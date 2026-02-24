@@ -17,6 +17,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # -------------------------------------------------------------------
+# Frontend builder stage: build JS/CSS assets
+# -------------------------------------------------------------------
+FROM node:20-slim AS frontend-builder
+
+WORKDIR /frontend
+
+COPY frontend/package.json ./
+RUN npm install
+
+COPY frontend/ ./
+RUN npm run build
+
+# -------------------------------------------------------------------
 # Builder stage: install Python dependencies
 # -------------------------------------------------------------------
 FROM base AS builder
@@ -38,6 +51,9 @@ COPY --from=builder /install /usr/local
 
 # Copy application code
 COPY --chown=suddenly:suddenly . .
+
+# Copy built frontend assets
+COPY --from=frontend-builder --chown=suddenly:suddenly /static/ ./static/
 
 # Collect static files
 RUN python manage.py collectstatic --noinput --clear
