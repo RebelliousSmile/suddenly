@@ -1,0 +1,47 @@
+# =================================================================
+# Suddenly - Requirements
+# =================================================================
+
+# Django core
+Django>=5.0,<5.1
+gunicorn>=21.0
+whitenoise>=6.6  # Static files serving
+
+# Database
+psycopg[binary]>=3.1  # PostgreSQL adapter (modern psycopg3)
+
+# Async tasks
+celery>=5.3
+redis>=5.0
+django-celery-beat>=2.5  # Periodic tasks
+
+# ActivityPub & HTTP
+httpx>=0.27  # Async HTTP client
+cryptography>=42.0  # HTTP signatures
+pydantic>=2.5  # Data validation
+
+# Authentication
+django-allauth>=0.61  # Social auth ready
+
+# API & Serialization
+djangorestframework>=3.14
+drf-spectacular>=0.27  # OpenAPI documentation
+markdown>=3.5  # Report content rendering
+
+# Utils
+python-dotenv>=1.0  # Environment variables
+django-extensions>=3.2  # Dev utilities
+Pillow>=10.2  # Image processing (avatars)
+
+# =================================================================
+# Development dependencies (uncomment for dev)
+# =================================================================
+pytest>=8.0
+pytest-django>=4.7
+pytest-cov>=4.1
+pytest-mock>=3.12
+factory-boy>=3.3
+# django-debug-toolbar>=4.2
+# ruff>=0.2  # Linting
+# mypy>=1.8
+# django-stubs>=4.2

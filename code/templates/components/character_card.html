@@ -1,0 +1,128 @@
+{# 
+  Character Card Component
+  
+  Usage:
+    {% include "components/character_card.html" with character=character %}
+    {% include "components/character_card.html" with character=character show_actions=True %}
+#}
+
+<article class="card card-hover group" id="character-{{ character.id }}">
+    <div class="card-body">
+        <!-- Header avec avatar et statut -->
+        <header class="flex items-start gap-3 mb-3">
+            {% if character.avatar %}
+                <img src="{{ character.avatar.url }}" 
+                     alt="{{ character.name }}"
+                     class="avatar-lg">
+            {% else %}
+                <div class="avatar-lg avatar-placeholder">
+                    <span class="i-lucide-user text-xl"></span>
+                </div>
+            {% endif %}
+            
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <h3 class="font-semibold text-gray-900 truncate">
+                        <a href="#" class="hover:text-primary-600">
+                            {{ character.name }}
+                        </a>
+                    </h3>
+                    
+                    <!-- Badge de statut -->
+                    {% if character.status == 'npc' %}
+                        <span class="badge-available">
+                            <span class="i-lucide-circle-dot text-xs"></span>
+                            Disponible
+                        </span>
+                    {% elif character.status == 'pc' %}
+                        <span class="badge-pc">
+                            <span class="i-lucide-star text-xs"></span>
+                            PJ
+                        </span>
+                    {% elif character.status == 'claimed' %}
+                        <span class="badge-claimed">
+                            <span class="i-lucide-git-merge text-xs"></span>
+                            Réclamé
+                        </span>
+                    {% elif character.status == 'adopted' %}
+                        <span class="badge-adopted">
+                            <span class="i-lucide-user-check text-xs"></span>
+                            Adopté
+                        </span>
+                    {% elif character.status == 'forked' %}
+                        <span class="badge-forked">
+                            <span class="i-lucide-git-branch text-xs"></span>
+                            Forké
+                        </span>
+                    {% endif %}
+                </div>
+                
+                <!-- Origine -->
+                <p class="text-sm text-gray-500 truncate">
+                    <span class="i-lucide-book-open text-xs mr-1"></span>
+                    {{ character.origin_game.title }}
+                </p>
+            </div>
+        </header>
+        
+        <!-- Description -->
+        {% if character.description %}
+            <p class="text-gray-600 text-sm line-clamp-3 mb-3">
+                {{ character.description }}
+            </p>
+        {% endif %}
+        
+        <!-- Métadonnées -->
+        <div class="flex items-center gap-4 text-xs text-gray-500">
+            {% if character.appearances.count %}
+                <span class="flex items-center gap-1">
+                    <span class="i-lucide-file-text"></span>
+                    {{ character.appearances.count }} apparition{{ character.appearances.count|pluralize }}
+                </span>
+            {% endif %}
+            
+            {% if character.quotes.count %}
+                <span class="flex items-center gap-1">
+                    <span class="i-lucide-quote"></span>
+                    {{ character.quotes.count }} citation{{ character.quotes.count|pluralize }}
+                </span>
+            {% endif %}
+            
+            {% if character.owner %}
+                <span class="flex items-center gap-1">
+                    <span class="i-lucide-user"></span>
+                    {{ character.owner.get_display_name }}
+                </span>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Actions (optionnel) -->
+    {% if show_actions and character.is_available and user.is_authenticated %}
+        <div class="card-footer flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button hx-post="/api/characters/{{ character.id }}/claim/"
+                    hx-target="#character-{{ character.id }}"
+                    hx-swap="outerHTML"
+                    class="btn-ghost btn-sm text-amber-600 hover:bg-amber-50">
+                <span class="i-lucide-git-merge"></span>
+                Claim
+            </button>
+            
+            <button hx-post="/api/characters/{{ character.id }}/adopt/"
+                    hx-target="#character-{{ character.id }}"
+                    hx-swap="outerHTML"
+                    class="btn-ghost btn-sm text-secondary-600 hover:bg-secondary-50">
+                <span class="i-lucide-user-plus"></span>
+                Adopt
+            </button>
+            
+            <button hx-post="/api/characters/{{ character.id }}/fork/"
+                    hx-target="#character-{{ character.id }}"
+                    hx-swap="outerHTML"
+                    class="btn-ghost btn-sm text-violet-600 hover:bg-violet-50">
+                <span class="i-lucide-git-branch"></span>
+                Fork
+            </button>
+        </div>
+    {% endif %}
+</article>
