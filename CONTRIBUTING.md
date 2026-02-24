@@ -14,6 +14,7 @@ Merci de votre intérêt pour Suddenly ! Ce guide vous aidera à contribuer au p
 6. [Tests](#tests)
 7. [Pull Requests](#pull-requests)
 8. [Signaler un Bug](#signaler-un-bug)
+9. [Domaines de Contribution](#domaines-de-contribution)
 
 ---
 
@@ -341,14 +342,33 @@ Ce qui devrait se passer.
 
 ## Logs
 
-```
+\`\`\`
 Coller les logs pertinents ici
-```
+\`\`\`
 
 ## Screenshots
 
 Si applicable.
 ```
+
+---
+
+## Domaines de Contribution
+
+### Prioritaires
+
+- [ ] Tests unitaires et d'intégration
+- [ ] Documentation utilisateur
+- [ ] Traductions
+- [ ] Accessibilité (a11y)
+- [ ] Tests de fédération avec d'autres logiciels AP
+
+### Fonctionnalités v0.2+
+
+- [ ] Interface de rédaction avec mentions
+- [ ] Graphe des liens entre personnages
+- [ ] Notifications en temps réel
+- [ ] Import/export de données
 
 ---
 

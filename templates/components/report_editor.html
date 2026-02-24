@@ -1,0 +1,167 @@
+{# 
+  Report Editor Component with @mention support
+  
+  Usage:
+    {% include "components/report_editor.html" with game=game %}
+    {% include "components/report_editor.html" with game=game report=report %}
+#}
+
+<div x-data="mentionInput('{{ report.content|default:""|escapejs }}')" 
+     class="space-y-4">
+    
+    <!-- Titre -->
+    <div>
+        <label for="report-title" class="form-label">
+            Titre <span class="text-gray-400">(optionnel)</span>
+        </label>
+        <input type="text" 
+               id="report-title"
+               name="title"
+               value="{{ report.title|default:"" }}"
+               placeholder="Ex: Session 12 - La confrontation finale"
+               class="form-input">
+    </div>
+    
+    <!-- Contenu avec mentions -->
+    <div class="relative">
+        <label for="report-content" class="form-label">
+            Compte-rendu
+        </label>
+        
+        <div class="relative">
+            <textarea id="report-content"
+                      name="content"
+                      x-model="content"
+                      @input="
+                          const match = content.match(/@(\w*)$/);
+                          if (match) search(match[1]);
+                          else showSuggestions = false;
+                      "
+                      @keydown="onKeydown"
+                      rows="12"
+                      placeholder="Racontez votre session...&#10;&#10;Utilisez @nom pour mentionner un personnage."
+                      class="form-input font-mono text-sm resize-y min-h-[300px]"></textarea>
+            
+            <!-- Suggestions de mentions -->
+            <div x-show="showSuggestions"
+                 x-transition
+                 class="absolute bottom-full left-0 mb-1 w-64 bg-white rounded-lg shadow-dropdown border border-gray-200 py-1 z-10">
+                <template x-for="(suggestion, index) in suggestions" :key="suggestion.id">
+                    <button @click="selectSuggestion(suggestion)"
+                            :class="{ 'bg-primary-50': index === selectedIndex }"
+                            class="w-full px-3 py-2 text-left flex items-center gap-2 hover:bg-gray-50 transition-colors">
+                        <template x-if="suggestion.avatar">
+                            <img :src="suggestion.avatar" class="avatar-sm">
+                        </template>
+                        <template x-if="!suggestion.avatar">
+                            <span class="avatar-sm avatar-placeholder">
+                                <span class="i-lucide-user text-xs"></span>
+                            </span>
+                        </template>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-gray-900 truncate" x-text="suggestion.name"></p>
+                            <p class="text-xs text-gray-500 truncate" x-text="suggestion.game_title"></p>
+                        </div>
+                    </button>
+                </template>
+                
+                <template x-if="suggestions.length === 0">
+                    <p class="px-3 py-2 text-sm text-gray-500">
+                        Aucun personnage trouvé
+                    </p>
+                </template>
+            </div>
+        </div>
+        
+        <p class="form-help">
+            <span class="i-lucide-info text-xs mr-1"></span>
+            Markdown supporté. Tapez <code class="bg-gray-100 px-1 rounded">@</code> pour mentionner un personnage.
+        </p>
+    </div>
+    
+    <!-- Cast / Personnages de la scène -->
+    <div x-data="{ cast: [], newCharacter: '' }">
+        <label class="form-label">
+            Distribution <span class="text-gray-400">(personnages de cette scène)</span>
+        </label>
+        
+        <div class="flex flex-wrap gap-2 mb-2">
+            <template x-for="character in cast" :key="character.id || character.name">
+                <span class="badge-primary flex items-center gap-1">
+                    <span x-text="character.name"></span>
+                    <button @click="cast = cast.filter(c => c !== character)"
+                            class="hover:text-primary-200">
+                        <span class="i-lucide-x text-xs"></span>
+                    </button>
+                </span>
+            </template>
+        </div>
+        
+        <div class="flex gap-2">
+            <input type="text"
+                   x-model="newCharacter"
+                   @keydown.enter.prevent="
+                       if (newCharacter.trim()) {
+                           cast.push({ name: newCharacter.trim(), isNew: true });
+                           newCharacter = '';
+                       }
+                   "
+                   placeholder="Ajouter un personnage..."
+                   class="form-input flex-1">
+            <button @click="
+                        if (newCharacter.trim()) {
+                            cast.push({ name: newCharacter.trim(), isNew: true });
+                            newCharacter = '';
+                        }
+                    "
+                    type="button"
+                    class="btn-secondary">
+                <span class="i-lucide-plus"></span>
+            </button>
+        </div>
+        
+        <!-- Hidden inputs pour le formulaire -->
+        <template x-for="(character, index) in cast" :key="index">
+            <input type="hidden" 
+                   :name="'cast[' + index + '][name]'" 
+                   :value="character.name">
+        </template>
+    </div>
+    
+    <!-- Actions -->
+    <div class="flex items-center gap-3 pt-4 border-t border-gray-200">
+        <button type="submit" 
+                name="action" 
+                value="publish"
+                class="btn-primary">
+            <span class="i-lucide-send"></span>
+            Publier
+        </button>
+        
+        <button type="submit" 
+                name="action" 
+                value="draft"
+                class="btn-secondary">
+            <span class="i-lucide-save"></span>
+            Enregistrer brouillon
+        </button>
+        
+        {% if report %}
+            <button type="button"
+                    @click="if(confirm('Supprimer ce brouillon ?')) $refs.deleteForm.submit()"
+                    class="btn-ghost text-red-600 ml-auto">
+                <span class="i-lucide-trash"></span>
+            </button>
+        {% endif %}
+    </div>
+</div>
+
+{% if report %}
+<form x-ref="deleteForm" 
+      action="#" 
+      method="POST" 
+      class="hidden">
+    {% csrf_token %}
+    <input type="hidden" name="_method" value="DELETE">
+</form>
+{% endif %}
