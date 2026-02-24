@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.joinbookwyrm.com)",
+      "WebFetch(domain:docs.anthropic.com)"
+    ]
+  }
+}
