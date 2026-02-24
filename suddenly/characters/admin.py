@@ -70,31 +70,7 @@ class SharedSequenceAdmin(admin.ModelAdmin):
 
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
-    list_display = ["follower", "target_type", "target_id", "created_at"]
-    list_filter = ["target_type", "created_at"]
-    search_fields = ["follower__username"]
-    raw_id_fields = ["follower"]_fields = ["requester__username", "target_character__name", "message"]
-    raw_id_fields = ["requester", "target_character", "proposed_character"]
-
-
-@admin.register(CharacterLink)
-class CharacterLinkAdmin(admin.ModelAdmin):
-    list_display = ["type", "source", "target", "created_at"]
-    list_filter = ["type", "created_at"]
-    search_fields = ["source__name", "target__name"]
-    raw_id_fields = ["source", "target", "link_request"]
-
-
-@admin.register(SharedSequence)
-class SharedSequenceAdmin(admin.ModelAdmin):
-    list_display = ["title", "link", "status", "created_at"]
-    list_filter = ["status", "created_at"]
-    raw_id_fields = ["link"]
-
-
-@admin.register(Follow)
-class FollowAdmin(admin.ModelAdmin):
-    list_display = ["follower", "target_type", "target_id", "created_at"]
-    list_filter = ["target_type", "created_at"]
+    list_display = ["follower", "content_type", "object_id", "created_at"]
+    list_filter = ["content_type", "created_at"]
     search_fields = ["follower__username"]
     raw_id_fields = ["follower"]
