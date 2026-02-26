@@ -98,6 +98,24 @@ class TestCharacterModel:
     def test_actor_url(self, character):
         assert f"/characters/{character.id}" in character.actor_url
 
+    def test_claimed_is_not_available(self, db, user, game):
+        claimed = Character.objects.create(
+            name="Claimed", status=CharacterStatus.CLAIMED, creator=user, origin_game=game
+        )
+        assert claimed.is_available is False
+
+    def test_adopted_is_not_available(self, db, user, game):
+        adopted = Character.objects.create(
+            name="Adopted", status=CharacterStatus.ADOPTED, creator=user, origin_game=game
+        )
+        assert adopted.is_available is False
+
+    def test_forked_is_not_available(self, db, user, game):
+        forked = Character.objects.create(
+            name="Forked", status=CharacterStatus.FORKED, creator=user, origin_game=game
+        )
+        assert forked.is_available is False
+
 
 class TestQuoteModel:
     """Tests for Quote model."""

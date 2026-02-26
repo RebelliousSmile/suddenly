@@ -109,6 +109,23 @@ class TestLinkServiceValidation:
         
         assert "n'est plus disponible" in str(exc.value)
     
+    def test_adopt_blocked_by_pending_request(self, db, user, other_user, character, game):
+        """Cannot adopt a character with an existing pending request."""
+        third_user = User.objects.create_user(
+            username="third", email="third@test.com", password="test"
+        )
+        LinkRequest.objects.create(
+            type=LinkType.CLAIM,
+            requester=third_user,
+            target_character=character,
+            message="I want it first"
+        )
+
+        with pytest.raises(ValidationError) as exc:
+            LinkService.validate_adopt(other_user, character)
+
+        assert "demande est déjà en cours" in str(exc.value)
+
     def test_fork_always_valid(self, db, user, other_user, game):
         """Fork can target any character."""
         # Even an already adopted character can be forked

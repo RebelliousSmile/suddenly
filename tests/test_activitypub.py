@@ -277,34 +277,197 @@ class TestSerializers:
 
 class TestHTTPSignatures:
     """Tests for HTTP signature generation and verification."""
-    
+
     def test_generate_key_pair(self):
         private_key, public_key = generate_key_pair()
-        
+
         assert "BEGIN PRIVATE KEY" in private_key
         assert "BEGIN PUBLIC KEY" in public_key
-    
+
     def test_key_pair_consistency(self):
         """Generated keys should be usable together."""
         from cryptography.hazmat.primitives import serialization
         from cryptography.hazmat.backends import default_backend
-        
+
         private_pem, public_pem = generate_key_pair()
-        
+
         # Load private key
         private_key = serialization.load_pem_private_key(
             private_pem.encode(),
             password=None,
             backend=default_backend()
         )
-        
+
         # Extract public key from private
         derived_public = private_key.public_key().public_bytes(
             encoding=serialization.Encoding.PEM,
             format=serialization.PublicFormat.SubjectPublicKeyInfo
         ).decode()
-        
+
         assert derived_public == public_pem
+
+    def test_sign_request_adds_required_headers(self):
+        """sign_request must set Signature, Date, and Host headers."""
+        from suddenly.activitypub.signatures import sign_request
+
+        private_pem, _ = generate_key_pair()
+        headers: dict = {}
+        sign_request(
+            method="GET",
+            url="https://example.com/users/alice/inbox",
+            headers=headers,
+            key_id="https://example.com/users/alice#main-key",
+            private_key_pem=private_pem,
+        )
+        assert "Signature" in headers
+        assert "Date" in headers
+        assert "Host" in headers
+        assert 'keyId="https://example.com/users/alice#main-key"' in headers["Signature"]
+
+    def test_sign_request_adds_digest_when_body_given(self):
+        """sign_request must add SHA-256 Digest header when body is provided."""
+        from suddenly.activitypub.signatures import sign_request
+
+        private_pem, _ = generate_key_pair()
+        headers: dict = {}
+        sign_request(
+            method="POST",
+            url="https://example.com/inbox",
+            headers=headers,
+            body={"type": "Follow"},
+            key_id="https://example.com/actor#main-key",
+            private_key_pem=private_pem,
+        )
+        assert "Digest" in headers
+        assert headers["Digest"].startswith("SHA-256=")
+        assert "digest" in headers["Signature"]
+
+    def test_verify_signature_returns_tuple(self):
+        """Regression: verify_signature returns (bool, str), not a plain bool.
+
+        The original bug: `if not verify_signature(request)` never rejected
+        because a non-empty tuple is always truthy in Python.
+        """
+        from suddenly.activitypub.signatures import verify_signature
+        from django.test import RequestFactory
+
+        request = RequestFactory().post("/inbox")
+        result = verify_signature(request)
+
+        assert isinstance(result, tuple), "verify_signature must return (bool, str), not a plain bool"
+        is_valid, _ = result
+        assert is_valid is False
+
+    def test_verify_signature_rejects_unsigned_request(self):
+        """Request without Signature header must fail verification."""
+        from suddenly.activitypub.signatures import verify_signature
+        from django.test import RequestFactory
+
+        request = RequestFactory().post("/inbox")
+        is_valid, reason = verify_signature(request)
+
+        assert is_valid is False
+        assert "No Signature" in reason
+
+    def test_sign_then_verify_roundtrip(self, mocker):
+        """Full roundtrip: sign outgoing request, then verify incoming."""
+        from suddenly.activitypub.signatures import sign_request, verify_signature
+        from django.test import RequestFactory
+
+        private_pem, public_pem = generate_key_pair()
+        key_id = "https://remote.social/users/alice#main-key"
+        target_url = "https://test.social/users/testuser/inbox"
+        body = {"type": "Follow"}
+
+        # Sign the outgoing request
+        headers: dict = {}
+        sign_request(
+            method="POST",
+            url=target_url,
+            headers=headers,
+            body=body,
+            key_id=key_id,
+            private_key_pem=private_pem,
+        )
+
+        # Reconstruct the incoming request
+        meta: dict = {
+            "HTTP_HOST": headers["Host"],
+            "HTTP_DATE": headers["Date"],
+            "HTTP_SIGNATURE": headers["Signature"],
+        }
+        if "Digest" in headers:
+            meta["HTTP_DIGEST"] = headers["Digest"]
+
+        request = RequestFactory().post(
+            "/users/testuser/inbox",
+            data=json.dumps(body),
+            content_type="application/activity+json",
+            **meta,
+        )
+
+        # Mock the actor fetch to return our public key
+        mock_response = mocker.MagicMock()
+        mock_response.json.return_value = {
+            "publicKey": {"id": key_id, "publicKeyPem": public_pem}
+        }
+        mock_response.raise_for_status.return_value = None
+        mock_ctx = mocker.MagicMock()
+        mock_ctx.__enter__.return_value = mock_ctx
+        mock_ctx.get.return_value = mock_response
+        mocker.patch("suddenly.activitypub.signatures.httpx.Client", return_value=mock_ctx)
+
+        is_valid, result = verify_signature(request)
+        assert is_valid is True
+        assert result == key_id
+
+    def test_verify_signature_rejects_tampered_request(self, mocker):
+        """Request with valid signature but tampered body must fail."""
+        from suddenly.activitypub.signatures import sign_request, verify_signature
+        from django.test import RequestFactory
+
+        private_pem, public_pem = generate_key_pair()
+        key_id = "https://remote.social/users/alice#main-key"
+
+        # Sign with original body
+        headers: dict = {}
+        sign_request(
+            method="POST",
+            url="https://test.social/users/testuser/inbox",
+            headers=headers,
+            body={"type": "Follow"},
+            key_id=key_id,
+            private_key_pem=private_pem,
+        )
+
+        # Tamper: replace body content but keep old Digest
+        meta: dict = {
+            "HTTP_HOST": headers["Host"],
+            "HTTP_DATE": headers["Date"],
+            "HTTP_SIGNATURE": headers["Signature"],
+        }
+        if "Digest" in headers:
+            meta["HTTP_DIGEST"] = headers["Digest"]
+
+        request = RequestFactory().post(
+            "/users/testuser/inbox",
+            data=json.dumps({"type": "Delete"}),  # tampered
+            content_type="application/activity+json",
+            **meta,
+        )
+
+        mock_response = mocker.MagicMock()
+        mock_response.json.return_value = {
+            "publicKey": {"id": key_id, "publicKeyPem": public_pem}
+        }
+        mock_response.raise_for_status.return_value = None
+        mock_ctx = mocker.MagicMock()
+        mock_ctx.__enter__.return_value = mock_ctx
+        mock_ctx.get.return_value = mock_response
+        mocker.patch("suddenly.activitypub.signatures.httpx.Client", return_value=mock_ctx)
+
+        is_valid, _ = verify_signature(request)
+        assert is_valid is False
 
 
 class TestInbox:
