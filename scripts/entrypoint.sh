@@ -9,6 +9,9 @@ python manage.py collectstatic --noinput --clear
 echo "==> Running migrations..."
 python manage.py migrate --noinput
 
+echo "==> Creating DB cache table (no-op if already exists)..."
+python manage.py createcachetable 2>/dev/null || true
+
 echo "==> Starting gunicorn..."
 exec gunicorn suddenly.wsgi:application \
     --bind "0.0.0.0:${PORT:-8000}" \
