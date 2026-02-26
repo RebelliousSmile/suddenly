@@ -41,6 +41,9 @@ urlpatterns = [
     path(".well-known/", include("suddenly.activitypub.wellknown_urls")),
     path("", include("suddenly.activitypub.urls")),  # Inbox endpoints
     
+    # User profiles (must be last — greedy @username pattern)
+    path("@", include("suddenly.users.urls")),
+
     # Main app
     path("", include("suddenly.core.urls")),
 ]
