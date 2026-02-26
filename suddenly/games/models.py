@@ -54,11 +54,16 @@ class Game(models.Model):
         return self.title
 
     @property
-    def actor_url(self):
+    def actor_url(self) -> str | None:
         """ActivityPub actor URL."""
         if self.remote:
             return self.ap_id
         return f"{settings.AP_BASE_URL}/games/{self.id}"
+
+    @property
+    def local(self) -> bool:
+        """True if this game belongs to the local instance."""
+        return not self.remote
 
 
 class ReportStatus(models.TextChoices):

@@ -108,11 +108,16 @@ class Character(models.Model):
         return self.status == CharacterStatus.NPC
 
     @property
-    def actor_url(self):
+    def actor_url(self) -> str | None:
         """ActivityPub actor URL."""
         if self.remote:
             return self.ap_id
         return f"{settings.AP_BASE_URL}/characters/{self.id}"
+
+    @property
+    def local(self) -> bool:
+        """True if this character belongs to the local instance."""
+        return not self.remote
 
 
 class QuoteVisibility(models.TextChoices):

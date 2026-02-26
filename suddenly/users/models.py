@@ -88,3 +88,8 @@ class User(AbstractUser):
         if self.remote:
             return self.outbox_url
         return f"{self.actor_url}/outbox"
+
+    @property
+    def local(self) -> bool:
+        """True if this user belongs to the local instance."""
+        return not self.remote
