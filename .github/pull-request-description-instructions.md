@@ -1,1 +1,0 @@
-../docs/PR_TEMPLATE.md

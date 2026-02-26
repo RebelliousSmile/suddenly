@@ -1,1 +1,0 @@
-C:/Users/fxgui/Documents/Projets/suddenly/aidd/prompts/templates/code_review.md
