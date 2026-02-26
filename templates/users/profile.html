@@ -70,15 +70,27 @@
             Parties récentes
         </h2>
 
-        <!-- Empty State -->
-        <div class="text-center py-12">
-            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="i-lucide-book-open text-xl text-gray-400"></span>
+        {% if games %}
+            <div class="space-y-4">
+                {% for game in games %}
+                    <div class="card card-body">
+                        <a href="{{ game.get_absolute_url }}" class="text-lg font-semibold text-gray-900 hover:text-primary-600">
+                            {{ game.title }}
+                        </a>
+                        {% if game.description %}
+                            <p class="text-gray-600 text-sm mt-1">{{ game.description|truncatewords:20 }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
             </div>
-            <p class="text-gray-600">
-                Aucune partie publiée pour le moment.
-            </p>
-        </div>
+        {% else %}
+            <div class="text-center py-12">
+                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="i-lucide-book-open text-xl text-gray-400"></span>
+                </div>
+                <p class="text-gray-600">Aucune partie publiée pour le moment.</p>
+            </div>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

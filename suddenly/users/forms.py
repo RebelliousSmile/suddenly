@@ -1,5 +1,7 @@
 """Forms for users app."""
 
+import json
+
 from django import forms
 
 from .models import User
@@ -20,10 +22,29 @@ class ProfileForm(forms.ModelForm):
         ]
         widgets = {
             "bio": forms.Textarea(attrs={"rows": 4}),
-            "preferred_languages": forms.Textarea(attrs={"rows": 2, "class": "form-input"}),
+            "preferred_languages": forms.TextInput(
+                attrs={"placeholder": "fr, en", "class": "form-input"}
+            ),
         }
 
     def clean_preferred_languages(self) -> list[str]:
-        """Ensure preferred_languages is a list of language codes."""
+        """Ensure preferred_languages is a list of language codes.
+
+        Accepts either:
+        - Comma-separated values: "fr, en"
+        - Valid JSON list: ["fr", "en"]
+        """
         value = self.cleaned_data.get("preferred_languages")
-        return value or []
+        if not value:
+            return []
+
+        # Try parsing as JSON first (backward compatibility)
+        try:
+            return json.loads(value)
+        except (json.JSONDecodeError, TypeError):
+            # Fall back to comma-separated parsing
+            return [
+                code.strip()
+                for code in value.split(",")
+                if code.strip()
+            ]

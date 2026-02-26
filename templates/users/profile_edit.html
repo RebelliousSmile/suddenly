@@ -92,7 +92,7 @@
                             </label>
                             <p class="pl-1">ou glisser-déposer</p>
                         </div>
-                        <p class="text-xs text-gray-500">PNG, JPG ou GIF jusqu'à 5 MB</p>
+                        <p class="text-xs text-gray-500">PNG, JPG ou GIF jusqu'à 10 MB</p>
                     </div>
                 </div>
                 {% if form.avatar.help_text %}
@@ -133,7 +133,7 @@
                     <span class="text-gray-400">(optionnel)</span>
                 </label>
                 {{ form.preferred_languages }}
-                <p class="form-help">Liste JSON de codes langue, ex : ["fr", "en"]</p>
+                <p class="form-help">Codes langue séparés par des virgules, ex : fr, en</p>
                 {% if form.preferred_languages.errors %}
                     {% for error in form.preferred_languages.errors %}
                         <p class="form-error">{{ error }}</p>
