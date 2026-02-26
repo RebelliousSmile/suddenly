@@ -22,6 +22,7 @@ pydantic>=2.5  # Data validation
 
 # Authentication
 django-allauth>=0.61  # Social auth ready
+django-htmx>=1.17  # HTMX middleware
 
 # API & Serialization
 djangorestframework>=3.14

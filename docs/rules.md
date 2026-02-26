@@ -131,6 +131,7 @@ Type hints obligatoires sur toutes les fonctions et méthodes publiques. `mypy -
 
 - Toute donnée externe (instance distante, input utilisateur) est validée avant usage
 - Aucun secret dans le code — uniquement via variables d'environnement
+- Ne jamais demander un token ou une clé API dans un prompt ou un chat — toujours lire depuis `.env`
 - Les HTTP Signatures sont vérifiées avant tout traitement d'activité AP
 - Les requêtes SQL passent uniquement par l'ORM — pas de `.raw()` sans review
 
