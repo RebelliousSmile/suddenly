@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Modifier mon profil — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<!-- Profile Edit Form -->
+<section class="py-12">
+    <div class="container-app max-w-2xl">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">
+            Modifier mon profil
+        </h1>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="card card-body space-y-6">
+
+            <!-- Display Name -->
+            <div>
+                <label for="{{ form.display_name.id_for_label }}" class="form-label">
+                    {{ form.display_name.label }}
+                    <span class="text-gray-400">(optionnel)</span>
+                </label>
+                <input type="text"
+                       id="{{ form.display_name.id_for_label }}"
+                       name="{{ form.display_name.html_name }}"
+                       value="{{ form.display_name.value|default:'' }}"
+                       placeholder="Votre nom d'affichage"
+                       class="form-input {% if form.display_name.errors %}border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}">
+                {% if form.display_name.help_text %}
+                    <p class="form-help">{{ form.display_name.help_text|safe }}</p>
+                {% endif %}
+                {% if form.display_name.errors %}
+                    {% for error in form.display_name.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Bio -->
+            <div>
+                <label for="{{ form.bio.id_for_label }}" class="form-label">
+                    {{ form.bio.label }}
+                    <span class="text-gray-400">(optionnel)</span>
+                </label>
+                <textarea id="{{ form.bio.id_for_label }}"
+                          name="{{ form.bio.html_name }}"
+                          rows="4"
+                          placeholder="Présentez-vous..."
+                          class="form-input {% if form.bio.errors %}border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}">{{ form.bio.value|default:'' }}</textarea>
+                {% if form.bio.help_text %}
+                    <p class="form-help">{{ form.bio.help_text|safe }}</p>
+                {% endif %}
+                {% if form.bio.errors %}
+                    {% for error in form.bio.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Avatar -->
+            <div>
+                <label for="{{ form.avatar.id_for_label }}" class="form-label">
+                    {{ form.avatar.label }}
+                    <span class="text-gray-400">(optionnel)</span>
+                </label>
+                {% if form.avatar.value %}
+                    <div class="mb-4 p-4 bg-gray-50 rounded-lg flex items-center gap-3">
+                        <img src="{{ form.avatar.value.url }}" alt="Avatar actuel" class="avatar-md">
+                        <div>
+                            <p class="text-sm text-gray-600">Image actuelle</p>
+                            <label for="{{ form.avatar.id_for_label }}-clear" class="text-sm text-red-600 hover:text-red-500">
+                                <input id="{{ form.avatar.id_for_label }}-clear"
+                                       name="{{ form.avatar.html_name }}-clear"
+                                       type="checkbox">
+                                Supprimer l'image
+                            </label>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition-colors">
+                    <div class="space-y-1 text-center">
+                        <span class="i-lucide-upload text-3xl text-gray-400"></span>
+                        <div class="flex text-sm text-gray-600">
+                            <label for="{{ form.avatar.id_for_label }}"
+                                   class="relative cursor-pointer rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500">
+                                <span>Téléverser une image</span>
+                                <input id="{{ form.avatar.id_for_label }}"
+                                       name="{{ form.avatar.html_name }}"
+                                       type="file"
+                                       accept="image/*"
+                                       class="sr-only">
+                            </label>
+                            <p class="pl-1">ou glisser-déposer</p>
+                        </div>
+                        <p class="text-xs text-gray-500">PNG, JPG ou GIF jusqu'à 5 MB</p>
+                    </div>
+                </div>
+                {% if form.avatar.help_text %}
+                    <p class="form-help mt-2">{{ form.avatar.help_text|safe }}</p>
+                {% endif %}
+                {% if form.avatar.errors %}
+                    {% for error in form.avatar.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Content Language -->
+            <div>
+                <label for="{{ form.content_language.id_for_label }}" class="form-label">
+                    {{ form.content_language.label }}
+                </label>
+                <input type="text"
+                       id="{{ form.content_language.id_for_label }}"
+                       name="{{ form.content_language.html_name }}"
+                       value="{{ form.content_language.value|default:'' }}"
+                       placeholder="ex: fr"
+                       class="form-input {% if form.content_language.errors %}border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}">
+                {% if form.content_language.help_text %}
+                    <p class="form-help">{{ form.content_language.help_text|safe }}</p>
+                {% endif %}
+                {% if form.content_language.errors %}
+                    {% for error in form.content_language.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Preferred Languages -->
+            <div>
+                <label for="{{ form.preferred_languages.id_for_label }}" class="form-label">
+                    {{ form.preferred_languages.label }}
+                    <span class="text-gray-400">(optionnel)</span>
+                </label>
+                {{ form.preferred_languages }}
+                <p class="form-help">Liste JSON de codes langue, ex : ["fr", "en"]</p>
+                {% if form.preferred_languages.errors %}
+                    {% for error in form.preferred_languages.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Show Unlabeled Content -->
+            <div class="flex items-start gap-3 py-4 border-t border-gray-200">
+                <input type="checkbox"
+                       id="{{ form.show_unlabeled_content.id_for_label }}"
+                       name="{{ form.show_unlabeled_content.html_name }}"
+                       {% if form.show_unlabeled_content.value %}checked{% endif %}
+                       class="mt-1 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                <div>
+                    <label for="{{ form.show_unlabeled_content.id_for_label }}" class="text-sm font-medium text-gray-700">
+                        {{ form.show_unlabeled_content.label }}
+                    </label>
+                    {% if form.show_unlabeled_content.help_text %}
+                        <p class="text-sm text-gray-500">{{ form.show_unlabeled_content.help_text|safe }}</p>
+                    {% endif %}
+                    {% if form.show_unlabeled_content.errors %}
+                        {% for error in form.show_unlabeled_content.errors %}
+                            <p class="form-error">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            </div>
+            <!-- Form Actions -->
+            <div class="card-footer flex items-center gap-3 mt-4">
+                <button type="submit" class="btn-primary">
+                    <span class="i-lucide-save"></span>
+                    Enregistrer les modifications
+                </button>
+                <a href="{% url 'users:profile' username=object.username %}" class="btn-ghost">
+                    Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

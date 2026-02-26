@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{{ profile_user.get_display_name }} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<!-- Profile Header -->
+<section class="bg-gradient-to-b from-primary-50 to-white py-12">
+    <div class="container-app">
+        <div class="flex flex-col sm:flex-row items-start gap-8">
+            <!-- Avatar -->
+            <div>
+                {% if profile_user.avatar %}
+                    <img src="{{ profile_user.avatar.url }}" alt="{{ profile_user.get_display_name }}" class="avatar-md">
+                {% else %}
+                    <span class="avatar-md avatar-placeholder">
+                        <span class="i-lucide-user text-sm"></span>
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Profile Info -->
+            <div class="flex-1">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">
+                            {{ profile_user.get_display_name }}
+                        </h1>
+                        <p class="text-gray-500">@{{ profile_user.username }}</p>
+                    </div>
+
+                    <!-- Edit button (visible only if viewing own profile) -->
+                    {% if user == profile_user %}
+                        <a href="{% url 'users:profile_edit' username=profile_user.username %}" class="btn-primary btn-sm">
+                            <span class="i-lucide-edit-2"></span>
+                            Modifier le profil
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Bio -->
+                {% if profile_user.bio %}
+                    <p class="text-gray-600 max-w-2xl">
+                        {{ profile_user.bio|linebreaksbr }}
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- ActivityPub Actor URL -->
+        {% if profile_user.actor_url %}
+            <div class="mt-8 pt-8 border-t border-gray-200">
+                <div class="flex items-center gap-3">
+                    <span class="i-lucide-globe text-gray-400"></span>
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Profil ActivityPub</p>
+                        <a href="{{ profile_user.actor_url }}" class="link text-sm break-all">
+                            {{ profile_user.actor_url }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Recent Games Section -->
+<section class="py-12">
+    <div class="container-app">
+        <h2 class="text-2xl font-bold text-gray-900 mb-8">
+            Parties récentes
+        </h2>
+
+        <!-- Empty State -->
+        <div class="text-center py-12">
+            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="i-lucide-book-open text-xl text-gray-400"></span>
+            </div>
+            <p class="text-gray-600">
+                Aucune partie publiée pour le moment.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

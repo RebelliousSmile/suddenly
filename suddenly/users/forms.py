@@ -20,6 +20,7 @@ class ProfileForm(forms.ModelForm):
         ]
         widgets = {
             "bio": forms.Textarea(attrs={"rows": 4}),
+            "preferred_languages": forms.Textarea(attrs={"rows": 2, "class": "form-input"}),
         }
 
     def clean_preferred_languages(self) -> list[str]:
