@@ -83,8 +83,8 @@ def broadcast_activity(activity_data: dict, actor_id: str):
     """
     from suddenly.characters.models import Follow
     
-    # Get all followers
-    follows = Follow.objects.filter(target_id=actor_id)
+    # Get all followers (Follow uses GenericFK, so filter on object_id)
+    follows = Follow.objects.filter(object_id=actor_id)
     
     for follow in follows:
         if follow.follower.remote and follow.follower.inbox_url:
