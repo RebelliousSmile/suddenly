@@ -143,12 +143,6 @@ class Migration(migrations.Migration):
                 'unique_together': {('follower', 'content_type', 'object_id')},
             },
         ),
-        # Add ReportCast.character FK (deferred to avoid circular dependency)
-        migrations.AddField(
-            model_name='reportcast',
-            name='character',
-            field=models.ForeignKey(blank=True, help_text='Existing character (null if creating new)', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cast_entries', to='characters.character'),
-        ),
         # Indexes
         migrations.AddIndex(
             model_name='character',
