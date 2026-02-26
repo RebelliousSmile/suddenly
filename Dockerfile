@@ -55,8 +55,8 @@ COPY --chown=suddenly:suddenly . .
 # Copy built frontend assets
 COPY --from=frontend-builder --chown=suddenly:suddenly /static/ ./static/
 
-# Collect static files
-RUN python manage.py collectstatic --noinput --clear
+# Rendre l'entrypoint exécutable
+RUN chmod +x scripts/entrypoint.sh
 
 USER suddenly
 
@@ -66,5 +66,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/health/ || exit 1
 
-# Run with gunicorn
-CMD ["gunicorn", "suddenly.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "4"]
+# collectstatic + migrate + gunicorn au démarrage (vars Railway disponibles)
+CMD ["scripts/entrypoint.sh"]
