@@ -32,16 +32,25 @@ DATABASES = {
     }
 }
 
-# Production Redis (required)
-REDIS_URL = os.environ["REDIS_URL"]
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": REDIS_URL,
+# Redis — optional, falls back to DB cache + sync Celery
+REDIS_URL = os.environ.get("REDIS_URL")
+if REDIS_URL:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": REDIS_URL,
+        }
     }
-}
-CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
+    CELERY_BROKER_URL = REDIS_URL
+    CELERY_RESULT_BACKEND = REDIS_URL
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+            "LOCATION": "django_cache",
+        }
+    }
+    CELERY_TASK_ALWAYS_EAGER = True  # Run tasks synchronously without broker
 
 # ActivityPub base URL
 AP_BASE_URL = f"https://{DOMAIN}"
