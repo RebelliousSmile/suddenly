@@ -64,6 +64,10 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="federatedserver",
+            index=models.Index(fields=["status"], name="fedserver_status_idx"),
+        ),
+        migrations.AddIndex(
+            model_name="federatedserver",
             index=models.Index(fields=["application_type"], name="fedserver_type_idx"),
         ),
     ]

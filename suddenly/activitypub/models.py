@@ -62,6 +62,7 @@ class FederatedServer(BaseModel):
         verbose_name_plural = "Instances fédérées"
         indexes = [
             models.Index(fields=["server_name"], name="fedserver_name_idx"),
+            models.Index(fields=["status"], name="fedserver_status_idx"),
             models.Index(fields=["application_type"], name="fedserver_type_idx"),
         ]
 
