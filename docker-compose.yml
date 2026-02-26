@@ -1,4 +1,10 @@
-version: "3.8"
+# Variables communes à tous les services Django
+x-django-env: &django-env
+  DATABASE_URL: postgres://${POSTGRES_USER:-suddenly}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-suddenly}
+  REDIS_URL: redis://redis:6379/0
+  SECRET_KEY: ${SECRET_KEY}
+  DOMAIN: ${DOMAIN}
+  DJANGO_SETTINGS_MODULE: config.settings.production
 
 services:
   # =================================================================
@@ -8,19 +14,15 @@ services:
     build: .
     restart: unless-stopped
     environment:
-      - DATABASE_URL=postgres://${POSTGRES_USER:-suddenly}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-suddenly}
-      - REDIS_URL=redis://redis:6379/0
-      - SECRET_KEY=${SECRET_KEY}
-      - DOMAIN=${DOMAIN}
-      - DEBUG=false
-      - ALLOWED_HOSTS=${DOMAIN}
+      <<: *django-env
+      ALLOWED_HOSTS: ${DOMAIN}
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_started
     volumes:
-      - static:/app/static
+      - static:/app/staticfiles
       - media:/app/media
     networks:
       - suddenly-network
@@ -70,10 +72,7 @@ services:
     restart: unless-stopped
     command: celery -A suddenly worker -l info -c 2
     environment:
-      - DATABASE_URL=postgres://${POSTGRES_USER:-suddenly}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-suddenly}
-      - REDIS_URL=redis://redis:6379/0
-      - SECRET_KEY=${SECRET_KEY}
-      - DOMAIN=${DOMAIN}
+      <<: *django-env
     depends_on:
       db:
         condition: service_healthy
@@ -92,10 +91,7 @@ services:
     restart: unless-stopped
     command: celery -A suddenly beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     environment:
-      - DATABASE_URL=postgres://${POSTGRES_USER:-suddenly}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-suddenly}
-      - REDIS_URL=redis://redis:6379/0
-      - SECRET_KEY=${SECRET_KEY}
-      - DOMAIN=${DOMAIN}
+      <<: *django-env
     depends_on:
       db:
         condition: service_healthy
@@ -116,7 +112,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - static:/app/static:ro
+      - static:/app/staticfiles:ro
       - media:/app/media:ro
       - certs:/etc/letsencrypt:ro
       - certbot-webroot:/var/www/certbot:ro
