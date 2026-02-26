@@ -12,8 +12,15 @@ from .base import *  # noqa: F401, F403
 DEBUG = True
 SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
 DOMAIN = os.environ.get("DOMAIN", "localhost:8000")
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
 
 # Local PostgreSQL
 _db_url = urlparse(
@@ -47,6 +54,8 @@ CELERY_RESULT_BACKEND = REDIS_URL
 AP_BASE_URL = f"http://{DOMAIN}"
 
 CSRF_TRUSTED_ORIGINS = [f"http://{DOMAIN}", "http://localhost:8000"]
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Development logging overrides
 LOGGING["root"]["level"] = "DEBUG"  # type: ignore[index]

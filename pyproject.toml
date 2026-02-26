@@ -11,6 +11,7 @@ dependencies = [
     "psycopg[binary]>=3.1",
     "pydantic>=2.5",
     "django-allauth>=0.61",
+    "django-htmx>=1.17",
     "djangorestframework>=3.14",
     "drf-spectacular>=0.27",
     "markdown>=3.5",
