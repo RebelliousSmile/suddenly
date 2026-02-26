@@ -251,8 +251,8 @@ def claim_character(
 
 Required READMEs:
 - `/README.md`: Project overview, setup, quick start
-- `/apps/activitypub/README.md`: Federation protocol details
-- `/documentation/`: All specs and architecture docs
+- `/apps/federation/README.md`: Federation protocol details
+- `/docs/`: All specs and architecture docs
 
 ---
 

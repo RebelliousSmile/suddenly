@@ -95,23 +95,25 @@ Scopes: users, games, characters, quotes, activitypub, api
 
 | Document | Contenu |
 |----------|---------|
-| `documentation/ARCHITECTURE.md` | Architecture technique complète |
-| `documentation/conception-jdr-activitypub.md` | Spécification fonctionnelle |
-| `documentation/api/activitypub.md` | Spec ActivityPub Suddenly |
+| `docs/memory-bank/ARCHITECTURE.md` | Architecture technique complète |
+| `docs/conception-jdr-activitypub.md` | Spécification fonctionnelle |
+| `docs/api/activitypub.md` | Spec ActivityPub Suddenly |
+| `docs/models/README.md` | Modèles de données Django |
 
 ### Références
 
 | Document | Contenu |
 |----------|---------|
-| `documentation/sources/bookwyrm-architecture.md` | Référence BookWyrm |
+| `docs/sources/bookwyrm-architecture.md` | Référence BookWyrm |
 
 ### Memory Bank (contexte rapide)
 
 | Fichier | Usage | Charger |
 |---------|-------|---------|
-| `memory-bank/00-core-suddenly.md` | Vue d'ensemble | TOUJOURS |
-| `memory-bank/02-development-standards.md` | Standards dev | Si coding |
-| `memory-bank/03-task-workflow.md` | Workflow tâches | Si planification |
+| `docs/memory-bank/00-core-suddenly.md` | Vue d'ensemble | TOUJOURS |
+| `docs/memory-bank/PROJECT_BRIEF.md` | Brief & langage ubiquitaire | Si besoin métier |
+| `docs/memory-bank/02-development-standards.md` | Standards dev | Si coding |
+| `docs/memory-bank/03-task-workflow.md` | Workflow tâches | Si planification |
 
 ---
 
