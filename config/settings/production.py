@@ -15,7 +15,7 @@ DEBUG = False
 # Fail fast if required secrets are absent
 SECRET_KEY = os.environ["SECRET_KEY"]
 DOMAIN = os.environ["DOMAIN"]
-ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(",")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", DOMAIN).split(",")
 
 # Production database (required)
 _db_url = urlparse(os.environ["DATABASE_URL"])
