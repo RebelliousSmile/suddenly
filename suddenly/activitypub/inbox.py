@@ -52,8 +52,9 @@ def process_inbox(request, actor_type: str, actor_identifier: str):
     Common inbox processing logic.
     """
     # Verify HTTP signature
-    if not verify_signature(request):
-        logger.warning(f"Invalid signature for {actor_type} inbox: {actor_identifier}")
+    is_valid, reason = verify_signature(request)
+    if not is_valid:
+        logger.warning(f"Invalid signature for {actor_type} inbox: {actor_identifier} — {reason}")
         return HttpResponse("Invalid signature", status=401)
     
     # Parse activity
