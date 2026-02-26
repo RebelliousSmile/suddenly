@@ -124,9 +124,10 @@ yarn-error.log*
 #
 aidd* # AIDD installation folder
 aidd/
-worktrees/
-
-.claude
+.github/
+.claude/
 .opencode
-
-# </AIDD>.github/
+worktrees/
+CLAUDE.md
+AGENTS.md
+# </AIDD>
