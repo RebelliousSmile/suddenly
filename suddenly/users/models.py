@@ -69,22 +69,22 @@ class User(AbstractUser):
         return self.display_name or self.username
 
     @property
-    def actor_url(self) -> str:
-        """ActivityPub actor URL."""
+    def actor_url(self) -> str | None:
+        """ActivityPub actor URL. None for remote users whose ap_id is not yet fetched."""
         if self.remote:
-            return self.ap_id or ""
+            return self.ap_id
         return f"{settings.AP_BASE_URL}/users/{self.username}"
 
     @property
-    def actor_inbox(self) -> str:
-        """ActivityPub inbox URL."""
+    def actor_inbox(self) -> str | None:
+        """ActivityPub inbox URL. None if actor_url is unavailable."""
         if self.remote:
-            return self.inbox_url or ""
+            return self.inbox_url
         return f"{self.actor_url}/inbox"
 
     @property
-    def actor_outbox(self) -> str:
-        """ActivityPub outbox URL."""
+    def actor_outbox(self) -> str | None:
+        """ActivityPub outbox URL. None if actor_url is unavailable."""
         if self.remote:
-            return self.outbox_url or ""
+            return self.outbox_url
         return f"{self.actor_url}/outbox"

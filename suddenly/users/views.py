@@ -2,6 +2,8 @@
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import DetailView, UpdateView
 
@@ -28,6 +30,12 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = ProfileForm
     template_name = "users/profile_edit.html"
+
+    def dispatch(self, request: HttpRequest, *args: object, **kwargs: object) -> HttpResponse:
+        """Redirect to the authenticated user's own edit URL if username doesn't match."""
+        if request.user.is_authenticated and kwargs.get("username") != request.user.username:
+            return redirect("users:profile_edit", username=request.user.username)
+        return super().dispatch(request, *args, **kwargs)  # type: ignore[return-value]
 
     def get_object(self) -> User:
         return self.request.user  # type: ignore[return-value]

@@ -23,8 +23,6 @@ class ProfileForm(forms.ModelForm):
         }
 
     def clean_preferred_languages(self) -> list[str]:
-        """Convertit la chaîne CSV en liste de codes langue."""
+        """Ensure preferred_languages is a list of language codes."""
         value = self.cleaned_data.get("preferred_languages")
-        if isinstance(value, str):
-            return [lang.strip() for lang in value.split(",") if lang.strip()]
         return value or []
