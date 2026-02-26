@@ -1,7 +1,0 @@
-{
-	"statusLine": {
-		"type": "command",
-		"command": "aidd/supports/.claude/_/statusbar.sh",
-		"padding": 0
-	}
-}
