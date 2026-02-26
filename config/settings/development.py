@@ -58,7 +58,7 @@ else:
             "LOCATION": "django_cache",
         }
     }
-    CELERY_TASK_ALWAYS_EAGER = True  # Run tasks synchronously
+    CELERY_TASK_ALWAYS_EAGER = True  # Run tasks synchronously (deprecated in Celery 5 but functional via Django settings bridge)
     CELERY_TASK_EAGER_PROPAGATES = True
 
 # ActivityPub base URL
