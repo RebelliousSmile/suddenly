@@ -127,6 +127,8 @@ aidd/
 .github/
 .claude/
 .opencode
+docs/tasks/
+docs/prompts/
 worktrees/
 CLAUDE.md
 AGENTS.md
