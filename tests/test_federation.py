@@ -3,6 +3,7 @@ Contract tests for FederatedServer model.
 """
 
 import pytest
+from django.db import IntegrityError
 
 from suddenly.activitypub.models import FederatedServer, ServerStatus
 
@@ -50,5 +51,5 @@ class TestFederatedServerUniqueness:
 
     def test_duplicate_server_name_raises(self, db):
         FederatedServer.objects.create(server_name="example.social")
-        with pytest.raises(Exception):
+        with pytest.raises(IntegrityError):
             FederatedServer.objects.create(server_name="example.social")
