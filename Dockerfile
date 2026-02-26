@@ -55,8 +55,10 @@ COPY --chown=suddenly:suddenly . .
 # Copy built frontend assets
 COPY --from=frontend-builder --chown=suddenly:suddenly /static/ ./static/
 
-# Rendre l'entrypoint exécutable
-RUN chmod +x scripts/entrypoint.sh
+# Créer staticfiles et media avec les bons droits avant de switcher d'utilisateur
+RUN mkdir -p /app/staticfiles /app/media \
+    && chown -R suddenly:suddenly /app/staticfiles /app/media \
+    && chmod +x scripts/entrypoint.sh
 
 USER suddenly
 
