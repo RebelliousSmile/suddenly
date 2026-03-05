@@ -57,10 +57,15 @@ description: Structured output template for the agentic readiness audit. Covers 
 | Rules files scoped to relevant paths | ✅ / ❌ / N/A | |
 | **Score** | **X/3** | |
 
-## Human supervision inference
+## Human supervision self-assessment
 
-| Component | Inference source | Supervision score (1–3) |
-|-----------|-----------------|------------------------|
+> Ask the human to self-assess. Do NOT infer from codebase presence alone.
+> 3 = can spot and fix agent errors without research
+> 2 = understands concepts, needs docs to verify details
+> 1 = cannot reliably review agent output
+
+| Component | Human self-assessment | Score (1–3) |
+|-----------|----------------------|-------------|
 | Language | | |
 | Framework | | |
 | Database | | |

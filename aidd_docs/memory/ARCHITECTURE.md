@@ -69,6 +69,16 @@ flowchart LR
 - No SPA, no build step required
 - Total bundle: ~32KB (HTMX 14KB + Alpine 8KB + Tailwind ~10KB purged)
 
+## Tooling & Quality Gates
+
+- **Unified check**: `make check` runs lint + typecheck + tests + coverage
+- **Lint**: Ruff (E, F, I, N, W, UP rules)
+- **Type check**: mypy strict + django-stubs
+- **Coverage**: pytest-cov, fail_under=80%
+- **Pre-commit**: ruff (with --fix) + mypy
+- **CI**: GitHub Actions — ruff check + mypy + pytest --cov, blocks merge on failure
+- **CI database**: PostgreSQL 16 service container for Django test DB
+
 ## Security Patterns
 
 ### HTTP Signatures

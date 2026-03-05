@@ -79,3 +79,33 @@ activitypub/    ← imports users, games, characters (for serialization)
 ```
 
 **Rule**: No circular imports. `core/` depends on nothing.
+
+## Tooling Files
+
+| File | Role |
+|------|------|
+| `Makefile` | Unified `make check` (lint + typecheck + test + coverage) |
+| `.pre-commit-config.yaml` | Pre-commit hooks: ruff + mypy |
+| `.github/workflows/ci.yml` | CI pipeline: ruff + mypy + pytest + coverage gate |
+| `pyproject.toml` | Project config, pytest addopts with --cov-fail-under=80 |
+
+## Scoped Rules
+
+| Rule file | Scope |
+|-----------|-------|
+| `.claude/rules/custom/03-django-models.md` | `suddenly/**/models.py` |
+| `.claude/rules/custom/03-django-services.md` | `suddenly/**/services.py` |
+| `.claude/rules/custom/03-django-views.md` | `suddenly/**/views.py` |
+| `.claude/rules/custom/05-pytest.md` | `tests/**/*.py`, `**/test_*.py` |
+| `.claude/rules/custom/08-activitypub.md` | `suddenly/activitypub/**` |
+| `.claude/rules/custom/08-characters.md` | `suddenly/characters/**` |
+
+## Agents
+
+| Agent | Role |
+|-------|------|
+| alexia | Autonomous end-to-end implementation |
+| iris | Frontend specialist (Figma, UI, journeys) |
+| kent | Test-driven development |
+| martin | Build/test runner |
+| claire | Clarity challenger |
