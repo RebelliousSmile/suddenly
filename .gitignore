@@ -140,7 +140,8 @@ aidd_docs/templates/*
 !.claude/skills/
 .claude/skills/*
 !.claude/skills/custom/
-.github/
+.github/*
+!.github/workflows/
 CLAUDE.md
 AGENTS.md
 CONTRIBUTING.md
