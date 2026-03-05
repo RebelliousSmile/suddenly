@@ -9,19 +9,25 @@
 
 ## Commands to run
 
-### Before commit
+### Single command (recommended)
+
+| Command | Description |
+| ------- | ----------- |
+| `make check` | Lint + typecheck + tests + coverage (fail_under=80%) |
+
+### Individual commands
 
 | Order | Command | Description |
 | ----- | ------- | ----------- |
-| 1 | `ruff check suddenly/` | Lint Python |
-| 2 | `pytest tests/` | Run unit & integration tests |
+| 1 | `ruff check .` | Lint Python |
+| 2 | `ruff format --check .` | Format check |
+| 3 | `mypy suddenly/` | Type checking (strict) |
+| 4 | `pytest` | Tests with coverage (80% threshold) |
 
-### Before push
+### Automated gates
 
-| Order | Command | Description |
-| ----- | ------- | ----------- |
-| 1 | `mypy suddenly/ --strict` | Type checking |
-| 2 | `pytest tests/ --cov` | Tests with coverage |
+- **Pre-commit**: ruff + mypy run automatically on `git commit`
+- **CI**: GitHub Actions blocks merge on any failure
 
 ## Coding Conventions
 
