@@ -1,31 +1,26 @@
-# AIDD Workflow — Conception to Implementation
+# AIDD workflow — plan before code
 
-## Triggers — quand ce workflow s'applique
+## Triggers
 
-Ce workflow s'applique à **toute demande qui touche au comportement ou à la structure du code** :
+- New feature, behavior change, refactoring, restructuring
+- Explicit invocations: `/brainstorm`, `/create_user_stories`, `/ticket_info`
+- Does NOT apply: typo fix, trivial rename, isolated value change
 
-- Nouvelle fonctionnalité (même "petite")
-- Modification de comportement existant
-- Refactoring ou restructuration
-- Invocations explicites : `@claire`, `/brainstorm`, `/create_user_stories`, `/ticket_info`
+## Agentic mode (autonomous skills, sub-agents)
 
-Ne s'applique PAS à : correction de typo, renommage trivial, modification d'une valeur isolée sans impact fonctionnel.
+- Always write a full plan before implementing
+- Wait for explicit user approval before coding
+- On plan rejection: ask for direction, do not implement alternative
+- On session resume: ask before acting on pending plan
 
-## Étape 1 — Avant tout : écrire un plan
+## Interactive mode (human-driven conversation)
 
-Dès qu'un trigger est détecté :
-1. Lire les fichiers concernés
-2. Écrire un plan dans `aidd_docs/tasks/<yyyy_mm>/`
-3. Attendre la validation explicite de l'utilisateur
-4. Ne pas implémenter avant cette validation
+- Propose approach in conversation before coding (no plan file needed)
+- Small scoped changes: state intent, then proceed unless user objects
+- Multi-file or cross-module changes: write a plan, wait for approval
 
-## Étape 2 — Après implémentation
+## Shared rules
 
-- Mettre à jour les user stories dans `aidd_docs/memory/` si impacté
-
-## Règles absolues
-
-- **Jamais implémenter sans plan validé** — même si la demande semble simple
-- **Clarification ≠ autorisation d'implémenter**
-- **Reprise de session** : si "l'étape suivante" est un plan, demander avant d'agir
-- **Une demande directe de feature est un trigger** — l'absence de `/brainstorm` ne dispense pas du plan
+- Clarification is not approval to implement
+- Direct feature request is a trigger — no command needed
+- Update memory bank if business behavior changed
