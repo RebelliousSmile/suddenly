@@ -13,3 +13,12 @@ repos:
         additional_dependencies:
           - django-stubs>=4.2
         args: [--strict]
+
+  - repo: local
+    hooks:
+      - id: generate-knowledge
+        name: generate KNOWLEDGE.md from memory bank
+        entry: python scripts/generate_knowledge.py
+        language: system
+        files: ^aidd_docs/memory/
+        pass_filenames: false
