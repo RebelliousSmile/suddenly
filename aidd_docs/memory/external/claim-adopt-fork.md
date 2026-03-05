@@ -52,6 +52,13 @@ sequenceDiagram
     Note over InstanceA,InstanceB: HTTP Signatures sur toutes les requêtes
 ```
 
+## Contraintes métier
+
+- **Claim** : nécessite une cohérence narrative — le PJ proposé pouvait être présent à ce moment
+- **Adopt** : interdit si le PNJ est déjà réclamé (CLAIMED) ou adopté (ADOPTED)
+- **Fork** : pas de contrainte de cohérence stricte — les deux personnages coexistent
+- **Conflit** : deux joueurs veulent le même PNJ → premier arrivé, premier servi (PENDING bloque les autres)
+
 ## SharedSequence — Règle MVP
 
 **Un lien sans SharedSequence est invalide.**
