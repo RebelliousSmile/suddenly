@@ -26,6 +26,12 @@ more costly, and human supervision more necessary.
 
 ---
 
+## Actionable rules
+
+The principles below are encoded as challengeable rules in `.claude/rules/custom/*-agentic-*.md`. During the audit, after the tech stack is identified, each rule is **challenged against the project's actual stack**: rules that don't apply are flagged for removal, rules that need adaptation are flagged for update, and missing rules are flagged for creation.
+
+---
+
 ## Core principle
 
 AI agents do not improve a bad codebase — they amplify its flaws.
@@ -134,6 +140,62 @@ If those conventions are inconsistent or implicit, the agent will propagate the 
 - No `CLAUDE.md`, or one that only describes the project without specifying agent behavior
 - Conventions exist only in developers' heads or in README prose
 - No rules file to constrain agent decisions at the module level
+
+### Rules file quality rubric
+
+Presence is necessary but not sufficient. Each rules file is evaluated on four axes:
+
+#### 1. Scoping
+
+| Score | Criterion |
+|-------|-----------|
+| ✅ | Rule is scoped to specific paths via `paths:` frontmatter (e.g. `src/api/**/*.ts`) |
+| ⚠️ | Rule is global (no `paths:`) but covers a genuinely cross-cutting concern |
+| ❌ | Rule is global but should be scoped — it applies constraints irrelevant to most files |
+
+#### 2. Actionability
+
+| Score | Criterion |
+|-------|-----------|
+| ✅ | Rule constrains a specific decision: the agent cannot be wrong once it reads it |
+| ⚠️ | Rule is a guideline with room for interpretation — the agent must infer the intent |
+| ❌ | Rule is descriptive prose (explains what the code does, not what the agent must do) |
+
+**Test:** can the agent violate this rule without knowing it? If yes → ❌.
+
+#### 3. Coverage of critical paths
+
+| Score | Criterion |
+|-------|-----------|
+| ✅ | Every high-risk module (auth, payments, federation, business logic) has at least one scoped rule |
+| ⚠️ | Some critical modules are uncovered — the agent falls back to inferred conventions |
+| ❌ | No rules cover any module — all constraints live in CLAUDE.md prose or nowhere |
+
+#### 4. Coherence
+
+| Score | Criterion |
+|-------|-----------|
+| ✅ | No contradictions between rules files; rules are consistent with CLAUDE.md |
+| ⚠️ | Minor overlaps — two rules cover the same path with compatible but redundant constraints |
+| ❌ | Contradictions detected: two rules give conflicting instructions for the same path or decision |
+
+### Rules audit output format
+
+For each rules file, report:
+
+```
+File: .claude/rules/<category>/<name>.md
+Paths: <scoped paths or "global">
+Scoping:      ✅ / ⚠️ / ❌  — <reason>
+Actionability: ✅ / ⚠️ / ❌ — <reason>
+Coverage gap: <module or decision not yet covered, if any>
+Contradiction: <conflicting rule, if any>
+```
+
+Then summarize:
+- Rules coverage score: `<covered critical modules> / <total critical modules>`
+- Number of actionable rules vs descriptive rules
+- List of gaps to address (input for `/generate_rules` in step 5)
 
 ---
 
