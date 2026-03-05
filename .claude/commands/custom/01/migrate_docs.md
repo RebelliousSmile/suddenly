@@ -90,4 +90,5 @@ Scan `docs/` and `documentation/` folders, classify each file by content type, r
 3. Spawn one sub-agent per file to classify using the Classification Map. Collect results and display plan:
    | Source | Destination | Action (create/merge/split/skip) |
 4. After user confirmation, spawn one sub-agent per output to reformat content following the matched template and write to destination.
-5. Print final summary with all actions taken and any warnings.
+5. After all writes succeed, delete each processed source file (including skipped ones — they have been evaluated). Empty directories left behind are also removed. Do NOT delete if any write for that file failed.
+6. Print final summary with all actions taken, files deleted, and any warnings.

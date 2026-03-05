@@ -1,3 +1,4 @@
+<!-- migrated from docs – verify with /init -->
 # Codebase Structure
 
 ```mermaid
@@ -55,3 +56,26 @@ flowchart TD
     G --> PG
     U --> PG
 ```
+
+## Critical Modules
+
+| File | Role | Tests Required |
+|------|------|----------------|
+| `suddenly/characters/services.py` | Claim/Adopt/Fork logic | Yes |
+| `suddenly/activitypub/handlers.py` | Incoming AP activity dispatch | Yes |
+| `suddenly/activitypub/signatures.py` | HTTP Signatures verify/sign | Yes |
+| `suddenly/activitypub/activities.py` | AP serialization | Yes |
+| `suddenly/users/activitypub.py` | User federation | Yes |
+| `suddenly/core/models.py` | BaseModel, ActivityPubMixin | Yes |
+
+## App Import Relations
+
+```
+core/           ← imported by everything (BaseModel, ActivityPubMixin)
+users/          ← imported by games, characters, activitypub
+games/          ← imported by characters
+characters/     ← imported by activitypub
+activitypub/    ← imports users, games, characters (for serialization)
+```
+
+**Rule**: No circular imports. `core/` depends on nothing.

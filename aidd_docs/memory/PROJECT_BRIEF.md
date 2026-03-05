@@ -10,6 +10,8 @@
 
 Suddenly est un réseau social fédéré (ActivityPub) pour joueurs de jeux de rôle. Les joueurs publient des comptes-rendus de parties mentionnant des personnages. Ces personnages (d'abord PNJ) peuvent être réclamés, adoptés ou dérivés par d'autres joueurs pour devenir leurs propres PJ.
 
+**"Suddenly"** = ce moment où l'inattendu surgit, quand un personnage apparaît soudainement dans une autre histoire.
+
 ## Context
 
 ### Core Domain
@@ -81,3 +83,52 @@ Créer un jeu → Rédiger le compte-rendu avec mentions → Définir le cast (d
 #### Adopter un PNJ
 
 Parcourir les comptes-rendus → Trouver un PNJ → Envoyer demande adopt avec message → Attendre décision du GM → Si accepté : le PNJ devient son PJ
+
+### Cross-instance (Bob on remote instance)
+
+- Suit des joueurs d'autres instances via fédération
+- Reçoit les CRs dans son feed via ActivityPub
+- Envoie une Adopt Request (ActivityPub Offer) depuis son instance
+- L'instance distante notifie Alice → Alice accepte (ActivityPub Accept)
+- Viktor devient PJ de Bob, lien visible sur les deux instances
+
+```mermaid
+journey
+    title Bob (instance B) adopte un PNJ de Alice (instance A)
+    section Découverte
+      Bob suit Alice via fédération: 4: Bob
+      Bob reçoit les CRs d'Alice dans son feed: 4: Bob
+      Bob découvre le PNJ Viktor: 5: Bob
+    section Demande cross-instance
+      Bob envoie Adopt Request (ActivityPub Offer): 4: Bob
+      Instance A reçoit et notifie Alice: 4: Alice
+      Alice accepte (ActivityPub Accept): 5: Alice
+    section Résultat
+      Viktor devient PJ de Bob: 5: Bob
+      Lien visible sur les deux instances: 5: Alice, Bob
+```
+
+## ActivityPub Overview
+
+### Actors (followable, have inbox/outbox)
+
+| Entity | AP Type | Description |
+|--------|---------|-------------|
+| User | Person | Compte joueur |
+| Character | Person | PJ ou PNJ |
+| Game | Group | Partie/campagne |
+
+### Objects (created, shared)
+
+| Entity | AP Type | Description |
+|--------|---------|-------------|
+| Report | Article | Compte-rendu |
+| Quote | Note | Citation |
+
+### Character Status Transitions
+
+```
+NPC → CLAIMED  (rétcon : le PNJ était le PJ depuis le début)
+NPC → ADOPTED  (adoption : le PNJ devient le PJ du demandeur)
+NPC → FORKED   (dérivation : nouveau PJ lié, PNJ conservé)
+```
