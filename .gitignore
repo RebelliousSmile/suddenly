@@ -118,18 +118,31 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
 # <AIDD>
-#
-# You might want to ignore the following files and directories:
-#
-aidd* # AIDD installation folder
-aidd/
-.github/
-.claude/
-.opencode
-docs/tasks/
-docs/prompts/
+.mcp.json
+docs/
 worktrees/
+.aidd/
+.vscode/
+aidd_docs/templates/*
+!aidd_docs/templates/custom/
+.claude/*
+!.claude/commands/
+.claude/commands/*
+!.claude/commands/custom/
+!.claude/rules/
+.claude/rules/*
+!.claude/rules/custom/
+!.claude/agents/
+.claude/agents/*
+!.claude/agents/custom-*
+!.claude/skills/
+.claude/skills/*
+!.claude/skills/custom/
+.github/
 CLAUDE.md
 AGENTS.md
+CONTRIBUTING.md
+migrate-docs.prompt.md
 # </AIDD>
