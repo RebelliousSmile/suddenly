@@ -114,7 +114,7 @@ def sign_request(
         if header == "(request-target)":
             signing_parts.append(f"(request-target): {method.lower()} {parsed.path}")
         else:
-            signing_parts.append(f"{header}: {headers[header]}")
+            signing_parts.append(f"{header}: {headers[header.title()]}")
 
     signing_string = "\n".join(signing_parts)
 
@@ -255,6 +255,15 @@ def verify_signature(request: HttpRequest) -> tuple[bool, str | None]:
 
     if algorithm != "rsa-sha256":
         return False, f"Unsupported algorithm: {algorithm}"
+
+    # Verify Digest header matches actual body (prevents body tampering)
+    digest_header = request.headers.get("Digest")
+    if digest_header and request.body:
+        expected_digest = "SHA-256=" + base64.b64encode(
+            hashlib.sha256(request.body).digest()
+        ).decode("utf-8")
+        if digest_header != expected_digest:
+            return False, "Digest mismatch"
 
     actor_url = key_id.split("#")[0]
     signing_string = _build_signing_string(request, headers_str.split())
