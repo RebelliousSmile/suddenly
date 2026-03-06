@@ -33,12 +33,17 @@ class ProfileForm(forms.ModelForm):  # type: ignore[type-arg]
         """Ensure preferred_languages is a list of language codes.
 
         Accepts either:
+        - A Python list (from JSONField widget)
         - Comma-separated values: "fr, en"
-        - Valid JSON list: ["fr", "en"]
+        - Valid JSON list: '["fr", "en"]'
         """
         value = self.cleaned_data.get("preferred_languages")
         if not value:
             return []
+
+        # Already a list (JSONField passes Python objects)
+        if isinstance(value, list):
+            return [str(code).strip() for code in value if str(code).strip()]
 
         # Try parsing as JSON first (backward compatibility)
         try:
