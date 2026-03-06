@@ -1,0 +1,226 @@
+/* =================================================================
+   Suddenly - Base Styles
+   ================================================================= */
+
+:root {
+    --color-primary: #6366f1;
+    --color-primary-dark: #4f46e5;
+    --color-secondary: #10b981;
+    --color-bg: #fafafa;
+    --color-surface: #ffffff;
+    --color-text: #1f2937;
+    --color-text-muted: #6b7280;
+    --color-border: #e5e7eb;
+    --font-sans: system-ui, -apple-system, sans-serif;
+    --font-serif: Georgia, serif;
+    --max-width: 1200px;
+    --spacing: 1rem;
+}
+
+/* Reset */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text);
+    background: var(--color-bg);
+}
+
+/* Layout */
+.site-header {
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--spacing);
+}
+
+.nav-main {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing);
+}
+
+.site-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: var(--color-text);
+}
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: calc(var(--spacing) * 1.5);
+}
+
+.nav-links a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+}
+
+.nav-links a:hover {
+    color: var(--color-primary);
+}
+
+.main-content {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: calc(var(--spacing) * 2);
+}
+
+.site-footer {
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    padding: calc(var(--spacing) * 2);
+    text-align: center;
+    color: var(--color-text-muted);
+    margin-top: calc(var(--spacing) * 4);
+}
+
+.site-footer a {
+    color: var(--color-primary);
+}
+
+/* Hero */
+.hero {
+    text-align: center;
+    padding: calc(var(--spacing) * 4) 0;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.tagline {
+    font-size: 1.25rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.description {
+    max-width: 600px;
+    margin: 0 auto 2rem;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-dark);
+}
+
+.btn-secondary {
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+
+.btn-secondary:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.cta-buttons {
+    display: flex;
+    gap: var(--spacing);
+    justify-content: center;
+}
+
+/* Features */
+.features {
+    padding: calc(var(--spacing) * 2) 0;
+}
+
+.features h2 {
+    text-align: center;
+    margin-bottom: calc(var(--spacing) * 2);
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: calc(var(--spacing) * 2);
+}
+
+.feature {
+    background: var(--color-surface);
+    padding: calc(var(--spacing) * 1.5);
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border);
+}
+
+.feature h3 {
+    margin-top: 0;
+    color: var(--color-primary);
+}
+
+.feature em {
+    display: block;
+    color: var(--color-text-muted);
+    font-style: italic;
+    margin-bottom: 0.5rem;
+}
+
+/* Federation info */
+.federation-info {
+    background: var(--color-surface);
+    padding: calc(var(--spacing) * 2);
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border);
+    text-align: center;
+    margin-top: calc(var(--spacing) * 3);
+}
+
+/* Messages */
+.messages {
+    margin-bottom: var(--spacing);
+}
+
+.message {
+    padding: var(--spacing);
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.message-success {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.message-error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.message-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.message-info {
+    background: #dbeafe;
+    color: #1e40af;
+}
