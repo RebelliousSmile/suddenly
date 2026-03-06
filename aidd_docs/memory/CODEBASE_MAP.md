@@ -13,6 +13,7 @@ flowchart TD
         end
         subgraph "users/"
             U["User (AbstractUser + AP fields + language prefs)"]
+            US["signals: AP actor init on signup (user_signed_up)"]
         end
         subgraph "games/"
             G["Game · Report · ReportCast"]
@@ -30,7 +31,7 @@ flowchart TD
     end
 
     subgraph "tests/"
-        T["conftest · test_api · test_models · test_services · test_activitypub · test_federation"]
+        T["conftest · factories · test_api · test_models · test_users · test_services · test_activitypub · test_federation"]
     end
 
     S --> C

@@ -59,6 +59,12 @@ Test files in `tests/`:
 - `test_services.py` — `LinkService` business logic
 - `test_federation.py` — federation tests
 
+## Celery in Tests
+
+- Autouse fixture `_celery_eager` in `conftest.py` forces synchronous execution
+- Must patch BOTH `settings` AND `celery_app.conf` — settings alone is insufficient (Celery reads config at import time)
+- `CELERY_TASK_ALWAYS_EAGER` must be unconditional in `development.py` (not inside `if REDIS_URL`)
+
 ## Mocking and Stubbing
 
 - `pytest-mock`: use `mocker` fixture
