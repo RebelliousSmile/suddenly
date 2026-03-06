@@ -57,6 +57,12 @@ class User(AbstractUser):
         ordering = ["-created_at"]
         # username, email, ap_id are unique → implicit indexes; remote has db_index=True
 
+    def save(self, *args: object, **kwargs: object) -> None:
+        # Normalize empty email to None so NULL uniqueness works in PostgreSQL
+        if not self.email:
+            self.email = None  # type: ignore[assignment]
+        super().save(*args, **kwargs)
+
     def __str__(self) -> str:
         return self.display_name or self.username
 
