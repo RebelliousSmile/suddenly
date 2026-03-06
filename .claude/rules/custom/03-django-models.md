@@ -5,7 +5,7 @@ paths:
 
 # Django models conventions
 
-- All models inherit from `core.models.BaseModel` (UUID PK, timestamps)
+- All models inherit from `core.models.BaseModel` (UUID PK, timestamps) — exception: `User` extends `AbstractUser` directly (required by `AUTH_USER_MODEL`)
 - Use `select_related` / `prefetch_related` in all querysets that cross relations
 - No business logic in models — delegate to services
 - ForeignKey fields must specify `on_delete` explicitly

@@ -19,3 +19,5 @@
 | DEC-015 | Compatibilité Mastodon read-only | Fédération | Accepted | 2026-03-05 |
 | DEC-016 | Soft delete pour le contenu modéré | Modération | Accepted | 2026-03-05 |
 | DEC-017 | Transfert de signalement cross-instance post-MVP | Modération | Accepted | 2026-03-05 |
+| DEC-018 | Alignement crypto standards Fediverse | ActivityPub | Accepted | 2026-03-06 |
+| DEC-019 | factory-boy pour génération de données de test | Testing | Accepted | 2026-03-06 |
