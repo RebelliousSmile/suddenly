@@ -15,10 +15,9 @@ Your goal is to help the user discover and memorize the project's codebase or me
 
 - Always start by asking for the source (code or docs) and the theme if not specified
 - 5 questions per session by default
+- **Scoring**: note on 20 (4 points × 5 questions), displayed as `Score: X/20`
 - Mix of multiple-choice and open questions — alternate to keep it engaging
-- On wrong answer: give a hint, let the user retry
-- On second wrong answer: explain in detail with a code or doc excerpt
-- Adaptive difficulty: start at intermediate, go up after 2 correct in a row, go down after 2 wrong in a row
+- Adaptive difficulty: start at intermediate, go up after 2 good scores in a row (3+/4), go down after 2 low scores in a row (≤2/4)
   - **Easy**: definitions, general concepts, model names, tech stack
   - **Intermediate**: relations between entities, route patterns, auth flow
   - **Hard**: edge cases, architecture decisions, potential inconsistencies between files
@@ -68,19 +67,46 @@ $ARGUMENTS
 5. Display: question number, source file path, the question
 6. Wait for the answer
 
-**If correct**:
+#### QCM scoring
+
+- **4/4**: correct on 1st attempt
+- **2/4**: correct on 2nd attempt (after hint)
+- **0/4**: wrong on both attempts
+
+#### Open question scoring
+
+- **4/4**: complete and precise answer
+- **3/4**: correct idea but incomplete formulation or a missing detail
+- **2/4**: right direction but important elements missing
+- **1/4**: one relevant element but overall insufficient
+- **0/4**: off-topic
+
+On any partial score (1-3), explain what was missing for 4/4.
+
+#### Flow
+
+**If full marks (4/4)**:
 - Validate with brief enthusiasm
-- Show partial score
+- Show score: `Score: X/20`
 - Update session report
 - Move to next question
 
-**If wrong (1st attempt)**:
+**If partial (open question, 1-3/4)**:
+- Award the points
+- Explain what was missing for 4/4
+- Show score: `Score: X/20`
+- Update session report
+- Move to next question
+
+**If wrong (QCM, 1st attempt)**:
 - Give a hint without revealing the answer (e.g. "It's in this file, around concept Y…")
 - Let the user retry
 
-**If wrong (2nd attempt)**:
+**If wrong (QCM, 2nd attempt)**:
+- Award 0/4
 - Reveal and explain the correct answer
 - Show a source file excerpt that justifies it
+- Show score: `Score: X/20`
 - Update session report
 - Move to next question
 
@@ -105,11 +131,16 @@ During file reading (step 3 of the question loop), audit the file being quizzed:
 
 ### End of session
 
-1. Display final score: `X/5`
-2. Summarize weak points (missed questions)
-3. Update session report with final score and key takeaways
-4. List all tasks and plans created during the session
-5. Suggest: "Play again? (same theme / new theme / other source)"
+1. Display final score: `X/20` with grade:
+   - 18-20: Excellente maîtrise
+   - 14-17: Bonne compréhension
+   - 10-13: Base correcte, points à approfondir
+   - 0-9: Besoin de révision
+2. Show detail per question: `Q1: X/4 — [brief justification]`
+3. Summarize weak points (missed or partial questions)
+4. Update session report with final score and key takeaways
+5. List all tasks and plans created during the session
+6. Suggest: "Play again? (same theme / new theme / other source)"
 
 ### Inconsistency detection
 
@@ -141,7 +172,7 @@ Inconsistency detected during an Ada session on <date>.
 ## OUTPUT: Interactive quiz
 
 - Conversational format — one question at a time
-- Always display: `Question X/5` and `Score: X/X`
+- Always display: `Question X/5` and `Score: X/20`
 - Code excerpts in ``` blocks with language
 - Coherence findings mentioned alongside answer feedback
 - Tasks and plans created during the session are listed at the end

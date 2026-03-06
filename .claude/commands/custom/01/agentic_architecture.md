@@ -70,7 +70,8 @@ Run an agentic readiness audit, then generate the project architecture.
    - Full generate_architecture instructions (loaded above) to follow
    - Constraint: validate the complete architecture plan with the user BEFORE creating any file
    - Constraint: write the final report following `architecture_summary.md` to `aidd_docs/tasks/{YYYY_MM}/architecture_result.md`
-4. Only if `aidd_docs/tasks/{YYYY_MM}/architecture_result.md` is complete and follows `architecture_summary.md` — update memory bank (scope: `architecture.md` and `codebase_map.md`) using it as input. If the file is missing or incomplete, report the gap to the user and stop:
+   - Constraint: all project-specific rules go in `.claude/rules/custom/` — never create files in AIDD core directories (`01-standards/`, `03-frameworks-and-libraries/`, `08-domain/`, etc.)
+4. Only if `aidd_docs/tasks/{YYYY_MM}/architecture_result.md` is complete and follows `architecture_summary.md` — **reconcile** memory bank (scope: `architecture.md` and `codebase_map.md`). This is NOT an incremental patch — the agent must re-read each section of the existing memory files, confront them with the current codebase, and fix any stale or incorrect information (not just add new content from the report). If the file is missing or incomplete, report the gap to the user and stop:
 
 ```markdown
 @.claude/commands/aidd/07/learn.md
