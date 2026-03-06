@@ -267,6 +267,21 @@ class TestSignupAPInitialization:
         assert response.status_code == 200
         assert User.objects.count() == count_before
 
+    def test_signup_with_weak_password_fails(self, client):
+        count_before = User.objects.count()
+
+        response = client.post(
+            "/accounts/signup/",
+            {
+                "username": "weakuser",
+                "email": "weak@example.com",
+                "password1": "123",
+                "password2": "123",
+            },
+        )
+        assert response.status_code == 200
+        assert User.objects.count() == count_before
+
 
 # ---------------------------------------------------------------------------
 # Remote user — no keys
