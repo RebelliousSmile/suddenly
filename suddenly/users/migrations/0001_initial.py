@@ -1,7 +1,8 @@
 # Generated migration for Suddenly users app
 
-from django.db import migrations, models
 import uuid
+
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):

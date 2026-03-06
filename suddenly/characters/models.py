@@ -7,8 +7,8 @@ get claimed, adopted, or forked by other players.
 
 import uuid
 
-from django.db import models
 from django.conf import settings
+from django.db import models
 
 from suddenly.games.models import Game, Report
 
@@ -29,19 +29,19 @@ class Character(models.Model):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    
+
     # Identity
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     avatar = models.ImageField(upload_to="characters/", blank=True, null=True)
-    
+
     # Status
     status = models.CharField(
         max_length=20,
         choices=CharacterStatus.choices,
         default=CharacterStatus.NPC
     )
-    
+
     # Ownership
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -57,7 +57,7 @@ class Character(models.Model):
         related_name="created_characters",
         help_text="Who created/mentioned this character first"
     )
-    
+
     # Origin
     origin_game = models.ForeignKey(
         Game,
@@ -65,7 +65,7 @@ class Character(models.Model):
         related_name="characters",
         help_text="Game where this character was first mentioned"
     )
-    
+
     # Lineage (for forks)
     parent = models.ForeignKey(
         "self",
@@ -75,10 +75,10 @@ class Character(models.Model):
         related_name="forks",
         help_text="Parent character if this is a fork"
     )
-    
+
     # External character sheet
     sheet_url = models.URLField(blank=True, null=True, help_text="Link to external character sheet")
-    
+
     # ActivityPub
     remote = models.BooleanField(default=False)
     ap_id = models.URLField(blank=True, null=True, unique=True)
@@ -86,7 +86,7 @@ class Character(models.Model):
     outbox_url = models.URLField(blank=True, null=True)
     public_key = models.TextField(blank=True, help_text="PEM-encoded public key")
     private_key = models.TextField(blank=True, help_text="PEM-encoded private key (local only)")
-    
+
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -133,11 +133,11 @@ class Quote(models.Model):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    
+
     # Content
     content = models.TextField(help_text="The quote itself")
     context = models.TextField(blank=True, help_text="Situation when this was said")
-    
+
     # Relations
     character = models.ForeignKey(
         Character,
@@ -158,25 +158,25 @@ class Quote(models.Model):
         related_name="saved_quotes",
         help_text="Who recorded this quote"
     )
-    
+
     # Visibility
     visibility = models.CharField(
         max_length=20,
         choices=QuoteVisibility.choices,
         default=QuoteVisibility.PUBLIC
     )
-    
+
     # Ephemeral quotes expiration
     expires_at = models.DateTimeField(
         blank=True,
         null=True,
         help_text="When this quote should disappear (for EPHEMERAL visibility)"
     )
-    
+
     # ActivityPub
     remote = models.BooleanField(default=False)
     ap_id = models.URLField(blank=True, null=True, unique=True)
-    
+
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -215,7 +215,7 @@ class CharacterAppearance(models.Model):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    
+
     character = models.ForeignKey(
         Character,
         on_delete=models.CASCADE,
@@ -226,14 +226,14 @@ class CharacterAppearance(models.Model):
         on_delete=models.CASCADE,
         related_name="character_appearances"
     )
-    
+
     role = models.CharField(
         max_length=20,
         choices=AppearanceRole.choices,
         default=AppearanceRole.MENTIONED
     )
     context = models.TextField(blank=True, help_text="Description of their role in this scene")
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -269,10 +269,10 @@ class LinkRequest(models.Model):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    
+
     # Type
     type = models.CharField(max_length=20, choices=LinkType.choices)
-    
+
     # Actors
     requester = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -293,18 +293,18 @@ class LinkRequest(models.Model):
         related_name="link_requests_proposed",
         help_text="For claims: the existing PC being proposed"
     )
-    
+
     # Status
     status = models.CharField(
         max_length=20,
         choices=LinkRequestStatus.choices,
         default=LinkRequestStatus.PENDING
     )
-    
+
     # Messages
     message = models.TextField(help_text="Explanation of the request")
     response_message = models.TextField(blank=True)
-    
+
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     resolved_at = models.DateTimeField(blank=True, null=True)
@@ -327,9 +327,9 @@ class CharacterLink(models.Model):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    
+
     type = models.CharField(max_length=20, choices=LinkType.choices)
-    
+
     source = models.ForeignKey(
         Character,
         on_delete=models.CASCADE,
@@ -342,16 +342,16 @@ class CharacterLink(models.Model):
         related_name="links_as_target",
         help_text="The former NPC"
     )
-    
+
     link_request = models.OneToOneField(
         LinkRequest,
         on_delete=models.SET_NULL,
         null=True,
         related_name="resulting_link"
     )
-    
+
     description = models.TextField(blank=True, help_text="Nature of the link")
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -374,22 +374,22 @@ class SharedSequence(models.Model):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    
+
     link = models.OneToOneField(
         CharacterLink,
         on_delete=models.CASCADE,
         related_name="shared_sequence"
     )
-    
+
     title = models.CharField(max_length=200, blank=True)
     content = models.TextField(help_text="Markdown content")
-    
+
     status = models.CharField(
         max_length=20,
         choices=SharedSequenceStatus.choices,
         default=SharedSequenceStatus.DRAFT
     )
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -400,23 +400,23 @@ class SharedSequence(models.Model):
 class Follow(models.Model):
     """
     A follow relationship (local or federated).
-    
+
     Uses Django's ContentType framework for polymorphic targets
     (User, Character, or Game).
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    
+
     follower = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="following"
     )
-    
+
     # Generic foreign key to support following Users, Characters, or Games
     from django.contrib.contenttypes.fields import GenericForeignKey
     from django.contrib.contenttypes.models import ContentType
-    
+
     content_type = models.ForeignKey(
         ContentType,
         on_delete=models.CASCADE,
@@ -426,11 +426,11 @@ class Follow(models.Model):
     )
     object_id = models.UUIDField()
     target = GenericForeignKey('content_type', 'object_id')
-    
+
     # ActivityPub
     remote = models.BooleanField(default=False)
     ap_id = models.URLField(blank=True, null=True, unique=True)
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

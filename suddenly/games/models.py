@@ -4,8 +4,8 @@ Game and Report models for Suddenly.
 
 import uuid
 
-from django.db import models
 from django.conf import settings
+from django.db import models
 
 
 class Game(models.Model):
@@ -15,22 +15,22 @@ class Game(models.Model):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    
+
     # Content
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     game_system = models.CharField(max_length=100, blank=True, help_text="Ex: Mist Engine, D&D 5e")
-    
+
     # Ownership
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="games"
     )
-    
+
     # Visibility
     is_public = models.BooleanField(default=True)
-    
+
     # ActivityPub
     remote = models.BooleanField(default=False)
     ap_id = models.URLField(blank=True, null=True, unique=True)
@@ -38,7 +38,7 @@ class Game(models.Model):
     outbox_url = models.URLField(blank=True, null=True)
     public_key = models.TextField(blank=True, help_text="PEM-encoded public key")
     private_key = models.TextField(blank=True, help_text="PEM-encoded private key (local only)")
-    
+
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -78,11 +78,11 @@ class Report(models.Model):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    
+
     # Content
     title = models.CharField(max_length=200, blank=True)
     content = models.TextField(help_text="Markdown with @character mentions")
-    
+
     # Relations
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="reports")
     author = models.ForeignKey(
@@ -90,7 +90,7 @@ class Report(models.Model):
         on_delete=models.CASCADE,
         related_name="reports"
     )
-    
+
     # Status
     status = models.CharField(
         max_length=20,
@@ -98,11 +98,11 @@ class Report(models.Model):
         default=ReportStatus.DRAFT
     )
     published_at = models.DateTimeField(blank=True, null=True)
-    
+
     # ActivityPub
     remote = models.BooleanField(default=False)
     ap_id = models.URLField(blank=True, null=True, unique=True)
-    
+
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -132,7 +132,7 @@ class CastRole(models.TextChoices):
 class ReportCast(models.Model):
     """
     Characters planned for a report, defined before writing.
-    
+
     This is the "distribution" (cast) workflow:
     1. Author creates a draft report
     2. Author defines which characters will appear via ReportCast
@@ -141,13 +141,13 @@ class ReportCast(models.Model):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    
+
     report = models.ForeignKey(
         Report,
         on_delete=models.CASCADE,
         related_name="cast"
     )
-    
+
     # Either existing character OR new character to create
     character = models.ForeignKey(
         "characters.Character",
@@ -157,7 +157,7 @@ class ReportCast(models.Model):
         related_name="cast_entries",
         help_text="Existing character (null if creating new)"
     )
-    
+
     # For creating new NPCs on the fly
     new_character_name = models.CharField(
         max_length=100,
@@ -168,13 +168,13 @@ class ReportCast(models.Model):
         blank=True,
         help_text="Description for new NPC"
     )
-    
+
     role = models.CharField(
         max_length=20,
         choices=CastRole.choices,
         default=CastRole.MENTIONED
     )
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

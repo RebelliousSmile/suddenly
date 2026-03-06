@@ -4,17 +4,17 @@ Character link services.
 Business logic for claim, adopt, and fork workflows.
 """
 
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.utils import timezone
-from django.core.exceptions import ValidationError
 
 from .models import (
     Character,
+    CharacterLink,
     CharacterStatus,
     LinkRequest,
     LinkRequestStatus,
     LinkType,
-    CharacterLink,
     SharedSequence,
 )
 
@@ -28,7 +28,7 @@ class LinkService:
     def validate_claim(requester, target_character, proposed_character):
         """
         Validate a claim request.
-        
+
         Rules:
         - Target must be an available NPC
         - Proposed character must be a PC owned by requester
@@ -36,24 +36,25 @@ class LinkService:
         """
         if target_character.status != CharacterStatus.NPC:
             raise ValidationError(
-                f"{target_character.name} n'est plus disponible (statut: {target_character.get_status_display()})"
+                f"{target_character.name} n'est plus disponible "
+                f"(statut: {target_character.get_status_display()})"
             )
-        
+
         if not proposed_character:
             raise ValidationError("Un claim nécessite un PJ existant")
-        
+
         if proposed_character.owner != requester:
             raise ValidationError("Vous ne pouvez claim qu'avec un de vos propres PJ")
-        
+
         if proposed_character.status != CharacterStatus.PC:
             raise ValidationError(f"{proposed_character.name} n'est pas un PJ")
-        
+
         # Check for pending requests
         pending = LinkRequest.objects.filter(
             target_character=target_character,
             status=LinkRequestStatus.PENDING
         ).exists()
-        
+
         if pending:
             raise ValidationError(
                 f"Une demande est déjà en cours pour {target_character.name}"
@@ -63,7 +64,7 @@ class LinkService:
     def validate_adopt(requester, target_character):
         """
         Validate an adopt request.
-        
+
         Rules:
         - Target must be an available NPC
         - No pending requests on target
@@ -72,12 +73,12 @@ class LinkService:
             raise ValidationError(
                 f"{target_character.name} n'est plus disponible"
             )
-        
+
         pending = LinkRequest.objects.filter(
             target_character=target_character,
             status=LinkRequestStatus.PENDING
         ).exists()
-        
+
         if pending:
             raise ValidationError(
                 f"Une demande est déjà en cours pour {target_character.name}"
@@ -87,7 +88,7 @@ class LinkService:
     def validate_fork(requester, target_character):
         """
         Validate a fork request.
-        
+
         Rules:
         - Target can be any character (NPC, PC, or already linked)
         - Forks are always allowed (they create new characters)
@@ -97,10 +98,12 @@ class LinkService:
             raise ValidationError("Personnage cible introuvable")
 
     @classmethod
-    def create_request(cls, requester, target_character, link_type, message, proposed_character=None):
+    def create_request(
+        cls, requester, target_character, link_type, message, proposed_character=None
+    ):
         """
         Create a link request after validation.
-        
+
         Returns the created LinkRequest.
         """
         # Validate based on type
@@ -112,7 +115,7 @@ class LinkService:
             cls.validate_fork(requester, target_character)
         else:
             raise ValidationError(f"Type de lien inconnu: {link_type}")
-        
+
         # Create the request
         request = LinkRequest.objects.create(
             type=link_type,
@@ -122,10 +125,10 @@ class LinkService:
             message=message,
             status=LinkRequestStatus.PENDING,
         )
-        
+
         # TODO: Send notification to target character's creator
         # TODO: Send ActivityPub Offer activity
-        
+
         return request
 
     @classmethod
@@ -133,7 +136,7 @@ class LinkService:
     def accept_request(cls, request, response_message=""):
         """
         Accept a link request and create the link.
-        
+
         This:
         1. Updates the request status
         2. Creates the CharacterLink
@@ -143,7 +146,7 @@ class LinkService:
         """
         if request.status != LinkRequestStatus.PENDING:
             raise ValidationError("Cette demande n'est plus en attente")
-        
+
         # Determine source character
         if request.type == LinkType.CLAIM:
             source = request.proposed_character
@@ -163,13 +166,13 @@ class LinkService:
             )
         else:
             raise ValidationError(f"Type inconnu: {request.type}")
-        
+
         # Update request
         request.status = LinkRequestStatus.ACCEPTED
         request.response_message = response_message
         request.resolved_at = timezone.now()
         request.save()
-        
+
         # Update target character status
         if request.type in (LinkType.CLAIM, LinkType.ADOPT):
             request.target_character.status = (
@@ -183,7 +186,7 @@ class LinkService:
             # Mark original as forked (but it stays available)
             # Actually, for fork the original doesn't change status
             pass
-        
+
         # Create the link
         link = CharacterLink.objects.create(
             type=request.type,
@@ -191,17 +194,17 @@ class LinkService:
             target=request.target_character,
             link_request=request,
         )
-        
+
         # Create shared sequence draft
         SharedSequence.objects.create(
             link=link,
             title=f"Séquence: {source.name} ↔ {request.target_character.name}",
             content="",  # To be filled by players
         )
-        
+
         # TODO: Send ActivityPub Accept activity
         # TODO: Notify both parties
-        
+
         return link
 
     @classmethod
@@ -211,15 +214,15 @@ class LinkService:
         """
         if request.status != LinkRequestStatus.PENDING:
             raise ValidationError("Cette demande n'est plus en attente")
-        
+
         request.status = LinkRequestStatus.REJECTED
         request.response_message = response_message
         request.resolved_at = timezone.now()
         request.save()
-        
+
         # TODO: Send ActivityPub Reject activity
         # TODO: Notify requester
-        
+
         return request
 
     @classmethod
@@ -229,9 +232,9 @@ class LinkService:
         """
         if request.status != LinkRequestStatus.PENDING:
             raise ValidationError("Cette demande n'est plus en attente")
-        
+
         request.status = LinkRequestStatus.CANCELLED
         request.resolved_at = timezone.now()
         request.save()
-        
+
         return request

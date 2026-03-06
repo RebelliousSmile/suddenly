@@ -37,7 +37,7 @@ class TestWebFinger:
         assert len(data["links"]) >= 1
 
         # Check for self link
-        self_link = next(l for l in data["links"] if l["rel"] == "self")
+        self_link = next(link for link in data["links"] if link["rel"] == "self")
         assert "application/activity+json" in self_link["type"]
 
     def test_webfinger_unknown_user(self, client, settings):
@@ -76,7 +76,7 @@ class TestNodeInfo:
         assert response.status_code == 200
         data = response.json()
         assert "links" in data
-        assert any("nodeinfo" in l["rel"] for l in data["links"])
+        assert any("nodeinfo" in link["rel"] for link in data["links"])
 
     def test_nodeinfo_2_0(self, client, db, user, settings):
         settings.DOMAIN = "test.social"
@@ -126,7 +126,7 @@ class TestUserActor:
         settings.DOMAIN = "test.social"
 
         # Create a published report
-        report = Report.objects.create(
+        Report.objects.create(
             title="Test Report",
             content="Test content",
             game=game,
@@ -353,7 +353,9 @@ class TestHTTPSignatures:
         request = RequestFactory().post("/inbox")
         result = verify_signature(request)
 
-        assert isinstance(result, tuple), "verify_signature must return (bool, str), not a plain bool"
+        assert isinstance(result, tuple), (
+            "verify_signature must return (bool, str), not a plain bool"
+        )
         is_valid, _ = result
         assert is_valid is False
 

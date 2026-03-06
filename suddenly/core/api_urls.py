@@ -2,7 +2,7 @@
 API URL patterns.
 """
 
-from django.urls import path, include
+from django.urls import include, path
 
 urlpatterns = [
     path("games/", include("suddenly.games.api_urls")),

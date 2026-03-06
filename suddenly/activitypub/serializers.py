@@ -5,8 +5,6 @@ Converts Django models to ActivityPub JSON-LD format.
 """
 
 from django.conf import settings
-from django.urls import reverse
-
 
 # ActivityPub context
 AP_CONTEXT = [
@@ -27,7 +25,7 @@ AP_CONTEXT = [
 def serialize_user(user):
     """Serialize a User to ActivityPub Person."""
     actor_url = user.actor_url
-    
+
     data = {
         "@context": AP_CONTEXT,
         "type": "Person",
@@ -41,31 +39,31 @@ def serialize_user(user):
         "url": f"https://{settings.DOMAIN}/@{user.username}",
         "published": user.created_at.isoformat(),
     }
-    
+
     if user.bio:
         data["summary"] = user.bio
-    
+
     if user.avatar:
         data["icon"] = {
             "type": "Image",
             "mediaType": "image/jpeg",
             "url": f"https://{settings.DOMAIN}{user.avatar.url}",
         }
-    
+
     if user.public_key:
         data["publicKey"] = {
             "id": f"{actor_url}#main-key",
             "owner": actor_url,
             "publicKeyPem": user.public_key,
         }
-    
+
     return data
 
 
 def serialize_game(game):
     """Serialize a Game to ActivityPub Group/Service."""
     actor_url = game.actor_url
-    
+
     data = {
         "@context": AP_CONTEXT,
         "type": "Group",
@@ -78,27 +76,27 @@ def serialize_game(game):
         "url": f"https://{settings.DOMAIN}/games/{game.id}",
         "published": game.created_at.isoformat(),
     }
-    
+
     if game.description:
         data["summary"] = game.description
-    
+
     if game.game_system:
         data["gameSystem"] = game.game_system
-    
+
     if game.public_key:
         data["publicKey"] = {
             "id": f"{actor_url}#main-key",
             "owner": actor_url,
             "publicKeyPem": game.public_key,
         }
-    
+
     return data
 
 
 def serialize_character(character):
     """Serialize a Character to ActivityPub Actor."""
     actor_url = character.actor_url
-    
+
     data = {
         "@context": AP_CONTEXT,
         "type": "Person",  # Characters are treated as Persons in AP
@@ -112,43 +110,43 @@ def serialize_character(character):
         "status": character.status,
         "attributedTo": character.origin_game.actor_url,
     }
-    
+
     if character.description:
         data["summary"] = character.description
-    
+
     if character.avatar:
         data["icon"] = {
             "type": "Image",
             "mediaType": "image/jpeg",
             "url": f"https://{settings.DOMAIN}{character.avatar.url}",
         }
-    
+
     if character.owner:
         data["owner"] = character.owner.actor_url
-    
+
     if character.creator:
         data["creator"] = character.creator.actor_url
-    
+
     if character.sheet_url:
         data["sheetUrl"] = character.sheet_url
-    
+
     if character.parent:
         data["derivedFrom"] = character.parent.actor_url
-    
+
     if character.public_key:
         data["publicKey"] = {
             "id": f"{actor_url}#main-key",
             "owner": actor_url,
             "publicKeyPem": character.public_key,
         }
-    
+
     return data
 
 
 def serialize_report(report):
     """Serialize a Report to ActivityPub Note/Article."""
     report_url = f"https://{settings.DOMAIN}/reports/{report.id}"
-    
+
     data = {
         "@context": AP_CONTEXT,
         "type": "Article",
@@ -159,10 +157,10 @@ def serialize_report(report):
         "content": report.content,
         "published": (report.published_at or report.created_at).isoformat(),
     }
-    
+
     if report.title:
         data["name"] = report.title
-    
+
     # Mentions
     mentions = []
     for appearance in report.character_appearances.select_related("character"):
@@ -171,17 +169,17 @@ def serialize_report(report):
             "href": appearance.character.actor_url,
             "name": f"@{appearance.character.name}",
         })
-    
+
     if mentions:
         data["tag"] = mentions
-    
+
     return data
 
 
 def serialize_quote(quote):
     """Serialize a Quote to ActivityPub Note."""
     quote_url = f"https://{settings.DOMAIN}/quotes/{quote.id}"
-    
+
     data = {
         "@context": AP_CONTEXT,
         "type": "Note",
@@ -191,27 +189,27 @@ def serialize_quote(quote):
         "content": f'"{quote.content}"',
         "published": quote.created_at.isoformat(),
     }
-    
+
     if quote.context:
         data["summary"] = quote.context
-    
+
     if quote.report:
         data["inReplyTo"] = quote.report.ap_id or f"https://{settings.DOMAIN}/reports/{quote.report.id}"
-    
+
     return data
 
 
 def serialize_link_request(link_request):
     """Serialize a LinkRequest to ActivityPub Offer."""
     request_url = f"https://{settings.DOMAIN}/link-requests/{link_request.id}"
-    
+
     # Determine the object type based on link type
     object_type = {
         "claim": "suddenly:Claim",
         "adopt": "suddenly:Adopt",
         "fork": "suddenly:Fork",
     }.get(link_request.type, "suddenly:Link")
-    
+
     data = {
         "@context": AP_CONTEXT,
         "type": "Offer",
@@ -224,10 +222,10 @@ def serialize_link_request(link_request):
         },
         "published": link_request.created_at.isoformat(),
     }
-    
+
     if link_request.proposed_character:
         data["object"]["proposedCharacter"] = link_request.proposed_character.actor_url
-    
+
     return data
 
 
@@ -241,10 +239,10 @@ def create_activity(activity_type, actor, obj, target=None):
         "actor": actor.actor_url if hasattr(actor, "actor_url") else actor,
         "object": obj,
     }
-    
+
     if target:
         activity["target"] = target
-    
+
     return activity
 
 

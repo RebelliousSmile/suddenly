@@ -15,12 +15,12 @@ def report_post_save(sender, instance, created, **kwargs):
     When a report is published, broadcast it via ActivityPub.
     """
     from suddenly.activitypub.tasks import send_create_activity
-    
+
     # Only send when status changes to published
     if instance.status == 'published' and instance.published_at:
         # Check if this is a new publication (not just an update)
         # We use a simple heuristic: published_at was just set
-        if created or (instance.published_at and 
+        if created or (instance.published_at and
                        (timezone.now() - instance.published_at).seconds < 10):
             send_create_activity.delay('report', str(instance.id))
 
@@ -40,7 +40,7 @@ def character_post_save(sender, instance, created, **kwargs):
     When a new character is created locally, broadcast it.
     """
     from suddenly.activitypub.tasks import send_create_activity
-    
+
     if created and not instance.remote:
         send_create_activity.delay('character', str(instance.id))
 
@@ -52,7 +52,7 @@ def quote_post_save(sender, instance, created, **kwargs):
     """
     from suddenly.activitypub.tasks import send_create_activity
     from suddenly.characters.models import QuoteVisibility
-    
+
     if created and not instance.remote and instance.visibility == QuoteVisibility.PUBLIC:
         send_create_activity.delay('quote', str(instance.id))
 
@@ -64,12 +64,12 @@ def link_request_post_save(sender, instance, created, **kwargs):
     When it's accepted/rejected, send corresponding activity.
     """
     from suddenly.activitypub.tasks import (
-        send_offer_activity,
         send_accept_activity,
+        send_offer_activity,
         send_reject_activity,
     )
     from suddenly.characters.models import LinkRequestStatus
-    
+
     if created:
         # New request - send Offer
         send_offer_activity.delay(str(instance.id))
@@ -86,15 +86,15 @@ def follow_post_save(sender, instance, created, **kwargs):
     """
     When a follow relationship is created, send Follow activity.
     """
-    from suddenly.activitypub.tasks import deliver_activity
     from suddenly.activitypub.activities import build_follow_activity
-    from suddenly.users.models import User
-    from suddenly.games.models import Game
+    from suddenly.activitypub.tasks import deliver_activity
     from suddenly.characters.models import Character, FollowTargetType
-    
+    from suddenly.games.models import Game
+    from suddenly.users.models import User
+
     if not created:
         return
-    
+
     # Get the target actor
     target = None
     if instance.target_type == FollowTargetType.USER:
@@ -112,7 +112,7 @@ def follow_post_save(sender, instance, created, **kwargs):
             target = Character.objects.get(id=instance.target_id)
         except Character.DoesNotExist:
             return
-    
+
     # Only send if target is remote
     if target and target.remote and hasattr(target, 'inbox_url') and target.inbox_url:
         activity = build_follow_activity(instance.follower, target.actor_url)
@@ -129,7 +129,7 @@ def user_post_save(sender, instance, created, **kwargs):
     Generate ActivityPub keys for new local users.
     """
     from suddenly.activitypub.signatures import generate_key_pair
-    
+
     if created and not instance.remote and not instance.private_key:
         private_key, public_key = generate_key_pair()
         # Use update to avoid triggering signal again
@@ -145,7 +145,7 @@ def game_post_save(sender, instance, created, **kwargs):
     Generate ActivityPub keys for new local games.
     """
     from suddenly.activitypub.signatures import generate_key_pair
-    
+
     if created and not instance.remote and not instance.private_key:
         private_key, public_key = generate_key_pair()
         type(instance).objects.filter(pk=instance.pk).update(

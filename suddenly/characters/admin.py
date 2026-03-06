@@ -6,12 +6,12 @@ from django.contrib import admin
 
 from .models import (
     Character,
-    Quote,
     CharacterAppearance,
-    LinkRequest,
     CharacterLink,
-    SharedSequence,
     Follow,
+    LinkRequest,
+    Quote,
+    SharedSequence,
 )
 
 

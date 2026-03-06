@@ -30,14 +30,25 @@ class ActivityPubMixin(models.Model):
     )
     inbox = models.URLField(null=True, blank=True, help_text="URL de l'inbox ActivityPub")
     outbox = models.URLField(null=True, blank=True, help_text="URL de l'outbox ActivityPub")
-    followers_url = models.URLField(null=True, blank=True, help_text="URL de la collection followers")
+    followers_url = models.URLField(
+        null=True, blank=True, help_text="URL de la collection followers"
+    )
     local = models.BooleanField(
         default=True,
         db_index=True,
         help_text="True si créé sur cette instance",
     )
-    public_key = models.TextField(null=True, blank=True, help_text="Clé publique PEM pour signatures HTTP")
-    private_key = models.TextField(null=True, blank=True, help_text="Clé privée PEM pour signatures HTTP — le chiffrement est à la charge de l'implémentation")
+    public_key = models.TextField(
+        null=True, blank=True, help_text="Clé publique PEM pour signatures HTTP"
+    )
+    private_key = models.TextField(
+        null=True,
+        blank=True,
+        help_text=(
+            "Clé privée PEM pour signatures HTTP"
+            " — le chiffrement est à la charge de l'implémentation"
+        ),
+    )
 
     class Meta:
         abstract = True

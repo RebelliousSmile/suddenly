@@ -20,11 +20,11 @@ def get_context():
 def build_actor(user_or_game_or_character):
     """
     Build an ActivityPub actor object.
-    
+
     Works for User, Game, or Character models.
     """
     obj = user_or_game_or_character
-    
+
     actor = {
         "@context": get_context(),
         "id": obj.actor_url,
@@ -35,7 +35,7 @@ def build_actor(user_or_game_or_character):
         "followers": f"{obj.actor_url}/followers",
         "following": f"{obj.actor_url}/following",
     }
-    
+
     # Name
     if hasattr(obj, 'display_name') and obj.display_name:
         actor["name"] = obj.display_name
@@ -43,20 +43,20 @@ def build_actor(user_or_game_or_character):
         actor["name"] = obj.name
     elif hasattr(obj, 'title'):
         actor["name"] = obj.title
-    
+
     # Summary/bio
     if hasattr(obj, 'bio') and obj.bio:
         actor["summary"] = obj.bio
     elif hasattr(obj, 'description') and obj.description:
         actor["summary"] = obj.description
-    
+
     # Avatar/icon
     if hasattr(obj, 'avatar') and obj.avatar:
         actor["icon"] = {
             "type": "Image",
             "url": f"https://{settings.DOMAIN}{obj.avatar.url}",
         }
-    
+
     # Public key for HTTP signatures
     if hasattr(obj, 'public_key') and obj.public_key:
         actor["publicKey"] = {
@@ -64,7 +64,7 @@ def build_actor(user_or_game_or_character):
             "owner": obj.actor_url,
             "publicKeyPem": obj.public_key,
         }
-    
+
     return actor
 
 
@@ -78,17 +78,21 @@ def build_note(report):
         "type": "Note",
         "attributedTo": report.author.actor_url,
         "content": report.content,
-        "published": report.published_at.isoformat() if report.published_at else timezone.now().isoformat(),
+        "published": (
+            report.published_at.isoformat()
+            if report.published_at
+            else timezone.now().isoformat()
+        ),
         "to": ["https://www.w3.org/ns/activitystreams#Public"],
         "cc": [f"{report.author.actor_url}/followers"],
     }
-    
+
     if report.title:
         note["name"] = report.title
-    
+
     # Add context about the game
     note["context"] = report.game.actor_url
-    
+
     # Add mentioned characters as tags
     mentions = []
     for appearance in report.character_appearances.select_related('character'):
@@ -97,17 +101,17 @@ def build_note(report):
             "href": appearance.character.actor_url,
             "name": f"@{appearance.character.name}",
         })
-    
+
     if mentions:
         note["tag"] = mentions
-    
+
     return note
 
 
 def build_create_activity(object_type: str, object_id: str):
     """
     Build a Create activity for a new object.
-    
+
     Returns:
         Tuple of (activity_dict, sender_id) or (None, None) if object not found
     """
@@ -117,7 +121,7 @@ def build_create_activity(object_type: str, object_id: str):
         "published": timezone.now().isoformat(),
         "to": ["https://www.w3.org/ns/activitystreams#Public"],
     }
-    
+
     if object_type == "report":
         from suddenly.games.models import Report
         try:
@@ -129,7 +133,7 @@ def build_create_activity(object_type: str, object_id: str):
             return activity, str(report.author.id)
         except Report.DoesNotExist:
             return None, None
-    
+
     elif object_type == "quote":
         from suddenly.characters.models import Quote
         try:
@@ -146,7 +150,7 @@ def build_create_activity(object_type: str, object_id: str):
             return activity, str(quote.author.id)
         except Quote.DoesNotExist:
             return None, None
-    
+
     elif object_type == "character":
         from suddenly.characters.models import Character
         try:
@@ -157,14 +161,14 @@ def build_create_activity(object_type: str, object_id: str):
             return activity, str(character.creator.id)
         except Character.DoesNotExist:
             return None, None
-    
+
     return None, None
 
 
 def build_offer_activity(link_request):
     """
     Build an Offer activity for a link request.
-    
+
     The Offer activity type is used for claim/adopt/fork requests.
     """
     activity = {
@@ -182,11 +186,11 @@ def build_offer_activity(link_request):
         },
         "summary": link_request.message,
     }
-    
+
     # For claims, include the proposed PC
     if link_request.proposed_character:
         activity["object"]["subject"] = link_request.proposed_character.actor_url
-    
+
     return activity
 
 
@@ -199,7 +203,11 @@ def build_accept_activity(link_request):
         "id": f"{settings.AP_BASE_URL}/activities/accept/{link_request.id}",
         "type": "Accept",
         "actor": link_request.target_character.creator.actor_url,
-        "published": link_request.resolved_at.isoformat() if link_request.resolved_at else timezone.now().isoformat(),
+        "published": (
+            link_request.resolved_at.isoformat()
+            if link_request.resolved_at
+            else timezone.now().isoformat()
+        ),
         "to": [link_request.requester.actor_url],
         "object": f"{settings.AP_BASE_URL}/activities/offer/{link_request.id}",
         "summary": link_request.response_message or None,
@@ -215,7 +223,11 @@ def build_reject_activity(link_request):
         "id": f"{settings.AP_BASE_URL}/activities/reject/{link_request.id}",
         "type": "Reject",
         "actor": link_request.target_character.creator.actor_url,
-        "published": link_request.resolved_at.isoformat() if link_request.resolved_at else timezone.now().isoformat(),
+        "published": (
+            link_request.resolved_at.isoformat()
+            if link_request.resolved_at
+            else timezone.now().isoformat()
+        ),
         "to": [link_request.requester.actor_url],
         "object": f"{settings.AP_BASE_URL}/activities/offer/{link_request.id}",
         "summary": link_request.response_message or None,
@@ -228,7 +240,10 @@ def build_follow_activity(follower, target_actor_url):
     """
     return {
         "@context": get_context(),
-        "id": f"{settings.AP_BASE_URL}/activities/follow/{follower.id}/{timezone.now().timestamp()}",
+        "id": (
+            f"{settings.AP_BASE_URL}/activities/follow"
+            f"/{follower.id}/{timezone.now().timestamp()}"
+        ),
         "type": "Follow",
         "actor": follower.actor_url,
         "object": target_actor_url,

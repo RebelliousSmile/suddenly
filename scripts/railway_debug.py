@@ -10,10 +10,9 @@ Usage:
 
 import json
 import sys
-import urllib.request
 import urllib.error
+import urllib.request
 from pathlib import Path
-
 
 RAILWAY_API = "https://backboard.railway.app/graphql/v2"
 
