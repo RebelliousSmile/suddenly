@@ -4,10 +4,12 @@
 
 - **Steps**:
   1. Set required environment variables
-  2. `pip install -r requirements.txt`
+  2. `pip install --upgrade pip && pip install -e ".[federation]"` (pas `requirements.txt`)
   3. `python manage.py migrate`
-  4. `python manage.py collectstatic --noinput`
-  5. Run via `gunicorn config.wsgi:application`
+  4. `python manage.py createcachetable` (si pas de Redis)
+  5. `python manage.py collectstatic --noinput`
+  6. Générer les clés ActivityPub : `mkdir -p keys && openssl genrsa -out keys/private.pem 2048 && openssl rsa -in keys/private.pem -pubout -out keys/public.pem`
+  7. Run via `gunicorn config.wsgi:application`
 
 - **Database migration**: Django migrations (`python manage.py migrate`)
 
@@ -116,14 +118,25 @@ flowchart LR
 
 ```
 Site → Python WSGI
-  Chemin : /www/suddenly/
-  Fichier WSGI : config/wsgi.py
-  Virtualenv : /www/suddenly/venv/
-  Version Python : 3.12
-  DJANGO_SETTINGS_MODULE=config.settings.production
+  Chemin de l'application : www/<app>/suddenly/wsgi.py   ← wsgi est dans suddenly/, pas config/
+  Répertoire de travail   : www/<app>/
+  Virtualenv              : www/<app>/venv               ← relatif au home, sans /home/user/
+  Version Python          : 3.12
+  Variables d'env         : format FOO=bar sans "export"
+  Chemins statiques       : /static/ staticfiles/        ← relatif au répertoire de travail
+                            /media/ media/
 ```
 
-- Static files : site statique séparé → `/www/suddenly/staticfiles/`
-- Media files : site statique séparé → `/www/suddenly/media/`
+**Pièges connus :**
+- Les chemins statiques sont relatifs au répertoire de travail (pas au home) — ne pas mettre le chemin absolu
+- `DATABASE_URL` : encoder les caractères spéciaux du mot de passe avec `urllib.parse.quote_plus`
+- Les variables d'env du panel ne sont pas disponibles en SSH, les exporter manuellement pour `manage.py`
+- Pas de Redis sur Alwaysdata → DB cache + `CELERY_TASK_ALWAYS_EAGER=True` (automatique si `REDIS_URL` absent)
+
+**Tâches planifiées** (variables d'env à renseigner dans chaque tâche) :
+```
+0 3 * * *  /home/<user>/www/<app>/venv/bin/python /home/<user>/www/<app>/manage.py clearsessions
+0 * * * *  /home/<user>/www/<app>/venv/bin/python /home/<user>/www/<app>/manage.py shell -c "from suddenly.activitypub.tasks import cleanup_expired_quotes; cleanup_expired_quotes()"
+```
+
 - SSL : Let's Encrypt via interface Alwaysdata
-- Tâches planifiées : cron pour `clearsessions` et `send_pending_activities` (sans Celery)
