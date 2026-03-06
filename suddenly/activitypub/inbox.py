@@ -4,14 +4,52 @@ ActivityPub inbox views for receiving federated activities.
 
 import json
 import logging
+from urllib.parse import urlparse
 
-from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
+from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django_ratelimit.core import is_ratelimited
 
+from .models import FederatedServer
 from .signatures import verify_signature
 
 logger = logging.getLogger(__name__)
+
+# Rate limits per minute
+_KNOWN_INSTANCE_RATE = "100/m"
+_UNKNOWN_INSTANCE_RATE = "10/m"
+
+
+def _get_request_domain(request: HttpRequest) -> str:
+    """Extract the remote instance domain from the Signature keyId."""
+    sig = request.headers.get("Signature", "")
+    for part in sig.split(","):
+        key, _, value = part.partition("=")
+        if key.strip() == "keyId":
+            return urlparse(value.strip('"')).netloc
+    return "unknown"
+
+
+def _check_rate_limit(request: HttpRequest) -> bool:
+    """
+    Check per-instance rate limit. Returns True if rate limit exceeded.
+
+    Known instances (in FederatedServer): 100 req/min.
+    Unknown instances: 10 req/min.
+    """
+    domain = _get_request_domain(request)
+    is_known = FederatedServer.objects.filter(server_name=domain).exists()
+    rate = _KNOWN_INSTANCE_RATE if is_known else _UNKNOWN_INSTANCE_RATE
+    group = f"ap-inbox-{domain}"
+
+    return is_ratelimited(
+        request=request,
+        group=group,
+        key=lambda _g, _r: domain,
+        rate=rate,
+        increment=True,
+    )
 
 
 @csrf_exempt
@@ -19,7 +57,7 @@ logger = logging.getLogger(__name__)
 def user_inbox(request, username):
     """
     Inbox endpoint for receiving activities addressed to a user.
-    
+
     POST /users/{username}/inbox
     """
     return process_inbox(request, actor_type='user', actor_identifier=username)
@@ -30,7 +68,7 @@ def user_inbox(request, username):
 def game_inbox(request, game_id):
     """
     Inbox endpoint for receiving activities addressed to a game.
-    
+
     POST /games/{id}/inbox
     """
     return process_inbox(request, actor_type='game', actor_identifier=game_id)
@@ -41,7 +79,7 @@ def game_inbox(request, game_id):
 def character_inbox(request, character_id):
     """
     Inbox endpoint for receiving activities addressed to a character.
-    
+
     POST /characters/{id}/inbox
     """
     return process_inbox(request, actor_type='character', actor_identifier=character_id)
@@ -51,25 +89,34 @@ def process_inbox(request, actor_type: str, actor_identifier: str):
     """
     Common inbox processing logic.
     """
+    # Rate limit check (before signature verification to save resources)
+    if _check_rate_limit(request):
+        domain = _get_request_domain(request)
+        logger.warning("Rate limit exceeded for domain %s", domain)
+        return HttpResponseForbidden("Rate limit exceeded")
+
     # Verify HTTP signature
     is_valid, reason = verify_signature(request)
     if not is_valid:
-        logger.warning(f"Invalid signature for {actor_type} inbox: {actor_identifier} — {reason}")
-        return HttpResponse("Invalid signature", status=401)
-    
+        logger.warning(
+            "Invalid signature for %s inbox %s: %s",
+            actor_type, actor_identifier, reason,
+        )
+        return HttpResponseForbidden("Invalid signature")
+
     # Parse activity
     try:
         activity = json.loads(request.body)
     except json.JSONDecodeError:
         return HttpResponseBadRequest("Invalid JSON")
-    
+
     activity_type = activity.get('type')
-    
+
     if not activity_type:
         return HttpResponseBadRequest("Missing activity type")
-    
+
     logger.info(f"Received {activity_type} for {actor_type}/{actor_identifier}")
-    
+
     # Route to appropriate handler
     handlers = {
         'Follow': handle_follow,
@@ -81,7 +128,7 @@ def process_inbox(request, actor_type: str, actor_identifier: str):
         'Accept': handle_accept,
         'Reject': handle_reject,
     }
-    
+
     handler = handlers.get(activity_type)
     if handler:
         try:
@@ -91,7 +138,7 @@ def process_inbox(request, actor_type: str, actor_identifier: str):
             # Still return 202 - we received it, processing failed
     else:
         logger.warning(f"Unknown activity type: {activity_type}")
-    
+
     # ActivityPub spec says to return 202 Accepted
     return HttpResponse(status=202)
 
@@ -99,54 +146,53 @@ def process_inbox(request, actor_type: str, actor_identifier: str):
 def handle_follow(activity: dict, actor_type: str, actor_identifier: str):
     """
     Handle incoming Follow activity.
-    
+
     Create a Follow record and optionally auto-accept.
     """
-    from suddenly.users.models import User
     from suddenly.characters.models import Follow, FollowTargetType
-    
+
     follower_id = activity.get('actor')
     if not follower_id:
         return
-    
+
     # Get or create the remote follower
     follower, _ = get_or_create_remote_user(follower_id)
     if not follower:
         return
-    
+
     # Determine target
     target_type = {
         'user': FollowTargetType.USER,
         'game': FollowTargetType.GAME,
         'character': FollowTargetType.CHARACTER,
     }.get(actor_type)
-    
+
     if not target_type:
         return
-    
+
     # Get target ID
     target = get_local_actor(actor_type, actor_identifier)
     if not target:
         return
-    
+
     # Create follow relationship
     Follow.objects.get_or_create(
         follower=follower,
         target_type=target_type,
         target_id=target.id,
     )
-    
+
     # Send Accept activity
-    from .tasks import deliver_activity
     from .activities import get_context
-    
+    from .tasks import deliver_activity
+
     accept_activity = {
         "@context": get_context(),
         "type": "Accept",
         "actor": target.actor_url,
         "object": activity,
     }
-    
+
     deliver_activity.delay(
         activity=accept_activity,
         inbox_url=follower.inbox_url,
@@ -159,10 +205,10 @@ def handle_undo(activity: dict, actor_type: str, actor_identifier: str):
     Handle Undo activity (e.g., unfollow).
     """
     from suddenly.characters.models import Follow
-    
+
     inner = activity.get('object', {})
     inner_type = inner.get('type') if isinstance(inner, dict) else None
-    
+
     if inner_type == 'Follow':
         # Undo follow = unfollow
         follower_id = activity.get('actor')
@@ -179,17 +225,17 @@ def handle_undo(activity: dict, actor_type: str, actor_identifier: str):
 def handle_create(activity: dict, actor_type: str, actor_identifier: str):
     """
     Handle incoming Create activity.
-    
+
     Could be a remote report, quote, or character.
     """
     obj = activity.get('object', {})
     obj_type = obj.get('type')
-    
+
     if obj_type == 'Note':
         # Could be a report or quote - store for display
         # Implementation depends on how you want to handle remote content
         logger.info(f"Received remote Note: {obj.get('id')}")
-    
+
     # For now, just log it
     logger.info(f"Received Create({obj_type}) from {activity.get('actor')}")
 
@@ -212,41 +258,41 @@ def handle_offer(activity: dict, actor_type: str, actor_identifier: str):
     """
     Handle Offer activity (claim/adopt/fork request from remote user).
     """
-    from suddenly.characters.models import LinkRequest, LinkType, Character
-    
+    from suddenly.characters.models import Character, LinkRequest, LinkType
+
     actor_url = activity.get('actor')
     obj = activity.get('object', {})
-    
+
     if obj.get('type') != 'Relationship':
         return
-    
+
     relationship = obj.get('relationship')
     target_url = obj.get('object')  # The NPC being claimed
-    
+
     # Map relationship to LinkType
     link_type = {
         'claim': LinkType.CLAIM,
         'adopt': LinkType.ADOPT,
         'fork': LinkType.FORK,
     }.get(relationship)
-    
+
     if not link_type:
         return
-    
+
     # Get remote requester
     requester, _ = get_or_create_remote_user(actor_url)
     if not requester:
         return
-    
+
     # Find local target character
     target_character = Character.objects.filter(
         ap_id=target_url,
         remote=False,
     ).first()
-    
+
     if not target_character:
         return
-    
+
     # Create link request
     LinkRequest.objects.create(
         type=link_type,
@@ -254,7 +300,7 @@ def handle_offer(activity: dict, actor_type: str, actor_identifier: str):
         target_character=target_character,
         message=activity.get('summary', ''),
     )
-    
+
     logger.info(f"Created LinkRequest: {link_type} for {target_character.name}")
 
 
@@ -263,12 +309,12 @@ def handle_accept(activity: dict, actor_type: str, actor_identifier: str):
     Handle Accept activity (our offer was accepted).
     """
     from suddenly.characters.models import LinkRequest, LinkRequestStatus
-    
+
     # The 'object' should be our original Offer activity ID
     offer_id = activity.get('object')
     if not offer_id:
         return
-    
+
     # Extract our request ID from the offer URL
     # Format: .../activities/offer/{uuid}
     if '/activities/offer/' in str(offer_id):
@@ -288,11 +334,11 @@ def handle_reject(activity: dict, actor_type: str, actor_identifier: str):
     Handle Reject activity (our offer was rejected).
     """
     from suddenly.characters.models import LinkRequest, LinkRequestStatus
-    
+
     offer_id = activity.get('object')
     if not offer_id:
         return
-    
+
     if '/activities/offer/' in str(offer_id):
         request_id = offer_id.split('/activities/offer/')[-1]
         try:
@@ -314,8 +360,9 @@ def get_or_create_remote_user(actor_url: str):
     Fetch and create/update a remote user from their actor URL.
     """
     import httpx
+
     from suddenly.users.models import User
-    
+
     try:
         with httpx.Client(timeout=10) as client:
             response = client.get(
@@ -327,9 +374,9 @@ def get_or_create_remote_user(actor_url: str):
     except Exception as e:
         logger.error(f"Failed to fetch actor {actor_url}: {e}")
         return None, False
-    
+
     username = actor_data.get('preferredUsername', actor_url.split('/')[-1])
-    
+
     user, created = User.objects.update_or_create(
         ap_id=actor_url,
         defaults={
@@ -342,7 +389,7 @@ def get_or_create_remote_user(actor_url: str):
             'public_key': actor_data.get('publicKey', {}).get('publicKeyPem', ''),
         }
     )
-    
+
     return user, created
 
 
@@ -358,10 +405,10 @@ def get_local_actor(actor_type: str, identifier: str):
     """
     Get a local actor (user, game, or character) by identifier.
     """
-    from suddenly.users.models import User
-    from suddenly.games.models import Game
     from suddenly.characters.models import Character
-    
+    from suddenly.games.models import Game
+    from suddenly.users.models import User
+
     if actor_type == 'user':
         return User.objects.filter(username=identifier, remote=False).first()
     elif actor_type == 'game':
