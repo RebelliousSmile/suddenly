@@ -1,23 +1,25 @@
 # docker-compose.dev.yml
-# Usage: docker-compose -f docker-compose.dev.yml up
+# Usage: docker compose -f docker-compose.dev.yml up
 #
 # Développement local avec hot-reload et debug
-
-version: "3.8"
 
 services:
   web:
     build:
       context: .
-      target: base  # Utilise le stage de base sans collectstatic
-    command: python manage.py runserver 0.0.0.0:8000
+      target: dev
+    command: >
+      sh -c "pip install -e '.[dev,federation]' &&
+             python manage.py migrate --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
     environment:
       - DATABASE_URL=postgres://suddenly:suddenly@db:5432/suddenly
       - REDIS_URL=redis://redis:6379/0
       - SECRET_KEY=dev-secret-key-change-in-production
-      - DOMAIN=localhost
+      - DOMAIN=localhost:8000
+      - DJANGO_SETTINGS_MODULE=config.settings.development
       - DEBUG=true
       - ALLOWED_HOSTS=localhost,127.0.0.1
     depends_on:
@@ -26,17 +28,15 @@ services:
       redis:
         condition: service_started
     volumes:
-      # Monte le code source pour hot-reload
       - .:/app
-      - /app/__pycache__
-      - /app/.pytest_cache
+      - pip-cache:/root/.cache/pip
     networks:
       - suddenly-dev
 
   db:
     image: postgres:16-alpine
     ports:
-      - "5432:5432"  # Exposé pour accès direct (debug)
+      - "5432:5432"
     environment:
       - POSTGRES_USER=suddenly
       - POSTGRES_PASSWORD=suddenly
@@ -54,21 +54,22 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"  # Exposé pour accès direct (debug)
+      - "6379:6379"
     networks:
       - suddenly-dev
 
-  # Worker Celery pour dev (optionnel, démarre manuellement si besoin)
+  # Worker Celery (opt-in: docker compose -f docker-compose.dev.yml --profile celery up)
   celery:
     build:
       context: .
-      target: base
+      target: dev
     command: celery -A suddenly worker -l debug
     environment:
       - DATABASE_URL=postgres://suddenly:suddenly@db:5432/suddenly
       - REDIS_URL=redis://redis:6379/0
       - SECRET_KEY=dev-secret-key-change-in-production
-      - DOMAIN=localhost
+      - DOMAIN=localhost:8000
+      - DJANGO_SETTINGS_MODULE=config.settings.development
       - DEBUG=true
     depends_on:
       - db
@@ -76,16 +77,16 @@ services:
     volumes:
       - .:/app
     profiles:
-      - celery  # Ne démarre qu'avec --profile celery
+      - celery
     networks:
       - suddenly-dev
 
-  # Mailhog pour tester les emails en local
+  # Mailhog pour tester les emails (opt-in: --profile mail)
   mailhog:
     image: mailhog/mailhog
     ports:
-      - "1025:1025"  # SMTP
-      - "8025:8025"  # Web UI
+      - "1025:1025"
+      - "8025:8025"
     profiles:
       - mail
     networks:
@@ -93,6 +94,7 @@ services:
 
 volumes:
   pgdata-dev:
+  pip-cache:
 
 networks:
   suddenly-dev:
