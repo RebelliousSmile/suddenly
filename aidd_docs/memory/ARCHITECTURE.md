@@ -18,6 +18,7 @@ flowchart LR
         AP["ActivityPub (custom)"]
         Sig["HTTP Signatures (cryptography)"]
         HTTPX["httpx"]
+        RL["django-ratelimit"]
     end
     subgraph "Data"
         PG["PostgreSQL"]

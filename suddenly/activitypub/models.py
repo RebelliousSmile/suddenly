@@ -72,3 +72,36 @@ class FederatedServer(BaseModel):
     def is_suddenly_instance(self) -> bool:
         """Return True if the remote instance runs Suddenly software."""
         return self.application_type == "suddenly"
+
+
+class PublicKeyCache(BaseModel):
+    """
+    Cached public keys from remote ActivityPub actors.
+
+    Avoids re-fetching the key on every signature verification.
+    Supports retry: if verification fails with a cached key,
+    the key is re-fetched once before rejecting.
+    """
+
+    actor_url = models.URLField(
+        max_length=500,
+        unique=True,
+        help_text="Remote actor URL (key owner)",
+    )
+    public_key_pem = models.TextField(
+        help_text="PEM-encoded public key",
+    )
+    fetched_at = models.DateTimeField(
+        auto_now=True,
+        help_text="Last time this key was fetched from remote",
+    )
+
+    class Meta:
+        verbose_name = "Clé publique en cache"
+        verbose_name_plural = "Clés publiques en cache"
+        indexes = [
+            models.Index(fields=["actor_url"], name="pubkey_actor_url_idx"),
+        ]
+
+    def __str__(self) -> str:
+        return self.actor_url
