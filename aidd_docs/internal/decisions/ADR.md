@@ -23,3 +23,4 @@
 | DEC-019 | factory-boy pour génération de données de test | Testing | Accepted | 2026-03-06 |
 | DEC-020 | Cache clés publiques AP via table DB | ActivityPub | Accepted | 2026-03-06 |
 | DEC-021 | Rate limiting inbox par instance | ActivityPub | Accepted | 2026-03-06 |
+| DEC-022 | Redis optionnel avec fallback DB cache | Infrastructure | Accepted | 2026-03-06 |
