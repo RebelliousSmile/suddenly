@@ -22,28 +22,21 @@ def health_check(request):
 urlpatterns = [
     # Health check
     path("health/", health_check, name="health"),
-
     # Admin
     path("admin/", admin.site.urls),
-
     # Authentication (django-allauth)
     path("accounts/", include("allauth.urls")),
-
     # API Documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="api-schema"), name="api-docs"),
     path("api/redoc/", SpectacularRedocView.as_view(url_name="api-schema"), name="api-redoc"),
-
     # API
     path("api/", include("suddenly.core.api_urls")),
-
     # ActivityPub endpoints
     path(".well-known/", include("suddenly.activitypub.wellknown_urls")),
     path("", include("suddenly.activitypub.urls")),  # Inbox endpoints
-
     # User profiles — @ prefix isolates from all other root patterns
     path("@", include("suddenly.users.urls")),
-
     # Main app
     path("", include("suddenly.core.urls")),
 ]

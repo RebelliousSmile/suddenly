@@ -91,6 +91,7 @@ def report(db, user, game):
 def api_client():
     """Create a DRF API client."""
     from rest_framework.test import APIClient
+
     return APIClient()
 
 
@@ -98,6 +99,7 @@ def api_client():
 def client():
     """Create a Django test client."""
     from django.test import Client
+
     return Client()
 
 

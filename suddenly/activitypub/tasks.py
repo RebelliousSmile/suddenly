@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 # Incoming activities processing
 # =================================================================
 
+
 @shared_task(bind=True, max_retries=3)
 def process_incoming_activity(self, user_id, activity, game_id=None, character_id=None):
     """
@@ -78,7 +79,7 @@ def handle_follow(activity, user_id, game_id, character_id):
         follower=follower,
         content_type=content_type,
         object_id=target.id,
-        defaults={"remote": True, "ap_id": activity.get("id")}
+        defaults={"remote": True, "ap_id": activity.get("id")},
     )
 
     send_accept_follow.delay(str(target.id), type(target).__name__, activity)
@@ -89,6 +90,7 @@ def handle_undo(activity, user_id, game_id, character_id):
     obj = activity.get("object", {})
     if obj.get("type") == "Follow":
         from suddenly.characters.models import Follow
+
         Follow.objects.filter(ap_id=obj.get("id")).delete()
 
 
@@ -120,6 +122,7 @@ def handle_offer(activity, user_id, game_id, character_id):
 # =================================================================
 # Outgoing activities
 # =================================================================
+
 
 @shared_task(bind=True, max_retries=3)
 def deliver_activity(self, activity, inbox_url):
@@ -161,10 +164,9 @@ def broadcast_activity(activity, actor_id, actor_type):
 
     content_type = ContentType.objects.get(app_label=app_label, model=model_name)
 
-    followers = Follow.objects.filter(
-        content_type=content_type,
-        object_id=actor_id
-    ).select_related("follower")
+    followers = Follow.objects.filter(content_type=content_type, object_id=actor_id).select_related(
+        "follower"
+    )
 
     inboxes = {f.follower.inbox_url for f in followers if f.follower.inbox_url}
 
@@ -255,9 +257,11 @@ def send_offer_activity(link_request_id):
 
     from .serializers import serialize_link_request
 
-    request = LinkRequest.objects.filter(id=link_request_id).select_related(
-        "requester", "target_character", "target_character__creator"
-    ).first()
+    request = (
+        LinkRequest.objects.filter(id=link_request_id)
+        .select_related("requester", "target_character", "target_character__creator")
+        .first()
+    )
 
     if not request:
         return
@@ -277,9 +281,11 @@ def send_accept_activity(link_request_id):
 
     from .serializers import create_accept_activity, serialize_link_request
 
-    request = LinkRequest.objects.filter(id=link_request_id).select_related(
-        "requester", "target_character", "target_character__creator"
-    ).first()
+    request = (
+        LinkRequest.objects.filter(id=link_request_id)
+        .select_related("requester", "target_character", "target_character__creator")
+        .first()
+    )
 
     if not request:
         return
@@ -300,9 +306,11 @@ def send_reject_activity(link_request_id):
 
     from .serializers import create_reject_activity, serialize_link_request
 
-    request = LinkRequest.objects.filter(id=link_request_id).select_related(
-        "requester", "target_character", "target_character__creator"
-    ).first()
+    request = (
+        LinkRequest.objects.filter(id=link_request_id)
+        .select_related("requester", "target_character", "target_character__creator")
+        .first()
+    )
 
     if not request:
         return
@@ -320,14 +328,14 @@ def send_reject_activity(link_request_id):
 # Periodic tasks
 # =================================================================
 
+
 @shared_task
 def cleanup_expired_quotes():
     """Delete expired ephemeral quotes."""
     from suddenly.characters.models import Quote, QuoteVisibility
 
     Quote.objects.filter(
-        visibility=QuoteVisibility.EPHEMERAL,
-        expires_at__lt=timezone.now()
+        visibility=QuoteVisibility.EPHEMERAL, expires_at__lt=timezone.now()
     ).delete()
 
 
@@ -336,10 +344,9 @@ def refresh_remote_actors():
     """Refresh stale remote actors."""
     from suddenly.users.models import User
 
-    stale = User.objects.filter(
-        remote=True,
-        updated_at__lt=timezone.now() - timedelta(hours=24)
-    )[:100]
+    stale = User.objects.filter(remote=True, updated_at__lt=timezone.now() - timedelta(hours=24))[
+        :100
+    ]
 
     for user in stale:
         fetch_remote_actor.delay(user.ap_id)
@@ -352,10 +359,7 @@ def fetch_remote_actor(actor_url):
 
     try:
         with httpx.Client(timeout=30) as client:
-            response = client.get(
-                actor_url,
-                headers={"Accept": "application/activity+json"}
-            )
+            response = client.get(actor_url, headers={"Accept": "application/activity+json"})
 
         if response.status_code == 200:
             update_remote_user(actor_url, response.json())
@@ -366,6 +370,7 @@ def fetch_remote_actor(actor_url):
 # =================================================================
 # Helpers
 # =================================================================
+
 
 def get_or_create_remote_user(actor_url):
     """Get or create a remote user."""
@@ -379,10 +384,7 @@ def get_or_create_remote_user(actor_url):
 
     try:
         with httpx.Client(timeout=30) as client:
-            response = client.get(
-                actor_url,
-                headers={"Accept": "application/activity+json"}
-            )
+            response = client.get(actor_url, headers={"Accept": "application/activity+json"})
 
         if response.status_code != 200:
             return None
@@ -390,6 +392,7 @@ def get_or_create_remote_user(actor_url):
         data = response.json()
 
         from urllib.parse import urlparse
+
         domain = urlparse(actor_url).netloc
         username = data.get("preferredUsername", "unknown")
 

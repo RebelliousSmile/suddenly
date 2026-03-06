@@ -18,7 +18,7 @@ AP_CONTEXT = [
         "status": "suddenly:status",
         "sheetUrl": "suddenly:sheetUrl",
         "gameSystem": "suddenly:gameSystem",
-    }
+    },
 ]
 
 
@@ -164,11 +164,13 @@ def serialize_report(report):
     # Mentions
     mentions = []
     for appearance in report.character_appearances.select_related("character"):
-        mentions.append({
-            "type": "Mention",
-            "href": appearance.character.actor_url,
-            "name": f"@{appearance.character.name}",
-        })
+        mentions.append(
+            {
+                "type": "Mention",
+                "href": appearance.character.actor_url,
+                "name": f"@{appearance.character.name}",
+            }
+        )
 
     if mentions:
         data["tag"] = mentions
@@ -194,7 +196,9 @@ def serialize_quote(quote):
         data["summary"] = quote.context
 
     if quote.report:
-        data["inReplyTo"] = quote.report.ap_id or f"https://{settings.DOMAIN}/reports/{quote.report.id}"
+        data["inReplyTo"] = (
+            quote.report.ap_id or f"https://{settings.DOMAIN}/reports/{quote.report.id}"
+        )
 
     return data
 
@@ -230,6 +234,7 @@ def serialize_link_request(link_request):
 
 
 # Activity serializers
+
 
 def create_activity(activity_type, actor, obj, target=None):
     """Create an ActivityPub activity."""

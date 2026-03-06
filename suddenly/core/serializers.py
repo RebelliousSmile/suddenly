@@ -19,15 +19,13 @@ from suddenly.users.models import User
 # User Serializers
 # =================================================================
 
+
 class UserSerializer(serializers.ModelSerializer):
     """Public user representation."""
 
     class Meta:
         model = User
-        fields = [
-            "id", "username", "display_name", "bio", "avatar",
-            "actor_url", "created_at"
-        ]
+        fields = ["id", "username", "display_name", "bio", "avatar", "actor_url", "created_at"]
         read_only_fields = fields
 
 
@@ -51,6 +49,7 @@ class UserDetailSerializer(UserSerializer):
 # Game Serializers
 # =================================================================
 
+
 class GameSerializer(serializers.ModelSerializer):
     """Game list representation."""
 
@@ -61,9 +60,17 @@ class GameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
         fields = [
-            "id", "title", "description", "game_system", "owner",
-            "is_public", "actor_url", "reports_count", "characters_count",
-            "created_at", "updated_at"
+            "id",
+            "title",
+            "description",
+            "game_system",
+            "owner",
+            "is_public",
+            "actor_url",
+            "reports_count",
+            "characters_count",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = ["id", "owner", "actor_url", "created_at", "updated_at"]
 
@@ -90,6 +97,7 @@ class GameCreateSerializer(serializers.ModelSerializer):
 # Character Serializers
 # =================================================================
 
+
 class CharacterSerializer(serializers.ModelSerializer):
     """Character list representation."""
 
@@ -101,14 +109,30 @@ class CharacterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Character
         fields = [
-            "id", "name", "description", "avatar", "status",
-            "owner", "creator", "origin_game", "origin_game_title",
-            "parent", "sheet_url", "is_available", "actor_url",
-            "created_at", "updated_at"
+            "id",
+            "name",
+            "description",
+            "avatar",
+            "status",
+            "owner",
+            "creator",
+            "origin_game",
+            "origin_game_title",
+            "parent",
+            "sheet_url",
+            "is_available",
+            "actor_url",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = [
-            "id", "owner", "creator", "status", "actor_url",
-            "created_at", "updated_at"
+            "id",
+            "owner",
+            "creator",
+            "status",
+            "actor_url",
+            "created_at",
+            "updated_at",
         ]
 
 
@@ -121,7 +145,9 @@ class CharacterDetailSerializer(CharacterSerializer):
 
     class Meta(CharacterSerializer.Meta):
         fields = CharacterSerializer.Meta.fields + [
-            "appearances_count", "quotes_count", "forks_count"
+            "appearances_count",
+            "quotes_count",
+            "forks_count",
         ]
 
     def get_appearances_count(self, obj):
@@ -148,6 +174,7 @@ class CharacterSearchSerializer(serializers.ModelSerializer):
 # Report Serializers
 # =================================================================
 
+
 class ReportSerializer(serializers.ModelSerializer):
     """Report list representation."""
 
@@ -158,14 +185,19 @@ class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
         fields = [
-            "id", "title", "content", "game", "game_title", "author",
-            "status", "published_at", "characters_count",
-            "created_at", "updated_at"
+            "id",
+            "title",
+            "content",
+            "game",
+            "game_title",
+            "author",
+            "status",
+            "published_at",
+            "characters_count",
+            "created_at",
+            "updated_at",
         ]
-        read_only_fields = [
-            "id", "author", "status", "published_at",
-            "created_at", "updated_at"
-        ]
+        read_only_fields = ["id", "author", "status", "published_at", "created_at", "updated_at"]
 
     def get_characters_count(self, obj):
         return obj.character_appearances.count()
@@ -198,15 +230,20 @@ class ReportCastSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReportCast
         fields = [
-            "id", "report", "character",
-            "new_character_name", "new_character_description",
-            "role", "created_at"
+            "id",
+            "report",
+            "character",
+            "new_character_name",
+            "new_character_description",
+            "role",
+            "created_at",
         ]
 
 
 # =================================================================
 # Quote Serializers
 # =================================================================
+
 
 class QuoteSerializer(serializers.ModelSerializer):
     """Quote representation."""
@@ -217,8 +254,14 @@ class QuoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quote
         fields = [
-            "id", "content", "context", "character", "report",
-            "visibility", "author", "created_at"
+            "id",
+            "content",
+            "context",
+            "character",
+            "report",
+            "visibility",
+            "author",
+            "created_at",
         ]
         read_only_fields = ["id", "author", "created_at"]
 
@@ -239,6 +282,7 @@ class QuoteCreateSerializer(serializers.ModelSerializer):
 # Link Serializers
 # =================================================================
 
+
 class LinkRequestSerializer(serializers.ModelSerializer):
     """Link request representation."""
 
@@ -249,13 +293,24 @@ class LinkRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkRequest
         fields = [
-            "id", "type", "requester", "target_character",
-            "proposed_character", "status", "message",
-            "response_message", "created_at", "resolved_at"
+            "id",
+            "type",
+            "requester",
+            "target_character",
+            "proposed_character",
+            "status",
+            "message",
+            "response_message",
+            "created_at",
+            "resolved_at",
         ]
         read_only_fields = [
-            "id", "requester", "status", "response_message",
-            "created_at", "resolved_at"
+            "id",
+            "requester",
+            "status",
+            "response_message",
+            "created_at",
+            "resolved_at",
         ]
 
 
@@ -275,9 +330,9 @@ class LinkRequestCreateSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         if data["type"] == "claim" and not data.get("proposed_character"):
-            raise serializers.ValidationError({
-                "proposed_character": "A claim requires an existing PC to propose."
-            })
+            raise serializers.ValidationError(
+                {"proposed_character": "A claim requires an existing PC to propose."}
+            )
         return data
 
     def create(self, validated_data):
@@ -294,10 +349,7 @@ class CharacterLinkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CharacterLink
-        fields = [
-            "id", "type", "source", "target",
-            "description", "created_at"
-        ]
+        fields = ["id", "type", "source", "target", "description", "created_at"]
 
 
 class SharedSequenceSerializer(serializers.ModelSerializer):
@@ -313,11 +365,12 @@ class SharedSequenceSerializer(serializers.ModelSerializer):
 # Follow Serializer
 # =================================================================
 
+
 class FollowSerializer(serializers.ModelSerializer):
     """Follow relationship with generic target."""
 
-    target_type = serializers.CharField(source='content_type.model', read_only=True)
-    target_id = serializers.UUIDField(source='object_id')
+    target_type = serializers.CharField(source="content_type.model", read_only=True)
+    target_id = serializers.UUIDField(source="object_id")
 
     class Meta:
         model = Follow

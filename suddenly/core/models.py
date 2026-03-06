@@ -3,6 +3,7 @@ Modèles abstraits de base.
 
 Tous les modèles de l'application héritent de BaseModel.
 """
+
 import uuid
 
 from django.db import models

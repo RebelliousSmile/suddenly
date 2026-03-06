@@ -53,9 +53,9 @@ def gql(token: str, query: str, variables: dict | None = None) -> dict:
 
 
 def print_section(title: str) -> None:
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"  {title}")
-    print("="*60)
+    print("=" * 60)
 
 
 def main() -> None:
@@ -69,7 +69,9 @@ def main() -> None:
 
     # 1. Projets
     print_section("PROJETS")
-    result = gql(token, """
+    result = gql(
+        token,
+        """
         query {
             projects {
                 edges {
@@ -90,7 +92,8 @@ def main() -> None:
                 }
             }
         }
-    """)
+    """,
+    )
     projects = result.get("data", {}).get("projects", {}).get("edges", [])
     if not projects:
         print("Aucun projet trouvé.")
@@ -125,7 +128,9 @@ def main() -> None:
 
     # 2. Dernier déploiement
     print_section("DERNIER DÉPLOIEMENT")
-    result = gql(token, """
+    result = gql(
+        token,
+        """
         query($serviceId: String!, $environmentId: String!) {
             deployments(
                 first: 1
@@ -142,7 +147,9 @@ def main() -> None:
                 }
             }
         }
-    """, {"serviceId": service_id, "environmentId": environment_id})
+    """,
+        {"serviceId": service_id, "environmentId": environment_id},
+    )
 
     deployments = result.get("data", {}).get("deployments", {}).get("edges", [])
     if not deployments:
@@ -158,7 +165,9 @@ def main() -> None:
 
     # 3. Build logs
     print_section("LOGS DE BUILD (100 dernières lignes)")
-    result = gql(token, """
+    result = gql(
+        token,
+        """
         query($deploymentId: String!) {
             buildLogs(deploymentId: $deploymentId, limit: 100) {
                 message
@@ -166,7 +175,9 @@ def main() -> None:
                 timestamp
             }
         }
-    """, {"deploymentId": deployment_id})
+    """,
+        {"deploymentId": deployment_id},
+    )
 
     build_logs = result.get("data", {}).get("buildLogs", [])
     if build_logs:
@@ -182,7 +193,9 @@ def main() -> None:
 
     # 4. Runtime logs
     print_section("LOGS RUNTIME (100 dernières lignes)")
-    result = gql(token, """
+    result = gql(
+        token,
+        """
         query($deploymentId: String!) {
             deploymentLogs(deploymentId: $deploymentId, limit: 100) {
                 message
@@ -190,7 +203,9 @@ def main() -> None:
                 timestamp
             }
         }
-    """, {"deploymentId": deployment_id})
+    """,
+        {"deploymentId": deployment_id},
+    )
 
     runtime_logs = result.get("data", {}).get("deploymentLogs", [])
     if runtime_logs:
@@ -206,7 +221,9 @@ def main() -> None:
 
     # 4. Variables d'environnement (noms uniquement, pas les valeurs)
     print_section("VARIABLES D'ENVIRONNEMENT (noms)")
-    result = gql(token, """
+    result = gql(
+        token,
+        """
         query($projectId: String!, $serviceId: String!, $environmentId: String!) {
             variables(
                 projectId: $projectId
@@ -214,11 +231,13 @@ def main() -> None:
                 environmentId: $environmentId
             )
         }
-    """, {
-        "projectId": project_id,
-        "serviceId": service_id,
-        "environmentId": environment_id,
-    })
+    """,
+        {
+            "projectId": project_id,
+            "serviceId": service_id,
+            "environmentId": environment_id,
+        },
+    )
 
     variables = result.get("data", {}).get("variables", {})
     if isinstance(variables, dict):

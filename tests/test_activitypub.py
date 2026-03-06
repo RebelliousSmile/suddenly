@@ -25,8 +25,7 @@ class TestWebFinger:
         settings.DOMAIN = "test.social"
 
         response = client.get(
-            "/.well-known/webfinger",
-            {"resource": f"acct:{user.username}@test.social"}
+            "/.well-known/webfinger", {"resource": f"acct:{user.username}@test.social"}
         )
 
         assert response.status_code == 200
@@ -43,20 +42,14 @@ class TestWebFinger:
     def test_webfinger_unknown_user(self, client, settings):
         settings.DOMAIN = "test.social"
 
-        response = client.get(
-            "/.well-known/webfinger",
-            {"resource": "acct:nobody@test.social"}
-        )
+        response = client.get("/.well-known/webfinger", {"resource": "acct:nobody@test.social"})
 
         assert response.status_code == 404
 
     def test_webfinger_wrong_domain(self, client, settings):
         settings.DOMAIN = "test.social"
 
-        response = client.get(
-            "/.well-known/webfinger",
-            {"resource": "acct:user@other.social"}
-        )
+        response = client.get("/.well-known/webfinger", {"resource": "acct:user@other.social"})
 
         assert response.status_code == 404
 
@@ -99,10 +92,7 @@ class TestUserActor:
     def test_user_actor_json(self, client, user, settings):
         settings.DOMAIN = "test.social"
 
-        response = client.get(
-            f"/users/{user.username}",
-            HTTP_ACCEPT="application/activity+json"
-        )
+        response = client.get(f"/users/{user.username}", HTTP_ACCEPT="application/activity+json")
 
         assert response.status_code == 200
         assert "application/activity+json" in response["Content-Type"]
@@ -114,10 +104,7 @@ class TestUserActor:
         assert "outbox" in data
 
     def test_user_actor_html_redirect(self, client, user):
-        response = client.get(
-            f"/users/{user.username}",
-            HTTP_ACCEPT="text/html"
-        )
+        response = client.get(f"/users/{user.username}", HTTP_ACCEPT="text/html")
 
         # Should redirect to profile page
         assert response.status_code == 302
@@ -127,16 +114,11 @@ class TestUserActor:
 
         # Create a published report
         Report.objects.create(
-            title="Test Report",
-            content="Test content",
-            game=game,
-            author=user,
-            status="published"
+            title="Test Report", content="Test content", game=game, author=user, status="published"
         )
 
         response = client.get(
-            f"/users/{user.username}/outbox",
-            HTTP_ACCEPT="application/activity+json"
+            f"/users/{user.username}/outbox", HTTP_ACCEPT="application/activity+json"
         )
 
         assert response.status_code == 200
@@ -150,10 +132,7 @@ class TestGameActor:
     def test_game_actor_json(self, client, game, settings):
         settings.DOMAIN = "test.social"
 
-        response = client.get(
-            f"/games/{game.id}",
-            HTTP_ACCEPT="application/activity+json"
-        )
+        response = client.get(f"/games/{game.id}", HTTP_ACCEPT="application/activity+json")
 
         assert response.status_code == 200
         data = response.json()
@@ -164,17 +143,10 @@ class TestGameActor:
         settings.DOMAIN = "test.social"
 
         Report.objects.create(
-            title="Test",
-            content="Content",
-            game=game,
-            author=user,
-            status="published"
+            title="Test", content="Content", game=game, author=user, status="published"
         )
 
-        response = client.get(
-            f"/games/{game.id}/outbox",
-            HTTP_ACCEPT="application/activity+json"
-        )
+        response = client.get(f"/games/{game.id}/outbox", HTTP_ACCEPT="application/activity+json")
 
         assert response.status_code == 200
         data = response.json()
@@ -188,8 +160,7 @@ class TestCharacterActor:
         settings.DOMAIN = "test.social"
 
         response = client.get(
-            f"/characters/{character.id}",
-            HTTP_ACCEPT="application/activity+json"
+            f"/characters/{character.id}", HTTP_ACCEPT="application/activity+json"
         )
 
         assert response.status_code == 200
@@ -240,7 +211,7 @@ class TestSerializers:
             status=CharacterStatus.FORKED,
             creator=user,
             origin_game=game,
-            parent=character
+            parent=character,
         )
 
         data = serialize_character(fork)
@@ -264,7 +235,7 @@ class TestSerializers:
             content="To be or not to be",
             character=character,
             author=user,
-            visibility=QuoteVisibility.PUBLIC
+            visibility=QuoteVisibility.PUBLIC,
         )
 
         data = serialize_quote(quote)
@@ -291,16 +262,18 @@ class TestHTTPSignatures:
 
         # Load private key
         private_key = serialization.load_pem_private_key(
-            private_pem.encode(),
-            password=None,
-            backend=default_backend()
+            private_pem.encode(), password=None, backend=default_backend()
         )
 
         # Extract public key from private
-        derived_public = private_key.public_key().public_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PublicFormat.SubjectPublicKeyInfo
-        ).decode()
+        derived_public = (
+            private_key.public_key()
+            .public_bytes(
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PublicFormat.SubjectPublicKeyInfo,
+            )
+            .decode()
+        )
 
         assert derived_public == public_pem
 
@@ -411,9 +384,7 @@ class TestHTTPSignatures:
 
         # Mock the actor fetch to return our public key
         mock_response = mocker.MagicMock()
-        mock_response.json.return_value = {
-            "publicKey": {"id": key_id, "publicKeyPem": public_pem}
-        }
+        mock_response.json.return_value = {"publicKey": {"id": key_id, "publicKeyPem": public_pem}}
         mock_response.raise_for_status.return_value = None
         mock_ctx = mocker.MagicMock()
         mock_ctx.__enter__.return_value = mock_ctx
@@ -461,9 +432,7 @@ class TestHTTPSignatures:
         )
 
         mock_response = mocker.MagicMock()
-        mock_response.json.return_value = {
-            "publicKey": {"id": key_id, "publicKeyPem": public_pem}
-        }
+        mock_response.json.return_value = {"publicKey": {"id": key_id, "publicKeyPem": public_pem}}
         mock_response.raise_for_status.return_value = None
         mock_ctx = mocker.MagicMock()
         mock_ctx.__enter__.return_value = mock_ctx
@@ -481,29 +450,27 @@ class TestInbox:
         response = client.post(
             f"/users/{user.username}/inbox",
             data="not json",
-            content_type="application/activity+json"
+            content_type="application/activity+json",
         )
 
         assert response.status_code == 400
 
     def test_inbox_accepts_valid_activity(self, client, user, mocker):
         # Mock the task to avoid actual processing
-        mock_task = mocker.patch(
-            "suddenly.activitypub.views.process_incoming_activity"
-        )
+        mock_task = mocker.patch("suddenly.activitypub.views.process_incoming_activity")
         mock_task.delay = mocker.MagicMock()
 
         activity = {
             "@context": "https://www.w3.org/ns/activitystreams",
             "type": "Follow",
             "actor": "https://remote.social/users/alice",
-            "object": f"https://test.social/users/{user.username}"
+            "object": f"https://test.social/users/{user.username}",
         }
 
         response = client.post(
             f"/users/{user.username}/inbox",
             data=json.dumps(activity),
-            content_type="application/activity+json"
+            content_type="application/activity+json",
         )
 
         assert response.status_code == 202
@@ -585,9 +552,7 @@ class TestPublicKeyCache:
             private_pem.encode(), password=None, backend=default_backend()
         )
         sig = base64.b64encode(
-            private_key.sign(
-                signing_string.encode(), padding.PKCS1v15(), hashes.SHA256()
-            )
+            private_key.sign(signing_string.encode(), padding.PKCS1v15(), hashes.SHA256())
         ).decode()
 
         sig_header = (
@@ -622,9 +587,7 @@ class TestPublicKeyCache:
 
         request = self._make_signed_request(rf, private_pem, actor_url)
 
-        mock_fetch = mocker.patch(
-            "suddenly.activitypub.signatures._fetch_public_key"
-        )
+        mock_fetch = mocker.patch("suddenly.activitypub.signatures._fetch_public_key")
 
         is_valid, result = verify_signature(request)
 

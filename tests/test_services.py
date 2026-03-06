@@ -23,10 +23,7 @@ class TestLinkServiceValidation:
     def test_claim_requires_available_npc(self, db, user, other_user, game):
         """Cannot claim a character that's not an NPC."""
         target = Character.objects.create(
-            name="Already Adopted",
-            status=CharacterStatus.ADOPTED,
-            creator=user,
-            origin_game=game
+            name="Already Adopted", status=CharacterStatus.ADOPTED, creator=user, origin_game=game
         )
 
         pc = Character.objects.create(
@@ -34,7 +31,7 @@ class TestLinkServiceValidation:
             status=CharacterStatus.PC,
             owner=other_user,
             creator=other_user,
-            origin_game=game
+            origin_game=game,
         )
 
         with pytest.raises(ValidationError) as exc:
@@ -45,10 +42,7 @@ class TestLinkServiceValidation:
     def test_claim_requires_pc(self, db, user, other_user, character, game):
         """Claim requires an actual PC, not an NPC."""
         npc = Character.objects.create(
-            name="Another NPC",
-            status=CharacterStatus.NPC,
-            creator=other_user,
-            origin_game=game
+            name="Another NPC", status=CharacterStatus.NPC, creator=other_user, origin_game=game
         )
 
         with pytest.raises(ValidationError) as exc:
@@ -63,7 +57,7 @@ class TestLinkServiceValidation:
             status=CharacterStatus.PC,
             owner=user,  # Owned by user, not other_user
             creator=user,
-            origin_game=game
+            origin_game=game,
         )
 
         with pytest.raises(ValidationError) as exc:
@@ -78,7 +72,7 @@ class TestLinkServiceValidation:
             status=CharacterStatus.PC,
             owner=other_user,
             creator=other_user,
-            origin_game=game
+            origin_game=game,
         )
 
         # Create pending request from someone else
@@ -89,7 +83,7 @@ class TestLinkServiceValidation:
             type=LinkType.ADOPT,
             requester=third_user,
             target_character=character,
-            message="I want it"
+            message="I want it",
         )
 
         with pytest.raises(ValidationError) as exc:
@@ -100,11 +94,7 @@ class TestLinkServiceValidation:
     def test_adopt_requires_available_npc(self, db, user, other_user, game):
         """Cannot adopt a character that's not available."""
         target = Character.objects.create(
-            name="Already PC",
-            status=CharacterStatus.PC,
-            owner=user,
-            creator=user,
-            origin_game=game
+            name="Already PC", status=CharacterStatus.PC, owner=user, creator=user, origin_game=game
         )
 
         with pytest.raises(ValidationError) as exc:
@@ -121,7 +111,7 @@ class TestLinkServiceValidation:
             type=LinkType.CLAIM,
             requester=third_user,
             target_character=character,
-            message="I want it first"
+            message="I want it first",
         )
 
         with pytest.raises(ValidationError) as exc:
@@ -137,7 +127,7 @@ class TestLinkServiceValidation:
             status=CharacterStatus.ADOPTED,
             owner=user,
             creator=user,
-            origin_game=game
+            origin_game=game,
         )
 
         # Should not raise
@@ -154,7 +144,7 @@ class TestLinkServiceCreateRequest:
             status=CharacterStatus.PC,
             owner=other_user,
             creator=other_user,
-            origin_game=game
+            origin_game=game,
         )
 
         request = LinkService.create_request(
@@ -162,7 +152,7 @@ class TestLinkServiceCreateRequest:
             target_character=character,
             link_type=LinkType.CLAIM,
             message="This was my character!",
-            proposed_character=pc
+            proposed_character=pc,
         )
 
         assert request.type == LinkType.CLAIM
@@ -175,7 +165,7 @@ class TestLinkServiceCreateRequest:
             requester=other_user,
             target_character=character,
             link_type=LinkType.ADOPT,
-            message="I want to play this character"
+            message="I want to play this character",
         )
 
         assert request.type == LinkType.ADOPT
@@ -187,7 +177,7 @@ class TestLinkServiceCreateRequest:
             requester=other_user,
             target_character=character,
             link_type=LinkType.FORK,
-            message="I want to create a sibling"
+            message="I want to create a sibling",
         )
 
         assert request.type == LinkType.FORK
@@ -203,7 +193,7 @@ class TestLinkServiceAccept:
             status=CharacterStatus.PC,
             owner=other_user,
             creator=other_user,
-            origin_game=game
+            origin_game=game,
         )
 
         request = LinkRequest.objects.create(
@@ -211,7 +201,7 @@ class TestLinkServiceAccept:
             requester=other_user,
             target_character=character,
             proposed_character=pc,
-            message="Claim!"
+            message="Claim!",
         )
 
         link = LinkService.accept_request(request, "Approved!")
@@ -234,7 +224,7 @@ class TestLinkServiceAccept:
             type=LinkType.ADOPT,
             requester=other_user,
             target_character=character,
-            message="I'll adopt!"
+            message="I'll adopt!",
         )
 
         LinkService.accept_request(request)
@@ -247,10 +237,7 @@ class TestLinkServiceAccept:
     def test_accept_fork_creates_new_character(self, db, user, other_user, character, game):
         """Accepting a fork creates a new derived character."""
         request = LinkRequest.objects.create(
-            type=LinkType.FORK,
-            requester=other_user,
-            target_character=character,
-            message="Forking!"
+            type=LinkType.FORK, requester=other_user, target_character=character, message="Forking!"
         )
 
         initial_count = Character.objects.count()
@@ -271,7 +258,7 @@ class TestLinkServiceAccept:
             requester=other_user,
             target_character=character,
             status=LinkRequestStatus.REJECTED,
-            message="Rejected one"
+            message="Rejected one",
         )
 
         with pytest.raises(ValidationError) as exc:
@@ -286,10 +273,7 @@ class TestLinkServiceReject:
     def test_reject_request(self, db, other_user, character):
         """Reject a request."""
         request = LinkRequest.objects.create(
-            type=LinkType.ADOPT,
-            requester=other_user,
-            target_character=character,
-            message="Please?"
+            type=LinkType.ADOPT, requester=other_user, target_character=character, message="Please?"
         )
 
         result = LinkService.reject_request(request, "Not a good fit")
@@ -305,7 +289,7 @@ class TestLinkServiceReject:
             requester=other_user,
             target_character=character,
             status=LinkRequestStatus.ACCEPTED,
-            message="Already accepted"
+            message="Already accepted",
         )
 
         with pytest.raises(ValidationError):
@@ -321,7 +305,7 @@ class TestLinkServiceCancel:
             type=LinkType.FORK,
             requester=other_user,
             target_character=character,
-            message="Changed my mind"
+            message="Changed my mind",
         )
 
         result = LinkService.cancel_request(request)

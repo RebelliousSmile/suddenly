@@ -26,27 +26,22 @@ from .serializers import (
 # Content negotiation helper
 # =================================================================
 
+
 def is_activitypub_request(request):
     """Check if request accepts ActivityPub content."""
     accept = request.headers.get("Accept", "")
-    return (
-        "application/activity+json" in accept or
-        "application/ld+json" in accept
-    )
+    return "application/activity+json" in accept or "application/ld+json" in accept
 
 
 def activitypub_response(data, status=200):
     """Return an ActivityPub JSON-LD response."""
-    return JsonResponse(
-        data,
-        content_type="application/activity+json",
-        status=status
-    )
+    return JsonResponse(data, content_type="application/activity+json", status=status)
 
 
 # =================================================================
 # Well-known endpoints
 # =================================================================
+
 
 @require_GET
 def webfinger(request):
@@ -109,14 +104,16 @@ def webfinger(request):
 @require_GET
 def nodeinfo_index(request):
     """NodeInfo discovery endpoint."""
-    return JsonResponse({
-        "links": [
-            {
-                "rel": "http://nodeinfo.diaspora.software/ns/schema/2.0",
-                "href": f"https://{settings.DOMAIN}/.well-known/nodeinfo/2.0",
-            }
-        ]
-    })
+    return JsonResponse(
+        {
+            "links": [
+                {
+                    "rel": "http://nodeinfo.diaspora.software/ns/schema/2.0",
+                    "href": f"https://{settings.DOMAIN}/.well-known/nodeinfo/2.0",
+                }
+            ]
+        }
+    )
 
 
 @require_GET
@@ -127,34 +124,37 @@ def nodeinfo(request):
     character_count = Character.objects.filter(remote=False).count()
     report_count = Report.objects.filter(remote=False, status="published").count()
 
-    return JsonResponse({
-        "version": "2.0",
-        "software": {
-            "name": "suddenly",
-            "version": "0.1.0",
-        },
-        "protocols": ["activitypub"],
-        "usage": {
-            "users": {
-                "total": user_count,
-                "activeMonth": user_count,
-                "activeHalfyear": user_count,
+    return JsonResponse(
+        {
+            "version": "2.0",
+            "software": {
+                "name": "suddenly",
+                "version": "0.1.0",
             },
-            "localPosts": report_count,
-        },
-        "openRegistrations": True,
-        "metadata": {
-            "nodeName": settings.SITE_NAME,
-            "nodeDescription": settings.SITE_DESCRIPTION,
-            "games": game_count,
-            "characters": character_count,
-        },
-    })
+            "protocols": ["activitypub"],
+            "usage": {
+                "users": {
+                    "total": user_count,
+                    "activeMonth": user_count,
+                    "activeHalfyear": user_count,
+                },
+                "localPosts": report_count,
+            },
+            "openRegistrations": True,
+            "metadata": {
+                "nodeName": settings.SITE_NAME,
+                "nodeDescription": settings.SITE_DESCRIPTION,
+                "games": game_count,
+                "characters": character_count,
+            },
+        }
+    )
 
 
 # =================================================================
 # User actor endpoints
 # =================================================================
+
 
 @require_GET
 def user_actor(request, username):
@@ -172,6 +172,7 @@ def user_actor(request, username):
     if not is_activitypub_request(request):
         # Redirect to profile page for browsers
         from django.shortcuts import redirect
+
         return redirect(f"/@{username}")
 
     return activitypub_response(serialize_user(user))
@@ -200,6 +201,7 @@ def user_inbox(request, username):
 
     # Queue activity processing
     from .tasks import process_incoming_activity
+
     process_incoming_activity.delay(user.id, activity)
 
     return JsonResponse({"status": "accepted"}, status=202)
@@ -218,21 +220,21 @@ def user_outbox(request, username):
         return HttpResponseNotFound("User not found")
 
     # Get user's public activities (reports)
-    reports = Report.objects.filter(
-        author=user,
-        status="published",
-        game__is_public=True
-    ).order_by("-published_at")[:20]
+    reports = Report.objects.filter(author=user, status="published", game__is_public=True).order_by(
+        "-published_at"
+    )[:20]
 
     items = [serialize_report(r) for r in reports]
 
-    return activitypub_response({
-        "@context": "https://www.w3.org/ns/activitystreams",
-        "type": "OrderedCollection",
-        "id": f"{user.actor_url}/outbox",
-        "totalItems": reports.count(),
-        "orderedItems": items,
-    })
+    return activitypub_response(
+        {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "OrderedCollection",
+            "id": f"{user.actor_url}/outbox",
+            "totalItems": reports.count(),
+            "orderedItems": items,
+        }
+    )
 
 
 @require_GET
@@ -248,23 +250,25 @@ def user_followers(request, username):
     from suddenly.characters.models import Follow
 
     user_ct = ContentType.objects.get_for_model(User)
-    followers = Follow.objects.filter(
-        content_type=user_ct,
-        object_id=user.id
-    ).select_related("follower")
+    followers = Follow.objects.filter(content_type=user_ct, object_id=user.id).select_related(
+        "follower"
+    )
 
-    return activitypub_response({
-        "@context": "https://www.w3.org/ns/activitystreams",
-        "type": "OrderedCollection",
-        "id": f"{user.actor_url}/followers",
-        "totalItems": followers.count(),
-        "orderedItems": [f.follower.actor_url for f in followers],
-    })
+    return activitypub_response(
+        {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "OrderedCollection",
+            "id": f"{user.actor_url}/followers",
+            "totalItems": followers.count(),
+            "orderedItems": [f.follower.actor_url for f in followers],
+        }
+    )
 
 
 # =================================================================
 # Game actor endpoints
 # =================================================================
+
 
 @require_GET
 def game_actor(request, game_id):
@@ -276,6 +280,7 @@ def game_actor(request, game_id):
 
     if not is_activitypub_request(request):
         from django.shortcuts import redirect
+
         return redirect(f"/games/{game_id}")
 
     return activitypub_response(serialize_game(game))
@@ -296,6 +301,7 @@ def game_inbox(request, game_id):
         return HttpResponseBadRequest("Invalid JSON")
 
     from .tasks import process_incoming_activity
+
     process_incoming_activity.delay(None, activity, game_id=str(game.id))
 
     return JsonResponse({"status": "accepted"}, status=202)
@@ -312,18 +318,21 @@ def game_outbox(request, game_id):
     reports = game.reports.filter(status="published").order_by("-published_at")[:20]
     items = [serialize_report(r) for r in reports]
 
-    return activitypub_response({
-        "@context": "https://www.w3.org/ns/activitystreams",
-        "type": "OrderedCollection",
-        "id": f"{game.actor_url}/outbox",
-        "totalItems": reports.count(),
-        "orderedItems": items,
-    })
+    return activitypub_response(
+        {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "OrderedCollection",
+            "id": f"{game.actor_url}/outbox",
+            "totalItems": reports.count(),
+            "orderedItems": items,
+        }
+    )
 
 
 # =================================================================
 # Character actor endpoints
 # =================================================================
+
 
 @require_GET
 def character_actor(request, character_id):
@@ -335,6 +344,7 @@ def character_actor(request, character_id):
 
     if not is_activitypub_request(request):
         from django.shortcuts import redirect
+
         return redirect(f"/characters/{character_id}")
 
     return activitypub_response(serialize_character(character))
@@ -355,6 +365,7 @@ def character_inbox(request, character_id):
         return HttpResponseBadRequest("Invalid JSON")
 
     from .tasks import process_incoming_activity
+
     process_incoming_activity.delay(None, activity, character_id=str(character.id))
 
     return JsonResponse({"status": "accepted"}, status=202)
@@ -371,11 +382,12 @@ def character_outbox(request, character_id):
     quotes = character.quotes.filter(visibility="public").order_by("-created_at")[:20]
     items = [serialize_quote(q) for q in quotes]
 
-    return activitypub_response({
-        "@context": "https://www.w3.org/ns/activitystreams",
-        "type": "OrderedCollection",
-        "id": f"{character.actor_url}/outbox",
-        "totalItems": quotes.count(),
-        "orderedItems": items,
-    })
-
+    return activitypub_response(
+        {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "OrderedCollection",
+            "id": f"{character.actor_url}/outbox",
+            "totalItems": quotes.count(),
+            "orderedItems": items,
+        }
+    )

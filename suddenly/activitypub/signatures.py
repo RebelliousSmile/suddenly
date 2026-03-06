@@ -27,21 +27,23 @@ def generate_key_pair() -> tuple[str, str]:
         Tuple of (private_key_pem, public_key_pem)
     """
     private_key = rsa.generate_private_key(
-        public_exponent=65537,
-        key_size=2048,
-        backend=default_backend()
+        public_exponent=65537, key_size=2048, backend=default_backend()
     )
 
     private_pem = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.PKCS8,
-        encryption_algorithm=serialization.NoEncryption()
+        encryption_algorithm=serialization.NoEncryption(),
     ).decode("utf-8")
 
-    public_pem = private_key.public_key().public_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PublicFormat.SubjectPublicKeyInfo
-    ).decode("utf-8")
+    public_pem = (
+        private_key.public_key()
+        .public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo,
+        )
+        .decode("utf-8")
+    )
 
     return private_pem, public_pem
 
@@ -52,7 +54,7 @@ def sign_request(
     headers: dict,
     body: dict | None = None,
     key_id: str | None = None,
-    private_key_pem: str | None = None
+    private_key_pem: str | None = None,
 ) -> dict:
     """
     Sign an outgoing HTTP request.
@@ -98,9 +100,7 @@ def sign_request(
 
     if body:
         body_bytes = json.dumps(body).encode("utf-8")
-        digest = base64.b64encode(
-            hashlib.sha256(body_bytes).digest()
-        ).decode("utf-8")
+        digest = base64.b64encode(hashlib.sha256(body_bytes).digest()).decode("utf-8")
         headers["Digest"] = f"SHA-256={digest}"
         signed_headers.append("digest")
 
@@ -116,15 +116,11 @@ def sign_request(
 
     # Sign
     private_key = serialization.load_pem_private_key(
-        private_key_pem.encode("utf-8"),
-        password=None,
-        backend=default_backend()
+        private_key_pem.encode("utf-8"), password=None, backend=default_backend()
     )
 
     signature = private_key.sign(
-        signing_string.encode("utf-8"),
-        padding.PKCS1v15(),
-        hashes.SHA256()
+        signing_string.encode("utf-8"), padding.PKCS1v15(), hashes.SHA256()
     )
 
     signature_b64 = base64.b64encode(signature).decode("utf-8")
@@ -190,9 +186,7 @@ def _build_signing_string(request, signed_headers: list[str]) -> str:
     return "\n".join(parts)
 
 
-def _verify_with_key(
-    public_key_pem: str, signature_b64: str, signing_string: str
-) -> bool:
+def _verify_with_key(public_key_pem: str, signature_b64: str, signing_string: str) -> bool:
     """Verify a signature against a public key. Returns True if valid."""
     try:
         public_key = serialization.load_pem_public_key(

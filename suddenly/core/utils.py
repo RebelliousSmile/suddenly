@@ -1,6 +1,7 @@
 """
 Utilitaires communs.
 """
+
 from django.db import models
 from django.utils.text import slugify as django_slugify
 

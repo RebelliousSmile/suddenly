@@ -24,9 +24,7 @@ class TestUserModel:
 
     def test_create_user(self, db):
         user = User.objects.create_user(
-            username="newuser",
-            email="new@example.com",
-            password="testpass"
+            username="newuser", email="new@example.com", password="testpass"
         )
         assert user.username == "newuser"
         assert user.remote is False
@@ -70,11 +68,7 @@ class TestReportCastModel:
     """Tests for ReportCast model."""
 
     def test_cast_with_existing_character(self, db, report, character):
-        cast = ReportCast.objects.create(
-            report=report,
-            character=character,
-            role="main"
-        )
+        cast = ReportCast.objects.create(report=report, character=character, role="main")
         assert cast.is_new_character() is False
 
     def test_cast_with_new_character(self, db, report):
@@ -82,7 +76,7 @@ class TestReportCastModel:
             report=report,
             new_character_name="New NPC",
             new_character_description="A brand new NPC",
-            role="supporting"
+            role="supporting",
         )
         assert cast.is_new_character() is True
 
@@ -130,7 +124,7 @@ class TestQuoteModel:
             content="I'll be back!",
             character=character,
             author=user,
-            visibility=QuoteVisibility.PUBLIC
+            visibility=QuoteVisibility.PUBLIC,
         )
         assert "I'll be back" in str(quote)
 
@@ -141,16 +135,13 @@ class TestQuoteModel:
             character=character,
             author=user,
             visibility=QuoteVisibility.EPHEMERAL,
-            expires_at=past
+            expires_at=past,
         )
         assert quote.is_expired is True
 
     def test_public_quote_not_expired(self, db, user, character):
         quote = Quote.objects.create(
-            content="Permanent",
-            character=character,
-            author=user,
-            visibility=QuoteVisibility.PUBLIC
+            content="Permanent", character=character, author=user, visibility=QuoteVisibility.PUBLIC
         )
         assert quote.is_expired is False
 
@@ -165,7 +156,7 @@ class TestLinkRequestModel:
             status=CharacterStatus.PC,
             owner=other_user,
             creator=other_user,
-            origin_game=game
+            origin_game=game,
         )
 
         request = LinkRequest.objects.create(
@@ -173,7 +164,7 @@ class TestLinkRequestModel:
             requester=other_user,
             target_character=character,
             proposed_character=pc,
-            message="This NPC was actually my PC!"
+            message="This NPC was actually my PC!",
         )
 
         assert request.status == LinkRequestStatus.PENDING
@@ -184,7 +175,7 @@ class TestLinkRequestModel:
             type=LinkType.ADOPT,
             requester=other_user,
             target_character=character,
-            message="I want to adopt this character"
+            message="I want to adopt this character",
         )
 
         assert request.type == LinkType.ADOPT
@@ -195,7 +186,7 @@ class TestLinkRequestModel:
             type=LinkType.FORK,
             requester=other_user,
             target_character=character,
-            message="I want to create a sibling of this character"
+            message="I want to create a sibling of this character",
         )
 
         assert request.type == LinkType.FORK
@@ -209,7 +200,7 @@ class TestCharacterLinkModel:
             type=LinkType.CLAIM,
             source=pc_character,
             target=character,
-            description="They were the same person all along"
+            description="They were the same person all along",
         )
 
         assert link.source == pc_character
@@ -220,19 +211,13 @@ class TestFollowModel:
     """Tests for Follow model."""
 
     def test_follow_user(self, db, user, other_user):
-        follow = Follow.objects.create(
-            follower=user,
-            target_type="user",
-            target_id=other_user.id
-        )
+        follow = Follow.objects.create(follower=user, target_type="user", target_id=other_user.id)
 
         assert follow.follower == user
 
     def test_follow_character(self, db, user, character):
         follow = Follow.objects.create(
-            follower=user,
-            target_type="character",
-            target_id=character.id
+            follower=user, target_type="character", target_id=character.id
         )
 
         assert follow.target_type == "character"

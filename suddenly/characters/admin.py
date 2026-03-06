@@ -34,6 +34,7 @@ class QuoteAdmin(admin.ModelAdmin):
 
     def content_preview(self, obj):
         return obj.content[:50] + "..." if len(obj.content) > 50 else obj.content
+
     content_preview.short_description = "Content"
 
 

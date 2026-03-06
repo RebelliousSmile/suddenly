@@ -43,8 +43,4 @@ class ProfileForm(forms.ModelForm):
             return json.loads(value)
         except (json.JSONDecodeError, TypeError):
             # Fall back to comma-separated parsing
-            return [
-                code.strip()
-                for code in value.split(",")
-                if code.strip()
-            ]
+            return [code.strip() for code in value.split(",") if code.strip()]

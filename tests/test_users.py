@@ -120,9 +120,7 @@ class TestProfileView:
     def test_inactive_user_returns_404(self, client, db):
         """is_active=False users are excluded from queryset."""
         client.raise_request_exception = False
-        inactive = User.objects.create_user(
-            username="inactive", password="x", is_active=False
-        )
+        inactive = User.objects.create_user(username="inactive", password="x", is_active=False)
         response = client.get(f"/@{inactive.username}/")
         assert response.status_code == 404
 

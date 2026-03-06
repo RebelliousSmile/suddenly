@@ -3,6 +3,7 @@ Mixins pour les modèles fédérables.
 
 ActivityPubMixin ajoute les champs nécessaires à la fédération ActivityPub.
 """
+
 from django.conf import settings
 from django.db import models
 

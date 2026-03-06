@@ -82,10 +82,9 @@ class CharacterViewSet(viewsets.ModelViewSet):
         if len(query) < 2:
             return Response([])
 
-        characters = Character.objects.filter(
-            name__icontains=query,
-            remote=False
-        ).select_related("origin_game")[:limit]
+        characters = Character.objects.filter(name__icontains=query, remote=False).select_related(
+            "origin_game"
+        )[:limit]
 
         serializer = CharacterSearchSerializer(characters, many=True)
         return Response(serializer.data)
@@ -106,13 +105,16 @@ class CharacterViewSet(viewsets.ModelViewSet):
             "report", "report__author", "report__game"
         ).filter(report__status="published")
 
-        data = [{
-            "report_id": a.report.id,
-            "report_title": a.report.title,
-            "game_title": a.report.game.title,
-            "role": a.role,
-            "published_at": a.report.published_at
-        } for a in appearances]
+        data = [
+            {
+                "report_id": a.report.id,
+                "report_title": a.report.title,
+                "game_title": a.report.game.title,
+                "role": a.role,
+                "published_at": a.report.published_at,
+            }
+            for a in appearances
+        ]
 
         return Response(data)
 
@@ -146,26 +148,24 @@ class CharacterViewSet(viewsets.ModelViewSet):
         if not target.is_available:
             return Response(
                 {"error": "This character is not available for claim."},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         proposed_id = request.data.get("proposed_character")
         if not proposed_id:
             return Response(
                 {"error": "A claim requires an existing PC to propose."},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         try:
             proposed = Character.objects.get(
-                id=proposed_id,
-                owner=request.user,
-                status=CharacterStatus.PC
+                id=proposed_id, owner=request.user, status=CharacterStatus.PC
             )
         except Character.DoesNotExist:
             return Response(
                 {"error": "Invalid proposed character. Must be your own PC."},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         link_request = LinkRequest.objects.create(
@@ -174,7 +174,7 @@ class CharacterViewSet(viewsets.ModelViewSet):
             target_character=target,
             proposed_character=proposed,
             message=request.data.get("message", ""),
-            status=LinkRequestStatus.PENDING
+            status=LinkRequestStatus.PENDING,
         )
 
         # TODO: Send ActivityPub Offer(Claim) activity
@@ -194,7 +194,7 @@ class CharacterViewSet(viewsets.ModelViewSet):
         if not target.is_available:
             return Response(
                 {"error": "This character is not available for adoption."},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         link_request = LinkRequest.objects.create(
@@ -202,7 +202,7 @@ class CharacterViewSet(viewsets.ModelViewSet):
             requester=request.user,
             target_character=target,
             message=request.data.get("message", ""),
-            status=LinkRequestStatus.PENDING
+            status=LinkRequestStatus.PENDING,
         )
 
         # TODO: Send ActivityPub Offer(Adopt) activity
@@ -223,7 +223,7 @@ class CharacterViewSet(viewsets.ModelViewSet):
         if not target.is_available:
             return Response(
                 {"error": "This character is not available for fork."},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         link_request = LinkRequest.objects.create(
@@ -231,7 +231,7 @@ class CharacterViewSet(viewsets.ModelViewSet):
             requester=request.user,
             target_character=target,
             message=request.data.get("message", ""),
-            status=LinkRequestStatus.PENDING
+            status=LinkRequestStatus.PENDING,
         )
 
         # Store fork details in message for now
@@ -256,11 +256,8 @@ class LinkRequestViewSet(viewsets.ModelViewSet):
 
         # Show requests user made or received
         return LinkRequest.objects.filter(
-            models.Q(requester=user) |
-            models.Q(target_character__creator=user)
-        ).select_related(
-            "requester", "target_character", "proposed_character"
-        )
+            models.Q(requester=user) | models.Q(target_character__creator=user)
+        ).select_related("requester", "target_character", "proposed_character")
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -279,13 +276,12 @@ class LinkRequestViewSet(viewsets.ModelViewSet):
         if link_request.target_character.creator != request.user:
             return Response(
                 {"error": "Only the character's creator can accept."},
-                status=status.HTTP_403_FORBIDDEN
+                status=status.HTTP_403_FORBIDDEN,
             )
 
         if link_request.status != LinkRequestStatus.PENDING:
             return Response(
-                {"error": "This request is no longer pending."},
-                status=status.HTTP_400_BAD_REQUEST
+                {"error": "This request is no longer pending."}, status=status.HTTP_400_BAD_REQUEST
             )
 
         with transaction.atomic():
@@ -320,7 +316,7 @@ class LinkRequestViewSet(viewsets.ModelViewSet):
                     owner=link_request.requester,
                     creator=link_request.requester,
                     origin_game=target.origin_game,
-                    parent=target
+                    parent=target,
                 )
                 target.status = CharacterStatus.FORKED
                 target.save()
@@ -331,14 +327,11 @@ class LinkRequestViewSet(viewsets.ModelViewSet):
                 source=source,
                 target=target,
                 link_request=link_request,
-                description=request.data.get("link_description", "")
+                description=request.data.get("link_description", ""),
             )
 
             # Create empty shared sequence for collaboration
-            SharedSequence.objects.create(
-                link=character_link,
-                status="draft"
-            )
+            SharedSequence.objects.create(link=character_link, status="draft")
 
             # TODO: Send ActivityPub Accept(Offer) activity
 
@@ -357,13 +350,12 @@ class LinkRequestViewSet(viewsets.ModelViewSet):
         if link_request.target_character.creator != request.user:
             return Response(
                 {"error": "Only the character's creator can reject."},
-                status=status.HTTP_403_FORBIDDEN
+                status=status.HTTP_403_FORBIDDEN,
             )
 
         if link_request.status != LinkRequestStatus.PENDING:
             return Response(
-                {"error": "This request is no longer pending."},
-                status=status.HTTP_400_BAD_REQUEST
+                {"error": "This request is no longer pending."}, status=status.HTTP_400_BAD_REQUEST
             )
 
         link_request.status = LinkRequestStatus.REJECTED
@@ -387,14 +379,12 @@ class LinkRequestViewSet(viewsets.ModelViewSet):
 
         if link_request.requester != request.user:
             return Response(
-                {"error": "Only the requester can cancel."},
-                status=status.HTTP_403_FORBIDDEN
+                {"error": "Only the requester can cancel."}, status=status.HTTP_403_FORBIDDEN
             )
 
         if link_request.status != LinkRequestStatus.PENDING:
             return Response(
-                {"error": "This request is no longer pending."},
-                status=status.HTTP_400_BAD_REQUEST
+                {"error": "This request is no longer pending."}, status=status.HTTP_400_BAD_REQUEST
             )
 
         link_request.status = LinkRequestStatus.CANCELLED
@@ -418,8 +408,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
         if self.request.user.is_authenticated:
             # Include user's private quotes
             return queryset.filter(
-                models.Q(visibility="public") |
-                models.Q(author=self.request.user)
+                models.Q(visibility="public") | models.Q(author=self.request.user)
             ).select_related("character", "author")
 
         return queryset.filter(visibility="public").select_related("character", "author")
@@ -439,11 +428,12 @@ class FollowViewSet(viewsets.ModelViewSet):
     http_method_names = ["get", "post", "delete"]
 
     def get_queryset(self):
-        return Follow.objects.filter(follower=self.request.user).select_related('content_type')
+        return Follow.objects.filter(follower=self.request.user).select_related("content_type")
 
     def get_serializer_class(self):
-        if self.action == 'create':
+        if self.action == "create":
             from suddenly.core.serializers import FollowCreateSerializer
+
             return FollowCreateSerializer
         return FollowSerializer
 
@@ -457,8 +447,7 @@ class FollowViewSet(viewsets.ModelViewSet):
 
         if not target_type or not target_id:
             return Response(
-                {"error": "target_type and target_id required"},
-                status=status.HTTP_400_BAD_REQUEST
+                {"error": "target_type and target_id required"}, status=status.HTTP_400_BAD_REQUEST
             )
 
         # Map target_type to content type
@@ -470,26 +459,19 @@ class FollowViewSet(viewsets.ModelViewSet):
 
         if target_type not in model_map:
             return Response(
-                {"error": f"Invalid target_type: {target_type}"},
-                status=status.HTTP_400_BAD_REQUEST
+                {"error": f"Invalid target_type: {target_type}"}, status=status.HTTP_400_BAD_REQUEST
             )
 
         app_label, model = model_map[target_type]
         content_type = ContentType.objects.get(app_label=app_label, model=model)
 
         follow = Follow.objects.filter(
-            follower=request.user,
-            content_type=content_type,
-            object_id=target_id
+            follower=request.user, content_type=content_type, object_id=target_id
         ).first()
 
         if follow:
             follow.delete()
             return Response({"following": False})
 
-        Follow.objects.create(
-            follower=request.user,
-            content_type=content_type,
-            object_id=target_id
-        )
+        Follow.objects.create(follower=request.user, content_type=content_type, object_id=target_id)
         return Response({"following": True}, status=status.HTTP_201_CREATED)

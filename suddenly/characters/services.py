@@ -51,14 +51,11 @@ class LinkService:
 
         # Check for pending requests
         pending = LinkRequest.objects.filter(
-            target_character=target_character,
-            status=LinkRequestStatus.PENDING
+            target_character=target_character, status=LinkRequestStatus.PENDING
         ).exists()
 
         if pending:
-            raise ValidationError(
-                f"Une demande est déjà en cours pour {target_character.name}"
-            )
+            raise ValidationError(f"Une demande est déjà en cours pour {target_character.name}")
 
     @staticmethod
     def validate_adopt(requester, target_character):
@@ -70,19 +67,14 @@ class LinkService:
         - No pending requests on target
         """
         if target_character.status != CharacterStatus.NPC:
-            raise ValidationError(
-                f"{target_character.name} n'est plus disponible"
-            )
+            raise ValidationError(f"{target_character.name} n'est plus disponible")
 
         pending = LinkRequest.objects.filter(
-            target_character=target_character,
-            status=LinkRequestStatus.PENDING
+            target_character=target_character, status=LinkRequestStatus.PENDING
         ).exists()
 
         if pending:
-            raise ValidationError(
-                f"Une demande est déjà en cours pour {target_character.name}"
-            )
+            raise ValidationError(f"Une demande est déjà en cours pour {target_character.name}")
 
     @staticmethod
     def validate_fork(requester, target_character):
@@ -176,7 +168,8 @@ class LinkService:
         # Update target character status
         if request.type in (LinkType.CLAIM, LinkType.ADOPT):
             request.target_character.status = (
-                CharacterStatus.CLAIMED if request.type == LinkType.CLAIM
+                CharacterStatus.CLAIMED
+                if request.type == LinkType.CLAIM
                 else CharacterStatus.ADOPTED
             )
             if request.type == LinkType.ADOPT:

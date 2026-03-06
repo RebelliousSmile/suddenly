@@ -29,7 +29,7 @@ def build_actor(user_or_game_or_character):
         "@context": get_context(),
         "id": obj.actor_url,
         "type": "Person",  # Could be customized per type
-        "preferredUsername": getattr(obj, 'username', None) or str(obj.id),
+        "preferredUsername": getattr(obj, "username", None) or str(obj.id),
         "inbox": f"{obj.actor_url}/inbox",
         "outbox": f"{obj.actor_url}/outbox",
         "followers": f"{obj.actor_url}/followers",
@@ -37,28 +37,28 @@ def build_actor(user_or_game_or_character):
     }
 
     # Name
-    if hasattr(obj, 'display_name') and obj.display_name:
+    if hasattr(obj, "display_name") and obj.display_name:
         actor["name"] = obj.display_name
-    elif hasattr(obj, 'name'):
+    elif hasattr(obj, "name"):
         actor["name"] = obj.name
-    elif hasattr(obj, 'title'):
+    elif hasattr(obj, "title"):
         actor["name"] = obj.title
 
     # Summary/bio
-    if hasattr(obj, 'bio') and obj.bio:
+    if hasattr(obj, "bio") and obj.bio:
         actor["summary"] = obj.bio
-    elif hasattr(obj, 'description') and obj.description:
+    elif hasattr(obj, "description") and obj.description:
         actor["summary"] = obj.description
 
     # Avatar/icon
-    if hasattr(obj, 'avatar') and obj.avatar:
+    if hasattr(obj, "avatar") and obj.avatar:
         actor["icon"] = {
             "type": "Image",
             "url": f"https://{settings.DOMAIN}{obj.avatar.url}",
         }
 
     # Public key for HTTP signatures
-    if hasattr(obj, 'public_key') and obj.public_key:
+    if hasattr(obj, "public_key") and obj.public_key:
         actor["publicKey"] = {
             "id": f"{obj.actor_url}#main-key",
             "owner": obj.actor_url,
@@ -79,9 +79,7 @@ def build_note(report):
         "attributedTo": report.author.actor_url,
         "content": report.content,
         "published": (
-            report.published_at.isoformat()
-            if report.published_at
-            else timezone.now().isoformat()
+            report.published_at.isoformat() if report.published_at else timezone.now().isoformat()
         ),
         "to": ["https://www.w3.org/ns/activitystreams#Public"],
         "cc": [f"{report.author.actor_url}/followers"],
@@ -95,12 +93,14 @@ def build_note(report):
 
     # Add mentioned characters as tags
     mentions = []
-    for appearance in report.character_appearances.select_related('character'):
-        mentions.append({
-            "type": "Mention",
-            "href": appearance.character.actor_url,
-            "name": f"@{appearance.character.name}",
-        })
+    for appearance in report.character_appearances.select_related("character"):
+        mentions.append(
+            {
+                "type": "Mention",
+                "href": appearance.character.actor_url,
+                "name": f"@{appearance.character.name}",
+            }
+        )
 
     if mentions:
         note["tag"] = mentions
@@ -124,8 +124,9 @@ def build_create_activity(object_type: str, object_id: str):
 
     if object_type == "report":
         from suddenly.games.models import Report
+
         try:
-            report = Report.objects.select_related('author', 'game').get(id=object_id)
+            report = Report.objects.select_related("author", "game").get(id=object_id)
             activity["id"] = f"{settings.AP_BASE_URL}/activities/create/{report.id}"
             activity["actor"] = report.author.actor_url
             activity["object"] = build_note(report)
@@ -136,8 +137,9 @@ def build_create_activity(object_type: str, object_id: str):
 
     elif object_type == "quote":
         from suddenly.characters.models import Quote
+
         try:
-            quote = Quote.objects.select_related('author', 'character').get(id=object_id)
+            quote = Quote.objects.select_related("author", "character").get(id=object_id)
             activity["id"] = f"{settings.AP_BASE_URL}/activities/create/{quote.id}"
             activity["actor"] = quote.author.actor_url
             activity["object"] = {
@@ -153,8 +155,9 @@ def build_create_activity(object_type: str, object_id: str):
 
     elif object_type == "character":
         from suddenly.characters.models import Character
+
         try:
-            character = Character.objects.select_related('creator').get(id=object_id)
+            character = Character.objects.select_related("creator").get(id=object_id)
             activity["id"] = f"{settings.AP_BASE_URL}/activities/create/{character.id}"
             activity["actor"] = character.creator.actor_url
             activity["object"] = build_actor(character)
@@ -241,8 +244,7 @@ def build_follow_activity(follower, target_actor_url):
     return {
         "@context": get_context(),
         "id": (
-            f"{settings.AP_BASE_URL}/activities/follow"
-            f"/{follower.id}/{timezone.now().timestamp()}"
+            f"{settings.AP_BASE_URL}/activities/follow/{follower.id}/{timezone.now().timestamp()}"
         ),
         "type": "Follow",
         "actor": follower.actor_url,

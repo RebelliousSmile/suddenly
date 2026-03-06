@@ -26,9 +26,7 @@ class ProfileView(DetailView):
     def get_context_data(self, **kwargs: object) -> dict:
         """Pass the user's public games, paginated to the template."""
         context = super().get_context_data(**kwargs)
-        context["games"] = (
-            self.object.games.filter(is_public=True).order_by("-updated_at")[:10]
-        )
+        context["games"] = self.object.games.filter(is_public=True).order_by("-updated_at")[:10]
         return context
 
 

@@ -97,6 +97,7 @@ class ReportViewSet(viewsets.ModelViewSet):
         if self.request.user.is_authenticated:
             # Include user's drafts
             from django.db import models
+
             return queryset.filter(
                 models.Q(status="published") | models.Q(author=self.request.user)
             ).select_related("author", "game")
@@ -122,14 +123,12 @@ class ReportViewSet(viewsets.ModelViewSet):
 
         if report.author != request.user:
             return Response(
-                {"error": "Only the author can publish"},
-                status=status.HTTP_403_FORBIDDEN
+                {"error": "Only the author can publish"}, status=status.HTTP_403_FORBIDDEN
             )
 
         if report.status == "published":
             return Response(
-                {"error": "Report is already published"},
-                status=status.HTTP_400_BAD_REQUEST
+                {"error": "Report is already published"}, status=status.HTTP_400_BAD_REQUEST
             )
 
         # Process cast entries
@@ -143,15 +142,13 @@ class ReportViewSet(viewsets.ModelViewSet):
                     description=cast_entry.new_character_description,
                     status="npc",
                     creator=request.user,
-                    origin_game=report.game
+                    origin_game=report.game,
                 )
 
             # Create appearance
             if character:
                 CharacterAppearance.objects.get_or_create(
-                    character=character,
-                    report=report,
-                    defaults={"role": cast_entry.role}
+                    character=character, report=report, defaults={"role": cast_entry.role}
                 )
 
         # Publish
@@ -182,8 +179,7 @@ class ReportViewSet(viewsets.ModelViewSet):
         # POST - add to cast
         if report.author != request.user:
             return Response(
-                {"error": "Only the author can modify cast"},
-                status=status.HTTP_403_FORBIDDEN
+                {"error": "Only the author can modify cast"}, status=status.HTTP_403_FORBIDDEN
             )
 
         serializer = ReportCastSerializer(data=request.data)

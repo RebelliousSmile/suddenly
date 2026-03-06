@@ -21,7 +21,7 @@ class TestGameAPI:
             "title": "New Game",
             "description": "A new game",
             "game_system": "D&D 5e",
-            "is_public": True
+            "is_public": True,
         }
         response = authenticated_client.post("/api/games/", data)
         assert response.status_code == status.HTTP_201_CREATED
@@ -55,21 +55,12 @@ class TestCharacterAPI:
     def test_claim_character(self, authenticated_client, user, character, pc_character, game):
         # Create another user's NPC
         other_npc = Character.objects.create(
-            name="Other NPC",
-            status=CharacterStatus.NPC,
-            creator=user,
-            origin_game=game
+            name="Other NPC", status=CharacterStatus.NPC, creator=user, origin_game=game
         )
 
-        data = {
-            "proposed_character": str(pc_character.id),
-            "message": "This was my PC!"
-        }
+        data = {"proposed_character": str(pc_character.id), "message": "This was my PC!"}
 
-        response = authenticated_client.post(
-            f"/api/characters/{other_npc.id}/claim/",
-            data
-        )
+        response = authenticated_client.post(f"/api/characters/{other_npc.id}/claim/", data)
 
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data["type"] == "claim"
@@ -77,10 +68,7 @@ class TestCharacterAPI:
     def test_adopt_character(self, authenticated_client, character):
         data = {"message": "I want to adopt this NPC"}
 
-        response = authenticated_client.post(
-            f"/api/characters/{character.id}/adopt/",
-            data
-        )
+        response = authenticated_client.post(f"/api/characters/{character.id}/adopt/", data)
 
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data["type"] == "adopt"
@@ -88,10 +76,7 @@ class TestCharacterAPI:
     def test_fork_character(self, authenticated_client, character):
         data = {"message": "Creating a related character"}
 
-        response = authenticated_client.post(
-            f"/api/characters/{character.id}/fork/",
-            data
-        )
+        response = authenticated_client.post(f"/api/characters/{character.id}/fork/", data)
 
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data["type"] == "fork"
@@ -99,10 +84,7 @@ class TestCharacterAPI:
     def test_cannot_claim_unavailable_character(self, authenticated_client, pc_character):
         data = {"message": "Trying to claim a PC"}
 
-        response = authenticated_client.post(
-            f"/api/characters/{pc_character.id}/adopt/",
-            data
-        )
+        response = authenticated_client.post(f"/api/characters/{pc_character.id}/adopt/", data)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
@@ -116,15 +98,14 @@ class TestLinkRequestAPI:
             type="adopt",
             requester=other_user,
             target_character=character,
-            message="I want to adopt"
+            message="I want to adopt",
         )
 
     def test_accept_link_request(self, api_client, user, link_request):
         api_client.force_authenticate(user=user)
 
         response = api_client.post(
-            f"/api/link-requests/{link_request.id}/accept/",
-            {"message": "Approved!"}
+            f"/api/link-requests/{link_request.id}/accept/", {"message": "Approved!"}
         )
 
         assert response.status_code == status.HTTP_200_OK
@@ -134,8 +115,7 @@ class TestLinkRequestAPI:
         api_client.force_authenticate(user=user)
 
         response = api_client.post(
-            f"/api/link-requests/{link_request.id}/reject/",
-            {"message": "Sorry, not now"}
+            f"/api/link-requests/{link_request.id}/reject/", {"message": "Sorry, not now"}
         )
 
         assert response.status_code == status.HTTP_200_OK
@@ -145,9 +125,7 @@ class TestLinkRequestAPI:
         # other_user is the requester, not the creator
         api_client.force_authenticate(user=other_user)
 
-        response = api_client.post(
-            f"/api/link-requests/{link_request.id}/accept/"
-        )
+        response = api_client.post(f"/api/link-requests/{link_request.id}/accept/")
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -156,11 +134,7 @@ class TestReportAPI:
     """Tests for Report API endpoints."""
 
     def test_create_draft_report(self, authenticated_client, game):
-        data = {
-            "title": "New Report",
-            "content": "Session content here",
-            "game": str(game.id)
-        }
+        data = {"title": "New Report", "content": "Session content here", "game": str(game.id)}
 
         response = authenticated_client.post("/api/reports/", data)
 
@@ -168,9 +142,7 @@ class TestReportAPI:
         assert response.data["status"] == "draft"
 
     def test_publish_report(self, authenticated_client, report):
-        response = authenticated_client.post(
-            f"/api/reports/{report.id}/publish/"
-        )
+        response = authenticated_client.post(f"/api/reports/{report.id}/publish/")
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data["status"] == "published"
@@ -180,9 +152,7 @@ class TestWebFinger:
     """Tests for WebFinger endpoint."""
 
     def test_webfinger_user(self, api_client, user):
-        response = api_client.get(
-            f"/.well-known/webfinger?resource=acct:{user.username}@localhost"
-        )
+        response = api_client.get(f"/.well-known/webfinger?resource=acct:{user.username}@localhost")
 
         # Should return 200 or appropriate error based on domain config
         assert response.status_code in [status.HTTP_200_OK, status.HTTP_400_BAD_REQUEST]

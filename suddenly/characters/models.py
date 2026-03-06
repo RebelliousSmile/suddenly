@@ -15,6 +15,7 @@ from suddenly.games.models import Game, Report
 
 class CharacterStatus(models.TextChoices):
     """Status of a character."""
+
     NPC = "npc", "PNJ"
     PC = "pc", "PJ"
     CLAIMED = "claimed", "Réclamé"
@@ -37,9 +38,7 @@ class Character(models.Model):
 
     # Status
     status = models.CharField(
-        max_length=20,
-        choices=CharacterStatus.choices,
-        default=CharacterStatus.NPC
+        max_length=20, choices=CharacterStatus.choices, default=CharacterStatus.NPC
     )
 
     # Ownership
@@ -49,13 +48,13 @@ class Character(models.Model):
         null=True,
         blank=True,
         related_name="owned_characters",
-        help_text="Current owner (null for unclaimed NPCs)"
+        help_text="Current owner (null for unclaimed NPCs)",
     )
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="created_characters",
-        help_text="Who created/mentioned this character first"
+        help_text="Who created/mentioned this character first",
     )
 
     # Origin
@@ -63,7 +62,7 @@ class Character(models.Model):
         Game,
         on_delete=models.CASCADE,
         related_name="characters",
-        help_text="Game where this character was first mentioned"
+        help_text="Game where this character was first mentioned",
     )
 
     # Lineage (for forks)
@@ -73,7 +72,7 @@ class Character(models.Model):
         null=True,
         blank=True,
         related_name="forks",
-        help_text="Parent character if this is a fork"
+        help_text="Parent character if this is a fork",
     )
 
     # External character sheet
@@ -122,6 +121,7 @@ class Character(models.Model):
 
 class QuoteVisibility(models.TextChoices):
     """Visibility levels for quotes."""
+
     EPHEMERAL = "ephemeral", "Éphémère"
     PRIVATE = "private", "Privée"
     PUBLIC = "public", "Publique"
@@ -139,38 +139,32 @@ class Quote(models.Model):
     context = models.TextField(blank=True, help_text="Situation when this was said")
 
     # Relations
-    character = models.ForeignKey(
-        Character,
-        on_delete=models.CASCADE,
-        related_name="quotes"
-    )
+    character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name="quotes")
     report = models.ForeignKey(
         Report,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name="quotes",
-        help_text="Source report if any"
+        help_text="Source report if any",
     )
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="saved_quotes",
-        help_text="Who recorded this quote"
+        help_text="Who recorded this quote",
     )
 
     # Visibility
     visibility = models.CharField(
-        max_length=20,
-        choices=QuoteVisibility.choices,
-        default=QuoteVisibility.PUBLIC
+        max_length=20, choices=QuoteVisibility.choices, default=QuoteVisibility.PUBLIC
     )
 
     # Ephemeral quotes expiration
     expires_at = models.DateTimeField(
         blank=True,
         null=True,
-        help_text="When this quote should disappear (for EPHEMERAL visibility)"
+        help_text="When this quote should disappear (for EPHEMERAL visibility)",
     )
 
     # ActivityPub
@@ -195,6 +189,7 @@ class Quote(models.Model):
     def is_expired(self):
         """Check if ephemeral quote has expired."""
         from django.utils import timezone
+
         if self.visibility != QuoteVisibility.EPHEMERAL:
             return False
         if not self.expires_at:
@@ -204,6 +199,7 @@ class Quote(models.Model):
 
 class AppearanceRole(models.TextChoices):
     """Role of a character in a report."""
+
     MAIN = "main", "Principal"
     SUPPORTING = "supporting", "Secondaire"
     MENTIONED = "mentioned", "Mentionné"
@@ -216,21 +212,13 @@ class CharacterAppearance(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    character = models.ForeignKey(
-        Character,
-        on_delete=models.CASCADE,
-        related_name="appearances"
-    )
+    character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name="appearances")
     report = models.ForeignKey(
-        Report,
-        on_delete=models.CASCADE,
-        related_name="character_appearances"
+        Report, on_delete=models.CASCADE, related_name="character_appearances"
     )
 
     role = models.CharField(
-        max_length=20,
-        choices=AppearanceRole.choices,
-        default=AppearanceRole.MENTIONED
+        max_length=20, choices=AppearanceRole.choices, default=AppearanceRole.MENTIONED
     )
     context = models.TextField(blank=True, help_text="Description of their role in this scene")
 
@@ -250,6 +238,7 @@ class CharacterAppearance(models.Model):
 
 class LinkType(models.TextChoices):
     """Types of links between characters."""
+
     CLAIM = "claim", "Claim (rétcon)"
     ADOPT = "adopt", "Adoption"
     FORK = "fork", "Fork (dérivation)"
@@ -257,6 +246,7 @@ class LinkType(models.TextChoices):
 
 class LinkRequestStatus(models.TextChoices):
     """Status of a link request."""
+
     PENDING = "pending", "En attente"
     ACCEPTED = "accepted", "Acceptée"
     REJECTED = "rejected", "Refusée"
@@ -275,15 +265,13 @@ class LinkRequest(models.Model):
 
     # Actors
     requester = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="link_requests_made"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="link_requests_made"
     )
     target_character = models.ForeignKey(
         Character,
         on_delete=models.CASCADE,
         related_name="link_requests_received",
-        help_text="The NPC being claimed/adopted/forked"
+        help_text="The NPC being claimed/adopted/forked",
     )
     proposed_character = models.ForeignKey(
         Character,
@@ -291,14 +279,12 @@ class LinkRequest(models.Model):
         null=True,
         blank=True,
         related_name="link_requests_proposed",
-        help_text="For claims: the existing PC being proposed"
+        help_text="For claims: the existing PC being proposed",
     )
 
     # Status
     status = models.CharField(
-        max_length=20,
-        choices=LinkRequestStatus.choices,
-        default=LinkRequestStatus.PENDING
+        max_length=20, choices=LinkRequestStatus.choices, default=LinkRequestStatus.PENDING
     )
 
     # Messages
@@ -331,23 +317,17 @@ class CharacterLink(models.Model):
     type = models.CharField(max_length=20, choices=LinkType.choices)
 
     source = models.ForeignKey(
-        Character,
-        on_delete=models.CASCADE,
-        related_name="links_as_source",
-        help_text="The PC"
+        Character, on_delete=models.CASCADE, related_name="links_as_source", help_text="The PC"
     )
     target = models.ForeignKey(
         Character,
         on_delete=models.CASCADE,
         related_name="links_as_target",
-        help_text="The former NPC"
+        help_text="The former NPC",
     )
 
     link_request = models.OneToOneField(
-        LinkRequest,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name="resulting_link"
+        LinkRequest, on_delete=models.SET_NULL, null=True, related_name="resulting_link"
     )
 
     description = models.TextField(blank=True, help_text="Nature of the link")
@@ -364,6 +344,7 @@ class CharacterLink(models.Model):
 
 class SharedSequenceStatus(models.TextChoices):
     """Status of a shared sequence."""
+
     DRAFT = "draft", "Brouillon"
     PUBLISHED = "published", "Publié"
 
@@ -376,18 +357,14 @@ class SharedSequence(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     link = models.OneToOneField(
-        CharacterLink,
-        on_delete=models.CASCADE,
-        related_name="shared_sequence"
+        CharacterLink, on_delete=models.CASCADE, related_name="shared_sequence"
     )
 
     title = models.CharField(max_length=200, blank=True)
     content = models.TextField(help_text="Markdown content")
 
     status = models.CharField(
-        max_length=20,
-        choices=SharedSequenceStatus.choices,
-        default=SharedSequenceStatus.DRAFT
+        max_length=20, choices=SharedSequenceStatus.choices, default=SharedSequenceStatus.DRAFT
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -408,9 +385,7 @@ class Follow(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     follower = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="following"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="following"
     )
 
     # Generic foreign key to support following Users, Characters, or Games
@@ -420,12 +395,10 @@ class Follow(models.Model):
     content_type = models.ForeignKey(
         ContentType,
         on_delete=models.CASCADE,
-        limit_choices_to={
-            'model__in': ('user', 'character', 'game')
-        }
+        limit_choices_to={"model__in": ("user", "character", "game")},
     )
     object_id = models.UUIDField()
-    target = GenericForeignKey('content_type', 'object_id')
+    target = GenericForeignKey("content_type", "object_id")
 
     # ActivityPub
     remote = models.BooleanField(default=False)

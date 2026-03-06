@@ -23,9 +23,7 @@ class Game(models.Model):
 
     # Ownership
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="games"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="games"
     )
 
     # Visibility
@@ -86,16 +84,12 @@ class Report(models.Model):
     # Relations
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="reports")
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="reports"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reports"
     )
 
     # Status
     status = models.CharField(
-        max_length=20,
-        choices=ReportStatus.choices,
-        default=ReportStatus.DRAFT
+        max_length=20, choices=ReportStatus.choices, default=ReportStatus.DRAFT
     )
     published_at = models.DateTimeField(blank=True, null=True)
 
@@ -124,6 +118,7 @@ class Report(models.Model):
 
 class CastRole(models.TextChoices):
     """Role of a character in the cast."""
+
     MAIN = "main", "Principal"
     SUPPORTING = "supporting", "Secondaire"
     MENTIONED = "mentioned", "Mentionné"
@@ -142,11 +137,7 @@ class ReportCast(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    report = models.ForeignKey(
-        Report,
-        on_delete=models.CASCADE,
-        related_name="cast"
-    )
+    report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name="cast")
 
     # Either existing character OR new character to create
     character = models.ForeignKey(
@@ -155,25 +146,16 @@ class ReportCast(models.Model):
         null=True,
         blank=True,
         related_name="cast_entries",
-        help_text="Existing character (null if creating new)"
+        help_text="Existing character (null if creating new)",
     )
 
     # For creating new NPCs on the fly
     new_character_name = models.CharField(
-        max_length=100,
-        blank=True,
-        help_text="Name for new NPC (if character is null)"
+        max_length=100, blank=True, help_text="Name for new NPC (if character is null)"
     )
-    new_character_description = models.TextField(
-        blank=True,
-        help_text="Description for new NPC"
-    )
+    new_character_description = models.TextField(blank=True, help_text="Description for new NPC")
 
-    role = models.CharField(
-        max_length=20,
-        choices=CastRole.choices,
-        default=CastRole.MENTIONED
-    )
+    role = models.CharField(max_length=20, choices=CastRole.choices, default=CastRole.MENTIONED)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
