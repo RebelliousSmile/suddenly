@@ -4,10 +4,14 @@ ActivityPub serializers for Suddenly.
 Converts Django models to ActivityPub JSON-LD format.
 """
 
+from __future__ import annotations
+
+from typing import Any
+
 from django.conf import settings
 
 # ActivityPub context
-AP_CONTEXT = [
+AP_CONTEXT: list[str | dict[str, str]] = [
     "https://www.w3.org/ns/activitystreams",
     "https://w3id.org/security/v1",
     {
@@ -22,11 +26,11 @@ AP_CONTEXT = [
 ]
 
 
-def serialize_user(user):
+def serialize_user(user: Any) -> dict[str, Any]:
     """Serialize a User to ActivityPub Person."""
-    actor_url = user.actor_url
+    actor_url: str = user.actor_url
 
-    data = {
+    data: dict[str, Any] = {
         "@context": AP_CONTEXT,
         "type": "Person",
         "id": actor_url,
@@ -60,11 +64,11 @@ def serialize_user(user):
     return data
 
 
-def serialize_game(game):
+def serialize_game(game: Any) -> dict[str, Any]:
     """Serialize a Game to ActivityPub Group/Service."""
-    actor_url = game.actor_url
+    actor_url: str = game.actor_url
 
-    data = {
+    data: dict[str, Any] = {
         "@context": AP_CONTEXT,
         "type": "Group",
         "id": actor_url,
@@ -73,7 +77,7 @@ def serialize_game(game):
         "inbox": f"{actor_url}/inbox",
         "outbox": f"{actor_url}/outbox",
         "followers": f"{actor_url}/followers",
-        "url": f"https://{settings.DOMAIN}/games/{game.id}",
+        "url": f"https://{settings.DOMAIN}/games/{game.pk}",
         "published": game.created_at.isoformat(),
     }
 
@@ -93,11 +97,11 @@ def serialize_game(game):
     return data
 
 
-def serialize_character(character):
+def serialize_character(character: Any) -> dict[str, Any]:
     """Serialize a Character to ActivityPub Actor."""
-    actor_url = character.actor_url
+    actor_url: str = character.actor_url
 
-    data = {
+    data: dict[str, Any] = {
         "@context": AP_CONTEXT,
         "type": "Person",  # Characters are treated as Persons in AP
         "id": actor_url,
@@ -105,7 +109,7 @@ def serialize_character(character):
         "inbox": f"{actor_url}/inbox",
         "outbox": f"{actor_url}/outbox",
         "followers": f"{actor_url}/followers",
-        "url": f"https://{settings.DOMAIN}/characters/{character.id}",
+        "url": f"https://{settings.DOMAIN}/characters/{character.pk}",
         "published": character.created_at.isoformat(),
         "status": character.status,
         "attributedTo": character.origin_game.actor_url,
@@ -143,11 +147,11 @@ def serialize_character(character):
     return data
 
 
-def serialize_report(report):
+def serialize_report(report: Any) -> dict[str, Any]:
     """Serialize a Report to ActivityPub Note/Article."""
-    report_url = f"https://{settings.DOMAIN}/reports/{report.id}"
+    report_url = f"https://{settings.DOMAIN}/reports/{report.pk}"
 
-    data = {
+    data: dict[str, Any] = {
         "@context": AP_CONTEXT,
         "type": "Article",
         "id": report.ap_id or report_url,
@@ -162,7 +166,7 @@ def serialize_report(report):
         data["name"] = report.title
 
     # Mentions
-    mentions = []
+    mentions: list[dict[str, str]] = []
     for appearance in report.character_appearances.select_related("character"):
         mentions.append(
             {
@@ -178,11 +182,11 @@ def serialize_report(report):
     return data
 
 
-def serialize_quote(quote):
+def serialize_quote(quote: Any) -> dict[str, Any]:
     """Serialize a Quote to ActivityPub Note."""
-    quote_url = f"https://{settings.DOMAIN}/quotes/{quote.id}"
+    quote_url = f"https://{settings.DOMAIN}/quotes/{quote.pk}"
 
-    data = {
+    data: dict[str, Any] = {
         "@context": AP_CONTEXT,
         "type": "Note",
         "id": quote.ap_id or quote_url,
@@ -197,15 +201,15 @@ def serialize_quote(quote):
 
     if quote.report:
         data["inReplyTo"] = (
-            quote.report.ap_id or f"https://{settings.DOMAIN}/reports/{quote.report.id}"
+            quote.report.ap_id or f"https://{settings.DOMAIN}/reports/{quote.report.pk}"
         )
 
     return data
 
 
-def serialize_link_request(link_request):
+def serialize_link_request(link_request: Any) -> dict[str, Any]:
     """Serialize a LinkRequest to ActivityPub Offer."""
-    request_url = f"https://{settings.DOMAIN}/link-requests/{link_request.id}"
+    request_url = f"https://{settings.DOMAIN}/link-requests/{link_request.pk}"
 
     # Determine the object type based on link type
     object_type = {
@@ -214,21 +218,23 @@ def serialize_link_request(link_request):
         "fork": "suddenly:Fork",
     }.get(link_request.type, "suddenly:Link")
 
-    data = {
+    obj_data: dict[str, Any] = {
+        "type": object_type,
+        "content": link_request.message,
+    }
+
+    data: dict[str, Any] = {
         "@context": AP_CONTEXT,
         "type": "Offer",
         "id": request_url,
         "actor": link_request.requester.actor_url,
         "target": link_request.target_character.actor_url,
-        "object": {
-            "type": object_type,
-            "content": link_request.message,
-        },
+        "object": obj_data,
         "published": link_request.created_at.isoformat(),
     }
 
     if link_request.proposed_character:
-        data["object"]["proposedCharacter"] = link_request.proposed_character.actor_url
+        obj_data["proposedCharacter"] = link_request.proposed_character.actor_url
 
     return data
 
@@ -236,9 +242,14 @@ def serialize_link_request(link_request):
 # Activity serializers
 
 
-def create_activity(activity_type, actor, obj, target=None):
+def create_activity(
+    activity_type: str,
+    actor: Any,
+    obj: dict[str, Any] | str,
+    target: str | None = None,
+) -> dict[str, Any]:
     """Create an ActivityPub activity."""
-    activity = {
+    activity: dict[str, Any] = {
         "@context": AP_CONTEXT,
         "type": activity_type,
         "actor": actor.actor_url if hasattr(actor, "actor_url") else actor,
@@ -251,36 +262,36 @@ def create_activity(activity_type, actor, obj, target=None):
     return activity
 
 
-def create_create_activity(actor, obj):
+def create_create_activity(actor: Any, obj: dict[str, Any] | str) -> dict[str, Any]:
     """Create a Create activity."""
     return create_activity("Create", actor, obj)
 
 
-def create_update_activity(actor, obj):
+def create_update_activity(actor: Any, obj: dict[str, Any] | str) -> dict[str, Any]:
     """Create an Update activity."""
     return create_activity("Update", actor, obj)
 
 
-def create_delete_activity(actor, obj_id):
+def create_delete_activity(actor: Any, obj_id: str) -> dict[str, Any]:
     """Create a Delete activity."""
     return create_activity("Delete", actor, {"type": "Tombstone", "id": obj_id})
 
 
-def create_follow_activity(actor, target):
+def create_follow_activity(actor: Any, target: str) -> dict[str, Any]:
     """Create a Follow activity."""
     return create_activity("Follow", actor, target)
 
 
-def create_accept_activity(actor, original_activity):
+def create_accept_activity(actor: Any, original_activity: dict[str, Any] | str) -> dict[str, Any]:
     """Create an Accept activity."""
     return create_activity("Accept", actor, original_activity)
 
 
-def create_reject_activity(actor, original_activity):
+def create_reject_activity(actor: Any, original_activity: dict[str, Any] | str) -> dict[str, Any]:
     """Create a Reject activity."""
     return create_activity("Reject", actor, original_activity)
 
 
-def create_offer_activity(actor, link_request):
+def create_offer_activity(actor: Any, link_request: Any) -> dict[str, Any]:
     """Create an Offer activity for link requests."""
     return serialize_link_request(link_request)

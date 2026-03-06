@@ -2,11 +2,21 @@
 ActivityPub views for federation discovery and actors.
 """
 
+from __future__ import annotations
+
 import json
 import re
+from typing import Any
 
 from django.conf import settings
-from django.http import HttpResponseBadRequest, HttpResponseNotFound, JsonResponse
+from django.http import (
+    HttpRequest,
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseNotFound,
+    HttpResponseRedirect,
+    JsonResponse,
+)
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
@@ -27,13 +37,13 @@ from .serializers import (
 # =================================================================
 
 
-def is_activitypub_request(request):
+def is_activitypub_request(request: HttpRequest) -> bool:
     """Check if request accepts ActivityPub content."""
     accept = request.headers.get("Accept", "")
     return "application/activity+json" in accept or "application/ld+json" in accept
 
 
-def activitypub_response(data, status=200):
+def activitypub_response(data: dict[str, Any], status: int = 200) -> JsonResponse:
     """Return an ActivityPub JSON-LD response."""
     return JsonResponse(data, content_type="application/activity+json", status=status)
 
@@ -44,7 +54,7 @@ def activitypub_response(data, status=200):
 
 
 @require_GET
-def webfinger(request):
+def webfinger(request: HttpRequest) -> HttpResponse:
     """
     WebFinger endpoint for discovering ActivityPub actors.
 
@@ -75,9 +85,10 @@ def webfinger(request):
 
     elif resource.startswith("https://"):
         actor_url = resource
-        user = User.objects.filter(ap_id=resource).first()
-        if not user:
+        found_user = User.objects.filter(ap_id=resource).first()
+        if not found_user:
             return JsonResponse({"error": "Actor not found"}, status=404)
+        user = found_user
     else:
         return HttpResponseBadRequest("Invalid resource format")
 
@@ -102,7 +113,7 @@ def webfinger(request):
 
 
 @require_GET
-def nodeinfo_index(request):
+def nodeinfo_index(request: HttpRequest) -> JsonResponse:
     """NodeInfo discovery endpoint."""
     return JsonResponse(
         {
@@ -117,7 +128,7 @@ def nodeinfo_index(request):
 
 
 @require_GET
-def nodeinfo(request):
+def nodeinfo(request: HttpRequest) -> JsonResponse:
     """NodeInfo 2.0 endpoint with instance metadata."""
     user_count = User.objects.filter(remote=False, is_active=True).count()
     game_count = Game.objects.filter(remote=False, is_public=True).count()
@@ -157,7 +168,7 @@ def nodeinfo(request):
 
 
 @require_GET
-def user_actor(request, username):
+def user_actor(request: HttpRequest, username: str) -> HttpResponse:
     """
     User actor endpoint.
 
@@ -173,14 +184,15 @@ def user_actor(request, username):
         # Redirect to profile page for browsers
         from django.shortcuts import redirect
 
-        return redirect(f"/@{username}")
+        response: HttpResponseRedirect = redirect(f"/@{username}")
+        return response
 
     return activitypub_response(serialize_user(user))
 
 
 @csrf_exempt
 @require_POST
-def user_inbox(request, username):
+def user_inbox(request: HttpRequest, username: str) -> HttpResponse:
     """
     User inbox endpoint for receiving activities.
 
@@ -208,7 +220,7 @@ def user_inbox(request, username):
 
 
 @require_GET
-def user_outbox(request, username):
+def user_outbox(request: HttpRequest, username: str) -> HttpResponse:
     """
     User outbox endpoint.
 
@@ -238,7 +250,7 @@ def user_outbox(request, username):
 
 
 @require_GET
-def user_followers(request, username):
+def user_followers(request: HttpRequest, username: str) -> HttpResponse:
     """User followers collection."""
     try:
         user = User.objects.get(username=username, remote=False)
@@ -271,7 +283,7 @@ def user_followers(request, username):
 
 
 @require_GET
-def game_actor(request, game_id):
+def game_actor(request: HttpRequest, game_id: str) -> HttpResponse:
     """Game actor endpoint."""
     try:
         game = Game.objects.get(id=game_id, remote=False, is_public=True)
@@ -281,14 +293,15 @@ def game_actor(request, game_id):
     if not is_activitypub_request(request):
         from django.shortcuts import redirect
 
-        return redirect(f"/games/{game_id}")
+        response: HttpResponseRedirect = redirect(f"/games/{game_id}")
+        return response
 
     return activitypub_response(serialize_game(game))
 
 
 @csrf_exempt
 @require_POST
-def game_inbox(request, game_id):
+def game_inbox(request: HttpRequest, game_id: str) -> HttpResponse:
     """Game inbox endpoint."""
     try:
         game = Game.objects.get(id=game_id, remote=False)
@@ -308,7 +321,7 @@ def game_inbox(request, game_id):
 
 
 @require_GET
-def game_outbox(request, game_id):
+def game_outbox(request: HttpRequest, game_id: str) -> HttpResponse:
     """Game outbox endpoint."""
     try:
         game = Game.objects.get(id=game_id, remote=False, is_public=True)
@@ -335,7 +348,7 @@ def game_outbox(request, game_id):
 
 
 @require_GET
-def character_actor(request, character_id):
+def character_actor(request: HttpRequest, character_id: str) -> HttpResponse:
     """Character actor endpoint."""
     try:
         character = Character.objects.get(id=character_id, remote=False)
@@ -345,14 +358,15 @@ def character_actor(request, character_id):
     if not is_activitypub_request(request):
         from django.shortcuts import redirect
 
-        return redirect(f"/characters/{character_id}")
+        response: HttpResponseRedirect = redirect(f"/characters/{character_id}")
+        return response
 
     return activitypub_response(serialize_character(character))
 
 
 @csrf_exempt
 @require_POST
-def character_inbox(request, character_id):
+def character_inbox(request: HttpRequest, character_id: str) -> HttpResponse:
     """Character inbox endpoint."""
     try:
         character = Character.objects.get(id=character_id, remote=False)
@@ -372,7 +386,7 @@ def character_inbox(request, character_id):
 
 
 @require_GET
-def character_outbox(request, character_id):
+def character_outbox(request: HttpRequest, character_id: str) -> HttpResponse:
     """Character outbox endpoint - quotes and appearances."""
     try:
         character = Character.objects.get(id=character_id, remote=False)

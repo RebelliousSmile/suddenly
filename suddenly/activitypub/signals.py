@@ -4,13 +4,17 @@ Django signals for triggering ActivityPub activities.
 These signals automatically federate content when it's created/modified locally.
 """
 
+from __future__ import annotations
+
+from typing import Any
+
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 
 
 @receiver(post_save, sender="games.Report")
-def report_post_save(sender, instance, created, **kwargs):
+def report_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: Any) -> None:
     """
     When a report is published, broadcast it via ActivityPub.
     """
@@ -27,7 +31,7 @@ def report_post_save(sender, instance, created, **kwargs):
 
 
 @receiver(pre_save, sender="games.Report")
-def report_pre_save(sender, instance, **kwargs):
+def report_pre_save(sender: type[Any], instance: Any, **kwargs: Any) -> None:
     """
     Set published_at when status changes to published.
     """
@@ -36,7 +40,7 @@ def report_pre_save(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender="characters.Character")
-def character_post_save(sender, instance, created, **kwargs):
+def character_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: Any) -> None:
     """
     When a new character is created locally, broadcast it.
     """
@@ -47,7 +51,7 @@ def character_post_save(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender="characters.Quote")
-def quote_post_save(sender, instance, created, **kwargs):
+def quote_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: Any) -> None:
     """
     When a public quote is created, broadcast it.
     """
@@ -59,7 +63,7 @@ def quote_post_save(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender="characters.LinkRequest")
-def link_request_post_save(sender, instance, created, **kwargs):
+def link_request_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: Any) -> None:
     """
     When a link request is created, send Offer activity.
     When it's accepted/rejected, send corresponding activity.
@@ -83,49 +87,56 @@ def link_request_post_save(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender="characters.Follow")
-def follow_post_save(sender, instance, created, **kwargs):
+def follow_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: Any) -> None:
     """
     When a follow relationship is created, send Follow activity.
     """
+    from django.contrib.contenttypes.models import ContentType
+
     from suddenly.activitypub.activities import build_follow_activity
     from suddenly.activitypub.tasks import deliver_activity
-    from suddenly.characters.models import Character, FollowTargetType
+    from suddenly.characters.models import Character
     from suddenly.games.models import Game
     from suddenly.users.models import User
 
     if not created:
         return
 
-    # Get the target actor
-    target = None
-    if instance.target_type == FollowTargetType.USER:
+    # Get the target actor via ContentType
+    target: User | Game | Character | None = None
+    user_ct = ContentType.objects.get_for_model(User)
+    game_ct = ContentType.objects.get_for_model(Game)
+    character_ct = ContentType.objects.get_for_model(Character)
+
+    if instance.content_type_id == user_ct.pk:
         try:
-            target = User.objects.get(id=instance.target_id)
+            target = User.objects.get(id=instance.object_id)
         except User.DoesNotExist:
             return
-    elif instance.target_type == FollowTargetType.GAME:
+    elif instance.content_type_id == game_ct.pk:
         try:
-            target = Game.objects.get(id=instance.target_id)
+            target = Game.objects.get(id=instance.object_id)
         except Game.DoesNotExist:
             return
-    elif instance.target_type == FollowTargetType.CHARACTER:
+    elif instance.content_type_id == character_ct.pk:
         try:
-            target = Character.objects.get(id=instance.target_id)
+            target = Character.objects.get(id=instance.object_id)
         except Character.DoesNotExist:
             return
 
     # Only send if target is remote
     if target and target.remote and hasattr(target, "inbox_url") and target.inbox_url:
-        activity = build_follow_activity(instance.follower, target.actor_url)
-        deliver_activity.delay(
-            activity=activity,
-            inbox_url=target.inbox_url,
-            sender_id=str(instance.follower.id),
-        )
+        target_actor_url = target.actor_url
+        if target_actor_url:
+            activity = build_follow_activity(instance.follower, target_actor_url)
+            deliver_activity.delay(
+                activity=activity,
+                inbox_url=target.inbox_url,
+            )
 
 
 @receiver(post_save, sender="users.User")
-def user_post_save(sender, instance, created, **kwargs):
+def user_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: Any) -> None:
     """
     Generate ActivityPub keys for new local users.
     """
@@ -141,7 +152,7 @@ def user_post_save(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender="games.Game")
-def game_post_save(sender, instance, created, **kwargs):
+def game_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: Any) -> None:
     """
     Generate ActivityPub keys for new local games.
     """

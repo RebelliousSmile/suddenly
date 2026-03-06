@@ -1,6 +1,12 @@
+# mypy: disable-error-code="no-untyped-call,type-arg,attr-defined"
 """
 Factory Boy factories for Suddenly test suite.
+
+factory_boy is an untyped library — mypy strict errors are suppressed
+for this module only.
 """
+
+from __future__ import annotations
 
 import factory
 from django.contrib.auth import get_user_model

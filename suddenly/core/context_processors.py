@@ -5,7 +5,7 @@ Context processors for Suddenly templates.
 from django.conf import settings
 
 
-def site_settings(request):
+def site_settings(request: object) -> dict[str, str]:
     """Add site settings to template context."""
     return {
         "SITE_NAME": getattr(settings, "SITE_NAME", "Suddenly"),

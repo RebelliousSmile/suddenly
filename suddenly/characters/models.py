@@ -5,6 +5,8 @@ Characters are the core of Suddenly - they can be NPCs that become PCs,
 get claimed, adopted, or forked by other players.
 """
 
+from __future__ import annotations
+
 import uuid
 
 from django.conf import settings
@@ -98,11 +100,11 @@ class Character(models.Model):
             models.Index(fields=["owner"]),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name} ({self.get_status_display()})"
 
     @property
-    def is_available(self):
+    def is_available(self) -> bool:
         """Is this character available for claim/adopt/fork?"""
         return self.status == CharacterStatus.NPC
 
@@ -182,11 +184,11 @@ class Quote(models.Model):
             models.Index(fields=["visibility", "expires_at"]),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'"{self.content[:50]}..." - {self.character.name}'
 
     @property
-    def is_expired(self):
+    def is_expired(self) -> bool:
         """Check if ephemeral quote has expired."""
         from django.utils import timezone
 
@@ -232,7 +234,7 @@ class CharacterAppearance(models.Model):
             models.Index(fields=["character", "report"]),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.character.name} in {self.report}"
 
 
@@ -303,7 +305,7 @@ class LinkRequest(models.Model):
             models.Index(fields=["requester", "status"]),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.get_type_display()}: {self.requester} → {self.target_character}"
 
 
@@ -338,7 +340,7 @@ class CharacterLink(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.source.name} ←{self.get_type_display()}→ {self.target.name}"
 
 
@@ -370,7 +372,7 @@ class SharedSequence(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title or f"Sequence for {self.link}"
 
 
@@ -415,5 +417,5 @@ class Follow(models.Model):
             models.Index(fields=["follower"]),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.follower} follows {self.target}"

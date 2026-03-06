@@ -5,6 +5,8 @@ Implements draft-cavage-http-signatures for signing outgoing
 requests and verifying incoming ones.
 """
 
+from __future__ import annotations
+
 import base64
 import hashlib
 import logging
@@ -14,7 +16,9 @@ from urllib.parse import urlparse
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
 from django.conf import settings
+from django.http import HttpRequest
 
 logger = logging.getLogger(__name__)
 
@@ -51,11 +55,11 @@ def generate_key_pair() -> tuple[str, str]:
 def sign_request(
     method: str,
     url: str,
-    headers: dict,
-    body: dict | None = None,
+    headers: dict[str, str],
+    body: dict[str, object] | None = None,
     key_id: str | None = None,
     private_key_pem: str | None = None,
-) -> dict:
+) -> dict[str, str]:
     """
     Sign an outgoing HTTP request.
 
@@ -105,7 +109,7 @@ def sign_request(
         signed_headers.append("digest")
 
     # Build signing string
-    signing_parts = []
+    signing_parts: list[str] = []
     for header in signed_headers:
         if header == "(request-target)":
             signing_parts.append(f"(request-target): {method.lower()} {parsed.path}")
@@ -114,9 +118,14 @@ def sign_request(
 
     signing_string = "\n".join(signing_parts)
 
-    # Sign
-    private_key = serialization.load_pem_private_key(
-        private_key_pem.encode("utf-8"), password=None, backend=default_backend()
+    # Cast to RSAPrivateKey since we know we use RSA keys (DEC-018)
+    from typing import cast
+
+    private_key = cast(
+        RSAPrivateKey,
+        serialization.load_pem_private_key(
+            private_key_pem.encode("utf-8"), password=None, backend=default_backend()
+        ),
     )
 
     signature = private_key.sign(
@@ -161,7 +170,7 @@ def _fetch_public_key(actor_url: str) -> str | None:
         logger.warning("Failed to fetch actor %s: %s", actor_url, e)
         return None
 
-    pem = actor.get("publicKey", {}).get("publicKeyPem")
+    pem: str | None = actor.get("publicKey", {}).get("publicKeyPem")
     if not pem:
         logger.warning("No public key in actor %s", actor_url)
         return None
@@ -173,12 +182,13 @@ def _fetch_public_key(actor_url: str) -> str | None:
     return pem
 
 
-def _build_signing_string(request, signed_headers: list[str]) -> str:
+def _build_signing_string(request: HttpRequest, signed_headers: list[str]) -> str:
     """Build the signing string from request and header list."""
     parts: list[str] = []
     for header in signed_headers:
         if header == "(request-target)":
-            parts.append(f"(request-target): {request.method.lower()} {request.path}")
+            method = request.method or "GET"
+            parts.append(f"(request-target): {method.lower()} {request.path}")
         else:
             value = request.headers.get(header.title())
             if value:
@@ -189,9 +199,15 @@ def _build_signing_string(request, signed_headers: list[str]) -> str:
 def _verify_with_key(public_key_pem: str, signature_b64: str, signing_string: str) -> bool:
     """Verify a signature against a public key. Returns True if valid."""
     try:
-        public_key = serialization.load_pem_public_key(
-            public_key_pem.encode("utf-8"),
-            backend=default_backend(),
+        # Cast to RSAPublicKey since we only support RSA keys (DEC-018)
+        from typing import cast
+
+        public_key = cast(
+            RSAPublicKey,
+            serialization.load_pem_public_key(
+                public_key_pem.encode("utf-8"),
+                backend=default_backend(),
+            ),
         )
         public_key.verify(
             base64.b64decode(signature_b64),
@@ -204,7 +220,7 @@ def _verify_with_key(public_key_pem: str, signature_b64: str, signing_string: st
         return False
 
 
-def verify_signature(request) -> tuple[bool, str | None]:
+def verify_signature(request: HttpRequest) -> tuple[bool, str | None]:
     """
     Verify an incoming request's HTTP signature.
 
@@ -270,7 +286,7 @@ def verify_signature(request) -> tuple[bool, str | None]:
     return False, f"Verification failed for {actor_url}"
 
 
-def ensure_instance_keys():
+def ensure_instance_keys() -> None:
     """
     Ensure the instance has RSA keys for ActivityPub.
 
@@ -278,8 +294,8 @@ def ensure_instance_keys():
     """
     import os
 
-    private_path = settings.AP_PRIVATE_KEY_PATH
-    public_path = settings.AP_PUBLIC_KEY_PATH
+    private_path = str(settings.AP_PRIVATE_KEY_PATH)
+    public_path = str(settings.AP_PUBLIC_KEY_PATH)
 
     # Create keys directory
     os.makedirs(os.path.dirname(private_path), exist_ok=True)

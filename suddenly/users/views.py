@@ -11,7 +11,7 @@ from .forms import ProfileForm
 from .models import User
 
 
-class ProfileView(DetailView):
+class ProfileView(DetailView[User]):
     """Public profile view for a user."""
 
     model = User
@@ -23,14 +23,14 @@ class ProfileView(DetailView):
     def get_queryset(self) -> QuerySet[User]:
         return User.objects.filter(is_active=True)
 
-    def get_context_data(self, **kwargs: object) -> dict:
+    def get_context_data(self, **kwargs: object) -> dict[str, object]:
         """Pass the user's public games, paginated to the template."""
         context = super().get_context_data(**kwargs)
         context["games"] = self.object.games.filter(is_public=True).order_by("-updated_at")[:10]
         return context
 
 
-class ProfileEditView(LoginRequiredMixin, UpdateView):
+class ProfileEditView(LoginRequiredMixin, UpdateView[User, ProfileForm]):
     """Edit view for the authenticated user's own profile."""
 
     model = User
@@ -43,7 +43,7 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
             return redirect("users:profile_edit", username=request.user.username)
         return super().dispatch(request, *args, **kwargs)  # type: ignore[return-value]
 
-    def get_object(self) -> User:
+    def get_object(self, queryset: QuerySet[User] | None = None) -> User:
         return self.request.user  # type: ignore[return-value]
 
     def get_success_url(self) -> str:

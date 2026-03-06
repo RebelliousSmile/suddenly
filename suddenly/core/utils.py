@@ -29,7 +29,7 @@ def generate_unique_slug(
     slug = base_slug
     counter = 1
 
-    queryset = model_class.objects.all()
+    queryset = model_class._default_manager.all()
     if instance and instance.pk:
         queryset = queryset.exclude(pk=instance.pk)
 

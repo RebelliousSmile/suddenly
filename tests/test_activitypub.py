@@ -2,9 +2,14 @@
 Tests for ActivityPub functionality.
 """
 
+from __future__ import annotations
+
 import json
+from typing import Any, cast
 
 import pytest
+from django.http import HttpRequest
+from django.test import Client, RequestFactory
 
 from suddenly.activitypub.serializers import (
     serialize_character,
@@ -15,13 +20,14 @@ from suddenly.activitypub.serializers import (
 )
 from suddenly.activitypub.signatures import generate_key_pair
 from suddenly.characters.models import Character, CharacterStatus, Quote, QuoteVisibility
-from suddenly.games.models import Report
+from suddenly.games.models import Game, Report
+from suddenly.users.models import User
 
 
 class TestWebFinger:
     """Tests for WebFinger endpoint."""
 
-    def test_webfinger_valid_user(self, client, user, settings):
+    def test_webfinger_valid_user(self, client: Client, user: User, settings: Any) -> None:
         settings.DOMAIN = "test.social"
 
         response = client.get(
@@ -39,21 +45,21 @@ class TestWebFinger:
         self_link = next(link for link in data["links"] if link["rel"] == "self")
         assert "application/activity+json" in self_link["type"]
 
-    def test_webfinger_unknown_user(self, client, settings):
+    def test_webfinger_unknown_user(self, client: Client, settings: Any) -> None:
         settings.DOMAIN = "test.social"
 
         response = client.get("/.well-known/webfinger", {"resource": "acct:nobody@test.social"})
 
         assert response.status_code == 404
 
-    def test_webfinger_wrong_domain(self, client, settings):
+    def test_webfinger_wrong_domain(self, client: Client, settings: Any) -> None:
         settings.DOMAIN = "test.social"
 
         response = client.get("/.well-known/webfinger", {"resource": "acct:user@other.social"})
 
         assert response.status_code == 404
 
-    def test_webfinger_missing_resource(self, client):
+    def test_webfinger_missing_resource(self, client: Client) -> None:
         response = client.get("/.well-known/webfinger")
         assert response.status_code == 400
 
@@ -61,7 +67,7 @@ class TestWebFinger:
 class TestNodeInfo:
     """Tests for NodeInfo endpoints."""
 
-    def test_nodeinfo_index(self, client, settings):
+    def test_nodeinfo_index(self, client: Client, settings: Any) -> None:
         settings.DOMAIN = "test.social"
 
         response = client.get("/.well-known/nodeinfo")
@@ -71,7 +77,7 @@ class TestNodeInfo:
         assert "links" in data
         assert any("nodeinfo" in link["rel"] for link in data["links"])
 
-    def test_nodeinfo_2_0(self, client, db, user, settings):
+    def test_nodeinfo_2_0(self, client: Client, db: Any, user: User, settings: Any) -> None:
         settings.DOMAIN = "test.social"
         settings.SITE_NAME = "Test Suddenly"
 
@@ -89,7 +95,7 @@ class TestNodeInfo:
 class TestUserActor:
     """Tests for User actor endpoints."""
 
-    def test_user_actor_json(self, client, user, settings):
+    def test_user_actor_json(self, client: Client, user: User, settings: Any) -> None:
         settings.DOMAIN = "test.social"
 
         response = client.get(f"/users/{user.username}", HTTP_ACCEPT="application/activity+json")
@@ -103,13 +109,13 @@ class TestUserActor:
         assert "inbox" in data
         assert "outbox" in data
 
-    def test_user_actor_html_redirect(self, client, user):
+    def test_user_actor_html_redirect(self, client: Client, user: User) -> None:
         response = client.get(f"/users/{user.username}", HTTP_ACCEPT="text/html")
 
         # Should redirect to profile page
         assert response.status_code == 302
 
-    def test_user_outbox(self, client, user, game, settings):
+    def test_user_outbox(self, client: Client, user: User, game: Game, settings: Any) -> None:
         settings.DOMAIN = "test.social"
 
         # Create a published report
@@ -129,7 +135,7 @@ class TestUserActor:
 class TestGameActor:
     """Tests for Game actor endpoints."""
 
-    def test_game_actor_json(self, client, game, settings):
+    def test_game_actor_json(self, client: Client, game: Game, settings: Any) -> None:
         settings.DOMAIN = "test.social"
 
         response = client.get(f"/games/{game.id}", HTTP_ACCEPT="application/activity+json")
@@ -139,7 +145,7 @@ class TestGameActor:
         assert data["type"] == "Group"
         assert data["name"] == game.title
 
-    def test_game_outbox(self, client, game, user, settings):
+    def test_game_outbox(self, client: Client, game: Game, user: User, settings: Any) -> None:
         settings.DOMAIN = "test.social"
 
         Report.objects.create(
@@ -156,7 +162,9 @@ class TestGameActor:
 class TestCharacterActor:
     """Tests for Character actor endpoints."""
 
-    def test_character_actor_json(self, client, character, settings):
+    def test_character_actor_json(
+        self, client: Client, character: Character, settings: Any
+    ) -> None:
         settings.DOMAIN = "test.social"
 
         response = client.get(
@@ -173,7 +181,7 @@ class TestCharacterActor:
 class TestSerializers:
     """Tests for ActivityPub serializers."""
 
-    def test_serialize_user(self, user, settings):
+    def test_serialize_user(self, user: User, settings: Any) -> None:
         settings.DOMAIN = "test.social"
 
         data = serialize_user(user)
@@ -185,7 +193,7 @@ class TestSerializers:
         assert "outbox" in data
         assert "@context" in data
 
-    def test_serialize_game(self, game, settings):
+    def test_serialize_game(self, game: Game, settings: Any) -> None:
         settings.DOMAIN = "test.social"
 
         data = serialize_game(game)
@@ -194,7 +202,7 @@ class TestSerializers:
         assert data["name"] == game.title
         assert "attributedTo" in data
 
-    def test_serialize_character_npc(self, character, settings):
+    def test_serialize_character_npc(self, character: Character, settings: Any) -> None:
         settings.DOMAIN = "test.social"
 
         data = serialize_character(character)
@@ -203,7 +211,9 @@ class TestSerializers:
         assert data["name"] == character.name
         assert data["status"] == "npc"
 
-    def test_serialize_character_with_parent(self, db, character, user, game, settings):
+    def test_serialize_character_with_parent(
+        self, db: Any, character: Character, user: User, game: Game, settings: Any
+    ) -> None:
         settings.DOMAIN = "test.social"
 
         fork = Character.objects.create(
@@ -217,9 +227,9 @@ class TestSerializers:
         data = serialize_character(fork)
 
         assert "derivedFrom" in data
-        assert character.actor_url in data["derivedFrom"]
+        assert str(character.actor_url) in str(data["derivedFrom"])
 
-    def test_serialize_report(self, report, settings):
+    def test_serialize_report(self, report: Report, settings: Any) -> None:
         settings.DOMAIN = "test.social"
 
         data = serialize_report(report)
@@ -228,7 +238,9 @@ class TestSerializers:
         assert data["content"] == report.content
         assert "attributedTo" in data
 
-    def test_serialize_quote(self, db, character, user, settings):
+    def test_serialize_quote(
+        self, db: Any, character: Character, user: User, settings: Any
+    ) -> None:
         settings.DOMAIN = "test.social"
 
         quote = Quote.objects.create(
@@ -247,22 +259,26 @@ class TestSerializers:
 class TestHTTPSignatures:
     """Tests for HTTP signature generation and verification."""
 
-    def test_generate_key_pair(self):
+    def test_generate_key_pair(self) -> None:
         private_key, public_key = generate_key_pair()
 
         assert "BEGIN PRIVATE KEY" in private_key
         assert "BEGIN PUBLIC KEY" in public_key
 
-    def test_key_pair_consistency(self):
+    def test_key_pair_consistency(self) -> None:
         """Generated keys should be usable together."""
         from cryptography.hazmat.backends import default_backend
         from cryptography.hazmat.primitives import serialization
+        from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 
         private_pem, public_pem = generate_key_pair()
 
         # Load private key
-        private_key = serialization.load_pem_private_key(
-            private_pem.encode(), password=None, backend=default_backend()
+        private_key = cast(
+            RSAPrivateKey,
+            serialization.load_pem_private_key(
+                private_pem.encode(), password=None, backend=default_backend()
+            ),
         )
 
         # Extract public key from private
@@ -277,12 +293,12 @@ class TestHTTPSignatures:
 
         assert derived_public == public_pem
 
-    def test_sign_request_adds_required_headers(self):
+    def test_sign_request_adds_required_headers(self) -> None:
         """sign_request must set Signature, Date, and Host headers."""
         from suddenly.activitypub.signatures import sign_request
 
         private_pem, _ = generate_key_pair()
-        headers: dict = {}
+        headers: dict[str, str] = {}
         sign_request(
             method="GET",
             url="https://example.com/users/alice/inbox",
@@ -295,12 +311,12 @@ class TestHTTPSignatures:
         assert "Host" in headers
         assert 'keyId="https://example.com/users/alice#main-key"' in headers["Signature"]
 
-    def test_sign_request_adds_digest_when_body_given(self):
+    def test_sign_request_adds_digest_when_body_given(self) -> None:
         """sign_request must add SHA-256 Digest header when body is provided."""
         from suddenly.activitypub.signatures import sign_request
 
         private_pem, _ = generate_key_pair()
-        headers: dict = {}
+        headers: dict[str, str] = {}
         sign_request(
             method="POST",
             url="https://example.com/inbox",
@@ -313,14 +329,8 @@ class TestHTTPSignatures:
         assert headers["Digest"].startswith("SHA-256=")
         assert "digest" in headers["Signature"]
 
-    def test_verify_signature_returns_tuple(self):
-        """Regression: verify_signature returns (bool, str), not a plain bool.
-
-        The original bug: `if not verify_signature(request)` never rejected
-        because a non-empty tuple is always truthy in Python.
-        """
-        from django.test import RequestFactory
-
+    def test_verify_signature_returns_tuple(self) -> None:
+        """Regression: verify_signature returns (bool, str), not a plain bool."""
         from suddenly.activitypub.signatures import verify_signature
 
         request = RequestFactory().post("/inbox")
@@ -332,31 +342,28 @@ class TestHTTPSignatures:
         is_valid, _ = result
         assert is_valid is False
 
-    def test_verify_signature_rejects_unsigned_request(self):
+    def test_verify_signature_rejects_unsigned_request(self) -> None:
         """Request without Signature header must fail verification."""
-        from django.test import RequestFactory
-
         from suddenly.activitypub.signatures import verify_signature
 
         request = RequestFactory().post("/inbox")
         is_valid, reason = verify_signature(request)
 
         assert is_valid is False
+        assert reason is not None
         assert "No Signature" in reason
 
-    def test_sign_then_verify_roundtrip(self, mocker):
+    def test_sign_then_verify_roundtrip(self, mocker: Any) -> None:
         """Full roundtrip: sign outgoing request, then verify incoming."""
-        from django.test import RequestFactory
-
         from suddenly.activitypub.signatures import sign_request, verify_signature
 
         private_pem, public_pem = generate_key_pair()
         key_id = "https://remote.social/users/alice#main-key"
         target_url = "https://test.social/users/testuser/inbox"
-        body = {"type": "Follow"}
+        body: dict[str, object] = {"type": "Follow"}
 
         # Sign the outgoing request
-        headers: dict = {}
+        headers: dict[str, str] = {}
         sign_request(
             method="POST",
             url=target_url,
@@ -367,7 +374,7 @@ class TestHTTPSignatures:
         )
 
         # Reconstruct the incoming request
-        meta: dict = {
+        meta: dict[str, Any] = {
             "HTTP_HOST": headers["Host"],
             "HTTP_DATE": headers["Date"],
             "HTTP_SIGNATURE": headers["Signature"],
@@ -395,17 +402,15 @@ class TestHTTPSignatures:
         assert is_valid is True
         assert result == key_id
 
-    def test_verify_signature_rejects_tampered_request(self, mocker):
+    def test_verify_signature_rejects_tampered_request(self, mocker: Any) -> None:
         """Request with valid signature but tampered body must fail."""
-        from django.test import RequestFactory
-
         from suddenly.activitypub.signatures import sign_request, verify_signature
 
         private_pem, public_pem = generate_key_pair()
         key_id = "https://remote.social/users/alice#main-key"
 
         # Sign with original body
-        headers: dict = {}
+        headers: dict[str, str] = {}
         sign_request(
             method="POST",
             url="https://test.social/users/testuser/inbox",
@@ -416,7 +421,7 @@ class TestHTTPSignatures:
         )
 
         # Tamper: replace body content but keep old Digest
-        meta: dict = {
+        meta: dict[str, Any] = {
             "HTTP_HOST": headers["Host"],
             "HTTP_DATE": headers["Date"],
             "HTTP_SIGNATURE": headers["Signature"],
@@ -446,7 +451,7 @@ class TestHTTPSignatures:
 class TestInbox:
     """Tests for inbox endpoints (receiving activities)."""
 
-    def test_inbox_rejects_invalid_json(self, client, user):
+    def test_inbox_rejects_invalid_json(self, client: Client, user: User) -> None:
         response = client.post(
             f"/users/{user.username}/inbox",
             data="not json",
@@ -455,7 +460,7 @@ class TestInbox:
 
         assert response.status_code == 400
 
-    def test_inbox_accepts_valid_activity(self, client, user, mocker):
+    def test_inbox_accepts_valid_activity(self, client: Client, user: User, mocker: Any) -> None:
         # Mock the task to avoid actual processing
         mock_task = mocker.patch("suddenly.activitypub.views.process_incoming_activity")
         mock_task.delay = mocker.MagicMock()
@@ -481,7 +486,7 @@ class TestPublicKeyCache:
 
     pytestmark = pytest.mark.django_db
 
-    def test_fetch_public_key_stores_in_cache(self, mocker):
+    def test_fetch_public_key_stores_in_cache(self, mocker: Any) -> None:
         """_fetch_public_key should store the key in PublicKeyCache."""
         from suddenly.activitypub.models import PublicKeyCache
         from suddenly.activitypub.signatures import _fetch_public_key
@@ -508,7 +513,7 @@ class TestPublicKeyCache:
         cached = PublicKeyCache.objects.get(actor_url=actor_url)
         assert cached.public_key_pem == public_pem
 
-    def test_fetch_public_key_returns_none_on_timeout(self, mocker):
+    def test_fetch_public_key_returns_none_on_timeout(self, mocker: Any) -> None:
         """_fetch_public_key should return None on HTTP error."""
         from suddenly.activitypub.signatures import _fetch_public_key
 
@@ -522,7 +527,13 @@ class TestPublicKeyCache:
         result = _fetch_public_key("https://slow.server/users/bob")
         assert result is None
 
-    def _make_signed_request(self, rf, private_pem, actor_url, path="/users/bob/inbox"):
+    def _make_signed_request(
+        self,
+        rf: RequestFactory,
+        private_pem: str,
+        actor_url: str,
+        path: str = "/users/bob/inbox",
+    ) -> HttpRequest:
         """Helper to create a properly signed Django request."""
         import base64
         import hashlib
@@ -532,6 +543,7 @@ class TestPublicKeyCache:
         from cryptography.hazmat.backends import default_backend
         from cryptography.hazmat.primitives import hashes, serialization
         from cryptography.hazmat.primitives.asymmetric import padding
+        from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 
         key_id = f"{actor_url}#main-key"
         body = json.dumps({"type": "Follow"})
@@ -548,8 +560,11 @@ class TestPublicKeyCache:
             f"digest: {digest}"
         )
 
-        private_key = serialization.load_pem_private_key(
-            private_pem.encode(), password=None, backend=default_backend()
+        private_key = cast(
+            RSAPrivateKey,
+            serialization.load_pem_private_key(
+                private_pem.encode(), password=None, backend=default_backend()
+            ),
         )
         sig = base64.b64encode(
             private_key.sign(signing_string.encode(), padding.PKCS1v15(), hashes.SHA256())
@@ -572,7 +587,7 @@ class TestPublicKeyCache:
             HTTP_SIGNATURE=sig_header,
         )
 
-    def test_verify_uses_cached_key(self, mocker, rf):
+    def test_verify_uses_cached_key(self, mocker: Any, rf: RequestFactory) -> None:
         """verify_signature should use cached key without HTTP call."""
         from suddenly.activitypub.models import PublicKeyCache
         from suddenly.activitypub.signatures import verify_signature
@@ -595,7 +610,7 @@ class TestPublicKeyCache:
         assert result == f"{actor_url}#main-key"
         mock_fetch.assert_not_called()
 
-    def test_verify_retries_on_stale_cached_key(self, mocker, rf):
+    def test_verify_retries_on_stale_cached_key(self, mocker: Any, rf: RequestFactory) -> None:
         """verify_signature should re-fetch if cached key fails."""
         from suddenly.activitypub.models import PublicKeyCache
         from suddenly.activitypub.signatures import verify_signature
@@ -627,7 +642,7 @@ class TestInboxRateLimit:
 
     pytestmark = pytest.mark.django_db
 
-    def test_known_instance_not_rate_limited(self, rf, mocker):
+    def test_known_instance_not_rate_limited(self, rf: RequestFactory, mocker: Any) -> None:
         """Known instances should have a higher rate limit."""
         from suddenly.activitypub.inbox import _check_rate_limit
         from suddenly.activitypub.models import FederatedServer
@@ -643,7 +658,7 @@ class TestInboxRateLimit:
         # Should not be rate limited on first request
         assert _check_rate_limit(request) is False
 
-    def test_unknown_instance_rate_limited(self, rf, mocker):
+    def test_unknown_instance_rate_limited(self, rf: RequestFactory, mocker: Any) -> None:
         """Unknown instances should hit rate limit faster."""
         from suddenly.activitypub.inbox import _check_rate_limit
 
@@ -660,7 +675,9 @@ class TestInboxRateLimit:
 
         assert _check_rate_limit(request) is True
 
-    def test_rate_limited_request_returns_403(self, rf, user, mocker):
+    def test_rate_limited_request_returns_403(
+        self, rf: RequestFactory, user: User, mocker: Any
+    ) -> None:
         """Rate-limited requests should get HTTP 403."""
         from suddenly.activitypub.inbox import process_inbox
 

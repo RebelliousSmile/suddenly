@@ -9,6 +9,10 @@ from django.db import models
 
 
 class ActivityPubMixin(models.Model):
+    def get_absolute_url(self) -> str:
+        """Must be implemented by concrete classes."""
+        raise NotImplementedError
+
     """
     Mixin pour les entités fédérables via ActivityPub.
 

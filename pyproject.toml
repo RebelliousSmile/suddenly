@@ -59,6 +59,18 @@ select = ["E", "F", "I", "N", "W", "UP"]
 python_version = "3.12"
 strict = true
 plugins = ["mypy_django_plugin.main"]
+exclude = ['migrations/']
+
+[[tool.mypy.overrides]]
+module = [
+    "celery.*",
+    "allauth.*",
+    "rest_framework.*",
+    "django_ratelimit.*",
+    "django_celery_beat.*",
+    "factory.*",
+]
+ignore_missing_imports = true
 
 [tool.django-stubs]
 django_settings_module = "config.settings.development"
@@ -66,7 +78,7 @@ django_settings_module = "config.settings.development"
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings.development"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
-addopts = "-v --tb=short -m 'not e2e'"
+addopts = "-v --tb=short -m 'not e2e' --cov=suddenly --cov-fail-under=80"
 markers = [
     "e2e: End-to-end browser tests",
 ]

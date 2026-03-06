@@ -2,6 +2,10 @@
 API Serializers for Suddenly.
 """
 
+from __future__ import annotations
+
+from typing import Any
+
 from rest_framework import serializers
 
 from suddenly.characters.models import (
@@ -20,7 +24,7 @@ from suddenly.users.models import User
 # =================================================================
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):  # type: ignore[misc]
     """Public user representation."""
 
     class Meta:
@@ -38,10 +42,10 @@ class UserDetailSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         fields = UserSerializer.Meta.fields + ["games_count", "characters_count"]
 
-    def get_games_count(self, obj):
+    def get_games_count(self, obj: User) -> int:
         return obj.games.filter(is_public=True).count()
 
-    def get_characters_count(self, obj):
+    def get_characters_count(self, obj: User) -> int:
         return obj.owned_characters.count()
 
 
@@ -50,7 +54,7 @@ class UserDetailSerializer(UserSerializer):
 # =================================================================
 
 
-class GameSerializer(serializers.ModelSerializer):
+class GameSerializer(serializers.ModelSerializer):  # type: ignore[misc]
     """Game list representation."""
 
     owner = UserSerializer(read_only=True)
@@ -74,23 +78,23 @@ class GameSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "owner", "actor_url", "created_at", "updated_at"]
 
-    def get_reports_count(self, obj):
+    def get_reports_count(self, obj: Game) -> int:
         return obj.reports.filter(status="published").count()
 
-    def get_characters_count(self, obj):
+    def get_characters_count(self, obj: Game) -> int:
         return obj.characters.count()
 
 
-class GameCreateSerializer(serializers.ModelSerializer):
+class GameCreateSerializer(serializers.ModelSerializer):  # type: ignore[misc]
     """Game creation."""
 
     class Meta:
         model = Game
         fields = ["title", "description", "game_system", "is_public"]
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict[str, Any]) -> Game:
         validated_data["owner"] = self.context["request"].user
-        return super().create(validated_data)
+        return super().create(validated_data)  # type: ignore[no-any-return]
 
 
 # =================================================================
@@ -98,7 +102,7 @@ class GameCreateSerializer(serializers.ModelSerializer):
 # =================================================================
 
 
-class CharacterSerializer(serializers.ModelSerializer):
+class CharacterSerializer(serializers.ModelSerializer):  # type: ignore[misc]
     """Character list representation."""
 
     owner = UserSerializer(read_only=True)
@@ -150,17 +154,17 @@ class CharacterDetailSerializer(CharacterSerializer):
             "forks_count",
         ]
 
-    def get_appearances_count(self, obj):
+    def get_appearances_count(self, obj: Character) -> int:
         return obj.appearances.count()
 
-    def get_quotes_count(self, obj):
+    def get_quotes_count(self, obj: Character) -> int:
         return obj.quotes.filter(visibility="public").count()
 
-    def get_forks_count(self, obj):
+    def get_forks_count(self, obj: Character) -> int:
         return obj.forks.count()
 
 
-class CharacterSearchSerializer(serializers.ModelSerializer):
+class CharacterSearchSerializer(serializers.ModelSerializer):  # type: ignore[misc]
     """Minimal character for search/autocomplete."""
 
     game_title = serializers.CharField(source="origin_game.title", read_only=True)
@@ -175,7 +179,7 @@ class CharacterSearchSerializer(serializers.ModelSerializer):
 # =================================================================
 
 
-class ReportSerializer(serializers.ModelSerializer):
+class ReportSerializer(serializers.ModelSerializer):  # type: ignore[misc]
     """Report list representation."""
 
     author = UserSerializer(read_only=True)
@@ -199,30 +203,30 @@ class ReportSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "author", "status", "published_at", "created_at", "updated_at"]
 
-    def get_characters_count(self, obj):
+    def get_characters_count(self, obj: Report) -> int:
         return obj.character_appearances.count()
 
 
-class ReportCreateSerializer(serializers.ModelSerializer):
+class ReportCreateSerializer(serializers.ModelSerializer):  # type: ignore[misc]
     """Report creation."""
 
     class Meta:
         model = Report
         fields = ["title", "content", "game"]
 
-    def validate_game(self, value):
+    def validate_game(self, value: Game) -> Game:
         user = self.context["request"].user
         if value.owner != user:
             raise serializers.ValidationError("You can only add reports to your own games.")
         return value
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict[str, Any]) -> Report:
         validated_data["author"] = self.context["request"].user
         validated_data["status"] = "draft"
-        return super().create(validated_data)
+        return super().create(validated_data)  # type: ignore[no-any-return]
 
 
-class ReportCastSerializer(serializers.ModelSerializer):
+class ReportCastSerializer(serializers.ModelSerializer):  # type: ignore[misc]
     """Cast entry for a report."""
 
     character = CharacterSerializer(read_only=True)
@@ -245,7 +249,7 @@ class ReportCastSerializer(serializers.ModelSerializer):
 # =================================================================
 
 
-class QuoteSerializer(serializers.ModelSerializer):
+class QuoteSerializer(serializers.ModelSerializer):  # type: ignore[misc]
     """Quote representation."""
 
     character = CharacterSerializer(read_only=True)
@@ -266,16 +270,16 @@ class QuoteSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "author", "created_at"]
 
 
-class QuoteCreateSerializer(serializers.ModelSerializer):
+class QuoteCreateSerializer(serializers.ModelSerializer):  # type: ignore[misc]
     """Quote creation."""
 
     class Meta:
         model = Quote
         fields = ["content", "context", "character", "report", "visibility"]
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict[str, Any]) -> Quote:
         validated_data["author"] = self.context["request"].user
-        return super().create(validated_data)
+        return super().create(validated_data)  # type: ignore[no-any-return]
 
 
 # =================================================================
@@ -283,7 +287,7 @@ class QuoteCreateSerializer(serializers.ModelSerializer):
 # =================================================================
 
 
-class LinkRequestSerializer(serializers.ModelSerializer):
+class LinkRequestSerializer(serializers.ModelSerializer):  # type: ignore[misc]
     """Link request representation."""
 
     requester = UserSerializer(read_only=True)
@@ -314,34 +318,34 @@ class LinkRequestSerializer(serializers.ModelSerializer):
         ]
 
 
-class LinkRequestCreateSerializer(serializers.ModelSerializer):
+class LinkRequestCreateSerializer(serializers.ModelSerializer):  # type: ignore[misc]
     """Link request creation."""
 
     class Meta:
         model = LinkRequest
         fields = ["type", "target_character", "proposed_character", "message"]
 
-    def validate_target_character(self, value):
+    def validate_target_character(self, value: Character) -> Character:
         if not value.is_available:
             raise serializers.ValidationError(
                 "This character is not available for claim/adopt/fork."
             )
         return value
 
-    def validate(self, data):
+    def validate(self, data: dict[str, Any]) -> dict[str, Any]:
         if data["type"] == "claim" and not data.get("proposed_character"):
             raise serializers.ValidationError(
                 {"proposed_character": "A claim requires an existing PC to propose."}
             )
         return data
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict[str, Any]) -> LinkRequest:
         validated_data["requester"] = self.context["request"].user
         validated_data["status"] = "pending"
-        return super().create(validated_data)
+        return super().create(validated_data)  # type: ignore[no-any-return]
 
 
-class CharacterLinkSerializer(serializers.ModelSerializer):
+class CharacterLinkSerializer(serializers.ModelSerializer):  # type: ignore[misc]
     """Established character link."""
 
     source = CharacterSerializer(read_only=True)
@@ -352,7 +356,7 @@ class CharacterLinkSerializer(serializers.ModelSerializer):
         fields = ["id", "type", "source", "target", "description", "created_at"]
 
 
-class SharedSequenceSerializer(serializers.ModelSerializer):
+class SharedSequenceSerializer(serializers.ModelSerializer):  # type: ignore[misc]
     """Shared sequence content."""
 
     class Meta:
@@ -366,7 +370,7 @@ class SharedSequenceSerializer(serializers.ModelSerializer):
 # =================================================================
 
 
-class FollowSerializer(serializers.ModelSerializer):
+class FollowSerializer(serializers.ModelSerializer):  # type: ignore[misc]
     """Follow relationship with generic target."""
 
     target_type = serializers.CharField(source="content_type.model", read_only=True)
@@ -378,13 +382,13 @@ class FollowSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "follower", "created_at"]
 
 
-class FollowCreateSerializer(serializers.Serializer):
+class FollowCreateSerializer(serializers.Serializer):  # type: ignore[misc]
     """Create a follow relationship."""
 
     target_type = serializers.ChoiceField(choices=["user", "character", "game"])
     target_id = serializers.UUIDField()
 
-    def validate(self, data):
+    def validate(self, data: dict[str, Any]) -> dict[str, Any]:
         from django.contrib.contenttypes.models import ContentType
 
         model_map = {
@@ -402,13 +406,16 @@ class FollowCreateSerializer(serializers.Serializer):
 
         # Check target exists
         model_class = content_type.model_class()
-        if not model_class.objects.filter(id=data["target_id"]).exists():
+        if (
+            model_class is None
+            or not model_class._default_manager.filter(id=data["target_id"]).exists()
+        ):
             raise serializers.ValidationError(f"Target {data['target_type']} not found")
 
         data["content_type"] = content_type
         return data
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict[str, Any]) -> Follow:
         return Follow.objects.create(
             follower=self.context["request"].user,
             content_type=validated_data["content_type"],

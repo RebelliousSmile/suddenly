@@ -6,6 +6,6 @@ class ActivityPubConfig(AppConfig):
     name = "suddenly.activitypub"
     verbose_name = "ActivityPub"
 
-    def ready(self):
+    def ready(self) -> None:
         # Import signals to register them
         from . import signals  # noqa: F401

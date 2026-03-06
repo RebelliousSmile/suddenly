@@ -7,7 +7,7 @@ from django import forms
 from .models import User
 
 
-class ProfileForm(forms.ModelForm):
+class ProfileForm(forms.ModelForm[User]):
     """Formulaire d'édition du profil utilisateur."""
 
     class Meta:
@@ -40,7 +40,8 @@ class ProfileForm(forms.ModelForm):
 
         # Try parsing as JSON first (backward compatibility)
         try:
-            return json.loads(value)
+            result: list[str] = json.loads(value)
+            return result
         except (json.JSONDecodeError, TypeError):
             # Fall back to comma-separated parsing
             return [code.strip() for code in value.split(",") if code.strip()]

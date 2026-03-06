@@ -2,6 +2,10 @@
 Tests for character link services (claim, adopt, fork).
 """
 
+from __future__ import annotations
+
+from typing import Any
+
 import pytest
 from django.core.exceptions import ValidationError
 
@@ -14,13 +18,16 @@ from suddenly.characters.models import (
     SharedSequence,
 )
 from suddenly.characters.services import LinkService
+from suddenly.games.models import Game
 from suddenly.users.models import User
 
 
 class TestLinkServiceValidation:
     """Tests for link request validation."""
 
-    def test_claim_requires_available_npc(self, db, user, other_user, game):
+    def test_claim_requires_available_npc(
+        self, db: Any, user: User, other_user: User, game: Game
+    ) -> None:
         """Cannot claim a character that's not an NPC."""
         target = Character.objects.create(
             name="Already Adopted", status=CharacterStatus.ADOPTED, creator=user, origin_game=game
@@ -39,7 +46,9 @@ class TestLinkServiceValidation:
 
         assert "n'est plus disponible" in str(exc.value)
 
-    def test_claim_requires_pc(self, db, user, other_user, character, game):
+    def test_claim_requires_pc(
+        self, db: Any, user: User, other_user: User, character: Character, game: Game
+    ) -> None:
         """Claim requires an actual PC, not an NPC."""
         npc = Character.objects.create(
             name="Another NPC", status=CharacterStatus.NPC, creator=other_user, origin_game=game
@@ -50,7 +59,9 @@ class TestLinkServiceValidation:
 
         assert "n'est pas un PJ" in str(exc.value)
 
-    def test_claim_requires_own_pc(self, db, user, other_user, character, game):
+    def test_claim_requires_own_pc(
+        self, db: Any, user: User, other_user: User, character: Character, game: Game
+    ) -> None:
         """Can only claim with your own PC."""
         someone_elses_pc = Character.objects.create(
             name="Not Mine",
@@ -65,7 +76,9 @@ class TestLinkServiceValidation:
 
         assert "vos propres PJ" in str(exc.value)
 
-    def test_claim_blocked_by_pending_request(self, db, user, other_user, character, game):
+    def test_claim_blocked_by_pending_request(
+        self, db: Any, user: User, other_user: User, character: Character, game: Game
+    ) -> None:
         """Cannot claim a character with a pending request."""
         pc = Character.objects.create(
             name="My PC",
@@ -91,7 +104,9 @@ class TestLinkServiceValidation:
 
         assert "demande est déjà en cours" in str(exc.value)
 
-    def test_adopt_requires_available_npc(self, db, user, other_user, game):
+    def test_adopt_requires_available_npc(
+        self, db: Any, user: User, other_user: User, game: Game
+    ) -> None:
         """Cannot adopt a character that's not available."""
         target = Character.objects.create(
             name="Already PC", status=CharacterStatus.PC, owner=user, creator=user, origin_game=game
@@ -102,7 +117,9 @@ class TestLinkServiceValidation:
 
         assert "n'est plus disponible" in str(exc.value)
 
-    def test_adopt_blocked_by_pending_request(self, db, user, other_user, character, game):
+    def test_adopt_blocked_by_pending_request(
+        self, db: Any, user: User, other_user: User, character: Character, game: Game
+    ) -> None:
         """Cannot adopt a character with an existing pending request."""
         third_user = User.objects.create_user(
             username="third", email="third@test.com", password="test"
@@ -119,7 +136,7 @@ class TestLinkServiceValidation:
 
         assert "demande est déjà en cours" in str(exc.value)
 
-    def test_fork_always_valid(self, db, user, other_user, game):
+    def test_fork_always_valid(self, db: Any, user: User, other_user: User, game: Game) -> None:
         """Fork can target any character."""
         # Even an already adopted character can be forked
         target = Character.objects.create(
@@ -137,7 +154,9 @@ class TestLinkServiceValidation:
 class TestLinkServiceCreateRequest:
     """Tests for creating link requests."""
 
-    def test_create_claim_request(self, db, user, other_user, character, game):
+    def test_create_claim_request(
+        self, db: Any, user: User, other_user: User, character: Character, game: Game
+    ) -> None:
         """Create a claim request."""
         pc = Character.objects.create(
             name="My PC",
@@ -159,7 +178,7 @@ class TestLinkServiceCreateRequest:
         assert request.status == LinkRequestStatus.PENDING
         assert request.proposed_character == pc
 
-    def test_create_adopt_request(self, db, other_user, character):
+    def test_create_adopt_request(self, db: Any, other_user: User, character: Character) -> None:
         """Create an adopt request."""
         request = LinkService.create_request(
             requester=other_user,
@@ -171,7 +190,7 @@ class TestLinkServiceCreateRequest:
         assert request.type == LinkType.ADOPT
         assert request.proposed_character is None
 
-    def test_create_fork_request(self, db, other_user, character):
+    def test_create_fork_request(self, db: Any, other_user: User, character: Character) -> None:
         """Create a fork request."""
         request = LinkService.create_request(
             requester=other_user,
@@ -186,7 +205,9 @@ class TestLinkServiceCreateRequest:
 class TestLinkServiceAccept:
     """Tests for accepting link requests."""
 
-    def test_accept_claim_creates_link(self, db, user, other_user, character, game):
+    def test_accept_claim_creates_link(
+        self, db: Any, user: User, other_user: User, character: Character, game: Game
+    ) -> None:
         """Accepting a claim creates a link and updates statuses."""
         pc = Character.objects.create(
             name="Claimer PC",
@@ -218,7 +239,9 @@ class TestLinkServiceAccept:
         # SharedSequence should be created
         assert SharedSequence.objects.filter(link=link).exists()
 
-    def test_accept_adopt_transfers_ownership(self, db, user, other_user, character, game):
+    def test_accept_adopt_transfers_ownership(
+        self, db: Any, user: User, other_user: User, character: Character, game: Game
+    ) -> None:
         """Accepting an adopt transfers ownership."""
         request = LinkRequest.objects.create(
             type=LinkType.ADOPT,
@@ -234,7 +257,9 @@ class TestLinkServiceAccept:
         assert character.status == CharacterStatus.ADOPTED
         assert character.owner == other_user
 
-    def test_accept_fork_creates_new_character(self, db, user, other_user, character, game):
+    def test_accept_fork_creates_new_character(
+        self, db: Any, user: User, other_user: User, character: Character, game: Game
+    ) -> None:
         """Accepting a fork creates a new derived character."""
         request = LinkRequest.objects.create(
             type=LinkType.FORK, requester=other_user, target_character=character, message="Forking!"
@@ -251,7 +276,9 @@ class TestLinkServiceAccept:
         assert link.source.owner == other_user
         assert link.source.status == CharacterStatus.PC
 
-    def test_cannot_accept_non_pending(self, db, other_user, character):
+    def test_cannot_accept_non_pending(
+        self, db: Any, other_user: User, character: Character
+    ) -> None:
         """Cannot accept an already resolved request."""
         request = LinkRequest.objects.create(
             type=LinkType.ADOPT,
@@ -270,7 +297,7 @@ class TestLinkServiceAccept:
 class TestLinkServiceReject:
     """Tests for rejecting link requests."""
 
-    def test_reject_request(self, db, other_user, character):
+    def test_reject_request(self, db: Any, other_user: User, character: Character) -> None:
         """Reject a request."""
         request = LinkRequest.objects.create(
             type=LinkType.ADOPT, requester=other_user, target_character=character, message="Please?"
@@ -282,7 +309,9 @@ class TestLinkServiceReject:
         assert result.response_message == "Not a good fit"
         assert result.resolved_at is not None
 
-    def test_cannot_reject_non_pending(self, db, other_user, character):
+    def test_cannot_reject_non_pending(
+        self, db: Any, other_user: User, character: Character
+    ) -> None:
         """Cannot reject an already resolved request."""
         request = LinkRequest.objects.create(
             type=LinkType.ADOPT,
@@ -299,7 +328,7 @@ class TestLinkServiceReject:
 class TestLinkServiceCancel:
     """Tests for canceling link requests."""
 
-    def test_cancel_request(self, db, other_user, character):
+    def test_cancel_request(self, db: Any, other_user: User, character: Character) -> None:
         """Cancel own request."""
         request = LinkRequest.objects.create(
             type=LinkType.FORK,

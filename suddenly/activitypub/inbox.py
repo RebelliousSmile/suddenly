@@ -2,8 +2,11 @@
 ActivityPub inbox views for receiving federated activities.
 """
 
+from __future__ import annotations
+
 import json
 import logging
+from typing import Any, Protocol
 from urllib.parse import urlparse
 
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
@@ -43,18 +46,20 @@ def _check_rate_limit(request: HttpRequest) -> bool:
     rate = _KNOWN_INSTANCE_RATE if is_known else _UNKNOWN_INSTANCE_RATE
     group = f"ap-inbox-{domain}"
 
-    return is_ratelimited(
-        request=request,
-        group=group,
-        key=lambda _g, _r: domain,
-        rate=rate,
-        increment=True,
+    return bool(
+        is_ratelimited(
+            request=request,
+            group=group,
+            key=lambda _g, _r: domain,
+            rate=rate,
+            increment=True,
+        )
     )
 
 
 @csrf_exempt
 @require_POST
-def user_inbox(request, username):
+def user_inbox(request: HttpRequest, username: str) -> HttpResponse:
     """
     Inbox endpoint for receiving activities addressed to a user.
 
@@ -65,7 +70,7 @@ def user_inbox(request, username):
 
 @csrf_exempt
 @require_POST
-def game_inbox(request, game_id):
+def game_inbox(request: HttpRequest, game_id: str) -> HttpResponse:
     """
     Inbox endpoint for receiving activities addressed to a game.
 
@@ -76,7 +81,7 @@ def game_inbox(request, game_id):
 
 @csrf_exempt
 @require_POST
-def character_inbox(request, character_id):
+def character_inbox(request: HttpRequest, character_id: str) -> HttpResponse:
     """
     Inbox endpoint for receiving activities addressed to a character.
 
@@ -85,7 +90,7 @@ def character_inbox(request, character_id):
     return process_inbox(request, actor_type="character", actor_identifier=character_id)
 
 
-def process_inbox(request, actor_type: str, actor_identifier: str):
+def process_inbox(request: HttpRequest, actor_type: str, actor_identifier: str) -> HttpResponse:
     """
     Common inbox processing logic.
     """
@@ -108,7 +113,7 @@ def process_inbox(request, actor_type: str, actor_identifier: str):
 
     # Parse activity
     try:
-        activity = json.loads(request.body)
+        activity: dict[str, Any] = json.loads(request.body)
     except json.JSONDecodeError:
         return HttpResponseBadRequest("Invalid JSON")
 
@@ -120,7 +125,7 @@ def process_inbox(request, actor_type: str, actor_identifier: str):
     logger.info(f"Received {activity_type} for {actor_type}/{actor_identifier}")
 
     # Route to appropriate handler
-    handlers = {
+    handlers: dict[str, _InboxHandler] = {
         "Follow": handle_follow,
         "Undo": handle_undo,
         "Create": handle_create,
@@ -145,34 +150,48 @@ def process_inbox(request, actor_type: str, actor_identifier: str):
     return HttpResponse(status=202)
 
 
-def handle_follow(activity: dict, actor_type: str, actor_identifier: str):
+class _InboxHandler(Protocol):
+    def __call__(
+        self, activity: dict[str, Any], actor_type: str, actor_identifier: str
+    ) -> None: ...
+
+
+def handle_follow(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
     Handle incoming Follow activity.
 
     Create a Follow record and optionally auto-accept.
     """
-    from suddenly.characters.models import Follow, FollowTargetType
+    from django.contrib.contenttypes.models import ContentType
+
+    from suddenly.characters.models import Character, Follow
+    from suddenly.games.models import Game
+    from suddenly.users.models import User
 
     follower_id = activity.get("actor")
     if not follower_id:
         return
 
     # Get or create the remote follower
-    follower, _ = get_or_create_remote_user(follower_id)
-    if not follower:
+    result = get_or_create_remote_user(follower_id)
+    if result is None:
+        return
+    follower, _ = result
+
+    # Determine content type for the target
+    content_type_map: dict[str, type[User | Game | Character]] = {
+        "user": User,
+        "game": Game,
+        "character": Character,
+    }
+
+    model_class = content_type_map.get(actor_type)
+    if not model_class:
         return
 
-    # Determine target
-    target_type = {
-        "user": FollowTargetType.USER,
-        "game": FollowTargetType.GAME,
-        "character": FollowTargetType.CHARACTER,
-    }.get(actor_type)
+    content_type = ContentType.objects.get_for_model(model_class)
 
-    if not target_type:
-        return
-
-    # Get target ID
+    # Get target
     target = get_local_actor(actor_type, actor_identifier)
     if not target:
         return
@@ -180,15 +199,15 @@ def handle_follow(activity: dict, actor_type: str, actor_identifier: str):
     # Create follow relationship
     Follow.objects.get_or_create(
         follower=follower,
-        target_type=target_type,
-        target_id=target.id,
+        content_type=content_type,
+        object_id=target.pk,
     )
 
     # Send Accept activity
     from .activities import get_context
     from .tasks import deliver_activity
 
-    accept_activity = {
+    accept_activity: dict[str, Any] = {
         "@context": get_context(),
         "type": "Accept",
         "actor": target.actor_url,
@@ -198,15 +217,18 @@ def handle_follow(activity: dict, actor_type: str, actor_identifier: str):
     deliver_activity.delay(
         activity=accept_activity,
         inbox_url=follower.inbox_url,
-        sender_id=str(target.id),
     )
 
 
-def handle_undo(activity: dict, actor_type: str, actor_identifier: str):
+def handle_undo(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
     Handle Undo activity (e.g., unfollow).
     """
-    from suddenly.characters.models import Follow
+    from django.contrib.contenttypes.models import ContentType
+
+    from suddenly.characters.models import Character, Follow
+    from suddenly.games.models import Game
+    from suddenly.users.models import User
 
     inner = activity.get("object", {})
     inner_type = inner.get("type") if isinstance(inner, dict) else None
@@ -214,17 +236,27 @@ def handle_undo(activity: dict, actor_type: str, actor_identifier: str):
     if inner_type == "Follow":
         # Undo follow = unfollow
         follower_id = activity.get("actor")
-        follower = get_remote_user(follower_id)
+        follower = get_remote_user(follower_id or "")
         if follower:
             target = get_local_actor(actor_type, actor_identifier)
             if target:
-                Follow.objects.filter(
-                    follower=follower,
-                    target_id=target.id,
-                ).delete()
+                # Get content type for the target model
+                content_type_map: dict[str, type[User | Game | Character]] = {
+                    "user": User,
+                    "game": Game,
+                    "character": Character,
+                }
+                model_class = content_type_map.get(actor_type)
+                if model_class:
+                    content_type = ContentType.objects.get_for_model(model_class)
+                    Follow.objects.filter(
+                        follower=follower,
+                        content_type=content_type,
+                        object_id=target.pk,
+                    ).delete()
 
 
-def handle_create(activity: dict, actor_type: str, actor_identifier: str):
+def handle_create(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
     Handle incoming Create activity.
 
@@ -242,21 +274,21 @@ def handle_create(activity: dict, actor_type: str, actor_identifier: str):
     logger.info(f"Received Create({obj_type}) from {activity.get('actor')}")
 
 
-def handle_update(activity: dict, actor_type: str, actor_identifier: str):
+def handle_update(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
     Handle Update activity.
     """
     logger.info(f"Received Update from {activity.get('actor')}")
 
 
-def handle_delete(activity: dict, actor_type: str, actor_identifier: str):
+def handle_delete(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
     Handle Delete activity.
     """
     logger.info(f"Received Delete from {activity.get('actor')}")
 
 
-def handle_offer(activity: dict, actor_type: str, actor_identifier: str):
+def handle_offer(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
     Handle Offer activity (claim/adopt/fork request from remote user).
     """
@@ -282,9 +314,12 @@ def handle_offer(activity: dict, actor_type: str, actor_identifier: str):
         return
 
     # Get remote requester
-    requester, _ = get_or_create_remote_user(actor_url)
-    if not requester:
+    if not actor_url:
         return
+    result = get_or_create_remote_user(actor_url)
+    if result is None:
+        return
+    requester, _ = result
 
     # Find local target character
     target_character = Character.objects.filter(
@@ -306,7 +341,7 @@ def handle_offer(activity: dict, actor_type: str, actor_identifier: str):
     logger.info(f"Created LinkRequest: {link_type} for {target_character.name}")
 
 
-def handle_accept(activity: dict, actor_type: str, actor_identifier: str):
+def handle_accept(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
     Handle Accept activity (our offer was accepted).
     """
@@ -331,7 +366,7 @@ def handle_accept(activity: dict, actor_type: str, actor_identifier: str):
             pass
 
 
-def handle_reject(activity: dict, actor_type: str, actor_identifier: str):
+def handle_reject(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
     Handle Reject activity (our offer was rejected).
     """
@@ -358,7 +393,9 @@ def handle_reject(activity: dict, actor_type: str, actor_identifier: str):
 # =================================================================
 
 
-def get_or_create_remote_user(actor_url: str):
+def get_or_create_remote_user(
+    actor_url: str,
+) -> tuple[Any, bool] | None:
     """
     Fetch and create/update a remote user from their actor URL.
     """
@@ -370,10 +407,10 @@ def get_or_create_remote_user(actor_url: str):
         with httpx.Client(timeout=10) as client:
             response = client.get(actor_url, headers={"Accept": "application/activity+json"})
             response.raise_for_status()
-            actor_data = response.json()
+            actor_data: dict[str, Any] = response.json()
     except Exception as e:
         logger.error(f"Failed to fetch actor {actor_url}: {e}")
-        return None, False
+        return None
 
     username = actor_data.get("preferredUsername", actor_url.split("/")[-1])
 
@@ -393,7 +430,7 @@ def get_or_create_remote_user(actor_url: str):
     return user, created
 
 
-def get_remote_user(actor_url: str):
+def get_remote_user(actor_url: str) -> Any:
     """
     Get an existing remote user by actor URL.
     """
@@ -402,7 +439,7 @@ def get_remote_user(actor_url: str):
     return User.objects.filter(ap_id=actor_url, remote=True).first()
 
 
-def get_local_actor(actor_type: str, identifier: str):
+def get_local_actor(actor_type: str, identifier: str) -> Any:
     """
     Get a local actor (user, game, or character) by identifier.
     """

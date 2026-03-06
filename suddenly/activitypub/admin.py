@@ -1,12 +1,21 @@
 """Admin configuration for the activitypub app."""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from django.contrib import admin
 
 from .models import FederatedServer
 
+if TYPE_CHECKING:
+    _FederatedServerBase = admin.ModelAdmin[FederatedServer]
+else:
+    _FederatedServerBase = admin.ModelAdmin
+
 
 @admin.register(FederatedServer)
-class FederatedServerAdmin(admin.ModelAdmin):
+class FederatedServerAdmin(_FederatedServerBase):
     """Admin for known remote ActivityPub instances."""
 
     list_display = ["server_name", "application_type", "status", "user_count", "last_checked"]

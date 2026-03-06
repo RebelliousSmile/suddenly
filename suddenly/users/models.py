@@ -34,7 +34,7 @@ class User(AbstractUser):
     avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
 
     # Email override — unique per instance (null=True allows multiple users without email)
-    email = models.EmailField(unique=True, blank=True, null=True)
+    email = models.EmailField(unique=True, blank=True, null=True)  # type: ignore[assignment]
 
     # Language preferences
     content_language = models.CharField(max_length=10, default="fr")

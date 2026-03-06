@@ -2,6 +2,8 @@
 User admin configuration.
 """
 
+from __future__ import annotations
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
@@ -9,13 +11,14 @@ from .models import User
 
 
 @admin.register(User)
-class UserAdmin(BaseUserAdmin):
+class UserAdmin(BaseUserAdmin):  # type: ignore[type-arg]
     list_display = ["username", "display_name", "email", "remote", "is_staff", "created_at"]
     list_filter = ["remote", "is_staff", "is_active", "content_language", "created_at"]
     search_fields = ["username", "display_name", "email"]
     ordering = ["-created_at"]
 
-    fieldsets = BaseUserAdmin.fieldsets + (
+    fieldsets = (
+        *(BaseUserAdmin.fieldsets or []),
         ("Profile", {"fields": ("display_name", "bio", "avatar")}),
         (
             "Language preferences",

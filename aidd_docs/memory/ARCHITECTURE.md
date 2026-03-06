@@ -66,9 +66,9 @@ flowchart LR
 
 ## Frontend
 
-- HTMX + Alpine.js + Tailwind CSS (CDN or build)
-- No SPA, no build step required
-- Total bundle: ~32KB (HTMX 14KB + Alpine 8KB + Tailwind ~10KB purged)
+- HTMX + Alpine.js + UnoCSS (Vite build)
+- No SPA, SSR with Vite for asset bundling
+- Total bundle: ~32KB (HTMX 14KB + Alpine 8KB + UnoCSS ~10KB purged)
 
 ## Tooling & Quality Gates
 

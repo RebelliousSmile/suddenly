@@ -2,11 +2,18 @@
 Characters API views with Claim/Adopt/Fork logic.
 """
 
+from __future__ import annotations
+
+from typing import Any
+
 from django.db import models, transaction
+from django.db.models import QuerySet
 from django.utils import timezone
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import BaseSerializer
 
 from suddenly.characters.models import (
     Character,
@@ -32,7 +39,7 @@ from suddenly.core.serializers import (
 )
 
 
-class CharacterViewSet(viewsets.ModelViewSet):
+class CharacterViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
     """
     API endpoint for characters.
 
@@ -41,7 +48,7 @@ class CharacterViewSet(viewsets.ModelViewSet):
 
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Character]:
         queryset = Character.objects.filter(remote=False)
 
         # Filter by status
@@ -60,15 +67,15 @@ class CharacterViewSet(viewsets.ModelViewSet):
 
         return queryset.select_related("owner", "creator", "origin_game")
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> type[BaseSerializer[Any]]:
         if self.action == "retrieve":
             return CharacterDetailSerializer
         if self.action == "search":
             return CharacterSearchSerializer
         return CharacterSerializer
 
-    @action(detail=False, methods=["get"])
-    def search(self, request):
+    @action(detail=False, methods=["get"])  # type: ignore[untyped-decorator]
+    def search(self, request: Request, **kwargs: Any) -> Response:
         """
         Search characters for @mention autocomplete.
 
@@ -89,16 +96,16 @@ class CharacterViewSet(viewsets.ModelViewSet):
         serializer = CharacterSearchSerializer(characters, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=["get"])
-    def quotes(self, request, pk=None):
+    @action(detail=True, methods=["get"])  # type: ignore[untyped-decorator]
+    def quotes(self, request: Request, pk: str | None = None, **kwargs: Any) -> Response:
         """List public quotes for this character."""
         character = self.get_object()
         quotes = character.quotes.filter(visibility="public")
         serializer = QuoteSerializer(quotes, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=["get"])
-    def appearances(self, request, pk=None):
+    @action(detail=True, methods=["get"])  # type: ignore[untyped-decorator]
+    def appearances(self, request: Request, pk: str | None = None, **kwargs: Any) -> Response:
         """List reports where this character appears."""
         character = self.get_object()
         appearances = character.appearances.select_related(
@@ -118,8 +125,8 @@ class CharacterViewSet(viewsets.ModelViewSet):
 
         return Response(data)
 
-    @action(detail=True, methods=["get"])
-    def links(self, request, pk=None):
+    @action(detail=True, methods=["get"])  # type: ignore[untyped-decorator]
+    def links(self, request: Request, pk: str | None = None, **kwargs: Any) -> Response:
         """List links (claim/adopt/fork) for this character."""
         character = self.get_object()
 
@@ -135,8 +142,8 @@ class CharacterViewSet(viewsets.ModelViewSet):
     # CLAIM / ADOPT / FORK Actions
     # =================================================================
 
-    @action(detail=True, methods=["post"])
-    def claim(self, request, pk=None):
+    @action(detail=True, methods=["post"])  # type: ignore[untyped-decorator]
+    def claim(self, request: Request, pk: str | None = None, **kwargs: Any) -> Response:
         """
         Propose a Claim: "Your NPC was my PC all along."
 
@@ -182,8 +189,8 @@ class CharacterViewSet(viewsets.ModelViewSet):
         serializer = LinkRequestSerializer(link_request)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=["post"])
-    def adopt(self, request, pk=None):
+    @action(detail=True, methods=["post"])  # type: ignore[untyped-decorator]
+    def adopt(self, request: Request, pk: str | None = None, **kwargs: Any) -> Response:
         """
         Propose an Adoption: "I want to make this NPC my PC."
 
@@ -210,8 +217,8 @@ class CharacterViewSet(viewsets.ModelViewSet):
         serializer = LinkRequestSerializer(link_request)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=["post"])
-    def fork(self, request, pk=None):
+    @action(detail=True, methods=["post"])  # type: ignore[untyped-decorator]
+    def fork(self, request: Request, pk: str | None = None, **kwargs: Any) -> Response:
         """
         Propose a Fork: "I want to create a character inspired by this NPC."
 
@@ -243,7 +250,7 @@ class CharacterViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class LinkRequestViewSet(viewsets.ModelViewSet):
+class LinkRequestViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
     """
     API endpoint for link requests (Claim/Adopt/Fork proposals).
     """
@@ -251,7 +258,7 @@ class LinkRequestViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ["get", "post", "delete"]
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[LinkRequest]:
         user = self.request.user
 
         # Show requests user made or received
@@ -259,13 +266,13 @@ class LinkRequestViewSet(viewsets.ModelViewSet):
             models.Q(requester=user) | models.Q(target_character__creator=user)
         ).select_related("requester", "target_character", "proposed_character")
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> type[BaseSerializer[Any]]:
         if self.action == "create":
             return LinkRequestCreateSerializer
         return LinkRequestSerializer
 
-    @action(detail=True, methods=["post"])
-    def accept(self, request, pk=None):
+    @action(detail=True, methods=["post"])  # type: ignore[untyped-decorator]
+    def accept(self, request: Request, pk: str | None = None, **kwargs: Any) -> Response:
         """
         Accept a link request.
 
@@ -294,6 +301,7 @@ class LinkRequestViewSet(viewsets.ModelViewSet):
             target = link_request.target_character
 
             # Process based on type
+            source: Character
             if link_request.type == LinkType.CLAIM:
                 # Claim: PC "was" the NPC all along
                 source = link_request.proposed_character
@@ -338,8 +346,8 @@ class LinkRequestViewSet(viewsets.ModelViewSet):
         serializer = LinkRequestSerializer(link_request)
         return Response(serializer.data)
 
-    @action(detail=True, methods=["post"])
-    def reject(self, request, pk=None):
+    @action(detail=True, methods=["post"])  # type: ignore[untyped-decorator]
+    def reject(self, request: Request, pk: str | None = None, **kwargs: Any) -> Response:
         """
         Reject a link request.
 
@@ -368,8 +376,8 @@ class LinkRequestViewSet(viewsets.ModelViewSet):
         serializer = LinkRequestSerializer(link_request)
         return Response(serializer.data)
 
-    @action(detail=True, methods=["post"])
-    def cancel(self, request, pk=None):
+    @action(detail=True, methods=["post"])  # type: ignore[untyped-decorator]
+    def cancel(self, request: Request, pk: str | None = None, **kwargs: Any) -> Response:
         """
         Cancel a link request.
 
@@ -395,14 +403,14 @@ class LinkRequestViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class QuoteViewSet(viewsets.ModelViewSet):
+class QuoteViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
     """
     API endpoint for quotes.
     """
 
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Quote]:
         queryset = Quote.objects.filter(remote=False)
 
         if self.request.user.is_authenticated:
@@ -413,13 +421,13 @@ class QuoteViewSet(viewsets.ModelViewSet):
 
         return queryset.filter(visibility="public").select_related("character", "author")
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> type[BaseSerializer[Any]]:
         if self.action == "create":
             return QuoteCreateSerializer
         return QuoteSerializer
 
 
-class FollowViewSet(viewsets.ModelViewSet):
+class FollowViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
     """
     API endpoint for follows.
     """
@@ -427,18 +435,18 @@ class FollowViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ["get", "post", "delete"]
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Follow]:
         return Follow.objects.filter(follower=self.request.user).select_related("content_type")
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> type[BaseSerializer[Any]]:
         if self.action == "create":
             from suddenly.core.serializers import FollowCreateSerializer
 
             return FollowCreateSerializer
         return FollowSerializer
 
-    @action(detail=False, methods=["post"])
-    def toggle(self, request):
+    @action(detail=False, methods=["post"])  # type: ignore[untyped-decorator]
+    def toggle(self, request: Request, **kwargs: Any) -> Response:
         """Toggle follow status for a target."""
         from django.contrib.contenttypes.models import ContentType
 

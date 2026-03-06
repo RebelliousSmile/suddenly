@@ -2,13 +2,21 @@
 Pytest configuration and fixtures for Suddenly tests.
 """
 
-import pytest
+from __future__ import annotations
 
+from typing import Any
+
+import pytest
+from django.test import Client
+
+from suddenly.characters.models import Character
+from suddenly.games.models import Game, Report
+from suddenly.users.models import User
 from tests.factories import CharacterFactory, GameFactory, ReportFactory, UserFactory
 
 
 @pytest.fixture(autouse=True)
-def _celery_eager(settings):
+def _celery_eager(settings: Any) -> None:
     """Force Celery to execute tasks synchronously during tests."""
     from suddenly.celery import app as celery_app
 
@@ -19,9 +27,9 @@ def _celery_eager(settings):
 
 
 @pytest.fixture
-def user(db):
+def user(db: Any) -> User:
     """Create a test user."""
-    return UserFactory(
+    return UserFactory(  # type: ignore[return-value,no-untyped-call]
         username="testuser",
         email="test@example.com",
         display_name="Test User",
@@ -29,9 +37,9 @@ def user(db):
 
 
 @pytest.fixture
-def other_user(db):
+def other_user(db: Any) -> User:
     """Create another test user."""
-    return UserFactory(
+    return UserFactory(  # type: ignore[return-value,no-untyped-call]
         username="otheruser",
         email="other@example.com",
         display_name="Other User",
@@ -39,9 +47,9 @@ def other_user(db):
 
 
 @pytest.fixture
-def game(db, user):
+def game(db: Any, user: User) -> Game:
     """Create a test game."""
-    return GameFactory(
+    return GameFactory(  # type: ignore[return-value,no-untyped-call]
         title="Test Game",
         description="A test game",
         game_system="Test System",
@@ -51,9 +59,9 @@ def game(db, user):
 
 
 @pytest.fixture
-def character(db, user, game):
+def character(db: Any, user: User, game: Game) -> Character:
     """Create a test NPC character."""
-    return CharacterFactory(
+    return CharacterFactory(  # type: ignore[return-value,no-untyped-call]
         name="Test NPC",
         description="A test NPC",
         status="npc",
@@ -63,9 +71,9 @@ def character(db, user, game):
 
 
 @pytest.fixture
-def pc_character(db, user, game):
+def pc_character(db: Any, user: User, game: Game) -> Character:
     """Create a test PC character."""
-    return CharacterFactory(
+    return CharacterFactory(  # type: ignore[return-value,no-untyped-call]
         name="Test PC",
         description="A test PC",
         status="pc",
@@ -76,9 +84,9 @@ def pc_character(db, user, game):
 
 
 @pytest.fixture
-def report(db, user, game):
+def report(db: Any, user: User, game: Game) -> Report:
     """Create a test report."""
-    return ReportFactory(
+    return ReportFactory(  # type: ignore[return-value,no-untyped-call]
         title="Test Report",
         content="This is a test report content.",
         game=game,
@@ -88,7 +96,7 @@ def report(db, user, game):
 
 
 @pytest.fixture
-def api_client():
+def api_client() -> Any:
     """Create a DRF API client."""
     from rest_framework.test import APIClient
 
@@ -96,15 +104,13 @@ def api_client():
 
 
 @pytest.fixture
-def client():
+def client() -> Client:
     """Create a Django test client."""
-    from django.test import Client
-
     return Client()
 
 
 @pytest.fixture
-def authenticated_client(api_client, user):
+def authenticated_client(api_client: Any, user: User) -> Any:
     """Create an authenticated API client."""
     api_client.force_authenticate(user=user)
     return api_client

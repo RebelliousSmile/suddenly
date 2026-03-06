@@ -4,9 +4,13 @@ Character link services.
 Business logic for claim, adopt, and fork workflows.
 """
 
+from __future__ import annotations
+
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.utils import timezone
+
+from suddenly.users.models import User
 
 from .models import (
     Character,
@@ -25,7 +29,9 @@ class LinkService:
     """
 
     @staticmethod
-    def validate_claim(requester, target_character, proposed_character):
+    def validate_claim(
+        requester: User, target_character: Character, proposed_character: Character | None
+    ) -> None:
         """
         Validate a claim request.
 
@@ -58,7 +64,7 @@ class LinkService:
             raise ValidationError(f"Une demande est déjà en cours pour {target_character.name}")
 
     @staticmethod
-    def validate_adopt(requester, target_character):
+    def validate_adopt(requester: User, target_character: Character) -> None:
         """
         Validate an adopt request.
 
@@ -77,7 +83,7 @@ class LinkService:
             raise ValidationError(f"Une demande est déjà en cours pour {target_character.name}")
 
     @staticmethod
-    def validate_fork(requester, target_character):
+    def validate_fork(requester: User, target_character: Character) -> None:
         """
         Validate a fork request.
 
@@ -91,8 +97,13 @@ class LinkService:
 
     @classmethod
     def create_request(
-        cls, requester, target_character, link_type, message, proposed_character=None
-    ):
+        cls,
+        requester: User,
+        target_character: Character,
+        link_type: str,
+        message: str,
+        proposed_character: Character | None = None,
+    ) -> LinkRequest:
         """
         Create a link request after validation.
 
@@ -125,7 +136,7 @@ class LinkService:
 
     @classmethod
     @transaction.atomic
-    def accept_request(cls, request, response_message=""):
+    def accept_request(cls, request: LinkRequest, response_message: str = "") -> CharacterLink:
         """
         Accept a link request and create the link.
 
@@ -140,8 +151,9 @@ class LinkService:
             raise ValidationError("Cette demande n'est plus en attente")
 
         # Determine source character
+        source: Character
         if request.type == LinkType.CLAIM:
-            source = request.proposed_character
+            source = request.proposed_character  # type: ignore[assignment]
         elif request.type == LinkType.ADOPT:
             # Create new PC from NPC for adopter
             source = request.target_character
@@ -201,7 +213,7 @@ class LinkService:
         return link
 
     @classmethod
-    def reject_request(cls, request, response_message=""):
+    def reject_request(cls, request: LinkRequest, response_message: str = "") -> LinkRequest:
         """
         Reject a link request.
         """
@@ -219,7 +231,7 @@ class LinkService:
         return request
 
     @classmethod
-    def cancel_request(cls, request):
+    def cancel_request(cls, request: LinkRequest) -> LinkRequest:
         """
         Cancel a pending request (by requester).
         """

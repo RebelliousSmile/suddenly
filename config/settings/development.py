@@ -71,5 +71,5 @@ CSRF_TRUSTED_ORIGINS = [f"http://{DOMAIN}", "http://localhost:8000"]
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Development logging overrides
-LOGGING["root"]["level"] = "DEBUG"  # noqa: F405  # type: ignore[index]
-LOGGING["loggers"]["suddenly"]["level"] = "DEBUG"  # noqa: F405  # type: ignore[index]
+LOGGING["root"]["level"] = "DEBUG"  # type: ignore[index]  # noqa: F405
+LOGGING["loggers"]["suddenly"]["level"] = "DEBUG"  # type: ignore[index]  # noqa: F405

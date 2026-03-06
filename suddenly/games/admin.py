@@ -2,13 +2,28 @@
 Games admin configuration.
 """
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from django.contrib import admin
 
 from .models import Game, Report, ReportCast
 
+if TYPE_CHECKING:
+    _GameBase = admin.ModelAdmin[Game]
+    _ReportBase = admin.ModelAdmin[Report]
+    _ReportCastBase = admin.ModelAdmin[ReportCast]
+    _ReportCastInlineBase = admin.TabularInline[ReportCast, Report]
+else:
+    _GameBase = admin.ModelAdmin
+    _ReportBase = admin.ModelAdmin
+    _ReportCastBase = admin.ModelAdmin
+    _ReportCastInlineBase = admin.TabularInline
+
 
 @admin.register(Game)
-class GameAdmin(admin.ModelAdmin):
+class GameAdmin(_GameBase):
     list_display = ["title", "owner", "game_system", "is_public", "remote", "created_at"]
     list_filter = ["is_public", "remote", "game_system", "created_at"]
     search_fields = ["title", "description", "owner__username"]
@@ -16,14 +31,14 @@ class GameAdmin(admin.ModelAdmin):
     ordering = ["-created_at"]
 
 
-class ReportCastInline(admin.TabularInline):
+class ReportCastInline(_ReportCastInlineBase):
     model = ReportCast
     extra = 0
     raw_id_fields = ["character"]
 
 
 @admin.register(Report)
-class ReportAdmin(admin.ModelAdmin):
+class ReportAdmin(_ReportBase):
     list_display = ["title", "game", "author", "status", "published_at", "created_at"]
     list_filter = ["status", "remote", "created_at", "published_at"]
     search_fields = ["title", "content", "game__title", "author__username"]
@@ -33,7 +48,7 @@ class ReportAdmin(admin.ModelAdmin):
 
 
 @admin.register(ReportCast)
-class ReportCastAdmin(admin.ModelAdmin):
+class ReportCastAdmin(_ReportCastBase):
     list_display = ["report", "character", "new_character_name", "role", "created_at"]
     list_filter = ["role", "created_at"]
     search_fields = ["report__title", "character__name", "new_character_name"]

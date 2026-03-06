@@ -48,7 +48,7 @@ class Game(models.Model):
             models.Index(fields=["is_public", "updated_at"]),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
     @property
@@ -108,11 +108,11 @@ class Report(models.Model):
             models.Index(fields=["status"]),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title or f"Report {self.id}"
 
     @property
-    def is_published(self):
+    def is_published(self) -> bool:
         return self.status == ReportStatus.PUBLISHED
 
 
@@ -166,10 +166,10 @@ class ReportCast(models.Model):
             models.Index(fields=["report"]),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         name = self.character.name if self.character else self.new_character_name
         return f"{name} in {self.report} cast"
 
-    def is_new_character(self):
+    def is_new_character(self) -> bool:
         """Returns True if this cast entry will create a new NPC."""
-        return self.character is None and self.new_character_name
+        return self.character is None and bool(self.new_character_name)

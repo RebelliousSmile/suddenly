@@ -68,6 +68,6 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 CSRF_TRUSTED_ORIGINS = [f"https://{DOMAIN}"]
 
 # Production logging override
-LOGGING["loggers"]["django"]["level"] = os.environ.get(  # noqa: F405
+LOGGING["loggers"]["django"]["level"] = os.environ.get(  # type: ignore[index]  # noqa: F405
     "DJANGO_LOG_LEVEL", "INFO"
-)  # type: ignore[index]
+)
