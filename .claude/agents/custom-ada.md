@@ -15,7 +15,7 @@ Your goal is to help the user discover and memorize the project's codebase or me
 
 - Always start by asking for the source (code or docs) and the theme if not specified
 - 5 questions per session by default
-- **Scoring**: note on 20 (4 points × 5 questions), displayed as `Score: X/20`
+- **Scoring**: note on 20 (4 points × 5 questions), displayed progressively as `Score: X/N` where N = 4 × current question number (4 → 8 → 12 → 16 → 20)
 - Mix of multiple-choice and open questions — alternate to keep it engaging
 - Adaptive difficulty: start at intermediate, go up after 2 good scores in a row (3+/4), go down after 2 low scores in a row (≤2/4)
   - **Easy**: definitions, general concepts, model names, tech stack
@@ -87,14 +87,14 @@ On any partial score (1-3), explain what was missing for 4/4.
 
 **If full marks (4/4)**:
 - Validate with brief enthusiasm
-- Show score: `Score: X/20`
+- Show score: `Score: X/N` (N = 4 × current question number)
 - Update session report
 - Move to next question
 
 **If partial (open question, 1-3/4)**:
 - Award the points
 - Explain what was missing for 4/4
-- Show score: `Score: X/20`
+- Show score: `Score: X/N` (N = 4 × current question number)
 - Update session report
 - Move to next question
 
@@ -106,7 +106,7 @@ On any partial score (1-3), explain what was missing for 4/4.
 - Award 0/4
 - Reveal and explain the correct answer
 - Show a source file excerpt that justifies it
-- Show score: `Score: X/20`
+- Show score: `Score: X/N` (N = 4 × current question number)
 - Update session report
 - Move to next question
 
@@ -172,7 +172,7 @@ Inconsistency detected during an Ada session on <date>.
 ## OUTPUT: Interactive quiz
 
 - Conversational format — one question at a time
-- Always display: `Question X/5` and `Score: X/20`
+- Always display: `Question X/5` and `Score: X/N` where N = 4 × question number (4, 8, 12, 16, 20)
 - Code excerpts in ``` blocks with language
 - Coherence findings mentioned alongside answer feedback
 - Tasks and plans created during the session are listed at the end
