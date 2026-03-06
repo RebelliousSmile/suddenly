@@ -17,6 +17,11 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 DOMAIN = os.environ["DOMAIN"]
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", DOMAIN).split(",")
 
+# Railway provides RAILWAY_PUBLIC_DOMAIN for the auto-generated hostname
+_railway_domain = os.environ.get("RAILWAY_PUBLIC_DOMAIN")
+if _railway_domain and _railway_domain not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(_railway_domain)
+
 # Production database (required)
 _db_url = urlparse(os.environ["DATABASE_URL"])
 DATABASES = {
@@ -66,6 +71,8 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 CSRF_TRUSTED_ORIGINS = [f"https://{DOMAIN}"]
+if _railway_domain:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{_railway_domain}")
 
 # Production logging override
 LOGGING["loggers"]["django"]["level"] = os.environ.get(  # type: ignore[index]  # noqa: F405
