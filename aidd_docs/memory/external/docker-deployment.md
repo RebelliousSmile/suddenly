@@ -51,8 +51,8 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Dépendances Python
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt gunicorn
+COPY pyproject.toml .
+RUN pip install --no-cache-dir -e ".[federation]"
 
 # Code source
 COPY . .

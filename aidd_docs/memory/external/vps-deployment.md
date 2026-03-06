@@ -91,7 +91,7 @@ cd app
 python3.12 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install --upgrade pip && pip install -e ".[federation]"
 pip install gunicorn
 EOF
 ```
@@ -155,7 +155,7 @@ ExecStart=/opt/suddenly/app/venv/bin/gunicorn \
     --bind unix:/opt/suddenly/suddenly.sock \
     --access-logfile /var/log/suddenly/access.log \
     --error-logfile /var/log/suddenly/error.log \
-    config.wsgi:application
+    suddenly.wsgi:application
 ExecReload=/bin/kill -s HUP $MAINPID
 Restart=on-failure
 RestartSec=5
@@ -391,7 +391,7 @@ sudo -u suddenly bash << 'EOF'
 cd /opt/suddenly/app
 git pull origin main
 source venv/bin/activate
-pip install -r requirements.txt
+pip install --upgrade pip && pip install -e ".[federation]"
 python manage.py migrate
 python manage.py collectstatic --noinput
 EOF

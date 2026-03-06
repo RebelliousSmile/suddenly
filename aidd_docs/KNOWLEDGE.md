@@ -22,6 +22,7 @@ Project-specific knowledge files: architecture, standards, and reference documen
 |------|-------------|
 | [bookwyrm-architecture.md](external/bookwyrm-architecture.md) | BookWyrm — Architecture de Référence |
 | [claim-adopt-fork.md](external/claim-adopt-fork.md) | Flows — Claim / Adopt / Fork |
+| [alwaysdata-deployment.md](external/alwaysdata-deployment.md) | Déploiement sur Alwaysdata |
 | [docker-deployment.md](external/docker-deployment.md) | Déploiement avec Docker |
 | [pr-template.md](external/pr-template.md) | Pull Request — Template |
 | [task-workflow.md](external/task-workflow.md) | Task Workflow (historique) |
