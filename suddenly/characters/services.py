@@ -49,11 +49,11 @@ class LinkService:
         if not proposed_character:
             raise ValidationError("Un claim nécessite un PJ existant")
 
-        if proposed_character.owner != requester:
-            raise ValidationError("Vous ne pouvez claim qu'avec un de vos propres PJ")
-
         if proposed_character.status != CharacterStatus.PC:
             raise ValidationError(f"{proposed_character.name} n'est pas un PJ")
+
+        if proposed_character.owner != requester:
+            raise ValidationError("Vous ne pouvez claim qu'avec un de vos propres PJ")
 
         # Check for pending requests
         pending = LinkRequest.objects.filter(
