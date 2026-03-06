@@ -1,5 +1,7 @@
 """Views for users app."""
 
+from __future__ import annotations
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
@@ -11,7 +13,7 @@ from .forms import ProfileForm
 from .models import User
 
 
-class ProfileView(DetailView[User]):
+class ProfileView(DetailView):  # type: ignore[type-arg]
     """Public profile view for a user."""
 
     model = User
@@ -30,7 +32,7 @@ class ProfileView(DetailView[User]):
         return context
 
 
-class ProfileEditView(LoginRequiredMixin, UpdateView[User, ProfileForm]):
+class ProfileEditView(LoginRequiredMixin, UpdateView):  # type: ignore[type-arg]
     """Edit view for the authenticated user's own profile."""
 
     model = User

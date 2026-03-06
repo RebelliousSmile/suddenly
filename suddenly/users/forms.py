@@ -1,5 +1,7 @@
 """Forms for users app."""
 
+from __future__ import annotations
+
 import json
 
 from django import forms
@@ -7,7 +9,7 @@ from django import forms
 from .models import User
 
 
-class ProfileForm(forms.ModelForm[User]):
+class ProfileForm(forms.ModelForm):  # type: ignore[type-arg]
     """Formulaire d'édition du profil utilisateur."""
 
     class Meta:
