@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Déconnexion — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-12">
+    <div class="container-app max-w-md">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+            Déconnexion
+        </h1>
+
+        <div class="card card-body text-center">
+            <p class="text-gray-600 mb-6">
+                Êtes-vous sûr de vouloir vous déconnecter ?
+            </p>
+
+            <form method="post" action="{% url 'account_logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-primary">
+                    Se déconnecter
+                </button>
+            </form>
+
+            <p class="mt-4">
+                <a href="{% url 'core:home' %}" class="link text-sm">
+                    Retour à l'accueil
+                </a>
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

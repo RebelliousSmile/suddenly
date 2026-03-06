@@ -3,7 +3,8 @@ Pytest configuration and fixtures for Suddenly tests.
 """
 
 import pytest
-from django.contrib.auth import get_user_model
+
+from tests.factories import CharacterFactory, GameFactory, ReportFactory, UserFactory
 
 
 @pytest.fixture(autouse=True)
@@ -16,85 +17,73 @@ def _celery_eager(settings):
     celery_app.conf.task_always_eager = True
     celery_app.conf.task_eager_propagates = True
 
-User = get_user_model()
-
 
 @pytest.fixture
 def user(db):
     """Create a test user."""
-    return User.objects.create_user(
+    return UserFactory(
         username="testuser",
         email="test@example.com",
-        password="testpass123",
-        display_name="Test User"
+        display_name="Test User",
     )
 
 
 @pytest.fixture
 def other_user(db):
     """Create another test user."""
-    return User.objects.create_user(
+    return UserFactory(
         username="otheruser",
         email="other@example.com",
-        password="testpass123",
-        display_name="Other User"
+        display_name="Other User",
     )
 
 
 @pytest.fixture
 def game(db, user):
     """Create a test game."""
-    from suddenly.games.models import Game
-    
-    return Game.objects.create(
+    return GameFactory(
         title="Test Game",
         description="A test game",
         game_system="Test System",
         owner=user,
-        is_public=True
+        is_public=True,
     )
 
 
 @pytest.fixture
 def character(db, user, game):
     """Create a test NPC character."""
-    from suddenly.characters.models import Character
-    
-    return Character.objects.create(
+    return CharacterFactory(
         name="Test NPC",
         description="A test NPC",
         status="npc",
         creator=user,
-        origin_game=game
+        origin_game=game,
     )
 
 
 @pytest.fixture
 def pc_character(db, user, game):
     """Create a test PC character."""
-    from suddenly.characters.models import Character
-    
-    return Character.objects.create(
+    return CharacterFactory(
         name="Test PC",
         description="A test PC",
         status="pc",
         owner=user,
         creator=user,
-        origin_game=game
+        origin_game=game,
     )
 
 
 @pytest.fixture
 def report(db, user, game):
     """Create a test report."""
-    from suddenly.games.models import Report
-    
-    return Report.objects.create(
+    return ReportFactory(
         title="Test Report",
         content="This is a test report content.",
         game=game,
         author=user,
-        status="draft"
+        status="draft",
     )
 
 

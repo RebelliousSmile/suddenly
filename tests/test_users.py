@@ -3,9 +3,10 @@ Tests for the users app: model constraints, AP URLs, views, and form.
 """
 
 import pytest
+from django.conf import settings
 
 from suddenly.users.models import User
-
+from tests.factories import UserFactory
 
 # ---------------------------------------------------------------------------
 # User.email — unique constraint with null support
@@ -201,3 +202,125 @@ class TestProfileForm:
         )
         assert form.is_valid(), form.errors
         assert form.cleaned_data["preferred_languages"] == ["fr", "en"]
+
+
+# ---------------------------------------------------------------------------
+# Signup — AP initialization via signal
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+class TestSignupAPInitialization:
+    """Signup creates a local user with ActivityPub fields initialized."""
+
+    def test_signup_creates_user_with_ap_fields(self, client):
+        response = client.post(
+            "/accounts/signup/",
+            {
+                "username": "newplayer",
+                "email": "newplayer@example.com",
+                "password1": "Str0ngP@ssword!",
+                "password2": "Str0ngP@ssword!",
+            },
+        )
+        assert response.status_code == 302
+
+        user = User.objects.get(username="newplayer")
+        expected_ap_id = f"{settings.AP_BASE_URL}/users/newplayer"
+
+        assert user.ap_id == expected_ap_id
+        assert user.public_key.startswith("-----BEGIN PUBLIC KEY-----")
+        assert user.private_key.startswith("-----BEGIN PRIVATE KEY-----")
+        assert user.inbox_url == f"{expected_ap_id}/inbox"
+        assert user.outbox_url == f"{expected_ap_id}/outbox"
+        assert user.remote is False
+
+    def test_signup_with_duplicate_username_fails(self, client):
+        UserFactory(username="taken")
+        count_before = User.objects.count()
+
+        response = client.post(
+            "/accounts/signup/",
+            {
+                "username": "taken",
+                "email": "unique@example.com",
+                "password1": "Str0ngP@ssword!",
+                "password2": "Str0ngP@ssword!",
+            },
+        )
+        assert response.status_code == 200
+        assert User.objects.count() == count_before
+
+    def test_signup_with_duplicate_email_fails(self, client):
+        UserFactory(email="taken@example.com")
+        count_before = User.objects.count()
+
+        response = client.post(
+            "/accounts/signup/",
+            {
+                "username": "uniqueuser",
+                "email": "taken@example.com",
+                "password1": "Str0ngP@ssword!",
+                "password2": "Str0ngP@ssword!",
+            },
+        )
+        assert response.status_code == 200
+        assert User.objects.count() == count_before
+
+    def test_signup_with_weak_password_fails(self, client):
+        count_before = User.objects.count()
+
+        response = client.post(
+            "/accounts/signup/",
+            {
+                "username": "weakuser",
+                "email": "weak@example.com",
+                "password1": "123",
+                "password2": "123",
+            },
+        )
+        assert response.status_code == 200
+        assert User.objects.count() == count_before
+
+
+# ---------------------------------------------------------------------------
+# Remote user — no keys
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+class TestRemoteUserNoKeys:
+    """Remote users created via factory have no RSA keys."""
+
+    def test_remote_user_has_no_keys(self):
+        remote = UserFactory(remote=True)
+        assert not remote.public_key
+        assert not remote.private_key
+
+
+# ---------------------------------------------------------------------------
+# Factory smoke test
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+class TestUserFactorySmoke:
+    """Basic factory sanity checks."""
+
+    def test_batch_creates_unique_users(self):
+        users = UserFactory.create_batch(5)
+        usernames = {u.username for u in users}
+        emails = {u.email for u in users}
+        assert len(usernames) == 5
+        assert len(emails) == 5
+
+
+# ---------------------------------------------------------------------------
+# E2E placeholder
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.e2e
+def test_signup_journey():
+    """Full registration journey — to be implemented with Playwright."""
+    pytest.skip("Playwright not configured yet")

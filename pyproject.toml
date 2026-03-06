@@ -38,6 +38,7 @@ dev = [
     "pytest-django>=4.7",
     "pytest-cov>=4.1",
     "pytest-mock>=3.12",
+    "pytest-playwright>=0.4",
     "factory-boy>=3.3",
     "ruff>=0.2",
     "mypy>=1.8",
@@ -63,7 +64,10 @@ django_settings_module = "config.settings.development"
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings.development"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
-addopts = "-v --tb=short"
+addopts = "-v --tb=short -m 'not e2e'"
+markers = [
+    "e2e: End-to-end browser tests",
+]
 filterwarnings = [
     "ignore::DeprecationWarning",
     "ignore::PendingDeprecationWarning",
