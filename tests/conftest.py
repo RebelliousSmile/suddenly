@@ -5,6 +5,17 @@ Pytest configuration and fixtures for Suddenly tests.
 import pytest
 from django.contrib.auth import get_user_model
 
+
+@pytest.fixture(autouse=True)
+def _celery_eager(settings):
+    """Force Celery to execute tasks synchronously during tests."""
+    from suddenly.celery import app as celery_app
+
+    settings.CELERY_TASK_ALWAYS_EAGER = True
+    settings.CELERY_TASK_EAGER_PROPAGATES = True
+    celery_app.conf.task_always_eager = True
+    celery_app.conf.task_eager_propagates = True
+
 User = get_user_model()
 
 
