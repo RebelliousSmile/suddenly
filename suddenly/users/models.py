@@ -6,6 +6,7 @@ own characters, and federate with other instances.
 """
 
 import uuid
+from typing import Any
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -57,10 +58,10 @@ class User(AbstractUser):
         ordering = ["-created_at"]
         # username, email, ap_id are unique → implicit indexes; remote has db_index=True
 
-    def save(self, *args: object, **kwargs: object) -> None:
+    def save(self, *args: Any, **kwargs: Any) -> None:
         # Normalize empty email to None so NULL uniqueness works in PostgreSQL
         if not self.email:
-            self.email = None  # type: ignore[assignment]
+            self.email = None
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
