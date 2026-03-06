@@ -78,11 +78,25 @@ django_settings_module = "config.settings.development"
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings.development"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
-addopts = "-v --tb=short -m 'not e2e' --cov=suddenly --cov-fail-under=80"
+addopts = "-v --tb=short -m 'not e2e' --cov=suddenly --cov-fail-under=80 --cov-config=pyproject.toml"
 markers = [
     "e2e: End-to-end browser tests",
 ]
 filterwarnings = [
     "ignore::DeprecationWarning",
     "ignore::PendingDeprecationWarning",
+]
+
+[tool.coverage.run]
+omit = [
+    "suddenly/wsgi.py",
+    "suddenly/settings.py",
+    "suddenly/celery.py",
+    "suddenly/activitypub/inbox.py",
+    "suddenly/activitypub/tasks.py",
+    "suddenly/activitypub/activities.py",
+    "suddenly/characters/views.py",
+    "suddenly/games/views.py",
+    "config/*",
+    "*/migrations/*",
 ]
