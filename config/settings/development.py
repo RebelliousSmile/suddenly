@@ -13,14 +13,6 @@ DEBUG = True
 SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
 DOMAIN = os.environ.get("DOMAIN", "localhost:8000")
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
-    },
-}
 
 # Local PostgreSQL
 _db_url = urlparse(
