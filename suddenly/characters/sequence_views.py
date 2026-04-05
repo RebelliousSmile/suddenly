@@ -26,6 +26,7 @@ def _get_sequence_for_user(pk: str, user: object) -> SharedSequence:
             "link__target",
             "link__link_request",
             "link__link_request__requester",
+            "link__link_request__target_character__creator",
             "last_edited_by",
             "publication_proposed_by",
         ),

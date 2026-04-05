@@ -81,17 +81,18 @@
                         <span class="i-lucide-save"></span>
                         Sauvegarder
                     </button>
-                    {% if not sequence.publication_proposed_by %}
-                        <form method="post" action="{% url 'characters:sequence_propose' pk=sequence.pk %}" class="inline">
-                            {% csrf_token %}
-                            <button type="submit" class="btn-secondary">
-                                <span class="i-lucide-send"></span>
-                                Proposer la publication
-                            </button>
-                        </form>
-                    {% endif %}
                 </div>
             </form>
+
+            {% if not sequence.publication_proposed_by %}
+                <form method="post" action="{% url 'characters:sequence_propose' pk=sequence.pk %}" class="mt-4">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-secondary">
+                        <span class="i-lucide-send"></span>
+                        Proposer la publication
+                    </button>
+                </form>
+            {% endif %}
         {% else %}
             <!-- Published: read-only -->
             <div class="card card-body">
