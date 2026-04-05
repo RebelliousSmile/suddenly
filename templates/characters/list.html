@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Personnages — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app">
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">Personnages</h1>
+
+        <!-- Search + filters -->
+        <div class="mb-6 space-y-3">
+            <input type="text"
+                   name="q"
+                   value="{{ query }}"
+                   placeholder="Rechercher un personnage..."
+                   class="form-input"
+                   hx-get="{% url 'characters:search' %}"
+                   hx-trigger="keyup changed delay:300ms"
+                   hx-target="#character-results"
+                   hx-include="[name='status'],[name='system']">
+
+            <div class="flex gap-3">
+                <select name="status" class="form-input w-auto"
+                        hx-get="{% url 'characters:search' %}"
+                        hx-trigger="change"
+                        hx-target="#character-results"
+                        hx-include="[name='q'],[name='system']">
+                    <option value="">Tous les statuts</option>
+                    {% for value, label in statuses %}
+                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <input type="text"
+                       name="system"
+                       value="{{ system_filter }}"
+                       placeholder="Système de jeu..."
+                       class="form-input w-auto"
+                       hx-get="{% url 'characters:search' %}"
+                       hx-trigger="keyup changed delay:500ms"
+                       hx-target="#character-results"
+                       hx-include="[name='q'],[name='status']">
+            </div>
+        </div>
+
+        <!-- Results (swapped by HTMX) -->
+        <div id="character-results">
+            {% include "characters/_list_results.html" %}
+        </div>
+    </div>
+</section>
+{% endblock %}

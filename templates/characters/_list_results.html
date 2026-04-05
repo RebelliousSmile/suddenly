@@ -1,0 +1,48 @@
+{# Partial: character search results (swapped by HTMX) #}
+
+{% if characters %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for character in characters %}
+            <a href="{% url 'characters:detail' slug=character.slug %}"
+               class="card card-hover card-body block">
+                <div class="flex items-center gap-3 mb-2">
+                    {% if character.avatar %}
+                        <img src="{{ character.avatar.url }}" alt="{{ character.name }}" class="avatar-md">
+                    {% else %}
+                        <span class="avatar-md avatar-placeholder">
+                            <span class="i-lucide-user"></span>
+                        </span>
+                    {% endif %}
+                    <div class="min-w-0">
+                        <h3 class="font-semibold text-gray-900 truncate">{{ character.name }}</h3>
+                        <span class="badge-{{ character.status|default:'available' }} text-xs">
+                            {{ character.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+
+                {% if character.origin_game %}
+                    <p class="text-xs text-gray-500 truncate">
+                        <span class="i-lucide-book-open text-xs mr-1"></span>
+                        {{ character.origin_game.title }}
+                    </p>
+                {% endif %}
+
+                {% if character.description %}
+                    <p class="text-sm text-gray-600 line-clamp-2 mt-2">{{ character.description }}</p>
+                {% endif %}
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-12">
+        <span class="i-lucide-search-x text-4xl text-gray-300 mb-4 block"></span>
+        <p class="text-gray-500">
+            {% if query %}
+                Aucun personnage trouvé pour « {{ query }} ».
+            {% else %}
+                Aucun personnage pour le moment.
+            {% endif %}
+        </p>
+    </div>
+{% endif %}
