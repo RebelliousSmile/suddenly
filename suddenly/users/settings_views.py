@@ -52,7 +52,12 @@ def export_follows_csv(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def import_follows_csv(request: HttpRequest) -> HttpResponse:
-    """Import follows from Mastodon-compatible CSV (US-32)."""
+    """Import follows from Mastodon-compatible CSV (US-32).
+
+    PLACEHOLDER: Parses CSV and counts rows but does NOT create Follow
+    objects yet. WebFinger resolution needed to resolve remote addresses
+    to local/remote User objects. Tracked as post-MVP.
+    """
     if request.method == "POST" and request.FILES.get("csv_file"):
         csv_file = request.FILES["csv_file"]
         decoded = csv_file.read().decode("utf-8")
@@ -62,7 +67,7 @@ def import_follows_csv(request: HttpRequest) -> HttpResponse:
         for row in reader:
             address = row.get("Account address", "").strip()
             if address:
-                # TODO: resolve via WebFinger and create Follow
+                # TODO(post-MVP): resolve address via WebFinger, then create Follow
                 imported += 1
 
         return render(

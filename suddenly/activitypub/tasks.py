@@ -204,22 +204,23 @@ def deliver_activity(
     from .signatures import sign_request
 
     try:
-        body = json_module.dumps(activity).encode()
         headers = {
             "Content-Type": "application/activity+json",
             "Accept": "application/activity+json",
         }
 
-        # Sign request if keys are available
+        # Sign request (pass dict — sign_request calls json.dumps internally)
         if actor_key_id and private_key_pem:
             headers = sign_request(
                 method="POST",
                 url=inbox_url,
                 headers=headers,
-                body=body,
+                body=activity,
                 key_id=actor_key_id,
                 private_key_pem=private_key_pem,
             )
+
+        body = json_module.dumps(activity).encode()
 
         with httpx.Client(timeout=30) as client:
             response = client.post(inbox_url, content=body, headers=headers)
