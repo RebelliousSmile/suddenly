@@ -1,4 +1,4 @@
-# Wireframes — Suddenly MVP
+# Wireframes — Suddenly
 
 **Date** : 2026-04-05
 **Design system** : UnoCSS + HTMX + Alpine.js
@@ -13,22 +13,57 @@
 | `03-auth.md` | Login, signup, logout | US-01 |
 | `04-profile.md` | Profil public, edition profil | US-01 |
 | `05-games.md` | Liste parties, detail partie, creation partie | US-02, US-03 |
-| `06-reports.md` | Liste CRs, detail CR, editeur CR + cast | US-04, US-05, US-13 |
-| `07-characters.md` | Liste persos, fiche perso, recherche FTS | US-06, US-07 |
-| `08-quotes.md` | Citations sur fiche perso, ajout citation | US-08 |
-| `09-links.md` | Demande claim/adopt/fork, arbitrage, SharedSequence | US-09 a US-11, US-18-19 |
-| `10-feed.md` | Fil d'actualite, follow/unfollow | US-12 |
-| `11-notifications.md` | Centre de notifications | US-20, US-21 |
+| `06-reports.md` | Detail CR, editeur CR + cast + @mentions | US-04, US-05, US-13 |
+| `07-characters.md` | Liste FTS, fiche perso, variantes (PJ, fork, distant, revoque) | US-06, US-07, US-17, US-22 |
+| `08-quotes.md` | Citations sur fiche perso, ajout HTMX | US-08 |
+| `09-links.md` | Modals claim/adopt/fork, file d'attente, revocation, cross-instance, SharedSequence | US-09 a US-11, US-15, US-16, US-18-19, US-23 |
+| `10-feed.md` | Fil d'actualite, bouton follow, page explorer | US-12 |
+| `11-notifications.md` | Centre de notifications, badge, parametres canal | US-20, US-21 |
 | `12-gm-dashboard.md` | Dashboard GM, vue "Mes PNJ", arbitrage inline | US-14 |
-| `13-admin.md` | Dashboard admin, signalements, gestion instances | US-25, US-26, US-27 |
+| `13-admin.md` | Dashboard admin, signalements, gestion instances | US-25, US-26 |
+| `14-federation.md` | Recherche federee, profil distant, rendu Mastodon, NodeInfo/WebFinger | US-22, US-24 |
+| `15-settings.md` | Compte, securite, langues, federation, donnees, migration | US-02 (deletion) |
+| `16-misc.md` | Onboarding 3 etapes, modal signalement, pages erreur (404/403/500) | US-27 |
 
 ## Couverture par persona
 
 | Persona | Wireframes | Couverture |
 |---------|-----------|------------|
-| **Joueur solo** | 01-11 | Complet — inscription, parties, CRs, persos, citations, liens, feed, notifs |
-| **Game Master** | 06, 09, 12 | Complet — editeur cast, arbitrage demandes, dashboard GM, vue PNJ |
-| **Admin d'instance** | 13 | Complet (post-MVP) — moderation, signalements, gestion instances |
+| **Joueur solo** | 01-11, 14-16 | Complet — inscription, profil, parties, CRs, persos, citations, liens, feed, notifs, recherche federee, settings, onboarding |
+| **Game Master** | 06, 09, 12 | Complet — editeur cast, arbitrage demandes (page + inline), dashboard GM, vue PNJ avec file d'attente |
+| **Admin d'instance** | 13 | Complet — moderation, signalements, gestion instances (bloquer/limiter/federer) |
+
+## Couverture des User Stories
+
+| US | Titre | Wireframe | Statut |
+|----|-------|-----------|--------|
+| US-01 | Creer mon compte | 03, 04 | Couvert |
+| US-02 | Creer ma campagne | 05 | Couvert |
+| US-03 | Reconstituer campagne passee | 05 | Couvert |
+| US-04 | Ecrire et publier un CR | 06 | Couvert |
+| US-05 | Mentionner des personnages | 06 | Couvert |
+| US-06 | Voir la fiche d'un personnage | 07 | Couvert |
+| US-07 | Rechercher des personnages | 07 | Couvert |
+| US-08 | Ajouter une citation | 08 | Couvert |
+| US-09 | Etre notifie d'une demande | 09, 11 | Couvert |
+| US-10 | Envoyer une demande d'Adopt | 09 | Couvert |
+| US-11 | Accepter ou refuser | 09 | Couvert |
+| US-12 | Suivre une partie ou un joueur | 10 | Couvert |
+| US-13 | Planifier la distribution | 06 | Couvert |
+| US-14 | Arbitrer les demandes | 09, 12 | Couvert |
+| US-15 | File d'attente QUEUED | 09 | Couvert |
+| US-16 | Revoquer un lien | 07, 09 | Couvert |
+| US-17 | Fork en chaine | 07 | Couvert |
+| US-18 | Co-ecrire SharedSequence | 09 | Couvert |
+| US-19 | Valider et publier Sequence | 09 | Couvert |
+| US-20 | Notifications in-app | 11 | Couvert |
+| US-21 | Preferences de notification | 11 | Couvert |
+| US-22 | Suivre cross-instance | 14 | Couvert |
+| US-23 | Demande cross-instance | 09, 14 | Couvert |
+| US-24 | Voir depuis Mastodon | 14 | Couvert |
+| US-25 | Moderer le contenu | 13 | Couvert |
+| US-26 | Bloquer/limiter instance | 13 | Couvert |
+| US-27 | Signaler un contenu | 16 | Couvert |
 
 ## Conventions
 

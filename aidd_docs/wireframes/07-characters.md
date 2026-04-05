@@ -125,11 +125,57 @@ Seuls les PNJ disponibles (status=NPC) montrent les boutons d'action.
 
 ### Fiche personnage — variante PJ (status != NPC)
 
-Les boutons d'action disparaissent. A la place :
+Les boutons Adopter/Reclamer disparaissent. A la place :
 
 ```
 |  Statut : (bleu) PJ actif                                       |
 |  Proprietaire : @bob                                             |
 |  Lien : Adopte depuis le 10 fev 2026                            |
 |  Sequence partagee : "La rencontre au carrefour"                 |
+|                                                                  |
+|  [Deriver ce personnage]     <- Fork toujours disponible (US-17) |
+|  [Renoncer a ce personnage]* <- visible si proprietaire (US-16)  |
+```
+
+*Renonciation : voir modal dans `09-links.md`.
+
+### Fiche personnage — variante PJ issu d'un Fork (US-17)
+
+Le bouton [Deriver] est visible car un PJ forke peut etre re-forke.
+La demande est envoyee au **proprietaire** (pas au createur original).
+
+```
+|  Statut : (violet) Derive                                        |
+|  Proprietaire : @bob                                             |
+|  Parent : Viktor (PNJ de @alice)                                 |
+|  Lien : Fork depuis le 5 mars 2026                              |
+|                                                                  |
+|  [Deriver ce personnage]  -> demande envoyee a @bob              |
+```
+
+### Fiche personnage — variante lien revoque (US-16)
+
+```
+|  Statut : (vert) PNJ disponible                                  |
+|  Ancien lien : (red barré) Adopte par @bob (revoque 10 mars)    |
+|  Sequence : "La rencontre au carrefour" (lien revoque)           |
+|                                                                  |
+|  [Adopter]  [Reclamer]  [Deriver]                                |
+```
+
+### Fiche personnage — variante acteur distant (US-22)
+
+```
+|  +----------+                                                    |
+|  |          |  Viktor                                            |
+|  | (avatar) |  (vert) PNJ disponible                             |
+|  |  (xl)    |  (globe) suddenly.games                            |
+|  |          |                                                    |
+|  +----------+  Origine : City of Mist                            |
+|                Cree par : @alice@suddenly.games                   |
+|                                                                  |
+|  (info) Ce personnage est heberge sur une instance distante.     |
+|  Les interactions passent par ActivityPub.                        |
+|                                                                  |
+|  [Suivre]  [Adopter]  [Reclamer]  [Deriver]                     |
 ```

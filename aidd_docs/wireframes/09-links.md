@@ -207,3 +207,202 @@ Accessible depuis le header (notification badge) ou le profil.
 ```
 
 La publication requiert la validation des deux participants.
+
+---
+
+## File d'attente QUEUED — US-15
+
+### Demande sur un PNJ qui a deja une demande PENDING
+
+La modal d'Adopt/Claim/Fork affiche un avertissement supplementaire :
+
+```
++----------------------------------------------------------+
+|                                                    [x]   |
+|  Adopter Viktor                                          |
+|                                                          |
+|  (alert-triangle) Viktor a deja 1 demande en attente.    |
+|  Votre demande sera mise en file d'attente (QUEUED).     |
+|  Vous serez notifie si elle devient traitable.            |
+|                                                          |
+|  Votre proposition narrative                              |
+|  {______________________________________________________}|
+|  {______________________________________________________}|
+|                                                          |
+|         [Envoyer (file d'attente)]   Annuler             |
+|                                                          |
++----------------------------------------------------------+
+```
+
+### Carte de demande QUEUED (vue envoyees)
+
+```
++------------------------------------------------------------+
+| (gray) EN FILE D'ATTENTE (#2)                 il y a 3j   |
+|                                                             |
+| Vous voulez ADOPTER Viktor (PNJ de @alice)                 |
+| Position dans la file : 2e                                  |
+|                                                             |
+| (info) Si la demande #1 est refusee, la votre passera     |
+| automatiquement en attente de traitement.                   |
+|                                                             |
+| [Annuler ma demande]                                       |
++------------------------------------------------------------+
+```
+
+### Promotion automatique (notification)
+
+Quand la demande precedente est refusee :
+
+```
++------------------------------------------------------------+
+| (bell) Votre demande d'Adopt sur Viktor est maintenant     |
+| traitable ! @alice peut desormais examiner votre           |
+| proposition.                                                |
++------------------------------------------------------------+
+```
+
+---
+
+## Revocation de lien — US-16
+
+### Revocation par le createur (avant publication SharedSequence)
+
+Accessible depuis la fiche personnage (section "Lien actif") ou le dashboard GM.
+
+```
++----------------------------------------------------------+
+|                                                    [x]   |
+|  Revoquer le lien avec Viktor                            |
+|                                                          |
+|  (alert) Viktor est actuellement adopte par @bob.        |
+|  La Sequence Partagee est encore en brouillon.            |
+|                                                          |
+|  En revoquant :                                           |
+|  - Le lien sera supprime                                  |
+|  - Viktor redeviendra PNJ disponible                      |
+|  - @bob sera notifie                                      |
+|  - Le brouillon de la Sequence sera supprime              |
+|                                                          |
+|  Raison (envoyee a @bob)                                 |
+|  {______________________________________________________}|
+|  {______________________________________________________}|
+|                                                          |
+|           [Revoquer le lien]   Annuler                    |
+|                                                          |
++----------------------------------------------------------+
+```
+
+### Revocation par le createur (apres publication)
+
+```
++----------------------------------------------------------+
+|                                                    [x]   |
+|  Revoquer le lien avec Viktor                            |
+|                                                          |
+|  (alert) La Sequence Partagee "La rencontre au           |
+|  carrefour" est deja publiee.                             |
+|                                                          |
+|  En revoquant :                                           |
+|  - Le lien sera marque comme REVOQUE (pas supprime)       |
+|  - Viktor redeviendra PNJ disponible                      |
+|  - La Sequence restera visible avec mention               |
+|    "lien revoque"                                         |
+|  - @bob sera notifie                                      |
+|                                                          |
+|  Raison (envoyee a @bob)                                 |
+|  {______________________________________________________}|
+|                                                          |
+|           [Revoquer le lien]   Annuler                    |
+|                                                          |
++----------------------------------------------------------+
+```
+
+### Renonciation par l'adoptant
+
+Accessible depuis la fiche du personnage adopte (section "Mon lien").
+
+```
++----------------------------------------------------------+
+|                                                    [x]   |
+|  Renoncer a Viktor                                       |
+|                                                          |
+|  Vous abandonnez Viktor. Il redeviendra PNJ              |
+|  disponible pour d'autres joueurs.                        |
+|                                                          |
+|  Message pour le createur (optionnel)                    |
+|  {______________________________________________________}|
+|                                                          |
+|           [Confirmer la renonciation]   Annuler           |
+|                                                          |
++----------------------------------------------------------+
+```
+
+### Badge REVOQUE sur fiche personnage
+
+```
+|  Statut : (red) Lien revoque                                     |
+|  Ancien lien : Adopte par @bob (revoque le 10 mars 2026)        |
+|  Sequence : "La rencontre au carrefour" (lien revoque)           |
+|                                                                  |
+|  (vert) Ce personnage est de nouveau disponible.                 |
+|  [Adopter]  [Reclamer]  [Deriver]                                |
+```
+
+---
+
+## Demande de lien cross-instance — US-23
+
+### Modal Adopt cross-instance
+
+Quand le PNJ est sur une instance distante, la modal ajoute des indicateurs :
+
+```
++----------------------------------------------------------+
+|                                                    [x]   |
+|  Adopter Viktor                                          |
+|  (globe) Instance distante : suddenly.games               |
+|                                                          |
+|  Vous souhaitez reprendre Viktor comme votre PJ.         |
+|  La demande sera envoyee via ActivityPub a                |
+|  @alice@suddenly.games                                    |
+|                                                          |
+|  Votre proposition narrative                              |
+|  {______________________________________________________}|
+|  {______________________________________________________}|
+|                                                          |
+|  (info-circle) Delai de reponse : si aucune reponse      |
+|  sous 30 jours, la demande expirera automatiquement.      |
+|                                                          |
+|               [Envoyer la demande]   Annuler             |
+|                                                          |
++----------------------------------------------------------+
+```
+
+### Carte de demande EXPIRED (vue envoyees)
+
+```
++------------------------------------------------------------+
+| (red) EXPIREE                                il y a 31j   |
+|                                                             |
+| Vous vouliez ADOPTER Viktor (PNJ de @alice@suddenly.games) |
+| Aucune reponse recue dans les 30 jours.                    |
+|                                                             |
+| [Renvoyer la demande]  [Supprimer]                         |
++------------------------------------------------------------+
+```
+
+### SharedSequence cross-instance
+
+```
++------------------------------------------------------------------+
+|  Sequence Partagee                                               |
+|  Viktor (PNJ) --> Adopt --> @bob                                |
+|                                                                  |
+|  (globe) Cross-instance : hebergee sur suddenly.games            |
+|  Participants : @alice@suddenly.games + @bob (vous)              |
+|                                                                  |
+|  (info) L'editeur est heberge sur l'instance du createur.       |
+|  Vos modifications sont synchronisees via ActivityPub.            |
++------------------------------------------------------------------+
+```
