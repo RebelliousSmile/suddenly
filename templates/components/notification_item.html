@@ -46,7 +46,7 @@
         <p class="text-sm text-gray-900 {% if not notification.is_read %}font-medium{% endif %}">
             {{ notification.message }}
         </p>
-        <time class="text-xs text-gray-400" datetime="{{ notification.created_at|date:'c' }}">
+        <time class="text-xs text-gray-500" datetime="{{ notification.created_at|date:'c' }}">
             {{ notification.created_at|timesince }}
         </time>
     </div>

@@ -9,7 +9,7 @@
 <div>
     <label for="{{ name }}" class="form-label">
         {{ label }}
-        {% if not required %}<span class="text-gray-400">(optionnel)</span>{% endif %}
+        {% if not required %}<span class="text-gray-500">(optionnel)</span>{% endif %}
     </label>
     <input type="{{ type }}"
            id="{{ name }}"
@@ -32,7 +32,7 @@
 <div>
     <label for="{{ name }}" class="form-label">
         {{ label }}
-        {% if not required %}<span class="text-gray-400">(optionnel)</span>{% endif %}
+        {% if not required %}<span class="text-gray-500">(optionnel)</span>{% endif %}
     </label>
     <textarea id="{{ name }}"
               name="{{ name }}"
@@ -54,7 +54,7 @@
 <div>
     <label for="{{ name }}" class="form-label">
         {{ label }}
-        {% if not required %}<span class="text-gray-400">(optionnel)</span>{% endif %}
+        {% if not required %}<span class="text-gray-500">(optionnel)</span>{% endif %}
     </label>
     <select id="{{ name }}"
             name="{{ name }}"
@@ -100,7 +100,7 @@
     <label for="{{ name }}" class="form-label">{{ label }}</label>
     <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition-colors">
         <div class="space-y-1 text-center">
-            <span class="i-lucide-upload text-3xl text-gray-400"></span>
+            <span class="i-lucide-upload text-3xl text-gray-500"></span>
             <div class="flex text-sm text-gray-600">
                 <label for="{{ name }}"
                        class="relative cursor-pointer rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500">

@@ -27,13 +27,13 @@
                    class="font-medium text-gray-900 hover:text-primary-600">
                     {{ report.author.display_name|default:report.author.username }}
                 </a>
-                <span class="text-gray-400 text-sm mx-1">dans</span>
+                <span class="text-gray-500 text-sm mx-1">dans</span>
                 <a href="#" class="text-gray-600 hover:text-primary-600 text-sm">
                     {{ report.game.title }}
                 </a>
             </div>
 
-            <time class="text-xs text-gray-400 flex-shrink-0"
+            <time class="text-xs text-gray-500 flex-shrink-0"
                   datetime="{{ report.published_at|date:'c' }}">
                 {{ report.published_at|timesince }}
             </time>
@@ -62,7 +62,7 @@
                 {% endfor %}
                 {% with total=report.character_appearances.count %}
                     {% if total > 6 %}
-                        <span class="text-xs text-gray-400">+{{ total|add:"-6" }} autres</span>
+                        <span class="text-xs text-gray-500">+{{ total|add:"-6" }} autres</span>
                     {% endif %}
                 {% endwith %}
             </div>
@@ -83,11 +83,11 @@
 
         <!-- Menu contextuel (signaler) -->
         <div class="ml-auto relative" x-data="dropdown">
-            <button @click="toggle()" class="btn-ghost btn-sm text-gray-400">
+            <button @click="toggle()" class="btn-ghost btn-sm text-gray-500">
                 <span class="i-lucide-more-horizontal text-sm"></span>
             </button>
             <div x-show="open" @click.away="close()" x-cloak
-                 class="absolute right-0 mt-1 w-40 bg-white rounded-card shadow-dropdown border border-gray-200 py-1 z-10">
+                 class="absolute right-0 mt-1 w-40 bg-white rounded-card shadow-dropdown border border-gray-200 py-1 z-dropdown">
                 <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
                     <span class="i-lucide-link text-xs"></span> Copier le lien
                 </a>

@@ -25,7 +25,7 @@
                 {{ request.get_status_display }}
                 {% if request.status == 'queued' %}(#{{ request.queue_position }}){% endif %}
             </span>
-            <time class="text-xs text-gray-400" datetime="{{ request.created_at|date:'c' }}">
+            <time class="text-xs text-gray-500" datetime="{{ request.created_at|date:'c' }}">
                 {{ request.created_at|timesince }}
             </time>
         </div>
@@ -44,7 +44,7 @@
             {% endif %}
 
             {% if request.target_character.remote %}
-                <span class="i-lucide-globe text-xs text-gray-400 ml-1" title="Cross-instance"></span>
+                <span class="i-lucide-globe text-xs text-gray-500 ml-1" title="Cross-instance"></span>
             {% endif %}
         </p>
 

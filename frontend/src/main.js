@@ -196,6 +196,144 @@ Alpine.data('characterStatus', (status) => ({
   },
 }))
 
+// Password strength meter
+Alpine.data('passwordStrength', (fieldId) => ({
+  strength: 0,
+  label: '',
+
+  init() {
+    const field = document.getElementById(fieldId)
+    if (!field) return
+    field.addEventListener('input', () => this.evaluate(field.value))
+  },
+
+  evaluate(password) {
+    if (!password) {
+      this.strength = 0
+      this.label = ''
+      return
+    }
+
+    let score = 0
+    if (password.length >= 8) score++
+    if (password.length >= 12) score++
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++
+    if (/\d/.test(password)) score++
+    if (/[^a-zA-Z0-9]/.test(password)) score++
+
+    this.strength = Math.min(Math.max(Math.ceil(score * 4 / 5), 1), 4)
+
+    const labels = {
+      1: 'Faible — ajoutez des majuscules, chiffres ou symboles',
+      2: 'Moyen — ajoutez de la variété',
+      3: 'Bon',
+      4: 'Excellent',
+    }
+    this.label = labels[this.strength]
+  },
+}))
+
+// Autosave indicator for report editor
+Alpine.data('autosave', (saveUrl) => ({
+  status: 'saved',  // 'saved' | 'saving' | 'unsaved' | 'error'
+  timer: null,
+
+  init() {
+    this.$watch('status', () => {})
+  },
+
+  markDirty() {
+    this.status = 'unsaved'
+    clearTimeout(this.timer)
+    this.timer = setTimeout(() => this.save(), 3000)
+  },
+
+  async save() {
+    if (this.status === 'saving') return
+    this.status = 'saving'
+
+    try {
+      const form = this.$el.closest('form')
+      const formData = new FormData(form)
+      formData.set('status', 'draft')
+
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value
+      const response = await fetch(saveUrl, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrfToken },
+        body: formData,
+      })
+
+      this.status = response.ok ? 'saved' : 'error'
+    } catch {
+      this.status = 'error'
+    }
+  },
+
+  get icon() {
+    return {
+      saved: 'i-lucide-cloud',
+      saving: 'i-lucide-loader-2 animate-spin',
+      unsaved: 'i-lucide-cloud-off',
+      error: 'i-lucide-alert-triangle text-red-500',
+    }[this.status]
+  },
+
+  get text() {
+    return {
+      saved: 'Sauvegardé',
+      saving: 'Sauvegarde...',
+      unsaved: 'Non sauvegardé',
+      error: 'Erreur de sauvegarde',
+    }[this.status]
+  },
+}))
+
+// Presence indicator for SharedSequence (polling-based)
+Alpine.data('presence', (sequenceId, currentUserId) => ({
+  participants: [],
+  interval: null,
+
+  init() {
+    this.poll()
+    this.interval = setInterval(() => this.poll(), 15000)
+    // Signal own presence
+    this.heartbeat()
+    setInterval(() => this.heartbeat(), 10000)
+  },
+
+  destroy() {
+    clearInterval(this.interval)
+  },
+
+  async poll() {
+    try {
+      const response = await fetch(`/api/sequences/${sequenceId}/presence/`)
+      if (response.ok) {
+        this.participants = await response.json()
+      }
+    } catch {
+      // Silently fail — presence is non-critical
+    }
+  },
+
+  async heartbeat() {
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value
+      await fetch(`/api/sequences/${sequenceId}/presence/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrfToken,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id: currentUserId }),
+      })
+    } catch {
+      // Silently fail
+    }
+  },
+}))
+
 // =================================================================
 // Initialisation
 // =================================================================

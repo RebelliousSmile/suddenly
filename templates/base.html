@@ -26,7 +26,7 @@
       hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-sticky">
         <nav class="container-app">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
@@ -178,7 +178,7 @@
 
     <!-- Notifications container -->
     <div x-data="notifications" 
-         class="fixed bottom-4 right-4 z-50 space-y-2">
+         class="fixed bottom-4 right-4 z-toast space-y-2">
         <template x-for="item in items" :key="item.id">
             <div x-show="true"
                  x-transition:enter="transition ease-out duration-300"
@@ -202,7 +202,7 @@
     </div>
 
     <!-- Loading indicator -->
-    <div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-primary-600 z-50"
+    <div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-primary-600 z-toast"
          style="display: none;">
     </div>
     

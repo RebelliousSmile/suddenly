@@ -20,12 +20,12 @@
             {% endif %}
             <div>
                 <span class="text-sm font-medium text-gray-900">@{{ p.user.username }}</span>
-                {% if p.role %}<span class="text-xs text-gray-400">({{ p.role }})</span>{% endif %}
+                {% if p.role %}<span class="text-xs text-gray-500">({{ p.role }})</span>{% endif %}
             </div>
             {% if p.is_online %}
                 <span class="w-2 h-2 rounded-full bg-emerald-500" title="En ligne"></span>
             {% else %}
-                <span class="text-xs text-gray-400">vu {{ p.last_seen|timesince }}</span>
+                <span class="text-xs text-gray-500">vu {{ p.last_seen|timesince }}</span>
             {% endif %}
         </div>
     {% endfor %}

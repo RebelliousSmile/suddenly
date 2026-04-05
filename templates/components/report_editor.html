@@ -12,7 +12,7 @@
     <!-- Titre -->
     <div>
         <label for="report-title" class="form-label">
-            Titre <span class="text-gray-400">(optionnel)</span>
+            Titre <span class="text-gray-500">(optionnel)</span>
         </label>
         <input type="text" 
                id="report-title"
@@ -45,7 +45,7 @@
             <!-- Suggestions de mentions -->
             <div x-show="showSuggestions"
                  x-transition
-                 class="absolute bottom-full left-0 mb-1 w-64 bg-white rounded-lg shadow-dropdown border border-gray-200 py-1 z-10">
+                 class="absolute bottom-full left-0 mb-1 w-64 bg-white rounded-lg shadow-dropdown border border-gray-200 py-1 z-dropdown">
                 <template x-for="(suggestion, index) in suggestions" :key="suggestion.id">
                     <button @click="selectSuggestion(suggestion)"
                             :class="{ 'bg-primary-50': index === selectedIndex }"
@@ -82,7 +82,7 @@
     <!-- Cast / Personnages de la scène -->
     <div x-data="{ cast: [], newCharacter: '' }">
         <label class="form-label">
-            Distribution <span class="text-gray-400">(personnages de cette scène)</span>
+            Distribution <span class="text-gray-500">(personnages de cette scène)</span>
         </label>
         
         <div class="flex flex-wrap gap-2 mb-2">
