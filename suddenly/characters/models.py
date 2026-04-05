@@ -7,11 +7,10 @@ get claimed, adopted, or forked by other players.
 
 from __future__ import annotations
 
-import uuid
-
 from django.conf import settings
 from django.db import models
 
+from suddenly.core.models import BaseModel
 from suddenly.games.models import Game, Report
 
 
@@ -25,13 +24,11 @@ class CharacterStatus(models.TextChoices):
     FORKED = "forked", "Forké"
 
 
-class Character(models.Model):
+class Character(BaseModel):
     """
     A Character can be a PC or NPC, and can evolve between states.
     Each character is an ActivityPub actor.
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     # Identity
     name = models.CharField(max_length=100)
@@ -88,10 +85,6 @@ class Character(models.Model):
     public_key = models.TextField(blank=True, help_text="PEM-encoded public key")
     private_key = models.TextField(blank=True, help_text="PEM-encoded private key (local only)")
 
-    # Timestamps
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
     class Meta:
         ordering = ["-created_at"]
         indexes = [
@@ -129,12 +122,10 @@ class QuoteVisibility(models.TextChoices):
     PUBLIC = "public", "Publique"
 
 
-class Quote(models.Model):
+class Quote(BaseModel):
     """
     A memorable quote from a character, BookWyrm-style.
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     # Content
     content = models.TextField(help_text="The quote itself")
@@ -174,8 +165,7 @@ class Quote(models.Model):
     ap_id = models.URLField(blank=True, null=True, unique=True)
 
     # Timestamps
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+
 
     class Meta:
         ordering = ["-created_at"]
@@ -207,12 +197,10 @@ class AppearanceRole(models.TextChoices):
     MENTIONED = "mentioned", "Mentionné"
 
 
-class CharacterAppearance(models.Model):
+class CharacterAppearance(BaseModel):
     """
     Links a character to a report where they appear.
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name="appearances")
     report = models.ForeignKey(
@@ -224,8 +212,7 @@ class CharacterAppearance(models.Model):
     )
     context = models.TextField(blank=True, help_text="Description of their role in this scene")
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+
 
     class Meta:
         unique_together = ["character", "report"]
@@ -255,12 +242,10 @@ class LinkRequestStatus(models.TextChoices):
     CANCELLED = "cancelled", "Annulée"
 
 
-class LinkRequest(models.Model):
+class LinkRequest(BaseModel):
     """
     A request to claim, adopt, or fork a character.
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     # Type
     type = models.CharField(max_length=20, choices=LinkType.choices)
@@ -309,12 +294,10 @@ class LinkRequest(models.Model):
         return f"{self.get_type_display()}: {self.requester} → {self.target_character}"
 
 
-class CharacterLink(models.Model):
+class CharacterLink(BaseModel):
     """
     An established link between characters after a request is accepted.
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     type = models.CharField(max_length=20, choices=LinkType.choices)
 
@@ -334,8 +317,7 @@ class CharacterLink(models.Model):
 
     description = models.TextField(blank=True, help_text="Nature of the link")
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+
 
     class Meta:
         ordering = ["-created_at"]
@@ -351,12 +333,10 @@ class SharedSequenceStatus(models.TextChoices):
     PUBLISHED = "published", "Publié"
 
 
-class SharedSequence(models.Model):
+class SharedSequence(BaseModel):
     """
     Co-created content when a link is established.
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     link = models.OneToOneField(
         CharacterLink, on_delete=models.CASCADE, related_name="shared_sequence"
@@ -369,22 +349,19 @@ class SharedSequence(models.Model):
         max_length=20, choices=SharedSequenceStatus.choices, default=SharedSequenceStatus.DRAFT
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+
 
     def __str__(self) -> str:
         return self.title or f"Sequence for {self.link}"
 
 
-class Follow(models.Model):
+class Follow(BaseModel):
     """
     A follow relationship (local or federated).
 
     Uses Django's ContentType framework for polymorphic targets
     (User, Character, or Game).
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     follower = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="following"
@@ -406,8 +383,7 @@ class Follow(models.Model):
     remote = models.BooleanField(default=False)
     ap_id = models.URLField(blank=True, null=True, unique=True)
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+
 
     class Meta:
         unique_together = ["follower", "content_type", "object_id"]

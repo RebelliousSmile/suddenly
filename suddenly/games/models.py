@@ -2,19 +2,17 @@
 Game and Report models for Suddenly.
 """
 
-import uuid
-
 from django.conf import settings
 from django.db import models
 
+from suddenly.core.models import BaseModel
 
-class Game(models.Model):
+
+class Game(BaseModel):
     """
     A Game is an ongoing fiction that receives reports over time.
     It's an ActivityPub actor that can be followed.
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     # Content
     title = models.CharField(max_length=200)
@@ -36,10 +34,6 @@ class Game(models.Model):
     outbox_url = models.URLField(blank=True, null=True)
     public_key = models.TextField(blank=True, help_text="PEM-encoded public key")
     private_key = models.TextField(blank=True, help_text="PEM-encoded private key (local only)")
-
-    # Timestamps
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["-updated_at"]
@@ -69,13 +63,11 @@ class ReportStatus(models.TextChoices):
     PUBLISHED = "published", "Publié"
 
 
-class Report(models.Model):
+class Report(BaseModel):
     """
     A Report is a narrative account added to a Game.
     Published reports become ActivityPub Notes.
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     # Content
     title = models.CharField(max_length=200, blank=True)
@@ -96,10 +88,6 @@ class Report(models.Model):
     # ActivityPub
     remote = models.BooleanField(default=False)
     ap_id = models.URLField(blank=True, null=True, unique=True)
-
-    # Timestamps
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["-published_at", "-created_at"]
@@ -124,7 +112,7 @@ class CastRole(models.TextChoices):
     MENTIONED = "mentioned", "Mentionné"
 
 
-class ReportCast(models.Model):
+class ReportCast(BaseModel):
     """
     Characters planned for a report, defined before writing.
 
@@ -134,8 +122,6 @@ class ReportCast(models.Model):
     3. Interface suggests @mentions during writing
     4. On publish, ReportCast entries become CharacterAppearance
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name="cast")
 
@@ -156,9 +142,6 @@ class ReportCast(models.Model):
     new_character_description = models.TextField(blank=True, help_text="Description for new NPC")
 
     role = models.CharField(max_length=20, choices=CastRole.choices, default=CastRole.MENTIONED)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["role", "created_at"]
