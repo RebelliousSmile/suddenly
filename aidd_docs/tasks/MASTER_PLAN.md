@@ -1,8 +1,9 @@
 # Master Plan — Suddenly
 
-**Date** : 2026-04-05 (v2 — post-audit Fediverse + UX)
+**Date** : 2026-04-05 (v3 — post-audit conception)
 **Statut** : Actif
 **User Stories** : US-01 a US-33 (27 originales + 6 ajoutees)
+**Audit conception** : `2026_04/2026_04_05-conception-audit.md`
 
 ---
 
@@ -33,6 +34,26 @@
 - Pas de boost/recommandation (deal breaker Fediverse)
 - Pas d'import/export follows
 
+### Decisions architecturales a prendre (audit conception)
+
+| # | Decision | Recommandation | Bloque |
+|---|----------|---------------|--------|
+| **DA-1** | DRF JSON vs HTMX HTML pour les vues front | **HTMX-first** : vues Django pour le front, DRF pour l'API publique AP | Toutes taches P2 |
+| **DA-2** | ADR-011 (NPC jusqu'a SharedSequence publiee) vs code actuel (statut change a l'acceptation) | A confirmer avec le product owner | T16, T17 |
+| **DA-3** | SharedSequence synchrone (chacun son tour) vs temps reel (CRDT/Yjs) | **Asynchrone pour le MVP** : polling presence + verrouillage pessimiste | T17 |
+| **DA-4** | GenericForeignKey sur Follow vs 3 FK nullables | **Garder GFK pour le MVP**, documenter le trade-off, migrer post-MVP si N+1 | T18 |
+
+### Corrections de schema requises avant P2
+
+| Correction | Modele | Champs a ajouter | Tache |
+|-----------|--------|-----------------|-------|
+| Statuts manquants | LinkRequestStatus | `QUEUED = 'queued'`, `EXPIRED = 'expired'` | T7 |
+| Content Warning | Report, Quote | `content_warning: TextField(blank=True)` | T7 |
+| Visibilite | Report | `visibility: CharField(choices=public/unlisted/followers_only, default=public)` | T7 |
+| Notification | Nouveau modele | `recipient, type, actor, target (GFK), message, is_read` | T7 |
+| SharedSequence collab | SharedSequence | `last_edited_by, publication_proposed_by, publication_proposed_at` | T7 |
+| Soft delete | BaseModel | `deleted_at: DateTimeField(null=True)` (optionnel) | Post-MVP |
+
 ---
 
 ## Taches restantes — par priorite
@@ -50,25 +71,25 @@
 
 | # | Tache | US | Effort |
 |---|-------|----|--------|
-| 5 | **Audit securite** — SECRET_KEY, cache cles publiques, validation domaine, dedup inbox | — | 2h |
+| 5 | **Audit securite** — SECRET_KEY, cache cles publiques, validation domaine actor, dedup inbox (ProcessedActivity), chiffrement cles privees AP, rate limiting front (login 10/min, signup 5/min, API 1000/h) | — | 4h |
 | 6 | **Outillage statique** — mypy strict + ruff | — | 1h |
-| 7 | **CW + visibilite sur Report et Quote** — ajouter champs `content_warning` (TextField, blank) et `visibility` (enum: public/unlisted/followers_only) aux modeles Report et Quote, migration, serialisation AP | US-29, US-30 | 2h |
-| 8 | **Tests modules critiques** — signatures, inbox handlers, LinkService, CW/visibility | — | 4h |
+| 7 | **Modeles manquants + corrections schema** — CW + visibility sur Report/Quote, statuts QUEUED/EXPIRED sur LinkRequest, modele Notification, champs collab SharedSequence, mixin AP, split characters/models.py en 4 fichiers. Regenerer les migrations. | US-29, US-30 | **6h** |
+| 8 | **Tests modules critiques** — signatures, inbox handlers, LinkService, CW/visibility, Notification creation | — | 4h |
 
 ### P2 — Vues et templates (MVP fonctionnel)
 
 | # | Tache | US | Effort |
 |---|-------|----|--------|
-| 9 | **Templates profil** — profile.html + profile_edit.html + followers/following listes + champs custom + migration badge + password strength | US-01 | 3h |
+| 9 | **Templates profil** — profile.html + profile_edit.html + followers/following listes + champs custom + migration badge + password strength + comptes bloques/mutes | US-01 | **5h** |
 | 10 | **Page A propos instance** — /about avec description, regles, stats, admin, federation | US-31 | 1h |
 | 11 | **Signup avec contexte instance** — nom instance, regles, checkbox acceptation, @username@domain preview | US-01, US-31 | 1h |
 | 12 | **Slug Character** — champ + migration + auto-generation | US-06 | 30 min |
 | 13 | **Index FTS PostgreSQL** — migration SQL pour index GIN | US-07 | 30 min |
 | 14 | **Vues HTMX Characters** — liste avec FTS + onglets Instance/Fediverse, detail avec lignee (US-17), badge distant, status banner demande en cours | US-06, US-07, US-17 | 4h |
 | 15 | **Vues HTMX Quotes** — liste par personnage, formulaire ajout avec CW, carte citation repliable, menu edit/delete | US-08, US-30 | 2h |
-| 16 | **Vues HTMX Links — flow guide** — modal unique [Lier a mon histoire] -> choix type (Adoption/Derivation/Retcon) -> formulaire specifique, file d'attente QUEUED (US-15), revocation avec grace period (US-16) | US-09, US-10, US-11, US-14, US-15, US-16 | 5h |
-| 17 | **SharedSequence editeur** — editeur collaboratif avec presence indicator, sauvegarde, proposition publication, double validation | US-18, US-19 | 4h |
-| 18 | **Vues HTMX Feed** — 3 onglets (Abonnements/Instance/Fediverse), filtres (Tout/CRs/Recommandations/Sequences/PNJ), bouton follow/unfollow, CW repliable, recommandation, invitation | US-12, US-28, US-29 | 5h |
+| 16 | **Vues HTMX Links — flow guide** — modal unique [Lier a mon histoire] -> choix type (Adoption/Derivation/Retcon) -> formulaire specifique, file d'attente QUEUED (US-15), revocation avec grace period (US-16). Necessite decision DA-2 (ADR-011) | US-09, US-10, US-11, US-14, US-15, US-16 | **8h** |
+| 17 | **SharedSequence editeur** — editeur **asynchrone** (DA-3) avec presence polling, verrouillage, sauvegarde, proposition publication, double validation. Pas de CRDT/Yjs au MVP. | US-18, US-19 | **3h** |
+| 18 | **Vues HTMX Feed** — 3 onglets (Abonnements/Instance/Fediverse, DA-1), filtres (Tout/CRs/Recommandations/Sequences/PNJ), bouton follow/unfollow, CW repliable, recommandation, invitation | US-12, US-28, US-29 | **8h** |
 | 19 | **Vues parties** — liste avec onglets Instance/Fediverse, detail, creation | US-02, US-03, US-13 | 3h |
 | 20 | **Vues CRs** — detail avec CW, editeur avec CW + visibilite + autosave + cast + @mention | US-04, US-05, US-29, US-30 | 4h |
 | 21 | **Dashboard GM** — vue "Mes PNJ" avec demandes en attente, arbitrage inline, activite recente | US-14 | 2h |
@@ -80,7 +101,7 @@
 
 | # | Tache | US | Effort |
 |---|-------|----|--------|
-| 25 | **AP sortant** — Offer/Accept/Reject liens, Follow/Accept, Announce (recommandation), CW + visibility dans les payloads | US-22, US-23, US-24, US-28 | 4h |
+| 25 | **AP sortant + namespace** — Offer/Accept/Reject liens, Follow/Accept, Announce (recommandation), CW + visibility dans les payloads, documenter namespace `suddenly:` (ADR-022), resoudre les 9 TODO dans le code | US-22, US-23, US-24, US-28 | **8h** |
 | 26 | **Import/export follows CSV** — export Mastodon-compatible, import avec resolution WebFinger | US-32 | 2h |
 | 27 | **Block/mute utilisateur** — modele, vues settings, filtrage dans les feeds | US-33 | 2h |
 | 28 | **Migration compte** — alias entrant, Move activity sortant, badge "compte migre" | US-32 | 2h |
