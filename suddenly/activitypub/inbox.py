@@ -118,11 +118,39 @@ def process_inbox(request: HttpRequest, actor_type: str, actor_identifier: str) 
         return HttpResponseBadRequest("Invalid JSON")
 
     activity_type = activity.get("type")
+    activity_id = activity.get("id", "")
+    actor_url = activity.get("actor", "")
 
     if not activity_type:
         return HttpResponseBadRequest("Missing activity type")
 
-    logger.info(f"Received {activity_type} for {actor_type}/{actor_identifier}")
+    # Validate actor domain matches signature domain
+    request_domain = _get_request_domain(request)
+    if actor_url and request_domain:
+        from urllib.parse import urlparse as _urlparse
+
+        actor_domain = _urlparse(actor_url).hostname or ""
+        if actor_domain != request_domain:
+            logger.warning(
+                "Actor domain mismatch: actor=%s, signature=%s",
+                actor_domain,
+                request_domain,
+            )
+            return HttpResponseForbidden("Actor domain mismatch")
+
+    # Inbox deduplication — skip already-processed activities
+    if activity_id:
+        from suddenly.activitypub.models import ProcessedActivity
+
+        if ProcessedActivity.objects.filter(ap_id=activity_id).exists():
+            logger.info("Skipping duplicate activity %s", activity_id)
+            return HttpResponse(status=202)
+        ProcessedActivity.objects.create(
+            ap_id=activity_id,
+            actor_domain=request_domain or "",
+        )
+
+    logger.info("Received %s for %s/%s", activity_type, actor_type, actor_identifier)
 
     # Route to appropriate handler
     handlers: dict[str, _InboxHandler] = {

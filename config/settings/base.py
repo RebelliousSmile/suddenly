@@ -4,6 +4,7 @@ Shared settings for all environments.
 Environment-specific overrides live in development.py and production.py.
 """
 
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "suddenly.core.middleware.AuthRateLimitMiddleware",
 ]
 
 ROOT_URLCONF = "suddenly.urls"
