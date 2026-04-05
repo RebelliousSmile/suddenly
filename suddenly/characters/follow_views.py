@@ -42,6 +42,13 @@ def follow_toggle(request: HttpRequest) -> HttpResponse:
         return HttpResponseBadRequest("Invalid target_type")
 
     target = get_object_or_404(model_cls, pk=target_id)
+
+    # Prevent self-follow
+    if target_type == "user" and target.pk == request.user.pk:
+        from django.http import HttpResponseBadRequest
+
+        return HttpResponseBadRequest("Cannot follow yourself")
+
     ct = ContentType.objects.get_for_model(model_cls)
 
     # Toggle

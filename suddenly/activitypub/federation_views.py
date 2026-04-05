@@ -176,8 +176,30 @@ def _search_local(query: str) -> list[dict[str, str]]:
 
 
 def _fetch_actor(url: str) -> dict | None:
-    """Fetch an ActivityPub actor JSON."""
+    """Fetch an ActivityPub actor JSON. Blocks private/loopback IPs (SSRF protection)."""
+    import socket
+
     import httpx
+
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https"):
+        return None
+
+    # Block private/loopback IPs
+    hostname = parsed.hostname
+    if hostname:
+        try:
+            resolved = socket.getaddrinfo(hostname, None)
+            for _, _, _, _, addr in resolved:
+                ip = addr[0]
+                import ipaddress
+
+                ip_obj = ipaddress.ip_address(ip)
+                if ip_obj.is_private or ip_obj.is_loopback or ip_obj.is_link_local:
+                    logger.warning("Blocked SSRF attempt to %s (%s)", url, ip)
+                    return None
+        except (socket.gaierror, ValueError):
+            pass  # DNS resolution failed or invalid IP — let httpx handle it
 
     try:
         with httpx.Client(timeout=10) as client:
