@@ -1,7 +1,7 @@
 # Plan — Principe d'alternatives pondérées dans l'audit agentique
 
 Date: 2026-03-05
-Status: draft
+Status: deferred (tracked as T32 in master plan, AIDD framework update)
 
 ## Objectif
 
