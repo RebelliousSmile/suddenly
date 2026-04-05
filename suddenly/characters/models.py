@@ -34,6 +34,7 @@ class Character(BaseModel):
     name = models.CharField(max_length=100)
     slug = models.SlugField(
         max_length=120,
+        unique=True,
         blank=True,
         help_text="URL-friendly name, auto-generated from name",
     )
@@ -103,15 +104,22 @@ class Character(BaseModel):
 
     def save(self, *args: object, **kwargs: object) -> None:
         if not self.slug:
+            import uuid as _uuid
+
+            from django.db import IntegrityError
             from django.utils.text import slugify
 
-            base_slug = slugify(self.name)[:120]
+            base_slug = slugify(self.name)[:100] or "character"
             slug = base_slug
-            counter = 1
-            while Character.objects.filter(slug=slug).exclude(pk=self.pk).exists():
-                slug = f"{base_slug[:115]}-{counter}"
-                counter += 1
-            self.slug = slug
+            for counter in range(1, 100):
+                try:
+                    self.slug = slug
+                    super().save(*args, **kwargs)
+                    return
+                except IntegrityError:
+                    slug = f"{base_slug[:95]}-{counter}"
+            # Fallback: UUID suffix (guaranteed unique)
+            self.slug = f"{base_slug[:80]}-{_uuid.uuid4().hex[:8]}"
         super().save(*args, **kwargs)
 
     @property

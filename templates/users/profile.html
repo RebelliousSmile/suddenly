@@ -54,11 +54,11 @@
                 <!-- Followers / Following counts -->
                 <div class="flex items-center gap-4 text-sm">
                     <span>
-                        <strong>{{ followers_count }}</strong>
+                        <strong>{{ followers_count|default:0 }}</strong>
                         <span class="text-gray-500">abonné{{ followers_count|pluralize }}</span>
                     </span>
                     <span>
-                        <strong>{{ following_count }}</strong>
+                        <strong>{{ following_count|default:0 }}</strong>
                         <span class="text-gray-500">abonnement{{ following_count|pluralize }}</span>
                     </span>
                 </div>

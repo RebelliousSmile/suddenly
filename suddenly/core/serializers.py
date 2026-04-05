@@ -115,6 +115,7 @@ class CharacterSerializer(serializers.ModelSerializer):  # type: ignore[misc]
         fields = [
             "id",
             "name",
+            "slug",
             "description",
             "avatar",
             "status",

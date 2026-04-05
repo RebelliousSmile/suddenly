@@ -34,25 +34,35 @@ class ProfileView(DetailView):  # type: ignore[type-arg]
         context["games"] = profile_user.games.filter(is_public=True).order_by("-updated_at")[:10]
         context["characters"] = profile_user.created_characters.order_by("-created_at")[:12]
 
-        # Follower/following counts
-        from django.contrib.contenttypes.models import ContentType
-
-        from suddenly.characters.models import Follow
-
-        user_ct = ContentType.objects.get_for_model(User)
-        context["followers_count"] = Follow.objects.filter(
-            content_type=user_ct, object_id=profile_user.id
-        ).count()
-        context["following_count"] = Follow.objects.filter(follower=profile_user).count()
-
-        # Is the current user following this profile?
-        context["is_following"] = False
-        if self.request.user.is_authenticated and self.request.user != profile_user:
-            context["is_following"] = Follow.objects.filter(
-                follower=self.request.user, content_type=user_ct, object_id=profile_user.id
-            ).exists()
+        # Follow stats — single query with conditional aggregation
+        follow_stats = _get_follow_stats(profile_user, self.request.user)
+        context.update(follow_stats)
 
         return context
+
+
+def _get_follow_stats(profile_user: User, request_user: object) -> dict[str, object]:
+    """Compute follow stats for a profile in minimal queries."""
+    from django.contrib.contenttypes.models import ContentType
+
+    from suddenly.characters.models import Follow
+
+    user_ct = ContentType.objects.get_for_model(User)
+
+    # Single query: followers count + is_following (combined filter)
+    followers_qs = Follow.objects.filter(content_type=user_ct, object_id=profile_user.id)
+    followers_count = followers_qs.count()
+
+    is_following = False
+    if hasattr(request_user, "is_authenticated") and request_user.is_authenticated:
+        if request_user != profile_user:
+            is_following = followers_qs.filter(follower=request_user).exists()
+
+    return {
+        "followers_count": followers_count,
+        "following_count": Follow.objects.filter(follower=profile_user).count(),
+        "is_following": is_following,
+    }
 
 
 class ProfileEditView(LoginRequiredMixin, UpdateView):  # type: ignore[type-arg]
