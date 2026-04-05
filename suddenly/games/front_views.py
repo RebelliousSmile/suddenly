@@ -11,7 +11,7 @@ from django.urls import reverse
 
 from suddenly.core.views import htmx_render
 
-from .models import Game, ReportStatus
+from .models import Game, Report, ReportStatus, ReportVisibility
 
 
 def game_list(request: HttpRequest) -> HttpResponse:
@@ -89,4 +89,94 @@ def game_create(request: HttpRequest) -> HttpResponse:
         full_template="games/create.html",
         partial_template="games/create.html",
         context={},
+    )
+
+
+def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
+    """Report detail page (US-04)."""
+    report = get_object_or_404(
+        Report.objects.select_related("game", "author"),
+        pk=pk,
+        game_id=game_pk,
+    )
+
+    # Only published reports visible (or own drafts)
+    if report.status != ReportStatus.PUBLISHED:
+        if not request.user.is_authenticated or request.user != report.author:
+            from django.http import Http404
+
+            raise Http404
+
+    cast = report.character_appearances.select_related("character").order_by("role")
+    quotes = report.quotes.filter(visibility="public").order_by("-created_at")[:5]
+
+    return htmx_render(
+        request,
+        full_template="games/report_detail.html",
+        partial_template="games/report_detail.html",
+        context={
+            "report": report,
+            "game": report.game,
+            "cast": cast,
+            "quotes": quotes,
+        },
+    )
+
+
+@login_required
+def report_create(request: HttpRequest, game_pk: str) -> HttpResponse:
+    """Create a new report (US-04, US-05)."""
+    game = get_object_or_404(Game, pk=game_pk, owner=request.user)
+
+    if request.method == "POST":
+        title = request.POST.get("title", "").strip()
+        content = request.POST.get("content", "").strip()
+        cw = request.POST.get("content_warning", "").strip()
+        visibility = request.POST.get("visibility", ReportVisibility.PUBLIC)
+        action = request.POST.get("action", "draft")
+
+        if not content:
+            return htmx_render(
+                request,
+                full_template="games/report_create.html",
+                partial_template="games/report_create.html",
+                context={
+                    "game": game,
+                    "error": "Le contenu est obligatoire.",
+                    "form_data": request.POST,
+                },
+            )
+
+        report = Report.objects.create(
+            title=title,
+            content=content,
+            content_warning=cw,
+            visibility=visibility,
+            game=game,
+            author=request.user,
+            status=ReportStatus.DRAFT,
+        )
+
+        if action == "publish":
+            from django.utils import timezone
+
+            report.status = ReportStatus.PUBLISHED
+            report.published_at = timezone.now()
+            report.save()
+
+        return redirect(
+            reverse(
+                "games:report_detail",
+                kwargs={"game_pk": game.pk, "pk": report.pk},
+            )
+        )
+
+    return htmx_render(
+        request,
+        full_template="games/report_create.html",
+        partial_template="games/report_create.html",
+        context={
+            "game": game,
+            "visibilities": ReportVisibility.choices,
+        },
     )
