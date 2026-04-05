@@ -23,6 +23,8 @@ def gm_dashboard(request: HttpRequest) -> HttpResponse:
     # NPCs with pending requests (prioritized)
     npcs_with_requests = (
         Character.objects.filter(creator=user, status=CharacterStatus.NPC)
+        .select_related("origin_game")
+        .prefetch_related("appearances")
         .prefetch_related(
             Prefetch(
                 "link_requests_received",
