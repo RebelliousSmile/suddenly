@@ -104,6 +104,9 @@ class Report(BaseModel):
     )
     published_at = models.DateTimeField(blank=True, null=True)
 
+    # Tags (hashtags for discovery)
+    tags = models.ManyToManyField("core.Tag", blank=True, related_name="reports")
+
     # ActivityPub
     remote = models.BooleanField(default=False)
     ap_id = models.URLField(blank=True, null=True, unique=True)

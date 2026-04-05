@@ -93,3 +93,15 @@ class Notification(BaseModel):
 
     def __str__(self) -> str:
         return f"{self.type}: {self.message[:50]}"
+
+
+class Tag(BaseModel):
+    """Hashtag for cross-instance content discovery."""
+
+    name = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self) -> str:
+        return f"#{self.name}"
