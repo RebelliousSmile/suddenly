@@ -270,6 +270,17 @@ Sidebar+content : flex flex-col md:flex-row gap-6 (sidebar w-56)
 |----------|-------------|
 | `dropdown-menu` | menu contextuel (bg-white, shadow-dropdown, border, z-dropdown) |
 
+### Instance badge (portee federation)
+
+Badge discret indiquant l'instance d'origine du contenu.
+Visible sur : feed Fediverse, cards distantes, profils distants.
+Pas affiche si le contenu est local (implicite).
+
+```
+(globe) suddenly.games        <- format inline
+text-xs text-gray-500 flex items-center gap-1 + i-lucide-globe
+```
+
 ### Liens et texte
 
 | Shortcut | Description |

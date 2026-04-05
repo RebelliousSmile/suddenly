@@ -9,10 +9,15 @@
 |                                                                  |
 |  Personnages                                                     |
 |                                                                  |
+|  +-----------------------------------------------------+        |
+|  | (users) Instance | (globe) Fediverse |               |        |
+|  +-----------------------------------------------------+        |
+|  (alpine:tabs, par defaut "Instance")                            |
+|                                                                  |
 |  +-----------------------------------------------+              |
 |  | (search) {Rechercher un personnage...}        |              |
 |  +-----------------------------------------------+              |
-|  hx-get="/htmx/characters/search/"                               |
+|  hx-get="/htmx/characters/search/?scope={tab}"                   |
 |  hx-trigger="keyup changed delay:300ms"                          |
 |  hx-target="#character-results"                                  |
 |                                                                  |
@@ -46,6 +51,10 @@
 
 Un seul bouton [Lier a mon histoire] par PNJ disponible, visible au hover.
 Ouvre le flow guide (voir `09-links.md`).
+
+En onglet **Fediverse**, les cards affichent le badge instance :
+`(globe) suddenly.games` sous le nom de la partie d'origine.
+La recherche FTS interroge les instances connues (plus lent, spinner).
 
 ## Fiche personnage (`/characters/{slug}/`) — US-06
 
