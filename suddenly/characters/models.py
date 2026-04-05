@@ -130,6 +130,11 @@ class Quote(BaseModel):
     # Content
     content = models.TextField(help_text="The quote itself")
     context = models.TextField(blank=True, help_text="Situation when this was said")
+    content_warning = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="Content warning displayed before the quote (US-30)",
+    )
 
     # Relations
     character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name="quotes")
@@ -234,9 +239,11 @@ class LinkRequestStatus(models.TextChoices):
     """Status of a link request."""
 
     PENDING = "pending", "En attente"
+    QUEUED = "queued", "En file d'attente"
     ACCEPTED = "accepted", "Acceptée"
     REJECTED = "rejected", "Refusée"
     CANCELLED = "cancelled", "Annulée"
+    EXPIRED = "expired", "Expirée"
 
 
 class LinkRequest(BaseModel):
@@ -331,6 +338,9 @@ class SharedSequenceStatus(models.TextChoices):
 class SharedSequence(BaseModel):
     """
     Co-created content when a link is established.
+
+    DA-3: Asynchronous editor for MVP (polling presence, pessimistic locking).
+    DA-2/ADR-011: Character status changes only when this is published.
     """
 
     link = models.OneToOneField(
@@ -341,8 +351,32 @@ class SharedSequence(BaseModel):
     content = models.TextField(help_text="Markdown content")
 
     status = models.CharField(
-        max_length=20, choices=SharedSequenceStatus.choices, default=SharedSequenceStatus.DRAFT
+        max_length=20,
+        choices=SharedSequenceStatus.choices,
+        default=SharedSequenceStatus.DRAFT,
     )
+
+    # Collaborative editing (DA-3: async, not CRDT)
+    last_edited_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+        help_text="Last user who edited the content",
+    )
+    last_edited_at = models.DateTimeField(null=True, blank=True)
+
+    # Publication workflow (double validation)
+    publication_proposed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+        help_text="Who proposed publishing (needs both parties to validate)",
+    )
+    publication_proposed_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self) -> str:
         return self.title or f"Sequence for {self.link}"

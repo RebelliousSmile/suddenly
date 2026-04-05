@@ -63,15 +63,28 @@ class ReportStatus(models.TextChoices):
     PUBLISHED = "published", "Publié"
 
 
+class ReportVisibility(models.TextChoices):
+    """Fediverse-compatible visibility scopes (US-29)."""
+
+    PUBLIC = "public", "Public"
+    UNLISTED = "unlisted", "Non-listé"
+    FOLLOWERS = "followers", "Abonnés uniquement"
+
+
 class Report(BaseModel):
     """
     A Report is a narrative account added to a Game.
-    Published reports become ActivityPub Notes.
+    Published reports become ActivityPub Articles.
     """
 
     # Content
     title = models.CharField(max_length=200, blank=True)
     content = models.TextField(help_text="Markdown with @character mentions")
+    content_warning = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="Content warning displayed before the report (US-30)",
+    )
 
     # Relations
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="reports")
@@ -79,9 +92,15 @@ class Report(BaseModel):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reports"
     )
 
-    # Status
+    # Status & visibility
     status = models.CharField(
         max_length=20, choices=ReportStatus.choices, default=ReportStatus.DRAFT
+    )
+    visibility = models.CharField(
+        max_length=20,
+        choices=ReportVisibility.choices,
+        default=ReportVisibility.PUBLIC,
+        help_text="Who can see this report (US-29)",
     )
     published_at = models.DateTimeField(blank=True, null=True)
 
