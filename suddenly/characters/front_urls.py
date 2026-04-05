@@ -6,7 +6,7 @@ These serve HTML pages. The DRF API URLs remain in api_urls.py.
 
 from django.urls import path
 
-from . import front_views, gm_views, link_views
+from . import front_views, gm_views, link_views, sequence_views
 
 app_name = "characters"
 
@@ -30,6 +30,22 @@ urlpatterns = [
         "requests/<uuid:pk>/cancel/",
         link_views.link_request_cancel,
         name="link_request_cancel",
+    ),
+    # SharedSequence editor
+    path(
+        "sequences/<uuid:pk>/",
+        sequence_views.sequence_edit,
+        name="sequence_edit",
+    ),
+    path(
+        "sequences/<uuid:pk>/propose/",
+        sequence_views.sequence_propose_publish,
+        name="sequence_propose",
+    ),
+    path(
+        "sequences/<uuid:pk>/publish/",
+        sequence_views.sequence_validate_publish,
+        name="sequence_publish",
     ),
     # Character detail + actions
     path("<slug:slug>/", front_views.character_detail, name="detail"),
