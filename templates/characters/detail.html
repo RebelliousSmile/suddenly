@@ -19,7 +19,7 @@
             <div class="flex-1">
                 <div class="flex items-center gap-3 mb-2">
                     <h1 class="text-2xl font-bold text-gray-900">{{ character.name }}</h1>
-                    <span class="badge-{{ character.status|default:'available' }}">
+                    <span class="{% if character.status == 'npc' %}badge-available{% else %}badge-{{ character.status }}{% endif %}">
                         {{ character.get_status_display }}
                     </span>
                 </div>

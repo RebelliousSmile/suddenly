@@ -15,7 +15,7 @@
                     {% endif %}
                     <div class="min-w-0">
                         <h3 class="font-semibold text-gray-900 truncate">{{ character.name }}</h3>
-                        <span class="badge-{{ character.status|default:'available' }} text-xs">
+                        <span class="{% if character.status == 'npc' %}badge-available{% else %}badge-{{ character.status }}{% endif %} text-xs">
                             {{ character.get_status_display }}
                         </span>
                     </div>

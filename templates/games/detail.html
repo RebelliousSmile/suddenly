@@ -73,7 +73,7 @@
                         <a href="{% url 'characters:detail' slug=character.slug %}"
                            class="card card-body text-center hover:shadow-card-hover transition-shadow">
                             <p class="font-medium text-sm text-gray-900">{{ character.name }}</p>
-                            <span class="badge-{{ character.status|default:'available' }} text-xs mt-1">
+                            <span class="{% if character.status == 'npc' %}badge-available{% else %}badge-{{ character.status }}{% endif %} text-xs mt-1">
                                 {{ character.get_status_display }}
                             </span>
                         </a>
