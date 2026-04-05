@@ -1,0 +1,88 @@
+{# Partial: feed items list (swapped by HTMX tab navigation) #}
+
+{% if reports %}
+    <div class="space-y-4">
+        {% for report in reports %}
+            <article class="card card-hover">
+                <div class="card-body">
+                    <!-- Header -->
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="avatar-md avatar-placeholder">
+                            <span class="i-lucide-user text-sm"></span>
+                        </span>
+                        <div class="flex-1 min-w-0">
+                            <span class="font-medium text-gray-900">
+                                @{{ report.author.username }}
+                            </span>
+                            <span class="text-gray-500 text-sm mx-1">dans</span>
+                            <a href="{% url 'games:detail' pk=report.game.pk %}"
+                               class="text-gray-600 hover:text-primary-600 text-sm">
+                                {{ report.game.title }}
+                            </a>
+                            {% if report.remote %}
+                                <span class="text-xs text-gray-500 ml-1">
+                                    <span class="i-lucide-globe text-xs"></span>
+                                </span>
+                            {% endif %}
+                        </div>
+                        {% if report.published_at %}
+                            <time class="text-xs text-gray-500 flex-shrink-0">
+                                {{ report.published_at|timesince }}
+                            </time>
+                        {% endif %}
+                    </div>
+
+                    <!-- Content Warning -->
+                    {% if report.content_warning %}
+                        <div class="flex items-center gap-2 text-sm text-amber-700 mb-2">
+                            <span class="i-lucide-alert-triangle text-xs"></span>
+                            {{ report.content_warning }}
+                        </div>
+                    {% endif %}
+
+                    <!-- Title + preview -->
+                    <h3 class="font-semibold text-lg mb-1">
+                        <a href="{% url 'games:report_detail' game_pk=report.game.pk pk=report.pk %}"
+                           class="text-gray-900 hover:text-primary-600">
+                            {{ report.title|default:"Sans titre" }}
+                        </a>
+                    </h3>
+
+                    {% if not report.content_warning %}
+                        <p class="text-sm text-gray-600 line-clamp-3">
+                            {{ report.content|truncatewords:40 }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <!-- Actions -->
+                <div class="card-footer flex items-center gap-4 text-gray-500">
+                    <button class="btn-ghost btn-sm">
+                        <span class="i-lucide-heart text-sm"></span>
+                    </button>
+                    <button class="btn-ghost btn-sm">
+                        <span class="i-lucide-sparkles text-sm"></span>
+                        Recommander
+                    </button>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+{% elif is_empty %}
+    <div class="text-center py-16">
+        <span class="i-lucide-home text-5xl text-gray-300 mb-4 block"></span>
+        <h3 class="font-semibold text-gray-900 mb-2">Votre fil est vide</h3>
+        <p class="text-sm text-gray-500 mb-4">
+            Suivez des joueurs ou des parties pour voir leurs publications ici.
+        </p>
+        <div class="flex items-center justify-center gap-3">
+            <a href="{% url 'games:list' %}" class="btn-primary btn-sm">Explorer les parties</a>
+            <a href="{% url 'characters:list' %}" class="btn-secondary btn-sm">Voir les personnages</a>
+        </div>
+    </div>
+{% else %}
+    <div class="text-center py-12">
+        <span class="i-lucide-inbox text-4xl text-gray-300 mb-4 block"></span>
+        <p class="text-gray-500">Aucun contenu récent.</p>
+    </div>
+{% endif %}
