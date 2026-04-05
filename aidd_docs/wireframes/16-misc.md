@@ -41,7 +41,17 @@ Affiche apres la premiere connexion (signup). Aide le joueur a demarrer.
 |  Etape 2 de 3                    [Passer l'introduction ->]      |
 +------------------------------------------------------------------+
 |                                                                  |
-|  Suivez des joueurs et des parties                               |
+|  Decouvrez votre instance                                        |
+|                                                                  |
+|  +------------------------------------------------------------+  |
+|  | Vous migrez d'une autre instance ?                          |  |
+|  | [Importer mes follows (CSV)]                                |  |
+|  +------------------------------------------------------------+  |
+|                                                                  |
+|  Apercu de l'activite locale                                     |
+|                                                                  |
+|  @feed_item — dernier CR public local                            |
+|  @feed_item — avant-dernier CR public local                      |
 |                                                                  |
 |  Joueurs actifs sur cette instance                               |
 |                                                                  |

@@ -46,11 +46,17 @@
 |  Resultats federes (2)                                           |
 |                                                                  |
 |  +------+ @alice@suddenly.games                                  |
-|  |avatar|  (globe) suddenly.games                                |
-|  +------+  3 parties publiques  ·  [Suivre]                     |
+|  |avatar|  (dice) Suddenly  ·  suddenly.games                    |
+|  +------+  3 parties publiques  ·  [Suivre] [Lier possible]     |
+|                                                                  |
+|  +------+ @frank@mastodon.social                                 |
+|  |avatar|  (mastodon) Mastodon  ·  mastodon.social               |
+|  +------+  [Suivre]                                              |
+|            (info) Instance non-Suddenly : liens narratifs         |
+|            non disponibles                                        |
 |                                                                  |
 |  +------+ Viktor (PNJ)                                           |
-|  |avatar|  (globe) suddenly.games                                |
+|  |avatar|  (dice) Suddenly  ·  suddenly.games                    |
 |  +------+  City of Mist  ·  [Voir la fiche ->]                  |
 |                                                                  |
 +------------------------------------------------------------------+
@@ -58,7 +64,8 @@
 
 ### Recherche par identifiant federe
 
-Saisir `@alice@suddenly.games` declenche un WebFinger lookup :
+Saisir `@alice@suddenly.games` ou une URL de profil
+(`https://suddenly.games/users/alice`) declenche un WebFinger lookup :
 
 ```
 +------------------------------------------------------------------+

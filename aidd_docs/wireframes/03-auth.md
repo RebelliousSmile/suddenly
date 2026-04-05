@@ -40,20 +40,33 @@
 |                                                                  |
 |                  +----------------------------+                  |
 |                  |                            |                  |
-|                  |       Inscription          |                  |
+|                  |  Rejoindre {{ SITE_NAME }} |                  |
+|                  |  {{ SITE_DESCRIPTION }}     |                  |
 |                  |                            |                  |
 |                  |  Nom d'utilisateur         |                  |
 |                  |  {________________________}|                  |
-|                  |  Lettres, chiffres, @/./- |                  |
+|                  |  Vous serez                |                  |
+|                  |  @username@{{ DOMAIN }}    |                  |
 |                  |                            |                  |
 |                  |  Adresse e-mail            |                  |
 |                  |  {________________________}|                  |
 |                  |                            |                  |
 |                  |  Mot de passe              |                  |
 |                  |  {________________________}|                  |
+|                  |  @password_strength        |                  |
 |                  |                            |                  |
 |                  |  Confirmer le mot de passe |                  |
 |                  |  {________________________}|                  |
+|                  |                            |                  |
+|                  |  Regles de l'instance :    |                  |
+|                  |  1. Respectez les autres   |                  |
+|                  |  2. Utilisez les CW pour   |                  |
+|                  |     le contenu sensible    |                  |
+|                  |  3. Pas de spam            |                  |
+|                  |  Voir toutes les regles -> |                  |
+|                  |                            |                  |
+|                  |  [x] J'accepte les regles  |                  |
+|                  |      de cette instance     |                  |
 |                  |                            |                  |
 |                  |  [     S'inscrire      ]   |                  |
 |                  |                            |                  |

@@ -160,12 +160,32 @@ Identique au wireframe `11-notifications.md` (section parametres).
 |                                      |
 |  ──────────────────────────────────  |
 |                                      |
+|  Comptes bloques                     |
+|                                      |
+|  {Bloquer un utilisateur...______}   |
+|  (info) Vous ne verrez plus son      |
+|  contenu et il ne pourra plus        |
+|  interagir avec vous.                |
+|                                      |
+|  @troll123 — bloque le 5 mars       |
+|    [Debloquer]                       |
+|                                      |
+|  ──────────────────────────────────  |
+|                                      |
+|  Comptes masques (mute)              |
+|                                      |
+|  {Masquer un utilisateur...______}   |
+|  (info) Son contenu sera masque      |
+|  de vos fils mais il pourra encore   |
+|  interagir.                          |
+|                                      |
+|  ──────────────────────────────────  |
+|                                      |
 |  Instances bloquees (personnel)      |
 |                                      |
 |  {Ajouter une instance a bloquer}    |
 |  (info) Vous ne verrez plus le       |
-|  contenu de cette instance, meme     |
-|  si vous suivez des acteurs dessus.  |
+|  contenu de cette instance.          |
 |                                      |
 +--------------------------------------+
 ```
@@ -176,7 +196,21 @@ Identique au wireframe `11-notifications.md` (section parametres).
 +--------------------------------------+
 |  Mes donnees                         |
 |                                      |
-|  Exporter mes donnees                |
+|  Import / Export d'abonnements       |
+|                                      |
+|  [Exporter mes follows (CSV)]        |
+|  (info) Format CSV compatible        |
+|  Mastodon. Contient vos abonnements  |
+|  joueurs, parties, personnages.      |
+|                                      |
+|  [Importer des follows (CSV)]        |
+|  (info) Importez un fichier CSV      |
+|  Mastodon ou Suddenly. Les comptes   |
+|  seront suivis automatiquement.      |
+|                                      |
+|  ──────────────────────────────────  |
+|                                      |
+|  Exporter mes donnees completes      |
 |                                      |
 |  [Telecharger une archive]           |
 |  (info) Archive ZIP contenant :      |
@@ -193,6 +227,15 @@ Identique au wireframe `11-notifications.md` (section parametres).
 |  (info) Importez une archive         |
 |  Suddenly ou compatible ActivityPub.  |
 |  Les doublons seront detectes.       |
+|                                      |
+|  ──────────────────────────────────  |
+|                                      |
+|  Alias de compte (migration entrante)|
+|                                      |
+|  {_@alice@ancien.instance________}   |
+|  [Ajouter un alias]                  |
+|  (info) Permet a votre ancien        |
+|  compte de migrer vers celui-ci.     |
 |                                      |
 |  ──────────────────────────────────  |
 |                                      |

@@ -8,12 +8,20 @@
 +------------------------------------------------------------------+
 |                                                                  |
 |  +--------+  Alice Dupont                                        |
-|  | avatar |  @alice@suddenly.social                              |
+|  | avatar |  @alice@suddenly.social  [Copier l'adresse]          |
 |  |  (lg)  |                                                      |
 |  +--------+  Joueuse de City of Mist et Blades in the Dark.     |
 |              Mes PNJ cherchent des histoires.                    |
 |                                                                  |
-|              (link) ActivityPub: @alice@suddenly.social           |
+|              Inscrite depuis jan. 2025                            |
+|              42 abonnes · 18 abonnements                         |
+|              ^^^^^^^^^^   ^^^^^^^^^^^^^                          |
+|              cliquable    cliquable (-> listes)                   |
+|                                                                  |
+|              Champs personnalises (4 max, label:valeur) :        |
+|              Pronoms : elle/elle                                  |
+|              Site : https://alice.blog  (lien verifie)           |
+|              Systemes preferes : City of Mist, BitD              |
 |                                                                  |
 |              [Suivre]           [Modifier le profil]*            |
 |                                                                  |
@@ -89,9 +97,29 @@
 |                  |  [ ] Afficher le contenu   |                  |
 |                  |      sans langue definie   |                  |
 |                  |                            |                  |
+|                  |  Champs personnalises      |                  |
+|                  |  Label 1  {_Pronoms_______} |                 |
+|                  |  Valeur   {_elle/elle______} |                 |
+|                  |  [+ Ajouter un champ] (max 4)|                |
+|                  |                            |                  |
 |                  |  [Enregistrer]  Annuler    |                  |
 |                  |                            |                  |
 |                  +----------------------------+                  |
 |                                                                  |
 +------------------------------------------------------------------+
 ```
+
+### Variante — Compte migre
+
+Si l'utilisateur a migre son compte, son profil affiche un bandeau :
+
+```
++------------------------------------------------------------------+
+|  @status_banner(type="info", icon="arrow-right")                 |
+|  Ce compte a migre vers @alice@new-instance.social               |
+|  [Voir le nouveau profil ->]                                     |
++------------------------------------------------------------------+
+```
+
+Le profil reste visible en lecture seule (CRs archives) mais
+les boutons [Suivre] et [Lier] sont desactives.

@@ -59,11 +59,19 @@ sur les pages de liste (personnages, parties).
 |                                                                  |
 +------------------------------------------------------------------+
 |                                                                  |
-|  Filtres : [Tout] [CRs] [Sequences] [PNJ]                       |
+|  Filtres : [Tout] [CRs] [Recommandations] [Sequences] [PNJ]            |
 |  id="feed-list"                                                  |
 |                                                                  |
 |  @feed_item(report=...) — @alice dans City of Mist               |
-|  @feed_item(report=...) — @dave dans Ironsworn                   |
+|                                                                  |
+|  +------------------------------------------------------------+  |
+|  | (sparkles) @charlie recommande                    il y a 1h    |  |
+|  |                                                             |  |
+|  | @feed_item(report=...) — @dave dans Ironsworn               |  |
+|  |                                                             |  |
+|  +------------------------------------------------------------+  |
+|                                                                  |
+|  @feed_item(report=...) — @eve dans Vampire                     |
 |  ...                                                             |
 |                                                                  |
 |  (hx-trigger="revealed" -> page suivante)                        |
@@ -162,6 +170,127 @@ Chaque item du fil Fediverse affiche le **badge instance** :
 |  [Rechercher sur le Fediverse]                                   |
 +------------------------------------------------------------------+
 ```
+
+---
+
+## Recommandation (Announce AP)
+
+La recommandation est le mecanisme de propagation narratif de Suddenly.
+Quand un joueur recommande un CR, il dit "cette histoire vaut le detour"
+— c'est un geste narratif, pas un simple repost.
+
+Techniquement, c'est un `Announce` ActivityPub — compatible Mastodon
+(affiche comme un boost). Mais cote Suddenly, le vocabulaire est narratif.
+
+### Bouton Recommander dans les feed items
+
+```
+  (heart) 4  (message) 2  (sparkles) Recommander  ...
+                           ^^^^^^^^^^
+                           hx-post="/api/reports/{id}/recommend/"
+                           hx-target="this"
+                           hx-swap="outerHTML"
+```
+
+Apres recommandation, le bouton change d'etat :
+
+```
+  (heart) 4  (message) 2  (sparkles active) Recommande  ...
+                           ^^^^^^^^^^^^^^^^ text-accent-600
+```
+
+### CR recommande dans le fil
+
+```
++------------------------------------------------------------+
+| (sparkles) @charlie recommande                   il y a 1h    |
++------------------------------------------------------------+
+| @feed_item standard (le CR original)                       |
+|                                                             |
+| +------+  @dave dans Ironsworn              il y a 1j      |
+| |avatar|  Jour 47 : La forge silencieuse                   |
+| +------+  ...                                              |
++------------------------------------------------------------+
+```
+
+Le header "(sparkles) @charlie recommande" est affiche au-dessus du
+feed_item original. Clic sur @charlie -> profil. Le CR lui-meme
+renvoie vers l'auteur original.
+
+### Activite ActivityPub
+
+```
+Type : Announce(Article)
+Envoi : aux followers de l'utilisateur qui recommande
+Reception Mastodon : apparait comme un boost classique
+Reception Suddenly : apparait avec (sparkles) et "recommande"
+```
+
+---
+
+## Invitation a rejoindre l'aventure
+
+En plus de la recommandation (publique, dans le fil), un joueur peut
+**inviter directement** un de ses followers a decouvrir un CR ou un PNJ.
+C'est un message prive narratif : "viens voir ca, ca pourrait t'interesser".
+
+### Bouton Inviter (dans le menu contextuel des feed items et fiches perso)
+
+```
+  (heart) 4  (message) 2  (sparkles) Recommander  ...
+                                                    |
+                                                    v (menu ...)
+                                              +------------------+
+                                              | (link) Copier    |
+                                              | (sparkles) Recom.|
+                                              | (send) Inviter   |
+                                              | (flag) Signaler  |
+                                              +------------------+
+```
+
+### Modal d'invitation
+
+```
++----------------------------------------------------------+
+|                                                    [x]   |
+|  Inviter a decouvrir ce CR                               |
+|                                                          |
+|  Session 12 : L'Oracle brise — @alice dans City of Mist  |
+|                                                          |
+|  Qui voulez-vous inviter ?                                |
+|  {Rechercher parmi vos followers...________________}      |
+|  hx-get="/htmx/followers/suggest/?q=..."                  |
+|                                                          |
+|  +------+ @charlie · suit 3 de vos parties               |
+|  +------+ @eve · joue aussi a City of Mist               |
+|                                                          |
+|  Message (optionnel)                                      |
+|  {______________________________________________________}|
+|  {  "Il y a un PNJ genial dans ce CR,                    }|
+|  {   je pense que tu adorerais l'adopter !"              }|
+|  {______________________________________________________}|
+|                                                          |
+|               [Envoyer l'invitation]   Annuler           |
+|                                                          |
++----------------------------------------------------------+
+```
+
+### Notification recue
+
+```
++------------------------------------------------------------+
+| (send) @bob vous invite a decouvrir                        |
+| "Session 12 : L'Oracle brise"                              |
+|                                                             |
+| "Il y a un PNJ genial dans ce CR, je pense                |
+|  que tu adorerais l'adopter !"                              |
+|                                                             |
+| [Lire le CR ->]                                            |
++------------------------------------------------------------+
+```
+
+L'invitation est une notification privee (pas dans le fil public).
+Techniquement : activite AP de type `Invite` ou `Note` directe.
 
 ---
 

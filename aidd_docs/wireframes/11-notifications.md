@@ -71,6 +71,9 @@
 | Demande de lien | (merge) | amber | LinkRequest creee sur mon PNJ |
 | Reponse demande | (check)/(x) | emerald/red | Ma demande acceptee/refusee |
 | Nouveau CR | (book-open) | indigo | Joueur/partie suivi publie |
+| **Recommandation** | **(sparkles)** | **accent** | **Quelqu'un a recommande votre CR** |
+| **Mention** | **(at-sign)** | **blue** | **Quelqu'un vous a mentionne dans un CR** |
+| **Invitation** | **(send)** | **primary** | **Quelqu'un vous invite a decouvrir un CR/PNJ** |
 | Nouveau follower | (user-plus) | blue | Quelqu'un me suit |
 | SharedSequence | (edit) | violet | Invitation, proposition publication |
 | Revocation | (alert-triangle) | red | Lien revoque |
@@ -91,6 +94,9 @@
 |  | Reponses            | [x]    | [x]    |                     |  |
 |  | SharedSequence      | [x]    | [x]    |                     |  |
 |  | Nouveaux CRs        | [x]    | [ ]    |                     |  |
+|  | Recommandations     | [x]    | [ ]    |                     |  |
+|  | Mentions            | [x]    | [x]    |                     |  |
+|  | Invitations         | [x]    | [x]    |                     |  |
 |  | Nouveaux followers  | [x]    | [ ]    |                     |  |
 |  +---------------------+--------+--------+                     |  |
 |  |                                                             |  |
