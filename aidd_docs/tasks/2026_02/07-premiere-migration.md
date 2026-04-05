@@ -2,8 +2,19 @@
 
 **Durée estimée** : 30 min
 **Phase** : 1 - Fondations
-**Statut** : [ ] À faire
+**Statut** : [x] Archivée (obsolète)
 **Dépend de** : 02, 03, 04, 05, 06
+
+---
+
+## Archive — Motif
+
+> Archivée le 2026-04-05 — remplacée par `2026_02_26-premiere-migration.md` qui corrige
+> les chemins de fichiers, pointe les bonnes migrations, et a déjà passé la review
+> (Phases 0-1 validées). La tâche 07 référençait une structure `apps/` qui n'existe pas
+> (le projet utilise `suddenly/`), proposait des workarounds dangereux (FK→CharField),
+> et ses vérifications étaient purement manuelles. Le travail restant est couvert par
+> la version révisée (Phases 2-3 : migrate + createsuperuser + validation).
 
 ---
 
