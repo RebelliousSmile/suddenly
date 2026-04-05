@@ -18,6 +18,23 @@ def home(request: HttpRequest) -> HttpResponse:
     return render(request, "core/home.html")
 
 
+def about(request: HttpRequest) -> HttpResponse:
+    """Instance about page (US-31, wireframe 17)."""
+    from suddenly.activitypub.models import FederatedServer
+    from suddenly.characters.models import Character
+    from suddenly.games.models import Report
+    from suddenly.users.models import User
+
+    stats = {
+        "users": User.objects.filter(is_active=True, remote=False).count(),
+        "reports": Report.objects.filter(status="published").count(),
+        "characters": Character.objects.filter(remote=False).count(),
+        "instances": FederatedServer.objects.exclude(status="BLOCKED").count(),
+    }
+
+    return render(request, "core/about.html", {"stats": stats})
+
+
 def htmx_render(
     request: HttpRequest,
     full_template: str,
