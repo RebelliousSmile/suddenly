@@ -606,6 +606,86 @@ Scenario: Signalement cross-instance
 
 ---
 
+## Domaine 12 — Fediverse natif (ajout 2026-04-05)
+
+> Issues de l'audit persona Fediverse (Mia). Voir `wireframes/PERSONA_FEDIVERSE_AUDIT.md`.
+
+### US-28: "Recommander un CR a mes followers"
+
+**As a** joueur qui decouvre un CR marquant
+**I want** le recommander a mes followers
+**So that** les histoires circulent entre joueurs et instances
+
+```gherkin
+Scenario: Recommandation publique
+  Given je lis un CR dans mon fil
+  When je clique "Recommander"
+  Then le CR apparait dans le fil de mes followers avec "(sparkles) @moi recommande"
+  And l'activite est federee (Announce AP, compatible Mastodon)
+
+Scenario: Invitation privee
+  Given je decouvre un CR ou un PNJ interessant
+  When je clique "Inviter" et choisis un follower
+  Then il recoit une notification privee avec mon message et un lien vers le CR
+```
+
+### US-29: "Controler la visibilite de mon CR"
+
+**As a** joueur qui publie un CR
+**I want** choisir qui peut le voir
+**So that** je controle la diffusion de mes recits
+
+```gherkin
+Scenario: Visibilite public
+  Given je publie un CR en mode Public
+  Then il apparait dans les fils Instance et Fediverse et est federe
+
+Scenario: Visibilite non-liste
+  Given je publie un CR en mode Non-liste
+  Then il est visible par lien direct mais pas dans les fils publics
+
+Scenario: Visibilite abonnes
+  Given je publie un CR en mode Abonnes
+  Then seuls mes followers le voient
+```
+
+### US-30: "Ajouter un avertissement de contenu"
+
+**As a** joueur qui publie du contenu sensible
+**I want** ajouter un avertissement de contenu (CW)
+**So that** les lecteurs choisissent de voir ou non le contenu
+
+```gherkin
+Scenario: CR avec CW
+  Given je publie un CR avec un avertissement "Violence"
+  Then le CR est replie dans le fil derriere "Afficher le contenu"
+  And le CW est transmis dans l'activite AP
+
+Scenario: Citation avec CW
+  Given j'ajoute une citation avec un avertissement "Contenu mature"
+  Then la citation est repliee sur la fiche personnage
+```
+
+### US-31: "Voir les details de mon instance"
+
+**As a** visiteur ou joueur
+**I want** voir la page A propos de l'instance
+**So that** je connais les regles, l'admin et les stats avant de m'inscrire
+
+### US-32: "Importer/exporter mes follows"
+
+**As a** joueur qui migre d'une autre instance
+**I want** importer mes follows au format CSV
+**So that** je retrouve ma communaute sans tout refaire
+
+### US-33: "Bloquer ou masquer un utilisateur"
+
+**As a** joueur
+**I want** bloquer ou masquer un utilisateur
+**So that** je ne voie plus son contenu et qu'il ne puisse plus interagir avec moi
+
+---
+
 ## Priorité d'implémentation
 
 | Priorité | US | Domaine | Justification |
@@ -625,3 +705,7 @@ Scenario: Signalement cross-instance
 | 7 | US-23 | Lien cross-instance | Fédération gameplay |
 | 7 | US-24 | Compatibilité Mastodon | Visibilité externe |
 | 7 | US-25, US-26, US-27 | Administration | Gouvernance d'instance |
+| 3 | US-29, US-30 | Fediverse natif | Visibilite + CW : requis avant publication de CRs |
+| 5 | US-28 | Fediverse natif | Recommandation : propagation de contenu |
+| 6 | US-31 | Fediverse natif | Page A propos : identite d'instance |
+| 7 | US-32, US-33 | Fediverse natif | Import/export, block/mute : portabilite |
