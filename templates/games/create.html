@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Nouvelle partie — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-2xl">
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">Nouvelle partie</h1>
+
+        {% if error %}
+            <div class="mb-4 p-4 rounded-lg bg-red-50 text-red-800 border border-red-200">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="post" class="card card-body space-y-4">
+            {% csrf_token %}
+
+            <div>
+                <label for="title" class="form-label">Titre</label>
+                <input type="text" id="title" name="title"
+                       value="{{ form_data.title|default:'' }}"
+                       placeholder="Ex: City of Mist — Saison 2"
+                       required class="form-input">
+            </div>
+
+            <div>
+                <label for="game_system" class="form-label">
+                    Système de jeu <span class="text-gray-500">(optionnel)</span>
+                </label>
+                <input type="text" id="game_system" name="game_system"
+                       value="{{ form_data.game_system|default:'' }}"
+                       placeholder="Ex: City of Mist, D&D 5e, Ironsworn"
+                       class="form-input">
+            </div>
+
+            <div>
+                <label for="description" class="form-label">
+                    Description <span class="text-gray-500">(optionnel)</span>
+                </label>
+                <textarea id="description" name="description" rows="4"
+                          placeholder="Décrivez votre campagne..."
+                          class="form-input">{{ form_data.description|default:'' }}</textarea>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <input type="checkbox" id="is_public" name="is_public"
+                       checked
+                       class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                <label for="is_public" class="text-sm text-gray-700">
+                    Partie publique (visible et suivable)
+                </label>
+            </div>
+
+            <div class="flex items-center gap-3 pt-4 border-t border-gray-200">
+                <button type="submit" class="btn-primary">
+                    <span class="i-lucide-plus"></span>
+                    Créer la partie
+                </button>
+                <a href="{% url 'games:list' %}" class="btn-ghost">Annuler</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

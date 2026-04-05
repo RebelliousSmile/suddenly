@@ -39,6 +39,7 @@ urlpatterns = [
     path("@", include("suddenly.users.urls")),
     # Front-end views (DA-1: HTMX-first)
     path("characters/", include("suddenly.characters.front_urls")),
+    path("games/", include("suddenly.games.front_urls")),
     # Main app
     path("", include("suddenly.core.urls")),
 ]
