@@ -11,16 +11,13 @@ Covers:
 
 from __future__ import annotations
 
-import json
 from typing import Any
-from unittest.mock import patch
 
 import pytest
 from django.test import Client, RequestFactory
 
 from suddenly.activitypub.models import ProcessedActivity
 from suddenly.core.middleware import AuthRateLimitMiddleware
-
 
 # ─── ProcessedActivity dedup ─────────────────────────────────────
 

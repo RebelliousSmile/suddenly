@@ -22,13 +22,11 @@ from suddenly.characters.models import (
     LinkRequestStatus,
     LinkType,
     SharedSequence,
-    SharedSequenceStatus,
 )
 from suddenly.core.models import Notification, NotificationType
 from suddenly.games.models import Report, ReportVisibility
 from suddenly.users.models import User
-from tests.factories import CharacterFactory, GameFactory, ReportFactory, UserFactory
-
+from tests.factories import CharacterFactory, GameFactory, UserFactory
 
 # ─── Report CW + Visibility ──────────────────────────────────────
 
@@ -262,7 +260,7 @@ class TestNotification:
 
     def test_notification_ordering(self, user: User) -> None:
         """Notifications are ordered by -created_at."""
-        n1 = Notification.objects.create(
+        Notification.objects.create(
             recipient=user,
             type=NotificationType.NEW_REPORT,
             message="First",
@@ -276,14 +274,10 @@ class TestNotification:
         assert notifs[0].id == n2.id  # Most recent first
 
     def test_unread_count(self, user: User) -> None:
-        Notification.objects.create(
-            recipient=user, type=NotificationType.MENTION, message="M1"
-        )
+        Notification.objects.create(recipient=user, type=NotificationType.MENTION, message="M1")
         Notification.objects.create(
             recipient=user, type=NotificationType.MENTION, message="M2", is_read=True
         )
-        Notification.objects.create(
-            recipient=user, type=NotificationType.INVITATION, message="M3"
-        )
+        Notification.objects.create(recipient=user, type=NotificationType.INVITATION, message="M3")
         unread = Notification.objects.filter(recipient=user, is_read=False).count()
         assert unread == 2
