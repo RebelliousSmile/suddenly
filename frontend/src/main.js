@@ -274,18 +274,19 @@ Alpine.data('passwordStrength', (fieldId) => ({
 Alpine.data('autosave', (saveUrl) => ({
   status: 'saved',  // 'saved' | 'saving' | 'unsaved' | 'error'
   timer: null,
+  _saveVersion: 0,
 
-  init() {
-    this.$watch('status', () => {})
-  },
+  init() {},
 
   markDirty() {
     this.status = 'unsaved'
+    this._saveVersion++
     clearTimeout(this.timer)
     this.timer = setTimeout(() => this.save(), 3000)
   },
 
   async save() {
+    const version = this._saveVersion
     if (this.status === 'saving') return
     this.status = 'saving'
 
@@ -301,9 +302,14 @@ Alpine.data('autosave', (saveUrl) => ({
         body: formData,
       })
 
-      this.status = response.ok ? 'saved' : 'error'
+      // Only update status if no newer changes came in during save
+      if (version === this._saveVersion) {
+        this.status = response.ok ? 'saved' : 'error'
+      }
     } catch {
-      this.status = 'error'
+      if (version === this._saveVersion) {
+        this.status = 'error'
+      }
     }
   },
 

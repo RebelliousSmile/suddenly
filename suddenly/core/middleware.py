@@ -5,7 +5,6 @@ Custom middleware for Suddenly.
 from __future__ import annotations
 
 import logging
-from typing import Any
 
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
 
@@ -27,7 +26,7 @@ class AuthRateLimitMiddleware:
         "/accounts/signup/": (5, 60),  # 5 per 60s
     }
 
-    def __init__(self, get_response: Any) -> None:
+    def __init__(self, get_response: object) -> None:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
@@ -47,23 +46,34 @@ class AuthRateLimitMiddleware:
         return self.get_response(request)
 
     def _is_rate_limited(
-        self, request: HttpRequest, path: str, max_attempts: int, window: int
+        self,
+        request: HttpRequest,
+        path: str,
+        max_attempts: int,
+        window: int,
     ) -> bool:
         from django.core.cache import cache
 
-        ip = self._get_client_ip(request)
-        cache_key = f"auth_rl:{path}:{ip}"
-        attempts = cache.get(cache_key, 0)
+        try:
+            ip = self._get_client_ip(request)
+            cache_key = f"auth_rl:{path}:{ip}"
+            attempts = cache.get(cache_key, 0)
 
-        if attempts >= max_attempts:
-            return True
+            if attempts >= max_attempts:
+                return True
 
-        cache.set(cache_key, attempts + 1, window)
+            cache.set(cache_key, attempts + 1, window)
+        except Exception:  # noqa: BLE001 — fail open if cache is down
+            logger.warning("Rate limit cache error, allowing request", exc_info=True)
+
         return False
 
     @staticmethod
     def _get_client_ip(request: HttpRequest) -> str:
-        xff = request.META.get("HTTP_X_FORWARDED_FOR")
-        if xff:
-            return xff.split(",")[0].strip()
+        """Extract client IP, using REMOTE_ADDR only.
+
+        X-Forwarded-For is NOT trusted here — Railway and most reverse
+        proxies set REMOTE_ADDR correctly. Trusting XFF without proxy
+        validation enables rate limit bypass via header spoofing.
+        """
         return request.META.get("REMOTE_ADDR", "unknown")

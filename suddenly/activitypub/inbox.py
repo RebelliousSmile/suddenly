@@ -129,26 +129,36 @@ def process_inbox(request: HttpRequest, actor_type: str, actor_identifier: str) 
     if actor_url and request_domain:
         from urllib.parse import urlparse as _urlparse
 
-        actor_domain = _urlparse(actor_url).hostname or ""
-        if actor_domain != request_domain:
+        actor_domain = _urlparse(actor_url).hostname
+        if not actor_domain:
+            return HttpResponseBadRequest("Invalid actor URL")
+        # Compare hostnames only (no port) — _get_request_domain may include port
+        sig_domain = _urlparse(f"https://{request_domain}").hostname or request_domain
+        if actor_domain != sig_domain:
             logger.warning(
                 "Actor domain mismatch: actor=%s, signature=%s",
                 actor_domain,
-                request_domain,
+                sig_domain,
             )
             return HttpResponseForbidden("Actor domain mismatch")
 
-    # Inbox deduplication — skip already-processed activities
+    # Inbox deduplication — atomic get_or_create to avoid race condition
     if activity_id:
+        from django.db import IntegrityError
+
         from suddenly.activitypub.models import ProcessedActivity
 
-        if ProcessedActivity.objects.filter(ap_id=activity_id).exists():
-            logger.info("Skipping duplicate activity %s", activity_id)
+        try:
+            _, created = ProcessedActivity.objects.get_or_create(
+                ap_id=activity_id,
+                defaults={"actor_domain": request_domain or ""},
+            )
+            if not created:
+                logger.info("Skipping duplicate activity %s", activity_id)
+                return HttpResponse(status=202)
+        except IntegrityError:
+            logger.info("Duplicate activity detected (race): %s", activity_id)
             return HttpResponse(status=202)
-        ProcessedActivity.objects.create(
-            ap_id=activity_id,
-            actor_domain=request_domain or "",
-        )
 
     logger.info("Received %s for %s/%s", activity_type, actor_type, actor_identifier)
 

@@ -13,6 +13,7 @@ Usage in templates:
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +21,8 @@ from django import template
 from django.conf import settings
 from django.templatetags.static import static
 from django.utils.safestring import mark_safe
+
+logger = logging.getLogger(__name__)
 
 register = template.Library()
 
@@ -39,11 +42,16 @@ def _load_manifest() -> dict[str, Any]:
         manifest_path = Path(settings.BASE_DIR) / "static" / "dist" / "manifest.json"
 
     if not manifest_path.exists():
-        # No manifest — return empty dict, fall back to dev paths
+        if not settings.DEBUG:
+            logger.warning("Vite manifest not found — static assets may be broken")
         return {}
 
-    with open(manifest_path) as f:
-        _manifest_cache = json.load(f)
+    try:
+        with open(manifest_path) as f:
+            _manifest_cache = json.load(f)
+    except (json.JSONDecodeError, OSError) as exc:
+        logger.error("Failed to load Vite manifest: %s", exc)
+        return {}
 
     return _manifest_cache
 

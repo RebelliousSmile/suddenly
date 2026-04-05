@@ -19,11 +19,17 @@ logger = logging.getLogger(__name__)
 
 
 def _safe_delay(task: Any, *args: Any, **kwargs: Any) -> None:
-    """Call task.delay() but swallow broker connection errors."""
+    """Call task.delay() but handle broker unavailability gracefully.
+
+    Catches connection-related errors (kombu, stdlib). Programming
+    errors (TypeError, AttributeError) propagate normally.
+    """
+    from kombu.exceptions import KombuError
+
     try:
         task.delay(*args, **kwargs)
-    except Exception:  # noqa: BLE001 — intentionally broad for broker resilience
-        logger.warning("Failed to queue task %s (broker unavailable?)", task.name, exc_info=True)
+    except (KombuError, ConnectionError, TimeoutError, OSError) as exc:
+        logger.warning("Failed to queue task %s: %s", task.name, exc)
 
 
 @receiver(post_save, sender="games.Report")

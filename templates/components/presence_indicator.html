@@ -23,7 +23,7 @@
                 {% if p.role %}<span class="text-xs text-gray-500">({{ p.role }})</span>{% endif %}
             </div>
             {% if p.is_online %}
-                <span class="w-2 h-2 rounded-full bg-emerald-500" title="En ligne"></span>
+                <span class="w-2 h-2 rounded-full bg-emerald-500" role="status" aria-label="En ligne" title="En ligne"></span>
             {% else %}
                 <span class="text-xs text-gray-500">vu {{ p.last_seen|timesince }}</span>
             {% endif %}
