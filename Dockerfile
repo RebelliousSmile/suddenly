@@ -19,13 +19,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # -------------------------------------------------------------------
 FROM node:20-slim AS frontend-builder
 
-WORKDIR /frontend
+WORKDIR /app/frontend
 
 COPY frontend/package.json frontend/package-lock.json* ./
 RUN npm install
 
 COPY frontend/ ./
 RUN npm run build
+# Output: /app/static/dist/ (vite.config.js: outDir = '../static/dist')
 
 # -------------------------------------------------------------------
 # Python builder: install dependencies from pyproject.toml
@@ -40,15 +41,16 @@ RUN pip install --prefix=/install ".[federation]"
 # -------------------------------------------------------------------
 FROM base AS dev
 
-COPY pyproject.toml .
-RUN pip install -e ".[dev,federation]"
-
+# Copy all code first (needed for editable install)
 COPY . .
+RUN pip install -e ".[dev,federation]"
 
 # -------------------------------------------------------------------
 # Final: production image
 # -------------------------------------------------------------------
 FROM base AS final
+
+ENV DJANGO_SETTINGS_MODULE=config.settings.production
 
 RUN groupadd --gid 1000 suddenly \
     && useradd --uid 1000 --gid suddenly --shell /bin/bash --create-home suddenly
@@ -59,8 +61,8 @@ COPY --from=builder /install /usr/local
 # Application code
 COPY --chown=suddenly:suddenly . .
 
-# Built frontend assets
-COPY --from=frontend-builder --chown=suddenly:suddenly /static/dist/ ./static/dist/
+# Built frontend assets from Vite
+COPY --from=frontend-builder --chown=suddenly:suddenly /app/static/dist/ ./static/dist/
 
 RUN mkdir -p /app/staticfiles /app/media \
     && chown -R suddenly:suddenly /app/staticfiles /app/media \

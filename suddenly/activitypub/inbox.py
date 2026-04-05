@@ -118,11 +118,49 @@ def process_inbox(request: HttpRequest, actor_type: str, actor_identifier: str) 
         return HttpResponseBadRequest("Invalid JSON")
 
     activity_type = activity.get("type")
+    activity_id = activity.get("id", "")
+    actor_url = activity.get("actor", "")
 
     if not activity_type:
         return HttpResponseBadRequest("Missing activity type")
 
-    logger.info(f"Received {activity_type} for {actor_type}/{actor_identifier}")
+    # Validate actor domain matches signature domain
+    request_domain = _get_request_domain(request)
+    if actor_url and request_domain:
+        from urllib.parse import urlparse as _urlparse
+
+        actor_domain = _urlparse(actor_url).hostname
+        if not actor_domain:
+            return HttpResponseBadRequest("Invalid actor URL")
+        # Compare hostnames only (no port) — _get_request_domain may include port
+        sig_domain = _urlparse(f"https://{request_domain}").hostname or request_domain
+        if actor_domain != sig_domain:
+            logger.warning(
+                "Actor domain mismatch: actor=%s, signature=%s",
+                actor_domain,
+                sig_domain,
+            )
+            return HttpResponseForbidden("Actor domain mismatch")
+
+    # Inbox deduplication — atomic get_or_create to avoid race condition
+    if activity_id:
+        from django.db import IntegrityError
+
+        from suddenly.activitypub.models import ProcessedActivity
+
+        try:
+            _, created = ProcessedActivity.objects.get_or_create(
+                ap_id=activity_id,
+                defaults={"actor_domain": request_domain or ""},
+            )
+            if not created:
+                logger.info("Skipping duplicate activity %s", activity_id)
+                return HttpResponse(status=202)
+        except IntegrityError:
+            logger.info("Duplicate activity detected (race): %s", activity_id)
+            return HttpResponse(status=202)
+
+    logger.info("Received %s for %s/%s", activity_type, actor_type, actor_identifier)
 
     # Route to appropriate handler
     handlers: dict[str, _InboxHandler] = {

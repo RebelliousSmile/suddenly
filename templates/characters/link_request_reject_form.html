@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Refuser la demande — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-lg">
+        <h1 class="text-xl font-bold text-gray-900 mb-4">
+            Refuser la demande de @{{ link_request.requester.username }}
+        </h1>
+
+        <form method="post" class="card card-body space-y-4">
+            {% csrf_token %}
+            <div>
+                <label for="response_message" class="form-label">
+                    Raison du refus <span class="text-gray-500">(optionnel)</span>
+                </label>
+                <textarea id="response_message" name="response_message" rows="3"
+                          placeholder="Expliquez pourquoi..."
+                          class="form-input"></textarea>
+            </div>
+            <div class="flex items-center gap-3">
+                <button type="submit" class="btn-danger">Confirmer le refus</button>
+                <a href="{% url 'characters:link_requests' %}" class="btn-ghost">Annuler</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

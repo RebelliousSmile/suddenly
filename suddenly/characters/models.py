@@ -7,11 +7,10 @@ get claimed, adopted, or forked by other players.
 
 from __future__ import annotations
 
-import uuid
-
 from django.conf import settings
 from django.db import models
 
+from suddenly.core.models import BaseModel
 from suddenly.games.models import Game, Report
 
 
@@ -25,16 +24,20 @@ class CharacterStatus(models.TextChoices):
     FORKED = "forked", "Forké"
 
 
-class Character(models.Model):
+class Character(BaseModel):
     """
     A Character can be a PC or NPC, and can evolve between states.
     Each character is an ActivityPub actor.
     """
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
     # Identity
     name = models.CharField(max_length=100)
+    slug = models.SlugField(
+        max_length=120,
+        unique=True,
+        blank=True,
+        help_text="URL-friendly name, auto-generated from name",
+    )
     description = models.TextField(blank=True)
     avatar = models.ImageField(upload_to="characters/", blank=True, null=True)
 
@@ -88,10 +91,6 @@ class Character(models.Model):
     public_key = models.TextField(blank=True, help_text="PEM-encoded public key")
     private_key = models.TextField(blank=True, help_text="PEM-encoded private key (local only)")
 
-    # Timestamps
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
     class Meta:
         ordering = ["-created_at"]
         indexes = [
@@ -102,6 +101,26 @@ class Character(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name} ({self.get_status_display()})"
+
+    def save(self, *args: object, **kwargs: object) -> None:
+        if not self.slug:
+            import uuid as _uuid
+
+            from django.db import IntegrityError
+            from django.utils.text import slugify
+
+            base_slug = slugify(self.name)[:100] or "character"
+            slug = base_slug
+            for counter in range(1, 100):
+                try:
+                    self.slug = slug
+                    super().save(*args, **kwargs)
+                    return
+                except IntegrityError:
+                    slug = f"{base_slug[:95]}-{counter}"
+            # Fallback: UUID suffix (guaranteed unique)
+            self.slug = f"{base_slug[:80]}-{_uuid.uuid4().hex[:8]}"
+        super().save(*args, **kwargs)
 
     @property
     def is_available(self) -> bool:
@@ -129,16 +148,19 @@ class QuoteVisibility(models.TextChoices):
     PUBLIC = "public", "Publique"
 
 
-class Quote(models.Model):
+class Quote(BaseModel):
     """
     A memorable quote from a character, BookWyrm-style.
     """
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
     # Content
     content = models.TextField(help_text="The quote itself")
     context = models.TextField(blank=True, help_text="Situation when this was said")
+    content_warning = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="Content warning displayed before the quote (US-30)",
+    )
 
     # Relations
     character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name="quotes")
@@ -174,8 +196,6 @@ class Quote(models.Model):
     ap_id = models.URLField(blank=True, null=True, unique=True)
 
     # Timestamps
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["-created_at"]
@@ -207,12 +227,10 @@ class AppearanceRole(models.TextChoices):
     MENTIONED = "mentioned", "Mentionné"
 
 
-class CharacterAppearance(models.Model):
+class CharacterAppearance(BaseModel):
     """
     Links a character to a report where they appear.
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name="appearances")
     report = models.ForeignKey(
@@ -223,9 +241,6 @@ class CharacterAppearance(models.Model):
         max_length=20, choices=AppearanceRole.choices, default=AppearanceRole.MENTIONED
     )
     context = models.TextField(blank=True, help_text="Description of their role in this scene")
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ["character", "report"]
@@ -250,17 +265,17 @@ class LinkRequestStatus(models.TextChoices):
     """Status of a link request."""
 
     PENDING = "pending", "En attente"
+    QUEUED = "queued", "En file d'attente"
     ACCEPTED = "accepted", "Acceptée"
     REJECTED = "rejected", "Refusée"
     CANCELLED = "cancelled", "Annulée"
+    EXPIRED = "expired", "Expirée"
 
 
-class LinkRequest(models.Model):
+class LinkRequest(BaseModel):
     """
     A request to claim, adopt, or fork a character.
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     # Type
     type = models.CharField(max_length=20, choices=LinkType.choices)
@@ -309,12 +324,10 @@ class LinkRequest(models.Model):
         return f"{self.get_type_display()}: {self.requester} → {self.target_character}"
 
 
-class CharacterLink(models.Model):
+class CharacterLink(BaseModel):
     """
     An established link between characters after a request is accepted.
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     type = models.CharField(max_length=20, choices=LinkType.choices)
 
@@ -334,9 +347,6 @@ class CharacterLink(models.Model):
 
     description = models.TextField(blank=True, help_text="Nature of the link")
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
     class Meta:
         ordering = ["-created_at"]
 
@@ -351,12 +361,13 @@ class SharedSequenceStatus(models.TextChoices):
     PUBLISHED = "published", "Publié"
 
 
-class SharedSequence(models.Model):
+class SharedSequence(BaseModel):
     """
     Co-created content when a link is established.
-    """
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    DA-3: Asynchronous editor for MVP (polling presence, pessimistic locking).
+    DA-2/ADR-011: Character status changes only when this is published.
+    """
 
     link = models.OneToOneField(
         CharacterLink, on_delete=models.CASCADE, related_name="shared_sequence"
@@ -366,25 +377,44 @@ class SharedSequence(models.Model):
     content = models.TextField(help_text="Markdown content")
 
     status = models.CharField(
-        max_length=20, choices=SharedSequenceStatus.choices, default=SharedSequenceStatus.DRAFT
+        max_length=20,
+        choices=SharedSequenceStatus.choices,
+        default=SharedSequenceStatus.DRAFT,
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    # Collaborative editing (DA-3: async, not CRDT)
+    last_edited_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+        help_text="Last user who edited the content",
+    )
+    last_edited_at = models.DateTimeField(null=True, blank=True)
+
+    # Publication workflow (double validation)
+    publication_proposed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+        help_text="Who proposed publishing (needs both parties to validate)",
+    )
+    publication_proposed_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self) -> str:
         return self.title or f"Sequence for {self.link}"
 
 
-class Follow(models.Model):
+class Follow(BaseModel):
     """
     A follow relationship (local or federated).
 
     Uses Django's ContentType framework for polymorphic targets
     (User, Character, or Game).
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     follower = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="following"
@@ -405,9 +435,6 @@ class Follow(models.Model):
     # ActivityPub
     remote = models.BooleanField(default=False)
     ap_id = models.URLField(blank=True, null=True, unique=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ["follower", "content_type", "object_id"]

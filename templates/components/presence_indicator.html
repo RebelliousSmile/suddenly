@@ -1,0 +1,32 @@
+{#
+  Presence Indicator Component — online/offline status for collaborative editing
+
+  Usage:
+    {% include "components/presence_indicator.html" with participants=participants %}
+
+  Props:
+    participants — list of dicts: [{"user": User, "is_online": bool, "last_seen": datetime}]
+#}
+
+<div class="flex items-center gap-4">
+    {% for p in participants %}
+        <div class="flex items-center gap-2">
+            {% if p.user.avatar %}
+                <img src="{{ p.user.avatar.url }}" alt="{{ p.user.username }}" class="avatar-sm">
+            {% else %}
+                <div class="avatar-sm avatar-placeholder">
+                    <span class="i-lucide-user text-xs"></span>
+                </div>
+            {% endif %}
+            <div>
+                <span class="text-sm font-medium text-gray-900">@{{ p.user.username }}</span>
+                {% if p.role %}<span class="text-xs text-gray-500">({{ p.role }})</span>{% endif %}
+            </div>
+            {% if p.is_online %}
+                <span class="w-2 h-2 rounded-full bg-emerald-500" role="status" aria-label="En ligne" title="En ligne"></span>
+            {% else %}
+                <span class="text-xs text-gray-500">vu {{ p.last_seen|timesince }}</span>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>

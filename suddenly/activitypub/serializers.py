@@ -165,6 +165,26 @@ def serialize_report(report: Any) -> dict[str, Any]:
     if report.title:
         data["name"] = report.title
 
+    # Content Warning (US-30)
+    if hasattr(report, "content_warning") and report.content_warning:
+        data["summary"] = report.content_warning  # AP CW field
+        data["sensitive"] = True
+
+    # Visibility (US-29) — maps to AP addressing
+    visibility = getattr(report, "visibility", "public")
+    public_url = "https://www.w3.org/ns/activitystreams#Public"
+    followers_url = f"{report.author.actor_url}/followers"
+
+    if visibility == "public":
+        data["to"] = [public_url]
+        data["cc"] = [followers_url]
+    elif visibility == "unlisted":
+        data["to"] = [followers_url]
+        data["cc"] = [public_url]
+    elif visibility == "followers":
+        data["to"] = [followers_url]
+        data["cc"] = []
+
     # Mentions
     mentions: list[dict[str, str]] = []
     for appearance in report.character_appearances.select_related("character"):
@@ -196,7 +216,11 @@ def serialize_quote(quote: Any) -> dict[str, Any]:
         "published": quote.created_at.isoformat(),
     }
 
-    if quote.context:
+    # Content Warning (US-30) — overrides context as summary if CW present
+    if hasattr(quote, "content_warning") and quote.content_warning:
+        data["summary"] = quote.content_warning
+        data["sensitive"] = True
+    elif quote.context:
         data["summary"] = quote.context
 
     if quote.report:

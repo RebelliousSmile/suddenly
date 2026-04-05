@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-2xl">
+
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold text-gray-900">
+                Notifications
+                {% if unread_count %}<span class="badge-accent ml-2">{{ unread_count }}</span>{% endif %}
+            </h1>
+            {% if unread_count %}
+                <form hx-post="{% url 'feed:notifications_read_all' %}"
+                      hx-target="main"
+                      hx-swap="innerHTML">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-ghost btn-sm">
+                        Tout marquer comme lu
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+
+        <div id="notification-items">
+            {% include "notifications/_items.html" %}
+        </div>
+
+    </div>
+</section>
+{% endblock %}

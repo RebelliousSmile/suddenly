@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}{{ report.title|default:"Compte-rendu" }} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-3xl">
+
+        <!-- Breadcrumb -->
+        <p class="text-sm text-gray-500 mb-4">
+            <a href="{% url 'games:detail' pk=game.pk %}" class="link-muted">{{ game.title }}</a>
+            › {{ report.title|default:"Compte-rendu" }}
+        </p>
+
+        <!-- Header -->
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">
+                {{ report.title|default:"Sans titre" }}
+            </h1>
+            <div class="flex items-center gap-3 text-sm text-gray-500">
+                <span>par @{{ report.author.username }}</span>
+                {% if report.published_at %}
+                    <span>· publié {{ report.published_at|timesince }}</span>
+                {% else %}
+                    <span class="badge-gray">Brouillon</span>
+                {% endif %}
+                {% if report.visibility != 'public' %}
+                    <span class="badge-gray">
+                        {% if report.visibility == 'unlisted' %}Non-listé{% endif %}
+                        {% if report.visibility == 'followers' %}Abonnés{% endif %}
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Content Warning -->
+        {% if report.content_warning %}
+            <div class="card card-body mb-6 bg-amber-50 border-amber-200"
+                 x-data="{ show: false }">
+                <div class="flex items-center gap-2 text-amber-800">
+                    <span class="i-lucide-alert-triangle"></span>
+                    <strong class="text-sm">{{ report.content_warning }}</strong>
+                </div>
+                <button @click="show = !show"
+                        class="btn-ghost btn-sm mt-2 text-amber-700"
+                        x-text="show ? 'Masquer' : 'Afficher le contenu'">
+                </button>
+                <div x-show="show" x-transition class="mt-4 prose-report">
+                    {{ report.content|linebreaksbr }}
+                </div>
+            </div>
+        {% else %}
+            <!-- Content -->
+            <div class="card card-body mb-6 prose-report">
+                {{ report.content|linebreaksbr }}
+            </div>
+        {% endif %}
+
+        <!-- Cast -->
+        {% if cast %}
+            <div class="card card-body mb-6">
+                <h2 class="text-heading mb-3">Distribution</h2>
+                <div class="flex flex-wrap gap-2">
+                    {% for app in cast %}
+                        <a href="{% url 'characters:detail' slug=app.character.slug %}"
+                           class="inline-flex items-center gap-1 px-3 py-1 rounded-badge text-sm
+                                  {% if app.character.status == 'npc' %}bg-green-100 text-green-800
+                                  {% else %}bg-blue-100 text-blue-800{% endif %}">
+                            {{ app.character.name }}
+                            <span class="text-xs opacity-60">{{ app.get_role_display }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Quotes from this report -->
+        {% if quotes %}
+            <div class="card card-body mb-6">
+                <h2 class="text-heading mb-3">Citations de cette session</h2>
+                {% for quote in quotes %}
+                    <blockquote class="border-l-4 border-primary-300 pl-4 mb-4">
+                        <p class="text-gray-800 italic font-serif text-lg">"{{ quote.content }}"</p>
+                        <footer class="text-xs text-gray-500 mt-1">
+                            — {{ quote.character.name }}
+                        </footer>
+                    </blockquote>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Accepter la demande — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-lg">
+        <h1 class="text-xl font-bold text-gray-900 mb-4">
+            Accepter la demande de @{{ link_request.requester.username }}
+        </h1>
+
+        <p class="text-gray-600 mb-4">
+            @{{ link_request.requester.username }} souhaite
+            <strong>{{ link_request.get_type_display }}</strong>
+            {{ link_request.target_character.name }}.
+        </p>
+
+        <form method="post" class="card card-body space-y-4">
+            {% csrf_token %}
+            <div>
+                <label for="response_message" class="form-label">
+                    Votre message de réponse <span class="text-gray-500">(optionnel)</span>
+                </label>
+                <textarea id="response_message" name="response_message" rows="3"
+                          placeholder="Un mot narratif pour accompagner la transition..."
+                          class="form-input"></textarea>
+            </div>
+            <p class="text-sm text-gray-500">
+                <span class="i-lucide-info text-xs mr-1"></span>
+                Une Séquence Partagée sera créée pour co-écrire la scène de transition.
+            </p>
+            <div class="flex items-center gap-3">
+                <button type="submit" class="btn-primary">Confirmer l'acceptation</button>
+                <a href="{% url 'characters:link_requests' %}" class="btn-ghost">Annuler</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

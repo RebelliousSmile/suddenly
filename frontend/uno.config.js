@@ -55,40 +55,57 @@ const presetSuddenly = () => ({
         900: '#78350f',
         950: '#451a03',
       },
-      // Statuts des personnages
-      status: {
-        available: '#10b981',   // Vert - PNJ disponible
-        claimed: '#f59e0b',     // Amber - Réclamé
-        adopted: '#6366f1',     // Indigo - Adopté
-        forked: '#8b5cf6',      // Violet - Forké
-        pc: '#3b82f6',          // Bleu - PJ
-      },
+      // Statuts des personnages — utilisés par les badges badge-*
+      // (conservés comme référence sémantique, les badges utilisent les palettes Tailwind)
     },
-    
+
     // Fonts
     fontFamily: {
       sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
       serif: ['Lora', 'Georgia', 'serif'],
       mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
     },
-    
+
     // Espacements custom
     spacing: {
       'safe': 'env(safe-area-inset-bottom)',
     },
-    
+
     // Border radius
     borderRadius: {
       'card': '0.75rem',
       'button': '0.5rem',
       'badge': '9999px',
     },
-    
+
     // Shadows
     boxShadow: {
       'card': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
       'card-hover': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
       'dropdown': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+    },
+
+    // Z-index scale
+    zIndex: {
+      'dropdown': '10',
+      'sticky': '20',
+      'overlay': '30',
+      'modal': '40',
+      'toast': '50',
+    },
+
+    // Animation durations — respects prefers-reduced-motion via CSS fallback
+    duration: {
+      'fast': '100ms',
+      'normal': '200ms',
+      'slow': '300ms',
+    },
+
+    // Easing
+    easing: {
+      'in': 'cubic-bezier(0.4, 0, 1, 1)',
+      'out': 'cubic-bezier(0, 0, 0.2, 1)',
+      'in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
     },
   },
   
@@ -114,10 +131,13 @@ const presetSuddenly = () => ({
     'card-footer': 'px-4 py-3 sm:px-6 border-t border-gray-100 bg-gray-50 rounded-b-card',
     
     // Formulaires
-    'form-input': 'block w-full rounded-button border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm',
+    'form-input': 'block w-full rounded-button border border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm',
+    'form-input-error': 'form-input border-red-300 focus:border-red-500 focus:ring-red-500',
     'form-label': 'block text-sm font-medium text-gray-700 mb-1',
-    'form-help': 'mt-1 text-sm text-gray-500',
+    'form-help': 'mt-1 text-sm text-gray-600',
     'form-error': 'mt-1 text-sm text-red-600',
+    'form-dropzone': 'mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-500 transition-colors',
+    'form-dropzone-link': 'relative cursor-pointer rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500',
     
     // Badges
     'badge': 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-xs font-medium',
@@ -141,6 +161,9 @@ const presetSuddenly = () => ({
     'avatar-xl': 'avatar w-16 h-16',
     'avatar-placeholder': 'avatar flex items-center justify-center bg-primary-100 text-primary-600',
     
+    // Dropdown menu
+    'dropdown-menu': 'absolute bg-white rounded-card shadow-dropdown border border-gray-200 py-1 z-dropdown',
+
     // Links
     'link': 'text-primary-600 hover:text-primary-800 hover:underline',
     'link-muted': 'text-gray-500 hover:text-gray-700',
@@ -150,7 +173,7 @@ const presetSuddenly = () => ({
     'text-heading': 'text-gray-900 font-semibold',
     
     // Prose (pour les reports)
-    'prose-report': 'prose prose-indigo prose-sm sm:prose-base max-w-none',
+    'prose-report': 'prose prose-indigo max-w-none',
   },
 })
 
@@ -178,9 +201,9 @@ export default defineConfig({
         'a': {
           'color': '#4f46e5',
           'text-decoration': 'none',
-          '&:hover': {
-            'text-decoration': 'underline',
-          },
+        },
+        'a:hover': {
+          'text-decoration': 'underline',
         },
         'blockquote': {
           'border-left-color': '#6366f1',
@@ -203,13 +226,20 @@ export default defineConfig({
   },
   
   // Safelist - classes toujours incluses
+  // IMPORTANT: toute classe générée dynamiquement en Python (template tags,
+  // context variables) DOIT être ajoutée ici. Le scanner UnoCSS ne détecte
+  // que les classes présentes littéralement dans les fichiers HTML/PY.
   safelist: [
-    // Statuts dynamiques
+    // Statuts dynamiques (générés via character.status dans les templates)
     'badge-available', 'badge-claimed', 'badge-adopted', 'badge-forked', 'badge-pc',
-    // Icônes fréquentes
+    // Z-index sémantiques (custom tokens)
+    'z-dropdown', 'z-sticky', 'z-overlay', 'z-modal', 'z-toast',
+    // Icônes fréquentes (utilisées dans des template tags dynamiques)
     'i-lucide-user', 'i-lucide-users', 'i-lucide-book-open', 'i-lucide-link',
     'i-lucide-git-merge', 'i-lucide-git-branch', 'i-lucide-sparkles',
     'i-lucide-plus', 'i-lucide-edit', 'i-lucide-trash', 'i-lucide-check',
     'i-lucide-x', 'i-lucide-search', 'i-lucide-menu', 'i-lucide-bell',
+    'i-lucide-cloud', 'i-lucide-cloud-off', 'i-lucide-loader-2',
+    'i-lucide-alert-triangle', 'i-lucide-info',
   ],
 })

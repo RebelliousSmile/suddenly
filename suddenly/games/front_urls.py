@@ -1,0 +1,15 @@
+"""Front-end URL patterns for games and reports (DA-1)."""
+
+from django.urls import path
+
+from . import front_views
+
+app_name = "games"
+
+urlpatterns = [
+    path("", front_views.game_list, name="list"),
+    path("new/", front_views.game_create, name="create"),
+    path("<uuid:pk>/", front_views.game_detail, name="detail"),
+    path("<uuid:game_pk>/reports/<uuid:pk>/", front_views.report_detail, name="report_detail"),
+    path("<uuid:game_pk>/reports/new/", front_views.report_create, name="report_create"),
+]

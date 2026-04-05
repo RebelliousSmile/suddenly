@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}{{ character.name }} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app">
+
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row items-start gap-6 mb-8">
+            {% if character.avatar %}
+                <img src="{{ character.avatar.url }}" alt="{{ character.name }}" class="avatar-xl">
+            {% else %}
+                <span class="avatar-xl avatar-placeholder">
+                    <span class="i-lucide-user text-2xl"></span>
+                </span>
+            {% endif %}
+
+            <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                    <h1 class="text-2xl font-bold text-gray-900">{{ character.name }}</h1>
+                    <span class="{% if character.status == 'npc' %}badge-available{% else %}badge-{{ character.status }}{% endif %}">
+                        {{ character.get_status_display }}
+                    </span>
+                </div>
+
+                <p class="text-sm text-gray-500 mb-1">
+                    <span class="i-lucide-book-open text-xs mr-1"></span>
+                    {{ character.origin_game.title }}
+                    {% if character.origin_game.game_system %}· {{ character.origin_game.game_system }}{% endif %}
+                </p>
+                <p class="text-sm text-gray-500">
+                    Créé par @{{ character.creator.username }}
+                    {% if character.owner %}· Propriétaire : @{{ character.owner.username }}{% endif %}
+                </p>
+            </div>
+
+            <!-- Actions -->
+            {% if character.is_available and user.is_authenticated and user != character.creator %}
+                {% if pending_request %}
+                    {% include "components/status_banner.html" with type="info" icon="clock" message="Vous avez une demande en attente sur ce personnage." action_label="Voir" action_url="#" %}
+                {% else %}
+                    <a href="#" class="btn-primary">
+                        <span class="i-lucide-link"></span>
+                        Lier à mon histoire
+                    </a>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <!-- Description -->
+        {% if character.description %}
+            <div class="card card-body mb-6">
+                <h2 class="text-heading mb-3">Description</h2>
+                <p class="text-gray-600">{{ character.description|linebreaksbr }}</p>
+            </div>
+        {% endif %}
+
+        <!-- Apparitions -->
+        <div class="card card-body mb-6">
+            <h2 class="text-heading mb-3">
+                Apparitions
+                {% if appearances %}({{ appearances|length }}){% endif %}
+            </h2>
+
+            {% if appearances %}
+                <div class="space-y-2">
+                    {% for app in appearances %}
+                        <div class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                            <div>
+                                <a href="#" class="font-medium text-gray-900 hover:text-primary-600">
+                                    {{ app.report.title|default:"Sans titre" }}
+                                </a>
+                                <p class="text-xs text-gray-500">
+                                    {{ app.report.game.title }} · par @{{ app.report.author.username }}
+                                </p>
+                            </div>
+                            <span class="badge-gray text-xs">{{ app.get_role_display }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-sm text-gray-500">Aucune apparition dans un compte-rendu.</p>
+            {% endif %}
+        </div>
+
+        <!-- Citations -->
+        <div class="card card-body mb-6">
+            <h2 class="text-heading mb-3">
+                Citations
+                {% if quotes %}({{ quotes|length }}){% endif %}
+            </h2>
+
+            {% if quotes %}
+                <div class="space-y-4">
+                    {% for quote in quotes %}
+                        <blockquote class="border-l-4 border-primary-300 pl-4">
+                            <p class="text-gray-800 italic font-serif text-lg">
+                                "{{ quote.content }}"
+                            </p>
+                            {% if quote.context %}
+                                <p class="text-sm text-gray-500 mt-1">{{ quote.context }}</p>
+                            {% endif %}
+                            <footer class="text-xs text-gray-500 mt-1">
+                                — {{ character.name }}, par @{{ quote.author.username }}
+                            </footer>
+                        </blockquote>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-sm text-gray-500">Aucune citation pour le moment.</p>
+            {% endif %}
+        </div>
+
+        <!-- Lignée (forks) -->
+        {% if character.parent or character.forks.exists %}
+            <div class="card card-body">
+                <h2 class="text-heading mb-3">Lignée</h2>
+                {% if character.parent %}
+                    <p class="text-sm text-gray-600 mb-2">
+                        Dérivé de
+                        <a href="{% url 'characters:detail' slug=character.parent.slug %}" class="link">
+                            {{ character.parent.name }}
+                        </a>
+                    </p>
+                {% endif %}
+                {% for fork in character.forks.all %}
+                    <p class="text-sm text-gray-600 ml-4">
+                        └─
+                        <a href="{% url 'characters:detail' slug=fork.slug %}" class="link">
+                            {{ fork.name }}
+                        </a>
+                        ({{ fork.get_status_display }})
+                    </p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

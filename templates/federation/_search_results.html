@@ -1,0 +1,35 @@
+{# Partial: federated search results #}
+
+{% if error %}
+    <div class="text-center py-8">
+        <span class="i-lucide-search-x text-4xl text-gray-300 mb-4 block"></span>
+        <p class="text-gray-500">{{ error }}</p>
+    </div>
+{% elif results %}
+    <div class="space-y-3">
+        {% for r in results %}
+            <div class="card card-body flex items-center justify-between">
+                <div>
+                    <p class="font-medium text-gray-900">{{ r.name }}</p>
+                    <p class="text-sm text-gray-500">
+                        {{ r.username }}
+                        <span class="i-lucide-globe text-xs ml-1"></span>
+                        {{ r.domain }}
+                    </p>
+                    {% if r.summary %}
+                        <p class="text-sm text-gray-600 mt-1 line-clamp-2">{{ r.summary|striptags|truncatewords:20 }}</p>
+                    {% endif %}
+                </div>
+                <a href="{% url 'federation:remote_profile' %}?ap_id={{ r.ap_id|urlencode }}"
+                   class="btn-secondary btn-sm">
+                    Voir le profil
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% elif query %}
+    <div class="text-center py-8">
+        <span class="i-lucide-search text-4xl text-gray-300 mb-4 block"></span>
+        <p class="text-gray-500">Recherche en cours...</p>
+    </div>
+{% endif %}

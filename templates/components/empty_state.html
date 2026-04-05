@@ -1,0 +1,27 @@
+{#
+  Empty State Component — generic placeholder for empty lists/sections
+
+  Usage:
+    {% include "components/empty_state.html" with icon="book-open" title="Aucune partie" description="Créez votre première partie pour commencer." cta_label="Créer une partie" cta_url=create_game_url %}
+    {% include "components/empty_state.html" with icon="search-x" title="Aucun résultat" description="Essayez d'autres termes." %}
+
+  Props:
+    icon        — Lucide icon name (without i-lucide- prefix)
+    title       — heading text
+    description — body text (optional)
+    cta_label   — button label (optional)
+    cta_url     — button href (optional)
+#}
+
+<div class="text-center py-12 px-4">
+    <span class="i-lucide-{{ icon }} text-4xl text-gray-300 mb-4 mx-auto block w-12 h-12"></span>
+    <h3 class="text-heading text-gray-900 mb-2">{{ title }}</h3>
+    {% if description %}
+        <p class="text-sm text-gray-500 max-w-md mx-auto mb-4">{{ description }}</p>
+    {% endif %}
+    {% if cta_label and cta_url %}
+        <a href="{{ cta_url }}" class="btn btn-primary btn-sm">
+            {{ cta_label }}
+        </a>
+    {% endif %}
+</div>

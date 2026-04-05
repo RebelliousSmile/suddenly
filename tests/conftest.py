@@ -18,12 +18,15 @@ from tests.factories import CharacterFactory, GameFactory, ReportFactory, UserFa
 @pytest.fixture(autouse=True)
 def _celery_eager(settings: Any) -> None:
     """Force Celery to execute tasks synchronously during tests."""
-    from suddenly.celery import app as celery_app
-
     settings.CELERY_TASK_ALWAYS_EAGER = True
     settings.CELERY_TASK_EAGER_PROPAGATES = True
-    celery_app.conf.task_always_eager = True
-    celery_app.conf.task_eager_propagates = True
+    try:
+        from suddenly.celery import app as celery_app
+
+        celery_app.conf.task_always_eager = True
+        celery_app.conf.task_eager_propagates = True
+    except Exception:
+        pass  # Celery may not be configured (no broker)
 
 
 @pytest.fixture

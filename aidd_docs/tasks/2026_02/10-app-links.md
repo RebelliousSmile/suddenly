@@ -2,8 +2,19 @@
 
 **Durée estimée** : 4h
 **Phase** : 3 — Liens
-**Statut** : [ ] À faire
+**Statut** : [x] Archivée (obsolète)
 **Dépend de** : 08-app-characters, 04-app-federation
+
+---
+
+## Archive — Motif
+
+> Archivée le 2026-04-05 — Les modèles LinkRequest, CharacterLink et SharedSequence existent
+> déjà dans `suddenly/characters/models.py` avec migration. Le service `LinkService` existe
+> dans `suddenly/characters/services.py` avec logique Claim/Adopt/Fork et `select_for_update`.
+> Les vues CharacterViewSet dans `suddenly/characters/views.py` implémentent les endpoints.
+> La tâche ciblait `apps/characters/` (chemin inexistant). Les vues HTMX et templates restent
+> à créer dans une future tâche adaptée à l'architecture réelle.
 
 ---
 

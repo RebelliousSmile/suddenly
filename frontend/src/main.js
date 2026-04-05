@@ -5,6 +5,9 @@
 // UnoCSS - génère les styles
 import 'virtual:uno.css'
 
+// HTMX loading indicator styles
+import './htmx-indicator.css'
+
 // HTMX - interactions serveur
 import htmx from 'htmx.org'
 window.htmx = htmx
@@ -108,15 +111,34 @@ Alpine.data('mentionInput', (initialValue = '') => ({
   suggestions: [],
   showSuggestions: false,
   selectedIndex: 0,
-  
+  _cursorPos: 0,
+  _mentionStart: -1,
+
+  onInput(event) {
+    const textarea = event.target
+    this._cursorPos = textarea.selectionStart
+    // Find the @ that starts the current mention (search backwards from cursor)
+    const textBeforeCursor = this.content.slice(0, this._cursorPos)
+    const mentionMatch = textBeforeCursor.match(/@(\w*)$/)
+    if (mentionMatch) {
+      this._mentionStart = this._cursorPos - mentionMatch[0].length
+      this.search(mentionMatch[1])
+    } else {
+      this.showSuggestions = false
+      this._mentionStart = -1
+    }
+  },
+
   async search(query) {
     if (query.length < 2) {
       this.suggestions = []
+      this.showSuggestions = false
       return
     }
-    
+
     try {
       const response = await fetch(`/api/characters/search/?q=${encodeURIComponent(query)}`)
+      if (!response.ok) return
       this.suggestions = await response.json()
       this.showSuggestions = this.suggestions.length > 0
       this.selectedIndex = 0
@@ -124,16 +146,31 @@ Alpine.data('mentionInput', (initialValue = '') => ({
       console.error('Search error:', e)
     }
   },
-  
+
   selectSuggestion(suggestion) {
-    // Insérer la mention
-    this.content = this.content.replace(/@\w*$/, `@${suggestion.name} `)
+    if (this._mentionStart < 0) return
+    // Replace from the @ to the cursor position with the selected name
+    const before = this.content.slice(0, this._mentionStart)
+    const after = this.content.slice(this._cursorPos)
+    const mention = `@${suggestion.name} `
+    this.content = before + mention + after
     this.showSuggestions = false
+    this._mentionStart = -1
+
+    // Restore cursor position after the inserted mention
+    this.$nextTick(() => {
+      const textarea = this.$el.querySelector('textarea')
+      if (textarea) {
+        const newPos = before.length + mention.length
+        textarea.focus()
+        textarea.setSelectionRange(newPos, newPos)
+      }
+    })
   },
-  
+
   onKeydown(event) {
     if (!this.showSuggestions) return
-    
+
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault()
@@ -193,6 +230,150 @@ Alpine.data('characterStatus', (status) => ({
   
   get statusClass() {
     return `badge-${this.status === 'npc' ? 'available' : this.status}`
+  },
+}))
+
+// Password strength meter
+Alpine.data('passwordStrength', (fieldId) => ({
+  strength: 0,
+  label: '',
+
+  init() {
+    const field = document.getElementById(fieldId)
+    if (!field) return
+    field.addEventListener('input', () => this.evaluate(field.value))
+  },
+
+  evaluate(password) {
+    if (!password) {
+      this.strength = 0
+      this.label = ''
+      return
+    }
+
+    let score = 0
+    if (password.length >= 8) score++
+    if (password.length >= 12) score++
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++
+    if (/\d/.test(password)) score++
+    if (/[^a-zA-Z0-9]/.test(password)) score++
+
+    this.strength = Math.min(Math.max(Math.ceil(score * 4 / 5), 1), 4)
+
+    const labels = {
+      1: 'Faible — ajoutez des majuscules, chiffres ou symboles',
+      2: 'Moyen — ajoutez de la variété',
+      3: 'Bon',
+      4: 'Excellent',
+    }
+    this.label = labels[this.strength]
+  },
+}))
+
+// Autosave indicator for report editor
+Alpine.data('autosave', (saveUrl) => ({
+  status: 'saved',  // 'saved' | 'saving' | 'unsaved' | 'error'
+  timer: null,
+  _saveVersion: 0,
+
+  init() {},
+
+  markDirty() {
+    this.status = 'unsaved'
+    this._saveVersion++
+    clearTimeout(this.timer)
+    this.timer = setTimeout(() => this.save(), 3000)
+  },
+
+  async save() {
+    const version = this._saveVersion
+    if (this.status === 'saving') return
+    this.status = 'saving'
+
+    try {
+      const form = this.$el.closest('form')
+      const formData = new FormData(form)
+      formData.set('status', 'draft')
+
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value
+      const response = await fetch(saveUrl, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrfToken },
+        body: formData,
+      })
+
+      // Only update status if no newer changes came in during save
+      if (version === this._saveVersion) {
+        this.status = response.ok ? 'saved' : 'error'
+      }
+    } catch {
+      if (version === this._saveVersion) {
+        this.status = 'error'
+      }
+    }
+  },
+
+  get icon() {
+    return {
+      saved: 'i-lucide-cloud',
+      saving: 'i-lucide-loader-2 animate-spin',
+      unsaved: 'i-lucide-cloud-off',
+      error: 'i-lucide-alert-triangle text-red-500',
+    }[this.status]
+  },
+
+  get text() {
+    return {
+      saved: 'Sauvegardé',
+      saving: 'Sauvegarde...',
+      unsaved: 'Non sauvegardé',
+      error: 'Erreur de sauvegarde',
+    }[this.status]
+  },
+}))
+
+// Presence indicator for SharedSequence (polling-based)
+Alpine.data('presence', (sequenceId, currentUserId) => ({
+  participants: [],
+  interval: null,
+
+  init() {
+    this.poll()
+    this.interval = setInterval(() => this.poll(), 15000)
+    // Signal own presence
+    this.heartbeat()
+    setInterval(() => this.heartbeat(), 10000)
+  },
+
+  destroy() {
+    clearInterval(this.interval)
+  },
+
+  async poll() {
+    try {
+      const response = await fetch(`/api/sequences/${sequenceId}/presence/`)
+      if (response.ok) {
+        this.participants = await response.json()
+      }
+    } catch {
+      // Silently fail — presence is non-critical
+    }
+  },
+
+  async heartbeat() {
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value
+      await fetch(`/api/sequences/${sequenceId}/presence/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrfToken,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id: currentUserId }),
+      })
+    } catch {
+      // Silently fail
+    }
   },
 }))
 

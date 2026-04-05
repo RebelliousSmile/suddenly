@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Lier {{ character.name }} à mon histoire — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-2xl">
+
+        <a href="{% url 'characters:detail' slug=character.slug %}" class="link-muted text-sm mb-4 block">
+            <span class="i-lucide-arrow-left text-xs"></span> Retour à {{ character.name }}
+        </a>
+
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">
+            Lier {{ character.name }} à votre histoire
+        </h1>
+
+        {% if character.remote %}
+            {% include "components/status_banner.html" with type="info" icon="globe" message="Ce personnage est sur une instance distante. La demande sera envoyée via ActivityPub. Délai : si aucune réponse sous 30 jours, la demande expirera." %}
+            <div class="mb-4"></div>
+        {% endif %}
+
+        {% if has_pending %}
+            {% include "components/status_banner.html" with type="warning" icon="alert-triangle" message="Ce PNJ a déjà une demande en attente. Votre demande sera mise en file d'attente." %}
+            <div class="mb-4"></div>
+        {% endif %}
+
+        <p class="text-gray-600 mb-6">Comment voulez-vous intégrer ce personnage ?</p>
+
+        <div class="space-y-4">
+            <!-- Adoption -->
+            <a href="{% url 'characters:link_request_form' slug=character.slug link_type='adopt' %}"
+               class="card card-hover card-body block">
+                <div class="flex items-start gap-4">
+                    <span class="w-10 h-10 rounded-full bg-secondary-100 text-secondary-600 flex items-center justify-center flex-shrink-0">
+                        <span class="i-lucide-heart text-lg"></span>
+                    </span>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 mb-1">Adoption</h3>
+                        <p class="text-sm text-gray-600">
+                            {{ character.name }} devient <strong>votre PJ</strong>.
+                            Il quitte son ancienne histoire pour rejoindre la vôtre.
+                            Le créateur devra accepter.
+                        </p>
+                    </div>
+                    <span class="i-lucide-arrow-right text-gray-400 mt-1 flex-shrink-0"></span>
+                </div>
+            </a>
+
+            <!-- Dérivation -->
+            <a href="{% url 'characters:link_request_form' slug=character.slug link_type='fork' %}"
+               class="card card-hover card-body block">
+                <div class="flex items-start gap-4">
+                    <span class="w-10 h-10 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center flex-shrink-0">
+                        <span class="i-lucide-git-branch text-lg"></span>
+                    </span>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 mb-1">Dérivation</h3>
+                        <p class="text-sm text-gray-600">
+                            Vous créez un <strong>nouveau PJ</strong> inspiré de {{ character.name }}.
+                            {{ character.name }} reste disponible pour d'autres joueurs.
+                            Vos deux personnages seront liés par une lignée.
+                        </p>
+                    </div>
+                    <span class="i-lucide-arrow-right text-gray-400 mt-1 flex-shrink-0"></span>
+                </div>
+            </a>
+
+            <!-- Retcon (de-emphasized) -->
+            <a href="{% url 'characters:link_request_form' slug=character.slug link_type='claim' %}"
+               class="card card-body block border-gray-100 hover:border-gray-200 transition-colors">
+                <div class="flex items-start gap-4">
+                    <span class="w-10 h-10 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center flex-shrink-0">
+                        <span class="i-lucide-git-merge text-lg"></span>
+                    </span>
+                    <div>
+                        <h3 class="font-medium text-gray-700 mb-1">
+                            Retcon <span class="text-xs text-gray-400 ml-1">(avancé)</span>
+                        </h3>
+                        <p class="text-sm text-gray-500">
+                            Réécriture rétroactive : {{ character.name }} était en fait
+                            votre PJ depuis le début. Son histoire est réinterprétée.
+                        </p>
+                    </div>
+                    <span class="i-lucide-arrow-right text-gray-300 mt-1 flex-shrink-0"></span>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

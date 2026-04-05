@@ -1,0 +1,25 @@
+{# Partial: game list results #}
+
+{% if games %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for game in games %}
+            <a href="{% url 'games:detail' pk=game.pk %}" class="card card-hover card-body block">
+                <h3 class="font-semibold text-gray-900 mb-1">{{ game.title }}</h3>
+                {% if game.game_system %}
+                    <p class="text-xs text-gray-500 mb-2">{{ game.game_system }}</p>
+                {% endif %}
+                {% if game.description %}
+                    <p class="text-sm text-gray-600 line-clamp-2">{{ game.description }}</p>
+                {% endif %}
+                <p class="text-xs text-gray-500 mt-2">
+                    par @{{ game.owner.username }}
+                </p>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-12">
+        <span class="i-lucide-book-open text-4xl text-gray-300 mb-4 block"></span>
+        <p class="text-gray-500">Aucune partie pour le moment.</p>
+    </div>
+{% endif %}

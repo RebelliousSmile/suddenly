@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Séquence Partagée — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-3xl">
+
+        <!-- Header -->
+        <div class="mb-6">
+            <h1 class="text-xl font-bold text-gray-900 mb-2">Séquence Partagée</h1>
+            <p class="text-sm text-gray-500">
+                {{ sequence.link.source.name }} ↔ {{ sequence.link.target.name }}
+                · {{ sequence.link.get_type_display }}
+            </p>
+            <div class="flex items-center gap-3 mt-2">
+                {% if sequence.status == 'draft' %}
+                    <span class="badge-accent">Brouillon</span>
+                {% else %}
+                    <span class="badge-secondary">Publié</span>
+                {% endif %}
+                {% if sequence.last_edited_by %}
+                    <span class="text-xs text-gray-500">
+                        Dernière modification par @{{ sequence.last_edited_by.username }}
+                        {% if sequence.last_edited_at %}, {{ sequence.last_edited_at|timesince }}{% endif %}
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if saved %}
+            <div class="mb-4 p-3 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-sm">
+                <span class="i-lucide-check text-xs mr-1"></span> Sauvegardé.
+            </div>
+        {% endif %}
+
+        <!-- Publication proposal banner -->
+        {% if sequence.publication_proposed_by and sequence.status == 'draft' %}
+            {% if sequence.publication_proposed_by == user %}
+                {% include "components/status_banner.html" with type="info" icon="send" message="Vous avez proposé la publication. En attente de validation de l'autre participant." %}
+            {% else %}
+                <div class="mb-4 p-4 rounded-lg bg-primary-50 border border-primary-200">
+                    <p class="text-sm text-primary-800 mb-3">
+                        <span class="i-lucide-send text-xs mr-1"></span>
+                        @{{ sequence.publication_proposed_by.username }} propose de publier cette séquence.
+                    </p>
+                    <form method="post" action="{% url 'characters:sequence_publish' pk=sequence.pk %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-primary btn-sm">Valider et publier</button>
+                    </form>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        {% if sequence.status == 'published' %}
+            {% include "components/status_banner.html" with type="success" icon="check-circle" message="Cette séquence est publiée et visible dans l'historique des deux personnages." %}
+        {% endif %}
+
+        <!-- Editor (DA-3: async, no CRDT) -->
+        {% if sequence.status == 'draft' %}
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+
+                <div>
+                    <label for="title" class="form-label">Titre</label>
+                    <input type="text" id="title" name="title"
+                           value="{{ sequence.title }}"
+                           placeholder="Ex: La rencontre au carrefour"
+                           class="form-input">
+                </div>
+
+                <div>
+                    <label for="content" class="form-label">Contenu (Markdown)</label>
+                    <textarea id="content" name="content" rows="16"
+                              placeholder="Écrivez ensemble la scène de transition..."
+                              class="form-input font-mono text-sm resize-y min-h-[400px]">{{ sequence.content }}</textarea>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button type="submit" class="btn-primary">
+                        <span class="i-lucide-save"></span>
+                        Sauvegarder
+                    </button>
+                </div>
+            </form>
+
+            {% if not sequence.publication_proposed_by %}
+                <form method="post" action="{% url 'characters:sequence_propose' pk=sequence.pk %}" class="mt-4">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-secondary">
+                        <span class="i-lucide-send"></span>
+                        Proposer la publication
+                    </button>
+                </form>
+            {% endif %}
+        {% else %}
+            <!-- Published: read-only -->
+            <div class="card card-body">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ sequence.title }}</h2>
+                <div class="prose-report">
+                    {{ sequence.content|linebreaksbr }}
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

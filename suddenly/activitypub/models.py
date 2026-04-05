@@ -105,3 +105,33 @@ class PublicKeyCache(BaseModel):
 
     def __str__(self) -> str:
         return self.actor_url
+
+
+class ProcessedActivity(BaseModel):
+    """
+    Tracks already-processed ActivityPub activity IDs for inbox deduplication.
+
+    Prevents replay attacks and duplicate processing when the same
+    activity is delivered multiple times (retries, network issues).
+    """
+
+    ap_id = models.URLField(
+        max_length=500,
+        unique=True,
+        help_text="ActivityPub activity ID (globally unique)",
+    )
+    actor_domain = models.CharField(
+        max_length=255,
+        help_text="Domain of the actor who sent this activity",
+    )
+
+    class Meta:
+        verbose_name = "Activité traitée"
+        verbose_name_plural = "Activités traitées"
+        indexes = [
+            models.Index(fields=["ap_id"], name="processed_ap_id_idx"),
+            models.Index(fields=["created_at"], name="processed_created_idx"),
+        ]
+
+    def __str__(self) -> str:
+        return self.ap_id

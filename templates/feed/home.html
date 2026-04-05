@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Fil d'actualité — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-3xl">
+
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">Fil d'actualité</h1>
+
+        <!-- Scope tabs -->
+        <div class="flex border-b border-gray-200 mb-6">
+            <a href="{% url 'feed:home' %}"
+               class="px-4 py-2 text-sm font-medium border-b-2 -mb-px
+                      {% if active_tab == 'subscriptions' %}border-primary-500 text-primary-600{% else %}border-transparent text-gray-500 hover:text-gray-700{% endif %}"
+               {% if active_tab != 'subscriptions' %}hx-get="{% url 'feed:home' %}" hx-target="#feed-content" hx-push-url="true"{% endif %}>
+                <span class="i-lucide-home text-sm mr-1"></span>
+                Abonnements
+            </a>
+            <a href="{% url 'feed:instance' %}"
+               class="px-4 py-2 text-sm font-medium border-b-2 -mb-px
+                      {% if active_tab == 'instance' %}border-primary-500 text-primary-600{% else %}border-transparent text-gray-500 hover:text-gray-700{% endif %}"
+               {% if active_tab != 'instance' %}hx-get="{% url 'feed:instance' %}" hx-target="#feed-content" hx-push-url="true"{% endif %}>
+                <span class="i-lucide-users text-sm mr-1"></span>
+                Instance
+            </a>
+            <a href="{% url 'feed:fediverse' %}"
+               class="px-4 py-2 text-sm font-medium border-b-2 -mb-px
+                      {% if active_tab == 'fediverse' %}border-primary-500 text-primary-600{% else %}border-transparent text-gray-500 hover:text-gray-700{% endif %}"
+               {% if active_tab != 'fediverse' %}hx-get="{% url 'feed:fediverse' %}" hx-target="#feed-content" hx-push-url="true"{% endif %}>
+                <span class="i-lucide-globe text-sm mr-1"></span>
+                Fediverse
+            </a>
+        </div>
+
+        <!-- NPC highlights (subscriptions tab only) -->
+        {% if active_tab == 'subscriptions' and npcs %}
+            <div class="mb-6">
+                <h2 class="text-sm font-semibold text-amber-700 mb-3">
+                    PNJ disponibles dans vos parties suivies
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {% for npc in npcs %}
+                        {% include "components/npc_highlight.html" with character=npc %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Feed content (swapped by HTMX) -->
+        <div id="feed-content">
+            {% include "feed/_feed_items.html" %}
+        </div>
+
+    </div>
+</section>
+{% endblock %}

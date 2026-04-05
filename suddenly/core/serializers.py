@@ -115,6 +115,7 @@ class CharacterSerializer(serializers.ModelSerializer):  # type: ignore[misc]
         fields = [
             "id",
             "name",
+            "slug",
             "description",
             "avatar",
             "status",
@@ -192,10 +193,12 @@ class ReportSerializer(serializers.ModelSerializer):  # type: ignore[misc]
             "id",
             "title",
             "content",
+            "content_warning",
             "game",
             "game_title",
             "author",
             "status",
+            "visibility",
             "published_at",
             "characters_count",
             "created_at",
@@ -212,7 +215,7 @@ class ReportCreateSerializer(serializers.ModelSerializer):  # type: ignore[misc]
 
     class Meta:
         model = Report
-        fields = ["title", "content", "game"]
+        fields = ["title", "content", "content_warning", "visibility", "game"]
 
     def validate_game(self, value: Game) -> Game:
         user = self.context["request"].user
@@ -261,6 +264,7 @@ class QuoteSerializer(serializers.ModelSerializer):  # type: ignore[misc]
             "id",
             "content",
             "context",
+            "content_warning",
             "character",
             "report",
             "visibility",

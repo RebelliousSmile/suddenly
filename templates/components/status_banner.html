@@ -1,0 +1,40 @@
+{#
+  Status Banner Component — contextual info bar on character/link pages
+
+  Usage:
+    {% include "components/status_banner.html" with type="info" icon="info" message="Votre demande est en attente." action_label="Voir" action_url=request_url dismiss=True %}
+    {% include "components/status_banner.html" with type="warning" icon="clock" message="En file d'attente (#2)" %}
+
+  Props:
+    type          — "info" | "warning" | "success" | "error"
+    icon          — Lucide icon name (without prefix)
+    message       — main text
+    action_label  — link text (optional)
+    action_url    — link href (optional)
+    dismiss       — show close button (optional, default False)
+#}
+
+<div class="flex items-center gap-3 px-4 py-3 rounded-card text-sm
+    {% if type == 'info' %}bg-blue-50 text-blue-800 border border-blue-200
+    {% elif type == 'warning' %}bg-amber-50 text-amber-800 border border-amber-200
+    {% elif type == 'success' %}bg-emerald-50 text-emerald-800 border border-emerald-200
+    {% elif type == 'error' %}bg-red-50 text-red-800 border border-red-200
+    {% endif %}"
+    {% if dismiss %}x-data="{ show: true }" x-show="show"{% endif %}>
+
+    <span class="i-lucide-{{ icon }} text-base flex-shrink-0"></span>
+
+    <p class="flex-1">{{ message }}</p>
+
+    {% if action_label and action_url %}
+        <a href="{{ action_url }}" class="font-medium underline flex-shrink-0">
+            {{ action_label }}
+        </a>
+    {% endif %}
+
+    {% if dismiss %}
+        <button @click="show = false" class="flex-shrink-0 opacity-60 hover:opacity-100">
+            <span class="i-lucide-x text-sm"></span>
+        </button>
+    {% endif %}
+</div>

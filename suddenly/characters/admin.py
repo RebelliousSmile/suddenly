@@ -38,7 +38,16 @@ else:
 
 @admin.register(Character)
 class CharacterAdmin(_CharacterBase):
-    list_display = ["name", "status", "owner", "creator", "origin_game", "remote", "created_at"]
+    list_display = [
+        "name",
+        "slug",
+        "status",
+        "owner",
+        "creator",
+        "origin_game",
+        "created_at",
+    ]
+    prepopulated_fields = {"slug": ("name",)}
     list_filter = ["status", "remote", "created_at"]
     search_fields = ["name", "description", "owner__username", "creator__username"]
     raw_id_fields = ["owner", "creator", "origin_game", "parent"]

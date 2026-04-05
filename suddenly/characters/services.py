@@ -225,8 +225,18 @@ class LinkService:
         request.resolved_at = timezone.now()
         request.save()
 
-        # TODO: Send ActivityPub Reject activity
-        # TODO: Notify requester
+        # Promote next QUEUED request to PENDING (US-15)
+        next_queued = (
+            LinkRequest.objects.filter(
+                target_character=request.target_character,
+                status=LinkRequestStatus.QUEUED,
+            )
+            .order_by("created_at")
+            .first()
+        )
+        if next_queued:
+            next_queued.status = LinkRequestStatus.PENDING
+            next_queued.save(update_fields=["status", "updated_at"])
 
         return request
 

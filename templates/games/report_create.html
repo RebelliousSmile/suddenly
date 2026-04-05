@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Nouveau compte-rendu — {{ game.title }} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-3xl">
+
+        <p class="text-sm text-gray-500 mb-4">
+            <a href="{% url 'games:detail' pk=game.pk %}" class="link-muted">{{ game.title }}</a>
+            › Nouveau compte-rendu
+        </p>
+
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">Nouveau compte-rendu</h1>
+
+        {% if error %}
+            <div class="mb-4 p-4 rounded-lg bg-red-50 text-red-800 border border-red-200">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+
+            <div class="card card-body space-y-4">
+                <div>
+                    <label for="title" class="form-label">
+                        Titre <span class="text-gray-500">(optionnel)</span>
+                    </label>
+                    <input type="text" id="title" name="title"
+                           value="{{ form_data.title|default:'' }}"
+                           placeholder="Ex: Session 12 — L'Oracle brisé"
+                           class="form-input">
+                </div>
+
+                <!-- Cast / Distribution (US-05, US-13) -->
+                <div x-data="{ cast: [], newChar: '' }">
+                    <label class="form-label">
+                        Distribution <span class="text-gray-500">(optionnel)</span>
+                    </label>
+                    <div class="flex flex-wrap gap-2 mb-2">
+                        <template x-for="(c, i) in cast" :key="i">
+                            <span class="badge-primary flex items-center gap-1">
+                                <span x-text="c"></span>
+                                <button type="button" @click="cast.splice(i, 1)"
+                                        class="hover:text-primary-200">
+                                    <span class="i-lucide-x text-xs"></span>
+                                </button>
+                                <input type="hidden" :name="'cast['+i+']'" :value="c">
+                            </span>
+                        </template>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" x-model="newChar"
+                               @keydown.enter.prevent="if(newChar.trim()){cast.push(newChar.trim());newChar='';}"
+                               placeholder="Ajouter un personnage..."
+                               class="form-input flex-1">
+                        <button type="button"
+                                @click="if(newChar.trim()){cast.push(newChar.trim());newChar='';}"
+                                class="btn-secondary">
+                            <span class="i-lucide-plus"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Content with @mention (US-05) -->
+                <div x-data="mentionInput('{{ form_data.content|default:''|escapejs }}')" class="relative">
+                    <label for="content" class="form-label">Contenu</label>
+                    <textarea id="content" name="content" rows="12"
+                              x-model="content"
+                              @input="onInput($event)"
+                              @keydown="onKeydown"
+                              placeholder="Racontez votre session... Tapez @ pour mentionner un personnage."
+                              required
+                              class="form-input font-mono text-sm resize-y min-h-[300px]"></textarea>
+
+                    <!-- Mention suggestions -->
+                    <div x-show="showSuggestions" x-transition
+                         class="dropdown-menu bottom-full left-0 mb-1 w-64">
+                        <template x-for="(s, i) in suggestions" :key="s.id">
+                            <button @click="selectSuggestion(s)"
+                                    :class="{'bg-primary-50': i === selectedIndex}"
+                                    class="w-full px-3 py-2 text-left text-sm hover:bg-gray-50"
+                                    x-text="s.name">
+                            </button>
+                        </template>
+                    </div>
+
+                    <p class="form-help">
+                        <span class="i-lucide-info text-xs mr-1"></span>
+                        Markdown supporté. Tapez <code class="bg-gray-100 px-1 rounded">@</code> pour mentionner.
+                    </p>
+                </div>
+
+                <div>
+                    <label for="content_warning" class="form-label">
+                        Avertissement de contenu <span class="text-gray-500">(optionnel)</span>
+                    </label>
+                    <input type="text" id="content_warning" name="content_warning"
+                           value="{{ form_data.content_warning|default:'' }}"
+                           placeholder="Ex: Violence, thèmes sombres"
+                           class="form-input">
+                    <p class="form-help">
+                        Si rempli, le contenu sera masqué derrière un bouton "Afficher".
+                    </p>
+                </div>
+
+                <div>
+                    <label class="form-label">Visibilité</label>
+                    {% for value, label in visibilities %}
+                        <label class="flex items-center gap-2 py-1">
+                            <input type="radio" name="visibility" value="{{ value }}"
+                                   {% if value == 'public' %}checked{% endif %}
+                                   class="h-4 w-4 text-primary-600 focus:ring-primary-500">
+                            <span class="text-sm">
+                                {% if value == 'public' %}<span class="i-lucide-globe text-xs"></span>{% endif %}
+                                {% if value == 'unlisted' %}<span class="i-lucide-unlock text-xs"></span>{% endif %}
+                                {% if value == 'followers' %}<span class="i-lucide-lock text-xs"></span>{% endif %}
+                                {{ label }}
+                            </span>
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button type="submit" name="action" value="publish" class="btn-primary">
+                    <span class="i-lucide-send"></span>
+                    Publier
+                </button>
+                <button type="submit" name="action" value="draft" class="btn-secondary">
+                    <span class="i-lucide-save"></span>
+                    Sauvegarder brouillon
+                </button>
+                <a href="{% url 'games:detail' pk=game.pk %}" class="btn-ghost">Annuler</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

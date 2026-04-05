@@ -2,15 +2,34 @@
 Django signals for triggering ActivityPub activities.
 
 These signals automatically federate content when it's created/modified locally.
+All Celery calls are wrapped in _safe_delay() to handle broker unavailability
+gracefully (e.g. Redis down, dev without broker).
 """
 
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
+
+logger = logging.getLogger(__name__)
+
+
+def _safe_delay(task: Any, *args: Any, **kwargs: Any) -> None:
+    """Call task.delay() but handle broker unavailability gracefully.
+
+    Catches connection-related errors (kombu, stdlib). Programming
+    errors (TypeError, AttributeError) propagate normally.
+    """
+    from kombu.exceptions import KombuError
+
+    try:
+        task.delay(*args, **kwargs)
+    except (KombuError, ConnectionError, TimeoutError, OSError) as exc:
+        logger.warning("Failed to queue task %s: %s", task.name, exc)
 
 
 @receiver(post_save, sender="games.Report")
@@ -27,7 +46,7 @@ def report_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: 
         if created or (
             instance.published_at and (timezone.now() - instance.published_at).seconds < 10
         ):
-            send_create_activity.delay("report", str(instance.id))
+            _safe_delay(send_create_activity, "report", str(instance.id))
 
 
 @receiver(pre_save, sender="games.Report")
@@ -47,7 +66,7 @@ def character_post_save(sender: type[Any], instance: Any, created: bool, **kwarg
     from suddenly.activitypub.tasks import send_create_activity
 
     if created and not instance.remote:
-        send_create_activity.delay("character", str(instance.id))
+        _safe_delay(send_create_activity, "character", str(instance.id))
 
 
 @receiver(post_save, sender="characters.Quote")
@@ -59,7 +78,7 @@ def quote_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: A
     from suddenly.characters.models import QuoteVisibility
 
     if created and not instance.remote and instance.visibility == QuoteVisibility.PUBLIC:
-        send_create_activity.delay("quote", str(instance.id))
+        _safe_delay(send_create_activity, "quote", str(instance.id))
 
 
 @receiver(post_save, sender="characters.LinkRequest")
@@ -77,13 +96,13 @@ def link_request_post_save(sender: type[Any], instance: Any, created: bool, **kw
 
     if created:
         # New request - send Offer
-        send_offer_activity.delay(str(instance.id))
+        _safe_delay(send_offer_activity, str(instance.id))
     else:
         # Status change - check if accepted or rejected
         if instance.status == LinkRequestStatus.ACCEPTED:
-            send_accept_activity.delay(str(instance.id))
+            _safe_delay(send_accept_activity, str(instance.id))
         elif instance.status == LinkRequestStatus.REJECTED:
-            send_reject_activity.delay(str(instance.id))
+            _safe_delay(send_reject_activity, str(instance.id))
 
 
 @receiver(post_save, sender="characters.Follow")
@@ -129,7 +148,8 @@ def follow_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: 
         target_actor_url = target.actor_url
         if target_actor_url:
             activity = build_follow_activity(instance.follower, target_actor_url)
-            deliver_activity.delay(
+            _safe_delay(
+                deliver_activity,
                 activity=activity,
                 inbox_url=target.inbox_url,
             )

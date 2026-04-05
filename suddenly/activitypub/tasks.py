@@ -184,9 +184,24 @@ def handle_offer(
 
 
 @shared_task(bind=True, max_retries=3)  # type: ignore[untyped-decorator]
-def deliver_activity(self: Any, activity: dict[str, Any], inbox_url: str, **kwargs: Any) -> None:
-    """Deliver an activity to a remote inbox."""
+def deliver_activity(
+    self: Any,
+    activity: dict[str, Any],
+    inbox_url: str,
+    actor_key_id: str | None = None,
+    private_key_pem: str | None = None,
+    **kwargs: Any,
+) -> None:
+    """Deliver a signed activity to a remote inbox.
+
+    Signs outgoing requests with HTTP Signatures (DEC-018).
+    Falls back to unsigned if no key provided (dev mode).
+    """
+    import json as json_module
+
     import httpx
+
+    from .signatures import sign_request
 
     try:
         headers = {
@@ -194,8 +209,21 @@ def deliver_activity(self: Any, activity: dict[str, Any], inbox_url: str, **kwar
             "Accept": "application/activity+json",
         }
 
+        # Sign request (pass dict — sign_request calls json.dumps internally)
+        if actor_key_id and private_key_pem:
+            headers = sign_request(
+                method="POST",
+                url=inbox_url,
+                headers=headers,
+                body=activity,
+                key_id=actor_key_id,
+                private_key_pem=private_key_pem,
+            )
+
+        body = json_module.dumps(activity).encode()
+
         with httpx.Client(timeout=30) as client:
-            response = client.post(inbox_url, json=activity, headers=headers)
+            response = client.post(inbox_url, content=body, headers=headers)
 
         if response.status_code >= 500:
             raise self.retry(countdown=60 * (self.request.retries + 1))
@@ -229,10 +257,23 @@ def broadcast_activity(activity: dict[str, Any], actor_id: str, actor_type: str)
         "follower"
     )
 
+    # Get actor's signing key
+    from suddenly.characters.models import Character
+    from suddenly.games.models import Game
+    from suddenly.users.models import User
+
+    actor_models: dict[str, type] = {"User": User, "Game": Game, "Character": Character}
+    ActorModel = actor_models.get(actor_type)  # noqa: N806
+    actor_obj = ActorModel.objects.filter(pk=actor_id).first() if ActorModel else None
+    key_id = f"{actor_obj.actor_url}#main-key" if actor_obj else None
+    private_key = getattr(actor_obj, "private_key", None)
+
     inboxes = {f.follower.inbox_url for f in followers if f.follower.inbox_url}
 
     for inbox_url in inboxes:
-        deliver_activity.delay(activity, inbox_url)
+        deliver_activity.delay(
+            activity, inbox_url, actor_key_id=key_id, private_key_pem=private_key
+        )
 
 
 @shared_task  # type: ignore[untyped-decorator]
@@ -398,6 +439,36 @@ def send_reject_activity(link_request_id: str) -> None:
 # =================================================================
 # Periodic tasks
 # =================================================================
+
+
+@shared_task  # type: ignore[untyped-decorator]
+def send_announce_activity(user_id: str, report_id: str) -> None:
+    """Send Announce (recommendation/boost) for a report. US-28."""
+    from django.conf import settings as django_settings
+
+    from suddenly.games.models import Report
+    from suddenly.users.models import User
+
+    user = User.objects.filter(pk=user_id).first()
+    report = Report.objects.filter(pk=report_id).first()
+    if not user or not report:
+        return
+
+    domain = django_settings.DOMAIN
+    report_url = report.ap_id or f"https://{domain}/reports/{report.pk}"
+
+    activity: dict[str, Any] = {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "type": "Announce",
+        "id": f"https://{domain}/users/{user.username}/announce/{report.pk}",
+        "actor": user.actor_url,
+        "object": report_url,
+        "to": ["https://www.w3.org/ns/activitystreams#Public"],
+        "cc": [f"{user.actor_url}/followers"],
+        "published": timezone.now().isoformat(),
+    }
+
+    broadcast_activity.delay(activity, str(user.pk), "User")
 
 
 @shared_task  # type: ignore[untyped-decorator]

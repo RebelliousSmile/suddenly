@@ -2,19 +2,17 @@
 Game and Report models for Suddenly.
 """
 
-import uuid
-
 from django.conf import settings
 from django.db import models
 
+from suddenly.core.models import BaseModel
 
-class Game(models.Model):
+
+class Game(BaseModel):
     """
     A Game is an ongoing fiction that receives reports over time.
     It's an ActivityPub actor that can be followed.
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     # Content
     title = models.CharField(max_length=200)
@@ -36,10 +34,6 @@ class Game(models.Model):
     outbox_url = models.URLField(blank=True, null=True)
     public_key = models.TextField(blank=True, help_text="PEM-encoded public key")
     private_key = models.TextField(blank=True, help_text="PEM-encoded private key (local only)")
-
-    # Timestamps
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["-updated_at"]
@@ -69,17 +63,28 @@ class ReportStatus(models.TextChoices):
     PUBLISHED = "published", "Publié"
 
 
-class Report(models.Model):
+class ReportVisibility(models.TextChoices):
+    """Fediverse-compatible visibility scopes (US-29)."""
+
+    PUBLIC = "public", "Public"
+    UNLISTED = "unlisted", "Non-listé"
+    FOLLOWERS = "followers", "Abonnés uniquement"
+
+
+class Report(BaseModel):
     """
     A Report is a narrative account added to a Game.
-    Published reports become ActivityPub Notes.
+    Published reports become ActivityPub Articles.
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     # Content
     title = models.CharField(max_length=200, blank=True)
     content = models.TextField(help_text="Markdown with @character mentions")
+    content_warning = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="Content warning displayed before the report (US-30)",
+    )
 
     # Relations
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="reports")
@@ -87,19 +92,24 @@ class Report(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reports"
     )
 
-    # Status
+    # Status & visibility
     status = models.CharField(
         max_length=20, choices=ReportStatus.choices, default=ReportStatus.DRAFT
     )
+    visibility = models.CharField(
+        max_length=20,
+        choices=ReportVisibility.choices,
+        default=ReportVisibility.PUBLIC,
+        help_text="Who can see this report (US-29)",
+    )
     published_at = models.DateTimeField(blank=True, null=True)
+
+    # Tags (hashtags for discovery)
+    tags = models.ManyToManyField("core.Tag", blank=True, related_name="reports")
 
     # ActivityPub
     remote = models.BooleanField(default=False)
     ap_id = models.URLField(blank=True, null=True, unique=True)
-
-    # Timestamps
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["-published_at", "-created_at"]
@@ -124,7 +134,7 @@ class CastRole(models.TextChoices):
     MENTIONED = "mentioned", "Mentionné"
 
 
-class ReportCast(models.Model):
+class ReportCast(BaseModel):
     """
     Characters planned for a report, defined before writing.
 
@@ -134,8 +144,6 @@ class ReportCast(models.Model):
     3. Interface suggests @mentions during writing
     4. On publish, ReportCast entries become CharacterAppearance
     """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name="cast")
 
@@ -156,9 +164,6 @@ class ReportCast(models.Model):
     new_character_description = models.TextField(blank=True, help_text="Description for new NPC")
 
     role = models.CharField(max_length=20, choices=CastRole.choices, default=CastRole.MENTIONED)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["role", "created_at"]

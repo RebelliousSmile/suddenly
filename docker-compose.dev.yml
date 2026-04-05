@@ -9,14 +9,14 @@ services:
       context: .
       target: dev
     command: >
-      sh -c "pip install -e '.[dev,federation]' &&
-             python manage.py migrate --noinput &&
+      sh -c "python manage.py migrate --noinput &&
              python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
     environment:
       - DATABASE_URL=postgres://suddenly:suddenly@db:5432/suddenly
       - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
       - SECRET_KEY=dev-secret-key-change-in-production
       - DOMAIN=localhost:8000
       - DJANGO_SETTINGS_MODULE=config.settings.development
@@ -26,7 +26,7 @@ services:
       db:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
     volumes:
       - .:/app
       - pip-cache:/root/.cache/pip
@@ -55,6 +55,11 @@ services:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
     networks:
       - suddenly-dev
 
@@ -67,6 +72,7 @@ services:
     environment:
       - DATABASE_URL=postgres://suddenly:suddenly@db:5432/suddenly
       - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
       - SECRET_KEY=dev-secret-key-change-in-production
       - DOMAIN=localhost:8000
       - DJANGO_SETTINGS_MODULE=config.settings.development

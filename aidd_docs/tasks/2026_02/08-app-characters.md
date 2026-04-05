@@ -2,8 +2,19 @@
 
 **Durée estimée** : 3h
 **Phase** : 2 - Personnages
-**Statut** : [ ] À faire
+**Statut** : [x] Archivée (obsolète)
 **Dépend de** : 05-app-games, 07-premiere-migration
+
+---
+
+## Archive — Motif
+
+> Archivée le 2026-04-05 — Les modèles Character, CharacterAppearance, Quote, LinkRequest,
+> CharacterLink, SharedSequence et Follow existent déjà dans `suddenly/characters/models.py`
+> avec migration appliquée. La tâche ciblait `apps/characters/` (chemin inexistant) avec des
+> imports erronés (`apps.core.models`, `apps.core.mixins`). Les travaux restants (héritage
+> BaseModel, slug, index FTS, vues/templates HTMX) sont couverts par des tâches dédiées
+> (`task-2026-03-06-characters-models-basemodel-inheritance.md` et futures tâches vues).
 
 ---
 

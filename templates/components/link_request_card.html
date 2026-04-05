@@ -1,0 +1,111 @@
+{#
+  Link Request Card Component
+
+  Usage:
+    {% include "components/link_request_card.html" with request=link_request perspective="received" %}
+    {% include "components/link_request_card.html" with request=link_request perspective="sent" %}
+
+  Props:
+    request     — LinkRequest instance
+    perspective — "received" (GM view with accept/reject) | "sent" (requester view with cancel)
+#}
+
+<article class="card" id="request-{{ request.id }}">
+    <div class="card-body">
+        <!-- Header : statut + date -->
+        <div class="flex items-center justify-between mb-3">
+            <span class="badge
+                {% if request.status == 'pending' %}badge-accent
+                {% elif request.status == 'queued' %}badge-gray
+                {% elif request.status == 'accepted' %}badge-secondary
+                {% elif request.status == 'rejected' %}badge-gray
+                {% elif request.status == 'expired' %}badge-gray text-red-600
+                {% elif request.status == 'cancelled' %}badge-gray
+                {% endif %}">
+                {{ request.get_status_display }}
+                {% if request.status == 'queued' %}(#{{ request.queue_position }}){% endif %}
+            </span>
+            <time class="text-xs text-gray-500" datetime="{{ request.created_at|date:'c' }}">
+                {{ request.created_at|timesince }}
+            </time>
+        </div>
+
+        <!-- Type + acteurs -->
+        <p class="font-medium text-gray-900 mb-2">
+            {% if perspective == "received" %}
+                <a href="#" class="link">@{{ request.requester.username }}</a>
+                veut <strong>{{ request.get_type_display|upper }}</strong>
+                votre PNJ
+                <a href="#" class="link">{{ request.target_character.name }}</a>
+            {% else %}
+                Vous voulez <strong>{{ request.get_type_display|upper }}</strong>
+                <a href="#" class="link">{{ request.target_character.name }}</a>
+                (PNJ de <a href="#" class="link">@{{ request.target_character.creator.username }}</a>)
+            {% endif %}
+
+            {% if request.target_character.remote %}
+                <span class="i-lucide-globe text-xs text-gray-500 ml-1" title="Cross-instance"></span>
+            {% endif %}
+        </p>
+
+        <!-- Message -->
+        {% if request.message %}
+            <blockquote class="text-sm text-gray-600 italic border-l-2 border-gray-200 pl-3 mb-3">
+                {{ request.message|truncatewords:50 }}
+            </blockquote>
+        {% endif %}
+
+        <!-- Info file d'attente -->
+        {% if request.status == 'queued' %}
+            <p class="text-sm text-gray-500 flex items-center gap-1 mb-3">
+                <span class="i-lucide-info text-xs"></span>
+                Sera traitable après la demande précédente.
+            </p>
+        {% endif %}
+
+        <!-- Info expiration cross-instance -->
+        {% if request.target_character.remote and request.status == 'pending' %}
+            <p class="text-sm text-gray-500 flex items-center gap-1 mb-3">
+                <span class="i-lucide-clock text-xs"></span>
+                Expire dans {{ request.expires_at|timeuntil }}.
+            </p>
+        {% endif %}
+    </div>
+
+    <!-- Actions -->
+    {% if request.status == 'pending' and perspective == 'received' %}
+        <div class="card-footer flex items-center gap-2">
+            <button hx-post="{% url 'accept_request' pk=request.id %}"
+                    hx-target="#request-{{ request.id }}"
+                    hx-swap="outerHTML"
+                    class="btn btn-primary btn-sm">
+                <span class="i-lucide-check text-sm"></span>
+                Accepter
+            </button>
+            <button hx-post="{% url 'reject_request' pk=request.id %}"
+                    hx-target="#request-{{ request.id }}"
+                    hx-swap="outerHTML"
+                    class="btn btn-ghost btn-sm">
+                <span class="i-lucide-x text-sm"></span>
+                Refuser
+            </button>
+            <a href="#" class="link-muted text-sm ml-auto">
+                Voir la fiche
+            </a>
+        </div>
+    {% elif request.status == 'pending' and perspective == 'sent' or request.status == 'queued' and perspective == 'sent' %}
+        <div class="card-footer">
+            <button hx-post="{% url 'cancel_request' pk=request.id %}"
+                    hx-target="#request-{{ request.id }}"
+                    hx-swap="outerHTML"
+                    class="btn btn-ghost btn-sm text-red-600">
+                Annuler ma demande
+            </button>
+        </div>
+    {% elif request.status == 'expired' and perspective == 'sent' %}
+        <div class="card-footer flex items-center gap-2">
+            <button class="btn btn-secondary btn-sm">Renvoyer la demande</button>
+            <button class="btn btn-ghost btn-sm text-red-600">Supprimer</button>
+        </div>
+    {% endif %}
+</article>

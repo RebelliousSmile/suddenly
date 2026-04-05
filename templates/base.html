@@ -1,4 +1,4 @@
-{% load static %}
+{% load static vite %}
 <!DOCTYPE html>
 <html lang="fr" class="h-full">
 <head>
@@ -6,27 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
     <meta name="description" content="{{ SITE_DESCRIPTION }}">
-    
+
     <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
+
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    
-    <!-- Styles (UnoCSS build) -->
-    <link rel="stylesheet" href="/static/dist/css/main.css">
-    
+
+    <!-- Styles (Vite build with cache-busting) -->
+    {% vite_css %}
+
     <!-- CSRF Token for HTMX -->
     {% csrf_token %}
-    
+
     {% block extra_head %}{% endblock %}
 </head>
-<body class="h-full bg-gray-50 text-gray-900 font-sans antialiased"
-      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+<body class="h-full bg-gray-50 text-gray-900 font-sans antialiased">
     
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-sticky">
         <nav class="container-app">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
@@ -72,7 +71,7 @@
                             <div x-show="open" 
                                  x-transition
                                  @click.away="close"
-                                 class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-dropdown border border-gray-200 py-1">
+                                 class="dropdown-menu right-0 mt-2 w-48">
                                 <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     <span class="i-lucide-user mr-2"></span>
                                     Profil
@@ -178,7 +177,7 @@
 
     <!-- Notifications container -->
     <div x-data="notifications" 
-         class="fixed bottom-4 right-4 z-50 space-y-2">
+         class="fixed bottom-4 right-4 z-toast space-y-2">
         <template x-for="item in items" :key="item.id">
             <div x-show="true"
                  x-transition:enter="transition ease-out duration-300"
@@ -201,18 +200,11 @@
         </template>
     </div>
 
-    <!-- Loading indicator -->
-    <div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-primary-600 z-50"
-         style="display: none;">
-    </div>
-    
-    <style>
-        .htmx-request .htmx-indicator { display: block !important; animation: loading 1s ease-in-out infinite; }
-        @keyframes loading { 0%, 100% { transform: translateX(-100%); } 50% { transform: translateX(100%); } }
-    </style>
+    <!-- Loading indicator (styles in frontend/src/htmx-indicator.css) -->
+    <div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-primary-600 z-toast"></div>
 
-    <!-- Scripts -->
-    <script type="module" src="/static/dist/js/main.js"></script>
+    <!-- Scripts (Vite build with cache-busting) -->
+    {% vite_asset "src/main.js" %}
     {% block extra_js %}{% endblock %}
 </body>
 </html>

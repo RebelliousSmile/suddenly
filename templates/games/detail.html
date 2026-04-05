@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}{{ game.title }} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app">
+
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ game.title }}</h1>
+            <p class="text-sm text-gray-500">
+                Par @{{ game.owner.username }}
+                {% if game.game_system %}· {{ game.game_system }}{% endif %}
+            </p>
+            {% if game.description %}
+                <p class="text-gray-600 mt-3 max-w-2xl">{{ game.description }}</p>
+            {% endif %}
+
+            {% if is_owner %}
+                <div class="mt-4">
+                    <a href="#" class="btn-secondary btn-sm">
+                        <span class="i-lucide-edit"></span> Modifier
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Reports -->
+        <div class="mb-8">
+            <h2 class="text-heading text-xl mb-4">
+                Comptes-rendus {% if reports %}({{ reports|length }}){% endif %}
+            </h2>
+
+            {% if reports %}
+                <div class="space-y-3">
+                    {% for report in reports %}
+                        <div class="card card-body">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-gray-900">
+                                        {{ report.title|default:"Sans titre" }}
+                                    </h3>
+                                    <p class="text-xs text-gray-500">
+                                        par @{{ report.author.username }}
+                                        {% if report.published_at %}· {{ report.published_at|timesince }}{% endif %}
+                                    </p>
+                                </div>
+                                {% if report.content_warning %}
+                                    <span class="badge-accent text-xs">
+                                        <span class="i-lucide-alert-triangle text-xs"></span>
+                                        {{ report.content_warning }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-sm text-gray-500">Aucun compte-rendu publié.</p>
+            {% endif %}
+        </div>
+
+        <!-- Characters -->
+        <div>
+            <h2 class="text-heading text-xl mb-4">
+                Personnages {% if characters %}({{ characters|length }}){% endif %}
+            </h2>
+
+            {% if characters %}
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {% for character in characters %}
+                        <a href="{% url 'characters:detail' slug=character.slug %}"
+                           class="card card-body text-center hover:shadow-card-hover transition-shadow">
+                            <p class="font-medium text-sm text-gray-900">{{ character.name }}</p>
+                            <span class="{% if character.status == 'npc' %}badge-available{% else %}badge-{{ character.status }}{% endif %} text-xs mt-1">
+                                {{ character.get_status_display }}
+                            </span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-sm text-gray-500">Aucun personnage dans cette partie.</p>
+            {% endif %}
+        </div>
+
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,16 @@
+{# Partial: recommend button state (swapped by HTMX) #}
+{% if recommended %}
+    <span class="btn-ghost btn-sm text-accent-600">
+        <span class="i-lucide-sparkles text-sm"></span>
+        Recommandé
+    </span>
+{% else %}
+    <button hx-post="{% url 'feed:recommend' %}"
+            hx-vals='{"report_id": "{{ report.pk }}"}'
+            hx-target="this"
+            hx-swap="outerHTML"
+            class="btn-ghost btn-sm">
+        <span class="i-lucide-sparkles text-sm"></span>
+        Recommander
+    </button>
+{% endif %}
