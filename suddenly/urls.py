@@ -37,6 +37,8 @@ urlpatterns = [
     path("", include("suddenly.activitypub.urls")),  # Inbox endpoints
     # User profiles — @ prefix isolates from all other root patterns
     path("@", include("suddenly.users.urls")),
+    # Federation front-end (search, remote profiles)
+    path("federation/", include("suddenly.activitypub.federation_urls")),
     # Admin panel (staff only — NOT Django admin)
     path("admin-panel/", include("suddenly.core.admin_urls")),
     # Front-end views (DA-1: HTMX-first)

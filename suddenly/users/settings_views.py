@@ -54,9 +54,8 @@ def export_follows_csv(request: HttpRequest) -> HttpResponse:
 def import_follows_csv(request: HttpRequest) -> HttpResponse:
     """Import follows from Mastodon-compatible CSV (US-32).
 
-    PLACEHOLDER: Parses CSV and counts rows but does NOT create Follow
-    objects yet. WebFinger resolution needed to resolve remote addresses
-    to local/remote User objects. Tracked as post-MVP.
+    Resolves each address via WebFinger, creates or finds User,
+    then creates Follow relationship.
     """
     if request.method == "POST" and request.FILES.get("csv_file"):
         csv_file = request.FILES["csv_file"]
@@ -64,16 +63,22 @@ def import_follows_csv(request: HttpRequest) -> HttpResponse:
         reader = csv.DictReader(io.StringIO(decoded))
 
         imported = 0
+        errors = 0
         for row in reader:
             address = row.get("Account address", "").strip()
-            if address:
-                # TODO(post-MVP): resolve address via WebFinger, then create Follow
+            if not address:
+                continue
+
+            user_to_follow = _resolve_and_follow(request.user, address)
+            if user_to_follow:
                 imported += 1
+            else:
+                errors += 1
 
         return render(
             request,
             "users/settings_data.html",
-            {"import_success": True, "imported_count": imported},
+            {"import_success": True, "imported_count": imported, "import_errors": errors},
         )
 
     return render(request, "users/settings_data.html")
@@ -96,3 +101,68 @@ def _get_domain() -> str:
     from django.conf import settings
 
     return getattr(settings, "DOMAIN", "localhost")
+
+
+def _resolve_and_follow(follower: object, address: str) -> bool:
+    """Resolve a @user@instance address and create Follow. Returns True on success."""
+    import logging
+
+    import httpx
+    from django.contrib.contenttypes.models import ContentType
+
+    from suddenly.characters.models import Follow
+    from suddenly.users.models import User
+
+    logger = logging.getLogger(__name__)
+
+    # Parse address
+    address = address.lstrip("@")
+    parts = address.split("@")
+
+    if len(parts) == 1:
+        # Local user
+        target = User.objects.filter(username=parts[0], is_active=True, remote=False).first()
+    elif len(parts) == 2:
+        username, domain = parts
+        # Check if already known
+        target = User.objects.filter(ap_id__icontains=f"/{username}", remote=True).first()
+        if not target:
+            # WebFinger lookup
+            try:
+                url = f"https://{domain}/.well-known/webfinger?resource=acct:{address}"
+                with httpx.Client(timeout=10) as client:
+                    resp = client.get(url, headers={"Accept": "application/jrd+json"})
+                if resp.status_code != 200:
+                    return False
+
+                data = resp.json()
+                actor_url = None
+                for link in data.get("links", []):
+                    if link.get("rel") == "self" and "activity" in link.get("type", ""):
+                        actor_url = link["href"]
+                        break
+
+                if not actor_url:
+                    return False
+
+                # Create remote user
+                from suddenly.activitypub.tasks import get_or_create_remote_user
+
+                target = get_or_create_remote_user(actor_url)
+            except Exception:
+                logger.warning("WebFinger failed for %s", address, exc_info=True)
+                return False
+    else:
+        return False
+
+    if not target:
+        return False
+
+    # Create follow
+    ct = ContentType.objects.get_for_model(User)
+    _, created = Follow.objects.get_or_create(
+        follower=follower,
+        content_type=ct,
+        object_id=target.pk,
+    )
+    return created

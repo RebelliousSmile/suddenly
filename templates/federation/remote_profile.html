@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Profil distant — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-2xl">
+
+        <a href="{% url 'federation:search' %}" class="link-muted text-sm mb-4 block">
+            <span class="i-lucide-arrow-left text-xs"></span> Retour à la recherche
+        </a>
+
+        {% if error %}
+            <div class="text-center py-16">
+                <span class="i-lucide-alert-triangle text-5xl text-gray-300 mb-4 block"></span>
+                <p class="text-gray-500">{{ error }}</p>
+            </div>
+        {% elif actor %}
+            {% include "components/status_banner.html" with type="info" icon="globe" message="Ce profil est hébergé sur "|add:domain|add:". Les données affichées sont partagées via ActivityPub." %}
+            <div class="mb-4"></div>
+
+            <div class="card card-body">
+                <div class="flex items-start gap-4 mb-4">
+                    {% if actor.icon.url %}
+                        <img src="{{ actor.icon.url }}" class="avatar-xl rounded-full">
+                    {% else %}
+                        <span class="avatar-xl avatar-placeholder">
+                            <span class="i-lucide-user text-2xl"></span>
+                        </span>
+                    {% endif %}
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">{{ actor.name|default:actor.preferredUsername }}</h1>
+                        <p class="text-sm text-gray-500">
+                            @{{ actor.preferredUsername }}@{{ domain }}
+                        </p>
+                    </div>
+                </div>
+
+                {% if actor.summary %}
+                    <p class="text-gray-600 mb-4">{{ actor.summary|striptags }}</p>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                    {% include "components/follow_button.html" with target_type="user" is_following=False %}
+                {% endif %}
+            </div>
+
+            <p class="text-sm text-gray-500 mt-4">
+                <a href="{{ ap_id }}" class="link-muted" target="_blank" rel="noopener">
+                    Voir le profil complet sur {{ domain }}
+                    <span class="i-lucide-external-link text-xs"></span>
+                </a>
+            </p>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

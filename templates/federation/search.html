@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Recherche fédérée — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-2xl">
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">Recherche fédérée</h1>
+
+        <div class="mb-6">
+            <input type="text" name="q" value="{{ query }}"
+                   placeholder="@alice@suddenly.games ou https://instance/users/alice"
+                   class="form-input"
+                   hx-get="{% url 'federation:search' %}"
+                   hx-trigger="keyup changed delay:500ms"
+                   hx-target="#search-results"
+                   hx-include="this">
+            <p class="form-help">
+                Tapez @utilisateur@instance, une URL de profil, ou un nom pour chercher localement.
+            </p>
+        </div>
+
+        <div id="search-results">
+            {% include "federation/_search_results.html" %}
+        </div>
+    </div>
+</section>
+{% endblock %}
