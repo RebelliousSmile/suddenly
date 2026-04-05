@@ -2,8 +2,19 @@
 
 **Durée estimée** : 4h
 **Phase** : 4 — Fédération & Social
-**Statut** : [ ] À faire
+**Statut** : [x] Archivée (obsolète)
 **Dépend de** : 04-app-federation, 08-app-characters, 10-app-links
+
+---
+
+## Archive — Motif
+
+> Archivée le 2026-04-05 — Le modèle Follow existe dans `suddenly/characters/models.py`
+> avec une GenericForeignKey (ContentType) — architecture différente du `target_type`/`target_id`
+> décrit ici. La tâche référence `apps/federation/` qui n'existe pas, et des classes
+> `FollowStatus`/`FollowTargetType` absentes du code réel. La logique de feed, les vues HTMX
+> follow/unfollow, et les handlers AP restent à implémenter dans une future tâche alignée
+> sur l'architecture réelle (GenericFK dans characters, pas dans federation).
 
 ---
 

@@ -1,4 +1,6 @@
-# Task [CLAUDE.md — omissions vs memory bank]
+# Task [CLAUDE.md — omissions vs memory bank] — ARCHIVÉE
+
+> Archivée le 2026-04-05 — Tous les fixes appliqués (Alpine.js ajouté, 4 commit types ajoutés).
 
 Inconsistency detected during an Ada session on 2026-03-06.
 

@@ -2,9 +2,16 @@
 
 ## Feature
 
-- **Summary**: Add `FederatedServer` model to track known remote ActivityPub instances (domain, software type/version, status, stats). Foundation structure — no federation logic yet.
+- **Summary**: ~~Add `FederatedServer` model~~ **ARCHIVÉE** — modèle déjà implémenté
 - **Stack**: `Django 5.x`, `PostgreSQL`, `Python 3.12`
 - **Branch name**: `main`
+
+## Archive — Motif
+
+> Archivée le 2026-04-05 — FederatedServer existe dans `suddenly/activitypub/models.py`
+> avec migration `0001_initial.py`. Le modèle inclut `server_name`, `application_type`,
+> `application_version`, `status` (UNKNOWN/FEDERATED/BLOCKED), `user_count`.
+> Admin enregistré dans `suddenly/activitypub/admin.py`. Tests à écrire séparément.
 
 ## Existing files
 

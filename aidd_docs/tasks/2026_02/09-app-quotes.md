@@ -2,8 +2,18 @@
 
 **Durée estimée** : 2h
 **Phase** : 2 - Personnages
-**Statut** : [ ] À faire
+**Statut** : [x] Archivée (obsolète)
 **Dépend de** : 08-app-characters
+
+---
+
+## Archive — Motif
+
+> Archivée le 2026-04-05 — Le modèle Quote existe déjà dans `suddenly/characters/models.py`
+> (pas dans une app séparée `apps/quotes/`). La tâche ciblait `apps/quotes/` avec des imports
+> erronés. Le modèle réel n'hérite pas de BaseModel ni ActivityPubMixin, et n'a pas de champ
+> `language`. Les vues et templates HTMX restent à implémenter dans une future tâche adaptée
+> à l'architecture réelle.
 
 ---
 

@@ -1,4 +1,6 @@
-# Task [Alpine.js absent du CLAUDE.md]
+# Task [Alpine.js absent du CLAUDE.md] — ARCHIVÉE
+
+> Archivée le 2026-04-05 — Doublon de `2026_03_06-claude-md-omissions.md`, déjà résolu.
 
 Inconsistency detected during an Ada session on 2026-03-06.
 
