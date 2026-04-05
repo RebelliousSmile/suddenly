@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Utilisateurs — Administration — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app">
+        <a href="{% url 'admin_panel:dashboard' %}" class="link-muted text-sm mb-4 block">
+            <span class="i-lucide-arrow-left text-xs"></span> Administration
+        </a>
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">Utilisateurs</h1>
+
+        {% if users_list %}
+            <div class="space-y-2">
+                {% for u in users_list %}
+                    <div class="card card-body flex items-center justify-between">
+                        <div>
+                            <span class="font-medium">@{{ u.username }}</span>
+                            {% if u.display_name %}<span class="text-gray-500 text-sm ml-1">({{ u.display_name }})</span>{% endif %}
+                            <p class="text-xs text-gray-500">Inscrit {{ u.date_joined|timesince }}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            {% if u.is_active %}
+                                <span class="badge-available text-xs">Actif</span>
+                                {% if u != user %}
+                                    <form method="post" action="{% url 'admin_panel:user_suspend' pk=u.pk %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-ghost btn-sm text-red-600"
+                                                onclick="return confirm('Suspendre @{{ u.username }} ?')">
+                                            Suspendre
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            {% else %}
+                                <span class="badge bg-red-100 text-red-800 text-xs">Suspendu</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500 text-center py-8">Aucun utilisateur.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

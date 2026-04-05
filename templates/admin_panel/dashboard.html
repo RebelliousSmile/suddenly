@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Administration — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app">
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">Administration</h1>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+            <div class="card card-body text-center">
+                <p class="text-2xl font-bold text-gray-900">{{ stats.users|default:0 }}</p>
+                <p class="text-xs text-gray-500">joueurs</p>
+            </div>
+            <div class="card card-body text-center">
+                <p class="text-2xl font-bold text-gray-900">{{ stats.reports|default:0 }}</p>
+                <p class="text-xs text-gray-500">CRs publiés</p>
+            </div>
+            <div class="card card-body text-center">
+                <p class="text-2xl font-bold text-emerald-600">{{ stats.instances_federated|default:0 }}</p>
+                <p class="text-xs text-gray-500">instances fédérées</p>
+            </div>
+            <div class="card card-body text-center">
+                <p class="text-2xl font-bold text-red-600">{{ stats.instances_blocked|default:0 }}</p>
+                <p class="text-xs text-gray-500">instances bloquées</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <a href="{% url 'admin_panel:instances' %}" class="card card-hover card-body block">
+                <span class="i-lucide-globe text-2xl text-primary-500 mb-2 block"></span>
+                <h3 class="font-semibold">Instances fédérées</h3>
+                <p class="text-sm text-gray-500">Gérer les instances (bloquer, débloquer)</p>
+            </a>
+            <a href="{% url 'admin_panel:users' %}" class="card card-hover card-body block">
+                <span class="i-lucide-users text-2xl text-primary-500 mb-2 block"></span>
+                <h3 class="font-semibold">Utilisateurs</h3>
+                <p class="text-sm text-gray-500">Gérer les comptes (suspendre)</p>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
