@@ -1,0 +1,55 @@
+{#
+  Notification Item Component
+
+  Usage:
+    {% include "components/notification_item.html" with notification=notif %}
+
+  Props:
+    notification — Notification instance with .type, .message, .target_url, .is_read, .created_at
+#}
+
+<a href="{{ notification.target_url }}"
+   hx-post="{% url 'mark_notification_read' pk=notification.id %}"
+   hx-swap="none"
+   class="flex items-start gap-3 px-4 py-3 rounded-card transition-colors
+          {% if not notification.is_read %}bg-primary-50 hover:bg-primary-100{% else %}hover:bg-gray-50{% endif %}">
+
+    <!-- Indicateur non lu -->
+    {% if not notification.is_read %}
+        <span class="w-2 h-2 rounded-full bg-primary-500 mt-2 flex-shrink-0"></span>
+    {% else %}
+        <span class="w-2 h-2 mt-2 flex-shrink-0"></span>
+    {% endif %}
+
+    <!-- Icône type -->
+    <span class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
+        {% if notification.type == 'link_request' %}bg-amber-100 text-amber-600
+        {% elif notification.type == 'link_accepted' %}bg-emerald-100 text-emerald-600
+        {% elif notification.type == 'link_rejected' %}bg-red-100 text-red-600
+        {% elif notification.type == 'new_report' %}bg-indigo-100 text-indigo-600
+        {% elif notification.type == 'new_follower' %}bg-blue-100 text-blue-600
+        {% elif notification.type == 'shared_sequence' %}bg-violet-100 text-violet-600
+        {% elif notification.type == 'revocation' %}bg-red-100 text-red-600
+        {% endif %}">
+        {% if notification.type == 'link_request' %}<span class="i-lucide-git-merge text-sm"></span>
+        {% elif notification.type == 'link_accepted' %}<span class="i-lucide-check text-sm"></span>
+        {% elif notification.type == 'link_rejected' %}<span class="i-lucide-x text-sm"></span>
+        {% elif notification.type == 'new_report' %}<span class="i-lucide-book-open text-sm"></span>
+        {% elif notification.type == 'new_follower' %}<span class="i-lucide-user-plus text-sm"></span>
+        {% elif notification.type == 'shared_sequence' %}<span class="i-lucide-edit text-sm"></span>
+        {% elif notification.type == 'revocation' %}<span class="i-lucide-alert-triangle text-sm"></span>
+        {% endif %}
+    </span>
+
+    <!-- Contenu -->
+    <div class="flex-1 min-w-0">
+        <p class="text-sm text-gray-900 {% if not notification.is_read %}font-medium{% endif %}">
+            {{ notification.message }}
+        </p>
+        <time class="text-xs text-gray-400" datetime="{{ notification.created_at|date:'c' }}">
+            {{ notification.created_at|timesince }}
+        </time>
+    </div>
+
+    <span class="i-lucide-chevron-right text-gray-400 text-sm flex-shrink-0 mt-1"></span>
+</a>

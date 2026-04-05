@@ -1,0 +1,28 @@
+{#
+  NPC Highlight Component — mini card for available NPCs
+
+  Usage:
+    {% include "components/npc_highlight.html" with character=npc %}
+
+  Props:
+    character — Character instance with status=NPC
+#}
+
+<div class="border border-amber-300 rounded-card p-3 bg-amber-50 hover:shadow-card-hover transition-shadow">
+    <div class="flex items-center gap-2 mb-1">
+        {% if character.avatar %}
+            <img src="{{ character.avatar.url }}" alt="{{ character.name }}" class="avatar-sm">
+        {% else %}
+            <div class="avatar-sm avatar-placeholder bg-amber-100 text-amber-600">
+                <span class="i-lucide-sparkles text-xs"></span>
+            </div>
+        {% endif %}
+        <p class="font-medium text-sm text-gray-900 truncate">{{ character.name }}</p>
+    </div>
+    <p class="text-xs text-gray-500 mb-2 truncate">{{ character.origin_game.title }}</p>
+    <a href="#"
+       class="text-xs text-amber-700 hover:text-amber-900 font-medium flex items-center gap-1">
+        Voir la fiche
+        <span class="i-lucide-arrow-right text-xs"></span>
+    </a>
+</div>
