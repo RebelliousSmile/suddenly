@@ -26,9 +26,32 @@ class ProfileView(DetailView):  # type: ignore[type-arg]
         return User.objects.filter(is_active=True)
 
     def get_context_data(self, **kwargs: object) -> dict[str, object]:
-        """Pass the user's public games, paginated to the template."""
+        """Pass user's public games, characters, followers count, follow state."""
         context = super().get_context_data(**kwargs)
-        context["games"] = self.object.games.filter(is_public=True).order_by("-updated_at")[:10]
+        profile_user = self.object
+
+        # Games and characters
+        context["games"] = profile_user.games.filter(is_public=True).order_by("-updated_at")[:10]
+        context["characters"] = profile_user.created_characters.order_by("-created_at")[:12]
+
+        # Follower/following counts
+        from django.contrib.contenttypes.models import ContentType
+
+        from suddenly.characters.models import Follow
+
+        user_ct = ContentType.objects.get_for_model(User)
+        context["followers_count"] = Follow.objects.filter(
+            content_type=user_ct, object_id=profile_user.id
+        ).count()
+        context["following_count"] = Follow.objects.filter(follower=profile_user).count()
+
+        # Is the current user following this profile?
+        context["is_following"] = False
+        if self.request.user.is_authenticated and self.request.user != profile_user:
+            context["is_following"] = Follow.objects.filter(
+                follower=self.request.user, content_type=user_ct, object_id=profile_user.id
+            ).exists()
+
         return context
 
 

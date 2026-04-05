@@ -10,10 +10,12 @@
             <!-- Avatar -->
             <div>
                 {% if profile_user.avatar %}
-                    <img src="{{ profile_user.avatar.url }}" alt="{{ profile_user.get_display_name }}" class="avatar-md">
+                    <img src="{{ profile_user.avatar.url }}"
+                         alt="{{ profile_user.get_display_name }}"
+                         class="avatar-xl">
                 {% else %}
-                    <span class="avatar-md avatar-placeholder">
-                        <span class="i-lucide-user text-sm"></span>
+                    <span class="avatar-xl avatar-placeholder">
+                        <span class="i-lucide-user text-2xl"></span>
                     </span>
                 {% endif %}
             </div>
@@ -28,68 +30,87 @@
                         <p class="text-gray-500">@{{ profile_user.username }}</p>
                     </div>
 
-                    <!-- Edit button (visible only if viewing own profile) -->
-                    {% if user == profile_user %}
-                        <a href="{% url 'users:profile_edit' username=profile_user.username %}" class="btn-primary btn-sm">
-                            <span class="i-lucide-edit-2"></span>
-                            Modifier le profil
-                        </a>
-                    {% endif %}
+                    <!-- Actions -->
+                    <div class="flex items-center gap-3">
+                        {% if user == profile_user %}
+                            <a href="{% url 'users:profile_edit' username=profile_user.username %}"
+                               class="btn-secondary btn-sm">
+                                <span class="i-lucide-edit-2"></span>
+                                Modifier le profil
+                            </a>
+                        {% elif user.is_authenticated %}
+                            {% include "components/follow_button.html" with target=profile_user target_type="user" is_following=is_following %}
+                        {% endif %}
+                    </div>
                 </div>
 
                 <!-- Bio -->
                 {% if profile_user.bio %}
-                    <p class="text-gray-600 max-w-2xl">
+                    <p class="text-gray-600 max-w-2xl mb-4">
                         {{ profile_user.bio|linebreaksbr }}
                     </p>
                 {% endif %}
+
+                <!-- Followers / Following counts -->
+                <div class="flex items-center gap-4 text-sm">
+                    <span>
+                        <strong>{{ followers_count }}</strong>
+                        <span class="text-gray-500">abonné{{ followers_count|pluralize }}</span>
+                    </span>
+                    <span>
+                        <strong>{{ following_count }}</strong>
+                        <span class="text-gray-500">abonnement{{ following_count|pluralize }}</span>
+                    </span>
+                </div>
             </div>
         </div>
 
         <!-- ActivityPub Actor URL -->
         {% if profile_user.actor_url %}
-            <div class="mt-8 pt-8 border-t border-gray-200">
-                <div class="flex items-center gap-3">
-                    <span class="i-lucide-globe text-gray-400"></span>
-                    <div>
-                        <p class="text-sm text-gray-500 mb-1">Profil ActivityPub</p>
-                        <a href="{{ profile_user.actor_url }}" class="link text-sm break-all">
-                            {{ profile_user.actor_url }}
-                        </a>
-                    </div>
-                </div>
+            <div class="mt-6 flex items-center gap-2 text-sm text-gray-500">
+                <span class="i-lucide-globe text-xs"></span>
+                <span>{{ profile_user.actor_url }}</span>
             </div>
         {% endif %}
     </div>
 </section>
 
-<!-- Recent Games Section -->
-<section class="py-12">
+<!-- Recent Games -->
+<section class="py-8">
     <div class="container-app">
-        <h2 class="text-2xl font-bold text-gray-900 mb-8">
-            Parties récentes
-        </h2>
+        <h2 class="text-heading text-xl mb-6">Parties récentes</h2>
 
         {% if games %}
-            <div class="space-y-4">
+            <div class="space-y-3">
                 {% for game in games %}
                     <div class="card card-body">
-                        <a href="{{ game.get_absolute_url }}" class="text-lg font-semibold text-gray-900 hover:text-primary-600">
-                            {{ game.title }}
-                        </a>
-                        {% if game.description %}
-                            <p class="text-gray-600 text-sm mt-1">{{ game.description|truncatewords:20 }}</p>
-                        {% endif %}
+                        <h3 class="font-semibold text-gray-900">{{ game.title }}</h3>
+                        {% if game.game_system %}<p class="text-sm text-gray-500">{{ game.game_system }}</p>{% endif %}
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div class="text-center py-12">
-                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span class="i-lucide-book-open text-xl text-gray-400"></span>
-                </div>
-                <p class="text-gray-600">Aucune partie publiée pour le moment.</p>
+            <p class="text-sm text-gray-500">Aucune partie publiée pour le moment.</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Characters -->
+<section class="py-8">
+    <div class="container-app">
+        <h2 class="text-heading text-xl mb-6">Personnages</h2>
+
+        {% if characters %}
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {% for character in characters %}
+                    <div class="card card-body text-center">
+                        <p class="font-medium text-sm">{{ character.name }}</p>
+                        <p class="text-xs text-gray-500">{{ character.get_status_display }}</p>
+                    </div>
+                {% endfor %}
             </div>
+        {% else %}
+            <p class="text-sm text-gray-500">Aucun personnage pour le moment.</p>
         {% endif %}
     </div>
 </section>
