@@ -32,6 +32,7 @@
 | **Joueur solo** | 01-11, 14-16 | Complet — inscription, profil, parties, CRs, persos, citations, liens, feed, notifs, recherche federee, settings, onboarding |
 | **Game Master** | 06, 09, 12 | Complet — editeur cast, arbitrage demandes (page + inline), dashboard GM, vue PNJ avec file d'attente |
 | **Admin d'instance** | 13 | Complet — moderation, signalements, gestion instances (bloquer/limiter/federer) |
+| **Habituee du Fediverse** | Audit : `PERSONA_FEDIVERSE_AUDIT.md` | 10 manques identifies, 2 critiques (boost, visibilite CRs) |
 
 ## Couverture des User Stories
 
