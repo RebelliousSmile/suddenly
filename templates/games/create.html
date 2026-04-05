@@ -35,6 +35,16 @@
             </div>
 
             <div>
+                <label for="started_at" class="form-label">
+                    Date de début <span class="text-gray-500">(optionnel)</span>
+                </label>
+                <input type="date" id="started_at" name="started_at"
+                       value="{{ form_data.started_at|default:'' }}"
+                       class="form-input">
+                <p class="form-help">Pour les campagnes passées. Laissez vide pour aujourd'hui.</p>
+            </div>
+
+            <div>
                 <label for="description" class="form-label">
                     Description <span class="text-gray-500">(optionnel)</span>
                 </label>

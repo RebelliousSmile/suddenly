@@ -3,41 +3,42 @@
 
   Usage:
     {% include "components/follow_button.html" with target=user target_type="user" is_following=is_following %}
-    {% include "components/follow_button.html" with target=game target_type="game" is_following=is_following %}
-    {% include "components/follow_button.html" with target=character target_type="character" is_following=is_following %}
 
   Props:
-    target       — object with .id (User, Game, or Character)
+    target       — object with .pk (User, Game, or Character)
     target_type  — "user" | "game" | "character"
     is_following — bool
 #}
 
-{% if user.is_authenticated and target.id != user.id %}
-    {% if is_following %}
-        <form hx-post="{% url 'unfollow' target_type=target_type pk=target.id %}"
-              hx-target="closest .follow-container"
-              hx-swap="innerHTML"
-              class="follow-container">
-            {% csrf_token %}
-            <button type="submit"
-                    class="btn btn-secondary btn-sm group">
-                <span class="i-lucide-check text-sm group-hover:hidden"></span>
-                <span class="hidden group-hover:inline i-lucide-x text-sm"></span>
-                <span class="group-hover:hidden">Abonné</span>
-                <span class="hidden group-hover:inline text-red-600">Se désabonner</span>
-            </button>
-        </form>
-    {% else %}
-        <form hx-post="{% url 'follow' target_type=target_type pk=target.id %}"
-              hx-target="closest .follow-container"
-              hx-swap="innerHTML"
-              class="follow-container">
-            {% csrf_token %}
-            <button type="submit"
-                    class="btn btn-primary btn-sm">
-                <span class="i-lucide-user-plus text-sm"></span>
-                Suivre
-            </button>
-        </form>
-    {% endif %}
+{% if user.is_authenticated and target.pk != user.pk %}
+    <div class="follow-container">
+        {% if is_following %}
+            <form hx-post="{% url 'characters:follow_toggle' %}"
+                  hx-target="closest .follow-container"
+                  hx-swap="innerHTML">
+                {% csrf_token %}
+                <input type="hidden" name="target_type" value="{{ target_type }}">
+                <input type="hidden" name="target_id" value="{{ target.pk }}">
+                <button type="submit"
+                        class="btn btn-secondary btn-sm group">
+                    <span class="i-lucide-check text-sm group-hover:hidden"></span>
+                    <span class="hidden group-hover:inline text-red-600">Se désabonner</span>
+                    <span class="group-hover:hidden">Abonné</span>
+                </button>
+            </form>
+        {% else %}
+            <form hx-post="{% url 'characters:follow_toggle' %}"
+                  hx-target="closest .follow-container"
+                  hx-swap="innerHTML">
+                {% csrf_token %}
+                <input type="hidden" name="target_type" value="{{ target_type }}">
+                <input type="hidden" name="target_id" value="{{ target.pk }}">
+                <button type="submit"
+                        class="btn btn-primary btn-sm">
+                    <span class="i-lucide-user-plus text-sm"></span>
+                    Suivre
+                </button>
+            </form>
+        {% endif %}
+    </div>
 {% endif %}

@@ -11,6 +11,7 @@ from __future__ import annotations
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
+from django.shortcuts import render
 
 from suddenly.core.views import htmx_render
 from suddenly.games.models import Report, ReportStatus
@@ -116,4 +117,31 @@ def feed_fediverse(request: HttpRequest) -> HttpResponse:
             "reports": reports,
             "active_tab": "fediverse",
         },
+    )
+
+
+@login_required
+def recommend_report(request: HttpRequest) -> HttpResponse:
+    """Recommend (boost) a report. US-28. HTMX POST."""
+    from django.http import JsonResponse
+
+    if request.method != "POST":
+        return JsonResponse({"error": "POST required"}, status=405)
+
+    report_id = request.POST.get("report_id", "")
+    report = Report.objects.filter(pk=report_id, status=ReportStatus.PUBLISHED).first()
+    if not report:
+        return JsonResponse({"error": "Report not found"}, status=404)
+
+    # Queue AP Announce activity
+    from suddenly.activitypub.signals import _safe_delay
+    from suddenly.activitypub.tasks import send_announce_activity
+
+    _safe_delay(send_announce_activity, str(request.user.pk), str(report.pk))
+
+    # Return updated button (HTMX swap)
+    return render(
+        request,
+        "feed/_recommend_button.html",
+        {"report": report, "recommended": True},
     )

@@ -21,6 +21,7 @@ urlpatterns = [
         notification_views.notification_badge,
         name="notification_badge",
     ),
+    path("feed/recommend/", feed_views.recommend_report, name="recommend"),
     path("welcome/", onboarding_views.onboarding_step1, name="onboarding_step1"),
     path("welcome/discover/", onboarding_views.onboarding_step2, name="onboarding_step2"),
     path("welcome/start/", onboarding_views.onboarding_step3, name="onboarding_step3"),
