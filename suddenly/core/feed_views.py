@@ -27,14 +27,16 @@ def feed_home(request: HttpRequest) -> HttpResponse:
 
     user = request.user
 
-    # Collect followed IDs by type
-    follows = Follow.objects.filter(follower=user).values("content_type_id", "object_id")
+    # Followed IDs via ORM subqueries (Django evaluates lazily, no Python loop)
+    user_ct_id = ContentType.objects.get_for_model(User).pk
+    game_ct_id = ContentType.objects.get_for_model(Game).pk
 
-    user_ct = ContentType.objects.get_for_model(User)
-    game_ct = ContentType.objects.get_for_model(Game)
-
-    followed_user_ids = [f["object_id"] for f in follows if f["content_type_id"] == user_ct.pk]
-    followed_game_ids = [f["object_id"] for f in follows if f["content_type_id"] == game_ct.pk]
+    followed_user_ids = Follow.objects.filter(
+        follower=user, content_type_id=user_ct_id
+    ).values_list("object_id", flat=True)
+    followed_game_ids = Follow.objects.filter(
+        follower=user, content_type_id=game_ct_id
+    ).values_list("object_id", flat=True)
 
     # Published reports from followed users/games
     reports = (
@@ -66,7 +68,7 @@ def feed_home(request: HttpRequest) -> HttpResponse:
             "reports": reports,
             "npcs": npcs,
             "active_tab": "subscriptions",
-            "is_empty": not followed_user_ids and not followed_game_ids,
+            "is_empty": not Follow.objects.filter(follower=user).exists(),
         },
     )
 
