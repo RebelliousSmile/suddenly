@@ -2,7 +2,7 @@
 
 from django.urls import path
 
-from . import feed_views, notification_views
+from . import feed_views, notification_views, onboarding_views
 
 app_name = "feed"
 
@@ -21,4 +21,7 @@ urlpatterns = [
         notification_views.notification_badge,
         name="notification_badge",
     ),
+    path("welcome/", onboarding_views.onboarding_step1, name="onboarding_step1"),
+    path("welcome/discover/", onboarding_views.onboarding_step2, name="onboarding_step2"),
+    path("welcome/start/", onboarding_views.onboarding_step3, name="onboarding_step3"),
 ]
