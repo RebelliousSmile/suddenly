@@ -14,6 +14,11 @@
             Lier {{ character.name }} à votre histoire
         </h1>
 
+        {% if character.remote %}
+            {% include "components/status_banner.html" with type="info" icon="globe" message="Ce personnage est sur une instance distante. La demande sera envoyée via ActivityPub. Délai : si aucune réponse sous 30 jours, la demande expirera." %}
+            <div class="mb-4"></div>
+        {% endif %}
+
         {% if has_pending %}
             {% include "components/status_banner.html" with type="warning" icon="alert-triangle" message="Ce PNJ a déjà une demande en attente. Votre demande sera mise en file d'attente." %}
             <div class="mb-4"></div>

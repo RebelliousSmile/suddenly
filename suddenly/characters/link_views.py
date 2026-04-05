@@ -201,3 +201,61 @@ def link_request_cancel(request: HttpRequest, pk: str) -> HttpResponse:
         return redirect(reverse("characters:link_requests") + "?tab=sent")
 
     return redirect(reverse("characters:link_requests") + "?tab=sent")
+
+
+@login_required
+def link_revoke(request: HttpRequest, pk: str) -> HttpResponse:
+    """Revoke an accepted link (US-16). Creator or adoptant can revoke."""
+    from .models import CharacterLink, CharacterStatus, SharedSequenceStatus
+
+    link = get_object_or_404(
+        CharacterLink.objects.select_related("source", "target", "link_request", "shared_sequence"),
+        pk=pk,
+    )
+
+    # Permission: creator of target character or owner of source
+    is_creator = request.user == link.target.creator
+    is_owner = link.source.owner and request.user == link.source.owner
+    if not is_creator and not is_owner:
+        from django.http import HttpResponseForbidden
+
+        return HttpResponseForbidden("Not authorized")
+
+    if request.method == "POST":
+        reason = request.POST.get("reason", "").strip()
+
+        # Check if SharedSequence is published
+        ss = getattr(link, "shared_sequence", None)
+        if ss and ss.status == SharedSequenceStatus.PUBLISHED:
+            # Mark as revoked (keep published sequence visible)
+            link.description = f"REVOKED: {reason}" if reason else "REVOKED"
+            link.save(update_fields=["description", "updated_at"])
+        else:
+            # Delete draft sequence if exists
+            if ss:
+                ss.delete()
+            link.delete()
+
+        # Revert character to NPC
+        link.target.status = CharacterStatus.NPC
+        link.target.owner = None
+        link.target.save(update_fields=["status", "owner", "updated_at"])
+
+        return render(
+            request,
+            "characters/link_revoked.html",
+            {"character": link.target, "is_creator": is_creator},
+        )
+
+    return render(
+        request,
+        "characters/link_revoke_form.html",
+        {
+            "link": link,
+            "is_creator": is_creator,
+            "has_published_sequence": (
+                hasattr(link, "shared_sequence")
+                and link.shared_sequence.status == SharedSequenceStatus.PUBLISHED
+            ),
+        },
+    )

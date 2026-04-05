@@ -105,3 +105,104 @@ class Tag(BaseModel):
 
     def __str__(self) -> str:
         return f"#{self.name}"
+
+
+class NotificationPreference(BaseModel):
+    """Per-user notification preferences (US-21)."""
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="notification_preferences",
+    )
+    email_link_request = models.BooleanField(default=True)
+    email_link_response = models.BooleanField(default=True)
+    email_shared_sequence = models.BooleanField(default=True)
+    email_new_report = models.BooleanField(default=False)
+    email_recommendation = models.BooleanField(default=False)
+    email_mention = models.BooleanField(default=True)
+    email_invitation = models.BooleanField(default=True)
+    email_new_follower = models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return f"Notification prefs for {self.user}"
+
+
+class ReportCategory(models.TextChoices):
+    """Categories for content reports (US-27)."""
+
+    SPAM = "spam", "Spam"
+    HARASSMENT = "harassment", "Harcèlement"
+    INAPPROPRIATE = "inappropriate", "Contenu inapproprié"
+    OTHER = "other", "Autre"
+
+
+class ContentReport(BaseModel):
+    """Content report / signalement (US-27)."""
+
+    reporter = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="reports_made",
+    )
+    target_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    target_object_id = models.UUIDField()
+    target = GenericForeignKey("target_content_type", "target_object_id")
+    category = models.CharField(max_length=20, choices=ReportCategory.choices)
+    comment = models.TextField(blank=True)
+    resolved = models.BooleanField(default=False)
+    resolved_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.category}: {self.reporter}"
+
+
+class UserBlock(BaseModel):
+    """User-level block (US-33)."""
+
+    blocker = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="blocks_made",
+    )
+    blocked = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="blocked_by",
+    )
+
+    class Meta:
+        unique_together = ["blocker", "blocked"]
+
+    def __str__(self) -> str:
+        return f"{self.blocker} blocks {self.blocked}"
+
+
+class UserMute(BaseModel):
+    """User-level mute (US-33)."""
+
+    muter = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="mutes_made",
+    )
+    muted = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="muted_by",
+    )
+
+    class Meta:
+        unique_together = ["muter", "muted"]
+
+    def __str__(self) -> str:
+        return f"{self.muter} mutes {self.muted}"
