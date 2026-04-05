@@ -5,9 +5,10 @@
 {% block content %}
 <section class="py-12">
     <div class="container-app max-w-md">
-        <h1 class="text-3xl font-bold text-gray-900 mb-8 text-center">
-            Créer un compte
+        <h1 class="text-3xl font-bold text-gray-900 mb-2 text-center">
+            Rejoindre {{ SITE_NAME }}
         </h1>
+        <p class="text-center text-sm text-gray-500 mb-8">{{ SITE_DESCRIPTION }}</p>
 
         <form method="post" action="{% url 'account_signup' %}">
             {% csrf_token %}
@@ -33,9 +34,7 @@
                            required
                            autofocus
                            class="{% if form.username.errors %}form-input-error{% else %}form-input{% endif %}">
-                    {% if form.username.help_text %}
-                        <p class="form-help">{{ form.username.help_text|safe }}</p>
-                    {% endif %}
+                    <p class="form-help">Vous serez @{{ form.username.value|default:'username' }}@{{ DOMAIN|default:'instance' }}</p>
                     {% if form.username.errors %}
                         {% for error in form.username.errors %}
                             <p class="form-error">{{ error }}</p>
@@ -105,6 +104,14 @@
                             <p class="form-error">{{ error }}</p>
                         {% endfor %}
                     {% endif %}
+                </div>
+
+                <!-- Instance rules -->
+                <div class="border-t border-gray-200 pt-4">
+                    <p class="text-sm text-gray-600 mb-2">
+                        En vous inscrivant, vous acceptez les
+                        <a href="{% url 'core:about' %}" class="link">règles de cette instance</a>.
+                    </p>
                 </div>
 
             </div>
