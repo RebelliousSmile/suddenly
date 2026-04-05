@@ -1,0 +1,21 @@
+{# Partial: single quote card (returned after HTMX add) #}
+
+<blockquote class="border-l-4 border-primary-300 pl-4 mb-4"
+            id="quote-{{ quote.id }}">
+    {% if quote.content_warning %}
+        <p class="text-sm text-amber-700 mb-1">
+            <span class="i-lucide-alert-triangle text-xs"></span>
+            {{ quote.content_warning }}
+        </p>
+    {% endif %}
+    <p class="text-gray-800 italic font-serif text-lg">"{{ quote.content }}"</p>
+    {% if quote.context %}
+        <p class="text-sm text-gray-500 mt-1">{{ quote.context }}</p>
+    {% endif %}
+    <footer class="text-xs text-gray-500 mt-1">
+        — {{ quote.character.name }}, par @{{ quote.author.username }}
+        {% if quote.visibility == 'private' %}
+            <span class="badge-gray ml-1"><span class="i-lucide-lock text-xs"></span> Privée</span>
+        {% endif %}
+    </footer>
+</blockquote>

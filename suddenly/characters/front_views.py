@@ -7,10 +7,11 @@ DRF ViewSets in views.py remain for the JSON API.
 
 from __future__ import annotations
 
+from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 
 from suddenly.core.views import htmx_render
 
@@ -120,3 +121,46 @@ def _build_character_queryset(request: HttpRequest) -> QuerySet[Character]:
         )
 
     return qs
+
+
+@login_required
+def quote_add(request: HttpRequest, slug: str) -> HttpResponse:
+    """Add a quote to a character (US-08). HTMX partial."""
+    character = get_object_or_404(Character, slug=slug)
+
+    if request.method == "POST":
+        from .models import Quote, QuoteVisibility
+
+        content = request.POST.get("content", "").strip()
+        context_text = request.POST.get("context", "").strip()
+        cw = request.POST.get("content_warning", "").strip()
+        visibility = request.POST.get("visibility", QuoteVisibility.PUBLIC)
+
+        if len(content) < 2:
+            return render(
+                request,
+                "characters/_quote_form.html",
+                {
+                    "character": character,
+                    "error": "La citation doit faire au moins 2 caractères.",
+                    "form_data": request.POST,
+                },
+                status=422,
+            )
+
+        quote = Quote.objects.create(
+            content=content,
+            context=context_text,
+            content_warning=cw,
+            visibility=visibility,
+            character=character,
+            author=request.user,
+        )
+        return render(request, "characters/_quote_card.html", {"quote": quote})
+
+    # GET: return the form partial
+    return render(
+        request,
+        "characters/_quote_form.html",
+        {"character": character},
+    )
