@@ -36,41 +36,43 @@
 
 ## Couverture des User Stories (33 US)
 
-| US | Titre | Wireframe | Tache MP |
+Issues GitHub : rebellioussmile/suddenly#30 a #62
+
+| US | Titre | Wireframe | Tache MP | Issue |
 |----|-------|-----------|----------|
-| US-01 | Creer mon compte | 03, 04 | T9, T11 |
-| US-02 | Creer ma campagne | 05 | T19 |
-| US-03 | Reconstituer campagne passee | 05 | T19 |
-| US-04 | Ecrire et publier un CR | 06 | T20 |
-| US-05 | Mentionner des personnages | 06 | T20 |
-| US-06 | Voir la fiche d'un personnage | 07 | T14 |
-| US-07 | Rechercher des personnages | 07 | T13, T14 |
-| US-08 | Ajouter une citation | 08 | T15 |
-| US-09 | Etre notifie d'une demande | 09, 11 | T16, T22 |
-| US-10 | Envoyer une demande (flow guide) | 09 | T16 |
-| US-11 | Accepter ou refuser | 09 | T16 |
-| US-12 | Suivre une partie ou un joueur | 10 | T18 |
-| US-13 | Planifier la distribution | 06 | T20 |
-| US-14 | Arbitrer les demandes | 09, 12 | T16, T21 |
-| US-15 | File d'attente QUEUED | 09 | T16 |
-| US-16 | Revoquer un lien | 07, 09 | T16 |
-| US-17 | Derivation en chaine | 07 | T14 |
-| US-18 | Co-ecrire SharedSequence | 09 | T17 |
-| US-19 | Valider et publier Sequence | 09 | T17 |
-| US-20 | Notifications in-app | 11 | T22 |
-| US-21 | Preferences de notification | 11 | T22 |
-| US-22 | Suivre cross-instance | 14 | T25 |
-| US-23 | Demande cross-instance | 09, 14 | T25 |
-| US-24 | Voir depuis Mastodon | 14 | T25 |
-| US-25 | Moderer le contenu | 13 | T30 |
-| US-26 | Bloquer/limiter instance | 13 | T30 |
-| US-27 | Signaler un contenu | 16 | T24 |
-| **US-28** | **Recommander un CR + inviter** | **10** | **T18** |
-| **US-29** | **Controler la visibilite CR** | **06** | **T7, T20** |
-| **US-30** | **Avertissement de contenu (CW)** | **06, 08** | **T7, T15, T20** |
-| **US-31** | **Page A propos instance** | **17** | **T10** |
-| **US-32** | **Import/export follows + migration** | **15** | **T26, T28** |
-| **US-33** | **Block/mute utilisateur** | **15** | **T27** |
+| US-01 | Creer mon compte | 03, 04 | T9, T11 | #30 |
+| US-02 | Creer ma campagne | 05 | T19 | #31 |
+| US-03 | Reconstituer campagne passee | 05 | T19 | #32 |
+| US-04 | Ecrire et publier un CR | 06 | T20 | #33 |
+| US-05 | Mentionner des personnages | 06 | T20 | #34 |
+| US-06 | Voir la fiche d'un personnage | 07 | T14 | #35 |
+| US-07 | Rechercher des personnages | 07 | T13, T14 | #36 |
+| US-08 | Ajouter une citation | 08 | T15 | #37 |
+| US-09 | Etre notifie d'une demande | 09, 11 | T16, T22 | #38 |
+| US-10 | Envoyer une demande (flow guide) | 09 | T16 | #39 |
+| US-11 | Accepter ou refuser | 09 | T16 | #40 |
+| US-12 | Suivre une partie ou un joueur | 10 | T18 | #41 |
+| US-13 | Planifier la distribution | 06 | T20 | #42 |
+| US-14 | Arbitrer les demandes | 09, 12 | T16, T21 | #43 |
+| US-15 | File d'attente QUEUED | 09 | T16 | #44 |
+| US-16 | Revoquer un lien | 07, 09 | T16 | #45 |
+| US-17 | Derivation en chaine | 07 | T14 | #46 |
+| US-18 | Co-ecrire SharedSequence | 09 | T17 | #47 |
+| US-19 | Valider et publier Sequence | 09 | T17 | #48 |
+| US-20 | Notifications in-app | 11 | T22 | #49 |
+| US-21 | Preferences de notification | 11 | T22 | #50 |
+| US-22 | Suivre cross-instance | 14 | T25 | #51 |
+| US-23 | Demande cross-instance | 09, 14 | T25 | #52 |
+| US-24 | Voir depuis Mastodon | 14 | T25 | #53 |
+| US-25 | Moderer le contenu | 13 | T30 | #54 |
+| US-26 | Bloquer/limiter instance | 13 | T30 | #55 |
+| US-27 | Signaler un contenu | 16 | T24 | #56 |
+| **US-28** | **Recommander + inviter** | **10** | **T18** | **#57** |
+| **US-29** | **Visibilite CR** | **06** | **T7, T20** | **#58** |
+| **US-30** | **Content Warning (CW)** | **06, 08** | **T7, T15, T20** | **#59** |
+| **US-31** | **Page A propos instance** | **17** | **T10** | **#60** |
+| **US-32** | **Import/export + migration** | **15** | **T26, T28** | **#61** |
+| **US-33** | **Block/mute utilisateur** | **15** | **T27** | **#62** |
 
 ## Conventions
 
