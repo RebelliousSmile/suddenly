@@ -173,7 +173,7 @@ const presetSuddenly = () => ({
     'text-heading': 'text-gray-900 font-semibold',
     
     // Prose (pour les reports)
-    'prose-report': 'prose prose-indigo prose-sm sm:prose-base max-w-none',
+    'prose-report': 'prose prose-indigo max-w-none',
   },
 })
 
@@ -201,9 +201,9 @@ export default defineConfig({
         'a': {
           'color': '#4f46e5',
           'text-decoration': 'none',
-          '&:hover': {
-            'text-decoration': 'underline',
-          },
+        },
+        'a:hover': {
+          'text-decoration': 'underline',
         },
         'blockquote': {
           'border-left-color': '#6366f1',
