@@ -36,12 +36,12 @@
 
 ### Decisions architecturales a prendre (audit conception)
 
-| # | Decision | Recommandation | Bloque |
-|---|----------|---------------|--------|
-| **DA-1** | DRF JSON vs HTMX HTML pour les vues front | **HTMX-first** : vues Django pour le front, DRF pour l'API publique AP | Toutes taches P2 |
-| **DA-2** | ADR-011 (NPC jusqu'a SharedSequence publiee) vs code actuel (statut change a l'acceptation) | A confirmer avec le product owner | T16, T17 |
-| **DA-3** | SharedSequence synchrone (chacun son tour) vs temps reel (CRDT/Yjs) | **Asynchrone pour le MVP** : polling presence + verrouillage pessimiste | T17 |
-| **DA-4** | GenericForeignKey sur Follow vs 3 FK nullables | **Garder GFK pour le MVP**, documenter le trade-off, migrer post-MVP si N+1 | T18 |
+| # | Decision | Choix valide | Bloque |
+|---|----------|-------------|--------|
+| **DA-1** | DRF JSON vs HTMX HTML pour les vues front | **HTMX-first** : vues Django pour le front, DRF pour l'API publique AP. VALIDE. | Toutes taches P2 |
+| **DA-2** | ADR-011 (NPC jusqu'a SharedSequence publiee) vs code actuel | **Suivre l'ADR-011** : corriger le code pour que le statut reste NPC jusqu'a publication SS. VALIDE. | T16, T17 |
+| **DA-3** | SharedSequence synchrone vs temps reel (CRDT/Yjs) | **Asynchrone pour le MVP** : polling presence + verrouillage pessimiste. VALIDE. | T17 |
+| **DA-4** | GenericForeignKey sur Follow vs 3 FK nullables | **Garder GFK pour le MVP**, documenter le trade-off, migrer post-MVP si N+1. VALIDE. | T18 |
 
 ### Corrections de schema requises avant P2
 

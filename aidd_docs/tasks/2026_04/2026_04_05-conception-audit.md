@@ -1,7 +1,7 @@
 # Audit de conception — Suddenly
 
 **Date** : 2026-04-05
-**Statut** : Findings documentes, decisions a prendre
+**Statut** : Findings documentes, **4 decisions validees**
 
 ---
 
@@ -21,24 +21,19 @@ Les wireframes et les 16 composants template supposent des **partials HTML via H
 Les ViewSets DRF retournent du **JSON**. Personne ne sert de partials HTML
 depuis `characters/` ou `games/`.
 
-**Decision requise** : choisir un pattern pour les vues front.
+**Decision DA-1 : HTMX-first** — VALIDEE le 2026-04-05
 
-Options :
-1. **HTMX-first** (recommande) : vues Django classiques pour le front, DRF uniquement pour l'API publique AP
-2. **DRF + content negotiation** : les ViewSets retournent HTML ou JSON selon le header Accept
-3. **API-first + proxy** : le front HTMX appelle l'API JSON via un middleware de rendu
-
-**Recommandation** : Option 1. C'est le pattern le plus naturel pour Django + HTMX + Alpine.js.
-Les ViewSets DRF existants sont conserves pour l'API publique (documentation OpenAPI, clients externes).
-Les vues front sont des fonctions/classes Django qui retournent des partials HTML.
+Vues Django classiques pour le front (partials HTML via HTMX).
+DRF conserve uniquement pour l'API publique (AP, OpenAPI, clients externes).
+Les ViewSets DRF existants ne sont pas supprimes mais ne servent pas le front.
 
 ### DB-2 : God module characters/models.py — HAUTE
 
 8 modeles, 4 domaines metier, 1 fichier, 1 migration geante.
 
-**Decision requise** : splitter ou garder ?
+**Decision DA-2 : Split en 4 fichiers** — VALIDEE le 2026-04-05
 
-**Recommandation** : Splitter en 4 fichiers dans `characters/models/` :
+Splitter en 4 fichiers dans `characters/models/` :
 - `character.py` : Character, CharacterAppearance
 - `quote.py` : Quote, QuoteVisibility
 - `link.py` : LinkRequest, CharacterLink, SharedSequence, LinkType, LinkRequestStatus
