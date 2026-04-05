@@ -40,7 +40,7 @@ def report_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: 
         if created or (
             instance.published_at and (timezone.now() - instance.published_at).seconds < 10
         ):
-            _safe_delay(send_create_activity,"report", str(instance.id))
+            _safe_delay(send_create_activity, "report", str(instance.id))
 
 
 @receiver(pre_save, sender="games.Report")
@@ -60,7 +60,7 @@ def character_post_save(sender: type[Any], instance: Any, created: bool, **kwarg
     from suddenly.activitypub.tasks import send_create_activity
 
     if created and not instance.remote:
-        _safe_delay(send_create_activity,"character", str(instance.id))
+        _safe_delay(send_create_activity, "character", str(instance.id))
 
 
 @receiver(post_save, sender="characters.Quote")
@@ -72,7 +72,7 @@ def quote_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: A
     from suddenly.characters.models import QuoteVisibility
 
     if created and not instance.remote and instance.visibility == QuoteVisibility.PUBLIC:
-        _safe_delay(send_create_activity,"quote", str(instance.id))
+        _safe_delay(send_create_activity, "quote", str(instance.id))
 
 
 @receiver(post_save, sender="characters.LinkRequest")
@@ -90,13 +90,13 @@ def link_request_post_save(sender: type[Any], instance: Any, created: bool, **kw
 
     if created:
         # New request - send Offer
-        _safe_delay(send_offer_activity,str(instance.id))
+        _safe_delay(send_offer_activity, str(instance.id))
     else:
         # Status change - check if accepted or rejected
         if instance.status == LinkRequestStatus.ACCEPTED:
-            _safe_delay(send_accept_activity,str(instance.id))
+            _safe_delay(send_accept_activity, str(instance.id))
         elif instance.status == LinkRequestStatus.REJECTED:
-            _safe_delay(send_reject_activity,str(instance.id))
+            _safe_delay(send_reject_activity, str(instance.id))
 
 
 @receiver(post_save, sender="characters.Follow")
@@ -142,7 +142,8 @@ def follow_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: 
         target_actor_url = target.actor_url
         if target_actor_url:
             activity = build_follow_activity(instance.follower, target_actor_url)
-            _safe_delay(deliver_activity,
+            _safe_delay(
+                deliver_activity,
                 activity=activity,
                 inbox_url=target.inbox_url,
             )

@@ -7,7 +7,7 @@ enabling proper cache-busting in production.
 Usage in templates:
     {% load vite %}
     {% vite_asset "css/main.css" %}  ->  <link rel="stylesheet" href="/static/dist/css/main.css">
-    {% vite_asset "js/main.js" %}    ->  <script type="module" src="/static/dist/js/main.abc123.js"></script>
+    {% vite_asset "js/main.js" %}    ->  <script type="module" src="..."></script>
 """
 
 from __future__ import annotations

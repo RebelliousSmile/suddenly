@@ -166,7 +166,6 @@ class Quote(BaseModel):
 
     # Timestamps
 
-
     class Meta:
         ordering = ["-created_at"]
         indexes = [
@@ -211,8 +210,6 @@ class CharacterAppearance(BaseModel):
         max_length=20, choices=AppearanceRole.choices, default=AppearanceRole.MENTIONED
     )
     context = models.TextField(blank=True, help_text="Description of their role in this scene")
-
-
 
     class Meta:
         unique_together = ["character", "report"]
@@ -317,8 +314,6 @@ class CharacterLink(BaseModel):
 
     description = models.TextField(blank=True, help_text="Nature of the link")
 
-
-
     class Meta:
         ordering = ["-created_at"]
 
@@ -348,8 +343,6 @@ class SharedSequence(BaseModel):
     status = models.CharField(
         max_length=20, choices=SharedSequenceStatus.choices, default=SharedSequenceStatus.DRAFT
     )
-
-
 
     def __str__(self) -> str:
         return self.title or f"Sequence for {self.link}"
@@ -382,8 +375,6 @@ class Follow(BaseModel):
     # ActivityPub
     remote = models.BooleanField(default=False)
     ap_id = models.URLField(blank=True, null=True, unique=True)
-
-
 
     class Meta:
         unique_together = ["follower", "content_type", "object_id"]
