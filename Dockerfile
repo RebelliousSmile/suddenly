@@ -41,15 +41,16 @@ RUN pip install --prefix=/install ".[federation]"
 # -------------------------------------------------------------------
 FROM base AS dev
 
-COPY pyproject.toml .
-RUN pip install -e ".[dev,federation]"
-
+# Copy all code first (needed for editable install)
 COPY . .
+RUN pip install -e ".[dev,federation]"
 
 # -------------------------------------------------------------------
 # Final: production image
 # -------------------------------------------------------------------
 FROM base AS final
+
+ENV DJANGO_SETTINGS_MODULE=config.settings.production
 
 RUN groupadd --gid 1000 suddenly \
     && useradd --uid 1000 --gid suddenly --shell /bin/bash --create-home suddenly

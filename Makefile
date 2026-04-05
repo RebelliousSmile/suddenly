@@ -1,5 +1,5 @@
-.PHONY: check lint typecheck test
-.PHONY: docker-up docker-down docker-test docker-check docker-shell docker-migrate docker-build
+.PHONY: check lint typecheck test frontend
+.PHONY: docker-up docker-down docker-test docker-check docker-shell docker-migrate docker-build docker-logs
 
 # ─── Local ────────────────────────────────────────────────────────
 
@@ -14,6 +14,9 @@ typecheck:
 
 test:
 	pytest --cov=suddenly --cov-fail-under=80 --tb=short
+
+frontend:
+	cd frontend && npm install && npm run build
 
 # ─── Docker ───────────────────────────────────────────────────────
 
@@ -39,3 +42,9 @@ docker-check:
 
 docker-shell:
 	$(COMPOSE_DEV) exec web python manage.py shell
+
+docker-logs:
+	$(COMPOSE_DEV) logs -f web
+
+docker-createsuperuser:
+	$(COMPOSE_DEV) exec web python manage.py createsuperuser
