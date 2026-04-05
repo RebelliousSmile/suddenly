@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if link_type == 'adopt' %}Adopter{% elif link_type == 'fork' %}Dériver{% else %}Retcon{% endif %}
+    {{ character.name }} — {{ SITE_NAME }}
+{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-2xl">
+
+        <a href="{% url 'characters:link_choose' slug=character.slug %}" class="link-muted text-sm mb-4 block">
+            <span class="i-lucide-arrow-left text-xs"></span> Retour au choix
+        </a>
+
+        <div class="flex items-center gap-3 mb-6">
+            {% if link_type == 'adopt' %}
+                <span class="w-10 h-10 rounded-full bg-secondary-100 text-secondary-600 flex items-center justify-center">
+                    <span class="i-lucide-heart text-lg"></span>
+                </span>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900">Adopter {{ character.name }}</h1>
+                    <p class="text-sm text-gray-500">Adoption</p>
+                </div>
+            {% elif link_type == 'fork' %}
+                <span class="w-10 h-10 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center">
+                    <span class="i-lucide-git-branch text-lg"></span>
+                </span>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900">Dériver {{ character.name }}</h1>
+                    <p class="text-sm text-gray-500">Dérivation</p>
+                </div>
+            {% else %}
+                <span class="w-10 h-10 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center">
+                    <span class="i-lucide-git-merge text-lg"></span>
+                </span>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900">Retcon sur {{ character.name }}</h1>
+                    <p class="text-sm text-gray-500">Réécriture rétroactive</p>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if error %}
+            <div class="mb-4 p-4 rounded-lg bg-red-50 text-red-800 border border-red-200">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="post" class="card card-body space-y-4">
+            {% csrf_token %}
+
+            {% if link_type == 'adopt' %}
+                <p class="text-sm text-gray-600">
+                    Vous souhaitez reprendre {{ character.name }} comme votre PJ.
+                    @{{ character.creator.username }} devra accepter votre demande.
+                </p>
+            {% elif link_type == 'fork' %}
+                <p class="text-sm text-gray-600">
+                    Vous créez un nouveau PJ inspiré de {{ character.name }}.
+                    {{ character.name }} reste PNJ — votre PJ sera lié par une lignée narrative.
+                </p>
+                <div>
+                    <label for="fork_name" class="form-label">Nom de votre nouveau PJ</label>
+                    <input type="text" id="fork_name" name="fork_name"
+                           value="{{ form_data.fork_name|default:'' }}"
+                           placeholder="Ex: Shadow {{ character.name }}"
+                           class="form-input">
+                </div>
+            {% else %}
+                <p class="text-sm text-gray-600">
+                    Vous affirmez que {{ character.name }} était votre PJ depuis le début.
+                    Son histoire sera réinterprétée rétroactivement.
+                </p>
+            {% endif %}
+
+            <div>
+                <label for="message" class="form-label">Votre proposition narrative</label>
+                <textarea id="message" name="message" rows="5" required
+                          placeholder="Expliquez comment {{ character.name }} s'intègre dans votre histoire et pourquoi ce lien vous intéresse..."
+                          class="{% if error %}form-input-error{% else %}form-input{% endif %}">{{ form_data.message|default:'' }}</textarea>
+            </div>
+
+            <p class="text-sm text-gray-500">
+                <span class="i-lucide-info text-xs mr-1"></span>
+                Après acceptation, vous co-écrirez une Séquence Partagée avec
+                @{{ character.creator.username }} pour sceller la transition narrative.
+            </p>
+
+            <div class="flex items-center gap-3 pt-4 border-t border-gray-200">
+                <button type="submit" class="btn-primary">
+                    <span class="i-lucide-send"></span>
+                    Envoyer la demande
+                </button>
+                <a href="{% url 'characters:detail' slug=character.slug %}" class="btn-ghost">
+                    Annuler
+                </a>
+            </div>
+        </form>
+
+    </div>
+</section>
+{% endblock %}

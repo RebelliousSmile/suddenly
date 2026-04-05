@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Demandes de lien — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-2xl">
+
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">Demandes de lien</h1>
+
+        <!-- Tabs -->
+        <div class="flex border-b border-gray-200 mb-6">
+            <a href="?tab=received"
+               class="px-4 py-2 text-sm font-medium border-b-2 -mb-px
+                      {% if active_tab == 'received' %}border-primary-500 text-primary-600{% else %}border-transparent text-gray-500{% endif %}">
+                Reçues ({{ received|length }})
+            </a>
+            <a href="?tab=sent"
+               class="px-4 py-2 text-sm font-medium border-b-2 -mb-px
+                      {% if active_tab == 'sent' %}border-primary-500 text-primary-600{% else %}border-transparent text-gray-500{% endif %}">
+                Envoyées ({{ sent|length }})
+            </a>
+        </div>
+
+        {% if active_tab == 'received' %}
+            {% if received %}
+                <div class="space-y-4">
+                    {% for req in received %}
+                        <div class="card card-body">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="{% if req.status == 'pending' %}badge-accent{% elif req.status == 'queued' %}badge-gray{% elif req.status == 'accepted' %}badge-secondary{% else %}badge-gray{% endif %}">
+                                    {{ req.get_status_display }}
+                                </span>
+                                <time class="text-xs text-gray-500">{{ req.created_at|timesince }}</time>
+                            </div>
+                            <p class="font-medium text-gray-900 mb-1">
+                                @{{ req.requester.username }} veut
+                                <strong>{{ req.get_type_display|upper }}</strong>
+                                {{ req.target_character.name }}
+                            </p>
+                            {% if req.message %}
+                                <p class="text-sm text-gray-600 italic line-clamp-2">« {{ req.message }} »</p>
+                            {% endif %}
+                            {% if req.status == 'pending' %}
+                                <div class="flex items-center gap-2 mt-3">
+                                    <a href="{% url 'characters:link_request_accept' pk=req.pk %}" class="btn-primary btn-sm">Accepter</a>
+                                    <a href="{% url 'characters:link_request_reject' pk=req.pk %}" class="btn-ghost btn-sm">Refuser</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-sm text-gray-500 text-center py-8">Aucune demande reçue.</p>
+            {% endif %}
+
+        {% else %}
+            {% if sent %}
+                <div class="space-y-4">
+                    {% for req in sent %}
+                        <div class="card card-body">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="{% if req.status == 'pending' %}badge-primary{% elif req.status == 'queued' %}badge-gray{% elif req.status == 'accepted' %}badge-secondary{% elif req.status == 'expired' %}badge-gray text-red-600{% else %}badge-gray{% endif %}">
+                                    {{ req.get_status_display }}
+                                </span>
+                                <time class="text-xs text-gray-500">{{ req.created_at|timesince }}</time>
+                            </div>
+                            <p class="font-medium text-gray-900 mb-1">
+                                {{ req.get_type_display|upper }} —
+                                {{ req.target_character.name }}
+                                (PNJ de @{{ req.target_character.creator.username }})
+                            </p>
+                            {% if req.status == 'pending' or req.status == 'queued' %}
+                                <form method="post"
+                                      action="{% url 'characters:link_request_cancel' pk=req.pk %}"
+                                      class="mt-2">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-ghost btn-sm text-red-600">
+                                        Annuler ma demande
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-sm text-gray-500 text-center py-8">Aucune demande envoyée.</p>
+            {% endif %}
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}
