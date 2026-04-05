@@ -32,6 +32,11 @@ class Character(BaseModel):
 
     # Identity
     name = models.CharField(max_length=100)
+    slug = models.SlugField(
+        max_length=120,
+        blank=True,
+        help_text="URL-friendly name, auto-generated from name",
+    )
     description = models.TextField(blank=True)
     avatar = models.ImageField(upload_to="characters/", blank=True, null=True)
 
@@ -95,6 +100,19 @@ class Character(BaseModel):
 
     def __str__(self) -> str:
         return f"{self.name} ({self.get_status_display()})"
+
+    def save(self, *args: object, **kwargs: object) -> None:
+        if not self.slug:
+            from django.utils.text import slugify
+
+            base_slug = slugify(self.name)[:120]
+            slug = base_slug
+            counter = 1
+            while Character.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug[:115]}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
 
     @property
     def is_available(self) -> bool:
