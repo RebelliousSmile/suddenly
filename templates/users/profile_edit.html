@@ -18,14 +18,14 @@
             <div>
                 <label for="{{ form.display_name.id_for_label }}" class="form-label">
                     {{ form.display_name.label }}
-                    <span class="text-gray-400">(optionnel)</span>
+                    <span class="text-gray-500">(optionnel)</span>
                 </label>
                 <input type="text"
                        id="{{ form.display_name.id_for_label }}"
                        name="{{ form.display_name.html_name }}"
                        value="{{ form.display_name.value|default:'' }}"
                        placeholder="Votre nom d'affichage"
-                       class="form-input {% if form.display_name.errors %}border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}">
+                       class="{% if form.display_name.errors %}form-input-error{% else %}form-input{% endif %}">
                 {% if form.display_name.help_text %}
                     <p class="form-help">{{ form.display_name.help_text|safe }}</p>
                 {% endif %}
@@ -40,13 +40,13 @@
             <div>
                 <label for="{{ form.bio.id_for_label }}" class="form-label">
                     {{ form.bio.label }}
-                    <span class="text-gray-400">(optionnel)</span>
+                    <span class="text-gray-500">(optionnel)</span>
                 </label>
                 <textarea id="{{ form.bio.id_for_label }}"
                           name="{{ form.bio.html_name }}"
                           rows="4"
                           placeholder="Présentez-vous..."
-                          class="form-input {% if form.bio.errors %}border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}">{{ form.bio.value|default:'' }}</textarea>
+                          class="{% if form.bio.errors %}form-input-error{% else %}form-input{% endif %}">{{ form.bio.value|default:'' }}</textarea>
                 {% if form.bio.help_text %}
                     <p class="form-help">{{ form.bio.help_text|safe }}</p>
                 {% endif %}
@@ -61,7 +61,7 @@
             <div>
                 <label for="{{ form.avatar.id_for_label }}" class="form-label">
                     {{ form.avatar.label }}
-                    <span class="text-gray-400">(optionnel)</span>
+                    <span class="text-gray-500">(optionnel)</span>
                 </label>
                 {% if form.avatar.value %}
                     <div class="mb-4 p-4 bg-gray-50 rounded-lg flex items-center gap-3">
@@ -77,12 +77,11 @@
                         </div>
                     </div>
                 {% endif %}
-                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition-colors">
+                <div class="form-dropzone">
                     <div class="space-y-1 text-center">
-                        <span class="i-lucide-upload text-3xl text-gray-400"></span>
+                        <span class="i-lucide-upload text-3xl text-gray-500"></span>
                         <div class="flex text-sm text-gray-600">
-                            <label for="{{ form.avatar.id_for_label }}"
-                                   class="relative cursor-pointer rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500">
+                            <label for="{{ form.avatar.id_for_label }}" class="form-dropzone-link">
                                 <span>Téléverser une image</span>
                                 <input id="{{ form.avatar.id_for_label }}"
                                        name="{{ form.avatar.html_name }}"
@@ -115,7 +114,7 @@
                        name="{{ form.content_language.html_name }}"
                        value="{{ form.content_language.value|default:'' }}"
                        placeholder="ex: fr"
-                       class="form-input {% if form.content_language.errors %}border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}">
+                       class="{% if form.content_language.errors %}form-input-error{% else %}form-input{% endif %}">
                 {% if form.content_language.help_text %}
                     <p class="form-help">{{ form.content_language.help_text|safe }}</p>
                 {% endif %}
@@ -130,7 +129,7 @@
             <div>
                 <label for="{{ form.preferred_languages.id_for_label }}" class="form-label">
                     {{ form.preferred_languages.label }}
-                    <span class="text-gray-400">(optionnel)</span>
+                    <span class="text-gray-500">(optionnel)</span>
                 </label>
                 {{ form.preferred_languages }}
                 <p class="form-help">Codes langue séparés par des virgules, ex : fr, en</p>

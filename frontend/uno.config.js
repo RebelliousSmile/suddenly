@@ -131,10 +131,13 @@ const presetSuddenly = () => ({
     'card-footer': 'px-4 py-3 sm:px-6 border-t border-gray-100 bg-gray-50 rounded-b-card',
     
     // Formulaires
-    'form-input': 'block w-full rounded-button border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm',
+    'form-input': 'block w-full rounded-button border border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm',
+    'form-input-error': 'form-input border-red-300 focus:border-red-500 focus:ring-red-500',
     'form-label': 'block text-sm font-medium text-gray-700 mb-1',
     'form-help': 'mt-1 text-sm text-gray-600',
     'form-error': 'mt-1 text-sm text-red-600',
+    'form-dropzone': 'mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-500 transition-colors',
+    'form-dropzone-link': 'relative cursor-pointer rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500',
     
     // Badges
     'badge': 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-xs font-medium',
@@ -158,6 +161,9 @@ const presetSuddenly = () => ({
     'avatar-xl': 'avatar w-16 h-16',
     'avatar-placeholder': 'avatar flex items-center justify-center bg-primary-100 text-primary-600',
     
+    // Dropdown menu
+    'dropdown-menu': 'absolute bg-white rounded-card shadow-dropdown border border-gray-200 py-1 z-dropdown',
+
     // Links
     'link': 'text-primary-600 hover:text-primary-800 hover:underline',
     'link-muted': 'text-gray-500 hover:text-gray-700',

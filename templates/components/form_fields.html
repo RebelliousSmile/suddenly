@@ -17,7 +17,7 @@
            value="{{ value }}"
            placeholder="{{ placeholder }}"
            {% if required %}required{% endif %}
-           class="form-input {% if error %}border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}">
+           class="{% if error %}form-input-error{% else %}form-input{% endif %}">
     {% if help and not error %}
         <p class="form-help">{{ help }}</p>
     {% endif %}
@@ -39,7 +39,7 @@
               placeholder="{{ placeholder }}"
               rows="{{ rows }}"
               {% if required %}required{% endif %}
-              class="form-input {% if error %}border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}">{{ value }}</textarea>
+              class="{% if error %}form-input-error{% else %}form-input{% endif %}">{{ value }}</textarea>
     {% if help and not error %}
         <p class="form-help">{{ help }}</p>
     {% endif %}
@@ -59,7 +59,7 @@
     <select id="{{ name }}"
             name="{{ name }}"
             {% if required %}required{% endif %}
-            class="form-input {% if error %}border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}">
+            class="{% if error %}form-input-error{% else %}form-input{% endif %}">
         {% for opt_value, opt_label in options %}
             <option value="{{ opt_value }}" {% if opt_value == value %}selected{% endif %}>
                 {{ opt_label }}
@@ -98,12 +98,11 @@
 {% macro file_upload(name, label, accept="", help="") %}
 <div>
     <label for="{{ name }}" class="form-label">{{ label }}</label>
-    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition-colors">
+    <div class="form-dropzone">
         <div class="space-y-1 text-center">
             <span class="i-lucide-upload text-3xl text-gray-500"></span>
             <div class="flex text-sm text-gray-600">
-                <label for="{{ name }}"
-                       class="relative cursor-pointer rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500">
+                <label for="{{ name }}" class="form-dropzone-link">
                     <span>Téléverser un fichier</span>
                     <input id="{{ name }}"
                            name="{{ name }}"

@@ -32,7 +32,7 @@
                            placeholder="Votre nom d'utilisateur"
                            required
                            autofocus
-                           class="form-input {% if form.username.errors %}border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}">
+                           class="{% if form.username.errors %}form-input-error{% else %}form-input{% endif %}">
                     {% if form.username.help_text %}
                         <p class="form-help">{{ form.username.help_text|safe }}</p>
                     {% endif %}
@@ -54,7 +54,7 @@
                            value="{{ form.email.value|default:'' }}"
                            placeholder="vous@example.com"
                            required
-                           class="form-input {% if form.email.errors %}border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}">
+                           class="{% if form.email.errors %}form-input-error{% else %}form-input{% endif %}">
                     {% if form.email.help_text %}
                         <p class="form-help">{{ form.email.help_text|safe }}</p>
                     {% endif %}
@@ -75,7 +75,7 @@
                            name="{{ form.password1.html_name }}"
                            placeholder="Mot de passe"
                            required
-                           class="form-input {% if form.password1.errors %}border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}">
+                           class="{% if form.password1.errors %}form-input-error{% else %}form-input{% endif %}">
                     {% if form.password1.help_text %}
                         <p class="form-help">{{ form.password1.help_text|safe }}</p>
                     {% endif %}
@@ -96,7 +96,7 @@
                            name="{{ form.password2.html_name }}"
                            placeholder="Confirmez le mot de passe"
                            required
-                           class="form-input {% if form.password2.errors %}border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}">
+                           class="{% if form.password2.errors %}form-input-error{% else %}form-input{% endif %}">
                     {% if form.password2.help_text %}
                         <p class="form-help">{{ form.password2.help_text|safe }}</p>
                     {% endif %}

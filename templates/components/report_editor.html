@@ -32,11 +32,7 @@
             <textarea id="report-content"
                       name="content"
                       x-model="content"
-                      @input="
-                          const match = content.match(/@(\w*)$/);
-                          if (match) search(match[1]);
-                          else showSuggestions = false;
-                      "
+                      @input="onInput($event)"
                       @keydown="onKeydown"
                       rows="12"
                       placeholder="Racontez votre session...&#10;&#10;Utilisez @nom pour mentionner un personnage."
@@ -45,7 +41,7 @@
             <!-- Suggestions de mentions -->
             <div x-show="showSuggestions"
                  x-transition
-                 class="absolute bottom-full left-0 mb-1 w-64 bg-white rounded-lg shadow-dropdown border border-gray-200 py-1 z-dropdown">
+                 class="dropdown-menu bottom-full left-0 mb-1 w-64">
                 <template x-for="(suggestion, index) in suggestions" :key="suggestion.id">
                     <button @click="selectSuggestion(suggestion)"
                             :class="{ 'bg-primary-50': index === selectedIndex }"

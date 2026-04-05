@@ -1,0 +1,18 @@
+/* =================================================================
+   HTMX loading indicator
+   Imported by main.js — processed by Vite build.
+   ================================================================= */
+
+.htmx-indicator {
+    display: none;
+}
+
+.htmx-request .htmx-indicator {
+    display: block;
+    animation: htmx-loading 1s ease-in-out infinite;
+}
+
+@keyframes htmx-loading {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+}

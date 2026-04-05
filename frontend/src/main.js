@@ -5,6 +5,9 @@
 // UnoCSS - génère les styles
 import 'virtual:uno.css'
 
+// HTMX loading indicator styles
+import './htmx-indicator.css'
+
 // HTMX - interactions serveur
 import htmx from 'htmx.org'
 window.htmx = htmx
@@ -108,15 +111,34 @@ Alpine.data('mentionInput', (initialValue = '') => ({
   suggestions: [],
   showSuggestions: false,
   selectedIndex: 0,
-  
+  _cursorPos: 0,
+  _mentionStart: -1,
+
+  onInput(event) {
+    const textarea = event.target
+    this._cursorPos = textarea.selectionStart
+    // Find the @ that starts the current mention (search backwards from cursor)
+    const textBeforeCursor = this.content.slice(0, this._cursorPos)
+    const mentionMatch = textBeforeCursor.match(/@(\w*)$/)
+    if (mentionMatch) {
+      this._mentionStart = this._cursorPos - mentionMatch[0].length
+      this.search(mentionMatch[1])
+    } else {
+      this.showSuggestions = false
+      this._mentionStart = -1
+    }
+  },
+
   async search(query) {
     if (query.length < 2) {
       this.suggestions = []
+      this.showSuggestions = false
       return
     }
-    
+
     try {
       const response = await fetch(`/api/characters/search/?q=${encodeURIComponent(query)}`)
+      if (!response.ok) return
       this.suggestions = await response.json()
       this.showSuggestions = this.suggestions.length > 0
       this.selectedIndex = 0
@@ -124,16 +146,31 @@ Alpine.data('mentionInput', (initialValue = '') => ({
       console.error('Search error:', e)
     }
   },
-  
+
   selectSuggestion(suggestion) {
-    // Insérer la mention
-    this.content = this.content.replace(/@\w*$/, `@${suggestion.name} `)
+    if (this._mentionStart < 0) return
+    // Replace from the @ to the cursor position with the selected name
+    const before = this.content.slice(0, this._mentionStart)
+    const after = this.content.slice(this._cursorPos)
+    const mention = `@${suggestion.name} `
+    this.content = before + mention + after
     this.showSuggestions = false
+    this._mentionStart = -1
+
+    // Restore cursor position after the inserted mention
+    this.$nextTick(() => {
+      const textarea = this.$el.querySelector('textarea')
+      if (textarea) {
+        const newPos = before.length + mention.length
+        textarea.focus()
+        textarea.setSelectionRange(newPos, newPos)
+      }
+    })
   },
-  
+
   onKeydown(event) {
     if (!this.showSuggestions) return
-    
+
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault()
