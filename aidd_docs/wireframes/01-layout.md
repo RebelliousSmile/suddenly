@@ -6,17 +6,25 @@
 +------------------------------------------------------------------+
 | (dice) Suddenly    Accueil  Explorer  Mes parties  Mes persos    |
 |                                                                  |
-|                                          (cloche)  [avatar \/]   |
+|                               Dashboard*  (link)[2]  (bell)[3]  |
+|                                            ^^^^^^^^  [avatar v]  |
 +------------------------------------------------------------------+
-                                              |
-                                              v (dropdown Alpine.js)
-                                        +------------------+
-                                        | Mon profil       |
-                                        | Parametres       |
-                                        | ──────────────── |
-                                        | Deconnexion      |
-                                        +------------------+
+                                 demandes     notifs
+                                 actives       |
+                                               v (dropdown Alpine.js)
+                                         +------------------+
+                                         | Mon profil       |
+                                         | Mes demandes     |
+                                         | Parametres       |
+                                         | ──────────────── |
+                                         | Deconnexion      |
+                                         +------------------+
 ```
+
+- **Dashboard** : visible si l'utilisateur a cree au moins une partie (GM)
+- **(link)[2]** : compteur de demandes actives (envoyees en attente + recues a traiter).
+  Clic -> `/requests/`. Badge visible seulement si > 0.
+- **(bell)[3]** : compteur de notifications non lues. Clic -> `/notifications/`.
 
 ### Header visiteur (non connecte)
 
@@ -81,7 +89,7 @@ Couleurs : success=emerald, warning=amber, error=red, info=blue.
 ```
                                         +------------------------+
                                         | (bell) Nouvelle        |
-                                        | demande d'Adopt sur    |
+                                        | demande d'Adoption sur |
                                         | Viktor                 |
                                         |              il y a 2s |
                                         +------------------------+

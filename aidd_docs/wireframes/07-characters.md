@@ -25,7 +25,7 @@
 |  |            | |            | |            | |            |    |
 |  | (avatar)   | | (avatar)   | | (avatar)   | | (avatar)   |    |
 |  | Viktor     | | Ombra      | | Kael       | | Fenris     |    |
-|  | (o) Dispo  | | (o) Dispo  | | (*) Reclame| | (o) Dispo  |    |
+|  | (o) Dispo  | | (o) Dispo  | | (*) Retcon | | (o) Dispo  |    |
 |  |            | |            | |            | |            |    |
 |  | City of    | | Blades in  | | City of    | | Ironsworn  |    |
 |  | Mist       | | the Dark   | | Mist       | |            |    |
@@ -33,12 +33,9 @@
 |  | 5 appar.   | | 3 appar.   | | 1 appar.   | | 8 appar.   |    |
 |  | 2 citations| | 0 citation | | 0 citation | | 4 citations|    |
 |  |            | |            | |            | |            |    |
-|  |  [Adopter] | |  [Adopter] | |            | |  [Adopter] |    |
-|  |  [Reclamer]| |  [Reclamer]| |            | |  [Reclamer]|    |
-|  |  [Deriver] | |  [Deriver] | |            | |  [Deriver] |    |
-|  +------------+ +------------+ +------------+ +------------+    |
-|  +------------+ +------------+ +------------+ +------------+    |
-|  | ...        | | ...        | | ...        | | ...        |    |
+|  | [Lier a    | | [Lier a    | |            | | [Lier a    |    |
+|  |  mon       | |  mon       | |            | |  mon       |    |
+|  |  histoire] | |  histoire] | |            | |  histoire] |    |
 |  +------------+ +------------+ +------------+ +------------+    |
 |                                                                  |
 |                    [Charger plus...]                              |
@@ -47,8 +44,8 @@
 +------------------------------------------------------------------+
 ```
 
-Les boutons [Adopter]/[Reclamer]/[Deriver] apparaissent au hover.
-Seuls les PNJ disponibles (status=NPC) montrent les boutons d'action.
+Un seul bouton [Lier a mon histoire] par PNJ disponible, visible au hover.
+Ouvre le flow guide (voir `09-links.md`).
 
 ## Fiche personnage (`/characters/{slug}/`) — US-06
 
@@ -78,16 +75,19 @@ Seuls les PNJ disponibles (status=NPC) montrent les boutons d'action.
 |                                                                  |
 +------------------------------------------------------------------+
 |                                                                  |
-|  Actions                                              US-10      |
+|  Lier ce personnage a votre histoire              US-10          |
+|  (visible uniquement si PNJ disponible + user authentifie)       |
 |                                                                  |
-|  +------------------+ +------------------+ +------------------+  |
-|  | (merge) Reclamer | | (heart) Adopter  | | (git-fork) Fork  |  |
-|  |                  | |                  | |                  |  |
-|  | "C'etait mon PJ  | | "Je reprends ce  | | "Je cree un PJ   |  |
-|  |  depuis le debut" | |  PNJ comme PJ"   | |  inspire de lui" |  |
-|  +------------------+ +------------------+ +------------------+  |
+|  +------------------------------------------------------------+  |
+|  |                                                            |  |
+|  |  Ce PNJ vous inspire ? Integrez-le dans votre             |  |
+|  |  histoire en un clic.                                      |  |
+|  |                                                            |  |
+|  |        [Lier a mon histoire ->]  btn-primary               |  |
+|  |                                                            |  |
+|  +------------------------------------------------------------+  |
 |                                                                  |
-|  --- clic ---> modal (voir 09-links.md)                          |
+|  --- clic ---> flow guide (voir 09-links.md)                     |
 |                                                                  |
 +------------------------------------------------------------------+
 |                                                                  |
@@ -113,19 +113,39 @@ Seuls les PNJ disponibles (status=NPC) montrent les boutons d'action.
 +------------------------------------------------------------------+
 |                                                                  |
 |  Lignee                                               US-17      |
-|  (visible uniquement si le personnage a un parent ou des forks) |
+|  (visible uniquement si le personnage a un parent ou des derives)|
 |                                                                  |
 |  Viktor (PNJ, origin)                                            |
-|    +-- Lyra (PJ, fork par @bob)                                 |
-|    |     +-- Kira (PJ, fork par @charlie)                       |
-|    +-- Shadow Viktor (PJ, fork par @dave)                        |
+|    +-- Lyra (PJ, derive par @bob)                               |
+|    |     +-- Kira (PJ, derive par @charlie)                     |
+|    +-- Shadow Viktor (PJ, derive par @dave)                      |
 |                                                                  |
 +------------------------------------------------------------------+
 ```
 
-### Fiche personnage — variante PJ (status != NPC)
+### Fiche personnage — bandeau si demande en cours
 
-Les boutons Adopter/Reclamer disparaissent. A la place :
+```
++------------------------------------------------------------------+
+|  @status_banner(type="info", icon="clock")                       |
+|  Vous avez une demande d'Adoption en attente sur ce PNJ.        |
+|  Envoyee il y a 2h.   [Voir ma demande]   [Annuler]             |
++------------------------------------------------------------------+
+```
+
+Ou si en file d'attente :
+
+```
++------------------------------------------------------------------+
+|  @status_banner(type="warning", icon="clock")                    |
+|  Votre demande de Derivation est en file d'attente (#2).        |
+|  [Voir ma demande]   [Annuler]                                   |
++------------------------------------------------------------------+
+```
+
+Le bouton [Lier a mon histoire] est masque quand une demande est active.
+
+### Fiche personnage — variante PJ (status != NPC)
 
 ```
 |  Statut : (bleu) PJ actif                                       |
@@ -133,34 +153,35 @@ Les boutons Adopter/Reclamer disparaissent. A la place :
 |  Lien : Adopte depuis le 10 fev 2026                            |
 |  Sequence partagee : "La rencontre au carrefour"                 |
 |                                                                  |
-|  [Deriver ce personnage]     <- Fork toujours disponible (US-17) |
+|  [Deriver ce personnage ->]  <- ouvre le flow guide en mode      |
+|                                  derivation uniquement (US-17)   |
 |  [Renoncer a ce personnage]* <- visible si proprietaire (US-16)  |
 ```
 
 *Renonciation : voir modal dans `09-links.md`.
 
-### Fiche personnage — variante PJ issu d'un Fork (US-17)
+### Fiche personnage — variante PJ issu d'une Derivation (US-17)
 
-Le bouton [Deriver] est visible car un PJ forke peut etre re-forke.
-La demande est envoyee au **proprietaire** (pas au createur original).
+La derivation en chaine est possible. La demande est envoyee au
+**proprietaire actuel** (pas au createur original).
 
 ```
 |  Statut : (violet) Derive                                        |
 |  Proprietaire : @bob                                             |
 |  Parent : Viktor (PNJ de @alice)                                 |
-|  Lien : Fork depuis le 5 mars 2026                              |
+|  Lien : Derivation depuis le 5 mars 2026                        |
 |                                                                  |
-|  [Deriver ce personnage]  -> demande envoyee a @bob              |
+|  [Deriver ce personnage ->]  -> demande envoyee a @bob           |
 ```
 
 ### Fiche personnage — variante lien revoque (US-16)
 
 ```
 |  Statut : (vert) PNJ disponible                                  |
-|  Ancien lien : (red barré) Adopte par @bob (revoque 10 mars)    |
+|  Ancien lien : (red barre) Adopte par @bob (revoque 10 mars)    |
 |  Sequence : "La rencontre au carrefour" (lien revoque)           |
 |                                                                  |
-|  [Adopter]  [Reclamer]  [Deriver]                                |
+|  [Lier a mon histoire ->]                                        |
 ```
 
 ### Fiche personnage — variante acteur distant (US-22)
@@ -174,8 +195,9 @@ La demande est envoyee au **proprietaire** (pas au createur original).
 |  +----------+  Origine : City of Mist                            |
 |                Cree par : @alice@suddenly.games                   |
 |                                                                  |
-|  (info) Ce personnage est heberge sur une instance distante.     |
+|  @status_banner(type="info", icon="globe")                       |
+|  Ce personnage est heberge sur une instance distante.            |
 |  Les interactions passent par ActivityPub.                        |
 |                                                                  |
-|  [Suivre]  [Adopter]  [Reclamer]  [Deriver]                     |
+|  [Suivre]   [Lier a mon histoire ->]                             |
 ```

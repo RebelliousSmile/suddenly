@@ -55,15 +55,15 @@ Page dediee au GM pour voir tous ses PNJ et les demandes en cours.
 |                                                                  |
 |  +------------------------------------------------------------+  |
 |  | Kael  (ambre) Reclame par @frank                            |  |
-|  |   Lien : Claim  ·  Sequence : "Le retour du prodigue"      |  |
+|  |   Lien : Retcon  ·  Sequence : "Le retour du prodigue"     |  |
 |  |   Sequence publiee le 20 fev 2026                           |  |
 |  +------------------------------------------------------------+  |
 |  | Lyra  (indigo) Adoptee par @bob                             |  |
-|  |   Lien : Adopt  ·  Sequence : "La rencontre au carrefour"  |  |
+|  |   Lien : Adoption · Sequence : "La rencontre au carrefour" |  |
 |  |   Sequence en brouillon                  [Voir sequence ->] |  |
 |  +------------------------------------------------------------+  |
 |  | Shadow Viktor  (violet) Derive par @dave                    |  |
-|  |   Lien : Fork  ·  Viktor reste PNJ                         |  |
+|  |   Lien : Derivation · Viktor reste PNJ                      |  |
 |  +------------------------------------------------------------+  |
 |                                                                  |
 +------------------------------------------------------------------+
@@ -102,8 +102,8 @@ Vue optionnelle accessible depuis le profil ou le header (si le user a des parti
 |                                                                  |
 |  Activite recente sur mes PNJ                                    |
 |                                                                  |
-|  (amber) @bob a demande l'Adopt de Viktor           il y a 2h  |
-|  (emerald) @frank a accepte le Claim de Kael         il y a 1j  |
+|  (amber) @bob demande l'Adoption de Viktor          il y a 2h  |
+|  (emerald) @frank a accepte le Retcon de Kael        il y a 1j  |
 |  (violet) @dave a derive Shadow Viktor de Viktor     il y a 3j  |
 |                                                                  |
 +------------------------------------------------------------------+

@@ -1,69 +1,102 @@
-# 09 — Liens (Claim / Adopt / Fork)
+# 09 — Liens narratifs (Adoption / Derivation / Retcon)
 
-## Modal de demande — US-10
+## Terminologie
 
-Declenchee depuis la fiche personnage (`07-characters.md`).
-Utilise `@modal` existant (Alpine.js, teleporte dans body).
+| Ancien terme | Nouveau terme | Sous-titre | Icone |
+|-------------|--------------|-----------|-------|
+| Adopt | **Adoption** | "Je reprends ce personnage" | `i-lucide-heart` |
+| Fork | **Derivation** | "Je cree un PJ inspire de lui" | `i-lucide-git-branch` |
+| Claim | **Retcon** | "C'etait mon PJ depuis le debut" | `i-lucide-git-merge` |
 
-### Adopt
+---
+
+## Flow guide — "Lier a mon histoire" — US-10
+
+Declenchee par le bouton unique [Lier a mon histoire] sur la fiche PNJ.
+Utilise `@modal` (Alpine.js). Le flow a 2 etapes : choix du type, puis formulaire.
+
+### Etape 1 — Choix du type de lien
 
 ```
 +----------------------------------------------------------+
 |                                                    [x]   |
+|  Comment voulez-vous lier Viktor a votre histoire ?      |
+|                                                          |
+|  +----------------------------------------------------+  |
+|  | (heart) Adoption                                    |  |
+|  |                                                     |  |
+|  | Viktor devient VOTRE PJ. Il quitte son ancienne     |  |
+|  | histoire pour rejoindre la votre. Le createur        |  |
+|  | devra accepter.                                      |  |
+|  |                                                     |  |
+|  |                                     [Choisir ->]    |  |
+|  +----------------------------------------------------+  |
+|                                                          |
+|  +----------------------------------------------------+  |
+|  | (git-branch) Derivation                             |  |
+|  |                                                     |  |
+|  | Vous creez un NOUVEAU PJ inspire de Viktor.          |  |
+|  | Viktor reste disponible pour d'autres joueurs.       |  |
+|  | Vos deux personnages seront lies par une lignee.     |  |
+|  |                                                     |  |
+|  |                                     [Choisir ->]    |  |
+|  +----------------------------------------------------+  |
+|                                                          |
+|  +----------------------------------------------------+  |
+|  | (git-merge) Retcon                          (rare)  |  |
+|  |                                                     |  |
+|  | Reecriture retroactive : Viktor etait en fait       |  |
+|  | votre PJ depuis le debut. Son histoire est          |  |
+|  | reinterpretee.                                       |  |
+|  |                                                     |  |
+|  |                                     [Choisir ->]    |  |
+|  +----------------------------------------------------+  |
+|                                                          |
++----------------------------------------------------------+
+```
+
+L'option Retcon est visuellement en retrait (bordure grise, pas de couleur)
+avec un tag "(rare)" pour indiquer que c'est un cas d'usage avance.
+
+### Etape 2a — Formulaire Adoption
+
+```
++----------------------------------------------------------+
+|  [<- Retour]                                       [x]   |
+|                                                          |
 |  Adopter Viktor                                          |
+|  (heart) Adoption                                        |
 |                                                          |
 |  Vous souhaitez reprendre Viktor comme votre PJ.         |
-|  Le createur (@alice) devra accepter votre demande.      |
+|  @alice devra accepter votre demande.                    |
 |                                                          |
 |  Votre proposition narrative                              |
 |  {______________________________________________________}|
-|  {  Expliquez pourquoi vous voulez adopter ce            }|
-|  {  personnage et comment il s'integre dans              }|
-|  {  votre histoire...                                    }|
+|  {  Expliquez comment Viktor s'integre dans votre        }|
+|  {  histoire et pourquoi ce lien vous interesse...       }|
 |  {______________________________________________________}|
 |                                                          |
-|  (info-circle) Une fois acceptee, vous co-ecrirez       |
-|  une Sequence Partagee avec @alice pour sceller          |
-|  la transition narrative.                                |
+|  (info) Apres acceptation, vous co-ecrirez une           |
+|  Sequence Partagee avec @alice pour sceller la            |
+|  transition narrative.                                    |
 |                                                          |
 |               [Envoyer la demande]   Annuler             |
 |                                                          |
 +----------------------------------------------------------+
 ```
 
-### Claim (retcon)
+### Etape 2b — Formulaire Derivation
 
 ```
 +----------------------------------------------------------+
-|                                                    [x]   |
-|  Reclamer Viktor                                         |
+|  [<- Retour]                                       [x]   |
 |                                                          |
-|  Vous affirmez que Viktor etait votre PJ depuis le       |
-|  debut (retcon narratif).                                |
-|                                                          |
-|  Votre personnage existant (optionnel)                   |
-|  {Rechercher un de vos PJ...______________________}      |
-|  hx-get="/htmx/characters/suggest/?owner=me"             |
-|                                                          |
-|  Votre explication                                       |
-|  {______________________________________________________}|
-|  {______________________________________________________}|
-|                                                          |
-|               [Envoyer la demande]   Annuler             |
-|                                                          |
-+----------------------------------------------------------+
-```
-
-### Fork (derivation)
-
-```
-+----------------------------------------------------------+
-|                                                    [x]   |
 |  Deriver Viktor                                          |
+|  (git-branch) Derivation                                 |
 |                                                          |
 |  Vous creez un nouveau PJ inspire de Viktor.             |
-|  Viktor reste PNJ — votre PJ sera un personnage          |
-|  distinct lie par une lignee narrative.                   |
+|  Viktor reste PNJ — votre PJ sera lie par une            |
+|  lignee narrative.                                        |
 |                                                          |
 |  Nom de votre nouveau PJ                                 |
 |  {_Shadow Viktor_____________________________________}   |
@@ -77,160 +110,67 @@ Utilise `@modal` existant (Alpine.js, teleporte dans body).
 +----------------------------------------------------------+
 ```
 
-## Page de gestion des demandes (`/characters/requests/`) — US-09, US-11, US-14
-
-Accessible depuis le header (notification badge) ou le profil.
-
-```
-+------------------------------------------------------------------+
-|                         HEADER                                   |
-+------------------------------------------------------------------+
-|                                                                  |
-|  Demandes de lien                                                |
-|                                                                  |
-|  Filtre: [Toutes v]  [Recues | Envoyees]                        |
-|                                                                  |
-+------------------------------------------------------------------+
-|                                                                  |
-|  Recues (3)                                                      |
-|                                                                  |
-|  +------------------------------------------------------------+  |
-|  | (amber) EN ATTENTE                             il y a 2h   |  |
-|  |                                                             |  |
-|  | @bob veut ADOPTER votre PNJ Viktor                         |  |
-|  |                                                             |  |
-|  | "J'aimerais reprendre Viktor dans ma campagne             |  |
-|  |  Ironsworn. Il deviendrait un ancien detective             |  |
-|  |  reconverti en voyageur solitaire..."                      |  |
-|  |                                                             |  |
-|  | [Accepter]  [Refuser]  [Voir la fiche de Viktor]           |  |
-|  +------------------------------------------------------------+  |
-|                                                                  |
-|  +------------------------------------------------------------+  |
-|  | (amber) EN FILE D'ATTENTE                      il y a 1j   |  |
-|  |                                                             |  |
-|  | @charlie veut DERIVER votre PNJ Viktor                     |  |
-|  |                                                             |  |
-|  | "Je voudrais creer Lyra, inspiree de Viktor..."            |  |
-|  |                                                             |  |
-|  | (info) Sera traitable apres la demande precedente.         |  |
-|  +------------------------------------------------------------+  |
-|                                                                  |
-+------------------------------------------------------------------+
-|                                                                  |
-|  Envoyees (1)                                                    |
-|                                                                  |
-|  +------------------------------------------------------------+  |
-|  | (blue) EN ATTENTE                              il y a 3j   |  |
-|  |                                                             |  |
-|  | Vous voulez ADOPTER Fenris (PNJ de @dave)                  |  |
-|  |                                                             |  |
-|  | [Annuler ma demande]                                       |  |
-|  +------------------------------------------------------------+  |
-|                                                                  |
-+------------------------------------------------------------------+
-```
-
-## Modal d'acceptation — US-11
+### Etape 2c — Formulaire Retcon
 
 ```
 +----------------------------------------------------------+
-|                                                    [x]   |
-|  Accepter la demande de @bob                             |
+|  [<- Retour]                                       [x]   |
 |                                                          |
-|  @bob souhaite adopter Viktor.                           |
+|  Retcon sur Viktor                                       |
+|  (git-merge) Retcon                                      |
 |                                                          |
-|  Votre message de reponse (optionnel)                    |
+|  Vous affirmez que Viktor etait votre PJ depuis le       |
+|  debut. Son histoire sera reinterpretee.                  |
+|                                                          |
+|  Votre personnage existant (optionnel)                   |
+|  {Rechercher un de vos PJ...______________________}      |
+|  hx-get="/htmx/characters/suggest/?owner=me"             |
+|                                                          |
+|  Votre explication narrative                              |
 |  {______________________________________________________}|
-|  {  Un mot narratif pour accompagner                     }|
-|  {  la transition...                                     }|
 |  {______________________________________________________}|
 |                                                          |
-|  (info-circle) Une Sequence Partagee sera creee          |
-|  pour co-ecrire la scene de transition.                  |
-|                                                          |
-|               [Confirmer l'acceptation]   Annuler        |
+|               [Envoyer la demande]   Annuler             |
 |                                                          |
 +----------------------------------------------------------+
 ```
 
-## SharedSequence (`/links/{id}/sequence/`) — US-18, US-19
+### Confirmation apres envoi
 
 ```
-+------------------------------------------------------------------+
-|                         HEADER                                   |
-+------------------------------------------------------------------+
-|                                                                  |
-|  Sequence Partagee                                               |
-|  Viktor (PNJ) --> Adopt --> @bob                                |
-|                                                                  |
-|  Statut : (amber) Brouillon                                     |
-|  Participants : @alice (createur) + @bob (adoptant)              |
-|                                                                  |
-+------------------------------------------------------------------+
-|                                                                  |
-|  Titre                                                           |
-|  {_La rencontre au carrefour________________________________}    |
-|                                                                  |
-|  Contenu (Markdown collaboratif)                                 |
-|  +------------------------------------------------------------+  |
-|  | Viktor marchait sous la pluie quand une silhouette          |  |
-|  | familiere apparut au bout de la ruelle.                     |  |
-|  |                                                             |  |
-|  | "Je te cherchais," dit l'inconnu.                          |  |
-|  |                                                             |  |
-|  | Viktor s'arreta. Il connaissait cette voix.                |  |
-|  | C'etait celle de son passe.                                |  |
-|  |                                                             |  |
-|  |                                                             |  |
-|  +------------------------------------------------------------+  |
-|                                                                  |
-|  Derniere modification par @alice, il y a 2h                     |
-|                                                                  |
-+------------------------------------------------------------------+
-|                                                                  |
-|  [Sauvegarder]  [Proposer la publication]                        |
-|                                                                  |
-+------------------------------------------------------------------+
++----------------------------------------------------------+
+|                                                          |
+|  (check-circle) Demande envoyee !                        |
+|                                                          |
+|  Votre demande d'Adoption a ete envoyee a @alice.        |
+|  Vous serez notifie de sa decision.                      |
+|                                                          |
+|  [Voir ma demande]   [Fermer]                            |
+|                                                          |
++----------------------------------------------------------+
 ```
 
-### Etat "Publication proposee"
-
-```
-+------------------------------------------------------------------+
-|  (info) @alice propose de publier cette sequence.                |
-|                                                                  |
-|  [Valider et publier]   [Demander des modifications]             |
-|                                                                  |
-|  {Commentaire optionnel si modifications...___________________}  |
-+------------------------------------------------------------------+
-```
-
-La publication requiert la validation des deux participants.
+La fiche PNJ affiche maintenant le `@status_banner` de demande en cours
+et masque le bouton [Lier a mon histoire].
 
 ---
 
-## File d'attente QUEUED — US-15
+## Avertissement file d'attente — US-15
 
-### Demande sur un PNJ qui a deja une demande PENDING
-
-La modal d'Adopt/Claim/Fork affiche un avertissement supplementaire :
+Si le PNJ a deja une demande PENDING, l'avertissement apparait
+**avant l'etape 1** :
 
 ```
 +----------------------------------------------------------+
 |                                                    [x]   |
-|  Adopter Viktor                                          |
 |                                                          |
-|  (alert-triangle) Viktor a deja 1 demande en attente.    |
+|  @status_banner(type="warning", icon="alert-triangle")   |
+|  Viktor a deja 1 demande en attente de traitement.       |
 |  Votre demande sera mise en file d'attente (QUEUED).     |
 |  Vous serez notifie si elle devient traitable.            |
 |                                                          |
-|  Votre proposition narrative                              |
-|  {______________________________________________________}|
-|  {______________________________________________________}|
-|                                                          |
-|         [Envoyer (file d'attente)]   Annuler             |
-|                                                          |
+|  Comment voulez-vous lier Viktor a votre histoire ?      |
+|  (suite du flow guide etape 1)                            |
 +----------------------------------------------------------+
 ```
 
@@ -250,15 +190,87 @@ La modal d'Adopt/Claim/Fork affiche un avertissement supplementaire :
 +------------------------------------------------------------+
 ```
 
-### Promotion automatique (notification)
+---
 
-Quand la demande precedente est refusee :
+## Page de gestion des demandes (`/requests/`) — US-09, US-11, US-14
+
+Accessible depuis le header (icone liens + badge) ou le profil.
+
+```
++------------------------------------------------------------------+
+|                         HEADER                                   |
++------------------------------------------------------------------+
+|                                                                  |
+|  Demandes de lien                                                |
+|                                                                  |
+|  [Recues | Envoyees]       Filtre: [Toutes v]                    |
+|                                                                  |
++------------------------------------------------------------------+
+|                                                                  |
+|  Recues (3)                                                      |
+|                                                                  |
+|  @link_request_card(request=req1, perspective="received")        |
+|  — @bob veut ADOPTER Viktor — il y a 2h — [Accepter] [Refuser] |
+|                                                                  |
+|  @link_request_card(request=req2, perspective="received")        |
+|  — @charlie veut DERIVER Viktor — il y a 1j — (en file)        |
+|                                                                  |
++------------------------------------------------------------------+
+|                                                                  |
+|  Envoyees (1)                                                    |
+|                                                                  |
+|  @link_request_card(request=req3, perspective="sent")            |
+|  — Vous voulez ADOPTER Fenris — il y a 3j — [Annuler]          |
+|                                                                  |
++------------------------------------------------------------------+
+```
+
+---
+
+## Modal d'acceptation — US-11
+
+```
++----------------------------------------------------------+
+|                                                    [x]   |
+|  Accepter la demande de @bob                             |
+|                                                          |
+|  @bob souhaite adopter Viktor.                           |
+|                                                          |
+|  Votre message de reponse (optionnel)                    |
+|  {______________________________________________________}|
+|  {  Un mot narratif pour accompagner                     }|
+|  {  la transition...                                     }|
+|  {______________________________________________________}|
+|                                                          |
+|  (info) Une Sequence Partagee sera creee pour             |
+|  co-ecrire la scene de transition.                        |
+|                                                          |
+|               [Confirmer l'acceptation]   Annuler        |
+|                                                          |
++----------------------------------------------------------+
+```
+
+### Confirmation post-acceptation (CTA vers SharedSequence)
+
+```
++----------------------------------------------------------+
+|                                                          |
+|  (check-circle) Demande acceptee !                       |
+|                                                          |
+|  Viktor est maintenant le PJ de @bob.                    |
+|  Une Sequence Partagee a ete creee pour vous deux.       |
+|                                                          |
+|  [Ouvrir la Sequence Partagee ->]   [Plus tard]          |
+|                                                          |
++----------------------------------------------------------+
+```
+
+Le demandeur recoit une notification avec le meme CTA :
 
 ```
 +------------------------------------------------------------+
-| (bell) Votre demande d'Adopt sur Viktor est maintenant     |
-| traitable ! @alice peut desormais examiner votre           |
-| proposition.                                                |
+| (check) @alice a accepte votre demande d'Adoption          |
+| sur Viktor ! [Ouvrir la Sequence Partagee ->]              |
 +------------------------------------------------------------+
 ```
 
@@ -267,8 +279,6 @@ Quand la demande precedente est refusee :
 ## Revocation de lien — US-16
 
 ### Revocation par le createur (avant publication SharedSequence)
-
-Accessible depuis la fiche personnage (section "Lien actif") ou le dashboard GM.
 
 ```
 +----------------------------------------------------------+
@@ -320,8 +330,6 @@ Accessible depuis la fiche personnage (section "Lien actif") ou le dashboard GM.
 
 ### Renonciation par l'adoptant
 
-Accessible depuis la fiche du personnage adopte (section "Mon lien").
-
 ```
 +----------------------------------------------------------+
 |                                                    [x]   |
@@ -338,45 +346,17 @@ Accessible depuis la fiche du personnage adopte (section "Mon lien").
 +----------------------------------------------------------+
 ```
 
-### Badge REVOQUE sur fiche personnage
-
-```
-|  Statut : (red) Lien revoque                                     |
-|  Ancien lien : Adopte par @bob (revoque le 10 mars 2026)        |
-|  Sequence : "La rencontre au carrefour" (lien revoque)           |
-|                                                                  |
-|  (vert) Ce personnage est de nouveau disponible.                 |
-|  [Adopter]  [Reclamer]  [Deriver]                                |
-```
-
 ---
 
-## Demande de lien cross-instance — US-23
+## Demande cross-instance — US-23
 
-### Modal Adopt cross-instance
-
-Quand le PNJ est sur une instance distante, la modal ajoute des indicateurs :
+Quand le PNJ est distant, le flow guide ajoute un indicateur a l'etape 1 :
 
 ```
-+----------------------------------------------------------+
-|                                                    [x]   |
-|  Adopter Viktor                                          |
-|  (globe) Instance distante : suddenly.games               |
-|                                                          |
-|  Vous souhaitez reprendre Viktor comme votre PJ.         |
-|  La demande sera envoyee via ActivityPub a                |
-|  @alice@suddenly.games                                    |
-|                                                          |
-|  Votre proposition narrative                              |
-|  {______________________________________________________}|
-|  {______________________________________________________}|
-|                                                          |
-|  (info-circle) Delai de reponse : si aucune reponse      |
-|  sous 30 jours, la demande expirera automatiquement.      |
-|                                                          |
-|               [Envoyer la demande]   Annuler             |
-|                                                          |
-+----------------------------------------------------------+
+|  (globe) Viktor est sur suddenly.games                   |
+|  La demande sera envoyee via ActivityPub.                 |
+|  Delai : si aucune reponse sous 30 jours, la demande     |
+|  expirera automatiquement.                                |
 ```
 
 ### Carte de demande EXPIRED (vue envoyees)
@@ -392,17 +372,68 @@ Quand le PNJ est sur une instance distante, la modal ajoute des indicateurs :
 +------------------------------------------------------------+
 ```
 
+---
+
+## SharedSequence (`/links/{id}/sequence/`) — US-18, US-19
+
+```
++------------------------------------------------------------------+
+|                         HEADER                                   |
++------------------------------------------------------------------+
+|                                                                  |
+|  Sequence Partagee                                               |
+|  Viktor (PNJ) --> Adoption --> @bob                             |
+|                                                                  |
+|  Statut : (amber) Brouillon                                     |
+|  @presence_indicator(participants=...)                            |
+|                                                                  |
++------------------------------------------------------------------+
+|                                                                  |
+|  Titre                                                           |
+|  {_La rencontre au carrefour________________________________}    |
+|                                                                  |
+|  Contenu (Markdown collaboratif)                                 |
+|  +------------------------------------------------------------+  |
+|  | Viktor marchait sous la pluie quand une silhouette          |  |
+|  | familiere apparut au bout de la ruelle.                     |  |
+|  |                                                             |  |
+|  | "Je te cherchais," dit l'inconnu.                          |  |
+|  |                                                             |  |
+|  | Viktor s'arreta. Il connaissait cette voix.                |  |
+|  | C'etait celle de son passe.                                |  |
+|  |                                                             |  |
+|  +------------------------------------------------------------+  |
+|                                                                  |
+|  Derniere modification par @alice, il y a 2h                     |
+|                                                                  |
++------------------------------------------------------------------+
+|                                                                  |
+|  [Sauvegarder]  [Proposer la publication]                        |
+|                                                                  |
++------------------------------------------------------------------+
+```
+
+### Etat "Publication proposee"
+
+```
++------------------------------------------------------------------+
+|  @status_banner(type="info", icon="send")                        |
+|  @alice propose de publier cette sequence.                       |
+|                                                                  |
+|  [Valider et publier]   [Demander des modifications]             |
+|                                                                  |
+|  {Commentaire optionnel si modifications...___________________}  |
++------------------------------------------------------------------+
+```
+
+La publication requiert la validation des deux participants.
+
 ### SharedSequence cross-instance
 
 ```
 +------------------------------------------------------------------+
-|  Sequence Partagee                                               |
-|  Viktor (PNJ) --> Adopt --> @bob                                |
-|                                                                  |
-|  (globe) Cross-instance : hebergee sur suddenly.games            |
-|  Participants : @alice@suddenly.games + @bob (vous)              |
-|                                                                  |
-|  (info) L'editeur est heberge sur l'instance du createur.       |
+|  @status_banner(type="info", icon="globe")                       |
+|  Cross-instance : hebergee sur suddenly.games                    |
 |  Vos modifications sont synchronisees via ActivityPub.            |
 +------------------------------------------------------------------+
 ```

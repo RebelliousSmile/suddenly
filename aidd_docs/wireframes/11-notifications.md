@@ -23,7 +23,7 @@
 |  +------------------------------------------------------------+  |
 |  | (*) (check) Demande acceptee                    il y a 1j  |  |
 |  |                                                  (non lu)   |  |
-|  |  @dave a accepte votre demande d'Adopt sur Fenris          |  |
+|  |  @dave a accepte votre demande d'Adoption sur Fenris       |  |
 |  |  [Voir la Sequence Partagee ->]                            |  |
 |  +------------------------------------------------------------+  |
 |                                                                  |

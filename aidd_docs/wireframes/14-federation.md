@@ -176,7 +176,7 @@ Les activites suivantes sont reservees aux instances Suddenly :
 |----------|---------|-------------------|
 | Publication CR | Create(Article) | Oui |
 | Citation publique | Create(Note) | Oui |
-| Demande Claim/Adopt/Fork | Offer | **Non** |
+| Demande Adoption/Derivation/Retcon | Offer | **Non** |
 | Acceptation/Refus | Accept/Reject | **Non** |
 | SharedSequence publiee | Create(Article) | Oui |
 

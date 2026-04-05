@@ -94,47 +94,36 @@ L'editeur de CR (`06-reports`) affiche un indicateur permanent :
 |                                  (alert) Non sauvegarde    |
 ```
 
-## 3. Aide contextuelle Claim/Adopt/Fork
+## 3. Flow guide "Lier a mon histoire" (Adoption / Derivation / Retcon)
 
-Un panneau explicatif accessible depuis la fiche personnage via un lien
-"Quelle est la difference ?" au-dessus des boutons d'action.
+Remplace les 3 boutons Claim/Adopt/Fork par un **point d'entree unique**
+[Lier a mon histoire] qui ouvre un flow guide en 2 etapes :
 
-```
-+------------------------------------------------------------------+
-|  Actions sur ce PNJ                                              |
-|  Quelle est la difference ? (v)   <- toggle accordeon            |
-|                                                                  |
-|  +------------------------------------------------------------+  |
-|  | (merge)    RECLAMER (Claim)                                 |  |
-|  |            Retcon : affirmer que ce PNJ etait votre PJ      |  |
-|  |            depuis le debut. Le PNJ devient votre PJ,        |  |
-|  |            son historique est reecrit.                       |  |
-|  |                                                             |  |
-|  | (heart)    ADOPTER (Adopt)                                  |  |
-|  |            Reprendre ce PNJ comme nouveau PJ. Le PNJ        |  |
-|  |            change de proprietaire et continue son histoire.  |  |
-|  |                                                             |  |
-|  | (git-fork) DERIVER (Fork)                                   |  |
-|  |            Creer un nouveau PJ inspire de ce PNJ. Le PNJ    |  |
-|  |            reste disponible. Les deux personnages sont       |  |
-|  |            lies par une lignee narrative.                    |  |
-|  +------------------------------------------------------------+  |
-|                                                                  |
-|  +------------------+ +------------------+ +------------------+  |
-|  | (merge) Reclamer | | (heart) Adopter  | | (git-fork) Fork  |  |
-|  +------------------+ +------------------+ +------------------+  |
-+------------------------------------------------------------------+
-```
+1. **Choix du type** : 3 cartes explicatives avec sous-titres narratifs
+2. **Formulaire** : specifique au type choisi, avec bouton [<- Retour]
+
+Voir `09-links.md` pour les wireframes detailles du flow.
+
+**Terminologie narrative** (remplace le jargon technique) :
+
+| Ancien | Nouveau | Sous-titre |
+|--------|---------|-----------|
+| Claim | **Retcon** | "C'etait mon PJ depuis le debut" |
+| Adopt | **Adoption** | "Je reprends ce personnage" |
+| Fork | **Derivation** | "Je cree un PJ inspire de lui" |
+
+Le Retcon est presente en retrait (cas avance, tag "rare").
 
 ## 4. Indicateur de statut sur fiche personnage apres demande
 
 Quand le joueur a une demande en cours sur un PNJ, la fiche
-affiche un bandeau de statut :
+affiche un `@status_banner` et masque le bouton [Lier a mon histoire] :
 
 ```
 +------------------------------------------------------------------+
-|  (info) Vous avez une demande d'Adopt en attente sur ce PNJ.    |
-|         Envoyee il y a 2h.  [Voir ma demande]  [Annuler]        |
+|  @status_banner(type="info", icon="clock")                       |
+|  Vous avez une demande d'Adoption en attente sur ce PNJ.        |
+|  Envoyee il y a 2h.  [Voir ma demande]  [Annuler]               |
 +------------------------------------------------------------------+
 ```
 
@@ -142,8 +131,9 @@ Ou si en file d'attente :
 
 ```
 +------------------------------------------------------------------+
-|  (clock) Votre demande de Fork est en file d'attente (#2).      |
-|          [Voir ma demande]  [Annuler]                            |
+|  @status_banner(type="warning", icon="clock")                    |
+|  Votre demande de Derivation est en file d'attente (#2).        |
+|  [Voir ma demande]  [Annuler]                                    |
 +------------------------------------------------------------------+
 ```
 
