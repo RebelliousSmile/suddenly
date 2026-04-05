@@ -19,6 +19,16 @@
 | `09-links.md` | Demande claim/adopt/fork, arbitrage, SharedSequence | US-09 a US-11, US-18-19 |
 | `10-feed.md` | Fil d'actualite, follow/unfollow | US-12 |
 | `11-notifications.md` | Centre de notifications | US-20, US-21 |
+| `12-gm-dashboard.md` | Dashboard GM, vue "Mes PNJ", arbitrage inline | US-14 |
+| `13-admin.md` | Dashboard admin, signalements, gestion instances | US-25, US-26, US-27 |
+
+## Couverture par persona
+
+| Persona | Wireframes | Couverture |
+|---------|-----------|------------|
+| **Joueur solo** | 01-11 | Complet — inscription, parties, CRs, persos, citations, liens, feed, notifs |
+| **Game Master** | 06, 09, 12 | Complet — editeur cast, arbitrage demandes, dashboard GM, vue PNJ |
+| **Admin d'instance** | 13 | Complet (post-MVP) — moderation, signalements, gestion instances |
 
 ## Conventions
 
