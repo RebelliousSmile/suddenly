@@ -96,7 +96,10 @@ def import_follows_csv(request: AuthenticatedRequest) -> HttpResponse:
 @login_required
 def settings_data(request: AuthenticatedRequest) -> HttpResponse:
     """Data settings: export/import, migration (US-32)."""
-    return render(request, "users/settings_data.html")
+    from suddenly.games.models import Game
+
+    has_games = Game.objects.filter(owner=request.user, remote=False).exists()
+    return render(request, "users/settings_data.html", {"has_games": has_games})
 
 
 @login_required
@@ -154,6 +157,13 @@ def export_characters(request: AuthenticatedRequest) -> FileResponse:
     )
 
 
+def _data_ctx(request: AuthenticatedRequest) -> dict[str, object]:
+    """Base context for settings_data.html — resolves has_games once."""
+    from suddenly.games.models import Game
+
+    return {"has_games": Game.objects.filter(owner=request.user, remote=False).exists()}
+
+
 @login_required
 def import_games(request: AuthenticatedRequest) -> HttpResponse:
     """Import games from a JSON file (US-32).
@@ -162,7 +172,7 @@ def import_games(request: AuthenticatedRequest) -> HttpResponse:
     Preserves original created_at via queryset .update() after creation.
     """
     if request.method != "POST":
-        return render(request, "users/settings_data.html")
+        return render(request, "users/settings_data.html", _data_ctx(request))
 
     from django.core.files.uploadedfile import UploadedFile
 
@@ -170,15 +180,19 @@ def import_games(request: AuthenticatedRequest) -> HttpResponse:
 
     games_file = request.FILES.get("games_file")
     if not isinstance(games_file, UploadedFile):
-        return render(request, "users/settings_data.html")
+        return render(request, "users/settings_data.html", _data_ctx(request))
 
     try:
         data = json.loads(games_file.read().decode("utf-8"))
     except (json.JSONDecodeError, UnicodeDecodeError):
-        return render(request, "users/settings_data.html", {"games_import_error": True})
+        return render(
+            request, "users/settings_data.html", {**_data_ctx(request), "games_import_error": True}
+        )
 
     if not isinstance(data, list):
-        return render(request, "users/settings_data.html", {"games_import_error": True})
+        return render(
+            request, "users/settings_data.html", {**_data_ctx(request), "games_import_error": True}
+        )
 
     imported = 0
     skipped = 0
@@ -219,6 +233,7 @@ def import_games(request: AuthenticatedRequest) -> HttpResponse:
         request,
         "users/settings_data.html",
         {
+            **_data_ctx(request),
             "games_import_success": True,
             "games_imported": imported,
             "games_skipped": skipped,
@@ -234,7 +249,7 @@ def import_characters(request: AuthenticatedRequest) -> HttpResponse:
     origin_game resolved by title among user's games; skipped if not found (non-nullable FK).
     """
     if request.method != "POST":
-        return render(request, "users/settings_data.html")
+        return render(request, "users/settings_data.html", _data_ctx(request))
 
     from django.core.files.uploadedfile import UploadedFile
 
@@ -243,15 +258,19 @@ def import_characters(request: AuthenticatedRequest) -> HttpResponse:
 
     characters_file = request.FILES.get("characters_file")
     if not isinstance(characters_file, UploadedFile):
-        return render(request, "users/settings_data.html")
+        return render(request, "users/settings_data.html", _data_ctx(request))
 
     try:
         data = json.loads(characters_file.read().decode("utf-8"))
     except (json.JSONDecodeError, UnicodeDecodeError):
-        return render(request, "users/settings_data.html", {"chars_import_error": True})
+        return render(
+            request, "users/settings_data.html", {**_data_ctx(request), "chars_import_error": True}
+        )
 
     if not isinstance(data, list):
-        return render(request, "users/settings_data.html", {"chars_import_error": True})
+        return render(
+            request, "users/settings_data.html", {**_data_ctx(request), "chars_import_error": True}
+        )
 
     user_games: dict[str, Game] = {
         g.title: g for g in Game.objects.filter(owner=request.user, remote=False)
@@ -306,6 +325,7 @@ def import_characters(request: AuthenticatedRequest) -> HttpResponse:
         request,
         "users/settings_data.html",
         {
+            **_data_ctx(request),
             "chars_import_success": True,
             "chars_imported": imported,
             "chars_skipped": skipped,

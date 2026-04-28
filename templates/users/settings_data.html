@@ -88,10 +88,12 @@
                 <span class="i-lucide-download text-sm"></span>
                 {% trans "Download my characters (JSON)" %}
             </a>
+            {% if not has_games %}
             <div class="mb-4 p-3 rounded-lg bg-warning/10 text-warning border border-warning/30 text-sm flex items-start gap-2">
                 <span class="i-lucide-alert-triangle text-sm flex-shrink-0 mt-0.5"></span>
                 {% trans "Import your games first. Characters referencing a game not found in your account will be skipped." %}
             </div>
+            {% endif %}
             <form method="post" action="{% url 'users:import_characters' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <label for="characters_file" class="form-label">{% trans "Import characters (JSON)" %}</label>
