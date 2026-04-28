@@ -26,6 +26,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # Authentication (django-allauth)
     path("accounts/", include("allauth.urls")),
+    # i18n language switcher (anonymous users)
+    path("i18n/", include("django.conf.urls.i18n")),
     # API Documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="api-schema"), name="api-docs"),

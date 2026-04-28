@@ -22,7 +22,14 @@ class UserAdmin(BaseUserAdmin):  # type: ignore[type-arg]
         ("Profile", {"fields": ("display_name", "bio", "avatar")}),
         (
             "Language preferences",
-            {"fields": ("content_language", "preferred_languages", "show_unlabeled_content")},
+            {
+                "fields": (
+                    "content_language",
+                    "preferred_languages",
+                    "show_unlabeled_content",
+                    "interface_language",
+                )
+            },
         ),
         (
             "ActivityPub",

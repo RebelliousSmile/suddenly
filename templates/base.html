@@ -95,6 +95,24 @@
                             {% trans "Sign up" %}
                         </a>
                     {% endif %}
+
+                    <!-- Language switcher (anonymous; authenticated users use profile) -->
+                    {% if not user.is_authenticated %}
+                        {% get_current_language as CURRENT_LANGUAGE %}
+                        {% get_available_languages as AVAILABLE_LANGUAGES %}
+                        <form method="post" action="{% url 'set_language' %}" class="inline-flex items-center gap-1">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <select name="language"
+                                    onchange="this.form.submit()"
+                                    class="text-xs border border-gray-200 rounded px-1 py-0.5 text-gray-600 bg-white">
+                                {% for lang_code, lang_name in AVAILABLE_LANGUAGES %}
+                                    <option value="{{ lang_code }}" {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %}>{{ lang_name }}</option>
+                                {% endfor %}
+                            </select>
+                            <noscript><button type="submit" class="text-xs text-gray-600">OK</button></noscript>
+                        </form>
+                    {% endif %}
                 </div>
 
                 <!-- Mobile menu button -->

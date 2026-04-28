@@ -163,6 +163,28 @@
                 </div>
             </div>
 
+            <!-- Interface Language -->
+            <div>
+                <label for="{{ form.interface_language.id_for_label }}" class="form-label">
+                    {% trans "Interface language" %}
+                </label>
+                <select id="{{ form.interface_language.id_for_label }}"
+                        name="{{ form.interface_language.html_name }}"
+                        class="{% if form.interface_language.errors %}form-input-error{% else %}form-input{% endif %}">
+                    {% for val, label in form.interface_language.field.choices %}
+                        <option value="{{ val }}" {% if val == form.interface_language.value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.interface_language.help_text %}
+                    <p class="form-help">{{ form.interface_language.help_text }}</p>
+                {% endif %}
+                {% if form.interface_language.errors %}
+                    {% for error in form.interface_language.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
             </div>
             <!-- Form Actions -->
             <div class="card-footer flex items-center gap-3 mt-4">

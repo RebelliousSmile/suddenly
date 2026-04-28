@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 
 from django import forms
+from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 from .models import User
 
@@ -21,11 +23,15 @@ class ProfileForm(forms.ModelForm):  # type: ignore[type-arg]
             "content_language",
             "preferred_languages",
             "show_unlabeled_content",
+            "interface_language",
         ]
         widgets = {
             "bio": forms.Textarea(attrs={"rows": 4}),
             "preferred_languages": forms.TextInput(
                 attrs={"placeholder": "fr, en", "class": "form-input"}
+            ),
+            "interface_language": forms.Select(
+                choices=[("", _("Use instance default"))] + list(settings.LANGUAGES)
             ),
         }
 
