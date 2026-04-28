@@ -5,15 +5,45 @@
 
 {% block content %}
 <section class="py-8">
-    <div class="container-app">
+    <div class="container-app" x-data="{ selectMode: false }">
+
+        <form id="bulk-delete-games-form" method="post" action="{% url 'games:delete_bulk' %}">
+            {% csrf_token %}
+        </form>
+
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold text-primary">{% trans "Games" %}</h1>
-            {% if user.is_authenticated %}
-                <a href="{% url 'games:create' %}" class="btn-primary btn-sm">
-                    <span class="i-lucide-plus"></span>
-                    {% trans "New game" %}
-                </a>
-            {% endif %}
+            <div class="flex items-center gap-2">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'games:create' %}" class="btn-primary btn-sm" x-show="!selectMode">
+                        <span class="i-lucide-plus"></span>
+                        {% trans "New game" %}
+                    </a>
+                    <button type="button" @click="selectMode = true"
+                            class="btn-ghost btn-sm" x-show="!selectMode"
+                            title="{% trans "Select" %}">
+                        <span class="i-lucide-list-checks"></span>
+                    </button>
+                    <div class="flex items-center gap-2" x-show="selectMode" x-cloak>
+                        <button type="button"
+                                @click="document.querySelectorAll('[form=bulk-delete-games-form]').forEach(c => c.checked = true)"
+                                class="btn-ghost btn-sm">
+                            {% trans "Select all" %}
+                        </button>
+                        <button type="submit" form="bulk-delete-games-form"
+                                onclick="return confirm('{% trans "Delete selected games?" %}')"
+                                class="btn-error btn-sm">
+                            <span class="i-lucide-trash-2"></span>
+                            {% trans "Delete selection" %}
+                        </button>
+                        <button type="button"
+                                @click="selectMode = false; document.querySelectorAll('[form=bulk-delete-games-form]').forEach(c => c.checked = false)"
+                                class="btn-ghost btn-sm">
+                            {% trans "Cancel" %}
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
         </div>
 
         <div id="game-results">

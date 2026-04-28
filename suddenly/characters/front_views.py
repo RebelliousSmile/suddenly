@@ -11,7 +11,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
@@ -165,3 +167,53 @@ def quote_add(request: AuthenticatedRequest, slug: str) -> HttpResponse:
         "characters/_quote_form.html",
         {"character": character},
     )
+
+
+@login_required
+def character_edit(request: AuthenticatedRequest, slug: str) -> HttpResponse:
+    """Edit a character (creator only)."""
+    character = get_object_or_404(Character, slug=slug, creator=request.user)
+
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        if not name:
+            return htmx_render(
+                request,
+                full_template="characters/character_form.html",
+                partial_template="characters/character_form.html",
+                context={
+                    "character": character,
+                    "error": _("Name is required."),
+                    "form_data": request.POST,
+                },
+            )
+        character.name = name
+        character.description = request.POST.get("description", "").strip()
+        character.sheet_url = request.POST.get("sheet_url", "").strip() or None
+        character.save(update_fields=["name", "description", "sheet_url", "updated_at"])
+        return redirect(reverse("characters:detail", kwargs={"slug": character.slug}))
+
+    return htmx_render(
+        request,
+        full_template="characters/character_form.html",
+        partial_template="characters/character_form.html",
+        context={"character": character},
+    )
+
+
+@login_required
+def character_delete(request: AuthenticatedRequest, slug: str) -> HttpResponse:
+    """Delete a character (creator only)."""
+    character = get_object_or_404(Character, slug=slug, creator=request.user)
+    if request.method == "POST":
+        character.delete()
+    return redirect(reverse("characters:list"))
+
+
+@login_required
+def character_delete_bulk(request: AuthenticatedRequest) -> HttpResponse:
+    """Bulk delete characters (creator only)."""
+    if request.method == "POST":
+        slugs = request.POST.getlist("slugs")
+        Character.objects.filter(slug__in=slugs, creator=request.user).delete()
+    return redirect(reverse("characters:list"))

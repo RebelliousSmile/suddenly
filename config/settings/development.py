@@ -53,7 +53,7 @@ else:
 
 # Always run Celery tasks synchronously in dev (no worker needed)
 CELERY_TASK_ALWAYS_EAGER = True
-CELERY_TASK_EAGER_PROPAGATES = True
+CELERY_TASK_EAGER_PROPAGATES = False
 
 # ActivityPub base URL
 AP_BASE_URL = f"http://{DOMAIN}"

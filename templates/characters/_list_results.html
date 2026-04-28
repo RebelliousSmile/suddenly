@@ -4,35 +4,62 @@
 {% if characters %}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {% for character in characters %}
-            <a href="{% url 'characters:detail' slug=character.slug %}"
-               class="card card-hover card-body block">
-                <div class="flex items-center gap-3 mb-2">
-                    {% if character.avatar %}
-                        <img src="{{ character.avatar.url }}" alt="{{ character.name }}" class="avatar-md">
-                    {% else %}
-                        <span class="avatar-md avatar-placeholder">
-                            <span class="i-lucide-user"></span>
-                        </span>
-                    {% endif %}
-                    <div class="min-w-0">
-                        <h3 class="font-semibold text-primary truncate">{{ character.name }}</h3>
-                        <span class="{% if character.status == 'npc' %}badge-available{% else %}badge-{{ character.status }}{% endif %} text-xs">
-                            {{ character.get_status_display }}
-                        </span>
+            <div class="relative group" id="char-{{ character.slug }}">
+                {% if user.is_authenticated %}
+                    <input type="checkbox" name="slugs" value="{{ character.slug }}"
+                           form="bulk-delete-chars-form"
+                           x-show="selectMode" x-cloak
+                           class="absolute top-3 left-3 z-10 h-4 w-4 rounded border-border accent-crimson cursor-pointer">
+                {% endif %}
+
+                <a href="{% url 'characters:detail' slug=character.slug %}"
+                   :class="selectMode ? 'pl-10' : ''"
+                   class="card card-hover card-body block transition-all">
+                    <div class="flex items-center gap-3 mb-2">
+                        {% if character.avatar %}
+                            <img src="{{ character.avatar.url }}" alt="{{ character.name }}" class="avatar-md">
+                        {% else %}
+                            <span class="avatar-md avatar-placeholder">
+                                <span class="i-lucide-user"></span>
+                            </span>
+                        {% endif %}
+                        <div class="min-w-0">
+                            <h3 class="font-semibold text-primary truncate">{{ character.name }}</h3>
+                            <span class="{% if character.status == 'npc' %}badge-available{% else %}badge-{{ character.status }}{% endif %} text-xs">
+                                {{ character.get_status_display }}
+                            </span>
+                        </div>
                     </div>
-                </div>
+                    {% if character.origin_game %}
+                        <p class="text-xs text-muted truncate">
+                            <span class="i-lucide-book-open text-xs mr-1"></span>
+                            {{ character.origin_game.title }}
+                        </p>
+                    {% endif %}
+                    {% if character.description %}
+                        <p class="text-sm text-secondary line-clamp-2 mt-2">{{ character.description }}</p>
+                    {% endif %}
+                </a>
 
-                {% if character.origin_game %}
-                    <p class="text-xs text-muted truncate">
-                        <span class="i-lucide-book-open text-xs mr-1"></span>
-                        {{ character.origin_game.title }}
-                    </p>
+                {% if user == character.creator %}
+                    <div class="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                         x-show="!selectMode">
+                        <a href="{% url 'characters:edit' slug=character.slug %}"
+                           class="btn-ghost btn-xs" title="{% trans "Edit" %}">
+                            <span class="i-lucide-pencil text-sm"></span>
+                        </a>
+                        <form method="post" action="{% url 'characters:delete' slug=character.slug %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    onclick="return confirm('{% trans "Delete this character?" %}')"
+                                    class="btn-ghost btn-xs text-error hover:bg-error/10"
+                                    title="{% trans "Delete" %}">
+                                <span class="i-lucide-trash-2 text-sm"></span>
+                            </button>
+                        </form>
+                    </div>
                 {% endif %}
-
-                {% if character.description %}
-                    <p class="text-sm text-secondary line-clamp-2 mt-2">{{ character.description }}</p>
-                {% endif %}
-            </a>
+            </div>
         {% endfor %}
     </div>
 {% else %}

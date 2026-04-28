@@ -5,21 +5,52 @@
 
 {% block content %}
 <section class="py-8">
-    <div class="container-app">
-        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "Characters" %}</h1>
+    <div class="container-app" x-data="{ selectMode: false }">
+
+        <form id="bulk-delete-chars-form" method="post" action="{% url 'characters:delete_bulk' %}">
+            {% csrf_token %}
+        </form>
+
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-2xl font-bold text-primary">{% trans "Characters" %}</h1>
+            {% if user.is_authenticated %}
+            <div class="flex items-center gap-2">
+                <button type="button" @click="selectMode = true"
+                        class="btn-ghost btn-sm" x-show="!selectMode"
+                        title="{% trans "Select" %}">
+                    <span class="i-lucide-list-checks"></span>
+                </button>
+                <div class="flex items-center gap-2" x-show="selectMode" x-cloak>
+                    <button type="button"
+                            @click="document.querySelectorAll('[form=bulk-delete-chars-form]').forEach(c => c.checked = true)"
+                            class="btn-ghost btn-sm">
+                        {% trans "Select all" %}
+                    </button>
+                    <button type="submit" form="bulk-delete-chars-form"
+                            onclick="return confirm('{% trans "Delete selected characters?" %}')"
+                            class="btn-error btn-sm">
+                        <span class="i-lucide-trash-2"></span>
+                        {% trans "Delete selection" %}
+                    </button>
+                    <button type="button"
+                            @click="selectMode = false; document.querySelectorAll('[form=bulk-delete-chars-form]').forEach(c => c.checked = false)"
+                            class="btn-ghost btn-sm">
+                        {% trans "Cancel" %}
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
 
         <!-- Search + filters -->
         <div class="mb-6 space-y-3">
-            <input type="text"
-                   name="q"
-                   value="{{ query }}"
+            <input type="text" name="q" value="{{ query }}"
                    placeholder="{% trans "Search a character..." %}"
                    class="form-input"
                    hx-get="{% url 'characters:search' %}"
                    hx-trigger="keyup changed delay:300ms"
                    hx-target="#character-results"
                    hx-include="[name='status'],[name='system']">
-
             <div class="flex gap-3">
                 <select name="status" class="form-input w-auto"
                         hx-get="{% url 'characters:search' %}"
@@ -33,10 +64,7 @@
                         </option>
                     {% endfor %}
                 </select>
-
-                <input type="text"
-                       name="system"
-                       value="{{ system_filter }}"
+                <input type="text" name="system" value="{{ system_filter }}"
                        placeholder="{% trans "Game system..." %}"
                        class="form-input w-auto"
                        hx-get="{% url 'characters:search' %}"
@@ -46,7 +74,6 @@
             </div>
         </div>
 
-        <!-- Results (swapped by HTMX) -->
         <div id="character-results">
             {% include "characters/_list_results.html" %}
         </div>

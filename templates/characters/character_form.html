@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% if character %}{% trans "Edit character" %}{% else %}{% trans "New character" %}{% endif %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-2xl">
+        <h1 class="text-2xl font-bold text-primary mb-6">
+            {% if character %}{% trans "Edit character" %}{% else %}{% trans "New character" %}{% endif %}
+        </h1>
+
+        {% if error %}
+            <div class="mb-4 p-4 rounded-lg bg-error/10 text-error border border-error/30">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" class="card card-body space-y-4">
+            {% csrf_token %}
+
+            <div>
+                <label for="name" class="form-label">{% trans "Name" %}</label>
+                <input type="text" id="name" name="name"
+                       value="{{ form_data.name|default:character.name|default:'' }}"
+                       required class="form-input">
+            </div>
+
+            <div>
+                <label for="description" class="form-label">
+                    {% trans "Description" %} <span class="text-muted">({% trans "optional" %})</span>
+                </label>
+                <textarea id="description" name="description" rows="4"
+                          class="form-input">{{ form_data.description|default:character.description|default:'' }}</textarea>
+            </div>
+
+            <div>
+                <label for="sheet_url" class="form-label">
+                    {% trans "Sheet URL" %} <span class="text-muted">({% trans "optional" %})</span>
+                </label>
+                <input type="url" id="sheet_url" name="sheet_url"
+                       value="{{ form_data.sheet_url|default:character.sheet_url|default:'' }}"
+                       placeholder="https://..."
+                       class="form-input">
+            </div>
+
+            <div class="flex items-center gap-3 pt-4 border-t border-border">
+                <button type="submit" class="btn-primary">
+                    {% if character %}
+                        <span class="i-lucide-save"></span>{% trans "Save" %}
+                    {% else %}
+                        <span class="i-lucide-plus"></span>{% trans "Create" %}
+                    {% endif %}
+                </button>
+                <a href="{% if character %}{% url 'characters:detail' slug=character.slug %}{% else %}{% url 'characters:list' %}{% endif %}"
+                   class="btn-ghost">{% trans "Cancel" %}</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

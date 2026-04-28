@@ -50,8 +50,11 @@ urlpatterns = [
         sequence_views.sequence_validate_publish,
         name="sequence_publish",
     ),
+    path("bulk-delete/", front_views.character_delete_bulk, name="delete_bulk"),
     # Character detail + actions
     path("<slug:slug>/", front_views.character_detail, name="detail"),
+    path("<slug:slug>/edit/", front_views.character_edit, name="edit"),
+    path("<slug:slug>/delete/", front_views.character_delete, name="delete"),
     path("<slug:slug>/quotes/add/", front_views.quote_add, name="quote_add"),
     path("<slug:slug>/link/", link_views.link_choose_type, name="link_choose"),
     path(

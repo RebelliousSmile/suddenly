@@ -4,18 +4,78 @@
 {% if games %}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {% for game in games %}
-            <a href="{% url 'games:detail' pk=game.pk %}" class="card card-hover card-body block">
-                <h3 class="font-semibold text-primary mb-1">{{ game.title }}</h3>
-                {% if game.game_system %}
-                    <p class="text-xs text-muted mb-2">{{ game.game_system }}</p>
+            <div class="relative group" id="game-{{ game.pk }}">
+                {% if user.is_authenticated %}
+                    <input type="checkbox" name="pks" value="{{ game.pk }}"
+                           form="bulk-delete-games-form"
+                           x-show="selectMode" x-cloak
+                           class="absolute top-3 left-3 z-10 h-4 w-4 rounded border-border accent-crimson cursor-pointer">
                 {% endif %}
-                {% if game.description %}
-                    <p class="text-sm text-secondary line-clamp-2">{{ game.description }}</p>
+
+                <a href="{% url 'games:detail' pk=game.pk %}"
+                   :class="selectMode ? 'pl-10' : ''"
+                   class="card card-hover card-body block transition-all">
+                    <h3 class="font-semibold text-primary mb-1">{{ game.title }}</h3>
+                    {% if game.game_system %}
+                        <p class="text-xs text-muted mb-2">{{ game.game_system }}</p>
+                    {% endif %}
+                    {% if game.description %}
+                        <p class="text-sm text-secondary line-clamp-2 mb-2">{{ game.description }}</p>
+                    {% endif %}
+                    <div class="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted mt-2">
+                        <span class="flex items-center gap-1" title="{% trans "Reports" %}">
+                            <span class="i-lucide-scroll-text"></span>
+                            {{ game.report_count|default:0 }}
+                        </span>
+                        {% if game.char_npc %}
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-user"></span>
+                            {% blocktrans with n=game.char_npc %}NPC {{ n }}{% endblocktrans %}
+                        </span>
+                        {% endif %}
+                        {% if game.char_pc %}
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-user-check"></span>
+                            {% blocktrans with n=game.char_pc %}PC {{ n }}{% endblocktrans %}
+                        </span>
+                        {% endif %}
+                        {% if game.char_adopted %}
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-user-plus"></span>
+                            {% blocktrans with n=game.char_adopted %}adopted {{ n }}{% endblocktrans %}
+                        </span>
+                        {% endif %}
+                        {% if game.char_forked %}
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-git-branch"></span>
+                            {% blocktrans with n=game.char_forked %}forked {{ n }}{% endblocktrans %}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <p class="text-xs text-muted mt-2">
+                        {% blocktrans with username=game.owner.username %}by @{{ username }}{% endblocktrans %}
+                    </p>
+                </a>
+
+                {% if user == game.owner %}
+                    <div class="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                         x-show="!selectMode">
+                        <a href="{% url 'games:edit' pk=game.pk %}"
+                           class="btn-ghost btn-xs" title="{% trans "Edit" %}">
+                            <span class="i-lucide-pencil text-sm"></span>
+                        </a>
+                        <form method="post" action="{% url 'games:delete' pk=game.pk %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    onclick="return confirm('{% trans "Delete this game?" %}')"
+                                    class="btn-ghost btn-xs text-error hover:bg-error/10"
+                                    title="{% trans "Delete" %}">
+                                <span class="i-lucide-trash-2 text-sm"></span>
+                            </button>
+                        </form>
+                    </div>
                 {% endif %}
-                <p class="text-xs text-muted mt-2">
-                    {% blocktrans with username=game.owner.username %}by @{{ username }}{% endblocktrans %}
-                </p>
-            </a>
+            </div>
         {% endfor %}
     </div>
 {% else %}
