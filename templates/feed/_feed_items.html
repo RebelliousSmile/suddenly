@@ -1,4 +1,5 @@
 {# Partial: feed items list (swapped by HTMX tab navigation) #}
+{% load i18n %}
 
 {% if reports %}
     <div class="space-y-4">
@@ -14,7 +15,7 @@
                             <span class="font-medium text-gray-900">
                                 @{{ report.author.username }}
                             </span>
-                            <span class="text-gray-500 text-sm mx-1">dans</span>
+                            <span class="text-gray-500 text-sm mx-1">{% trans "in" %}</span>
                             <a href="{% url 'games:detail' pk=report.game.pk %}"
                                class="text-gray-600 hover:text-primary-600 text-sm">
                                 {{ report.game.title }}
@@ -44,7 +45,7 @@
                     <h3 class="font-semibold text-lg mb-1">
                         <a href="{% url 'games:report_detail' game_pk=report.game.pk pk=report.pk %}"
                            class="text-gray-900 hover:text-primary-600">
-                            {{ report.title|default:"Sans titre" }}
+                            {{ report.title|default:_("Untitled") }}
                         </a>
                     </h3>
 
@@ -62,7 +63,7 @@
                     </button>
                     <button class="btn-ghost btn-sm">
                         <span class="i-lucide-sparkles text-sm"></span>
-                        Recommander
+                        {% trans "Recommend" %}
                     </button>
                 </div>
             </article>
@@ -71,18 +72,18 @@
 {% elif is_empty %}
     <div class="text-center py-16">
         <span class="i-lucide-home text-5xl text-gray-300 mb-4 block"></span>
-        <h3 class="font-semibold text-gray-900 mb-2">Votre fil est vide</h3>
+        <h3 class="font-semibold text-gray-900 mb-2">{% trans "Your feed is empty" %}</h3>
         <p class="text-sm text-gray-500 mb-4">
-            Suivez des joueurs ou des parties pour voir leurs publications ici.
+            {% trans "Follow players or games to see their publications here." %}
         </p>
         <div class="flex items-center justify-center gap-3">
-            <a href="{% url 'games:list' %}" class="btn-primary btn-sm">Explorer les parties</a>
-            <a href="{% url 'characters:list' %}" class="btn-secondary btn-sm">Voir les personnages</a>
+            <a href="{% url 'games:list' %}" class="btn-primary btn-sm">{% trans "Explore games" %}</a>
+            <a href="{% url 'characters:list' %}" class="btn-secondary btn-sm">{% trans "See characters" %}</a>
         </div>
     </div>
 {% else %}
     <div class="text-center py-12">
         <span class="i-lucide-inbox text-4xl text-gray-300 mb-4 block"></span>
-        <p class="text-gray-500">Aucun contenu récent.</p>
+        <p class="text-gray-500">{% trans "No recent content." %}</p>
     </div>
 {% endif %}

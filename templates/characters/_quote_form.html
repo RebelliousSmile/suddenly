@@ -1,4 +1,5 @@
 {# Partial: quote add form (HTMX) #}
+{% load i18n %}
 
 <form hx-post="{% url 'characters:quote_add' slug=character.slug %}"
       hx-target="#quote-list-{{ character.id }}"
@@ -11,45 +12,45 @@
     {% endif %}
 
     <div>
-        <label for="quote-content" class="form-label">La réplique</label>
+        <label for="quote-content" class="form-label">{% trans "The line" %}</label>
         <textarea id="quote-content" name="content" rows="3" required
-                  placeholder="La réplique mémorable..."
+                  placeholder="{% trans "The memorable line..." %}"
                   class="{% if error %}form-input-error{% else %}form-input{% endif %}">{{ form_data.content|default:'' }}</textarea>
     </div>
 
     <div>
         <label for="quote-context" class="form-label">
-            Contexte <span class="text-gray-500">(optionnel)</span>
+            {% trans "Context" %} <span class="text-gray-500">({% trans "optional" %})</span>
         </label>
         <textarea id="quote-context" name="context" rows="2"
-                  placeholder="Situation narrative..."
+                  placeholder="{% trans "Narrative situation..." %}"
                   class="form-input">{{ form_data.context|default:'' }}</textarea>
     </div>
 
     <div>
         <label for="quote-cw" class="form-label">
-            Avertissement <span class="text-gray-500">(optionnel)</span>
+            {% trans "Content warning" %} <span class="text-gray-500">({% trans "optional" %})</span>
         </label>
         <input type="text" id="quote-cw" name="content_warning"
                value="{{ form_data.content_warning|default:'' }}"
-               placeholder="Ex: Contenu mature"
+               placeholder="{% trans "e.g. Mature content" %}"
                class="form-input">
     </div>
 
     <div class="flex items-center gap-3">
         <select name="visibility" class="form-input w-auto">
-            <option value="public">Publique</option>
-            <option value="private">Privée</option>
-            <option value="ephemeral">Éphémère</option>
+            <option value="public">{% trans "Public" %}</option>
+            <option value="private">{% trans "Private" %}</option>
+            <option value="ephemeral">{% trans "Ephemeral" %}</option>
         </select>
 
-        <button type="submit" class="btn-primary btn-sm">Enregistrer</button>
+        <button type="submit" class="btn-primary btn-sm">{% trans "Save" %}</button>
         <button type="button"
                 hx-get="{% url 'characters:detail' slug=character.slug %}"
                 hx-target="#quote-form-container"
                 hx-swap="innerHTML"
                 class="btn-ghost btn-sm">
-            Annuler
+            {% trans "Cancel" %}
         </button>
     </div>
 </form>

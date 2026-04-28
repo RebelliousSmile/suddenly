@@ -1,43 +1,41 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}{{ SITE_NAME }} — Réseau fédéré de fiction partagée{% endblock %}
+{% block title %}{{ SITE_NAME }} — {% trans "Federated shared fiction network" %}{% endblock %}
 
 {% block content %}
 <!-- Hero -->
 <section class="bg-gradient-to-b from-primary-50 to-white py-16 sm:py-24">
     <div class="container-app text-center">
         <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
-            🎭 Bienvenue sur <span class="text-primary-600">{{ SITE_NAME }}</span>
+            🎭 {% trans "Welcome to" %} <span class="text-primary-600">{{ SITE_NAME }}</span>
         </h1>
         <p class="text-xl text-gray-600 mb-6 max-w-2xl mx-auto">
             {{ SITE_DESCRIPTION }}
         </p>
         <p class="text-gray-500 mb-8 max-w-xl mx-auto">
-            Publiez vos comptes-rendus de partie. Les PNJ que vous mentionnez 
-            peuvent être <strong class="text-gray-700">réclamés</strong>, 
-            <strong class="text-gray-700">adoptés</strong> ou 
-            <strong class="text-gray-700">forkés</strong> par d'autres joueurs.
+            {% blocktrans %}Publish your game reports. The NPCs you mention can be <strong class="text-gray-700">claimed</strong>, <strong class="text-gray-700">adopted</strong> or <strong class="text-gray-700">forked</strong> by other players.{% endblocktrans %}
         </p>
-        
+
         {% if not user.is_authenticated %}
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="{% url 'account_signup' %}" class="btn-primary btn-lg">
                     <span class="i-lucide-sparkles"></span>
-                    Rejoindre le réseau
+                    {% trans "Join the network" %}
                 </a>
                 <a href="{% url 'account_login' %}" class="btn-secondary btn-lg">
-                    Se connecter
+                    {% trans "Log in" %}
                 </a>
             </div>
         {% else %}
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="#" class="btn-primary btn-lg">
                     <span class="i-lucide-plus"></span>
-                    Nouvelle partie
+                    {% trans "New game" %}
                 </a>
                 <a href="#" class="btn-secondary btn-lg">
                     <span class="i-lucide-compass"></span>
-                    Explorer
+                    {% trans "Explore" %}
                 </a>
             </div>
         {% endif %}
@@ -47,114 +45,120 @@
 <!-- Features -->
 <section class="py-16 container-app">
     <h2 class="text-2xl font-bold text-center text-gray-900 mb-12">
-        Comment ça marche ?
+        {% trans "How does it work?" %}
     </h2>
-    
+
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Publish -->
         <article class="card card-body text-center">
             <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span class="i-lucide-book-open text-2xl text-primary-600"></span>
             </div>
-            <h3 class="font-semibold text-gray-900 mb-2">Publiez vos parties</h3>
+            <h3 class="font-semibold text-gray-900 mb-2">{% trans "Publish your games" %}</h3>
             <p class="text-sm text-gray-600">
-                Créez des comptes-rendus de vos sessions de JDR. 
-                Mentionnez vos PNJ pour les rendre découvrables.
+                {% trans "Create reports of your RPG sessions. Mention your NPCs to make them discoverable." %}
             </p>
         </article>
-        
+
         <!-- Claim -->
         <article class="card card-body text-center">
             <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span class="i-lucide-git-merge text-2xl text-amber-600"></span>
             </div>
-            <h3 class="font-semibold text-gray-900 mb-2">Claim</h3>
+            <h3 class="font-semibold text-gray-900 mb-2">{% trans "Claim" %}</h3>
             <p class="text-sm text-gray-500 italic mb-2">
-                "Ton PNJ c'était mon PJ depuis le début."
+                "{% trans "Your NPC was my PC all along." %}"
             </p>
             <p class="text-sm text-gray-600">
-                Révélez que votre personnage était déjà là — une rétcon narrative.
+                {% trans "Reveal that your character was already there — a narrative retcon." %}
             </p>
         </article>
-        
+
         <!-- Adopt -->
         <article class="card card-body text-center">
             <div class="w-12 h-12 bg-secondary-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span class="i-lucide-user-plus text-2xl text-secondary-600"></span>
             </div>
-            <h3 class="font-semibold text-gray-900 mb-2">Adopt</h3>
+            <h3 class="font-semibold text-gray-900 mb-2">{% trans "Adopt" %}</h3>
             <p class="text-sm text-gray-500 italic mb-2">
-                "Ton PNJ m'intéresse, j'en fais mon PJ."
+                "{% trans "Your NPC interests me, I'll make them my PC." %}"
             </p>
             <p class="text-sm text-gray-600">
-                Reprenez un PNJ abandonné et donnez-lui une nouvelle vie.
+                {% trans "Take an abandoned NPC and give them a new life." %}
             </p>
         </article>
-        
+
         <!-- Fork -->
         <article class="card card-body text-center">
             <div class="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span class="i-lucide-git-branch text-2xl text-violet-600"></span>
             </div>
-            <h3 class="font-semibold text-gray-900 mb-2">Fork</h3>
+            <h3 class="font-semibold text-gray-900 mb-2">{% trans "Fork" %}</h3>
             <p class="text-sm text-gray-500 italic mb-2">
-                "Je crée un PJ inspiré de ton PNJ."
+                "{% trans "I create a PC derived from your NPC." %}"
             </p>
             <p class="text-sm text-gray-600">
-                Créez un personnage dérivé — cousin, sosie, ancien associé.
+                {% trans "Create a derived character — cousin, lookalike, former associate." %}
             </p>
         </article>
     </div>
 </section>
 
-<!-- Recent activity (placeholder) -->
+<!-- Recent activity -->
 <section class="py-16 bg-gray-100">
     <div class="container-app">
         <div class="flex items-center justify-between mb-8">
             <h2 class="text-2xl font-bold text-gray-900">
-                Activité récente
+                {% trans "Recent activity" %}
             </h2>
-            <a href="#" class="link flex items-center gap-1">
-                Voir tout
+            <a href="{% url 'feed:instance' %}" class="link flex items-center gap-1">
+                {% trans "See all" %}
                 <span class="i-lucide-arrow-right text-sm"></span>
             </a>
         </div>
-        
+
+        {% if recent_reports %}
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Placeholder cards -->
-            {% for i in "123" %}
+            {% for report in recent_reports %}
             <article class="card card-hover">
                 <div class="card-body">
                     <div class="flex items-center gap-3 mb-3">
-                        <span class="avatar-md avatar-placeholder">
-                            <span class="i-lucide-user"></span>
-                        </span>
+                        {% if report.author.avatar %}
+                            <img src="{{ report.author.avatar.url }}" class="avatar-md" alt="">
+                        {% else %}
+                            <span class="avatar-md avatar-placeholder">
+                                <span class="i-lucide-user"></span>
+                            </span>
+                        {% endif %}
                         <div>
-                            <p class="font-medium text-gray-900">Joueur {{ i }}</p>
-                            <p class="text-sm text-gray-500">Il y a {{ i }} heures</p>
+                            <p class="font-medium text-gray-900">{{ report.author.get_display_name }}</p>
+                            <p class="text-sm text-gray-500">{{ report.published_at|timesince }}</p>
                         </div>
                     </div>
                     <h3 class="font-semibold text-gray-900 mb-2">
-                        Nouveau compte-rendu
+                        {{ report.title }}
                     </h3>
-                    <p class="text-sm text-gray-600 line-clamp-2">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                        Sed do eiusmod tempor incididunt ut labore.
-                    </p>
+                    <p class="text-sm text-gray-600 line-clamp-2">{{ report.content|truncatewords:20 }}</p>
                 </div>
                 <div class="card-footer flex items-center gap-4 text-sm text-gray-500">
                     <span class="flex items-center gap-1">
                         <span class="i-lucide-users text-xs"></span>
-                        3 personnages
+                        {% blocktrans count counter=report.cast.count %}{{ counter }} character{% plural %}{{ counter }} characters{% endblocktrans %}
                     </span>
                     <span class="flex items-center gap-1">
                         <span class="i-lucide-message-circle text-xs"></span>
-                        2 citations
+                        {% blocktrans count counter=report.quotes.count %}{{ counter }} quote{% plural %}{{ counter }} quotes{% endblocktrans %}
                     </span>
                 </div>
             </article>
             {% endfor %}
         </div>
+        {% else %}
+        <div class="text-center py-12 text-gray-500">
+            <span class="i-lucide-book-open text-4xl block mx-auto mb-4 opacity-40"></span>
+            <p>{% trans "No activity yet. Be the first to publish a report!" %}</p>
+        </div>
+        {% endif %}
     </div>
 </section>
 
@@ -165,12 +169,10 @@
             <span class="i-lucide-globe text-3xl text-primary-600"></span>
         </div>
         <h2 class="text-2xl font-bold text-gray-900 mb-4">
-            Fédéré avec le Fediverse
+            {% trans "Federated with the Fediverse" %}
         </h2>
         <p class="text-gray-600 mb-6">
-            {{ SITE_NAME }} utilise <strong>ActivityPub</strong> pour se connecter 
-            à d'autres instances et au reste du Fediverse. Suivez des joueurs 
-            depuis Mastodon, BookWyrm ou n'importe quelle plateforme compatible.
+            {% blocktrans %}{{ SITE_NAME }} uses <strong>ActivityPub</strong> to connect to other instances and the rest of the Fediverse. Follow players from Mastodon, BookWyrm or any compatible platform.{% endblocktrans %}
         </p>
         <div class="flex flex-wrap justify-center gap-4 text-gray-400">
             <span class="i-simple-icons-mastodon text-2xl hover:text-purple-500 transition-colors"></span>

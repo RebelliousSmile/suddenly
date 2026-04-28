@@ -1,17 +1,18 @@
-{# 
+{#
   Modal Component (Alpine.js)
-  
+
   Usage:
     <div x-data="modal">
       <button @click="show">Open Modal</button>
       {% include "components/modal.html" with title="My Modal" %}
     </div>
-    
+
   Slots:
-    - title: Titre du modal
-    - Contenu: block modal_body
+    - title: Modal title
+    - Content: block modal_body
     - Actions: block modal_footer
 #}
+{% load i18n %}
 
 <template x-teleport="body">
     <div x-show="open" 
@@ -67,10 +68,10 @@
                 {% block modal_footer %}
                     <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-lg flex justify-end gap-3">
                         <button @click="hide" class="btn-secondary">
-                            Annuler
+                            {% trans "Cancel" %}
                         </button>
                         <button class="btn-primary">
-                            Confirmer
+                            {% trans "Confirm" %}
                         </button>
                     </div>
                 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}{{ character.name }} — {{ SITE_NAME }}{% endblock %}
 
@@ -30,19 +31,19 @@
                     {% if character.origin_game.game_system %}· {{ character.origin_game.game_system }}{% endif %}
                 </p>
                 <p class="text-sm text-gray-500">
-                    Créé par @{{ character.creator.username }}
-                    {% if character.owner %}· Propriétaire : @{{ character.owner.username }}{% endif %}
+                    {% blocktrans with username=character.creator.username %}Created by @{{ username }}{% endblocktrans %}
+                    {% if character.owner %}· {% blocktrans with username=character.owner.username %}Owner: @{{ username }}{% endblocktrans %}{% endif %}
                 </p>
             </div>
 
             <!-- Actions -->
             {% if character.is_available and user.is_authenticated and user != character.creator %}
                 {% if pending_request %}
-                    {% include "components/status_banner.html" with type="info" icon="clock" message="Vous avez une demande en attente sur ce personnage." action_label="Voir" action_url="#" %}
+                    {% include "components/status_banner.html" with type="info" icon="clock" message=_("You have a pending request on this character.") action_label=_("View") action_url="#" %}
                 {% else %}
                     <a href="#" class="btn-primary">
                         <span class="i-lucide-link"></span>
-                        Lier à mon histoire
+                        {% trans "Link to my story" %}
                     </a>
                 {% endif %}
             {% endif %}
@@ -51,15 +52,15 @@
         <!-- Description -->
         {% if character.description %}
             <div class="card card-body mb-6">
-                <h2 class="text-heading mb-3">Description</h2>
+                <h2 class="text-heading mb-3">{% trans "Description" %}</h2>
                 <p class="text-gray-600">{{ character.description|linebreaksbr }}</p>
             </div>
         {% endif %}
 
-        <!-- Apparitions -->
+        <!-- Appearances -->
         <div class="card card-body mb-6">
             <h2 class="text-heading mb-3">
-                Apparitions
+                {% trans "Appearances" %}
                 {% if appearances %}({{ appearances|length }}){% endif %}
             </h2>
 
@@ -69,10 +70,10 @@
                         <div class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
                             <div>
                                 <a href="#" class="font-medium text-gray-900 hover:text-primary-600">
-                                    {{ app.report.title|default:"Sans titre" }}
+                                    {{ app.report.title|default:_("Untitled") }}
                                 </a>
                                 <p class="text-xs text-gray-500">
-                                    {{ app.report.game.title }} · par @{{ app.report.author.username }}
+                                    {{ app.report.game.title }} · {% blocktrans with username=app.report.author.username %}by @{{ username }}{% endblocktrans %}
                                 </p>
                             </div>
                             <span class="badge-gray text-xs">{{ app.get_role_display }}</span>
@@ -80,14 +81,14 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <p class="text-sm text-gray-500">Aucune apparition dans un compte-rendu.</p>
+                <p class="text-sm text-gray-500">{% trans "No appearance in a report." %}</p>
             {% endif %}
         </div>
 
-        <!-- Citations -->
+        <!-- Quotes -->
         <div class="card card-body mb-6">
             <h2 class="text-heading mb-3">
-                Citations
+                {% trans "Quotes" %}
                 {% if quotes %}({{ quotes|length }}){% endif %}
             </h2>
 
@@ -102,23 +103,23 @@
                                 <p class="text-sm text-gray-500 mt-1">{{ quote.context }}</p>
                             {% endif %}
                             <footer class="text-xs text-gray-500 mt-1">
-                                — {{ character.name }}, par @{{ quote.author.username }}
+                                — {{ character.name }}, {% blocktrans with username=quote.author.username %}by @{{ username }}{% endblocktrans %}
                             </footer>
                         </blockquote>
                     {% endfor %}
                 </div>
             {% else %}
-                <p class="text-sm text-gray-500">Aucune citation pour le moment.</p>
+                <p class="text-sm text-gray-500">{% trans "No quotes yet." %}</p>
             {% endif %}
         </div>
 
-        <!-- Lignée (forks) -->
+        <!-- Lineage (forks) -->
         {% if character.parent or character.forks.exists %}
             <div class="card card-body">
-                <h2 class="text-heading mb-3">Lignée</h2>
+                <h2 class="text-heading mb-3">{% trans "Lineage" %}</h2>
                 {% if character.parent %}
                     <p class="text-sm text-gray-600 mb-2">
-                        Dérivé de
+                        {% trans "Forked from" %}
                         <a href="{% url 'characters:detail' slug=character.parent.slug %}" class="link">
                             {{ character.parent.name }}
                         </a>

@@ -1,19 +1,20 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Bloquer {{ server.server_name }} — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% blocktrans with name=server.server_name %}Block {{ name }}{% endblocktrans %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
     <div class="container-app max-w-lg">
-        <h1 class="text-xl font-bold text-gray-900 mb-4">Bloquer {{ server.server_name }}</h1>
+        <h1 class="text-xl font-bold text-gray-900 mb-4">{% blocktrans with name=server.server_name %}Block {{ name }}{% endblocktrans %}</h1>
 
-        {% include "components/status_banner.html" with type="error" icon="alert-triangle" message="Cette action rejettera toutes les activités entrantes et masquera le contenu de cette instance." %}
+        {% include "components/status_banner.html" with type="error" icon="alert-triangle" message=_("This action will reject all incoming activities and hide content from this instance.") %}
 
         <form method="post" class="mt-6">
             {% csrf_token %}
             <div class="flex items-center gap-3">
-                <button type="submit" class="btn-danger">Confirmer le blocage</button>
-                <a href="{% url 'admin_panel:instances' %}" class="btn-ghost">Annuler</a>
+                <button type="submit" class="btn-danger">{% trans "Confirm block" %}</button>
+                <a href="{% url 'admin_panel:instances' %}" class="btn-ghost">{% trans "Cancel" %}</a>
             </div>
         </form>
     </div>

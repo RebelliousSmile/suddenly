@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}{{ game.title }} — {{ SITE_NAME }}{% endblock %}
 
@@ -10,7 +11,7 @@
         <div class="mb-8">
             <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ game.title }}</h1>
             <p class="text-sm text-gray-500">
-                Par @{{ game.owner.username }}
+                {% blocktrans with username=game.owner.username %}By @{{ username }}{% endblocktrans %}
                 {% if game.game_system %}· {{ game.game_system }}{% endif %}
             </p>
             {% if game.description %}
@@ -20,7 +21,7 @@
             {% if is_owner %}
                 <div class="mt-4">
                     <a href="#" class="btn-secondary btn-sm">
-                        <span class="i-lucide-edit"></span> Modifier
+                        <span class="i-lucide-edit"></span> {% trans "Edit" %}
                     </a>
                 </div>
             {% endif %}
@@ -29,7 +30,7 @@
         <!-- Reports -->
         <div class="mb-8">
             <h2 class="text-heading text-xl mb-4">
-                Comptes-rendus {% if reports %}({{ reports|length }}){% endif %}
+                {% trans "Reports" %} {% if reports %}({{ reports|length }}){% endif %}
             </h2>
 
             {% if reports %}
@@ -39,10 +40,10 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <h3 class="font-semibold text-gray-900">
-                                        {{ report.title|default:"Sans titre" }}
+                                        {{ report.title|default:_("Untitled") }}
                                     </h3>
                                     <p class="text-xs text-gray-500">
-                                        par @{{ report.author.username }}
+                                        {% blocktrans with username=report.author.username %}by @{{ username }}{% endblocktrans %}
                                         {% if report.published_at %}· {{ report.published_at|timesince }}{% endif %}
                                     </p>
                                 </div>
@@ -57,14 +58,14 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <p class="text-sm text-gray-500">Aucun compte-rendu publié.</p>
+                <p class="text-sm text-gray-500">{% trans "No published report." %}</p>
             {% endif %}
         </div>
 
         <!-- Characters -->
         <div>
             <h2 class="text-heading text-xl mb-4">
-                Personnages {% if characters %}({{ characters|length }}){% endif %}
+                {% trans "Characters" %} {% if characters %}({{ characters|length }}){% endif %}
             </h2>
 
             {% if characters %}
@@ -80,7 +81,7 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <p class="text-sm text-gray-500">Aucun personnage dans cette partie.</p>
+                <p class="text-sm text-gray-500">{% trans "No characters in this game." %}</p>
             {% endif %}
         </div>
 

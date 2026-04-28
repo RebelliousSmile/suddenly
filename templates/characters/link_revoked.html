@@ -1,19 +1,20 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Lien révoqué — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Link revoked" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-16">
     <div class="container-app max-w-lg text-center">
         <span class="i-lucide-check-circle text-5xl text-amber-500 mb-4 block"></span>
         <h1 class="text-2xl font-bold text-gray-900 mb-2">
-            {% if is_creator %}Lien révoqué{% else %}Renonciation confirmée{% endif %}
+            {% if is_creator %}{% trans "Link revoked" %}{% else %}{% trans "Renunciation confirmed" %}{% endif %}
         </h1>
         <p class="text-gray-600 mb-6">
-            {{ character.name }} est de nouveau disponible comme PNJ.
+            {% blocktrans with name=character.name %}{{ name }} is available again as an NPC.{% endblocktrans %}
         </p>
         <a href="{% url 'characters:detail' slug=character.slug %}" class="btn-primary">
-            Voir la fiche
+            {% trans "View profile" %}
         </a>
     </div>
 </section>

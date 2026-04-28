@@ -1,7 +1,8 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}
-    {% if link_type == 'adopt' %}Adopter{% elif link_type == 'fork' %}Dériver{% else %}Retcon{% endif %}
+    {% if link_type == 'adopt' %}{% trans "Adopt" %}{% elif link_type == 'fork' %}{% trans "Fork" %}{% else %}{% trans "Claim" %}{% endif %}
     {{ character.name }} — {{ SITE_NAME }}
 {% endblock %}
 
@@ -10,7 +11,7 @@
     <div class="container-app max-w-2xl">
 
         <a href="{% url 'characters:link_choose' slug=character.slug %}" class="link-muted text-sm mb-4 block">
-            <span class="i-lucide-arrow-left text-xs"></span> Retour au choix
+            <span class="i-lucide-arrow-left text-xs"></span> {% trans "Back to choice" %}
         </a>
 
         <div class="flex items-center gap-3 mb-6">
@@ -19,24 +20,24 @@
                     <span class="i-lucide-heart text-lg"></span>
                 </span>
                 <div>
-                    <h1 class="text-xl font-bold text-gray-900">Adopter {{ character.name }}</h1>
-                    <p class="text-sm text-gray-500">Adoption</p>
+                    <h1 class="text-xl font-bold text-gray-900">{% blocktrans with name=character.name %}Adopt {{ name }}{% endblocktrans %}</h1>
+                    <p class="text-sm text-gray-500">{% trans "Adoption" %}</p>
                 </div>
             {% elif link_type == 'fork' %}
                 <span class="w-10 h-10 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center">
                     <span class="i-lucide-git-branch text-lg"></span>
                 </span>
                 <div>
-                    <h1 class="text-xl font-bold text-gray-900">Dériver {{ character.name }}</h1>
-                    <p class="text-sm text-gray-500">Dérivation</p>
+                    <h1 class="text-xl font-bold text-gray-900">{% blocktrans with name=character.name %}Fork {{ name }}{% endblocktrans %}</h1>
+                    <p class="text-sm text-gray-500">{% trans "Derivation" %}</p>
                 </div>
             {% else %}
                 <span class="w-10 h-10 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center">
                     <span class="i-lucide-git-merge text-lg"></span>
                 </span>
                 <div>
-                    <h1 class="text-xl font-bold text-gray-900">Retcon sur {{ character.name }}</h1>
-                    <p class="text-sm text-gray-500">Réécriture rétroactive</p>
+                    <h1 class="text-xl font-bold text-gray-900">{% blocktrans with name=character.name %}Retcon on {{ name }}{% endblocktrans %}</h1>
+                    <p class="text-sm text-gray-500">{% trans "Retroactive rewrite" %}</p>
                 </div>
             {% endif %}
         </div>
@@ -52,48 +53,44 @@
 
             {% if link_type == 'adopt' %}
                 <p class="text-sm text-gray-600">
-                    Vous souhaitez reprendre {{ character.name }} comme votre PJ.
-                    @{{ character.creator.username }} devra accepter votre demande.
+                    {% blocktrans with name=character.name username=character.creator.username %}You want to take {{ name }} as your PC. @{{ username }} will need to accept your request.{% endblocktrans %}
                 </p>
             {% elif link_type == 'fork' %}
                 <p class="text-sm text-gray-600">
-                    Vous créez un nouveau PJ inspiré de {{ character.name }}.
-                    {{ character.name }} reste PNJ — votre PJ sera lié par une lignée narrative.
+                    {% blocktrans with name=character.name %}You are creating a new PC inspired by {{ name }}. {{ name }} remains NPC — your PC will be linked by a narrative lineage.{% endblocktrans %}
                 </p>
                 <div>
-                    <label for="fork_name" class="form-label">Nom de votre nouveau PJ</label>
+                    <label for="fork_name" class="form-label">{% trans "Name of your new PC" %}</label>
                     <input type="text" id="fork_name" name="fork_name"
                            value="{{ form_data.fork_name|default:'' }}"
-                           placeholder="Ex: Shadow {{ character.name }}"
+                           placeholder="{% blocktrans with name=character.name %}e.g. Shadow {{ name }}{% endblocktrans %}"
                            class="form-input">
                 </div>
             {% else %}
                 <p class="text-sm text-gray-600">
-                    Vous affirmez que {{ character.name }} était votre PJ depuis le début.
-                    Son histoire sera réinterprétée rétroactivement.
+                    {% blocktrans with name=character.name %}You claim that {{ name }} was your PC from the beginning. Their story will be reinterpreted retroactively.{% endblocktrans %}
                 </p>
             {% endif %}
 
             <div>
-                <label for="message" class="form-label">Votre proposition narrative</label>
+                <label for="message" class="form-label">{% trans "Your narrative proposal" %}</label>
                 <textarea id="message" name="message" rows="5" required
-                          placeholder="Expliquez comment {{ character.name }} s'intègre dans votre histoire et pourquoi ce lien vous intéresse..."
+                          placeholder="{% blocktrans with name=character.name %}Explain how {{ name }} fits into your story and why this link interests you...{% endblocktrans %}"
                           class="{% if error %}form-input-error{% else %}form-input{% endif %}">{{ form_data.message|default:'' }}</textarea>
             </div>
 
             <p class="text-sm text-gray-500">
                 <span class="i-lucide-info text-xs mr-1"></span>
-                Après acceptation, vous co-écrirez une Séquence Partagée avec
-                @{{ character.creator.username }} pour sceller la transition narrative.
+                {% blocktrans with username=character.creator.username %}After acceptance, you will co-write a Shared Sequence with @{{ username }} to seal the narrative transition.{% endblocktrans %}
             </p>
 
             <div class="flex items-center gap-3 pt-4 border-t border-gray-200">
                 <button type="submit" class="btn-primary">
                     <span class="i-lucide-send"></span>
-                    Envoyer la demande
+                    {% trans "Send request" %}
                 </button>
                 <a href="{% url 'characters:detail' slug=character.slug %}" class="btn-ghost">
-                    Annuler
+                    {% trans "Cancel" %}
                 </a>
             </div>
         </form>

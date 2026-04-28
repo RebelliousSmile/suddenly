@@ -1,10 +1,11 @@
-{# 
+{#
   Game Card Component
-  
+
   Usage:
     {% include "components/game_card.html" with game=game %}
     {% include "components/game_card.html" with game=game compact=True %}
 #}
+{% load i18n %}
 
 <article class="card card-hover" id="game-{{ game.id }}">
     <div class="card-body">
@@ -16,9 +17,9 @@
                         {{ game.title }}
                     </a>
                 </h3>
-                
+
                 <div class="flex items-center gap-3 text-sm text-gray-500">
-                    <!-- Propriétaire -->
+                    <!-- Owner -->
                     <span class="flex items-center gap-1">
                         {% if game.owner.avatar %}
                             <img src="{{ game.owner.avatar.url }}" class="avatar-sm">
@@ -27,8 +28,8 @@
                         {% endif %}
                         {{ game.owner.get_display_name }}
                     </span>
-                    
-                    <!-- Système de jeu -->
+
+                    <!-- Game system -->
                     {% if game.game_system %}
                         <span class="flex items-center gap-1">
                             <span class="i-lucide-dice-5 text-xs"></span>
@@ -37,35 +38,35 @@
                     {% endif %}
                 </div>
             </div>
-            
-            <!-- Visibilité -->
+
+            <!-- Visibility -->
             {% if not game.is_public %}
                 <span class="badge-gray">
                     <span class="i-lucide-lock text-xs"></span>
-                    Privée
+                    {% trans "Private" %}
                 </span>
             {% endif %}
         </header>
-        
+
         <!-- Description -->
         {% if game.description and not compact %}
             <p class="text-gray-600 text-sm line-clamp-2 mb-3">
                 {{ game.description }}
             </p>
         {% endif %}
-        
+
         <!-- Stats -->
         <div class="flex items-center gap-4 text-xs text-gray-500">
             <span class="flex items-center gap-1">
                 <span class="i-lucide-file-text"></span>
-                {{ game.reports.count }} compte-rendu{{ game.reports.count|pluralize }}
+                {% blocktrans count counter=game.reports.count %}{{ counter }} report{% plural %}{{ counter }} reports{% endblocktrans %}
             </span>
-            
+
             <span class="flex items-center gap-1">
                 <span class="i-lucide-users"></span>
-                {{ game.characters.count }} personnage{{ game.characters.count|pluralize }}
+                {% blocktrans count counter=game.characters.count %}{{ counter }} character{% plural %}{{ counter }} characters{% endblocktrans %}
             </span>
-            
+
             {% if game.updated_at %}
                 <span class="flex items-center gap-1 ml-auto">
                     <span class="i-lucide-clock"></span>
@@ -74,15 +75,15 @@
             {% endif %}
         </div>
     </div>
-    
-    <!-- Derniers personnages (optionnel) -->
+
+    <!-- Recent characters (optional) -->
     {% if not compact and game.characters.exists %}
         <div class="card-footer">
-            <p class="text-xs text-gray-500 mb-2">Personnages récents</p>
+            <p class="text-xs text-gray-500 mb-2">{% trans "Recent characters" %}</p>
             <div class="flex -space-x-2">
                 {% for character in game.characters.all|slice:":5" %}
                     {% if character.avatar %}
-                        <img src="{{ character.avatar.url }}" 
+                        <img src="{{ character.avatar.url }}"
                              alt="{{ character.name }}"
                              title="{{ character.name }}"
                              class="avatar-sm ring-2 ring-white">
@@ -93,7 +94,7 @@
                         </span>
                     {% endif %}
                 {% endfor %}
-                
+
                 {% if game.characters.count > 5 %}
                     <span class="avatar-sm bg-gray-100 text-gray-600 ring-2 ring-white flex items-center justify-center text-xs font-medium">
                         +{{ game.characters.count|add:"-5" }}

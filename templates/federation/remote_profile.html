@@ -1,13 +1,14 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Profil distant — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Remote profile" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
     <div class="container-app max-w-2xl">
 
         <a href="{% url 'federation:search' %}" class="link-muted text-sm mb-4 block">
-            <span class="i-lucide-arrow-left text-xs"></span> Retour à la recherche
+            <span class="i-lucide-arrow-left text-xs"></span> {% trans "Back to search" %}
         </a>
 
         {% if error %}
@@ -16,7 +17,7 @@
                 <p class="text-gray-500">{{ error }}</p>
             </div>
         {% elif actor %}
-            {% include "components/status_banner.html" with type="info" icon="globe" message="Ce profil est hébergé sur "|add:domain|add:". Les données affichées sont partagées via ActivityPub." %}
+            {% include "components/status_banner.html" with type="info" icon="globe" message=_("This profile is hosted on ")|add:domain|add:_(". The displayed data is shared via ActivityPub.") %}
             <div class="mb-4"></div>
 
             <div class="card card-body">
@@ -47,7 +48,7 @@
 
             <p class="text-sm text-gray-500 mt-4">
                 <a href="{{ ap_id }}" class="link-muted" target="_blank" rel="noopener">
-                    Voir le profil complet sur {{ domain }}
+                    {% blocktrans with d=domain %}View full profile on {{ d }}{% endblocktrans %}
                     <span class="i-lucide-external-link text-xs"></span>
                 </a>
             </p>

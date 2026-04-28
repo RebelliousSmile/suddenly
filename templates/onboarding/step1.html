@@ -1,14 +1,15 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Bienvenue — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Welcome" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-12">
     <div class="container-app max-w-lg">
 
-        <p class="text-sm text-gray-500 mb-2">Étape 1 de 3</p>
+        <p class="text-sm text-gray-500 mb-2">{% trans "Step 1 of 3" %}</p>
         <h1 class="text-2xl font-bold text-gray-900 mb-6">
-            Bienvenue sur {{ SITE_NAME }}, {{ user.username }} !
+            {% blocktrans with name=SITE_NAME username=user.username %}Welcome to {{ name }}, {{ username }}!{% endblocktrans %}
         </h1>
 
         <form method="post" class="card card-body space-y-4">
@@ -16,29 +17,29 @@
 
             <div>
                 <label for="display_name" class="form-label">
-                    Nom d'affichage <span class="text-gray-500">(optionnel)</span>
+                    {% trans "Display name" %} <span class="text-gray-500">({% trans "optional" %})</span>
                 </label>
                 <input type="text" id="display_name" name="display_name"
                        value="{{ user.display_name|default:'' }}"
-                       placeholder="Comment voulez-vous être appelé ?"
+                       placeholder="{% trans "What do you want to be called?" %}"
                        class="form-input">
             </div>
 
             <div>
                 <label for="bio" class="form-label">
-                    Biographie <span class="text-gray-500">(optionnel)</span>
+                    {% trans "Biography" %} <span class="text-gray-500">({% trans "optional" %})</span>
                 </label>
                 <textarea id="bio" name="bio" rows="3"
-                          placeholder="Présentez-vous en quelques mots..."
+                          placeholder="{% trans "Introduce yourself in a few words..." %}"
                           class="form-input">{{ user.bio|default:'' }}</textarea>
             </div>
 
             <div class="flex items-center justify-between pt-4">
                 <a href="{% url 'feed:onboarding_step2' %}" class="link-muted text-sm">
-                    Passer cette étape
+                    {% trans "Skip this step" %}
                 </a>
                 <button type="submit" class="btn-primary">
-                    Continuer
+                    {% trans "Continue" %}
                     <span class="i-lucide-arrow-right text-sm"></span>
                 </button>
             </div>

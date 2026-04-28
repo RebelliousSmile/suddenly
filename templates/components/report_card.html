@@ -1,10 +1,11 @@
-{# 
+{#
   Report Card Component
-  
+
   Usage:
     {% include "components/report_card.html" with report=report %}
     {% include "components/report_card.html" with report=report show_game=True %}
 #}
+{% load i18n %}
 
 <article class="card card-hover" id="report-{{ report.id }}">
     <div class="card-body">
@@ -29,7 +30,7 @@
                     {% if report.status == 'draft' %}
                         <span class="badge-gray">
                             <span class="i-lucide-pencil text-xs"></span>
-                            Brouillon
+                            {% trans "Draft" %}
                         </span>
                     {% endif %}
                 </div>
@@ -79,7 +80,7 @@
                     
                     {% if report.character_appearances.count > 6 %}
                         <span class="inline-flex items-center px-2 py-1 text-xs text-gray-500">
-                            +{{ report.character_appearances.count|add:"-6" }} autres
+                            +{{ report.character_appearances.count|add:"-6" }}
                         </span>
                     {% endif %}
                 </div>
@@ -103,7 +104,7 @@
             </button>
             
             <a href="#" class="btn-ghost btn-sm text-gray-500 ml-auto">
-                Lire la suite
+                {% trans "Read more" %}
                 <span class="i-lucide-arrow-right text-xs"></span>
             </a>
         </footer>

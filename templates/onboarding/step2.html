@@ -1,28 +1,29 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Découvrir — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Discover" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-12">
     <div class="container-app max-w-lg">
 
         <div class="flex items-center justify-between mb-2">
-            <p class="text-sm text-gray-500">Étape 2 de 3</p>
+            <p class="text-sm text-gray-500">{% trans "Step 2 of 3" %}</p>
             <a href="{% url 'feed:onboarding_step1' %}" class="link-muted text-sm">
-                <span class="i-lucide-arrow-left text-xs"></span> Retour
+                <span class="i-lucide-arrow-left text-xs"></span> {% trans "Back" %}
             </a>
         </div>
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">Découvrez votre instance</h1>
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">{% trans "Discover your instance" %}</h1>
 
         <!-- Local timeline preview -->
         {% if recent_reports %}
             <div class="mb-6">
-                <h2 class="text-heading text-sm mb-3">Activité récente</h2>
+                <h2 class="text-heading text-sm mb-3">{% trans "Recent activity" %}</h2>
                 <div class="space-y-2">
                     {% for report in recent_reports %}
                         <div class="card card-body text-sm">
-                            <strong>{{ report.title|default:"Sans titre" }}</strong>
-                            <span class="text-gray-500">par @{{ report.author.username }}</span>
+                            <strong>{{ report.title|default:_("Untitled") }}</strong>
+                            <span class="text-gray-500">{% blocktrans with username=report.author.username %}by @{{ username }}{% endblocktrans %}</span>
                         </div>
                     {% endfor %}
                 </div>
@@ -32,7 +33,7 @@
         <!-- Suggested users -->
         {% if suggested_users %}
             <div class="mb-6">
-                <h2 class="text-heading text-sm mb-3">Joueurs actifs</h2>
+                <h2 class="text-heading text-sm mb-3">{% trans "Active players" %}</h2>
                 <div class="space-y-2">
                     {% for u in suggested_users %}
                         <div class="flex items-center justify-between py-2">
@@ -46,7 +47,7 @@
         <!-- Suggested games -->
         {% if suggested_games %}
             <div class="mb-6">
-                <h2 class="text-heading text-sm mb-3">Parties populaires</h2>
+                <h2 class="text-heading text-sm mb-3">{% trans "Popular games" %}</h2>
                 <div class="space-y-2">
                     {% for g in suggested_games %}
                         <div class="card card-body text-sm">
@@ -60,10 +61,10 @@
 
         <div class="flex items-center justify-between pt-4">
             <a href="{% url 'feed:onboarding_step3' %}" class="link-muted text-sm">
-                Passer cette étape
+                {% trans "Skip this step" %}
             </a>
             <a href="{% url 'feed:onboarding_step3' %}" class="btn-primary">
-                Continuer
+                {% trans "Continue" %}
                 <span class="i-lucide-arrow-right text-sm"></span>
             </a>
         </div>

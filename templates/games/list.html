@@ -1,16 +1,17 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Parties — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Games" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
     <div class="container-app">
         <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl font-bold text-gray-900">Parties</h1>
+            <h1 class="text-2xl font-bold text-gray-900">{% trans "Games" %}</h1>
             {% if user.is_authenticated %}
                 <a href="{% url 'games:create' %}" class="btn-primary btn-sm">
                     <span class="i-lucide-plus"></span>
-                    Nouvelle partie
+                    {% trans "New game" %}
                 </a>
             {% endif %}
         </div>

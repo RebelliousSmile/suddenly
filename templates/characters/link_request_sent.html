@@ -1,24 +1,23 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Demande envoyée — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Request sent" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-16">
     <div class="container-app max-w-lg text-center">
         <span class="i-lucide-check-circle text-5xl text-secondary-500 mb-4 block"></span>
-        <h1 class="text-2xl font-bold text-gray-900 mb-2">Demande envoyée !</h1>
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">{% trans "Request sent!" %}</h1>
         <p class="text-gray-600 mb-6">
-            Votre demande
-            {% if link_type == 'adopt' %}d'Adoption{% elif link_type == 'fork' %}de Dérivation{% else %}de Retcon{% endif %}
-            a été envoyée à @{{ character.creator.username }}.
-            Vous serez notifié de sa décision.
+            {% if link_type == 'adopt' %}{% trans "Your Adoption request" %}{% elif link_type == 'fork' %}{% trans "Your Derivation request" %}{% else %}{% trans "Your Retcon request" %}{% endif %}
+            {% blocktrans with username=character.creator.username %}has been sent to @{{ username }}. You will be notified of their decision.{% endblocktrans %}
         </p>
         <div class="flex items-center justify-center gap-3">
             <a href="{% url 'characters:detail' slug=character.slug %}" class="btn-primary">
-                Voir la fiche
+                {% trans "View profile" %}
             </a>
             <a href="{% url 'characters:link_requests' %}?tab=sent" class="btn-secondary">
-                Mes demandes
+                {% trans "My requests" %}
             </a>
         </div>
     </div>

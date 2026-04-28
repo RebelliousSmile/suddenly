@@ -1,4 +1,5 @@
 {# Partial: notification items #}
+{% load i18n %}
 
 {% if notifications %}
     <div class="divide-y divide-gray-100">
@@ -52,6 +53,6 @@
 {% else %}
     <div class="text-center py-16">
         <span class="i-lucide-bell text-5xl text-gray-300 mb-4 block"></span>
-        <p class="text-gray-500">Aucune notification.</p>
+        <p class="text-gray-500">{% trans "No notifications." %}</p>
     </div>
 {% endif %}

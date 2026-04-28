@@ -1,26 +1,27 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Fédération — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Federation" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
     <div class="container-app max-w-2xl">
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">Fédération</h1>
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">{% trans "Federation" %}</h1>
 
         <div class="card card-body mb-6">
-            <h2 class="text-heading mb-3">Votre identifiant ActivityPub</h2>
+            <h2 class="text-heading mb-3">{% trans "Your ActivityPub identifier" %}</h2>
             <p class="text-sm text-gray-600 mb-2">@{{ user.username }}@{{ DOMAIN }}</p>
         </div>
 
         <div class="card card-body">
-            <h2 class="text-heading mb-3">Données</h2>
+            <h2 class="text-heading mb-3">{% trans "Data" %}</h2>
             <div class="space-y-3">
                 <a href="{% url 'users:export_follows' %}" class="btn-secondary btn-sm">
                     <span class="i-lucide-download text-sm"></span>
-                    Exporter mes follows (CSV)
+                    {% trans "Export my follows (CSV)" %}
                 </a>
                 <a href="{% url 'users:settings_data' %}" class="btn-ghost btn-sm">
-                    Importer / Migrer
+                    {% trans "Import / Migrate" %}
                 </a>
             </div>
         </div>
