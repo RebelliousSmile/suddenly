@@ -13,7 +13,7 @@ def site_settings(request: object) -> dict[str, str]:
     return {
         "SITE_NAME": getattr(settings, "SITE_NAME", "Suddenly"),
         "SITE_DESCRIPTION": getattr(
-            settings, "SITE_DESCRIPTION", _("Federated shared fiction network")
+            settings, "SITE_DESCRIPTION", str(_("Federated shared fiction network"))
         ),
         "DOMAIN": getattr(settings, "DOMAIN", "localhost"),
         "APP_VERSION": get_version(),
