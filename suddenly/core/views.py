@@ -15,7 +15,20 @@ from django.shortcuts import render
 
 def home(request: HttpRequest) -> HttpResponse:
     """Home page."""
-    return render(request, "core/home.html")
+    from suddenly.games.models import Report, ReportStatus
+
+    recent_reports = (
+        Report.objects.filter(
+            status=ReportStatus.PUBLISHED,
+            visibility="public",
+            remote=False,
+        )
+        .select_related("author", "game")
+        .prefetch_related("cast", "quotes")
+        .order_by("-published_at")[:3]
+    )
+
+    return render(request, "core/home.html", {"recent_reports": recent_reports})
 
 
 def about(request: HttpRequest) -> HttpResponse:

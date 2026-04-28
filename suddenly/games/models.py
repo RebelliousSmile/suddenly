@@ -4,6 +4,7 @@ Game and Report models for Suddenly.
 
 from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from suddenly.core.models import BaseModel
 
@@ -59,16 +60,16 @@ class Game(BaseModel):
 
 
 class ReportStatus(models.TextChoices):
-    DRAFT = "draft", "Brouillon"
-    PUBLISHED = "published", "Publié"
+    DRAFT = "draft", _("Draft")
+    PUBLISHED = "published", _("Published")
 
 
 class ReportVisibility(models.TextChoices):
     """Fediverse-compatible visibility scopes (US-29)."""
 
-    PUBLIC = "public", "Public"
-    UNLISTED = "unlisted", "Non-listé"
-    FOLLOWERS = "followers", "Abonnés uniquement"
+    PUBLIC = "public", _("Public")
+    UNLISTED = "unlisted", _("Unlisted")
+    FOLLOWERS = "followers", _("Followers only")
 
 
 class Report(BaseModel):
@@ -129,9 +130,9 @@ class Report(BaseModel):
 class CastRole(models.TextChoices):
     """Role of a character in the cast."""
 
-    MAIN = "main", "Principal"
-    SUPPORTING = "supporting", "Secondaire"
-    MENTIONED = "mentioned", "Mentionné"
+    MAIN = "main", _("Main")
+    SUPPORTING = "supporting", _("Supporting")
+    MENTIONED = "mentioned", _("Mentioned")
 
 
 class ReportCast(BaseModel):
