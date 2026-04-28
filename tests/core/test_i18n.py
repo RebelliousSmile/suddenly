@@ -9,7 +9,6 @@ from pathlib import Path
 import pytest
 from django.test import Client, override_settings
 
-
 LOCALE_DIR = Path(__file__).resolve().parents[2] / "locale"
 
 
