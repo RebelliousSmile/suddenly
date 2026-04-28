@@ -15,6 +15,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from suddenly.core.types import AuthenticatedRequest
+from suddenly.users.models import User
 
 
 @login_required
@@ -109,7 +110,7 @@ def _get_domain() -> str:
     return getattr(settings, "DOMAIN", "localhost")
 
 
-def _resolve_and_follow(follower: object, address: str) -> bool:
+def _resolve_and_follow(follower: User, address: str) -> bool:
     """Resolve a @user@instance address and create Follow. Returns True on success."""
     import logging
 
