@@ -13,17 +13,17 @@ const presetSuddenly = () => ({
   name: 'suddenly',
   theme: {
     colors: {
-      // Dark cosmos palette
-      background: '#0a0915',
-      surface: '#100e20',
+      // Semi-dark palette (GitHub Dark / Linear inspired)
+      background: '#0d0d17',
+      surface: '#16162b',
       card: {
-        DEFAULT: '#18162a',
-        dark: '#211e36',
+        DEFAULT: '#1e1e38',
+        dark: '#262645',
       },
-      border: '#2d2845',
-      primary: '#ede8f5',
-      secondary: '#b0a8cc',
-      muted: '#7a7290',
+      border: '#38386a',
+      primary: '#eeeeff',
+      secondary: '#9898c0',
+      muted: '#66667a',
       crimson: {
         DEFAULT: '#e03558',
         hover: '#c82a4a',
