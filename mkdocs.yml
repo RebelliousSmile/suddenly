@@ -26,6 +26,10 @@ extra_css:
   - stylesheets/extra.css
   - stylesheets/design-system.css
 
+extra_javascript:
+  - https://unpkg.com/lucide@latest
+  - javascripts/icons.js
+
 plugins:
   - search
 

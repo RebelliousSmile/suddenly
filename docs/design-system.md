@@ -603,7 +603,7 @@ Used whenever a list has no items. Always includes icon + title, optionally desc
 <div class="sd-light">
 <span class="sd-label">Light mode — with CTA</span>
 <div class="sd-empty-state">
-  <span class="sd-empty-icon">📖</span>
+  <span class="sd-empty-icon"><i data-lucide="book-open"></i></span>
   <p class="sd-empty-title">No games yet</p>
   <p class="sd-empty-desc">Create your first game to start publishing session reports.</p>
   <button class="sd-btn sd-btn-primary sd-btn-sm">New game</button>
@@ -613,7 +613,7 @@ Used whenever a list has no items. Always includes icon + title, optionally desc
 <div class="sd-dark">
 <span class="sd-label">Dark mode — search empty</span>
 <div class="sd-empty-state">
-  <span class="sd-empty-icon" style="filter:grayscale(0.3)">🔍</span>
+  <span class="sd-empty-icon"><i data-lucide="search-x"></i></span>
   <p class="sd-empty-title" style="color:#f0f0f0">No characters found</p>
   <p class="sd-empty-desc" style="color:#606060">Try different search terms or filters.</p>
 </div>
@@ -726,7 +726,7 @@ Optional fields carry `(optional)` in muted text next to the label.
 <div class="sd-light">
 <span class="sd-label">Light mode</span>
 <div class="sd-dropzone">
-  <span style="font-size:2rem;display:block;margin-bottom:0.5rem">⬆</span>
+  <i data-lucide="upload"></i>
   <p style="font-size:0.875rem;margin:0"><span style="color:#e03558;font-weight:500;cursor:pointer">Upload a file</span> or drag and drop</p>
   <p style="font-size:0.75rem;color:#8a8aaa;margin:0.25rem 0 0">PNG, JPG up to 2 MB</p>
 </div>
@@ -735,7 +735,7 @@ Optional fields carry `(optional)` in muted text next to the label.
 <div class="sd-dark">
 <span class="sd-label">Dark mode</span>
 <div class="sd-dropzone" style="background:#1a1a1a;border-color:#2a2a2a">
-  <span style="font-size:2rem;display:block;margin-bottom:0.5rem;filter:grayscale(0.5)">⬆</span>
+  <i data-lucide="upload"></i>
   <p style="font-size:0.875rem;margin:0;color:#a0a0a0"><span style="color:#e03558;font-weight:500;cursor:pointer">Upload a file</span> or drag and drop</p>
   <p style="font-size:0.75rem;color:#606060;margin:0.25rem 0 0">PNG, JPG up to 2 MB</p>
 </div>
@@ -812,3 +812,242 @@ Used at the top of a form when server-side validation fails.
 <span class="sd-label">Dark mode</span>
 <div class="sd-error-banner">A game with this title already exists.</div>
 </div>
+
+---
+
+## Icons
+
+Suddenly uses three icon sources with distinct roles:
+
+| Library | Prefix | Role |
+|---------|--------|------|
+| [Lucide](https://lucide.dev) | `i-lucide-*` | UI chrome — navigation, actions, status |
+| [Game Icons](https://game-icons.net) | `i-game-icons-*` | Thematic — empty states, section art, RPG concepts |
+| [Simple Icons](https://simpleicons.org) | `i-simple-icons-*` | Brand logos (Mastodon, ActivityPub) |
+
+All three are loaded via UnoCSS + Iconify. Icons are rendered as CSS masks — size via `text-*`, color via `text-*` tokens.
+
+```html
+<!-- Lucide — UI -->
+<span class="i-lucide-book-open text-xl text-secondary"></span>
+
+<!-- Game Icons — thematic / decorative -->
+<span class="i-game-icons-open-book text-4xl text-muted"></span>
+
+<!-- Simple Icons — brand -->
+<span class="i-simple-icons-mastodon text-lg hover:text-violet"></span>
+```
+
+> **Keep the icon set small.** Every icon not in this list must be added to the `safelist` in `uno.config.js` to survive the UnoCSS tree-shake.
+
+---
+
+### UI Icons — Lucide
+
+Used for all interface controls. Never use Lucide icons decoratively — they are functional and should always carry a readable label or `aria-label`.
+
+#### Navigation & Layout
+
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-icon-grid">
+  <div class="sd-icon-item"><i data-lucide="home"></i><span class="sd-icon-name">home</span></div>
+  <div class="sd-icon-item"><i data-lucide="search"></i><span class="sd-icon-name">search</span></div>
+  <div class="sd-icon-item"><i data-lucide="bell"></i><span class="sd-icon-name">bell</span></div>
+  <div class="sd-icon-item"><i data-lucide="inbox"></i><span class="sd-icon-name">inbox</span></div>
+  <div class="sd-icon-item"><i data-lucide="compass"></i><span class="sd-icon-name">compass</span></div>
+  <div class="sd-icon-item"><i data-lucide="more-horizontal"></i><span class="sd-icon-name">more-horizontal</span></div>
+  <div class="sd-icon-item"><i data-lucide="chevron-right"></i><span class="sd-icon-name">chevron-right</span></div>
+  <div class="sd-icon-item"><i data-lucide="arrow-left"></i><span class="sd-icon-name">arrow-left</span></div>
+  <div class="sd-icon-item"><i data-lucide="arrow-right"></i><span class="sd-icon-name">arrow-right</span></div>
+  <div class="sd-icon-item"><i data-lucide="external-link"></i><span class="sd-icon-name">external-link</span></div>
+  <div class="sd-icon-item"><i data-lucide="rss"></i><span class="sd-icon-name">rss</span></div>
+  <div class="sd-icon-item"><i data-lucide="sun"></i><span class="sd-icon-name">sun</span></div>
+  <div class="sd-icon-item"><i data-lucide="moon"></i><span class="sd-icon-name">moon</span></div>
+</div>
+</div>
+
+#### Users & Characters
+
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-icon-grid">
+  <div class="sd-icon-item"><i data-lucide="user"></i><span class="sd-icon-name">user</span></div>
+  <div class="sd-icon-item"><i data-lucide="users"></i><span class="sd-icon-name">users</span></div>
+  <div class="sd-icon-item"><i data-lucide="user-check"></i><span class="sd-icon-name">user-check</span></div>
+  <div class="sd-icon-item"><i data-lucide="user-plus"></i><span class="sd-icon-name">user-plus</span></div>
+  <div class="sd-icon-item"><i data-lucide="at-sign"></i><span class="sd-icon-name">at-sign</span></div>
+  <div class="sd-icon-item"><i data-lucide="star"></i><span class="sd-icon-name">star</span></div>
+  <div class="sd-icon-item"><i data-lucide="circle-dot"></i><span class="sd-icon-name">circle-dot</span></div>
+  <div class="sd-icon-item"><i data-lucide="heart"></i><span class="sd-icon-name">heart</span></div>
+</div>
+</div>
+
+#### Character Link types
+
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-icon-grid">
+  <div class="sd-icon-item sd-icon-crimson"><i data-lucide="git-merge"></i><span class="sd-icon-name">git-merge<br><em>Claim</em></span></div>
+  <div class="sd-icon-item sd-icon-crimson"><i data-lucide="user-plus"></i><span class="sd-icon-name">user-plus<br><em>Adopt</em></span></div>
+  <div class="sd-icon-item sd-icon-crimson"><i data-lucide="git-branch"></i><span class="sd-icon-name">git-branch<br><em>Fork</em></span></div>
+  <div class="sd-icon-item"><i data-lucide="link"></i><span class="sd-icon-name">link</span></div>
+</div>
+</div>
+
+#### Content & Actions
+
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-icon-grid">
+  <div class="sd-icon-item"><i data-lucide="book-open"></i><span class="sd-icon-name">book-open</span></div>
+  <div class="sd-icon-item"><i data-lucide="file-text"></i><span class="sd-icon-name">file-text</span></div>
+  <div class="sd-icon-item"><i data-lucide="quote"></i><span class="sd-icon-name">quote</span></div>
+  <div class="sd-icon-item"><i data-lucide="message-circle"></i><span class="sd-icon-name">message-circle</span></div>
+  <div class="sd-icon-item"><i data-lucide="sparkles"></i><span class="sd-icon-name">sparkles</span></div>
+  <div class="sd-icon-item"><i data-lucide="dice-5"></i><span class="sd-icon-name">dice-5</span></div>
+  <div class="sd-icon-item"><i data-lucide="clock"></i><span class="sd-icon-name">clock</span></div>
+  <div class="sd-icon-item"><i data-lucide="plus"></i><span class="sd-icon-name">plus</span></div>
+  <div class="sd-icon-item"><i data-lucide="edit-2"></i><span class="sd-icon-name">edit-2</span></div>
+  <div class="sd-icon-item"><i data-lucide="pencil"></i><span class="sd-icon-name">pencil</span></div>
+  <div class="sd-icon-item"><i data-lucide="trash"></i><span class="sd-icon-name">trash</span></div>
+  <div class="sd-icon-item"><i data-lucide="check"></i><span class="sd-icon-name">check</span></div>
+  <div class="sd-icon-item"><i data-lucide="check-circle"></i><span class="sd-icon-name">check-circle</span></div>
+  <div class="sd-icon-item"><i data-lucide="x"></i><span class="sd-icon-name">x</span></div>
+  <div class="sd-icon-item"><i data-lucide="save"></i><span class="sd-icon-name">save</span></div>
+  <div class="sd-icon-item"><i data-lucide="send"></i><span class="sd-icon-name">send</span></div>
+  <div class="sd-icon-item"><i data-lucide="share"></i><span class="sd-icon-name">share</span></div>
+  <div class="sd-icon-item"><i data-lucide="download"></i><span class="sd-icon-name">download</span></div>
+  <div class="sd-icon-item"><i data-lucide="upload"></i><span class="sd-icon-name">upload</span></div>
+  <div class="sd-icon-item"><i data-lucide="flag"></i><span class="sd-icon-name">flag</span></div>
+</div>
+</div>
+
+#### Status & Feedback
+
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-icon-grid">
+  <div class="sd-icon-item"><i data-lucide="info"></i><span class="sd-icon-name">info</span></div>
+  <div class="sd-icon-item"><i data-lucide="alert-triangle"></i><span class="sd-icon-name">alert-triangle</span></div>
+  <div class="sd-icon-item"><i data-lucide="search-x"></i><span class="sd-icon-name">search-x</span></div>
+  <div class="sd-icon-item"><i data-lucide="lock"></i><span class="sd-icon-name">lock</span></div>
+  <div class="sd-icon-item"><i data-lucide="unlock"></i><span class="sd-icon-name">unlock</span></div>
+  <div class="sd-icon-item"><i data-lucide="globe"></i><span class="sd-icon-name">globe</span></div>
+</div>
+</div>
+
+---
+
+### Thematic Icons — Game Icons
+
+Used for empty states, section illustrations, and decorative accents. Never use for functional controls — these icons are for atmosphere, not interaction.
+
+Game Icons are free under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). Loaded via `@iconify-json/game-icons`.
+
+| Concept | Icon | Usage |
+|---------|------|-------|
+| Games / Campaigns | `i-game-icons-open-book` | Empty state — no games |
+| Session Reports | `i-game-icons-scroll-quill` | Empty state — no reports |
+| Characters / NPCs | `i-game-icons-two-shadows` | Empty state — no characters |
+| Quotes | `i-game-icons-speech-bubbles` | Empty state — no quotes |
+| Dice / Game system | `i-game-icons-dice-six-faces-four` | Game system badge |
+| Claim link | `i-game-icons-shackles` | Claim relationship art |
+| Adopt link | `i-game-icons-hand` | Adopt relationship art |
+| Fork link | `i-game-icons-divergence` | Fork relationship art |
+| Federation | `i-game-icons-rss` | Federation / ActivityPub |
+
+<div class="sd-light">
+<span class="sd-label">Light mode — thematic icons at empty-state scale</span>
+<div class="sd-icon-grid" style="grid-template-columns:repeat(auto-fill,minmax(96px,1fr))">
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/open-book.svg?color=%238a8aaa" width="40" height="40" alt="open-book">
+    <span class="sd-icon-name">open-book</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/scroll-quill.svg?color=%238a8aaa" width="40" height="40" alt="scroll-quill">
+    <span class="sd-icon-name">scroll-quill</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/two-shadows.svg?color=%238a8aaa" width="40" height="40" alt="two-shadows">
+    <span class="sd-icon-name">two-shadows</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/speech-bubbles.svg?color=%238a8aaa" width="40" height="40" alt="speech-bubbles">
+    <span class="sd-icon-name">speech-bubbles</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/dice-six-faces-four.svg?color=%238a8aaa" width="40" height="40" alt="dice">
+    <span class="sd-icon-name">dice-six-faces-four</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/shackles.svg?color=%23e03558" width="40" height="40" alt="shackles">
+    <span class="sd-icon-name">shackles<br><em>Claim</em></span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/hand.svg?color=%23e03558" width="40" height="40" alt="hand">
+    <span class="sd-icon-name">hand<br><em>Adopt</em></span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/divergence.svg?color=%23e03558" width="40" height="40" alt="divergence">
+    <span class="sd-icon-name">divergence<br><em>Fork</em></span>
+  </div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-icon-grid" style="grid-template-columns:repeat(auto-fill,minmax(96px,1fr))">
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/open-book.svg?color=%23606060" width="40" height="40" alt="open-book">
+    <span class="sd-icon-name" style="color:#606060">open-book</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/scroll-quill.svg?color=%23606060" width="40" height="40" alt="scroll-quill">
+    <span class="sd-icon-name" style="color:#606060">scroll-quill</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/two-shadows.svg?color=%23606060" width="40" height="40" alt="two-shadows">
+    <span class="sd-icon-name" style="color:#606060">two-shadows</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/speech-bubbles.svg?color=%23606060" width="40" height="40" alt="speech-bubbles">
+    <span class="sd-icon-name" style="color:#606060">speech-bubbles</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/dice-six-faces-four.svg?color=%23606060" width="40" height="40" alt="dice">
+    <span class="sd-icon-name" style="color:#606060">dice-six-faces-four</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/shackles.svg?color=%23e03558" width="40" height="40" alt="shackles">
+    <span class="sd-icon-name" style="color:#606060">shackles<br><em>Claim</em></span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/hand.svg?color=%23e03558" width="40" height="40" alt="hand">
+    <span class="sd-icon-name" style="color:#606060">hand<br><em>Adopt</em></span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/divergence.svg?color=%23e03558" width="40" height="40" alt="divergence">
+    <span class="sd-icon-name" style="color:#606060">divergence<br><em>Fork</em></span>
+  </div>
+</div>
+</div>
+
+---
+
+### Brand / Federation — Simple Icons
+
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-icon-grid">
+  <div class="sd-icon-item">
+    <svg role="img" viewBox="0 0 24 24" width="22" height="22" fill="#1a1a2e" xmlns="http://www.w3.org/2000/svg"><title>Mastodon</title><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>
+    <span class="sd-icon-name">mastodon</span>
+  </div>
+  <div class="sd-icon-item">
+    <svg role="img" viewBox="0 0 24 24" width="22" height="22" fill="#1a1a2e" xmlns="http://www.w3.org/2000/svg"><title>ActivityPub</title><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-.586 4.57c.22-.006.44.004.657.03l-2.64 4.573-2.64-4.573a7.96 7.96 0 0 1 4.623-.03zm3.965 1.055l-2.64 4.573 2.64 4.573a7.96 7.96 0 0 1 0-9.146zm-7.931 0a7.96 7.96 0 0 1 0 9.146L4.808 10.2l2.64-4.574zm9.895 1.945a7.96 7.96 0 0 1 .03 4.623l-4.573-2.64 4.543-1.983zm-11.858.03l4.543 1.984-4.573 2.64a7.96 7.96 0 0 1 .03-4.624zm5.929 2.97l2.64 4.572h-5.28l2.64-4.573zm3.965 1.055l4.573 2.64a7.96 7.96 0 0 1-.03 4.623l-4.543-7.263zm-7.93 0l-4.543 7.263a7.96 7.96 0 0 1-.03-4.623l4.573-2.64zm3.965 2.97l2.64 4.574a7.96 7.96 0 0 1-5.28 0l2.64-4.573zm1.325 5.628l-1.325-2.296-1.325 2.296a7.96 7.96 0 0 0 2.65 0z"/></svg>
+    <span class="sd-icon-name">activitypub</span>
+  </div>
+</div>
+</div>
+
