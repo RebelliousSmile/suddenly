@@ -32,3 +32,5 @@ body {
 }
 
 a { text-decoration: none; }
+
+[x-cloak] { display: none !important; }

@@ -2,6 +2,15 @@
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:'en' }}" class="h-full" x-data="theme">
 <head>
+    <!-- Anti-flash: set theme before CSS loads -->
+    <script>
+(function(){
+  var t = localStorage.getItem('theme') ||
+    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.dataset.theme = t;
+})();
+</script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
@@ -13,15 +22,6 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-
-    <!-- Anti-flash: set theme before CSS loads -->
-    <script>
-(function(){
-  var t = localStorage.getItem('theme') ||
-    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  document.documentElement.dataset.theme = t;
-})();
-</script>
 
     <!-- Styles (Vite build with cache-busting) -->
     {% vite_css %}
@@ -109,8 +109,8 @@
                     <button @click="toggle()"
                             class="p-2 text-muted hover:text-primary transition-colors"
                             :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
-                        <span x-show="isDark" class="i-lucide-sun text-xl"></span>
-                        <span x-show="!isDark" class="i-lucide-moon text-xl"></span>
+                        <span x-show="isDark" x-cloak class="i-lucide-sun text-xl"></span>
+                        <span x-show="!isDark" x-cloak class="i-lucide-moon text-xl"></span>
                     </button>
 
                     <!-- Language switcher (anonymous; authenticated users use profile) -->
@@ -164,8 +164,8 @@
                 <button @click="toggle()"
                         class="flex items-center gap-2 py-2 text-secondary hover:text-primary transition-colors w-full"
                         :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
-                    <span x-show="isDark" class="i-lucide-sun text-xl"></span>
-                    <span x-show="!isDark" class="i-lucide-moon text-xl"></span>
+                    <span x-show="isDark" x-cloak class="i-lucide-sun text-xl"></span>
+                    <span x-show="!isDark" x-cloak class="i-lucide-moon text-xl"></span>
                     <span x-text="isDark ? '{% trans "Light mode" %}' : '{% trans "Dark mode" %}'"></span>
                 </button>
             </div>
@@ -245,7 +245,7 @@
     </div>
 
     <!-- Loading indicator (styles in frontend/src/htmx-indicator.css) -->
-    <div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-crimson z-toast"></div>
+    <div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-violet z-toast"></div>
 
     <!-- Scripts (Vite build with cache-busting) -->
     {% vite_asset "src/main.js" %}
