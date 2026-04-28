@@ -10,7 +10,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SITE_NAME = "Suddenly"
-SITE_DESCRIPTION = "Réseau fédéré de fiction partagée"
+SITE_DESCRIPTION = None  # Translated at runtime via context processor
 
 # =================================================================
 # APPLICATION DEFINITION
