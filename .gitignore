@@ -42,6 +42,9 @@ db.sqlite3-journal
 
 # Static files (collected by collectstatic)
 staticfiles/
+
+# i18n compiled catalogs (generated at deploy time)
+locale/*/LC_MESSAGES/*.mo
 # Vite build output
 static/dist/
 

@@ -43,6 +43,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -102,7 +103,12 @@ LOGOUT_REDIRECT_URL = "/"
 # INTERNATIONALIZATION
 # =================================================================
 
-LANGUAGE_CODE = "fr-fr"
+LANGUAGE_CODE = os.environ.get("LANGUAGE_CODE", "fr")
+LANGUAGES = [
+    ("en", "English"),
+    ("fr", "Français"),
+]
+LOCALE_PATHS = [BASE_DIR / "locale"]
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True

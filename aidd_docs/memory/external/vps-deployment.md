@@ -35,7 +35,8 @@ sudo apt install -y \
     git \
     certbot python3-certbot-nginx \
     build-essential \
-    libpq-dev
+    libpq-dev \
+    gettext
 ```
 
 ### 1.3 Créer un Utilisateur

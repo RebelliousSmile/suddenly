@@ -21,6 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from suddenly.characters.models import Character
+from suddenly.core.version import get_available_languages, get_version
 from suddenly.games.models import Game, Report
 from suddenly.users.models import User
 
@@ -140,7 +141,7 @@ def nodeinfo(request: HttpRequest) -> JsonResponse:
             "version": "2.0",
             "software": {
                 "name": "suddenly",
-                "version": "0.1.0",
+                "version": get_version(),
             },
             "protocols": ["activitypub"],
             "usage": {
@@ -155,6 +156,7 @@ def nodeinfo(request: HttpRequest) -> JsonResponse:
             "metadata": {
                 "nodeName": settings.SITE_NAME,
                 "nodeDescription": settings.SITE_DESCRIPTION,
+                "languages": get_available_languages(),
                 "games": game_count,
                 "characters": character_count,
             },
