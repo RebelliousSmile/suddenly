@@ -65,7 +65,7 @@
                         <!-- User dropdown -->
                         <div x-data="dropdown" class="relative">
                             <button @click="toggle"
-                                    class="flex items-center gap-2 text-secondary hover:text-primary bg-transparent outline-none">
+                                    class="flex items-center text-secondary hover:text-primary bg-transparent outline-none">
                                 {% if user.avatar %}
                                     <img src="{{ user.avatar.url }}" class="avatar-sm">
                                 {% else %}
@@ -73,8 +73,6 @@
                                         <span class="i-lucide-user text-sm"></span>
                                     </span>
                                 {% endif %}
-                                <span>{{ user.get_display_name }}</span>
-                                <span class="i-lucide-chevron-down text-xs"></span>
                             </button>
 
                             <div x-show="open"
