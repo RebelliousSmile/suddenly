@@ -9,10 +9,9 @@ from typing import Any
 
 import pytest
 from django.http import HttpRequest, HttpResponse
-from django.test import Client, RequestFactory
+from django.test import RequestFactory
 
 from suddenly.core.middleware import UserLanguageMiddleware
-from tests.factories import UserFactory
 
 
 def make_middleware(captured: list[str]) -> UserLanguageMiddleware:

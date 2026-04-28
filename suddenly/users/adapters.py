@@ -6,9 +6,9 @@ from __future__ import annotations
 
 from typing import Any
 
+from allauth.account.adapter import DefaultAccountAdapter
 from django.conf import settings
 from django.utils import translation
-from allauth.account.adapter import DefaultAccountAdapter
 
 
 class SuddenlyAccountAdapter(DefaultAccountAdapter):

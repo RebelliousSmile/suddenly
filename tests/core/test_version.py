@@ -8,8 +8,6 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import patch
 
-import pytest
-
 from suddenly.core.version import get_available_languages, get_version
 
 

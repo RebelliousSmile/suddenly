@@ -6,8 +6,6 @@ from __future__ import annotations
 
 from typing import Any
 
-import pytest
-
 
 class TestLocaleMiddlewarePosition:
     def test_locale_middleware_present(self, settings: Any) -> None:

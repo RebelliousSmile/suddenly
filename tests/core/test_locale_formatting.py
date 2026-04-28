@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import datetime
 
-import pytest
 from django.utils import formats, translation
 
 
