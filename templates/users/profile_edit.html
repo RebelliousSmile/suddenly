@@ -54,42 +54,8 @@
             </div>
 
             <!-- Avatar -->
+            {% include "components/form_image_upload.html" with field_id=form.avatar.id_for_label field_name=form.avatar.html_name field_label=form.avatar.label field_optional=True current_url=form.avatar.value.url|default:'' clear_id=form.avatar.id_for_label|add:"-clear" clear_name=form.avatar.html_name|add:"-clear" %}
             <div>
-                <label for="{{ form.avatar.id_for_label }}" class="form-label">
-                    {{ form.avatar.label }}
-                    <span class="text-muted">({% trans "optional" %})</span>
-                </label>
-                {% if form.avatar.value %}
-                    <div class="mb-4 p-4 bg-surface rounded-lg flex items-center gap-3">
-                        <img src="{{ form.avatar.value.url }}" alt="{% trans "Current avatar" %}" class="avatar-md">
-                        <div>
-                            <p class="text-sm text-secondary">{% trans "Current image" %}</p>
-                            <label for="{{ form.avatar.id_for_label }}-clear" class="text-sm text-error hover:text-error/70">
-                                <input id="{{ form.avatar.id_for_label }}-clear"
-                                       name="{{ form.avatar.html_name }}-clear"
-                                       type="checkbox">
-                                {% trans "Delete image" %}
-                            </label>
-                        </div>
-                    </div>
-                {% endif %}
-                <div class="form-dropzone">
-                    <div class="space-y-1 text-center">
-                        <span class="i-lucide-upload text-3xl text-muted"></span>
-                        <div class="flex text-sm text-secondary">
-                            <label for="{{ form.avatar.id_for_label }}" class="form-dropzone-link">
-                                <span>{% trans "Upload an image" %}</span>
-                                <input id="{{ form.avatar.id_for_label }}"
-                                       name="{{ form.avatar.html_name }}"
-                                       type="file"
-                                       accept="image/*"
-                                       class="sr-only">
-                            </label>
-                            <p class="pl-1">{% trans "or drag and drop" %}</p>
-                        </div>
-                        <p class="text-xs text-muted">{% trans "PNG, JPG or GIF up to 10 MB" %}</p>
-                    </div>
-                </div>
                 {% if form.avatar.help_text %}
                     <p class="form-help mt-2">{{ form.avatar.help_text|safe }}</p>
                 {% endif %}
