@@ -250,8 +250,8 @@ export default defineConfig({
     'hover:bg-crimson/10',
     // Couleurs violet/crimson pour composants dark-light
     'bg-violet', 'border-violet', 'hover:text-violet/60',
-    // Theme toggle switch (Alpine :class bindings)
-    'translate-x-0', 'translate-x-8', 'bg-amber-400',
+    // Theme toggle + form switch (Alpine :class bindings)
+    'translate-x-0', 'translate-x-6', 'translate-x-8', 'bg-amber-400',
     'border-crimson/50', 'border-violet/50', 'border-amber-300/60', 'text-amber-400',
     // Badges dynamiques pending/rejected
     'badge-pending', 'badge-rejected',
