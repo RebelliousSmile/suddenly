@@ -41,10 +41,10 @@
                     </label>
                     <div class="flex flex-wrap gap-2 mb-2">
                         <template x-for="(c, i) in cast" :key="i">
-                            <span class="badge bg-violet/10 text-violet border border-violet/30 flex items-center gap-1">
+                            <span class="badge bg-crimson/10 text-crimson border border-crimson/30 flex items-center gap-1">
                                 <span x-text="c"></span>
                                 <button type="button" @click="cast.splice(i, 1)"
-                                        class="hover:text-violet/60">
+                                        class="hover:text-crimson/60">
                                     <span class="i-lucide-x text-xs"></span>
                                 </button>
                                 <input type="hidden" :name="'cast['+i+']'" :value="c">
@@ -112,7 +112,7 @@
                         <label class="flex items-center gap-2 py-1">
                             <input type="radio" name="visibility" value="{{ value }}"
                                    {% if value == 'public' %}checked{% endif %}
-                                   class="h-4 w-4 text-violet focus:ring-violet">
+                                   class="h-4 w-4 text-crimson focus:ring-crimson">
                             <span class="text-sm">
                                 {% if value == 'public' %}<span class="i-lucide-globe text-xs"></span>{% endif %}
                                 {% if value == 'unlisted' %}<span class="i-lucide-unlock text-xs"></span>{% endif %}
