@@ -320,3 +320,483 @@ The pill switch in the top navigation — moon icon (dark) / sun icon (light).
   <span style="font-size:0.8125rem;color:#a0a0a0;font-family:Inter,sans-serif">Crimson knob slid left → dark mode</span>
 </div>
 </div>
+
+---
+
+## Images & Avatars
+
+Avatars follow the `avatar-*` size scale. Always provide a `avatar-placeholder` fallback when no image is available.
+
+| Class | Size | Usage |
+|-------|------|-------|
+| `avatar-sm` | 32 × 32 px | Stacked groups, inline meta |
+| `avatar-md` | 40 × 40 px | List items, compact cards |
+| `avatar-lg` | 48 × 48 px | Card headers |
+| `avatar-xl` | 64 × 64 px | Profile page header |
+| `avatar-placeholder` | any size | Fallback — icon on `bg-surface` |
+
+### Avatar sizes
+
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-row" style="align-items:flex-end">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder"><span style="font-size:0.75rem">✦</span></span>
+    <span class="sd-swatch-name">sm<br>32px</span>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <span class="sd-avatar sd-avatar-md sd-avatar-placeholder"><span style="font-size:0.9rem">✦</span></span>
+    <span class="sd-swatch-name">md<br>40px</span>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <span class="sd-avatar sd-avatar-lg sd-avatar-placeholder"><span style="font-size:1.1rem">✦</span></span>
+    <span class="sd-swatch-name">lg<br>48px</span>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <span class="sd-avatar sd-avatar-xl sd-avatar-placeholder"><span style="font-size:1.5rem">✦</span></span>
+    <span class="sd-swatch-name">xl<br>64px</span>
+  </div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-row" style="align-items:flex-end">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060"><span style="font-size:0.75rem">✦</span></span>
+    <span class="sd-swatch-name" style="color:#606060">sm<br>32px</span>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <span class="sd-avatar sd-avatar-md sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060"><span style="font-size:0.9rem">✦</span></span>
+    <span class="sd-swatch-name" style="color:#606060">md<br>40px</span>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <span class="sd-avatar sd-avatar-lg sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060"><span style="font-size:1.1rem">✦</span></span>
+    <span class="sd-swatch-name" style="color:#606060">lg<br>48px</span>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <span class="sd-avatar sd-avatar-xl sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060"><span style="font-size:1.5rem">✦</span></span>
+    <span class="sd-swatch-name" style="color:#606060">xl<br>64px</span>
+  </div>
+</div>
+</div>
+
+### Stacked avatar group
+
+Used in game cards to show recent characters (`-space-x-2`, `ring-2 ring-card`). Overflow beyond 5 shown as `+N` chip.
+
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-stack">
+  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="z-index:5"><span style="font-size:0.7rem">A</span></span>
+  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="z-index:4"><span style="font-size:0.7rem">B</span></span>
+  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="z-index:3"><span style="font-size:0.7rem">C</span></span>
+  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="z-index:2"><span style="font-size:0.7rem">D</span></span>
+  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="z-index:1"><span style="font-size:0.7rem">E</span></span>
+  <span class="sd-avatar sd-avatar-sm sd-stack-overflow">+3</span>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-stack">
+  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060;outline:2px solid #1a1a1a;z-index:5"><span style="font-size:0.7rem">A</span></span>
+  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060;outline:2px solid #1a1a1a;z-index:4"><span style="font-size:0.7rem">B</span></span>
+  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060;outline:2px solid #1a1a1a;z-index:3"><span style="font-size:0.7rem">C</span></span>
+  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060;outline:2px solid #1a1a1a;z-index:2"><span style="font-size:0.7rem">D</span></span>
+  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060;outline:2px solid #1a1a1a;z-index:1"><span style="font-size:0.7rem">E</span></span>
+  <span class="sd-avatar sd-avatar-sm sd-stack-overflow" style="background:#222222;border-color:#2a2a2a;color:#a0a0a0;outline:2px solid #0a0a0a">+3</span>
+</div>
+</div>
+
+---
+
+## Lists & Grids
+
+Three layout patterns are used across the app depending on context.
+
+| Pattern | Classes | Usage |
+|---------|---------|-------|
+| Card grid | `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4` | Characters list, games list |
+| Compact grid | `grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3` | Profile characters |
+| Vertical stack | `space-y-3` | Profile games, feed, notifications |
+| Empty state | `components/empty_state.html` | Any empty list |
+
+### Card grid — 3 columns
+
+<div class="sd-light">
+<span class="sd-label">Light mode — characters / games list</span>
+<div class="sd-grid-3">
+  <div class="sd-card">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+      <span class="sd-avatar sd-avatar-md sd-avatar-placeholder"><span style="font-size:0.9rem">✦</span></span>
+      <div>
+        <p class="sd-card-title" style="font-size:0.9375rem">Seraphina Voss</p>
+        <span class="sd-badge sd-badge-adopted">Adopted</span>
+      </div>
+    </div>
+    <p class="sd-card-body">Former archivist, now rogue. Introduced in session 3.</p>
+  </div>
+  <div class="sd-card">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+      <span class="sd-avatar sd-avatar-md sd-avatar-placeholder"><span style="font-size:0.9rem">✦</span></span>
+      <div>
+        <p class="sd-card-title" style="font-size:0.9375rem">Brother Kael</p>
+        <span class="sd-badge sd-badge-available">Available</span>
+      </div>
+    </div>
+    <p class="sd-card-body">Wandering healer. Has not been claimed yet.</p>
+  </div>
+  <div class="sd-card">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+      <span class="sd-avatar sd-avatar-md sd-avatar-placeholder"><span style="font-size:0.9rem">✦</span></span>
+      <div>
+        <p class="sd-card-title" style="font-size:0.9375rem">Lady Morrow</p>
+        <span class="sd-badge sd-badge-pc">PC</span>
+      </div>
+    </div>
+    <p class="sd-card-body">Player character — originally an NPC from <a class="sd-link" href="#">Iron Season</a>.</p>
+  </div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-grid-3">
+  <div class="sd-card">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+      <span class="sd-avatar sd-avatar-md sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060"><span style="font-size:0.9rem">✦</span></span>
+      <div>
+        <p class="sd-card-title" style="font-size:0.9375rem">Seraphina Voss</p>
+        <span class="sd-badge sd-badge-adopted">Adopted</span>
+      </div>
+    </div>
+    <p class="sd-card-body">Former archivist, now rogue. Introduced in session 3.</p>
+  </div>
+  <div class="sd-card">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+      <span class="sd-avatar sd-avatar-md sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060"><span style="font-size:0.9rem">✦</span></span>
+      <div>
+        <p class="sd-card-title" style="font-size:0.9375rem">Brother Kael</p>
+        <span class="sd-badge sd-badge-available">Available</span>
+      </div>
+    </div>
+    <p class="sd-card-body">Wandering healer. Has not been claimed yet.</p>
+  </div>
+  <div class="sd-card">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+      <span class="sd-avatar sd-avatar-md sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060"><span style="font-size:0.9rem">✦</span></span>
+      <div>
+        <p class="sd-card-title" style="font-size:0.9375rem">Lady Morrow</p>
+        <span class="sd-badge sd-badge-pc">PC</span>
+      </div>
+    </div>
+    <p class="sd-card-body">Player character — originally an NPC from <a class="sd-link" href="#">Iron Season</a>.</p>
+  </div>
+</div>
+</div>
+
+### Compact grid — 4 columns
+
+Used on profile pages to show a user's characters without full card detail.
+
+<div class="sd-light">
+<span class="sd-label">Light mode — profile characters</span>
+<div class="sd-grid-4">
+  <div class="sd-card" style="text-align:center;padding:0.875rem">
+    <p class="sd-card-title" style="font-size:0.875rem">Seraphina</p>
+    <span class="sd-badge sd-badge-adopted" style="font-size:0.65rem">Adopted</span>
+  </div>
+  <div class="sd-card" style="text-align:center;padding:0.875rem">
+    <p class="sd-card-title" style="font-size:0.875rem">Kael</p>
+    <span class="sd-badge sd-badge-available" style="font-size:0.65rem">Available</span>
+  </div>
+  <div class="sd-card" style="text-align:center;padding:0.875rem">
+    <p class="sd-card-title" style="font-size:0.875rem">Lady Morrow</p>
+    <span class="sd-badge sd-badge-pc" style="font-size:0.65rem">PC</span>
+  </div>
+  <div class="sd-card" style="text-align:center;padding:0.875rem">
+    <p class="sd-card-title" style="font-size:0.875rem">Draven</p>
+    <span class="sd-badge sd-badge-forked" style="font-size:0.65rem">Forked</span>
+  </div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-grid-4">
+  <div class="sd-card" style="text-align:center;padding:0.875rem">
+    <p class="sd-card-title" style="font-size:0.875rem">Seraphina</p>
+    <span class="sd-badge sd-badge-adopted" style="font-size:0.65rem">Adopted</span>
+  </div>
+  <div class="sd-card" style="text-align:center;padding:0.875rem">
+    <p class="sd-card-title" style="font-size:0.875rem">Kael</p>
+    <span class="sd-badge sd-badge-available" style="font-size:0.65rem">Available</span>
+  </div>
+  <div class="sd-card" style="text-align:center;padding:0.875rem">
+    <p class="sd-card-title" style="font-size:0.875rem">Lady Morrow</p>
+    <span class="sd-badge sd-badge-pc" style="font-size:0.65rem">PC</span>
+  </div>
+  <div class="sd-card" style="text-align:center;padding:0.875rem">
+    <p class="sd-card-title" style="font-size:0.875rem">Draven</p>
+    <span class="sd-badge sd-badge-forked" style="font-size:0.65rem">Forked</span>
+  </div>
+</div>
+</div>
+
+### Vertical stack
+
+Used for games on profile pages, notifications, feed items. Items breathe with `space-y-3`.
+
+<div class="sd-light">
+<span class="sd-label">Light mode — profile games / feed</span>
+<div class="sd-stack-y">
+  <div class="sd-card">
+    <p class="sd-card-title">City of Mist — Season 2</p>
+    <p class="sd-card-body">City of Mist</p>
+  </div>
+  <div class="sd-card">
+    <p class="sd-card-title">Iron Season</p>
+    <p class="sd-card-body">Ironsworn</p>
+  </div>
+  <div class="sd-card">
+    <p class="sd-card-title">The Long Road</p>
+    <p class="sd-card-body">Blades in the Dark</p>
+  </div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-stack-y">
+  <div class="sd-card">
+    <p class="sd-card-title">City of Mist — Season 2</p>
+    <p class="sd-card-body">City of Mist</p>
+  </div>
+  <div class="sd-card">
+    <p class="sd-card-title">Iron Season</p>
+    <p class="sd-card-body">Ironsworn</p>
+  </div>
+  <div class="sd-card">
+    <p class="sd-card-title">The Long Road</p>
+    <p class="sd-card-body">Blades in the Dark</p>
+  </div>
+</div>
+</div>
+
+### Empty state
+
+Used whenever a list has no items. Always includes icon + title, optionally description + CTA.
+
+<div class="sd-light">
+<span class="sd-label">Light mode — with CTA</span>
+<div class="sd-empty-state">
+  <span class="sd-empty-icon">📖</span>
+  <p class="sd-empty-title">No games yet</p>
+  <p class="sd-empty-desc">Create your first game to start publishing session reports.</p>
+  <button class="sd-btn sd-btn-primary sd-btn-sm">New game</button>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode — search empty</span>
+<div class="sd-empty-state">
+  <span class="sd-empty-icon" style="filter:grayscale(0.3)">🔍</span>
+  <p class="sd-empty-title" style="color:#f0f0f0">No characters found</p>
+  <p class="sd-empty-desc" style="color:#606060">Try different search terms or filters.</p>
+</div>
+</div>
+
+---
+
+## Forms
+
+Forms are wrapped in `card card-body space-y-4`. Each field follows the same structure: label → input → help/error.
+
+| Class | Element | Usage |
+|-------|---------|-------|
+| `form-label` | `<label>` | Field label — Inter 500, `text-secondary` |
+| `form-input` | `<input>`, `<textarea>`, `<select>` | Base input style |
+| `form-input-error` | same elements | Error state — crimson border + ring |
+| `form-help` | `<p>` | Helper text below field |
+| `form-error` | `<p>` | Validation error below field |
+| `form-dropzone` | `<div>` | File upload zone |
+| `form-dropzone-link` | `<label>` | Clickable part of dropzone |
+
+Optional fields carry `(optional)` in muted text next to the label.
+
+### Text input — states
+
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div style="display:flex;flex-direction:column;gap:1.25rem">
+  <div>
+    <label class="sd-form-label">Title <span style="color:#e03558">*</span></label>
+    <input class="sd-input" type="text" placeholder="e.g. City of Mist — Season 2" style="max-width:100%">
+  </div>
+  <div>
+    <label class="sd-form-label">Game system <span style="color:#8a8aaa;font-weight:400">(optional)</span></label>
+    <input class="sd-input" type="text" value="Ironsworn" style="max-width:100%">
+    <p class="sd-form-help">The rule system used for this campaign.</p>
+  </div>
+  <div>
+    <label class="sd-form-label">Start date <span style="color:#8a8aaa;font-weight:400">(optional)</span></label>
+    <input class="sd-input sd-input-error" type="date" style="max-width:100%">
+    <p class="sd-form-error">Invalid date format.</p>
+  </div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div style="display:flex;flex-direction:column;gap:1.25rem">
+  <div>
+    <label class="sd-form-label" style="color:#a0a0a0">Title <span style="color:#e03558">*</span></label>
+    <input class="sd-input" type="text" placeholder="e.g. City of Mist — Season 2" style="max-width:100%">
+  </div>
+  <div>
+    <label class="sd-form-label" style="color:#a0a0a0">Game system <span style="color:#606060;font-weight:400">(optional)</span></label>
+    <input class="sd-input" type="text" value="Ironsworn" style="max-width:100%">
+    <p class="sd-form-help" style="color:#606060">The rule system used for this campaign.</p>
+  </div>
+  <div>
+    <label class="sd-form-label" style="color:#a0a0a0">Start date <span style="color:#606060;font-weight:400">(optional)</span></label>
+    <input class="sd-input sd-input-error" type="date" style="max-width:100%">
+    <p class="sd-form-error">Invalid date format.</p>
+  </div>
+</div>
+</div>
+
+### Textarea
+
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div>
+  <label class="sd-form-label">Description <span style="color:#8a8aaa;font-weight:400">(optional)</span></label>
+  <textarea class="sd-input" rows="3" placeholder="Describe your campaign..." style="max-width:100%;resize:vertical"></textarea>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div>
+  <label class="sd-form-label" style="color:#a0a0a0">Description <span style="color:#606060;font-weight:400">(optional)</span></label>
+  <textarea class="sd-input" rows="3" placeholder="Describe your campaign..." style="max-width:100%;resize:vertical"></textarea>
+</div>
+</div>
+
+### Checkbox
+
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div style="display:flex;align-items:flex-start;gap:0.75rem">
+  <input type="checkbox" checked class="sd-checkbox">
+  <div>
+    <label class="sd-form-label" style="margin-bottom:0">Public game (visible and followable)</label>
+    <p class="sd-form-help">Anyone can follow this game via ActivityPub.</p>
+  </div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div style="display:flex;align-items:flex-start;gap:0.75rem">
+  <input type="checkbox" checked class="sd-checkbox">
+  <div>
+    <label class="sd-form-label" style="margin-bottom:0;color:#a0a0a0">Public game (visible and followable)</label>
+    <p class="sd-form-help" style="color:#606060">Anyone can follow this game via ActivityPub.</p>
+  </div>
+</div>
+</div>
+
+### File upload dropzone
+
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-dropzone">
+  <span style="font-size:2rem;display:block;margin-bottom:0.5rem">⬆</span>
+  <p style="font-size:0.875rem;margin:0"><span style="color:#e03558;font-weight:500;cursor:pointer">Upload a file</span> or drag and drop</p>
+  <p style="font-size:0.75rem;color:#8a8aaa;margin:0.25rem 0 0">PNG, JPG up to 2 MB</p>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-dropzone" style="background:#1a1a1a;border-color:#2a2a2a">
+  <span style="font-size:2rem;display:block;margin-bottom:0.5rem;filter:grayscale(0.5)">⬆</span>
+  <p style="font-size:0.875rem;margin:0;color:#a0a0a0"><span style="color:#e03558;font-weight:500;cursor:pointer">Upload a file</span> or drag and drop</p>
+  <p style="font-size:0.75rem;color:#606060;margin:0.25rem 0 0">PNG, JPG up to 2 MB</p>
+</div>
+</div>
+
+### Full form example
+
+<div class="sd-light">
+<span class="sd-label">Light mode — game creation form</span>
+<div class="sd-card">
+<div style="display:flex;flex-direction:column;gap:1rem">
+  <div>
+    <label class="sd-form-label">Title <span style="color:#e03558">*</span></label>
+    <input class="sd-input" type="text" placeholder="e.g. City of Mist — Season 2" style="max-width:100%">
+  </div>
+  <div>
+    <label class="sd-form-label">Game system <span style="color:#8a8aaa;font-weight:400">(optional)</span></label>
+    <input class="sd-input" type="text" placeholder="e.g. D&D 5e, Ironsworn" style="max-width:100%">
+  </div>
+  <div>
+    <label class="sd-form-label">Description <span style="color:#8a8aaa;font-weight:400">(optional)</span></label>
+    <textarea class="sd-input" rows="3" placeholder="Describe your campaign..." style="max-width:100%;resize:vertical"></textarea>
+  </div>
+  <div style="display:flex;align-items:center;gap:0.75rem">
+    <input type="checkbox" checked class="sd-checkbox">
+    <label class="sd-form-label" style="margin-bottom:0">Public game (visible and followable)</label>
+  </div>
+  <div style="display:flex;align-items:center;gap:0.75rem;padding-top:1rem;border-top:1px solid #d4cfe8">
+    <button class="sd-btn sd-btn-primary">Create a game</button>
+    <button class="sd-btn sd-btn-ghost">Cancel</button>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-card">
+<div style="display:flex;flex-direction:column;gap:1rem">
+  <div>
+    <label class="sd-form-label" style="color:#a0a0a0">Title <span style="color:#e03558">*</span></label>
+    <input class="sd-input" type="text" placeholder="e.g. City of Mist — Season 2" style="max-width:100%">
+  </div>
+  <div>
+    <label class="sd-form-label" style="color:#a0a0a0">Game system <span style="color:#606060;font-weight:400">(optional)</span></label>
+    <input class="sd-input" type="text" placeholder="e.g. D&D 5e, Ironsworn" style="max-width:100%">
+  </div>
+  <div>
+    <label class="sd-form-label" style="color:#a0a0a0">Description <span style="color:#606060;font-weight:400">(optional)</span></label>
+    <textarea class="sd-input" rows="3" placeholder="Describe your campaign..." style="max-width:100%;resize:vertical"></textarea>
+  </div>
+  <div style="display:flex;align-items:center;gap:0.75rem">
+    <input type="checkbox" checked class="sd-checkbox">
+    <label class="sd-form-label" style="margin-bottom:0;color:#a0a0a0">Public game (visible and followable)</label>
+  </div>
+  <div style="display:flex;align-items:center;gap:0.75rem;padding-top:1rem;border-top:1px solid #2a2a2a">
+    <button class="sd-btn sd-btn-primary">Create a game</button>
+    <button class="sd-btn sd-btn-ghost" style="color:#a0a0a0">Cancel</button>
+  </div>
+</div>
+</div>
+</div>
+
+### Error banner
+
+Used at the top of a form when server-side validation fails.
+
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-error-banner">A game with this title already exists.</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-error-banner">A game with this title already exists.</div>
+</div>
