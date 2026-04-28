@@ -37,7 +37,7 @@
                                 <span class="badge bg-error/15 text-error">{% trans "Blocked" %}</span>
                                 <form method="post" action="{% url 'admin_panel:instance_unblock' pk=server.pk %}">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn-ghost btn-sm text-emerald-600">
+                                    <button type="submit" class="btn-ghost btn-sm text-success">
                                         {% trans "Unblock" %}
                                     </button>
                                 </form>

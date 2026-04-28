@@ -5,7 +5,7 @@
 
 {% block content %}
 <!-- Hero -->
-<section class="bg-gradient-to-b from-primary-50 to-white py-16 sm:py-24">
+<section class="bg-gradient-to-b from-surface to-background py-16 sm:py-24">
     <div class="container-app text-center">
         <h1 class="text-4xl sm:text-5xl font-bold text-primary mb-4">
             🎭 {% trans "Welcome to" %} <span class="text-crimson">{{ SITE_NAME }}</span>
@@ -76,8 +76,8 @@
 
         <!-- Adopt -->
         <article class="card card-body text-center">
-            <div class="w-12 h-12 bg-secondary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="i-lucide-user-plus text-2xl text-secondary-600"></span>
+            <div class="w-12 h-12 bg-card rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="i-lucide-user-plus text-2xl text-secondary"></span>
             </div>
             <h3 class="font-semibold text-primary mb-2">{% trans "Adopt" %}</h3>
             <p class="text-sm text-muted italic mb-2">
@@ -90,8 +90,8 @@
 
         <!-- Fork -->
         <article class="card card-body text-center">
-            <div class="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="i-lucide-git-branch text-2xl text-violet-600"></span>
+            <div class="w-12 h-12 bg-info/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="i-lucide-git-branch text-2xl text-info"></span>
             </div>
             <h3 class="font-semibold text-primary mb-2">{% trans "Fork" %}</h3>
             <p class="text-sm text-muted italic mb-2">

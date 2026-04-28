@@ -16,7 +16,7 @@
 
         <div class="flex items-center gap-3 mb-6">
             {% if link_type == 'adopt' %}
-                <span class="w-10 h-10 rounded-full bg-secondary-100 text-secondary-600 flex items-center justify-center">
+                <span class="w-10 h-10 rounded-full bg-card text-secondary flex items-center justify-center">
                     <span class="i-lucide-heart text-lg"></span>
                 </span>
                 <div>
@@ -24,7 +24,7 @@
                     <p class="text-sm text-muted">{% trans "Adoption" %}</p>
                 </div>
             {% elif link_type == 'fork' %}
-                <span class="w-10 h-10 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center">
+                <span class="w-10 h-10 rounded-full bg-info/20 text-info flex items-center justify-center">
                     <span class="i-lucide-git-branch text-lg"></span>
                 </span>
                 <div>

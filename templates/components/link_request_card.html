@@ -79,14 +79,14 @@
             <button hx-post="{% url 'accept_request' pk=request.id %}"
                     hx-target="#request-{{ request.id }}"
                     hx-swap="outerHTML"
-                    class="btn btn-primary btn-sm">
+                    class="btn-primary btn-sm">
                 <span class="i-lucide-check text-sm"></span>
                 {% trans "Accept" %}
             </button>
             <button hx-post="{% url 'reject_request' pk=request.id %}"
                     hx-target="#request-{{ request.id }}"
                     hx-swap="outerHTML"
-                    class="btn btn-ghost btn-sm">
+                    class="btn-ghost btn-sm">
                 <span class="i-lucide-x text-sm"></span>
                 {% trans "Reject" %}
             </button>
@@ -99,14 +99,14 @@
             <button hx-post="{% url 'cancel_request' pk=request.id %}"
                     hx-target="#request-{{ request.id }}"
                     hx-swap="outerHTML"
-                    class="btn btn-ghost btn-sm text-error">
+                    class="btn-ghost btn-sm text-error">
                 {% trans "Cancel my request" %}
             </button>
         </div>
     {% elif request.status == 'expired' and perspective == 'sent' %}
         <div class="card-footer flex items-center gap-2">
-            <button class="btn btn-secondary btn-sm">{% trans "Resend request" %}</button>
-            <button class="btn btn-ghost btn-sm text-error">{% trans "Delete" %}</button>
+            <button class="btn-secondary btn-sm">{% trans "Resend request" %}</button>
+            <button class="btn-ghost btn-sm text-error">{% trans "Delete" %}</button>
         </div>
     {% endif %}
 </article>

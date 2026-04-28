@@ -16,14 +16,14 @@
                 <!-- Type icon -->
                 <span class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
                     {% if notif.type == 'link_request' %}bg-warning/15 text-warning
-                    {% elif notif.type == 'link_accepted' %}bg-emerald-100 text-emerald-600
+                    {% elif notif.type == 'link_accepted' %}bg-success/20 text-success
                     {% elif notif.type == 'link_rejected' %}bg-error/15 text-error
                     {% elif notif.type == 'new_report' %}bg-info/15 text-info
                     {% elif notif.type == 'recommendation' %}bg-accent-100 text-accent-600
                     {% elif notif.type == 'mention' %}bg-info/15 text-info
                     {% elif notif.type == 'invitation' %}bg-crimson/15 text-crimson
                     {% elif notif.type == 'new_follower' %}bg-info/15 text-info
-                    {% elif notif.type == 'shared_sequence' %}bg-violet-100 text-violet-600
+                    {% elif notif.type == 'shared_sequence' %}bg-info/20 text-info
                     {% elif notif.type == 'revocation' %}bg-error/15 text-error
                     {% endif %}">
                     {% if notif.type == 'link_request' %}<span class="i-lucide-git-merge text-sm"></span>

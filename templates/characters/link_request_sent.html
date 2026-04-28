@@ -6,7 +6,7 @@
 {% block content %}
 <section class="py-16">
     <div class="container-app max-w-lg text-center">
-        <span class="i-lucide-check-circle text-5xl text-secondary-500 mb-4 block"></span>
+        <span class="i-lucide-check-circle text-5xl text-muted mb-4 block"></span>
         <h1 class="text-2xl font-bold text-primary mb-2">{% trans "Request sent!" %}</h1>
         <p class="text-secondary mb-6">
             {% if link_type == 'adopt' %}{% trans "Your Adoption request" %}{% elif link_type == 'fork' %}{% trans "Your Derivation request" %}{% else %}{% trans "Your Retcon request" %}{% endif %}

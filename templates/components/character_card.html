@@ -112,7 +112,7 @@
             <button hx-post="/api/characters/{{ character.id }}/adopt/"
                     hx-target="#character-{{ character.id }}"
                     hx-swap="outerHTML"
-                    class="btn-ghost btn-sm text-secondary-600 hover:bg-secondary-50">
+                    class="btn-ghost btn-sm text-secondary hover:bg-surface">
                 <span class="i-lucide-user-plus"></span>
                 {% trans "Adopt" %}
             </button>
@@ -120,7 +120,7 @@
             <button hx-post="/api/characters/{{ character.id }}/fork/"
                     hx-target="#character-{{ character.id }}"
                     hx-swap="outerHTML"
-                    class="btn-ghost btn-sm text-violet-600 hover:bg-violet-50">
+                    class="btn-ghost btn-sm text-info hover:bg-info/10">
                 <span class="i-lucide-git-branch"></span>
                 {% trans "Fork" %}
             </button>
