@@ -1,0 +1,82 @@
+{% extends "users/settings_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Preferences" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block settings_content %}
+        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "Preferences" %}</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="card card-body space-y-6">
+
+            <!-- Content Language -->
+            <div>
+                <label for="{{ form.content_language.id_for_label }}" class="form-label">
+                    {{ form.content_language.label }}
+                </label>
+                <input type="text"
+                       id="{{ form.content_language.id_for_label }}"
+                       name="{{ form.content_language.html_name }}"
+                       value="{{ form.content_language.value|default:'' }}"
+                       placeholder="{% trans "e.g. fr" %}"
+                       class="{% if form.content_language.errors %}form-input-error{% else %}form-input{% endif %}">
+                {% if form.content_language.help_text %}
+                    <p class="form-help">{{ form.content_language.help_text|safe }}</p>
+                {% endif %}
+                {% for error in form.content_language.errors %}
+                    <p class="form-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <!-- Preferred Languages -->
+            <div>
+                <label for="{{ form.preferred_languages.id_for_label }}" class="form-label">
+                    {{ form.preferred_languages.label }}
+                    <span class="text-muted">({% trans "optional" %})</span>
+                </label>
+                {{ form.preferred_languages }}
+                <p class="form-help">{% trans "Language codes separated by commas, e.g. fr, en" %}</p>
+                {% for error in form.preferred_languages.errors %}
+                    <p class="form-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <!-- Show Unlabeled Content -->
+            <div class="py-4 border-t border-border">
+                {% include "components/form_switch.html" with field_id=form.show_unlabeled_content.id_for_label field_name=form.show_unlabeled_content.html_name field_label=form.show_unlabeled_content.label field_checked=form.show_unlabeled_content.value field_help=form.show_unlabeled_content.help_text %}
+                {% for error in form.show_unlabeled_content.errors %}
+                    <p class="form-error mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <!-- Interface Language -->
+            <div>
+                <label for="{{ form.interface_language.id_for_label }}" class="form-label">
+                    {% trans "Interface language" %}
+                </label>
+                <select id="{{ form.interface_language.id_for_label }}"
+                        name="{{ form.interface_language.html_name }}"
+                        class="{% if form.interface_language.errors %}form-input-error{% else %}form-input{% endif %}">
+                    {% for val, label in form.interface_language.field.choices %}
+                        <option value="{{ val }}" {% if val == form.interface_language.value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.interface_language.help_text %}
+                    <p class="form-help">{{ form.interface_language.help_text }}</p>
+                {% endif %}
+                {% for error in form.interface_language.errors %}
+                    <p class="form-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            </div>
+            <!-- Form Actions -->
+            <div class="card-footer flex items-center gap-3 mt-4">
+                <button type="submit" class="btn-primary">
+                    <span class="i-lucide-save"></span>
+                    {% trans "Save changes" %}
+                </button>
+            </div>
+        </form>
+{% endblock %}

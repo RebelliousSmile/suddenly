@@ -20,13 +20,24 @@ class ProfileForm(forms.ModelForm):  # type: ignore[type-arg]
             "display_name",
             "bio",
             "avatar",
+        ]
+        widgets = {
+            "bio": forms.Textarea(attrs={"rows": 4}),
+        }
+
+
+class PreferencesForm(forms.ModelForm):  # type: ignore[type-arg]
+    """Formulaire de préférences de langue et d'interface."""
+
+    class Meta:
+        model = User
+        fields = [
             "content_language",
             "preferred_languages",
             "show_unlabeled_content",
             "interface_language",
         ]
         widgets = {
-            "bio": forms.Textarea(attrs={"rows": 4}),
             "preferred_languages": forms.TextInput(
                 attrs={"placeholder": "fr, en", "class": "form-input"}
             ),
@@ -47,14 +58,11 @@ class ProfileForm(forms.ModelForm):  # type: ignore[type-arg]
         if not value:
             return []
 
-        # Already a list (JSONField passes Python objects)
         if isinstance(value, list):
             return [str(code).strip() for code in value if str(code).strip()]
 
-        # Try parsing as JSON first (backward compatibility)
         try:
             result: list[str] = json.loads(value)
             return result
         except (json.JSONDecodeError, TypeError):
-            # Fall back to comma-separated parsing
             return [code.strip() for code in value.split(",") if code.strip()]

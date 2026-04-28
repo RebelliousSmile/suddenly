@@ -13,7 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
-from .models import Game, Report, ReportStatus, ReportVisibility
+from .models import Game, GameSystem, Report, ReportStatus, ReportVisibility
 
 
 def game_list(request: HttpRequest) -> HttpResponse:
@@ -26,7 +26,7 @@ def game_list(request: HttpRequest) -> HttpResponse:
 
     qs = (
         Game.objects.filter(public_filter)
-        .select_related("owner")
+        .select_related("owner", "game_system_ref")
         .annotate(
             report_count=Count("reports", distinct=True),
             char_npc=Count("characters", filter=Q(characters__status="npc"), distinct=True),
@@ -43,7 +43,9 @@ def game_list(request: HttpRequest) -> HttpResponse:
 
     system = request.GET.get("system", "").strip()
     if system:
-        qs = qs.filter(game_system__icontains=system)
+        qs = qs.filter(
+            Q(game_system_ref__name__icontains=system) | Q(game_system__icontains=system)
+        )
 
     return htmx_render(
         request,
@@ -61,7 +63,9 @@ def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
     if request.user.is_authenticated:
         visibility |= Q(owner=request.user)
 
-    game = get_object_or_404(Game.objects.select_related("owner").filter(visibility), pk=pk)
+    game = get_object_or_404(
+        Game.objects.select_related("owner", "game_system_ref").filter(visibility), pk=pk
+    )
 
     reports = (
         game.reports.filter(status=ReportStatus.PUBLISHED)
@@ -89,8 +93,16 @@ def game_create(request: AuthenticatedRequest) -> HttpResponse:
     if request.method == "POST":
         title = request.POST.get("title", "").strip()
         description = request.POST.get("description", "").strip()
-        game_system = request.POST.get("game_system", "").strip()
         is_public = request.POST.get("is_public") == "on"
+
+        slug = request.POST.get("game_system_slug", "").strip()
+        custom = request.POST.get("game_system_custom", "").strip()
+        if slug:
+            system_ref = GameSystem.objects.filter(slug=slug, is_deprecated=False).first()
+            game_system_text = ""
+        else:
+            system_ref = None
+            game_system_text = custom
 
         if not title:
             return htmx_render(
@@ -105,12 +117,15 @@ def game_create(request: AuthenticatedRequest) -> HttpResponse:
                 },
             )
 
+        cover = request.FILES.get("cover")
         game = Game.objects.create(
             title=title,
             description=description,
-            game_system=game_system,
+            game_system=game_system_text,
+            game_system_ref=system_ref,
             is_public=is_public,
             owner=request.user,
+            cover=cover,
         )
         return redirect(reverse("games:detail", kwargs={"pk": game.pk}))
 
@@ -235,11 +250,39 @@ def game_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
                     "is_public_checked": is_public_checked,
                 },
             )
+        slug = request.POST.get("game_system_slug", "").strip()
+        custom = request.POST.get("game_system_custom", "").strip()
+        if slug:
+            system_ref = GameSystem.objects.filter(slug=slug, is_deprecated=False).first()
+            game_system_text = ""
+        else:
+            system_ref = None
+            game_system_text = custom
+
         game.title = title
         game.description = request.POST.get("description", "").strip()
-        game.game_system = request.POST.get("game_system", "").strip()
+        game.game_system = game_system_text
+        game.game_system_ref = system_ref
         game.is_public = is_public_checked
-        game.save()
+
+        if request.POST.get("cover-clear"):
+            if game.cover:
+                game.cover.delete(save=False)
+            game.cover = None
+        elif "cover" in request.FILES:
+            game.cover = request.FILES["cover"]
+
+        game.save(
+            update_fields=[
+                "title",
+                "description",
+                "game_system",
+                "game_system_ref",
+                "is_public",
+                "cover",
+                "updated_at",
+            ]
+        )
         return redirect(reverse("games:detail", kwargs={"pk": game.pk}))
 
     return htmx_render(
@@ -272,3 +315,22 @@ def game_delete_bulk(request: AuthenticatedRequest) -> HttpResponse:
             if not game.characters.filter(status__in=pc_statuses).exists():
                 game.delete()
     return redirect(reverse("games:list"))
+
+
+def game_system_search(request: HttpRequest) -> HttpResponse:
+    """HTMX autocomplete for GameSystem slug/name (used in game form)."""
+    import json
+
+    query = request.GET.get("q", "").strip()
+    results: list[dict[str, str]] = []
+    if query:
+        results = [
+            {"slug": gs.slug, "name": gs.name}
+            for gs in GameSystem.objects.filter(name__icontains=query, is_deprecated=False).only(
+                "slug", "name"
+            )[:10]
+        ]
+    return HttpResponse(
+        json.dumps(results),
+        content_type="application/json",
+    )

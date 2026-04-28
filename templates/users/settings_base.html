@@ -20,6 +20,13 @@
                             {% trans "Profile" %}
                         </a>
 
+                        <a href="{% url 'users:settings_preferences' %}"
+                           class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm whitespace-nowrap lg:whitespace-normal transition-colors
+                                  {% if url_name == 'settings_preferences' %}bg-surface text-primary font-medium{% else %}text-secondary hover:text-primary hover:bg-surface{% endif %}">
+                            <span class="i-lucide-settings-2 text-sm flex-shrink-0"></span>
+                            {% trans "Preferences" %}
+                        </a>
+
                         <a href="{% url 'users:settings_federation' %}"
                            class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm whitespace-nowrap lg:whitespace-normal transition-colors
                                   {% if url_name == 'settings_federation' %}bg-surface text-primary font-medium{% else %}text-secondary hover:text-primary hover:bg-surface{% endif %}">

@@ -173,19 +173,18 @@ class TestProfileEditView:
 # ---------------------------------------------------------------------------
 
 
-class TestProfileForm:
-    """ProfileForm.clean_preferred_languages contract."""
+class TestPreferencesForm:
+    """PreferencesForm.clean_preferred_languages contract."""
 
     def test_empty_preferred_languages_returns_empty_list(self, db: Any, user: User) -> None:
-        from suddenly.users.forms import ProfileForm
+        from suddenly.users.forms import PreferencesForm
 
-        form = ProfileForm(
+        form = PreferencesForm(
             data={
-                "display_name": "Test",
-                "bio": "",
                 "content_language": "fr",
                 "preferred_languages": "[]",
                 "show_unlabeled_content": True,
+                "interface_language": "",
             },
             instance=user,
         )
@@ -193,15 +192,14 @@ class TestProfileForm:
         assert form.cleaned_data["preferred_languages"] == []
 
     def test_valid_list_passes_through_unchanged(self, db: Any, user: User) -> None:
-        from suddenly.users.forms import ProfileForm
+        from suddenly.users.forms import PreferencesForm
 
-        form = ProfileForm(
+        form = PreferencesForm(
             data={
-                "display_name": "Test",
-                "bio": "",
                 "content_language": "fr",
                 "preferred_languages": '["fr", "en"]',
                 "show_unlabeled_content": True,
+                "interface_language": "",
             },
             instance=user,
         )

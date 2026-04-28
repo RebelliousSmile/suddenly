@@ -8,18 +8,28 @@ from typing import TYPE_CHECKING
 
 from django.contrib import admin
 
-from .models import Game, Report, ReportCast
+from .models import Game, GameSystem, Report, ReportCast
 
 if TYPE_CHECKING:
+    _GameSystemBase = admin.ModelAdmin[GameSystem]
     _GameBase = admin.ModelAdmin[Game]
     _ReportBase = admin.ModelAdmin[Report]
     _ReportCastBase = admin.ModelAdmin[ReportCast]
     _ReportCastInlineBase = admin.TabularInline[ReportCast, Report]
 else:
+    _GameSystemBase = admin.ModelAdmin
     _GameBase = admin.ModelAdmin
     _ReportBase = admin.ModelAdmin
     _ReportCastBase = admin.ModelAdmin
     _ReportCastInlineBase = admin.TabularInline
+
+
+@admin.register(GameSystem)
+class GameSystemAdmin(_GameSystemBase):
+    """Admin for GameSystem — game rule systems catalog."""
+
+    list_display = ["slug", "name", "git_url", "is_deprecated", "synced_at"]
+    search_fields = ["slug", "name"]
 
 
 @admin.register(Game)

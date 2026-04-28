@@ -17,7 +17,24 @@ from django.urls import reverse
 from django.utils.dateparse import parse_datetime
 
 from suddenly.core.types import AuthenticatedRequest
+from suddenly.users.forms import PreferencesForm
 from suddenly.users.models import User
+
+
+@login_required
+def settings_preferences(request: AuthenticatedRequest) -> HttpResponse:
+    """Language and interface preferences."""
+    if request.method == "POST":
+        form = PreferencesForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            from django.contrib import messages
+
+            messages.success(request, "Preferences saved.")
+            return redirect(reverse("users:settings_preferences"))
+    else:
+        form = PreferencesForm(instance=request.user)
+    return render(request, "users/settings_preferences.html", {"form": form})
 
 
 @login_required

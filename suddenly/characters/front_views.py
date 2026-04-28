@@ -190,7 +190,15 @@ def character_edit(request: AuthenticatedRequest, slug: str) -> HttpResponse:
         character.name = name
         character.description = request.POST.get("description", "").strip()
         character.sheet_url = request.POST.get("sheet_url", "").strip() or None
-        character.save(update_fields=["name", "description", "sheet_url", "updated_at"])
+
+        if request.POST.get("avatar-clear"):
+            if character.avatar:
+                character.avatar.delete(save=False)
+            character.avatar = None
+        elif "avatar" in request.FILES:
+            character.avatar = request.FILES["avatar"]
+
+        character.save(update_fields=["name", "description", "sheet_url", "avatar", "updated_at"])
         return redirect(reverse("characters:detail", kwargs={"slug": character.slug}))
 
     return htmx_render(

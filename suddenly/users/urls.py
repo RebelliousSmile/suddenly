@@ -8,6 +8,7 @@ app_name = "users"
 
 urlpatterns = [
     # Settings (before username catch-all)
+    path("settings/preferences/", settings_views.settings_preferences, name="settings_preferences"),
     path("settings/federation/", settings_views.settings_federation, name="settings_federation"),
     path("settings/data/", settings_views.settings_data, name="settings_data"),
     path("settings/export-follows/", settings_views.export_follows_csv, name="export_follows"),

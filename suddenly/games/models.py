@@ -9,6 +9,25 @@ from django.utils.translation import gettext_lazy as _
 from suddenly.core.models import BaseModel
 
 
+class GameSystem(models.Model):
+    """
+    A game rule system from the FoundryVTT catalog (or manually added).
+    Synced from the official Foundry package registry.
+    """
+
+    slug = models.CharField(max_length=100, primary_key=True)
+    name = models.CharField(max_length=200)
+    git_url = models.URLField(blank=True)
+    is_deprecated = models.BooleanField(default=False)
+    synced_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class Game(BaseModel):
     """
     A Game is an ongoing fiction that receives reports over time.
@@ -19,6 +38,13 @@ class Game(BaseModel):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     game_system = models.CharField(max_length=100, blank=True, help_text="Ex: Mist Engine, D&D 5e")
+    game_system_ref = models.ForeignKey(
+        GameSystem,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="games",
+    )
 
     # Ownership
     owner = models.ForeignKey(
@@ -27,6 +53,9 @@ class Game(BaseModel):
 
     # Visibility
     is_public = models.BooleanField(default=True)
+
+    # Media
+    cover = models.ImageField(upload_to="games/", blank=True, null=True)
 
     # ActivityPub
     remote = models.BooleanField(default=False)
