@@ -9,6 +9,7 @@
 
 .htmx-request .htmx-indicator {
     display: block;
+    background-color: #e03558;
     animation: htmx-loading 1s ease-in-out infinite;
 }
 
