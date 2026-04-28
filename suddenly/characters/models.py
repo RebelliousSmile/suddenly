@@ -7,8 +7,11 @@ get claimed, adopted, or forked by other players.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
+
 from django.conf import settings
 from django.db import models
+from django.db.models.base import ModelBase
 from django.utils.translation import gettext_lazy as _
 
 from suddenly.core.models import BaseModel
@@ -103,7 +106,13 @@ class Character(BaseModel):
     def __str__(self) -> str:
         return f"{self.name} ({self.get_status_display()})"
 
-    def save(self, *args: object, **kwargs: object) -> None:
+    def save(
+        self,
+        force_insert: bool | tuple[ModelBase, ...] = False,
+        force_update: bool = False,
+        using: str | None = None,
+        update_fields: Iterable[str] | None = None,
+    ) -> None:
         if not self.slug:
             import uuid as _uuid
 
@@ -115,13 +124,13 @@ class Character(BaseModel):
             for counter in range(1, 100):
                 try:
                     self.slug = slug
-                    super().save(*args, **kwargs)
+                    super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
                     return
                 except IntegrityError:
                     slug = f"{base_slug[:95]}-{counter}"
             # Fallback: UUID suffix (guaranteed unique)
             self.slug = f"{base_slug[:80]}-{_uuid.uuid4().hex[:8]}"
-        super().save(*args, **kwargs)
+        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     @property
     def is_available(self) -> bool:

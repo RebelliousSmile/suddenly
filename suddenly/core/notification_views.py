@@ -5,14 +5,15 @@ Notification views (US-20, US-21, wireframe 11).
 from __future__ import annotations
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpResponse
 
 from suddenly.core.models import Notification
+from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
 
 @login_required
-def notification_list(request: HttpRequest) -> HttpResponse:
+def notification_list(request: AuthenticatedRequest) -> HttpResponse:
     """Notification center — list all notifications for current user."""
     notifications = (
         Notification.objects.filter(recipient=request.user)
@@ -34,7 +35,7 @@ def notification_list(request: HttpRequest) -> HttpResponse:
 
 
 @login_required
-def notification_mark_all_read(request: HttpRequest) -> HttpResponse:
+def notification_mark_all_read(request: AuthenticatedRequest) -> HttpResponse:
     """Mark all notifications as read (HTMX POST)."""
     if request.method == "POST":
         Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
@@ -43,7 +44,7 @@ def notification_mark_all_read(request: HttpRequest) -> HttpResponse:
 
 
 @login_required
-def notification_badge(request: HttpRequest) -> HttpResponse:
+def notification_badge(request: AuthenticatedRequest) -> HttpResponse:
     """Return unread count badge (HTMX polling endpoint)."""
     from django.http import JsonResponse
 

@@ -13,6 +13,7 @@ from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
 
+from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
 from .models import Character, CharacterStatus
@@ -124,7 +125,7 @@ def _build_character_queryset(request: HttpRequest) -> QuerySet[Character]:
 
 
 @login_required
-def quote_add(request: HttpRequest, slug: str) -> HttpResponse:
+def quote_add(request: AuthenticatedRequest, slug: str) -> HttpResponse:
     """Add a quote to a character (US-08). HTMX partial."""
     character = get_object_or_404(Character, slug=slug)
 

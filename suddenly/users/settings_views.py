@@ -10,19 +10,21 @@ import csv
 import io
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
+from suddenly.core.types import AuthenticatedRequest
+
 
 @login_required
-def settings_federation(request: HttpRequest) -> HttpResponse:
+def settings_federation(request: AuthenticatedRequest) -> HttpResponse:
     """Federation settings: AP identity, followed instances, blocked instances."""
     return render(request, "users/settings_federation.html")
 
 
 @login_required
-def export_follows_csv(request: HttpRequest) -> HttpResponse:
+def export_follows_csv(request: AuthenticatedRequest) -> HttpResponse:
     """Export follows as Mastodon-compatible CSV (US-32)."""
     from django.contrib.contenttypes.models import ContentType
 
@@ -51,14 +53,18 @@ def export_follows_csv(request: HttpRequest) -> HttpResponse:
 
 
 @login_required
-def import_follows_csv(request: HttpRequest) -> HttpResponse:
+def import_follows_csv(request: AuthenticatedRequest) -> HttpResponse:
     """Import follows from Mastodon-compatible CSV (US-32).
 
     Resolves each address via WebFinger, creates or finds User,
     then creates Follow relationship.
     """
     if request.method == "POST" and request.FILES.get("csv_file"):
-        csv_file = request.FILES["csv_file"]
+        from django.core.files.uploadedfile import UploadedFile
+
+        csv_file = request.FILES.get("csv_file")
+        if not isinstance(csv_file, UploadedFile):
+            return render(request, "users/settings_data.html")
         decoded = csv_file.read().decode("utf-8")
         reader = csv.DictReader(io.StringIO(decoded))
 
@@ -85,13 +91,13 @@ def import_follows_csv(request: HttpRequest) -> HttpResponse:
 
 
 @login_required
-def settings_data(request: HttpRequest) -> HttpResponse:
+def settings_data(request: AuthenticatedRequest) -> HttpResponse:
     """Data settings: export/import, migration (US-32)."""
     return render(request, "users/settings_data.html")
 
 
 @login_required
-def block_user(request: HttpRequest) -> HttpResponse:
+def block_user(request: AuthenticatedRequest) -> HttpResponse:
     """Block a user (US-33). Placeholder — needs Block model."""
     # TODO: implement Block model and filtering
     return redirect(reverse("users:settings_federation"))

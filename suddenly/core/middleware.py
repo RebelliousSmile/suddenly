@@ -5,6 +5,7 @@ Custom middleware for Suddenly.
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
 from django.utils import translation
@@ -19,12 +20,12 @@ class UserLanguageMiddleware:
     Must be placed AFTER LocaleMiddleware and AuthenticationMiddleware.
     """
 
-    def __init__(self, get_response: object) -> None:
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         activated = False
-        if request.user.is_authenticated and getattr(request.user, "interface_language", ""):
+        if request.user.is_authenticated and getattr(request.user, "interface_language", None):
             try:
                 translation.activate(request.user.interface_language)
                 request.LANGUAGE_CODE = request.user.interface_language
@@ -53,7 +54,7 @@ class AuthRateLimitMiddleware:
         "/accounts/signup/": (5, 60),  # 5 per 60s
     }
 
-    def __init__(self, get_response: object) -> None:
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
@@ -103,4 +104,4 @@ class AuthRateLimitMiddleware:
         proxies set REMOTE_ADDR correctly. Trusting XFF without proxy
         validation enables rate limit bypass via header spoofing.
         """
-        return request.META.get("REMOTE_ADDR", "unknown")
+        return str(request.META.get("REMOTE_ADDR", "unknown"))

@@ -62,12 +62,12 @@ def _resolve_asset(entry: str) -> str:
 
     # Try exact match first
     if entry in manifest:
-        return manifest[entry].get("file", entry)
+        return str(manifest[entry].get("file", entry))
 
     # Try with src/ prefix (Vite uses src/main.js as key)
     src_entry = f"src/{entry}"
     if src_entry in manifest:
-        return manifest[src_entry].get("file", entry)
+        return str(manifest[src_entry].get("file", entry))
 
     # No manifest or entry not found — use the entry as-is
     return entry

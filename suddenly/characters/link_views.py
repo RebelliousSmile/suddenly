@@ -11,6 +11,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
+from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
 from .models import (
@@ -45,7 +46,7 @@ def link_choose_type(request: HttpRequest, slug: str) -> HttpResponse:
 
 
 @login_required
-def link_request_form(request: HttpRequest, slug: str, link_type: str) -> HttpResponse:
+def link_request_form(request: AuthenticatedRequest, slug: str, link_type: str) -> HttpResponse:
     """Step 2: Link request form for chosen type. US-10."""
     character = get_object_or_404(Character, slug=slug, status=CharacterStatus.NPC)
 
@@ -107,7 +108,7 @@ def link_request_form(request: HttpRequest, slug: str, link_type: str) -> HttpRe
 
 
 @login_required
-def link_requests_list(request: HttpRequest) -> HttpResponse:
+def link_requests_list(request: AuthenticatedRequest) -> HttpResponse:
     """List received and sent link requests. US-09, US-14."""
     user = request.user
     tab = request.GET.get("tab", "received")

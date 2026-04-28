@@ -5,12 +5,14 @@ Onboarding views — 3-step flow after first signup (wireframe 16-misc.md).
 from __future__ import annotations
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
+
+from suddenly.core.types import AuthenticatedRequest
 
 
 @login_required
-def onboarding_step1(request: HttpRequest) -> HttpResponse:
+def onboarding_step1(request: AuthenticatedRequest) -> HttpResponse:
     """Step 1: Complete profile (display name, bio, avatar)."""
     if request.method == "POST":
         user = request.user
@@ -23,7 +25,7 @@ def onboarding_step1(request: HttpRequest) -> HttpResponse:
 
 
 @login_required
-def onboarding_step2(request: HttpRequest) -> HttpResponse:
+def onboarding_step2(request: AuthenticatedRequest) -> HttpResponse:
     """Step 2: Discover instance (follow suggestions + local timeline)."""
     from suddenly.games.models import Game, Report, ReportStatus
     from suddenly.users.models import User
@@ -48,6 +50,6 @@ def onboarding_step2(request: HttpRequest) -> HttpResponse:
 
 
 @login_required
-def onboarding_step3(request: HttpRequest) -> HttpResponse:
+def onboarding_step3(request: AuthenticatedRequest) -> HttpResponse:
     """Step 3: Choose first action."""
     return render(request, "onboarding/step3.html")

@@ -8,15 +8,16 @@ from __future__ import annotations
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Prefetch, Q
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpResponse
 
+from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
 from .models import Character, CharacterStatus, LinkRequest, LinkRequestStatus
 
 
 @login_required
-def gm_dashboard(request: HttpRequest) -> HttpResponse:
+def gm_dashboard(request: AuthenticatedRequest) -> HttpResponse:
     """GM Dashboard — overview of created NPCs and pending requests (US-14)."""
     user = request.user
 

@@ -262,7 +262,7 @@ def broadcast_activity(activity: dict[str, Any], actor_id: str, actor_type: str)
     from suddenly.games.models import Game
     from suddenly.users.models import User
 
-    actor_models: dict[str, type] = {"User": User, "Game": Game, "Character": Character}
+    actor_models: dict[str, Any] = {"User": User, "Game": Game, "Character": Character}
     ActorModel = actor_models.get(actor_type)  # noqa: N806
     actor_obj = ActorModel.objects.filter(pk=actor_id).first() if ActorModel else None
     key_id = f"{actor_obj.actor_url}#main-key" if actor_obj else None

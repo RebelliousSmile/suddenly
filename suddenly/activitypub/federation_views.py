@@ -7,6 +7,7 @@ DA-1: HTMX-first. These views serve HTML for federated discovery.
 from __future__ import annotations
 
 import logging
+from typing import Any
 from urllib.parse import urlparse
 
 from django.http import HttpRequest, HttpResponse
@@ -175,7 +176,7 @@ def _search_local(query: str) -> list[dict[str, str]]:
     ]
 
 
-def _fetch_actor(url: str) -> dict | None:
+def _fetch_actor(url: str) -> dict[str, Any] | None:
     """Fetch an ActivityPub actor JSON. Blocks private/loopback IPs (SSRF protection)."""
     import socket
 
@@ -208,7 +209,7 @@ def _fetch_actor(url: str) -> dict | None:
                 headers={"Accept": "application/activity+json, application/ld+json"},
             )
         if resp.status_code == 200:
-            return resp.json()
+            return resp.json()  # type: ignore[no-any-return]
     except Exception:
         logger.warning("Failed to fetch actor %s", url, exc_info=True)
 

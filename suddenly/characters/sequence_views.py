@@ -7,11 +7,12 @@ Wireframe 09-links.md. Pessimistic locking via last_edited_by.
 from __future__ import annotations
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 
+from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
 from .models import SharedSequence, SharedSequenceStatus
@@ -45,7 +46,7 @@ def _get_sequence_for_user(pk: str, user: object) -> SharedSequence:
 
 
 @login_required
-def sequence_edit(request: HttpRequest, pk: str) -> HttpResponse:
+def sequence_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
     """SharedSequence editor (US-18)."""
     sequence = _get_sequence_for_user(pk, request.user)
 
@@ -77,7 +78,7 @@ def sequence_edit(request: HttpRequest, pk: str) -> HttpResponse:
 
 
 @login_required
-def sequence_propose_publish(request: HttpRequest, pk: str) -> HttpResponse:
+def sequence_propose_publish(request: AuthenticatedRequest, pk: str) -> HttpResponse:
     """Propose publication of SharedSequence (US-19)."""
     sequence = _get_sequence_for_user(pk, request.user)
 
@@ -96,7 +97,7 @@ def sequence_propose_publish(request: HttpRequest, pk: str) -> HttpResponse:
 
 
 @login_required
-def sequence_validate_publish(request: HttpRequest, pk: str) -> HttpResponse:
+def sequence_validate_publish(request: AuthenticatedRequest, pk: str) -> HttpResponse:
     """Validate (second party) and publish SharedSequence (US-19)."""
     sequence = _get_sequence_for_user(pk, request.user)
 

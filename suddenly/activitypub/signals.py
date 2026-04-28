@@ -24,7 +24,7 @@ def _safe_delay(task: Any, *args: Any, **kwargs: Any) -> None:
     Catches connection-related errors (kombu, stdlib). Programming
     errors (TypeError, AttributeError) propagate normally.
     """
-    from kombu.exceptions import KombuError
+    from kombu.exceptions import KombuError  # type: ignore[import-untyped]
 
     try:
         task.delay(*args, **kwargs)

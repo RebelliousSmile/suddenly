@@ -13,12 +13,13 @@ from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
+from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 from suddenly.games.models import Report, ReportStatus
 
 
 @login_required
-def feed_home(request: HttpRequest) -> HttpResponse:
+def feed_home(request: AuthenticatedRequest) -> HttpResponse:
     """Feed — Abonnements tab (default). US-12, US-28."""
     from django.contrib.contenttypes.models import ContentType
 

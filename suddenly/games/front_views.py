@@ -9,6 +9,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 
+from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
 from .models import Game, Report, ReportStatus, ReportVisibility
@@ -59,7 +60,7 @@ def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
 
 
 @login_required
-def game_create(request: HttpRequest) -> HttpResponse:
+def game_create(request: AuthenticatedRequest) -> HttpResponse:
     """Create a new game (US-02)."""
     if request.method == "POST":
         title = request.POST.get("title", "").strip()
@@ -124,7 +125,7 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
 
 
 @login_required
-def report_create(request: HttpRequest, game_pk: str) -> HttpResponse:
+def report_create(request: AuthenticatedRequest, game_pk: str) -> HttpResponse:
     """Create a new report (US-04, US-05)."""
     game = get_object_or_404(Game, pk=game_pk, owner=request.user)
 

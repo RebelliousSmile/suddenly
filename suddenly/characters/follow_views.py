@@ -8,14 +8,16 @@ from __future__ import annotations
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
+
+from suddenly.core.types import AuthenticatedRequest
 
 from .models import Character, Follow
 
 
 @login_required
-def follow_toggle(request: HttpRequest) -> HttpResponse:
+def follow_toggle(request: AuthenticatedRequest) -> HttpResponse:
     """Toggle follow on a user/game/character. HTMX POST."""
     if request.method != "POST":
         from django.http import HttpResponseNotAllowed

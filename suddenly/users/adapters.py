@@ -11,7 +11,7 @@ from django.conf import settings
 from django.utils import translation
 
 
-class SuddenlyAccountAdapter(DefaultAccountAdapter):
+class SuddenlyAccountAdapter(DefaultAccountAdapter):  # type: ignore[misc]
     """Force all outgoing allauth emails to use the instance LANGUAGE_CODE.
 
     This ensures signup confirmations, password resets, email confirmations,

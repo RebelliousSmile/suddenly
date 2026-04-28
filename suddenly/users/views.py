@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import AnonymousUser
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
@@ -41,7 +42,7 @@ class ProfileView(DetailView):  # type: ignore[type-arg]
         return context
 
 
-def _get_follow_stats(profile_user: User, request_user: object) -> dict[str, object]:
+def _get_follow_stats(profile_user: User, request_user: User | AnonymousUser) -> dict[str, object]:
     """Compute follow stats for a profile in minimal queries."""
     from django.contrib.contenttypes.models import ContentType
 
