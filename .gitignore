@@ -11,6 +11,7 @@ __pycache__/
 *.so
 .Python
 build/
+site/
 develop-eggs/
 dist/
 downloads/
@@ -125,8 +126,6 @@ yarn-error.log*
 
 # <AIDD>
 .mcp.json
-docs/*
-!docs/translations.md
 worktrees/
 .aidd/
 .vscode/

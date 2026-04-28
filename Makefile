@@ -1,4 +1,4 @@
-.PHONY: check lint typecheck test i18n-check frontend
+.PHONY: check lint typecheck test i18n-check frontend docs-serve docs-build
 .PHONY: docker-up docker-down docker-test docker-check docker-shell docker-migrate docker-build docker-logs
 
 # ─── Local ────────────────────────────────────────────────────────
@@ -22,6 +22,12 @@ test:
 
 frontend:
 	cd frontend && npm install && npm run build
+
+docs-serve:
+	mkdocs serve
+
+docs-build:
+	mkdocs build
 
 # ─── Docker ───────────────────────────────────────────────────────
 

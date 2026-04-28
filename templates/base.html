@@ -44,11 +44,11 @@
                     </a>
 
                     {% if user.is_authenticated %}
-                        <a href="#" class="text-gray-600 hover:text-gray-900 transition-colors">
+                        <a href="{% url 'games:list' %}" class="text-gray-600 hover:text-gray-900 transition-colors">
                             <span class="i-lucide-book-open mr-1"></span>
                             {% trans "My games" %}
                         </a>
-                        <a href="#" class="text-gray-600 hover:text-gray-900 transition-colors">
+                        <a href="{% url 'characters:list' %}" class="text-gray-600 hover:text-gray-900 transition-colors">
                             <span class="i-lucide-users mr-1"></span>
                             {% trans "My characters" %}
                         </a>
@@ -72,11 +72,11 @@
                                  x-transition
                                  @click.away="close"
                                  class="dropdown-menu right-0 mt-2 w-48">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     <span class="i-lucide-user mr-2"></span>
                                     {% trans "Profile" %}
                                 </a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     <span class="i-lucide-settings mr-2"></span>
                                     {% trans "Settings" %}
                                 </a>
@@ -133,8 +133,8 @@
                 <a href="{% url 'core:home' %}" class="block py-2 text-gray-600">{% trans "Home" %}</a>
                 <a href="#" class="block py-2 text-gray-600">{% trans "Explore" %}</a>
                 {% if user.is_authenticated %}
-                    <a href="#" class="block py-2 text-gray-600">{% trans "My games" %}</a>
-                    <a href="#" class="block py-2 text-gray-600">{% trans "My characters" %}</a>
+                    <a href="{% url 'games:list' %}" class="block py-2 text-gray-600">{% trans "My games" %}</a>
+                    <a href="{% url 'characters:list' %}" class="block py-2 text-gray-600">{% trans "My characters" %}</a>
                     <hr class="my-2 border-gray-200">
                     <a href="{% url 'account_logout' %}" class="block py-2 text-red-600">{% trans "Log out" %}</a>
                 {% else %}
@@ -182,9 +182,9 @@
                 </div>
 
                 <div class="flex items-center gap-4 text-sm text-gray-500">
-                    <a href="#" class="hover:text-gray-900">{% trans "About" %}</a>
-                    <a href="#" class="hover:text-gray-900">{% trans "Documentation" %}</a>
-                    <a href="https://github.com/votre-repo/suddenly" class="hover:text-gray-900">
+                    <a href="{% url 'core:about' %}" class="hover:text-gray-900">{% trans "About" %}</a>
+                    <a href="https://rebellioussmile.github.io/suddenly/" class="hover:text-gray-900">{% trans "Documentation" %}</a>
+                    <a href="https://github.com/RebelliousSmile/suddenly" class="hover:text-gray-900">
                         <span class="i-simple-icons-github mr-1"></span>
                         GitHub
                     </a>
