@@ -124,13 +124,23 @@ class Character(BaseModel):
             for counter in range(1, 100):
                 try:
                     self.slug = slug
-                    super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+                    super().save(
+                        force_insert=force_insert,
+                        force_update=force_update,
+                        using=using,
+                        update_fields=update_fields,
+                    )
                     return
                 except IntegrityError:
                     slug = f"{base_slug[:95]}-{counter}"
             # Fallback: UUID suffix (guaranteed unique)
             self.slug = f"{base_slug[:80]}-{_uuid.uuid4().hex[:8]}"
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
 
     @property
     def is_available(self) -> bool:
