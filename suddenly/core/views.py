@@ -12,23 +12,12 @@ from typing import Any
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
+from suddenly.core.services import get_recent_public_reports
+
 
 def home(request: HttpRequest) -> HttpResponse:
     """Home page."""
-    from suddenly.games.models import Report, ReportStatus
-
-    recent_reports = (
-        Report.objects.filter(
-            status=ReportStatus.PUBLISHED,
-            visibility="public",
-            remote=False,
-        )
-        .select_related("author", "game")
-        .prefetch_related("cast", "quotes")
-        .order_by("-published_at")[:3]
-    )
-
-    return render(request, "core/home.html", {"recent_reports": recent_reports})
+    return render(request, "core/home.html", {"recent_reports": get_recent_public_reports()})
 
 
 def about(request: HttpRequest) -> HttpResponse:
