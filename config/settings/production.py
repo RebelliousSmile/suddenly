@@ -60,6 +60,18 @@ else:
 # ActivityPub base URL
 AP_BASE_URL = f"https://{DOMAIN}"
 
+# Email — SMTP if configured, silent dummy otherwise (verification is optional)
+_email_host = os.environ.get("EMAIL_HOST")
+if _email_host:
+    EMAIL_HOST = _email_host
+    EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
+    EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+    EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+    EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "true").lower() == "true"
+    DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", f"no-reply@{DOMAIN}")
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
+
 # Security headers
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
