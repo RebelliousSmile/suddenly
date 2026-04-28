@@ -1,0 +1,1667 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-28 10:19+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\suddenly\characters\models.py:21
+msgid "NPC"
+msgstr ""
+
+#: .\suddenly\characters\models.py:22
+msgid "PC"
+msgstr ""
+
+#: .\suddenly\characters\models.py:23
+#: .\templates\components\character_card.html:46
+msgid "Claimed"
+msgstr ""
+
+#: .\suddenly\characters\models.py:24
+#: .\templates\components\character_card.html:51
+msgid "Adopted"
+msgstr ""
+
+#: .\suddenly\characters\models.py:25
+#: .\templates\components\character_card.html:56
+msgid "Forked"
+msgstr ""
+
+#: .\suddenly\characters\models.py:147
+#: .\templates\characters\_quote_form.html:44
+#: .\templates\components\quote_card.html:56
+msgid "Ephemeral"
+msgstr ""
+
+#: .\suddenly\characters\models.py:148
+#: .\templates\characters\_quote_card.html:19
+#: .\templates\characters\_quote_form.html:43
+#: .\templates\components\game_card.html:46
+#: .\templates\components\quote_card.html:61
+msgid "Private"
+msgstr ""
+
+#: .\suddenly\characters\models.py:149 .\suddenly\games\models.py:70
+#: .\templates\characters\_quote_form.html:42
+msgid "Public"
+msgstr ""
+
+#: .\suddenly\characters\models.py:226 .\suddenly\games\models.py:133
+msgid "Main"
+msgstr ""
+
+#: .\suddenly\characters\models.py:227 .\suddenly\games\models.py:134
+msgid "Supporting"
+msgstr ""
+
+#: .\suddenly\characters\models.py:228 .\suddenly\games\models.py:135
+msgid "Mentioned"
+msgstr ""
+
+#: .\suddenly\characters\models.py:260
+msgid "Claim (retcon)"
+msgstr ""
+
+#: .\suddenly\characters\models.py:261
+#: .\templates\characters\link_choose_type.html:39
+#: .\templates\characters\link_request_form.html:24
+msgid "Adoption"
+msgstr ""
+
+#: .\suddenly\characters\models.py:262
+msgid "Fork (derivation)"
+msgstr ""
+
+#: .\suddenly\characters\models.py:268
+msgid "Pending"
+msgstr ""
+
+#: .\suddenly\characters\models.py:269
+msgid "Queued"
+msgstr ""
+
+#: .\suddenly\characters\models.py:270
+msgid "Accepted"
+msgstr ""
+
+#: .\suddenly\characters\models.py:271
+msgid "Rejected"
+msgstr ""
+
+#: .\suddenly\characters\models.py:272
+msgid "Cancelled"
+msgstr ""
+
+#: .\suddenly\characters\models.py:273
+msgid "Expired"
+msgstr ""
+
+#: .\suddenly\characters\models.py:361 .\suddenly\games\models.py:63
+#: .\templates\characters\sequence_edit.html:19
+#: .\templates\components\report_card.html:33
+#: .\templates\games\report_detail.html:26
+msgid "Draft"
+msgstr ""
+
+#: .\suddenly\characters\models.py:362 .\suddenly\games\models.py:64
+#: .\templates\characters\sequence_edit.html:21
+msgid "Published"
+msgstr ""
+
+#: .\suddenly\games\models.py:71 .\templates\games\report_detail.html:30
+msgid "Unlisted"
+msgstr ""
+
+#: .\suddenly\games\models.py:72
+msgid "Followers only"
+msgstr ""
+
+#: .\templates\403.html:4 .\templates\403.html:10
+msgid "Access denied"
+msgstr ""
+
+#: .\templates\403.html:12
+msgid "You do not have permission to access this page."
+msgstr ""
+
+#: .\templates\403.html:15 .\templates\404.html:15
+msgid "Back to home"
+msgstr ""
+
+#: .\templates\403.html:16 .\templates\base.html:92 .\templates\base.html:124
+#: .\templates\core\home.html:27
+msgid "Log in"
+msgstr ""
+
+#: .\templates\404.html:4 .\templates\404.html:10
+msgid "Page not found"
+msgstr ""
+
+#: .\templates\404.html:12
+msgid "The character you are looking for may have changed story."
+msgstr ""
+
+#: .\templates\404.html:16 .\templates\base.html:43 .\templates\base.html:116
+#: .\templates\core\home.html:38
+msgid "Explore"
+msgstr ""
+
+#: .\templates\admin_panel\dashboard.html:4
+#: .\templates\admin_panel\dashboard.html:9
+#: .\templates\admin_panel\instances.html:4
+#: .\templates\admin_panel\instances.html:10
+#: .\templates\admin_panel\users.html:4 .\templates\admin_panel\users.html:10
+msgid "Administration"
+msgstr ""
+
+#: .\templates\admin_panel\dashboard.html:14 .\templates\core\about.html:22
+msgid "players"
+msgstr ""
+
+#: .\templates\admin_panel\dashboard.html:18
+msgid "published reports"
+msgstr ""
+
+#: .\templates\admin_panel\dashboard.html:22 .\templates\core\about.html:37
+msgid "federated instances"
+msgstr ""
+
+#: .\templates\admin_panel\dashboard.html:26
+msgid "blocked instances"
+msgstr ""
+
+#: .\templates\admin_panel\dashboard.html:33
+#: .\templates\admin_panel\instances.html:4
+#: .\templates\admin_panel\instances.html:12
+msgid "Federated instances"
+msgstr ""
+
+#: .\templates\admin_panel\dashboard.html:34
+msgid "Manage instances (block, unblock)"
+msgstr ""
+
+#: .\templates\admin_panel\dashboard.html:38
+#: .\templates\admin_panel\users.html:4 .\templates\admin_panel\users.html:12
+msgid "Users"
+msgstr ""
+
+#: .\templates\admin_panel\dashboard.html:39
+msgid "Manage accounts (suspend)"
+msgstr ""
+
+#: .\templates\admin_panel\instance_block.html:4
+#: .\templates\admin_panel\instance_block.html:9
+#, python-format
+msgid "Block %(name)s"
+msgstr ""
+
+#: .\templates\admin_panel\instance_block.html:11
+msgid "This action will reject all incoming activities and hide content from this instance."
+msgstr ""
+
+#: .\templates\admin_panel\instance_block.html:16
+msgid "Confirm block"
+msgstr ""
+
+#: .\templates\admin_panel\instance_block.html:17
+#: .\templates\characters\_quote_form.html:53
+#: .\templates\characters\link_request_accept_form.html:33
+#: .\templates\characters\link_request_form.html:93
+#: .\templates\characters\link_request_reject_form.html:25
+#: .\templates\characters\link_revoke_form.html:35
+#: .\templates\components\modal.html:71 .\templates\games\create.html:71
+#: .\templates\games\report_create.html:136
+#: .\templates\users\profile_edit.html:174
+msgid "Cancel"
+msgstr ""
+
+#: .\templates\admin_panel\instances.html:21
+msgid "unknown"
+msgstr ""
+
+#: .\templates\admin_panel\instances.html:23
+#, python-format
+msgid "%(count)s users"
+msgstr ""
+
+#: .\templates\admin_panel\instances.html:28
+msgid "Federated"
+msgstr ""
+
+#: .\templates\admin_panel\instances.html:32
+#, python-format
+msgid "Block %(name)s?"
+msgstr ""
+
+#: .\templates\admin_panel\instances.html:33
+msgid "Block"
+msgstr ""
+
+#: .\templates\admin_panel\instances.html:37
+msgid "Blocked"
+msgstr ""
+
+#: .\templates\admin_panel\instances.html:41
+msgid "Unblock"
+msgstr ""
+
+#: .\templates\admin_panel\instances.html:45
+msgid "Unknown"
+msgstr ""
+
+#: .\templates\admin_panel\instances.html:52
+msgid "No known instance."
+msgstr ""
+
+#: .\templates\admin_panel\users.html:21
+#, python-format
+msgid "Joined %(date)s"
+msgstr ""
+
+#: .\templates\admin_panel\users.html:25
+msgid "Active"
+msgstr ""
+
+#: .\templates\admin_panel\users.html:30
+#, python-format
+msgid "Suspend @%(username)s?"
+msgstr ""
+
+#: .\templates\admin_panel\users.html:31
+msgid "Suspend"
+msgstr ""
+
+#: .\templates\admin_panel\users.html:36
+msgid "Suspended"
+msgstr ""
+
+#: .\templates\admin_panel\users.html:43
+msgid "No users."
+msgstr ""
+
+#: .\templates\base.html:40 .\templates\base.html:115
+msgid "Home"
+msgstr ""
+
+#: .\templates\base.html:49 .\templates\base.html:118
+msgid "My games"
+msgstr ""
+
+#: .\templates\base.html:53 .\templates\base.html:119
+msgid "My characters"
+msgstr ""
+
+#: .\templates\base.html:77
+msgid "Profile"
+msgstr ""
+
+#: .\templates\base.html:81
+msgid "Settings"
+msgstr ""
+
+#: .\templates\base.html:86 .\templates\base.html:121
+msgid "Log out"
+msgstr ""
+
+#: .\templates\base.html:95 .\templates\base.html:125
+msgid "Sign up"
+msgstr ""
+
+#: .\templates\base.html:163 .\templates\core\home.html:4
+msgid "Federated shared fiction network"
+msgstr ""
+
+#: .\templates\base.html:167 .\templates\core\about.html:4
+msgid "About"
+msgstr ""
+
+#: .\templates\base.html:168
+msgid "Documentation"
+msgstr ""
+
+#: .\templates\characters\_list_results.html:43
+#, python-format
+msgid "No character found for \"%(q)s\"."
+msgstr ""
+
+#: .\templates\characters\_list_results.html:45
+#: .\templates\users\profile.html:114
+msgid "No characters yet."
+msgstr ""
+
+#: .\templates\characters\_quote_card.html:17
+#: .\templates\characters\detail.html:76 .\templates\characters\detail.html:106
+#: .\templates\characters\gm_dashboard.html:120
+#: .\templates\games\_list_results.html:16 .\templates\games\detail.html:46
+#: .\templates\games\report_detail.html:22 .\templates\onboarding\step2.html:26
+#, python-format
+msgid "by @%(username)s"
+msgstr ""
+
+#: .\templates\characters\_quote_form.html:15
+msgid "The line"
+msgstr ""
+
+#: .\templates\characters\_quote_form.html:17
+msgid "The memorable line..."
+msgstr ""
+
+#: .\templates\characters\_quote_form.html:23
+msgid "Context"
+msgstr ""
+
+#: .\templates\characters\_quote_form.html:23
+#: .\templates\characters\_quote_form.html:32
+#: .\templates\characters\link_request_accept_form.html:21
+#: .\templates\characters\link_request_reject_form.html:17
+#: .\templates\characters\link_revoke_form.html:25
+#: .\templates\components\form_fields.html:13
+#: .\templates\components\form_fields.html:36
+#: .\templates\components\form_fields.html:58
+#: .\templates\components\report_editor.html:16
+#: .\templates\games\create.html:30 .\templates\games\create.html:40
+#: .\templates\games\create.html:50 .\templates\games\report_create.html:29
+#: .\templates\games\report_create.html:40
+#: .\templates\games\report_create.html:98 .\templates\onboarding\step1.html:20
+#: .\templates\onboarding\step1.html:30 .\templates\users\profile_edit.html:22
+#: .\templates\users\profile_edit.html:44
+#: .\templates\users\profile_edit.html:65
+#: .\templates\users\profile_edit.html:133
+msgid "optional"
+msgstr ""
+
+#: .\templates\characters\_quote_form.html:26
+msgid "Narrative situation..."
+msgstr ""
+
+#: .\templates\characters\_quote_form.html:32
+#: .\templates\games\report_create.html:98
+msgid "Content warning"
+msgstr ""
+
+#: .\templates\characters\_quote_form.html:36
+msgid "e.g. Mature content"
+msgstr ""
+
+#: .\templates\characters\_quote_form.html:47
+#: .\templates\characters\sequence_edit.html:83
+msgid "Save"
+msgstr ""
+
+#: .\templates\characters\detail.html:34
+#, python-format
+msgid "Created by @%(username)s"
+msgstr ""
+
+#: .\templates\characters\detail.html:35
+#, python-format
+msgid "Owner: @%(username)s"
+msgstr ""
+
+#: .\templates\characters\detail.html:42
+msgid "You have a pending request on this character."
+msgstr ""
+
+#: .\templates\characters\detail.html:42
+msgid "View"
+msgstr ""
+
+#: .\templates\characters\detail.html:46
+msgid "Link to my story"
+msgstr ""
+
+#: .\templates\characters\detail.html:55 .\templates\games\create.html:50
+msgid "Description"
+msgstr ""
+
+#: .\templates\characters\detail.html:63
+msgid "Appearances"
+msgstr ""
+
+#: .\templates\characters\detail.html:73 .\templates\feed\_feed_items.html:48
+#: .\templates\games\detail.html:43 .\templates\games\report_detail.html:19
+#: .\templates\onboarding\step2.html:25
+msgid "Untitled"
+msgstr ""
+
+#: .\templates\characters\detail.html:84
+msgid "No appearance in a report."
+msgstr ""
+
+#: .\templates\characters\detail.html:91
+msgid "Quotes"
+msgstr ""
+
+#: .\templates\characters\detail.html:112
+msgid "No quotes yet."
+msgstr ""
+
+#: .\templates\characters\detail.html:119
+msgid "Lineage"
+msgstr ""
+
+#: .\templates\characters\detail.html:122
+msgid "Forked from"
+msgstr ""
+
+#: .\templates\characters\gm_dashboard.html:4
+#: .\templates\characters\gm_dashboard.html:10
+msgid "Dashboard"
+msgstr ""
+
+#: .\templates\characters\gm_dashboard.html:16
+msgid "NPCs created"
+msgstr ""
+
+#: .\templates\characters\gm_dashboard.html:20
+msgid "pending requests"
+msgstr ""
+
+#: .\templates\characters\gm_dashboard.html:24
+msgid "linked characters"
+msgstr ""
+
+#: .\templates\characters\gm_dashboard.html:28
+msgid "Explore NPCs"
+msgstr ""
+
+#: .\templates\characters\gm_dashboard.html:38
+msgid "NPCs with pending requests"
+msgstr ""
+
+#: .\templates\characters\gm_dashboard.html:53
+#: .\templates\components\character_card.html:81
+#, python-format
+msgid "%(counter)s appearance"
+msgid_plural "%(counter)s appearances"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\templates\characters\gm_dashboard.html:56
+#, python-format
+msgid "%(counter)s request"
+msgid_plural "%(counter)s requests"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\templates\characters\gm_dashboard.html:64
+#: .\templates\components\link_request_card.html:38
+msgid "wants to"
+msgstr ""
+
+#: .\templates\characters\gm_dashboard.html:74
+msgid "To process"
+msgstr ""
+
+#: .\templates\characters\gm_dashboard.html:76
+#, python-format
+msgid "In queue (#%(num)s)"
+msgstr ""
+
+#: .\templates\characters\gm_dashboard.html:90
+msgid "Available NPCs"
+msgstr ""
+
+#: .\templates\characters\gm_dashboard.html:106
+msgid "Linked characters"
+msgstr ""
+
+#: .\templates\characters\gm_dashboard.html:132
+msgid "You have no NPCs yet"
+msgstr ""
+
+#: .\templates\characters\gm_dashboard.html:134
+msgid "NPCs are created automatically when you mention them in a report."
+msgstr ""
+
+#: .\templates\characters\gm_dashboard.html:136
+msgid "See my games"
+msgstr ""
+
+#: .\templates\characters\link_choose_type.html:4
+#, python-format
+msgid "Link %(name)s to my story"
+msgstr ""
+
+#: .\templates\characters\link_choose_type.html:11
+#, python-format
+msgid "Back to %(name)s"
+msgstr ""
+
+#: .\templates\characters\link_choose_type.html:15
+#, python-format
+msgid "Link %(name)s to your story"
+msgstr ""
+
+#: .\templates\characters\link_choose_type.html:19
+msgid "This character is on a remote instance. The request will be sent via ActivityPub. Delay: if no response within 30 days, the request will expire."
+msgstr ""
+
+#: .\templates\characters\link_choose_type.html:24
+msgid "This NPC already has a pending request. Your request will be queued."
+msgstr ""
+
+#: .\templates\characters\link_choose_type.html:28
+msgid "How do you want to integrate this character?"
+msgstr ""
+
+#: .\templates\characters\link_choose_type.html:41
+#, python-format
+msgid "%(name)s becomes <strong>your PC</strong>. They leave their old story to join yours. The creator will need to accept."
+msgstr ""
+
+#: .\templates\characters\link_choose_type.html:56
+#: .\templates\characters\link_request_form.html:32
+msgid "Derivation"
+msgstr ""
+
+#: .\templates\characters\link_choose_type.html:58
+#, python-format
+msgid "You create a <strong>new PC</strong> inspired by %(name)s. %(name)s remains available for other players. Your two characters will be linked by a lineage."
+msgstr ""
+
+#: .\templates\characters\link_choose_type.html:74
+msgid "Retcon"
+msgstr ""
+
+#: .\templates\characters\link_choose_type.html:74
+msgid "advanced"
+msgstr ""
+
+#: .\templates\characters\link_choose_type.html:77
+#, python-format
+msgid "Retroactive rewrite: %(name)s was actually your PC from the beginning. Their story is reinterpreted."
+msgstr ""
+
+#: .\templates\characters\link_request_accept_form.html:4
+msgid "Accept request"
+msgstr ""
+
+#: .\templates\characters\link_request_accept_form.html:10
+#, python-format
+msgid "Accept request from @%(username)s"
+msgstr ""
+
+#: .\templates\characters\link_request_accept_form.html:14
+#, python-format
+msgid "@%(username)s wants to <strong>%(type)s</strong> %(name)s."
+msgstr ""
+
+#: .\templates\characters\link_request_accept_form.html:21
+msgid "Your response message"
+msgstr ""
+
+#: .\templates\characters\link_request_accept_form.html:24
+msgid "A narrative word to accompany the transition..."
+msgstr ""
+
+#: .\templates\characters\link_request_accept_form.html:29
+msgid "A Shared Sequence will be created to co-write the transition scene."
+msgstr ""
+
+#: .\templates\characters\link_request_accept_form.html:32
+msgid "Confirm acceptance"
+msgstr ""
+
+#: .\templates\characters\link_request_accepted.html:4
+msgid "Request accepted"
+msgstr ""
+
+#: .\templates\characters\link_request_accepted.html:10
+msgid "Request accepted!"
+msgstr ""
+
+#: .\templates\characters\link_request_accepted.html:12
+#, python-format
+msgid "%(name)s is now linked to @%(username)s. A Shared Sequence has been created."
+msgstr ""
+
+#: .\templates\characters\link_request_accepted.html:18
+msgid "Open Shared Sequence"
+msgstr ""
+
+#: .\templates\characters\link_request_accepted.html:22
+msgid "Back to requests"
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:5
+#: .\templates\components\character_card.html:117 .\templates\core\home.html:82
+msgid "Adopt"
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:5
+#: .\templates\components\character_card.html:125 .\templates\core\home.html:96
+msgid "Fork"
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:5
+#: .\templates\components\character_card.html:109 .\templates\core\home.html:68
+msgid "Claim"
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:14
+msgid "Back to choice"
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:23
+#, python-format
+msgid "Adopt %(name)s"
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:31
+#, python-format
+msgid "Fork %(name)s"
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:39
+#, python-format
+msgid "Retcon on %(name)s"
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:40
+msgid "Retroactive rewrite"
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:56
+#, python-format
+msgid "You want to take %(name)s as your PC. @%(username)s will need to accept your request."
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:60
+#, python-format
+msgid "You are creating a new PC inspired by %(name)s. %(name)s remains NPC — your PC will be linked by a narrative lineage."
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:63
+msgid "Name of your new PC"
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:66
+#, python-format
+msgid "e.g. Shadow %(name)s"
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:71
+#, python-format
+msgid "You claim that %(name)s was your PC from the beginning. Their story will be reinterpreted retroactively."
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:76
+msgid "Your narrative proposal"
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:78
+#, python-format
+msgid "Explain how %(name)s fits into your story and why this link interests you..."
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:84
+#, python-format
+msgid "After acceptance, you will co-write a Shared Sequence with @%(username)s to seal the narrative transition."
+msgstr ""
+
+#: .\templates\characters\link_request_form.html:90
+msgid "Send request"
+msgstr ""
+
+#: .\templates\characters\link_request_reject_form.html:4
+msgid "Reject request"
+msgstr ""
+
+#: .\templates\characters\link_request_reject_form.html:10
+#, python-format
+msgid "Reject request from @%(username)s"
+msgstr ""
+
+#: .\templates\characters\link_request_reject_form.html:17
+msgid "Reason for rejection"
+msgstr ""
+
+#: .\templates\characters\link_request_reject_form.html:20
+msgid "Explain why..."
+msgstr ""
+
+#: .\templates\characters\link_request_reject_form.html:24
+msgid "Confirm rejection"
+msgstr ""
+
+#: .\templates\characters\link_request_sent.html:4
+msgid "Request sent"
+msgstr ""
+
+#: .\templates\characters\link_request_sent.html:10
+msgid "Request sent!"
+msgstr ""
+
+#: .\templates\characters\link_request_sent.html:12
+msgid "Your Adoption request"
+msgstr ""
+
+#: .\templates\characters\link_request_sent.html:12
+msgid "Your Derivation request"
+msgstr ""
+
+#: .\templates\characters\link_request_sent.html:12
+msgid "Your Retcon request"
+msgstr ""
+
+#: .\templates\characters\link_request_sent.html:13
+#, python-format
+msgid "has been sent to @%(username)s. You will be notified of their decision."
+msgstr ""
+
+#: .\templates\characters\link_request_sent.html:17
+#: .\templates\characters\link_revoked.html:17
+#: .\templates\components\link_request_card.html:94
+#: .\templates\components\npc_highlight.html:26
+#: .\templates\federation\_search_results.html:26
+msgid "View profile"
+msgstr ""
+
+#: .\templates\characters\link_request_sent.html:20
+msgid "My requests"
+msgstr ""
+
+#: .\templates\characters\link_requests.html:4
+#: .\templates\characters\link_requests.html:10
+msgid "Link requests"
+msgstr ""
+
+#: .\templates\characters\link_requests.html:17
+msgid "Received"
+msgstr ""
+
+#: .\templates\characters\link_requests.html:22
+msgid "Sent"
+msgstr ""
+
+#: .\templates\characters\link_requests.html:38
+#, python-format
+msgid "@%(username)s wants to <strong>%(type)s</strong> %(name)s"
+msgstr ""
+
+#: .\templates\characters\link_requests.html:45
+#: .\templates\components\link_request_card.html:84
+msgid "Accept"
+msgstr ""
+
+#: .\templates\characters\link_requests.html:46
+#: .\templates\components\link_request_card.html:91
+msgid "Reject"
+msgstr ""
+
+#: .\templates\characters\link_requests.html:53
+msgid "No received requests."
+msgstr ""
+
+#: .\templates\characters\link_requests.html:70
+#, python-format
+msgid "NPC by @%(username)s"
+msgstr ""
+
+#: .\templates\characters\link_requests.html:78
+#: .\templates\components\link_request_card.html:103
+msgid "Cancel my request"
+msgstr ""
+
+#: .\templates\characters\link_requests.html:86
+msgid "No sent requests."
+msgstr ""
+
+#: .\templates\characters\link_revoke_form.html:4
+#: .\templates\characters\link_revoke_form.html:33
+msgid "Revoke link"
+msgstr ""
+
+#: .\templates\characters\link_revoke_form.html:10
+#, python-format
+msgid "Revoke link with %(name)s"
+msgstr ""
+
+#: .\templates\characters\link_revoke_form.html:10
+#, python-format
+msgid "Renounce %(name)s"
+msgstr ""
+
+#: .\templates\characters\link_revoke_form.html:14
+msgid "The Shared Sequence is published. The link will be marked REVOKED but the sequence will remain visible."
+msgstr ""
+
+#: .\templates\characters\link_revoke_form.html:17
+msgid "The link and sequence draft will be deleted. The NPC will become available again."
+msgstr ""
+
+#: .\templates\characters\link_revoke_form.html:25
+msgid "Reason"
+msgstr ""
+
+#: .\templates\characters\link_revoke_form.html:28
+msgid "Explain why you are revoking..."
+msgstr ""
+
+#: .\templates\characters\link_revoke_form.html:28
+msgid "Message for the creator..."
+msgstr ""
+
+#: .\templates\characters\link_revoke_form.html:33
+msgid "Confirm renunciation"
+msgstr ""
+
+#: .\templates\characters\link_revoked.html:4
+#: .\templates\characters\link_revoked.html:11
+msgid "Link revoked"
+msgstr ""
+
+#: .\templates\characters\link_revoked.html:11
+msgid "Renunciation confirmed"
+msgstr ""
+
+#: .\templates\characters\link_revoked.html:14
+#, python-format
+msgid "%(name)s is available again as an NPC."
+msgstr ""
+
+#: .\templates\characters\list.html:4 .\templates\characters\list.html:9
+#: .\templates\games\detail.html:68 .\templates\users\profile.html:102
+msgid "Characters"
+msgstr ""
+
+#: .\templates\characters\list.html:16
+msgid "Search a character..."
+msgstr ""
+
+#: .\templates\characters\list.html:29
+msgid "All statuses"
+msgstr ""
+
+#: .\templates\characters\list.html:40
+msgid "Game system..."
+msgstr ""
+
+#: .\templates\characters\sequence_edit.html:4
+#: .\templates\characters\sequence_edit.html:12
+msgid "Shared Sequence"
+msgstr ""
+
+#: .\templates\characters\sequence_edit.html:25
+#, python-format
+msgid "Last edited by @%(username)s"
+msgstr ""
+
+#: .\templates\characters\sequence_edit.html:34
+msgid "Saved."
+msgstr ""
+
+#: .\templates\characters\sequence_edit.html:41
+msgid "You have proposed publication. Waiting for the other participant's validation."
+msgstr ""
+
+#: .\templates\characters\sequence_edit.html:46
+#, python-format
+msgid "@%(username)s proposes to publish this sequence."
+msgstr ""
+
+#: .\templates\characters\sequence_edit.html:50
+msgid "Validate and publish"
+msgstr ""
+
+#: .\templates\characters\sequence_edit.html:57
+msgid "This sequence is published and visible in both characters' history."
+msgstr ""
+
+#: .\templates\characters\sequence_edit.html:66
+#: .\templates\components\report_editor.html:16
+#: .\templates\games\create.html:21 .\templates\games\report_create.html:29
+msgid "Title"
+msgstr ""
+
+#: .\templates\characters\sequence_edit.html:69
+msgid "e.g. The meeting at the crossroads"
+msgstr ""
+
+#: .\templates\characters\sequence_edit.html:74
+msgid "Content (Markdown)"
+msgstr ""
+
+#: .\templates\characters\sequence_edit.html:76
+msgid "Write the transition scene together..."
+msgstr ""
+
+#: .\templates\characters\sequence_edit.html:93
+msgid "Propose publication"
+msgstr ""
+
+#: .\templates\components\character_card.html:36
+msgid "Available"
+msgstr ""
+
+#: .\templates\components\character_card.html:88 .\templates\core\home.html:150
+#, python-format
+msgid "%(counter)s quote"
+msgid_plural "%(counter)s quotes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\templates\components\feed_item.html:31
+#: .\templates\components\quote_card.html:46
+#: .\templates\feed\_feed_items.html:18
+msgid "in"
+msgstr ""
+
+#: .\templates\components\feed_item.html:60
+msgid "Available NPC"
+msgstr ""
+
+#: .\templates\components\feed_item.html:93
+msgid "Copy link"
+msgstr ""
+
+#: .\templates\components\feed_item.html:96
+#: .\templates\components\report_editor.html:29
+#: .\templates\games\report_detail.html:4
+#: .\templates\games\report_detail.html:13
+msgid "Report"
+msgstr ""
+
+#: .\templates\components\follow_button.html:26
+msgid "Unfollow"
+msgstr ""
+
+#: .\templates\components\follow_button.html:27
+msgid "Following"
+msgstr ""
+
+#: .\templates\components\follow_button.html:40
+msgid "Follow"
+msgstr ""
+
+#: .\templates\components\form_fields.html:107
+msgid "Upload a file"
+msgstr ""
+
+#: .\templates\components\form_fields.html:114
+#: .\templates\users\profile_edit.html:93
+msgid "or drag and drop"
+msgstr ""
+
+#: .\templates\components\game_card.html:62
+#, python-format
+msgid "%(counter)s report"
+msgid_plural "%(counter)s reports"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\templates\components\game_card.html:67 .\templates\core\home.html:146
+#, python-format
+msgid "%(counter)s character"
+msgid_plural "%(counter)s characters"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\templates\components\game_card.html:82
+msgid "Recent characters"
+msgstr ""
+
+#: .\templates\components\link_request_card.html:39
+msgid "your NPC"
+msgstr ""
+
+#: .\templates\components\link_request_card.html:42
+msgid "You want to"
+msgstr ""
+
+#: .\templates\components\link_request_card.html:44
+msgid "NPC by"
+msgstr ""
+
+#: .\templates\components\link_request_card.html:63
+msgid "Will be processable after the previous request."
+msgstr ""
+
+#: .\templates\components\link_request_card.html:71
+#, python-format
+msgid "Expires in %(time)s."
+msgstr ""
+
+#: .\templates\components\link_request_card.html:108
+msgid "Resend request"
+msgstr ""
+
+#: .\templates\components\link_request_card.html:109
+msgid "Delete"
+msgstr ""
+
+#: .\templates\components\modal.html:74
+msgid "Confirm"
+msgstr ""
+
+#: .\templates\components\presence_indicator.html:27
+msgid "Online"
+msgstr ""
+
+#: .\templates\components\presence_indicator.html:29
+#, python-format
+msgid "seen %(time)s ago"
+msgstr ""
+
+#: .\templates\components\report_card.html:107
+msgid "Read more"
+msgstr ""
+
+#: .\templates\components\report_editor.html:39
+msgid "Tell us about your session..."
+msgstr ""
+
+#: .\templates\components\report_editor.html:39
+msgid "Use @name to mention a character."
+msgstr ""
+
+#: .\templates\components\report_editor.html:67
+msgid "No character found"
+msgstr ""
+
+#: .\templates\components\report_editor.html:75
+msgid "Markdown supported. Type <code class=\"bg-gray-100 px-1 rounded\">@</code> to mention a character."
+msgstr ""
+
+#: .\templates\components\report_editor.html:82
+#: .\templates\games\report_create.html:40
+#: .\templates\games\report_detail.html:63
+msgid "Cast"
+msgstr ""
+
+#: .\templates\components\report_editor.html:82
+msgid "characters in this scene"
+msgstr ""
+
+#: .\templates\components\report_editor.html:106
+#: .\templates\games\report_create.html:57
+msgid "Add a character..."
+msgstr ""
+
+#: .\templates\components\report_editor.html:135
+#: .\templates\games\report_create.html:130
+msgid "Publish"
+msgstr ""
+
+#: .\templates\components\report_editor.html:143
+#: .\templates\games\report_create.html:134
+msgid "Save draft"
+msgstr ""
+
+#: .\templates\components\report_editor.html:148
+msgid "Delete this draft?"
+msgstr ""
+
+#: .\templates\core\about.html:10
+#, python-format
+msgid "About %(name)s"
+msgstr ""
+
+#: .\templates\core\about.html:27
+msgid "reports"
+msgstr ""
+
+#: .\templates\core\about.html:32
+msgid "characters"
+msgstr ""
+
+#: .\templates\core\about.html:44
+msgid "Instance rules"
+msgstr ""
+
+#: .\templates\core\about.html:51 .\templates\users\settings_federation.html:4
+#: .\templates\users\settings_federation.html:9
+msgid "Federation"
+msgstr ""
+
+#: .\templates\core\about.html:53
+msgid "Software:"
+msgstr ""
+
+#: .\templates\core\about.html:54
+msgid "Protocol:"
+msgstr ""
+
+#: .\templates\core\about.html:55
+msgid "Compatible with:"
+msgstr ""
+
+#: .\templates\core\about.html:61
+msgid "Contact"
+msgstr ""
+
+#: .\templates\core\about.html:63
+msgid "For any questions, contact the administrator of this instance."
+msgstr ""
+
+#: .\templates\core\home.html:11
+msgid "Welcome to"
+msgstr ""
+
+#: .\templates\core\home.html:17
+msgid "Publish your game reports. The NPCs you mention can be <strong class=\"text-gray-700\">claimed</strong>, <strong class=\"text-gray-700\">adopted</strong> or <strong class=\"text-gray-700\">forked</strong> by other players."
+msgstr ""
+
+#: .\templates\core\home.html:24
+msgid "Join the network"
+msgstr ""
+
+#: .\templates\core\home.html:34 .\templates\games\create.html:4
+#: .\templates\games\create.html:9 .\templates\games\list.html:14
+msgid "New game"
+msgstr ""
+
+#: .\templates\core\home.html:48
+msgid "How does it work?"
+msgstr ""
+
+#: .\templates\core\home.html:57
+msgid "Publish your games"
+msgstr ""
+
+#: .\templates\core\home.html:59
+msgid "Create reports of your RPG sessions. Mention your NPCs to make them discoverable."
+msgstr ""
+
+#: .\templates\core\home.html:70
+msgid "Your NPC was my PC all along."
+msgstr ""
+
+#: .\templates\core\home.html:73
+msgid "Reveal that your character was already there — a narrative retcon."
+msgstr ""
+
+#: .\templates\core\home.html:84
+msgid "Your NPC interests me, I'll make them my PC."
+msgstr ""
+
+#: .\templates\core\home.html:87
+msgid "Take an abandoned NPC and give them a new life."
+msgstr ""
+
+#: .\templates\core\home.html:98
+msgid "I create a PC derived from your NPC."
+msgstr ""
+
+#: .\templates\core\home.html:101
+msgid "Create a derived character — cousin, lookalike, former associate."
+msgstr ""
+
+#: .\templates\core\home.html:112 .\templates\onboarding\step2.html:21
+msgid "Recent activity"
+msgstr ""
+
+#: .\templates\core\home.html:115
+msgid "See all"
+msgstr ""
+
+#: .\templates\core\home.html:159
+msgid "No activity yet. Be the first to publish a report!"
+msgstr ""
+
+#: .\templates\core\home.html:172
+msgid "Federated with the Fediverse"
+msgstr ""
+
+#: .\templates\core\home.html:175
+#, python-format
+msgid "%(SITE_NAME)s uses <strong>ActivityPub</strong> to connect to other instances and the rest of the Fediverse. Follow players from Mastodon, BookWyrm or any compatible platform."
+msgstr ""
+
+#: .\templates\federation\_search_results.html:34
+msgid "Searching..."
+msgstr ""
+
+#: .\templates\federation\remote_profile.html:4
+msgid "Remote profile"
+msgstr ""
+
+#: .\templates\federation\remote_profile.html:11
+msgid "Back to search"
+msgstr ""
+
+#: .\templates\federation\remote_profile.html:20
+msgid "This profile is hosted on "
+msgstr ""
+
+#: .\templates\federation\remote_profile.html:20
+msgid ". The displayed data is shared via ActivityPub."
+msgstr ""
+
+#: .\templates\federation\remote_profile.html:51
+#, python-format
+msgid "View full profile on %(d)s"
+msgstr ""
+
+#: .\templates\federation\search.html:4 .\templates\federation\search.html:9
+msgid "Federated search"
+msgstr ""
+
+#: .\templates\federation\search.html:13
+msgid "or"
+msgstr ""
+
+#: .\templates\federation\search.html:20
+msgid "Type @user@instance, a profile URL, or a name to search locally."
+msgstr ""
+
+#: .\templates\feed\_feed_items.html:66
+#: .\templates\feed\_recommend_button.html:15
+msgid "Recommend"
+msgstr ""
+
+#: .\templates\feed\_feed_items.html:75
+msgid "Your feed is empty"
+msgstr ""
+
+#: .\templates\feed\_feed_items.html:77
+msgid "Follow players or games to see their publications here."
+msgstr ""
+
+#: .\templates\feed\_feed_items.html:80
+msgid "Explore games"
+msgstr ""
+
+#: .\templates\feed\_feed_items.html:81
+msgid "See characters"
+msgstr ""
+
+#: .\templates\feed\_feed_items.html:87
+msgid "No recent content."
+msgstr ""
+
+#: .\templates\feed\_recommend_button.html:6
+msgid "Recommended"
+msgstr ""
+
+#: .\templates\feed\home.html:4 .\templates\feed\home.html:10
+msgid "Feed"
+msgstr ""
+
+#: .\templates\feed\home.html:19
+msgid "Subscriptions"
+msgstr ""
+
+#: .\templates\feed\home.html:26
+msgid "Instance"
+msgstr ""
+
+#: .\templates\feed\home.html:33
+msgid "Fediverse"
+msgstr ""
+
+#: .\templates\feed\home.html:41
+msgid "Available NPCs in your followed games"
+msgstr ""
+
+#: .\templates\games\_list_results.html:24
+msgid "No games yet."
+msgstr ""
+
+#: .\templates\games\create.html:24
+msgid "e.g. City of Mist — Season 2"
+msgstr ""
+
+#: .\templates\games\create.html:30
+msgid "Game system"
+msgstr ""
+
+#: .\templates\games\create.html:34
+msgid "e.g. City of Mist, D&D 5e, Ironsworn"
+msgstr ""
+
+#: .\templates\games\create.html:40
+msgid "Start date"
+msgstr ""
+
+#: .\templates\games\create.html:45
+msgid "For past campaigns. Leave blank for today."
+msgstr ""
+
+#: .\templates\games\create.html:53
+msgid "Describe your campaign..."
+msgstr ""
+
+#: .\templates\games\create.html:62
+msgid "Public game (visible and followable)"
+msgstr ""
+
+#: .\templates\games\create.html:69
+msgid "Create a game"
+msgstr ""
+
+#: .\templates\games\detail.html:14
+#, python-format
+msgid "By @%(username)s"
+msgstr ""
+
+#: .\templates\games\detail.html:24
+msgid "Edit"
+msgstr ""
+
+#: .\templates\games\detail.html:33
+msgid "Reports"
+msgstr ""
+
+#: .\templates\games\detail.html:61
+msgid "No published report."
+msgstr ""
+
+#: .\templates\games\detail.html:84
+msgid "No characters in this game."
+msgstr ""
+
+#: .\templates\games\list.html:4 .\templates\games\list.html:10
+msgid "Games"
+msgstr ""
+
+#: .\templates\games\report_create.html:4
+#: .\templates\games\report_create.html:12
+#: .\templates\games\report_create.html:15
+msgid "New report"
+msgstr ""
+
+#: .\templates\games\report_create.html:33
+msgid "e.g. Session 12 — The Broken Oracle"
+msgstr ""
+
+#: .\templates\games\report_create.html:69
+msgid "Content"
+msgstr ""
+
+#: .\templates\games\report_create.html:74
+msgid "Tell your session... Type @ to mention a character."
+msgstr ""
+
+#: .\templates\games\report_create.html:92
+msgid "Markdown supported. Type"
+msgstr ""
+
+#: .\templates\games\report_create.html:92
+msgid "to mention."
+msgstr ""
+
+#: .\templates\games\report_create.html:102
+msgid "e.g. Violence, dark themes"
+msgstr ""
+
+#: .\templates\games\report_create.html:105
+msgid "If filled, content will be hidden behind a 'Show' button."
+msgstr ""
+
+#: .\templates\games\report_create.html:110
+msgid "Visibility"
+msgstr ""
+
+#: .\templates\games\report_detail.html:24
+#, python-format
+msgid "published %(date)s"
+msgstr ""
+
+#: .\templates\games\report_detail.html:31
+msgid "Followers"
+msgstr ""
+
+#: .\templates\games\report_detail.html:47
+msgid "Hide"
+msgstr ""
+
+#: .\templates\games\report_detail.html:47
+msgid "Show content"
+msgstr ""
+
+#: .\templates\games\report_detail.html:81
+msgid "Quotes from this session"
+msgstr ""
+
+#: .\templates\notifications\_items.html:56
+msgid "No notifications."
+msgstr ""
+
+#: .\templates\notifications\list.html:4 .\templates\notifications\list.html:12
+msgid "Notifications"
+msgstr ""
+
+#: .\templates\notifications\list.html:21
+msgid "Mark all as read"
+msgstr ""
+
+#: .\templates\onboarding\step1.html:4
+msgid "Welcome"
+msgstr ""
+
+#: .\templates\onboarding\step1.html:10
+msgid "Step 1 of 3"
+msgstr ""
+
+#: .\templates\onboarding\step1.html:12
+#, python-format
+msgid "Welcome to %(name)s, %(username)s!"
+msgstr ""
+
+#: .\templates\onboarding\step1.html:20
+msgid "Display name"
+msgstr ""
+
+#: .\templates\onboarding\step1.html:24
+msgid "What do you want to be called?"
+msgstr ""
+
+#: .\templates\onboarding\step1.html:30
+msgid "Biography"
+msgstr ""
+
+#: .\templates\onboarding\step1.html:33
+msgid "Introduce yourself in a few words..."
+msgstr ""
+
+#: .\templates\onboarding\step1.html:39 .\templates\onboarding\step2.html:64
+msgid "Skip this step"
+msgstr ""
+
+#: .\templates\onboarding\step1.html:42 .\templates\onboarding\step2.html:67
+msgid "Continue"
+msgstr ""
+
+#: .\templates\onboarding\step2.html:4
+msgid "Discover"
+msgstr ""
+
+#: .\templates\onboarding\step2.html:11
+msgid "Step 2 of 3"
+msgstr ""
+
+#: .\templates\onboarding\step2.html:13 .\templates\onboarding\step3.html:13
+msgid "Back"
+msgstr ""
+
+#: .\templates\onboarding\step2.html:16
+msgid "Discover your instance"
+msgstr ""
+
+#: .\templates\onboarding\step2.html:36
+msgid "Active players"
+msgstr ""
+
+#: .\templates\onboarding\step2.html:50
+msgid "Popular games"
+msgstr ""
+
+#: .\templates\onboarding\step3.html:4
+msgid "Get started"
+msgstr ""
+
+#: .\templates\onboarding\step3.html:11
+msgid "Step 3 of 3"
+msgstr ""
+
+#: .\templates\onboarding\step3.html:16
+msgid "What do you want to do?"
+msgstr ""
+
+#: .\templates\onboarding\step3.html:21
+msgid "Create my first game"
+msgstr ""
+
+#: .\templates\onboarding\step3.html:22
+msgid "Start documenting your RPG sessions"
+msgstr ""
+
+#: .\templates\onboarding\step3.html:27
+msgid "Explore characters"
+msgstr ""
+
+#: .\templates\onboarding\step3.html:28
+msgid "Discover other players' NPCs"
+msgstr ""
+
+#: .\templates\onboarding\step3.html:33
+msgid "View local feed"
+msgstr ""
+
+#: .\templates\onboarding\step3.html:34
+msgid "Follow the community's publications"
+msgstr ""
+
+#: .\templates\users\profile.html:40
+msgid "Edit profile"
+msgstr ""
+
+#: .\templates\users\profile.html:59
+msgid "follower"
+msgid_plural "followers"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\templates\users\profile.html:63
+msgid "following"
+msgid_plural "following"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\templates\users\profile.html:82
+msgid "Recent games"
+msgstr ""
+
+#: .\templates\users\profile.html:94
+msgid "No published games yet."
+msgstr ""
+
+#: .\templates\users\profile_edit.html:4 .\templates\users\profile_edit.html:11
+msgid "Edit my profile"
+msgstr ""
+
+#: .\templates\users\profile_edit.html:28
+msgid "Your display name"
+msgstr ""
+
+#: .\templates\users\profile_edit.html:49
+msgid "Introduce yourself..."
+msgstr ""
+
+#: .\templates\users\profile_edit.html:69
+msgid "Current avatar"
+msgstr ""
+
+#: .\templates\users\profile_edit.html:71
+msgid "Current image"
+msgstr ""
+
+#: .\templates\users\profile_edit.html:76
+msgid "Delete image"
+msgstr ""
+
+#: .\templates\users\profile_edit.html:86
+msgid "Upload an image"
+msgstr ""
+
+#: .\templates\users\profile_edit.html:95
+msgid "PNG, JPG or GIF up to 10 MB"
+msgstr ""
+
+#: .\templates\users\profile_edit.html:117
+msgid "e.g. fr"
+msgstr ""
+
+#: .\templates\users\profile_edit.html:136
+msgid "Language codes separated by commas, e.g. fr, en"
+msgstr ""
+
+#: .\templates\users\profile_edit.html:171
+msgid "Save changes"
+msgstr ""
+
+#: .\templates\users\settings_data.html:4
+#: .\templates\users\settings_federation.html:17
+msgid "Data"
+msgstr ""
+
+#: .\templates\users\settings_data.html:9
+msgid "My data"
+msgstr ""
+
+#: .\templates\users\settings_data.html:13
+#, python-format
+msgid "%(counter)s account imported."
+msgid_plural "%(counter)s accounts imported."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\templates\users\settings_data.html:19
+msgid "Import follows"
+msgstr ""
+
+#: .\templates\users\settings_data.html:23
+msgid "Mastodon-compatible CSV (column \\"
+msgstr ""
+
+#: .\templates\users\settings_data.html:24
+msgid "Import"
+msgstr ""
+
+#: .\templates\users\settings_data.html:30
+msgid "Export"
+msgstr ""
+
+#: .\templates\users\settings_data.html:32
+msgid "Download my follows (CSV)"
+msgstr ""
+
+#: .\templates\users\settings_data.html:38
+msgid "Migrate to another instance"
+msgstr ""
+
+#: .\templates\users\settings_data.html:40
+msgid "Your profile will be redirected. Your followers will be notified. This process is irreversible."
+msgstr ""
+
+#: .\templates\users\settings_data.html:44
+msgid "Feature under development."
+msgstr ""
+
+#: .\templates\users\settings_federation.html:12
+msgid "Your ActivityPub identifier"
+msgstr ""
+
+#: .\templates\users\settings_federation.html:21
+msgid "Export my follows (CSV)"
+msgstr ""
+
+#: .\templates\users\settings_federation.html:24
+msgid "Import / Migrate"
+msgstr ""
