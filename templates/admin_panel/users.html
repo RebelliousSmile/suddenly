@@ -1,14 +1,15 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Utilisateurs — Administration — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Users" %} — {% trans "Administration" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
     <div class="container-app">
         <a href="{% url 'admin_panel:dashboard' %}" class="link-muted text-sm mb-4 block">
-            <span class="i-lucide-arrow-left text-xs"></span> Administration
+            <span class="i-lucide-arrow-left text-xs"></span> {% trans "Administration" %}
         </a>
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">Utilisateurs</h1>
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">{% trans "Users" %}</h1>
 
         {% if users_list %}
             <div class="space-y-2">
@@ -17,29 +18,29 @@
                         <div>
                             <span class="font-medium">@{{ u.username }}</span>
                             {% if u.display_name %}<span class="text-gray-500 text-sm ml-1">({{ u.display_name }})</span>{% endif %}
-                            <p class="text-xs text-gray-500">Inscrit {{ u.date_joined|timesince }}</p>
+                            <p class="text-xs text-gray-500">{% blocktrans with date=u.date_joined|timesince %}Joined {{ date }}{% endblocktrans %}</p>
                         </div>
                         <div class="flex items-center gap-2">
                             {% if u.is_active %}
-                                <span class="badge-available text-xs">Actif</span>
+                                <span class="badge-available text-xs">{% trans "Active" %}</span>
                                 {% if u != user %}
                                     <form method="post" action="{% url 'admin_panel:user_suspend' pk=u.pk %}">
                                         {% csrf_token %}
                                         <button type="submit" class="btn-ghost btn-sm text-red-600"
-                                                onclick="return confirm('Suspendre @{{ u.username }} ?')">
-                                            Suspendre
+                                                onclick="return confirm('{% blocktrans with username=u.username %}Suspend @{{ username }}?{% endblocktrans %}')">
+                                            {% trans "Suspend" %}
                                         </button>
                                     </form>
                                 {% endif %}
                             {% else %}
-                                <span class="badge bg-red-100 text-red-800 text-xs">Suspendu</span>
+                                <span class="badge bg-red-100 text-red-800 text-xs">{% trans "Suspended" %}</span>
                             {% endif %}
                         </div>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <p class="text-gray-500 text-center py-8">Aucun utilisateur.</p>
+            <p class="text-gray-500 text-center py-8">{% trans "No users." %}</p>
         {% endif %}
     </div>
 </section>

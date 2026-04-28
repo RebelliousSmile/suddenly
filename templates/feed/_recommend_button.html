@@ -1,8 +1,9 @@
 {# Partial: recommend button state (swapped by HTMX) #}
+{% load i18n %}
 {% if recommended %}
     <span class="btn-ghost btn-sm text-accent-600">
         <span class="i-lucide-sparkles text-sm"></span>
-        Recommandé
+        {% trans "Recommended" %}
     </span>
 {% else %}
     <button hx-post="{% url 'feed:recommend' %}"
@@ -11,6 +12,6 @@
             hx-swap="outerHTML"
             class="btn-ghost btn-sm">
         <span class="i-lucide-sparkles text-sm"></span>
-        Recommander
+        {% trans "Recommend" %}
     </button>
 {% endif %}

@@ -9,6 +9,7 @@
     target_type  — "user" | "game" | "character"
     is_following — bool
 #}
+{% load i18n %}
 
 {% if user.is_authenticated and target.pk != user.pk %}
     <div class="follow-container">
@@ -22,8 +23,8 @@
                 <button type="submit"
                         class="btn btn-secondary btn-sm group">
                     <span class="i-lucide-check text-sm group-hover:hidden"></span>
-                    <span class="hidden group-hover:inline text-red-600">Se désabonner</span>
-                    <span class="group-hover:hidden">Abonné</span>
+                    <span class="hidden group-hover:inline text-red-600">{% trans "Unfollow" %}</span>
+                    <span class="group-hover:hidden">{% trans "Following" %}</span>
                 </button>
             </form>
         {% else %}
@@ -36,7 +37,7 @@
                 <button type="submit"
                         class="btn btn-primary btn-sm">
                     <span class="i-lucide-user-plus text-sm"></span>
-                    Suivre
+                    {% trans "Follow" %}
                 </button>
             </form>
         {% endif %}

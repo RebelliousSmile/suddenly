@@ -1,13 +1,14 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Modifier mon profil — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Edit my profile" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <!-- Profile Edit Form -->
 <section class="py-12">
     <div class="container-app max-w-2xl">
         <h1 class="text-3xl font-bold text-gray-900 mb-8">
-            Modifier mon profil
+            {% trans "Edit my profile" %}
         </h1>
 
         <form method="post" enctype="multipart/form-data">
@@ -18,13 +19,13 @@
             <div>
                 <label for="{{ form.display_name.id_for_label }}" class="form-label">
                     {{ form.display_name.label }}
-                    <span class="text-gray-500">(optionnel)</span>
+                    <span class="text-gray-500">({% trans "optional" %})</span>
                 </label>
                 <input type="text"
                        id="{{ form.display_name.id_for_label }}"
                        name="{{ form.display_name.html_name }}"
                        value="{{ form.display_name.value|default:'' }}"
-                       placeholder="Votre nom d'affichage"
+                       placeholder="{% trans "Your display name" %}"
                        class="{% if form.display_name.errors %}form-input-error{% else %}form-input{% endif %}">
                 {% if form.display_name.help_text %}
                     <p class="form-help">{{ form.display_name.help_text|safe }}</p>
@@ -40,12 +41,12 @@
             <div>
                 <label for="{{ form.bio.id_for_label }}" class="form-label">
                     {{ form.bio.label }}
-                    <span class="text-gray-500">(optionnel)</span>
+                    <span class="text-gray-500">({% trans "optional" %})</span>
                 </label>
                 <textarea id="{{ form.bio.id_for_label }}"
                           name="{{ form.bio.html_name }}"
                           rows="4"
-                          placeholder="Présentez-vous..."
+                          placeholder="{% trans "Introduce yourself..." %}"
                           class="{% if form.bio.errors %}form-input-error{% else %}form-input{% endif %}">{{ form.bio.value|default:'' }}</textarea>
                 {% if form.bio.help_text %}
                     <p class="form-help">{{ form.bio.help_text|safe }}</p>
@@ -61,18 +62,18 @@
             <div>
                 <label for="{{ form.avatar.id_for_label }}" class="form-label">
                     {{ form.avatar.label }}
-                    <span class="text-gray-500">(optionnel)</span>
+                    <span class="text-gray-500">({% trans "optional" %})</span>
                 </label>
                 {% if form.avatar.value %}
                     <div class="mb-4 p-4 bg-gray-50 rounded-lg flex items-center gap-3">
-                        <img src="{{ form.avatar.value.url }}" alt="Avatar actuel" class="avatar-md">
+                        <img src="{{ form.avatar.value.url }}" alt="{% trans "Current avatar" %}" class="avatar-md">
                         <div>
-                            <p class="text-sm text-gray-600">Image actuelle</p>
+                            <p class="text-sm text-gray-600">{% trans "Current image" %}</p>
                             <label for="{{ form.avatar.id_for_label }}-clear" class="text-sm text-red-600 hover:text-red-500">
                                 <input id="{{ form.avatar.id_for_label }}-clear"
                                        name="{{ form.avatar.html_name }}-clear"
                                        type="checkbox">
-                                Supprimer l'image
+                                {% trans "Delete image" %}
                             </label>
                         </div>
                     </div>
@@ -82,16 +83,16 @@
                         <span class="i-lucide-upload text-3xl text-gray-500"></span>
                         <div class="flex text-sm text-gray-600">
                             <label for="{{ form.avatar.id_for_label }}" class="form-dropzone-link">
-                                <span>Téléverser une image</span>
+                                <span>{% trans "Upload an image" %}</span>
                                 <input id="{{ form.avatar.id_for_label }}"
                                        name="{{ form.avatar.html_name }}"
                                        type="file"
                                        accept="image/*"
                                        class="sr-only">
                             </label>
-                            <p class="pl-1">ou glisser-déposer</p>
+                            <p class="pl-1">{% trans "or drag and drop" %}</p>
                         </div>
-                        <p class="text-xs text-gray-500">PNG, JPG ou GIF jusqu'à 10 MB</p>
+                        <p class="text-xs text-gray-500">{% trans "PNG, JPG or GIF up to 10 MB" %}</p>
                     </div>
                 </div>
                 {% if form.avatar.help_text %}
@@ -113,7 +114,7 @@
                        id="{{ form.content_language.id_for_label }}"
                        name="{{ form.content_language.html_name }}"
                        value="{{ form.content_language.value|default:'' }}"
-                       placeholder="ex: fr"
+                       placeholder="{% trans "e.g. fr" %}"
                        class="{% if form.content_language.errors %}form-input-error{% else %}form-input{% endif %}">
                 {% if form.content_language.help_text %}
                     <p class="form-help">{{ form.content_language.help_text|safe }}</p>
@@ -129,10 +130,10 @@
             <div>
                 <label for="{{ form.preferred_languages.id_for_label }}" class="form-label">
                     {{ form.preferred_languages.label }}
-                    <span class="text-gray-500">(optionnel)</span>
+                    <span class="text-gray-500">({% trans "optional" %})</span>
                 </label>
                 {{ form.preferred_languages }}
-                <p class="form-help">Codes langue séparés par des virgules, ex : fr, en</p>
+                <p class="form-help">{% trans "Language codes separated by commas, e.g. fr, en" %}</p>
                 {% if form.preferred_languages.errors %}
                     {% for error in form.preferred_languages.errors %}
                         <p class="form-error">{{ error }}</p>
@@ -162,15 +163,37 @@
                 </div>
             </div>
 
+            <!-- Interface Language -->
+            <div>
+                <label for="{{ form.interface_language.id_for_label }}" class="form-label">
+                    {% trans "Interface language" %}
+                </label>
+                <select id="{{ form.interface_language.id_for_label }}"
+                        name="{{ form.interface_language.html_name }}"
+                        class="{% if form.interface_language.errors %}form-input-error{% else %}form-input{% endif %}">
+                    {% for val, label in form.interface_language.field.choices %}
+                        <option value="{{ val }}" {% if val == form.interface_language.value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.interface_language.help_text %}
+                    <p class="form-help">{{ form.interface_language.help_text }}</p>
+                {% endif %}
+                {% if form.interface_language.errors %}
+                    {% for error in form.interface_language.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
             </div>
             <!-- Form Actions -->
             <div class="card-footer flex items-center gap-3 mt-4">
                 <button type="submit" class="btn-primary">
                     <span class="i-lucide-save"></span>
-                    Enregistrer les modifications
+                    {% trans "Save changes" %}
                 </button>
                 <a href="{% url 'users:profile' username=object.username %}" class="btn-ghost">
-                    Annuler
+                    {% trans "Cancel" %}
                 </a>
             </div>
         </form>

@@ -37,6 +37,8 @@ pip install --upgrade pip
 pip install -e ".[federation]"
 ```
 
+> **Note `gettext`** : `compilemessages` requiert `gettext` système (`msgfmt`). Vérifier sa disponibilité : `which msgfmt`. Sur Alwaysdata, `gettext` est généralement pré-installé. Si absent, solution de repli : committer les fichiers `.mo` directement dans le dépôt (ajouter `locale/*/LC_MESSAGES/*.mo` en exception dans `.gitignore`).
+
 ---
 
 ## Étape 4 : Générer les clés ActivityPub
@@ -70,6 +72,7 @@ export DATABASE_URL="postgresql://user:password@host:5432/dbname"
 ```bash
 python manage.py migrate
 python manage.py createcachetable
+python manage.py compilemessages -l fr -l en  # requiert gettext (vérifier avec: which msgfmt)
 python manage.py collectstatic --noinput
 python manage.py createsuperuser
 ```

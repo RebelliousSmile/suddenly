@@ -43,10 +43,12 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "suddenly.core.middleware.UserLanguageMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
@@ -95,6 +97,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ACCOUNT_LOGIN_METHODS = {"username", "email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]
 ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_ADAPTER = "suddenly.users.adapters.SuddenlyAccountAdapter"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
@@ -102,7 +105,12 @@ LOGOUT_REDIRECT_URL = "/"
 # INTERNATIONALIZATION
 # =================================================================
 
-LANGUAGE_CODE = "fr-fr"
+LANGUAGE_CODE = os.environ.get("LANGUAGE_CODE", "fr")
+LANGUAGES = [
+    ("en", "English"),
+    ("fr", "Français"),
+]
+LOCALE_PATHS = [BASE_DIR / "locale"]
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True

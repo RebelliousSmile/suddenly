@@ -12,6 +12,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
@@ -38,9 +39,17 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, blank=True, null=True)  # type: ignore[assignment]
 
     # Language preferences
+    # content_language / preferred_languages / show_unlabeled_content: content filtering (not UI)
     content_language = models.CharField(max_length=10, default="fr")
     preferred_languages = models.JSONField(default=list, blank=True)
     show_unlabeled_content = models.BooleanField(default=True)
+    # UI language override — empty string means "use instance default"
+    interface_language = models.CharField(
+        max_length=10,
+        blank=True,
+        default="",
+        help_text=_("UI language. Empty = use instance default."),
+    )
 
     # ActivityPub
     remote = models.BooleanField(default=False, db_index=True, help_text="True if federated user")

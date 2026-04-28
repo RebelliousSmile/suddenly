@@ -1,19 +1,20 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Révoquer le lien — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Revoke link" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
     <div class="container-app max-w-lg">
         <h1 class="text-xl font-bold text-gray-900 mb-4">
-            {% if is_creator %}Révoquer le lien avec {{ link.target.name }}{% else %}Renoncer à {{ link.target.name }}{% endif %}
+            {% if is_creator %}{% blocktrans with name=link.target.name %}Revoke link with {{ name }}{% endblocktrans %}{% else %}{% blocktrans with name=link.target.name %}Renounce {{ name }}{% endblocktrans %}{% endif %}
         </h1>
 
         {% if has_published_sequence %}
-            {% include "components/status_banner.html" with type="warning" icon="alert-triangle" message="La Séquence Partagée est publiée. Le lien sera marqué RÉVOQUÉ mais la séquence restera visible." %}
+            {% include "components/status_banner.html" with type="warning" icon="alert-triangle" message=_("The Shared Sequence is published. The link will be marked REVOKED but the sequence will remain visible.") %}
             <div class="mb-4"></div>
         {% else %}
-            {% include "components/status_banner.html" with type="error" icon="alert-triangle" message="Le lien et le brouillon de séquence seront supprimés. Le PNJ redeviendra disponible." %}
+            {% include "components/status_banner.html" with type="error" icon="alert-triangle" message=_("The link and sequence draft will be deleted. The NPC will become available again.") %}
             <div class="mb-4"></div>
         {% endif %}
 
@@ -21,17 +22,17 @@
             {% csrf_token %}
             <div>
                 <label for="reason" class="form-label">
-                    Raison <span class="text-gray-500">(optionnel)</span>
+                    {% trans "Reason" %} <span class="text-gray-500">({% trans "optional" %})</span>
                 </label>
                 <textarea id="reason" name="reason" rows="3"
-                          placeholder="{% if is_creator %}Expliquez pourquoi vous révoquez...{% else %}Message pour le créateur...{% endif %}"
+                          placeholder="{% if is_creator %}{% trans "Explain why you are revoking..." %}{% else %}{% trans "Message for the creator..." %}{% endif %}"
                           class="form-input"></textarea>
             </div>
             <div class="flex items-center gap-3">
                 <button type="submit" class="btn-danger">
-                    {% if is_creator %}Révoquer le lien{% else %}Confirmer la renonciation{% endif %}
+                    {% if is_creator %}{% trans "Revoke link" %}{% else %}{% trans "Confirm renunciation" %}{% endif %}
                 </button>
-                <a href="{% url 'characters:detail' slug=link.target.slug %}" class="btn-ghost">Annuler</a>
+                <a href="{% url 'characters:detail' slug=link.target.slug %}" class="btn-ghost">{% trans "Cancel" %}</a>
             </div>
         </form>
     </div>

@@ -1,12 +1,13 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}À propos — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "About" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
     <div class="container-app max-w-3xl">
 
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">À propos de {{ SITE_NAME }}</h1>
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">{% blocktrans with name=SITE_NAME %}About {{ name }}{% endblocktrans %}</h1>
 
         <!-- Description -->
         <div class="card card-body mb-6">
@@ -18,48 +19,48 @@
             <div class="card card-body text-center">
                 <span class="i-lucide-users text-2xl text-primary-500 mb-2 block"></span>
                 <p class="text-2xl font-bold text-gray-900">{{ stats.users|default:0 }}</p>
-                <p class="text-xs text-gray-500">joueurs</p>
+                <p class="text-xs text-gray-500">{% trans "players" %}</p>
             </div>
             <div class="card card-body text-center">
                 <span class="i-lucide-book-open text-2xl text-primary-500 mb-2 block"></span>
                 <p class="text-2xl font-bold text-gray-900">{{ stats.reports|default:0 }}</p>
-                <p class="text-xs text-gray-500">comptes-rendus</p>
+                <p class="text-xs text-gray-500">{% trans "reports" %}</p>
             </div>
             <div class="card card-body text-center">
                 <span class="i-lucide-user text-2xl text-primary-500 mb-2 block"></span>
                 <p class="text-2xl font-bold text-gray-900">{{ stats.characters|default:0 }}</p>
-                <p class="text-xs text-gray-500">personnages</p>
+                <p class="text-xs text-gray-500">{% trans "characters" %}</p>
             </div>
             <div class="card card-body text-center">
                 <span class="i-lucide-globe text-2xl text-primary-500 mb-2 block"></span>
                 <p class="text-2xl font-bold text-gray-900">{{ stats.instances|default:0 }}</p>
-                <p class="text-xs text-gray-500">instances fédérées</p>
+                <p class="text-xs text-gray-500">{% trans "federated instances" %}</p>
             </div>
         </div>
 
         <!-- Rules -->
         {% if rules %}
             <div class="card card-body mb-6">
-                <h2 class="text-heading mb-3">Règles de l'instance</h2>
+                <h2 class="text-heading mb-3">{% trans "Instance rules" %}</h2>
                 <div class="prose-report">{{ rules|linebreaksbr }}</div>
             </div>
         {% endif %}
 
         <!-- Federation -->
         <div class="card card-body mb-6">
-            <h2 class="text-heading mb-3">Fédération</h2>
+            <h2 class="text-heading mb-3">{% trans "Federation" %}</h2>
             <div class="space-y-2 text-sm text-gray-600">
-                <p><strong>Logiciel :</strong> Suddenly {{ version|default:"0.1.0" }}</p>
-                <p><strong>Protocole :</strong> ActivityPub</p>
-                <p><strong>Compatible avec :</strong> Mastodon, BookWyrm, Lemmy, Pleroma</p>
+                <p><strong>{% trans "Software:" %}</strong> Suddenly {{ APP_VERSION }}</p>
+                <p><strong>{% trans "Protocol:" %}</strong> ActivityPub</p>
+                <p><strong>{% trans "Compatible with:" %}</strong> Mastodon, BookWyrm, Lemmy, Pleroma</p>
             </div>
         </div>
 
         <!-- Contact -->
         <div class="card card-body">
-            <h2 class="text-heading mb-3">Contact</h2>
+            <h2 class="text-heading mb-3">{% trans "Contact" %}</h2>
             <p class="text-sm text-gray-600">
-                Pour toute question, contactez l'administrateur de cette instance.
+                {% trans "For any questions, contact the administrator of this instance." %}
             </p>
         </div>
 

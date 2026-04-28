@@ -1,4 +1,5 @@
 {# Partial: character search results (swapped by HTMX) #}
+{% load i18n %}
 
 {% if characters %}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -39,9 +40,9 @@
         <span class="i-lucide-search-x text-4xl text-gray-300 mb-4 block"></span>
         <p class="text-gray-500">
             {% if query %}
-                Aucun personnage trouvé pour « {{ query }} ».
+                {% blocktrans with q=query %}No character found for "{{ q }}".{% endblocktrans %}
             {% else %}
-                Aucun personnage pour le moment.
+                {% trans "No characters yet." %}
             {% endif %}
         </p>
     </div>

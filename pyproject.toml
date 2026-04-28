@@ -34,6 +34,9 @@ federation = [
     "cryptography>=42.0",
     "django-ratelimit>=4.1",
 ]
+docs = [
+    "mkdocs-material>=9.5",
+]
 dev = [
     "pytest>=8.0",
     "pytest-django>=4.7",

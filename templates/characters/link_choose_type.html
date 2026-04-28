@@ -1,30 +1,31 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Lier {{ character.name }} à mon histoire — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% blocktrans with name=character.name %}Link {{ name }} to my story{% endblocktrans %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
     <div class="container-app max-w-2xl">
 
         <a href="{% url 'characters:detail' slug=character.slug %}" class="link-muted text-sm mb-4 block">
-            <span class="i-lucide-arrow-left text-xs"></span> Retour à {{ character.name }}
+            <span class="i-lucide-arrow-left text-xs"></span> {% blocktrans with name=character.name %}Back to {{ name }}{% endblocktrans %}
         </a>
 
         <h1 class="text-2xl font-bold text-gray-900 mb-2">
-            Lier {{ character.name }} à votre histoire
+            {% blocktrans with name=character.name %}Link {{ name }} to your story{% endblocktrans %}
         </h1>
 
         {% if character.remote %}
-            {% include "components/status_banner.html" with type="info" icon="globe" message="Ce personnage est sur une instance distante. La demande sera envoyée via ActivityPub. Délai : si aucune réponse sous 30 jours, la demande expirera." %}
+            {% include "components/status_banner.html" with type="info" icon="globe" message=_("This character is on a remote instance. The request will be sent via ActivityPub. Delay: if no response within 30 days, the request will expire.") %}
             <div class="mb-4"></div>
         {% endif %}
 
         {% if has_pending %}
-            {% include "components/status_banner.html" with type="warning" icon="alert-triangle" message="Ce PNJ a déjà une demande en attente. Votre demande sera mise en file d'attente." %}
+            {% include "components/status_banner.html" with type="warning" icon="alert-triangle" message=_("This NPC already has a pending request. Your request will be queued.") %}
             <div class="mb-4"></div>
         {% endif %}
 
-        <p class="text-gray-600 mb-6">Comment voulez-vous intégrer ce personnage ?</p>
+        <p class="text-gray-600 mb-6">{% trans "How do you want to integrate this character?" %}</p>
 
         <div class="space-y-4">
             <!-- Adoption -->
@@ -35,18 +36,16 @@
                         <span class="i-lucide-heart text-lg"></span>
                     </span>
                     <div>
-                        <h3 class="font-semibold text-gray-900 mb-1">Adoption</h3>
+                        <h3 class="font-semibold text-gray-900 mb-1">{% trans "Adoption" %}</h3>
                         <p class="text-sm text-gray-600">
-                            {{ character.name }} devient <strong>votre PJ</strong>.
-                            Il quitte son ancienne histoire pour rejoindre la vôtre.
-                            Le créateur devra accepter.
+                            {% blocktrans with name=character.name %}{{ name }} becomes <strong>your PC</strong>. They leave their old story to join yours. The creator will need to accept.{% endblocktrans %}
                         </p>
                     </div>
                     <span class="i-lucide-arrow-right text-gray-400 mt-1 flex-shrink-0"></span>
                 </div>
             </a>
 
-            <!-- Dérivation -->
+            <!-- Derivation -->
             <a href="{% url 'characters:link_request_form' slug=character.slug link_type='fork' %}"
                class="card card-hover card-body block">
                 <div class="flex items-start gap-4">
@@ -54,11 +53,9 @@
                         <span class="i-lucide-git-branch text-lg"></span>
                     </span>
                     <div>
-                        <h3 class="font-semibold text-gray-900 mb-1">Dérivation</h3>
+                        <h3 class="font-semibold text-gray-900 mb-1">{% trans "Derivation" %}</h3>
                         <p class="text-sm text-gray-600">
-                            Vous créez un <strong>nouveau PJ</strong> inspiré de {{ character.name }}.
-                            {{ character.name }} reste disponible pour d'autres joueurs.
-                            Vos deux personnages seront liés par une lignée.
+                            {% blocktrans with name=character.name %}You create a <strong>new PC</strong> inspired by {{ name }}. {{ name }} remains available for other players. Your two characters will be linked by a lineage.{% endblocktrans %}
                         </p>
                     </div>
                     <span class="i-lucide-arrow-right text-gray-400 mt-1 flex-shrink-0"></span>
@@ -74,11 +71,10 @@
                     </span>
                     <div>
                         <h3 class="font-medium text-gray-700 mb-1">
-                            Retcon <span class="text-xs text-gray-400 ml-1">(avancé)</span>
+                            {% trans "Retcon" %} <span class="text-xs text-gray-400 ml-1">({% trans "advanced" %})</span>
                         </h3>
                         <p class="text-sm text-gray-500">
-                            Réécriture rétroactive : {{ character.name }} était en fait
-                            votre PJ depuis le début. Son histoire est réinterprétée.
+                            {% blocktrans with name=character.name %}Retroactive rewrite: {{ name }} was actually your PC from the beginning. Their story is reinterpreted.{% endblocktrans %}
                         </p>
                     </div>
                     <span class="i-lucide-arrow-right text-gray-300 mt-1 flex-shrink-0"></span>

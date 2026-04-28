@@ -1,6 +1,7 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Nouveau compte-rendu — {{ game.title }} — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "New report" %} — {{ game.title }} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
@@ -8,10 +9,10 @@
 
         <p class="text-sm text-gray-500 mb-4">
             <a href="{% url 'games:detail' pk=game.pk %}" class="link-muted">{{ game.title }}</a>
-            › Nouveau compte-rendu
+            › {% trans "New report" %}
         </p>
 
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">Nouveau compte-rendu</h1>
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">{% trans "New report" %}</h1>
 
         {% if error %}
             <div class="mb-4 p-4 rounded-lg bg-red-50 text-red-800 border border-red-200">
@@ -25,18 +26,18 @@
             <div class="card card-body space-y-4">
                 <div>
                     <label for="title" class="form-label">
-                        Titre <span class="text-gray-500">(optionnel)</span>
+                        {% trans "Title" %} <span class="text-gray-500">({% trans "optional" %})</span>
                     </label>
                     <input type="text" id="title" name="title"
                            value="{{ form_data.title|default:'' }}"
-                           placeholder="Ex: Session 12 — L'Oracle brisé"
+                           placeholder="{% trans "e.g. Session 12 — The Broken Oracle" %}"
                            class="form-input">
                 </div>
 
                 <!-- Cast / Distribution (US-05, US-13) -->
                 <div x-data="{ cast: [], newChar: '' }">
                     <label class="form-label">
-                        Distribution <span class="text-gray-500">(optionnel)</span>
+                        {% trans "Cast" %} <span class="text-gray-500">({% trans "optional" %})</span>
                     </label>
                     <div class="flex flex-wrap gap-2 mb-2">
                         <template x-for="(c, i) in cast" :key="i">
@@ -53,7 +54,7 @@
                     <div class="flex gap-2">
                         <input type="text" x-model="newChar"
                                @keydown.enter.prevent="if(newChar.trim()){cast.push(newChar.trim());newChar='';}"
-                               placeholder="Ajouter un personnage..."
+                               placeholder="{% trans "Add a character..." %}"
                                class="form-input flex-1">
                         <button type="button"
                                 @click="if(newChar.trim()){cast.push(newChar.trim());newChar='';}"
@@ -65,12 +66,12 @@
 
                 <!-- Content with @mention (US-05) -->
                 <div x-data="mentionInput('{{ form_data.content|default:''|escapejs }}')" class="relative">
-                    <label for="content" class="form-label">Contenu</label>
+                    <label for="content" class="form-label">{% trans "Content" %}</label>
                     <textarea id="content" name="content" rows="12"
                               x-model="content"
                               @input="onInput($event)"
                               @keydown="onKeydown"
-                              placeholder="Racontez votre session... Tapez @ pour mentionner un personnage."
+                              placeholder="{% trans "Tell your session... Type @ to mention a character." %}"
                               required
                               class="form-input font-mono text-sm resize-y min-h-[300px]"></textarea>
 
@@ -88,25 +89,25 @@
 
                     <p class="form-help">
                         <span class="i-lucide-info text-xs mr-1"></span>
-                        Markdown supporté. Tapez <code class="bg-gray-100 px-1 rounded">@</code> pour mentionner.
+                        {% trans "Markdown supported. Type" %} <code class="bg-gray-100 px-1 rounded">@</code> {% trans "to mention." %}
                     </p>
                 </div>
 
                 <div>
                     <label for="content_warning" class="form-label">
-                        Avertissement de contenu <span class="text-gray-500">(optionnel)</span>
+                        {% trans "Content warning" %} <span class="text-gray-500">({% trans "optional" %})</span>
                     </label>
                     <input type="text" id="content_warning" name="content_warning"
                            value="{{ form_data.content_warning|default:'' }}"
-                           placeholder="Ex: Violence, thèmes sombres"
+                           placeholder="{% trans "e.g. Violence, dark themes" %}"
                            class="form-input">
                     <p class="form-help">
-                        Si rempli, le contenu sera masqué derrière un bouton "Afficher".
+                        {% trans "If filled, content will be hidden behind a 'Show' button." %}
                     </p>
                 </div>
 
                 <div>
-                    <label class="form-label">Visibilité</label>
+                    <label class="form-label">{% trans "Visibility" %}</label>
                     {% for value, label in visibilities %}
                         <label class="flex items-center gap-2 py-1">
                             <input type="radio" name="visibility" value="{{ value }}"
@@ -126,13 +127,13 @@
             <div class="flex items-center gap-3">
                 <button type="submit" name="action" value="publish" class="btn-primary">
                     <span class="i-lucide-send"></span>
-                    Publier
+                    {% trans "Publish" %}
                 </button>
                 <button type="submit" name="action" value="draft" class="btn-secondary">
                     <span class="i-lucide-save"></span>
-                    Sauvegarder brouillon
+                    {% trans "Save draft" %}
                 </button>
-                <a href="{% url 'games:detail' pk=game.pk %}" class="btn-ghost">Annuler</a>
+                <a href="{% url 'games:detail' pk=game.pk %}" class="btn-ghost">{% trans "Cancel" %}</a>
             </div>
         </form>
     </div>

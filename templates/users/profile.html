@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}{{ profile_user.get_display_name }} — {{ SITE_NAME }}{% endblock %}
 
@@ -36,7 +37,7 @@
                             <a href="{% url 'users:profile_edit' username=profile_user.username %}"
                                class="btn-secondary btn-sm">
                                 <span class="i-lucide-edit-2"></span>
-                                Modifier le profil
+                                {% trans "Edit profile" %}
                             </a>
                         {% elif user.is_authenticated %}
                             {% include "components/follow_button.html" with target=profile_user target_type="user" is_following=is_following %}
@@ -55,11 +56,11 @@
                 <div class="flex items-center gap-4 text-sm">
                     <span>
                         <strong>{{ followers_count|default:0 }}</strong>
-                        <span class="text-gray-500">abonné{{ followers_count|pluralize }}</span>
+                        <span class="text-gray-500">{% blocktrans count counter=followers_count|default:0 %}follower{% plural %}followers{% endblocktrans %}</span>
                     </span>
                     <span>
                         <strong>{{ following_count|default:0 }}</strong>
-                        <span class="text-gray-500">abonnement{{ following_count|pluralize }}</span>
+                        <span class="text-gray-500">{% blocktrans count counter=following_count|default:0 %}following{% plural %}following{% endblocktrans %}</span>
                     </span>
                 </div>
             </div>
@@ -78,7 +79,7 @@
 <!-- Recent Games -->
 <section class="py-8">
     <div class="container-app">
-        <h2 class="text-heading text-xl mb-6">Parties récentes</h2>
+        <h2 class="text-heading text-xl mb-6">{% trans "Recent games" %}</h2>
 
         {% if games %}
             <div class="space-y-3">
@@ -90,7 +91,7 @@
                 {% endfor %}
             </div>
         {% else %}
-            <p class="text-sm text-gray-500">Aucune partie publiée pour le moment.</p>
+            <p class="text-sm text-gray-500">{% trans "No published games yet." %}</p>
         {% endif %}
     </div>
 </section>
@@ -98,7 +99,7 @@
 <!-- Characters -->
 <section class="py-8">
     <div class="container-app">
-        <h2 class="text-heading text-xl mb-6">Personnages</h2>
+        <h2 class="text-heading text-xl mb-6">{% trans "Characters" %}</h2>
 
         {% if characters %}
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -110,7 +111,7 @@
                 {% endfor %}
             </div>
         {% else %}
-            <p class="text-sm text-gray-500">Aucun personnage pour le moment.</p>
+            <p class="text-sm text-gray-500">{% trans "No characters yet." %}</p>
         {% endif %}
     </div>
 </section>

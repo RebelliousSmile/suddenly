@@ -7,10 +7,11 @@
   Props:
     report — Report instance with .author, .game, .title, .content, .published_at, .character_appearances
 #}
+{% load i18n %}
 
 <article class="card card-hover" id="feed-item-{{ report.id }}">
     <div class="card-body">
-        <!-- Header : auteur + partie + date -->
+        <!-- Header: author + game + date -->
         <header class="flex items-center gap-3 mb-3">
             {% if report.author.avatar %}
                 <img src="{{ report.author.avatar.url }}"
@@ -27,7 +28,7 @@
                    class="font-medium text-gray-900 hover:text-primary-600">
                     {{ report.author.display_name|default:report.author.username }}
                 </a>
-                <span class="text-gray-500 text-sm mx-1">dans</span>
+                <span class="text-gray-500 text-sm mx-1">{% trans "in" %}</span>
                 <a href="#" class="text-gray-600 hover:text-primary-600 text-sm">
                     {{ report.game.title }}
                 </a>
@@ -39,14 +40,14 @@
             </time>
         </header>
 
-        <!-- Titre -->
+        <!-- Title -->
         <h3 class="font-semibold text-lg mb-2">
             <a href="{{ report.get_absolute_url }}" class="text-gray-900 hover:text-primary-600">
                 {{ report.title }}
             </a>
         </h3>
 
-        <!-- Personnages mentionnes avec highlight PNJ -->
+        <!-- Characters mentioned with NPC highlight -->
         {% if report.character_appearances.all %}
             <div class="flex flex-wrap gap-1 mb-3">
                 {% for appearance in report.character_appearances.all|slice:":6" %}
@@ -56,13 +57,13 @@
                               {% else %}bg-blue-100 text-blue-800{% endif %}">
                         {{ appearance.character.name }}
                         {% if appearance.character.status == 'npc' %}
-                            <span class="i-lucide-sparkles text-xs" title="PNJ disponible"></span>
+                            <span class="i-lucide-sparkles text-xs" title="{% trans "Available NPC" %}"></span>
                         {% endif %}
                     </a>
                 {% endfor %}
                 {% with total=report.character_appearances.count %}
                     {% if total > 6 %}
-                        <span class="text-xs text-gray-500">+{{ total|add:"-6" }} autres</span>
+                        <span class="text-xs text-gray-500">+{{ total|add:"-6" }}</span>
                     {% endif %}
                 {% endwith %}
             </div>
@@ -81,7 +82,7 @@
             <span class="i-lucide-share text-sm"></span>
         </button>
 
-        <!-- Menu contextuel (signaler) -->
+        <!-- Context menu (report) -->
         <div class="ml-auto relative" x-data="dropdown">
             <button @click="toggle()" class="btn-ghost btn-sm text-gray-500">
                 <span class="i-lucide-more-horizontal text-sm"></span>
@@ -89,10 +90,10 @@
             <div x-show="open" @click.away="close()" x-cloak
                  class="dropdown-menu right-0 mt-1 w-40">
                 <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                    <span class="i-lucide-link text-xs"></span> Copier le lien
+                    <span class="i-lucide-link text-xs"></span> {% trans "Copy link" %}
                 </a>
                 <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50">
-                    <span class="i-lucide-flag text-xs"></span> Signaler
+                    <span class="i-lucide-flag text-xs"></span> {% trans "Report" %}
                 </a>
             </div>
         </div>

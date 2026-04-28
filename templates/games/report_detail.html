@@ -1,6 +1,7 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}{{ report.title|default:"Compte-rendu" }} — {{ SITE_NAME }}{% endblock %}
+{% block title %}{{ report.title|default:_("Report") }} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
@@ -9,25 +10,25 @@
         <!-- Breadcrumb -->
         <p class="text-sm text-gray-500 mb-4">
             <a href="{% url 'games:detail' pk=game.pk %}" class="link-muted">{{ game.title }}</a>
-            › {{ report.title|default:"Compte-rendu" }}
+            › {{ report.title|default:_("Report") }}
         </p>
 
         <!-- Header -->
         <div class="mb-6">
             <h1 class="text-2xl font-bold text-gray-900 mb-2">
-                {{ report.title|default:"Sans titre" }}
+                {{ report.title|default:_("Untitled") }}
             </h1>
             <div class="flex items-center gap-3 text-sm text-gray-500">
-                <span>par @{{ report.author.username }}</span>
+                <span>{% blocktrans with username=report.author.username %}by @{{ username }}{% endblocktrans %}</span>
                 {% if report.published_at %}
-                    <span>· publié {{ report.published_at|timesince }}</span>
+                    <span>· {% blocktrans with date=report.published_at|timesince %}published {{ date }}{% endblocktrans %}</span>
                 {% else %}
-                    <span class="badge-gray">Brouillon</span>
+                    <span class="badge-gray">{% trans "Draft" %}</span>
                 {% endif %}
                 {% if report.visibility != 'public' %}
                     <span class="badge-gray">
-                        {% if report.visibility == 'unlisted' %}Non-listé{% endif %}
-                        {% if report.visibility == 'followers' %}Abonnés{% endif %}
+                        {% if report.visibility == 'unlisted' %}{% trans "Unlisted" %}{% endif %}
+                        {% if report.visibility == 'followers' %}{% trans "Followers" %}{% endif %}
                     </span>
                 {% endif %}
             </div>
@@ -43,7 +44,7 @@
                 </div>
                 <button @click="show = !show"
                         class="btn-ghost btn-sm mt-2 text-amber-700"
-                        x-text="show ? 'Masquer' : 'Afficher le contenu'">
+                        x-text="show ? '{% trans "Hide" %}' : '{% trans "Show content" %}'">
                 </button>
                 <div x-show="show" x-transition class="mt-4 prose-report">
                     {{ report.content|linebreaksbr }}
@@ -59,7 +60,7 @@
         <!-- Cast -->
         {% if cast %}
             <div class="card card-body mb-6">
-                <h2 class="text-heading mb-3">Distribution</h2>
+                <h2 class="text-heading mb-3">{% trans "Cast" %}</h2>
                 <div class="flex flex-wrap gap-2">
                     {% for app in cast %}
                         <a href="{% url 'characters:detail' slug=app.character.slug %}"
@@ -77,7 +78,7 @@
         <!-- Quotes from this report -->
         {% if quotes %}
             <div class="card card-body mb-6">
-                <h2 class="text-heading mb-3">Citations de cette session</h2>
+                <h2 class="text-heading mb-3">{% trans "Quotes from this session" %}</h2>
                 {% for quote in quotes %}
                     <blockquote class="border-l-4 border-primary-300 pl-4 mb-4">
                         <p class="text-gray-800 italic font-serif text-lg">"{{ quote.content }}"</p>

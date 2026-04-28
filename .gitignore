@@ -11,6 +11,7 @@ __pycache__/
 *.so
 .Python
 build/
+site/
 develop-eggs/
 dist/
 downloads/
@@ -42,6 +43,9 @@ db.sqlite3-journal
 
 # Static files (collected by collectstatic)
 staticfiles/
+
+# i18n compiled catalogs (generated at deploy time)
+locale/*/LC_MESSAGES/*.mo
 # Vite build output
 static/dist/
 
@@ -122,7 +126,6 @@ yarn-error.log*
 
 # <AIDD>
 .mcp.json
-docs/
 worktrees/
 .aidd/
 .vscode/

@@ -9,10 +9,11 @@
     request     — LinkRequest instance
     perspective — "received" (GM view with accept/reject) | "sent" (requester view with cancel)
 #}
+{% load i18n %}
 
 <article class="card" id="request-{{ request.id }}">
     <div class="card-body">
-        <!-- Header : statut + date -->
+        <!-- Header: status + date -->
         <div class="flex items-center justify-between mb-3">
             <span class="badge
                 {% if request.status == 'pending' %}badge-accent
@@ -30,17 +31,17 @@
             </time>
         </div>
 
-        <!-- Type + acteurs -->
+        <!-- Type + actors -->
         <p class="font-medium text-gray-900 mb-2">
             {% if perspective == "received" %}
                 <a href="#" class="link">@{{ request.requester.username }}</a>
-                veut <strong>{{ request.get_type_display|upper }}</strong>
-                votre PNJ
+                {% trans "wants to" %} <strong>{{ request.get_type_display|upper }}</strong>
+                {% trans "your NPC" %}
                 <a href="#" class="link">{{ request.target_character.name }}</a>
             {% else %}
-                Vous voulez <strong>{{ request.get_type_display|upper }}</strong>
+                {% trans "You want to" %} <strong>{{ request.get_type_display|upper }}</strong>
                 <a href="#" class="link">{{ request.target_character.name }}</a>
-                (PNJ de <a href="#" class="link">@{{ request.target_character.creator.username }}</a>)
+                ({% trans "NPC by" %} <a href="#" class="link">@{{ request.target_character.creator.username }}</a>)
             {% endif %}
 
             {% if request.target_character.remote %}
@@ -55,19 +56,19 @@
             </blockquote>
         {% endif %}
 
-        <!-- Info file d'attente -->
+        <!-- Queue info -->
         {% if request.status == 'queued' %}
             <p class="text-sm text-gray-500 flex items-center gap-1 mb-3">
                 <span class="i-lucide-info text-xs"></span>
-                Sera traitable après la demande précédente.
+                {% trans "Will be processable after the previous request." %}
             </p>
         {% endif %}
 
-        <!-- Info expiration cross-instance -->
+        <!-- Cross-instance expiration info -->
         {% if request.target_character.remote and request.status == 'pending' %}
             <p class="text-sm text-gray-500 flex items-center gap-1 mb-3">
                 <span class="i-lucide-clock text-xs"></span>
-                Expire dans {{ request.expires_at|timeuntil }}.
+                {% blocktrans with time=request.expires_at|timeuntil %}Expires in {{ time }}.{% endblocktrans %}
             </p>
         {% endif %}
     </div>
@@ -80,17 +81,17 @@
                     hx-swap="outerHTML"
                     class="btn btn-primary btn-sm">
                 <span class="i-lucide-check text-sm"></span>
-                Accepter
+                {% trans "Accept" %}
             </button>
             <button hx-post="{% url 'reject_request' pk=request.id %}"
                     hx-target="#request-{{ request.id }}"
                     hx-swap="outerHTML"
                     class="btn btn-ghost btn-sm">
                 <span class="i-lucide-x text-sm"></span>
-                Refuser
+                {% trans "Reject" %}
             </button>
             <a href="#" class="link-muted text-sm ml-auto">
-                Voir la fiche
+                {% trans "View profile" %}
             </a>
         </div>
     {% elif request.status == 'pending' and perspective == 'sent' or request.status == 'queued' and perspective == 'sent' %}
@@ -99,13 +100,13 @@
                     hx-target="#request-{{ request.id }}"
                     hx-swap="outerHTML"
                     class="btn btn-ghost btn-sm text-red-600">
-                Annuler ma demande
+                {% trans "Cancel my request" %}
             </button>
         </div>
     {% elif request.status == 'expired' and perspective == 'sent' %}
         <div class="card-footer flex items-center gap-2">
-            <button class="btn btn-secondary btn-sm">Renvoyer la demande</button>
-            <button class="btn btn-ghost btn-sm text-red-600">Supprimer</button>
+            <button class="btn btn-secondary btn-sm">{% trans "Resend request" %}</button>
+            <button class="btn btn-ghost btn-sm text-red-600">{% trans "Delete" %}</button>
         </div>
     {% endif %}
 </article>

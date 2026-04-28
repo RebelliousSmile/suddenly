@@ -4,6 +4,8 @@ Context processors for Suddenly templates.
 
 from django.conf import settings
 
+from suddenly.core.version import get_version
+
 
 def site_settings(request: object) -> dict[str, str]:
     """Add site settings to template context."""
@@ -13,4 +15,5 @@ def site_settings(request: object) -> dict[str, str]:
             settings, "SITE_DESCRIPTION", "Réseau fédéré de fiction partagée"
         ),
         "DOMAIN": getattr(settings, "DOMAIN", "localhost"),
+        "APP_VERSION": get_version(),
     }

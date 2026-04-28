@@ -1,4 +1,5 @@
 {# Partial: federated search results #}
+{% load i18n %}
 
 {% if error %}
     <div class="text-center py-8">
@@ -22,7 +23,7 @@
                 </div>
                 <a href="{% url 'federation:remote_profile' %}?ap_id={{ r.ap_id|urlencode }}"
                    class="btn-secondary btn-sm">
-                    Voir le profil
+                    {% trans "View profile" %}
                 </a>
             </div>
         {% endfor %}
@@ -30,6 +31,6 @@
 {% elif query %}
     <div class="text-center py-8">
         <span class="i-lucide-search text-4xl text-gray-300 mb-4 block"></span>
-        <p class="text-gray-500">Recherche en cours...</p>
+        <p class="text-gray-500">{% trans "Searching..." %}</p>
     </div>
 {% endif %}

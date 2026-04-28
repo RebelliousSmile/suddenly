@@ -5,6 +5,9 @@
 // UnoCSS - génère les styles
 import 'virtual:uno.css'
 
+// Base reset
+import './base.css'
+
 // HTMX loading indicator styles
 import './htmx-indicator.css'
 
@@ -221,9 +224,9 @@ Alpine.data('characterStatus', (status) => ({
     const labels = {
       npc: 'PNJ disponible',
       pc: 'PJ',
-      claimed: 'Réclamé',
+      claimed: 'Révélé',
       adopted: 'Adopté',
-      forked: 'Forké',
+      forked: 'Dérivé',
     }
     return labels[this.status] || this.status
   },

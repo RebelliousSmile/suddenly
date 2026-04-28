@@ -12,10 +12,12 @@ from typing import Any
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
+from suddenly.core.services import get_recent_public_reports
+
 
 def home(request: HttpRequest) -> HttpResponse:
     """Home page."""
-    return render(request, "core/home.html")
+    return render(request, "core/home.html", {"recent_reports": get_recent_public_reports()})
 
 
 def about(request: HttpRequest) -> HttpResponse:

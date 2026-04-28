@@ -1,30 +1,31 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Tableau de bord — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Dashboard" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
     <div class="container-app">
 
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">Tableau de bord</h1>
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">{% trans "Dashboard" %}</h1>
 
         <!-- Stats -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
             <div class="card card-body text-center">
                 <p class="text-2xl font-bold text-gray-900">{{ total_npcs|default:0 }}</p>
-                <p class="text-xs text-gray-500">PNJ créés</p>
+                <p class="text-xs text-gray-500">{% trans "NPCs created" %}</p>
             </div>
             <div class="card card-body text-center">
                 <p class="text-2xl font-bold text-amber-600">{{ total_requests|default:0 }}</p>
-                <p class="text-xs text-gray-500">demandes à traiter</p>
+                <p class="text-xs text-gray-500">{% trans "pending requests" %}</p>
             </div>
             <div class="card card-body text-center">
                 <p class="text-2xl font-bold text-gray-900">{{ linked|length }}</p>
-                <p class="text-xs text-gray-500">personnages liés</p>
+                <p class="text-xs text-gray-500">{% trans "linked characters" %}</p>
             </div>
             <div class="card card-body text-center">
                 <a href="{% url 'characters:list' %}" class="btn-primary btn-sm w-full">
-                    Explorer les PNJ
+                    {% trans "Explore NPCs" %}
                 </a>
             </div>
         </div>
@@ -34,7 +35,7 @@
             <div class="mb-8">
                 <h2 class="text-heading text-lg mb-4">
                     <span class="i-lucide-bell text-amber-500 mr-1"></span>
-                    PNJ avec demandes en attente
+                    {% trans "NPCs with pending requests" %}
                 </h2>
                 <div class="space-y-4">
                     {% for npc in npcs_with_requests %}
@@ -49,10 +50,10 @@
                                         {{ npc.name }}
                                     </a>
                                     <p class="text-xs text-gray-500">
-                                        {{ npc.origin_game.title }} · {{ npc.appearances.count }} apparition{{ npc.appearances.count|pluralize }}
+                                        {{ npc.origin_game.title }} · {% blocktrans count counter=npc.appearances.count %}{{ counter }} appearance{% plural %}{{ counter }} appearances{% endblocktrans %}
                                     </p>
                                 </div>
-                                <span class="badge-accent ml-auto">{{ npc.pending_count }} demande{{ npc.pending_count|pluralize }}</span>
+                                <span class="badge-accent ml-auto">{% blocktrans count counter=npc.pending_count %}{{ counter }} request{% plural %}{{ counter }} requests{% endblocktrans %}</span>
                             </div>
 
                             {% for req in npc.pending_requests %}
@@ -60,7 +61,7 @@
                                     <div>
                                         <p class="text-sm">
                                             <strong>@{{ req.requester.username }}</strong>
-                                            veut <strong>{{ req.get_type_display|upper }}</strong>
+                                            {% trans "wants to" %} <strong>{{ req.get_type_display|upper }}</strong>
                                         </p>
                                         {% if req.message %}
                                             <p class="text-xs text-gray-500 line-clamp-1 mt-0.5">
@@ -70,9 +71,9 @@
                                     </div>
                                     <div class="flex items-center gap-2 flex-shrink-0">
                                         {% if req.status == 'pending' %}
-                                            <span class="badge-accent text-xs">À traiter</span>
+                                            <span class="badge-accent text-xs">{% trans "To process" %}</span>
                                         {% else %}
-                                            <span class="badge-gray text-xs">En file (#{{ forloop.counter }})</span>
+                                            <span class="badge-gray text-xs">{% blocktrans with num=forloop.counter %}In queue (#{{ num }}){% endblocktrans %}</span>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -86,7 +87,7 @@
         <!-- Available NPCs (no requests) -->
         {% if npcs_available %}
             <div class="mb-8">
-                <h2 class="text-heading text-lg mb-4">PNJ disponibles</h2>
+                <h2 class="text-heading text-lg mb-4">{% trans "Available NPCs" %}</h2>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                     {% for npc in npcs_available %}
                         <a href="{% url 'characters:detail' slug=npc.slug %}"
@@ -102,7 +103,7 @@
         <!-- Linked characters -->
         {% if linked %}
             <div>
-                <h2 class="text-heading text-lg mb-4">Personnages liés</h2>
+                <h2 class="text-heading text-lg mb-4">{% trans "Linked characters" %}</h2>
                 <div class="space-y-2">
                     {% for char in linked %}
                         <div class="card card-body flex items-center justify-between">
@@ -116,7 +117,7 @@
                                 </span>
                             </div>
                             {% if char.owner %}
-                                <span class="text-xs text-gray-500">par @{{ char.owner.username }}</span>
+                                <span class="text-xs text-gray-500">{% blocktrans with username=char.owner.username %}by @{{ username }}{% endblocktrans %}</span>
                             {% endif %}
                         </div>
                     {% endfor %}
@@ -128,11 +129,11 @@
         {% if not npcs_with_requests and not npcs_available and not linked %}
             <div class="text-center py-16">
                 <span class="i-lucide-users text-5xl text-gray-300 mb-4 block"></span>
-                <h3 class="font-semibold text-gray-900 mb-2">Vous n'avez pas encore de PNJ</h3>
+                <h3 class="font-semibold text-gray-900 mb-2">{% trans "You have no NPCs yet" %}</h3>
                 <p class="text-sm text-gray-500 mb-4">
-                    Les PNJ sont créés automatiquement quand vous les mentionnez dans un compte-rendu.
+                    {% trans "NPCs are created automatically when you mention them in a report." %}
                 </p>
-                <a href="{% url 'games:list' %}" class="btn-primary btn-sm">Voir mes parties</a>
+                <a href="{% url 'games:list' %}" class="btn-primary btn-sm">{% trans "See my games" %}</a>
             </div>
         {% endif %}
 

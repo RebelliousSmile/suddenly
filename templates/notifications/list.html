@@ -1,6 +1,7 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Notifications — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Notifications" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
@@ -8,7 +9,7 @@
 
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold text-gray-900">
-                Notifications
+                {% trans "Notifications" %}
                 {% if unread_count %}<span class="badge-accent ml-2">{{ unread_count }}</span>{% endif %}
             </h1>
             {% if unread_count %}
@@ -17,7 +18,7 @@
                       hx-swap="innerHTML">
                     {% csrf_token %}
                     <button type="submit" class="btn-ghost btn-sm">
-                        Tout marquer comme lu
+                        {% trans "Mark all as read" %}
                     </button>
                 </form>
             {% endif %}

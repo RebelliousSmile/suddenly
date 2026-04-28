@@ -1,47 +1,47 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Données — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Data" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
     <div class="container-app max-w-2xl">
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">Mes données</h1>
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">{% trans "My data" %}</h1>
 
         {% if import_success %}
             <div class="mb-4 p-3 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-sm">
-                {{ imported_count }} compte{{ imported_count|pluralize }} importé{{ imported_count|pluralize }}.
+                {% blocktrans count counter=imported_count %}{{ counter }} account imported.{% plural %}{{ counter }} accounts imported.{% endblocktrans %}
             </div>
         {% endif %}
 
         <!-- Import follows -->
         <div class="card card-body mb-6">
-            <h2 class="text-heading mb-3">Importer des follows</h2>
+            <h2 class="text-heading mb-3">{% trans "Import follows" %}</h2>
             <form method="post" action="{% url 'users:import_follows' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input type="file" name="csv_file" accept=".csv" class="form-input mb-3">
-                <p class="form-help mb-3">CSV Mastodon-compatible (colonne "Account address").</p>
-                <button type="submit" class="btn-primary btn-sm">Importer</button>
+                <p class="form-help mb-3">{% trans "Mastodon-compatible CSV (column \"Account address\")." %}</p>
+                <button type="submit" class="btn-primary btn-sm">{% trans "Import" %}</button>
             </form>
         </div>
 
         <!-- Export -->
         <div class="card card-body mb-6">
-            <h2 class="text-heading mb-3">Exporter</h2>
+            <h2 class="text-heading mb-3">{% trans "Export" %}</h2>
             <a href="{% url 'users:export_follows' %}" class="btn-secondary btn-sm">
-                Télécharger mes follows (CSV)
+                {% trans "Download my follows (CSV)" %}
             </a>
         </div>
 
         <!-- Migration -->
         <div class="card card-body border-amber-200">
-            <h2 class="text-heading mb-3">Migrer vers une autre instance</h2>
+            <h2 class="text-heading mb-3">{% trans "Migrate to another instance" %}</h2>
             <p class="text-sm text-gray-600 mb-3">
-                Votre profil sera redirigé. Vos followers seront notifiés.
-                Ce processus est irréversible.
+                {% trans "Your profile will be redirected. Your followers will be notified. This process is irreversible." %}
             </p>
             <p class="text-sm text-gray-500">
                 <span class="i-lucide-info text-xs mr-1"></span>
-                Fonctionnalité en cours de développement.
+                {% trans "Feature under development." %}
             </p>
         </div>
     </div>

@@ -1,15 +1,16 @@
-{# 
+{#
   Form Components
-  
+
   Includes reusable form field patterns.
 #}
+{% load i18n %}
 
 {# Text Input #}
 {% macro input(name, label, type="text", value="", placeholder="", required=False, help="", error="") %}
 <div>
     <label for="{{ name }}" class="form-label">
         {{ label }}
-        {% if not required %}<span class="text-gray-500">(optionnel)</span>{% endif %}
+        {% if not required %}<span class="text-gray-500">({% trans "optional" %})</span>{% endif %}
     </label>
     <input type="{{ type }}"
            id="{{ name }}"
@@ -32,7 +33,7 @@
 <div>
     <label for="{{ name }}" class="form-label">
         {{ label }}
-        {% if not required %}<span class="text-gray-500">(optionnel)</span>{% endif %}
+        {% if not required %}<span class="text-gray-500">({% trans "optional" %})</span>{% endif %}
     </label>
     <textarea id="{{ name }}"
               name="{{ name }}"
@@ -54,7 +55,7 @@
 <div>
     <label for="{{ name }}" class="form-label">
         {{ label }}
-        {% if not required %}<span class="text-gray-500">(optionnel)</span>{% endif %}
+        {% if not required %}<span class="text-gray-500">({% trans "optional" %})</span>{% endif %}
     </label>
     <select id="{{ name }}"
             name="{{ name }}"
@@ -103,14 +104,14 @@
             <span class="i-lucide-upload text-3xl text-gray-500"></span>
             <div class="flex text-sm text-gray-600">
                 <label for="{{ name }}" class="form-dropzone-link">
-                    <span>Téléverser un fichier</span>
+                    <span>{% trans "Upload a file" %}</span>
                     <input id="{{ name }}"
                            name="{{ name }}"
                            type="file"
                            {% if accept %}accept="{{ accept }}"{% endif %}
                            class="sr-only">
                 </label>
-                <p class="pl-1">ou glisser-déposer</p>
+                <p class="pl-1">{% trans "or drag and drop" %}</p>
             </div>
             {% if help %}
                 <p class="text-xs text-gray-500">{{ help }}</p>

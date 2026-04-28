@@ -1,36 +1,37 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Commencer — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Get started" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-12">
     <div class="container-app max-w-lg">
 
         <div class="flex items-center justify-between mb-2">
-            <p class="text-sm text-gray-500">Étape 3 de 3</p>
+            <p class="text-sm text-gray-500">{% trans "Step 3 of 3" %}</p>
             <a href="{% url 'feed:onboarding_step2' %}" class="link-muted text-sm">
-                <span class="i-lucide-arrow-left text-xs"></span> Retour
+                <span class="i-lucide-arrow-left text-xs"></span> {% trans "Back" %}
             </a>
         </div>
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">Que voulez-vous faire ?</h1>
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">{% trans "What do you want to do?" %}</h1>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <a href="{% url 'games:create' %}" class="card card-hover card-body text-center block">
                 <span class="i-lucide-book-open text-3xl text-primary-500 mb-3 block"></span>
-                <h3 class="font-semibold text-gray-900 mb-1">Créer ma première partie</h3>
-                <p class="text-sm text-gray-500">Commencez à documenter vos sessions de JDR</p>
+                <h3 class="font-semibold text-gray-900 mb-1">{% trans "Create my first game" %}</h3>
+                <p class="text-sm text-gray-500">{% trans "Start documenting your RPG sessions" %}</p>
             </a>
 
             <a href="{% url 'characters:list' %}" class="card card-hover card-body text-center block">
                 <span class="i-lucide-search text-3xl text-primary-500 mb-3 block"></span>
-                <h3 class="font-semibold text-gray-900 mb-1">Explorer les personnages</h3>
-                <p class="text-sm text-gray-500">Découvrez les PNJ d'autres joueurs</p>
+                <h3 class="font-semibold text-gray-900 mb-1">{% trans "Explore characters" %}</h3>
+                <p class="text-sm text-gray-500">{% trans "Discover other players' NPCs" %}</p>
             </a>
 
             <a href="{% url 'feed:instance' %}" class="card card-hover card-body text-center block sm:col-span-2">
                 <span class="i-lucide-rss text-3xl text-primary-500 mb-3 block"></span>
-                <h3 class="font-semibold text-gray-900 mb-1">Voir le fil local</h3>
-                <p class="text-sm text-gray-500">Suivez les publications de la communauté</p>
+                <h3 class="font-semibold text-gray-900 mb-1">{% trans "View local feed" %}</h3>
+                <p class="text-sm text-gray-500">{% trans "Follow the community's publications" %}</p>
             </a>
         </div>
 

@@ -1,0 +1,5 @@
+/* Base reset — supprime les styles navigateur non couverts par UnoCSS preflight */
+a {
+  text-decoration: none;
+  color: inherit;
+}

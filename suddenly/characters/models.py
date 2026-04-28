@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from suddenly.core.models import BaseModel
 from suddenly.games.models import Game, Report
@@ -17,11 +18,11 @@ from suddenly.games.models import Game, Report
 class CharacterStatus(models.TextChoices):
     """Status of a character."""
 
-    NPC = "npc", "PNJ"
-    PC = "pc", "PJ"
-    CLAIMED = "claimed", "Réclamé"
-    ADOPTED = "adopted", "Adopté"
-    FORKED = "forked", "Forké"
+    NPC = "npc", _("NPC")
+    PC = "pc", _("PC")
+    CLAIMED = "claimed", _("Claimed")
+    ADOPTED = "adopted", _("Adopted")
+    FORKED = "forked", _("Forked")
 
 
 class Character(BaseModel):
@@ -143,9 +144,9 @@ class Character(BaseModel):
 class QuoteVisibility(models.TextChoices):
     """Visibility levels for quotes."""
 
-    EPHEMERAL = "ephemeral", "Éphémère"
-    PRIVATE = "private", "Privée"
-    PUBLIC = "public", "Publique"
+    EPHEMERAL = "ephemeral", _("Ephemeral")
+    PRIVATE = "private", _("Private")
+    PUBLIC = "public", _("Public")
 
 
 class Quote(BaseModel):
@@ -222,9 +223,9 @@ class Quote(BaseModel):
 class AppearanceRole(models.TextChoices):
     """Role of a character in a report."""
 
-    MAIN = "main", "Principal"
-    SUPPORTING = "supporting", "Secondaire"
-    MENTIONED = "mentioned", "Mentionné"
+    MAIN = "main", _("Main")
+    SUPPORTING = "supporting", _("Supporting")
+    MENTIONED = "mentioned", _("Mentioned")
 
 
 class CharacterAppearance(BaseModel):
@@ -256,20 +257,20 @@ class CharacterAppearance(BaseModel):
 class LinkType(models.TextChoices):
     """Types of links between characters."""
 
-    CLAIM = "claim", "Claim (rétcon)"
-    ADOPT = "adopt", "Adoption"
-    FORK = "fork", "Fork (dérivation)"
+    CLAIM = "claim", _("Claim (retcon)")
+    ADOPT = "adopt", _("Adoption")
+    FORK = "fork", _("Fork (derivation)")
 
 
 class LinkRequestStatus(models.TextChoices):
     """Status of a link request."""
 
-    PENDING = "pending", "En attente"
-    QUEUED = "queued", "En file d'attente"
-    ACCEPTED = "accepted", "Acceptée"
-    REJECTED = "rejected", "Refusée"
-    CANCELLED = "cancelled", "Annulée"
-    EXPIRED = "expired", "Expirée"
+    PENDING = "pending", _("Pending")
+    QUEUED = "queued", _("Queued")
+    ACCEPTED = "accepted", _("Accepted")
+    REJECTED = "rejected", _("Rejected")
+    CANCELLED = "cancelled", _("Cancelled")
+    EXPIRED = "expired", _("Expired")
 
 
 class LinkRequest(BaseModel):
@@ -357,8 +358,8 @@ class CharacterLink(BaseModel):
 class SharedSequenceStatus(models.TextChoices):
     """Status of a shared sequence."""
 
-    DRAFT = "draft", "Brouillon"
-    PUBLISHED = "published", "Publié"
+    DRAFT = "draft", _("Draft")
+    PUBLISHED = "published", _("Published")
 
 
 class SharedSequence(BaseModel):
