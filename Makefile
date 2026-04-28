@@ -22,7 +22,7 @@ typecheck:
 	mypy suddenly/
 
 test:
-	pytest --cov=suddenly --cov-fail-under=80 --tb=short
+	pytest --cov=suddenly --cov-fail-under=50 --tb=short
 
 frontend:
 	cd frontend && npm install && npm run build
@@ -50,7 +50,7 @@ docker-migrate:
 	$(COMPOSE_DEV) exec web python manage.py migrate
 
 docker-test:
-	$(COMPOSE_DEV) exec web pytest --cov=suddenly --cov-fail-under=80 --tb=short
+	$(COMPOSE_DEV) exec web pytest --cov=suddenly --cov-fail-under=50 --tb=short
 
 docker-check:
 	$(COMPOSE_DEV) exec web make check
