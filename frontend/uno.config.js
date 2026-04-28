@@ -125,11 +125,13 @@ const presetSuddenly = () => ({
     // Badges
     'badge': 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-xs font-medium',
 
-    // Badges de statut personnage — teintes sombres lisibles sur bg-card dark cosmos
-    'badge-available': 'badge bg-emerald-900/40 text-emerald-400 border border-emerald-700/50',
-    'badge-claimed': 'badge bg-amber-900/40 text-amber-400 border border-amber-700/50',
-    'badge-adopted': 'badge bg-indigo-900/40 text-indigo-400 border border-indigo-700/50',
-    'badge-forked': 'badge bg-violet-900/40 text-violet-400 border border-violet-700/50',
+    // Badges de statut personnage — couleurs sémantiques, compatibles light/dark
+    'badge-available': 'badge bg-success/10 text-success border border-success/30',
+    'badge-claimed': 'badge bg-violet/10 text-violet border border-violet/30',
+    'badge-adopted': 'badge bg-info/10 text-info border border-info/30',
+    'badge-forked': 'badge bg-warning/10 text-warning border border-warning/30',
+    'badge-pending': 'badge bg-surface text-muted border border-border',
+    'badge-rejected': 'badge bg-error/10 text-error border border-error/30',
     'badge-pc': 'badge bg-sky-900/40 text-sky-400 border border-sky-700/50',
 
     // Avatars
@@ -154,7 +156,7 @@ const presetSuddenly = () => ({
     'label-overline': 'text-violet text-[12px] font-medium tracking-[3px] uppercase',
 
     // Prose (pour les reports)
-    'prose-report': 'prose prose-invert max-w-none',
+    'prose-report': 'prose max-w-none',
   },
 })
 
@@ -228,5 +230,11 @@ export default defineConfig({
     'i-lucide-x', 'i-lucide-search', 'i-lucide-menu', 'i-lucide-bell',
     'i-lucide-cloud', 'i-lucide-cloud-off', 'i-lucide-loader-2',
     'i-lucide-alert-triangle', 'i-lucide-info',
+    'i-lucide-sun', 'i-lucide-moon',
+    // Couleurs violet/crimson pour composants dark-light
+    'bg-violet', 'border-violet', 'hover:text-violet/60',
+    'bg-crimson/10', 'hover:bg-crimson/15',
+    // Badges dynamiques pending/rejected
+    'badge-pending', 'badge-rejected',
   ],
 })
