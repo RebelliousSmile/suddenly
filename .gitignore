@@ -125,7 +125,8 @@ yarn-error.log*
 
 # <AIDD>
 .mcp.json
-docs/
+docs/*
+!docs/translations.md
 worktrees/
 .aidd/
 .vscode/
