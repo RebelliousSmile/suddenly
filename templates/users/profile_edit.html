@@ -7,7 +7,7 @@
 <!-- Profile Edit Form -->
 <section class="py-12">
     <div class="container-app max-w-2xl">
-        <h1 class="text-3xl font-bold text-gray-900 mb-8">
+        <h1 class="text-3xl font-bold text-primary mb-8">
             {% trans "Edit my profile" %}
         </h1>
 
@@ -19,7 +19,7 @@
             <div>
                 <label for="{{ form.display_name.id_for_label }}" class="form-label">
                     {{ form.display_name.label }}
-                    <span class="text-gray-500">({% trans "optional" %})</span>
+                    <span class="text-muted">({% trans "optional" %})</span>
                 </label>
                 <input type="text"
                        id="{{ form.display_name.id_for_label }}"
@@ -41,7 +41,7 @@
             <div>
                 <label for="{{ form.bio.id_for_label }}" class="form-label">
                     {{ form.bio.label }}
-                    <span class="text-gray-500">({% trans "optional" %})</span>
+                    <span class="text-muted">({% trans "optional" %})</span>
                 </label>
                 <textarea id="{{ form.bio.id_for_label }}"
                           name="{{ form.bio.html_name }}"
@@ -62,14 +62,14 @@
             <div>
                 <label for="{{ form.avatar.id_for_label }}" class="form-label">
                     {{ form.avatar.label }}
-                    <span class="text-gray-500">({% trans "optional" %})</span>
+                    <span class="text-muted">({% trans "optional" %})</span>
                 </label>
                 {% if form.avatar.value %}
-                    <div class="mb-4 p-4 bg-gray-50 rounded-lg flex items-center gap-3">
+                    <div class="mb-4 p-4 bg-surface rounded-lg flex items-center gap-3">
                         <img src="{{ form.avatar.value.url }}" alt="{% trans "Current avatar" %}" class="avatar-md">
                         <div>
-                            <p class="text-sm text-gray-600">{% trans "Current image" %}</p>
-                            <label for="{{ form.avatar.id_for_label }}-clear" class="text-sm text-red-600 hover:text-red-500">
+                            <p class="text-sm text-secondary">{% trans "Current image" %}</p>
+                            <label for="{{ form.avatar.id_for_label }}-clear" class="text-sm text-error hover:text-red-500">
                                 <input id="{{ form.avatar.id_for_label }}-clear"
                                        name="{{ form.avatar.html_name }}-clear"
                                        type="checkbox">
@@ -80,8 +80,8 @@
                 {% endif %}
                 <div class="form-dropzone">
                     <div class="space-y-1 text-center">
-                        <span class="i-lucide-upload text-3xl text-gray-500"></span>
-                        <div class="flex text-sm text-gray-600">
+                        <span class="i-lucide-upload text-3xl text-muted"></span>
+                        <div class="flex text-sm text-secondary">
                             <label for="{{ form.avatar.id_for_label }}" class="form-dropzone-link">
                                 <span>{% trans "Upload an image" %}</span>
                                 <input id="{{ form.avatar.id_for_label }}"
@@ -92,7 +92,7 @@
                             </label>
                             <p class="pl-1">{% trans "or drag and drop" %}</p>
                         </div>
-                        <p class="text-xs text-gray-500">{% trans "PNG, JPG or GIF up to 10 MB" %}</p>
+                        <p class="text-xs text-muted">{% trans "PNG, JPG or GIF up to 10 MB" %}</p>
                     </div>
                 </div>
                 {% if form.avatar.help_text %}
@@ -130,7 +130,7 @@
             <div>
                 <label for="{{ form.preferred_languages.id_for_label }}" class="form-label">
                     {{ form.preferred_languages.label }}
-                    <span class="text-gray-500">({% trans "optional" %})</span>
+                    <span class="text-muted">({% trans "optional" %})</span>
                 </label>
                 {{ form.preferred_languages }}
                 <p class="form-help">{% trans "Language codes separated by commas, e.g. fr, en" %}</p>
@@ -142,18 +142,18 @@
             </div>
 
             <!-- Show Unlabeled Content -->
-            <div class="flex items-start gap-3 py-4 border-t border-gray-200">
+            <div class="flex items-start gap-3 py-4 border-t border-border">
                 <input type="checkbox"
                        id="{{ form.show_unlabeled_content.id_for_label }}"
                        name="{{ form.show_unlabeled_content.html_name }}"
                        {% if form.show_unlabeled_content.value %}checked{% endif %}
-                       class="mt-1 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                       class="mt-1 h-4 w-4 rounded border-border text-crimson focus:ring-crimson">
                 <div>
-                    <label for="{{ form.show_unlabeled_content.id_for_label }}" class="text-sm font-medium text-gray-700">
+                    <label for="{{ form.show_unlabeled_content.id_for_label }}" class="text-sm font-medium text-secondary">
                         {{ form.show_unlabeled_content.label }}
                     </label>
                     {% if form.show_unlabeled_content.help_text %}
-                        <p class="text-sm text-gray-500">{{ form.show_unlabeled_content.help_text|safe }}</p>
+                        <p class="text-sm text-muted">{{ form.show_unlabeled_content.help_text|safe }}</p>
                     {% endif %}
                     {% if form.show_unlabeled_content.errors %}
                         {% for error in form.show_unlabeled_content.errors %}

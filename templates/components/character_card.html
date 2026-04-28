@@ -23,8 +23,8 @@
 
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
-                    <h3 class="font-semibold text-gray-900 truncate">
-                        <a href="#" class="hover:text-primary-600">
+                    <h3 class="font-semibold text-primary truncate">
+                        <a href="#" class="hover:text-crimson">
                             {{ character.name }}
                         </a>
                     </h3>
@@ -59,7 +59,7 @@
                 </div>
 
                 <!-- Origin -->
-                <p class="text-sm text-gray-500 truncate">
+                <p class="text-sm text-muted truncate">
                     <span class="i-lucide-book-open text-xs mr-1"></span>
                     {{ character.origin_game.title }}
                 </p>
@@ -68,13 +68,13 @@
 
         <!-- Description -->
         {% if character.description %}
-            <p class="text-gray-600 text-sm line-clamp-3 mb-3">
+            <p class="text-secondary text-sm line-clamp-3 mb-3">
                 {{ character.description }}
             </p>
         {% endif %}
 
         <!-- Metadata -->
-        <div class="flex items-center gap-4 text-xs text-gray-500">
+        <div class="flex items-center gap-4 text-xs text-muted">
             {% if character.appearances.count %}
                 <span class="flex items-center gap-1">
                     <span class="i-lucide-file-text"></span>
@@ -104,7 +104,7 @@
             <button hx-post="/api/characters/{{ character.id }}/claim/"
                     hx-target="#character-{{ character.id }}"
                     hx-swap="outerHTML"
-                    class="btn-ghost btn-sm text-amber-600 hover:bg-amber-50">
+                    class="btn-ghost btn-sm text-warning hover:bg-warning/10">
                 <span class="i-lucide-git-merge"></span>
                 {% trans "Claim" %}
             </button>

@@ -10,7 +10,7 @@
 <div>
     <label for="{{ name }}" class="form-label">
         {{ label }}
-        {% if not required %}<span class="text-gray-500">({% trans "optional" %})</span>{% endif %}
+        {% if not required %}<span class="text-muted">({% trans "optional" %})</span>{% endif %}
     </label>
     <input type="{{ type }}"
            id="{{ name }}"
@@ -33,7 +33,7 @@
 <div>
     <label for="{{ name }}" class="form-label">
         {{ label }}
-        {% if not required %}<span class="text-gray-500">({% trans "optional" %})</span>{% endif %}
+        {% if not required %}<span class="text-muted">({% trans "optional" %})</span>{% endif %}
     </label>
     <textarea id="{{ name }}"
               name="{{ name }}"
@@ -55,7 +55,7 @@
 <div>
     <label for="{{ name }}" class="form-label">
         {{ label }}
-        {% if not required %}<span class="text-gray-500">({% trans "optional" %})</span>{% endif %}
+        {% if not required %}<span class="text-muted">({% trans "optional" %})</span>{% endif %}
     </label>
     <select id="{{ name }}"
             name="{{ name }}"
@@ -83,13 +83,13 @@
            id="{{ name }}"
            name="{{ name }}"
            {% if checked %}checked{% endif %}
-           class="mt-1 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+           class="mt-1 h-4 w-4 rounded border-border text-crimson focus:ring-crimson">
     <div>
-        <label for="{{ name }}" class="text-sm font-medium text-gray-700">
+        <label for="{{ name }}" class="text-sm font-medium text-secondary">
             {{ label }}
         </label>
         {% if help %}
-            <p class="text-sm text-gray-500">{{ help }}</p>
+            <p class="text-sm text-muted">{{ help }}</p>
         {% endif %}
     </div>
 </div>
@@ -101,8 +101,8 @@
     <label for="{{ name }}" class="form-label">{{ label }}</label>
     <div class="form-dropzone">
         <div class="space-y-1 text-center">
-            <span class="i-lucide-upload text-3xl text-gray-500"></span>
-            <div class="flex text-sm text-gray-600">
+            <span class="i-lucide-upload text-3xl text-muted"></span>
+            <div class="flex text-sm text-secondary">
                 <label for="{{ name }}" class="form-dropzone-link">
                     <span>{% trans "Upload a file" %}</span>
                     <input id="{{ name }}"
@@ -114,7 +114,7 @@
                 <p class="pl-1">{% trans "or drag and drop" %}</p>
             </div>
             {% if help %}
-                <p class="text-xs text-gray-500">{{ help }}</p>
+                <p class="text-xs text-muted">{{ help }}</p>
             {% endif %}
         </div>
     </div>

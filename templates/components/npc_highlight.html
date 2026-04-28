@@ -9,20 +9,20 @@
 #}
 {% load i18n %}
 
-<div class="border border-amber-300 rounded-card p-3 bg-amber-50 hover:shadow-card-hover transition-shadow">
+<div class="border border-amber-300 rounded-card p-3 bg-warning/10 hover:shadow-card-hover transition-shadow">
     <div class="flex items-center gap-2 mb-1">
         {% if character.avatar %}
             <img src="{{ character.avatar.url }}" alt="{{ character.name }}" class="avatar-sm">
         {% else %}
-            <div class="avatar-sm avatar-placeholder bg-amber-100 text-amber-600">
+            <div class="avatar-sm avatar-placeholder bg-warning/15 text-warning">
                 <span class="i-lucide-sparkles text-xs"></span>
             </div>
         {% endif %}
-        <p class="font-medium text-sm text-gray-900 truncate">{{ character.name }}</p>
+        <p class="font-medium text-sm text-primary truncate">{{ character.name }}</p>
     </div>
-    <p class="text-xs text-gray-500 mb-2 truncate">{{ character.origin_game.title }}</p>
+    <p class="text-xs text-muted mb-2 truncate">{{ character.origin_game.title }}</p>
     <a href="#"
-       class="text-xs text-amber-700 hover:text-amber-900 font-medium flex items-center gap-1">
+       class="text-xs text-warning hover:text-warning font-medium flex items-center gap-1">
         {% trans "View profile" %}
         <span class="i-lucide-arrow-right text-xs"></span>
     </a>

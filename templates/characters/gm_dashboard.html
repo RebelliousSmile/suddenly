@@ -7,21 +7,21 @@
 <section class="py-8">
     <div class="container-app">
 
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">{% trans "Dashboard" %}</h1>
+        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "Dashboard" %}</h1>
 
         <!-- Stats -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
             <div class="card card-body text-center">
-                <p class="text-2xl font-bold text-gray-900">{{ total_npcs|default:0 }}</p>
-                <p class="text-xs text-gray-500">{% trans "NPCs created" %}</p>
+                <p class="text-2xl font-bold text-primary">{{ total_npcs|default:0 }}</p>
+                <p class="text-xs text-muted">{% trans "NPCs created" %}</p>
             </div>
             <div class="card card-body text-center">
-                <p class="text-2xl font-bold text-amber-600">{{ total_requests|default:0 }}</p>
-                <p class="text-xs text-gray-500">{% trans "pending requests" %}</p>
+                <p class="text-2xl font-bold text-warning">{{ total_requests|default:0 }}</p>
+                <p class="text-xs text-muted">{% trans "pending requests" %}</p>
             </div>
             <div class="card card-body text-center">
-                <p class="text-2xl font-bold text-gray-900">{{ linked|length }}</p>
-                <p class="text-xs text-gray-500">{% trans "linked characters" %}</p>
+                <p class="text-2xl font-bold text-primary">{{ linked|length }}</p>
+                <p class="text-xs text-muted">{% trans "linked characters" %}</p>
             </div>
             <div class="card card-body text-center">
                 <a href="{% url 'characters:list' %}" class="btn-primary btn-sm w-full">
@@ -34,7 +34,7 @@
         {% if npcs_with_requests %}
             <div class="mb-8">
                 <h2 class="text-heading text-lg mb-4">
-                    <span class="i-lucide-bell text-amber-500 mr-1"></span>
+                    <span class="i-lucide-bell text-warning mr-1"></span>
                     {% trans "NPCs with pending requests" %}
                 </h2>
                 <div class="space-y-4">
@@ -46,10 +46,10 @@
                                 </span>
                                 <div>
                                     <a href="{% url 'characters:detail' slug=npc.slug %}"
-                                       class="font-semibold text-gray-900 hover:text-primary-600">
+                                       class="font-semibold text-primary hover:text-crimson">
                                         {{ npc.name }}
                                     </a>
-                                    <p class="text-xs text-gray-500">
+                                    <p class="text-xs text-muted">
                                         {{ npc.origin_game.title }} · {% blocktrans count counter=npc.appearances.count %}{{ counter }} appearance{% plural %}{{ counter }} appearances{% endblocktrans %}
                                     </p>
                                 </div>
@@ -57,14 +57,14 @@
                             </div>
 
                             {% for req in npc.pending_requests %}
-                                <div class="flex items-center justify-between py-2 border-t border-gray-100">
+                                <div class="flex items-center justify-between py-2 border-t border-border">
                                     <div>
                                         <p class="text-sm">
                                             <strong>@{{ req.requester.username }}</strong>
                                             {% trans "wants to" %} <strong>{{ req.get_type_display|upper }}</strong>
                                         </p>
                                         {% if req.message %}
-                                            <p class="text-xs text-gray-500 line-clamp-1 mt-0.5">
+                                            <p class="text-xs text-muted line-clamp-1 mt-0.5">
                                                 « {{ req.message|truncatewords:15 }} »
                                             </p>
                                         {% endif %}
@@ -73,7 +73,7 @@
                                         {% if req.status == 'pending' %}
                                             <span class="badge-accent text-xs">{% trans "To process" %}</span>
                                         {% else %}
-                                            <span class="badge-gray text-xs">{% blocktrans with num=forloop.counter %}In queue (#{{ num }}){% endblocktrans %}</span>
+                                            <span class="badge bg-card-dark text-muted border border-border text-xs">{% blocktrans with num=forloop.counter %}In queue (#{{ num }}){% endblocktrans %}</span>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -93,7 +93,7 @@
                         <a href="{% url 'characters:detail' slug=npc.slug %}"
                            class="card card-body text-center hover:shadow-card-hover transition-shadow">
                             <p class="font-medium text-sm">{{ npc.name }}</p>
-                            <p class="text-xs text-gray-500">{{ npc.origin_game.title }}</p>
+                            <p class="text-xs text-muted">{{ npc.origin_game.title }}</p>
                         </a>
                     {% endfor %}
                 </div>
@@ -109,7 +109,7 @@
                         <div class="card card-body flex items-center justify-between">
                             <div>
                                 <a href="{% url 'characters:detail' slug=char.slug %}"
-                                   class="font-medium text-gray-900 hover:text-primary-600">
+                                   class="font-medium text-primary hover:text-crimson">
                                     {{ char.name }}
                                 </a>
                                 <span class="{% if char.status == 'npc' %}badge-available{% else %}badge-{{ char.status }}{% endif %} text-xs ml-2">
@@ -117,7 +117,7 @@
                                 </span>
                             </div>
                             {% if char.owner %}
-                                <span class="text-xs text-gray-500">{% blocktrans with username=char.owner.username %}by @{{ username }}{% endblocktrans %}</span>
+                                <span class="text-xs text-muted">{% blocktrans with username=char.owner.username %}by @{{ username }}{% endblocktrans %}</span>
                             {% endif %}
                         </div>
                     {% endfor %}
@@ -128,9 +128,9 @@
         <!-- Empty state -->
         {% if not npcs_with_requests and not npcs_available and not linked %}
             <div class="text-center py-16">
-                <span class="i-lucide-users text-5xl text-gray-300 mb-4 block"></span>
-                <h3 class="font-semibold text-gray-900 mb-2">{% trans "You have no NPCs yet" %}</h3>
-                <p class="text-sm text-gray-500 mb-4">
+                <span class="i-lucide-users text-5xl text-muted mb-4 block"></span>
+                <h3 class="font-semibold text-primary mb-2">{% trans "You have no NPCs yet" %}</h3>
+                <p class="text-sm text-muted mb-4">
                     {% trans "NPCs are created automatically when you mention them in a report." %}
                 </p>
                 <a href="{% url 'games:list' %}" class="btn-primary btn-sm">{% trans "See my games" %}</a>

@@ -121,12 +121,12 @@ const presetSuddenly = () => ({
     // Badges
     'badge': 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-xs font-medium',
 
-    // Badges de statut personnage (conservés)
-    'badge-available': 'badge bg-green-100 text-green-800',
-    'badge-claimed': 'badge bg-amber-100 text-amber-800',
-    'badge-adopted': 'badge bg-indigo-100 text-indigo-800',
-    'badge-forked': 'badge bg-violet-100 text-violet-800',
-    'badge-pc': 'badge bg-blue-100 text-blue-800',
+    // Badges de statut personnage — teintes sombres lisibles sur bg-card dark cosmos
+    'badge-available': 'badge bg-emerald-900/40 text-emerald-400 border border-emerald-700/50',
+    'badge-claimed': 'badge bg-amber-900/40 text-amber-400 border border-amber-700/50',
+    'badge-adopted': 'badge bg-indigo-900/40 text-indigo-400 border border-indigo-700/50',
+    'badge-forked': 'badge bg-violet-900/40 text-violet-400 border border-violet-700/50',
+    'badge-pc': 'badge bg-sky-900/40 text-sky-400 border border-sky-700/50',
 
     // Avatars
     'avatar': 'rounded-full object-cover bg-surface',

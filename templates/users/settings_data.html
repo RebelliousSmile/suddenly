@@ -6,7 +6,7 @@
 {% block content %}
 <section class="py-8">
     <div class="container-app max-w-2xl">
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">{% trans "My data" %}</h1>
+        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "My data" %}</h1>
 
         {% if import_success %}
             <div class="mb-4 p-3 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-sm">
@@ -34,12 +34,12 @@
         </div>
 
         <!-- Migration -->
-        <div class="card card-body border-amber-200">
+        <div class="card card-body border-warning/30">
             <h2 class="text-heading mb-3">{% trans "Migrate to another instance" %}</h2>
-            <p class="text-sm text-gray-600 mb-3">
+            <p class="text-sm text-secondary mb-3">
                 {% trans "Your profile will be redirected. Your followers will be notified. This process is irreversible." %}
             </p>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
                 <span class="i-lucide-info text-xs mr-1"></span>
                 {% trans "Feature under development." %}
             </p>

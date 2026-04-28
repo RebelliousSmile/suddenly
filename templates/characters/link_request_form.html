@@ -20,30 +20,30 @@
                     <span class="i-lucide-heart text-lg"></span>
                 </span>
                 <div>
-                    <h1 class="text-xl font-bold text-gray-900">{% blocktrans with name=character.name %}Adopt {{ name }}{% endblocktrans %}</h1>
-                    <p class="text-sm text-gray-500">{% trans "Adoption" %}</p>
+                    <h1 class="text-xl font-bold text-primary">{% blocktrans with name=character.name %}Adopt {{ name }}{% endblocktrans %}</h1>
+                    <p class="text-sm text-muted">{% trans "Adoption" %}</p>
                 </div>
             {% elif link_type == 'fork' %}
                 <span class="w-10 h-10 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center">
                     <span class="i-lucide-git-branch text-lg"></span>
                 </span>
                 <div>
-                    <h1 class="text-xl font-bold text-gray-900">{% blocktrans with name=character.name %}Fork {{ name }}{% endblocktrans %}</h1>
-                    <p class="text-sm text-gray-500">{% trans "Derivation" %}</p>
+                    <h1 class="text-xl font-bold text-primary">{% blocktrans with name=character.name %}Fork {{ name }}{% endblocktrans %}</h1>
+                    <p class="text-sm text-muted">{% trans "Derivation" %}</p>
                 </div>
             {% else %}
-                <span class="w-10 h-10 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center">
+                <span class="w-10 h-10 rounded-full bg-card text-muted flex items-center justify-center">
                     <span class="i-lucide-git-merge text-lg"></span>
                 </span>
                 <div>
-                    <h1 class="text-xl font-bold text-gray-900">{% blocktrans with name=character.name %}Retcon on {{ name }}{% endblocktrans %}</h1>
-                    <p class="text-sm text-gray-500">{% trans "Retroactive rewrite" %}</p>
+                    <h1 class="text-xl font-bold text-primary">{% blocktrans with name=character.name %}Retcon on {{ name }}{% endblocktrans %}</h1>
+                    <p class="text-sm text-muted">{% trans "Retroactive rewrite" %}</p>
                 </div>
             {% endif %}
         </div>
 
         {% if error %}
-            <div class="mb-4 p-4 rounded-lg bg-red-50 text-red-800 border border-red-200">
+            <div class="mb-4 p-4 rounded-lg bg-error/10 text-error border border-error/30">
                 {{ error }}
             </div>
         {% endif %}
@@ -52,11 +52,11 @@
             {% csrf_token %}
 
             {% if link_type == 'adopt' %}
-                <p class="text-sm text-gray-600">
+                <p class="text-sm text-secondary">
                     {% blocktrans with name=character.name username=character.creator.username %}You want to take {{ name }} as your PC. @{{ username }} will need to accept your request.{% endblocktrans %}
                 </p>
             {% elif link_type == 'fork' %}
-                <p class="text-sm text-gray-600">
+                <p class="text-sm text-secondary">
                     {% blocktrans with name=character.name %}You are creating a new PC inspired by {{ name }}. {{ name }} remains NPC — your PC will be linked by a narrative lineage.{% endblocktrans %}
                 </p>
                 <div>
@@ -67,7 +67,7 @@
                            class="form-input">
                 </div>
             {% else %}
-                <p class="text-sm text-gray-600">
+                <p class="text-sm text-secondary">
                     {% blocktrans with name=character.name %}You claim that {{ name }} was your PC from the beginning. Their story will be reinterpreted retroactively.{% endblocktrans %}
                 </p>
             {% endif %}
@@ -79,12 +79,12 @@
                           class="{% if error %}form-input-error{% else %}form-input{% endif %}">{{ form_data.message|default:'' }}</textarea>
             </div>
 
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted">
                 <span class="i-lucide-info text-xs mr-1"></span>
                 {% blocktrans with username=character.creator.username %}After acceptance, you will co-write a Shared Sequence with @{{ username }} to seal the narrative transition.{% endblocktrans %}
             </p>
 
-            <div class="flex items-center gap-3 pt-4 border-t border-gray-200">
+            <div class="flex items-center gap-3 pt-4 border-t border-border">
                 <button type="submit" class="btn-primary">
                     <span class="i-lucide-send"></span>
                     {% trans "Send request" %}

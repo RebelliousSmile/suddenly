@@ -28,7 +28,7 @@
          aria-modal="true">
         
         <!-- Backdrop -->
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+        <div class="fixed inset-0 bg-surface0 bg-opacity-75 transition-opacity"
              @click="hide"></div>
         
         <!-- Modal container -->
@@ -42,16 +42,16 @@
                  x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                  @click.away="hide"
                  @keydown.escape.window="hide"
-                 class="relative bg-white rounded-lg shadow-xl max-w-lg w-full">
+                 class="relative bg-surface rounded-lg shadow-xl max-w-lg w-full">
                 
                 <!-- Header -->
-                <div class="px-6 py-4 border-b border-gray-200">
+                <div class="px-6 py-4 border-b border-border">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-semibold text-gray-900" id="modal-title">
+                        <h3 class="text-lg font-semibold text-primary" id="modal-title">
                             {{ title|default:"Modal" }}
                         </h3>
                         <button @click="hide" 
-                                class="text-gray-400 hover:text-gray-500 transition-colors">
+                                class="text-muted hover:text-muted transition-colors">
                             <span class="i-lucide-x text-xl"></span>
                         </button>
                     </div>
@@ -66,7 +66,7 @@
                 
                 <!-- Footer -->
                 {% block modal_footer %}
-                    <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-lg flex justify-end gap-3">
+                    <div class="px-6 py-4 border-t border-border bg-surface rounded-b-lg flex justify-end gap-3">
                         <button @click="hide" class="btn-secondary">
                             {% trans "Cancel" %}
                         </button>

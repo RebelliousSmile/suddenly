@@ -6,37 +6,37 @@
 {% block content %}
 <section class="py-8">
     <div class="container-app">
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">{% trans "Administration" %}</h1>
+        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "Administration" %}</h1>
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
             <div class="card card-body text-center">
-                <p class="text-2xl font-bold text-gray-900">{{ stats.users|default:0 }}</p>
-                <p class="text-xs text-gray-500">{% trans "players" %}</p>
+                <p class="text-2xl font-bold text-primary">{{ stats.users|default:0 }}</p>
+                <p class="text-xs text-muted">{% trans "players" %}</p>
             </div>
             <div class="card card-body text-center">
-                <p class="text-2xl font-bold text-gray-900">{{ stats.reports|default:0 }}</p>
-                <p class="text-xs text-gray-500">{% trans "published reports" %}</p>
+                <p class="text-2xl font-bold text-primary">{{ stats.reports|default:0 }}</p>
+                <p class="text-xs text-muted">{% trans "published reports" %}</p>
             </div>
             <div class="card card-body text-center">
                 <p class="text-2xl font-bold text-emerald-600">{{ stats.instances_federated|default:0 }}</p>
-                <p class="text-xs text-gray-500">{% trans "federated instances" %}</p>
+                <p class="text-xs text-muted">{% trans "federated instances" %}</p>
             </div>
             <div class="card card-body text-center">
-                <p class="text-2xl font-bold text-red-600">{{ stats.instances_blocked|default:0 }}</p>
-                <p class="text-xs text-gray-500">{% trans "blocked instances" %}</p>
+                <p class="text-2xl font-bold text-error">{{ stats.instances_blocked|default:0 }}</p>
+                <p class="text-xs text-muted">{% trans "blocked instances" %}</p>
             </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <a href="{% url 'admin_panel:instances' %}" class="card card-hover card-body block">
-                <span class="i-lucide-globe text-2xl text-primary-500 mb-2 block"></span>
+                <span class="i-lucide-globe text-2xl text-crimson mb-2 block"></span>
                 <h3 class="font-semibold">{% trans "Federated instances" %}</h3>
-                <p class="text-sm text-gray-500">{% trans "Manage instances (block, unblock)" %}</p>
+                <p class="text-sm text-muted">{% trans "Manage instances (block, unblock)" %}</p>
             </a>
             <a href="{% url 'admin_panel:users' %}" class="card card-hover card-body block">
-                <span class="i-lucide-users text-2xl text-primary-500 mb-2 block"></span>
+                <span class="i-lucide-users text-2xl text-crimson mb-2 block"></span>
                 <h3 class="font-semibold">{% trans "Users" %}</h3>
-                <p class="text-sm text-gray-500">{% trans "Manage accounts (suspend)" %}</p>
+                <p class="text-sm text-muted">{% trans "Manage accounts (suspend)" %}</p>
             </a>
         </div>
     </div>

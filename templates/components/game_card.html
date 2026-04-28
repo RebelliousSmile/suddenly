@@ -12,13 +12,13 @@
         <!-- Header -->
         <header class="flex items-start justify-between gap-3 mb-3">
             <div class="flex-1 min-w-0">
-                <h3 class="font-semibold text-gray-900 mb-1">
-                    <a href="#" class="hover:text-primary-600">
+                <h3 class="font-semibold text-primary mb-1">
+                    <a href="#" class="hover:text-crimson">
                         {{ game.title }}
                     </a>
                 </h3>
 
-                <div class="flex items-center gap-3 text-sm text-gray-500">
+                <div class="flex items-center gap-3 text-sm text-muted">
                     <!-- Owner -->
                     <span class="flex items-center gap-1">
                         {% if game.owner.avatar %}
@@ -41,7 +41,7 @@
 
             <!-- Visibility -->
             {% if not game.is_public %}
-                <span class="badge-gray">
+                <span class="badge bg-card-dark text-muted border border-border">
                     <span class="i-lucide-lock text-xs"></span>
                     {% trans "Private" %}
                 </span>
@@ -50,13 +50,13 @@
 
         <!-- Description -->
         {% if game.description and not compact %}
-            <p class="text-gray-600 text-sm line-clamp-2 mb-3">
+            <p class="text-secondary text-sm line-clamp-2 mb-3">
                 {{ game.description }}
             </p>
         {% endif %}
 
         <!-- Stats -->
-        <div class="flex items-center gap-4 text-xs text-gray-500">
+        <div class="flex items-center gap-4 text-xs text-muted">
             <span class="flex items-center gap-1">
                 <span class="i-lucide-file-text"></span>
                 {% blocktrans count counter=game.reports.count %}{{ counter }} report{% plural %}{{ counter }} reports{% endblocktrans %}
@@ -79,7 +79,7 @@
     <!-- Recent characters (optional) -->
     {% if not compact and game.characters.exists %}
         <div class="card-footer">
-            <p class="text-xs text-gray-500 mb-2">{% trans "Recent characters" %}</p>
+            <p class="text-xs text-muted mb-2">{% trans "Recent characters" %}</p>
             <div class="flex -space-x-2">
                 {% for character in game.characters.all|slice:":5" %}
                     {% if character.avatar %}
@@ -96,7 +96,7 @@
                 {% endfor %}
 
                 {% if game.characters.count > 5 %}
-                    <span class="avatar-sm bg-gray-100 text-gray-600 ring-2 ring-white flex items-center justify-center text-xs font-medium">
+                    <span class="avatar-sm bg-card text-secondary ring-2 ring-white flex items-center justify-center text-xs font-medium">
                         +{{ game.characters.count|add:"-5" }}
                     </span>
                 {% endif %}

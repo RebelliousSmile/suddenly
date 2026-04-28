@@ -23,19 +23,19 @@
             
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2">
-                    <a href="#" class="font-medium text-gray-900 hover:text-primary-600">
+                    <a href="#" class="font-medium text-primary hover:text-crimson">
                         {{ report.author.get_display_name }}
                     </a>
                     
                     {% if report.status == 'draft' %}
-                        <span class="badge-gray">
+                        <span class="badge bg-card-dark text-muted border border-border">
                             <span class="i-lucide-pencil text-xs"></span>
                             {% trans "Draft" %}
                         </span>
                     {% endif %}
                 </div>
                 
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-muted">
                     {% if report.published_at %}
                         {{ report.published_at|timesince }}
                     {% else %}
@@ -44,7 +44,7 @@
                     
                     {% if show_game and report.game %}
                         <span class="mx-1">·</span>
-                        <a href="#" class="hover:text-primary-600">
+                        <a href="#" class="hover:text-crimson">
                             {{ report.game.title }}
                         </a>
                     {% endif %}
@@ -54,15 +54,15 @@
         
         <!-- Titre -->
         {% if report.title %}
-            <h3 class="font-semibold text-gray-900 mb-2">
-                <a href="#" class="hover:text-primary-600">
+            <h3 class="font-semibold text-primary mb-2">
+                <a href="#" class="hover:text-crimson">
                     {{ report.title }}
                 </a>
             </h3>
         {% endif %}
         
         <!-- Contenu (extrait) -->
-        <div class="text-gray-600 text-sm line-clamp-4 mb-3 prose-report">
+        <div class="text-secondary text-sm line-clamp-4 mb-3 prose-report">
             {{ report.content|truncatewords:50|safe }}
         </div>
         
@@ -72,14 +72,14 @@
                 <div class="flex flex-wrap gap-2">
                     {% for appearance in report.character_appearances.all|slice:":6" %}
                         <a href="#" 
-                           class="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded-full text-xs text-gray-700 hover:bg-gray-200 transition-colors">
-                            <span class="i-lucide-at-sign text-gray-400"></span>
+                           class="inline-flex items-center gap-1 px-2 py-1 bg-card rounded-full text-xs text-secondary hover:bg-card-dark transition-colors">
+                            <span class="i-lucide-at-sign text-muted"></span>
                             {{ appearance.character.name }}
                         </a>
                     {% endfor %}
                     
                     {% if report.character_appearances.count > 6 %}
-                        <span class="inline-flex items-center px-2 py-1 text-xs text-gray-500">
+                        <span class="inline-flex items-center px-2 py-1 text-xs text-muted">
                             +{{ report.character_appearances.count|add:"-6" }}
                         </span>
                     {% endif %}
@@ -88,22 +88,22 @@
         {% endif %}
         
         <!-- Actions -->
-        <footer class="flex items-center gap-4 pt-3 border-t border-gray-100">
-            <button class="btn-ghost btn-sm text-gray-500">
+        <footer class="flex items-center gap-4 pt-3 border-t border-border">
+            <button class="btn-ghost btn-sm text-muted">
                 <span class="i-lucide-heart"></span>
                 <span class="text-xs">12</span>
             </button>
             
-            <button class="btn-ghost btn-sm text-gray-500">
+            <button class="btn-ghost btn-sm text-muted">
                 <span class="i-lucide-message-circle"></span>
                 <span class="text-xs">3</span>
             </button>
             
-            <button class="btn-ghost btn-sm text-gray-500">
+            <button class="btn-ghost btn-sm text-muted">
                 <span class="i-lucide-share"></span>
             </button>
             
-            <a href="#" class="btn-ghost btn-sm text-gray-500 ml-auto">
+            <a href="#" class="btn-ghost btn-sm text-muted ml-auto">
                 {% trans "Read more" %}
                 <span class="i-lucide-arrow-right text-xs"></span>
             </a>

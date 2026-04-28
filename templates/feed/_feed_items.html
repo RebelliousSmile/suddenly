@@ -12,22 +12,22 @@
                             <span class="i-lucide-user text-sm"></span>
                         </span>
                         <div class="flex-1 min-w-0">
-                            <span class="font-medium text-gray-900">
+                            <span class="font-medium text-primary">
                                 @{{ report.author.username }}
                             </span>
-                            <span class="text-gray-500 text-sm mx-1">{% trans "in" %}</span>
+                            <span class="text-muted text-sm mx-1">{% trans "in" %}</span>
                             <a href="{% url 'games:detail' pk=report.game.pk %}"
-                               class="text-gray-600 hover:text-primary-600 text-sm">
+                               class="text-secondary hover:text-crimson text-sm">
                                 {{ report.game.title }}
                             </a>
                             {% if report.remote %}
-                                <span class="text-xs text-gray-500 ml-1">
+                                <span class="text-xs text-muted ml-1">
                                     <span class="i-lucide-globe text-xs"></span>
                                 </span>
                             {% endif %}
                         </div>
                         {% if report.published_at %}
-                            <time class="text-xs text-gray-500 flex-shrink-0">
+                            <time class="text-xs text-muted flex-shrink-0">
                                 {{ report.published_at|timesince }}
                             </time>
                         {% endif %}
@@ -35,7 +35,7 @@
 
                     <!-- Content Warning -->
                     {% if report.content_warning %}
-                        <div class="flex items-center gap-2 text-sm text-amber-700 mb-2">
+                        <div class="flex items-center gap-2 text-sm text-warning mb-2">
                             <span class="i-lucide-alert-triangle text-xs"></span>
                             {{ report.content_warning }}
                         </div>
@@ -44,20 +44,20 @@
                     <!-- Title + preview -->
                     <h3 class="font-semibold text-lg mb-1">
                         <a href="{% url 'games:report_detail' game_pk=report.game.pk pk=report.pk %}"
-                           class="text-gray-900 hover:text-primary-600">
+                           class="text-primary hover:text-crimson">
                             {{ report.title|default:_("Untitled") }}
                         </a>
                     </h3>
 
                     {% if not report.content_warning %}
-                        <p class="text-sm text-gray-600 line-clamp-3">
+                        <p class="text-sm text-secondary line-clamp-3">
                             {{ report.content|truncatewords:40 }}
                         </p>
                     {% endif %}
                 </div>
 
                 <!-- Actions -->
-                <div class="card-footer flex items-center gap-4 text-gray-500">
+                <div class="card-footer flex items-center gap-4 text-muted">
                     <button class="btn-ghost btn-sm">
                         <span class="i-lucide-heart text-sm"></span>
                     </button>
@@ -71,9 +71,9 @@
     </div>
 {% elif is_empty %}
     <div class="text-center py-16">
-        <span class="i-lucide-home text-5xl text-gray-300 mb-4 block"></span>
-        <h3 class="font-semibold text-gray-900 mb-2">{% trans "Your feed is empty" %}</h3>
-        <p class="text-sm text-gray-500 mb-4">
+        <span class="i-lucide-home text-5xl text-muted mb-4 block"></span>
+        <h3 class="font-semibold text-primary mb-2">{% trans "Your feed is empty" %}</h3>
+        <p class="text-sm text-muted mb-4">
             {% trans "Follow players or games to see their publications here." %}
         </p>
         <div class="flex items-center justify-center gap-3">
@@ -83,7 +83,7 @@
     </div>
 {% else %}
     <div class="text-center py-12">
-        <span class="i-lucide-inbox text-4xl text-gray-300 mb-4 block"></span>
-        <p class="text-gray-500">{% trans "No recent content." %}</p>
+        <span class="i-lucide-inbox text-4xl text-muted mb-4 block"></span>
+        <p class="text-muted">{% trans "No recent content." %}</p>
     </div>
 {% endif %}

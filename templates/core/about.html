@@ -7,34 +7,34 @@
 <section class="py-8">
     <div class="container-app max-w-3xl">
 
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">{% blocktrans with name=SITE_NAME %}About {{ name }}{% endblocktrans %}</h1>
+        <h1 class="text-2xl font-bold text-primary mb-6">{% blocktrans with name=SITE_NAME %}About {{ name }}{% endblocktrans %}</h1>
 
         <!-- Description -->
         <div class="card card-body mb-6">
-            <p class="text-gray-600">{{ SITE_DESCRIPTION }}</p>
+            <p class="text-secondary">{{ SITE_DESCRIPTION }}</p>
         </div>
 
         <!-- Stats -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
             <div class="card card-body text-center">
-                <span class="i-lucide-users text-2xl text-primary-500 mb-2 block"></span>
-                <p class="text-2xl font-bold text-gray-900">{{ stats.users|default:0 }}</p>
-                <p class="text-xs text-gray-500">{% trans "players" %}</p>
+                <span class="i-lucide-users text-2xl text-crimson mb-2 block"></span>
+                <p class="text-2xl font-bold text-primary">{{ stats.users|default:0 }}</p>
+                <p class="text-xs text-muted">{% trans "players" %}</p>
             </div>
             <div class="card card-body text-center">
-                <span class="i-lucide-book-open text-2xl text-primary-500 mb-2 block"></span>
-                <p class="text-2xl font-bold text-gray-900">{{ stats.reports|default:0 }}</p>
-                <p class="text-xs text-gray-500">{% trans "reports" %}</p>
+                <span class="i-lucide-book-open text-2xl text-crimson mb-2 block"></span>
+                <p class="text-2xl font-bold text-primary">{{ stats.reports|default:0 }}</p>
+                <p class="text-xs text-muted">{% trans "reports" %}</p>
             </div>
             <div class="card card-body text-center">
-                <span class="i-lucide-user text-2xl text-primary-500 mb-2 block"></span>
-                <p class="text-2xl font-bold text-gray-900">{{ stats.characters|default:0 }}</p>
-                <p class="text-xs text-gray-500">{% trans "characters" %}</p>
+                <span class="i-lucide-user text-2xl text-crimson mb-2 block"></span>
+                <p class="text-2xl font-bold text-primary">{{ stats.characters|default:0 }}</p>
+                <p class="text-xs text-muted">{% trans "characters" %}</p>
             </div>
             <div class="card card-body text-center">
-                <span class="i-lucide-globe text-2xl text-primary-500 mb-2 block"></span>
-                <p class="text-2xl font-bold text-gray-900">{{ stats.instances|default:0 }}</p>
-                <p class="text-xs text-gray-500">{% trans "federated instances" %}</p>
+                <span class="i-lucide-globe text-2xl text-crimson mb-2 block"></span>
+                <p class="text-2xl font-bold text-primary">{{ stats.instances|default:0 }}</p>
+                <p class="text-xs text-muted">{% trans "federated instances" %}</p>
             </div>
         </div>
 
@@ -49,7 +49,7 @@
         <!-- Federation -->
         <div class="card card-body mb-6">
             <h2 class="text-heading mb-3">{% trans "Federation" %}</h2>
-            <div class="space-y-2 text-sm text-gray-600">
+            <div class="space-y-2 text-sm text-secondary">
                 <p><strong>{% trans "Software:" %}</strong> Suddenly {{ APP_VERSION }}</p>
                 <p><strong>{% trans "Protocol:" %}</strong> ActivityPub</p>
                 <p><strong>{% trans "Compatible with:" %}</strong> Mastodon, BookWyrm, Lemmy, Pleroma</p>
@@ -59,7 +59,7 @@
         <!-- Contact -->
         <div class="card card-body">
             <h2 class="text-heading mb-3">{% trans "Contact" %}</h2>
-            <p class="text-sm text-gray-600">
+            <p class="text-sm text-secondary">
                 {% trans "For any questions, contact the administrator of this instance." %}
             </p>
         </div>
