@@ -337,46 +337,58 @@ Avatars follow the `avatar-*` size scale. Always provide a `avatar-placeholder` 
 
 ### Avatar sizes
 
+Same image at each scale. The `border-radius: 9999px` and `object-fit: cover` are applied by the `avatar` base class.
+
 <div class="sd-light">
-<span class="sd-label">Light mode</span>
-<div class="sd-row" style="align-items:flex-end">
+<span class="sd-label">Light mode — with image</span>
+<div class="sd-row" style="align-items:flex-end;gap:1.5rem">
   <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
-    <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder"><span style="font-size:0.75rem">✦</span></span>
-    <span class="sd-swatch-name">sm<br>32px</span>
+    <img class="sd-avatar sd-avatar-sm" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop&auto=format&q=80" alt="Seraphina">
+    <span class="sd-swatch-name">sm · 32px</span>
   </div>
   <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
-    <span class="sd-avatar sd-avatar-md sd-avatar-placeholder"><span style="font-size:0.9rem">✦</span></span>
-    <span class="sd-swatch-name">md<br>40px</span>
+    <img class="sd-avatar sd-avatar-md" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&auto=format&q=80" alt="Seraphina">
+    <span class="sd-swatch-name">md · 40px</span>
   </div>
   <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
-    <span class="sd-avatar sd-avatar-lg sd-avatar-placeholder"><span style="font-size:1.1rem">✦</span></span>
-    <span class="sd-swatch-name">lg<br>48px</span>
+    <img class="sd-avatar sd-avatar-lg" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop&auto=format&q=80" alt="Seraphina">
+    <span class="sd-swatch-name">lg · 48px</span>
   </div>
   <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
-    <span class="sd-avatar sd-avatar-xl sd-avatar-placeholder"><span style="font-size:1.5rem">✦</span></span>
-    <span class="sd-swatch-name">xl<br>64px</span>
+    <img class="sd-avatar sd-avatar-xl" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&fit=crop&auto=format&q=80" alt="Seraphina">
+    <span class="sd-swatch-name">xl · 64px</span>
+  </div>
+  <div style="width:1px;height:64px;background:#d4cfe8;margin:0 0.5rem"></div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <span class="sd-avatar sd-avatar-xl sd-avatar-placeholder"><span style="font-size:1.4rem">✦</span></span>
+    <span class="sd-swatch-name">placeholder</span>
   </div>
 </div>
 </div>
 
 <div class="sd-dark">
-<span class="sd-label">Dark mode</span>
-<div class="sd-row" style="align-items:flex-end">
+<span class="sd-label">Dark mode — with image</span>
+<div class="sd-row" style="align-items:flex-end;gap:1.5rem">
   <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
-    <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060"><span style="font-size:0.75rem">✦</span></span>
-    <span class="sd-swatch-name" style="color:#606060">sm<br>32px</span>
+    <img class="sd-avatar sd-avatar-sm" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop&auto=format&q=80" alt="Seraphina">
+    <span class="sd-swatch-name" style="color:#606060">sm · 32px</span>
   </div>
   <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
-    <span class="sd-avatar sd-avatar-md sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060"><span style="font-size:0.9rem">✦</span></span>
-    <span class="sd-swatch-name" style="color:#606060">md<br>40px</span>
+    <img class="sd-avatar sd-avatar-md" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&auto=format&q=80" alt="Seraphina">
+    <span class="sd-swatch-name" style="color:#606060">md · 40px</span>
   </div>
   <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
-    <span class="sd-avatar sd-avatar-lg sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060"><span style="font-size:1.1rem">✦</span></span>
-    <span class="sd-swatch-name" style="color:#606060">lg<br>48px</span>
+    <img class="sd-avatar sd-avatar-lg" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop&auto=format&q=80" alt="Seraphina">
+    <span class="sd-swatch-name" style="color:#606060">lg · 48px</span>
   </div>
   <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
-    <span class="sd-avatar sd-avatar-xl sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060"><span style="font-size:1.5rem">✦</span></span>
-    <span class="sd-swatch-name" style="color:#606060">xl<br>64px</span>
+    <img class="sd-avatar sd-avatar-xl" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&fit=crop&auto=format&q=80" alt="Seraphina">
+    <span class="sd-swatch-name" style="color:#606060">xl · 64px</span>
+  </div>
+  <div style="width:1px;height:64px;background:#2a2a2a;margin:0 0.5rem"></div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <span class="sd-avatar sd-avatar-xl sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060"><span style="font-size:1.4rem">✦</span></span>
+    <span class="sd-swatch-name" style="color:#606060">placeholder</span>
   </div>
 </div>
 </div>
@@ -388,11 +400,11 @@ Used in game cards to show recent characters (`-space-x-2`, `ring-2 ring-card`).
 <div class="sd-light">
 <span class="sd-label">Light mode</span>
 <div class="sd-stack">
-  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="z-index:5"><span style="font-size:0.7rem">A</span></span>
-  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="z-index:4"><span style="font-size:0.7rem">B</span></span>
-  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="z-index:3"><span style="font-size:0.7rem">C</span></span>
-  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="z-index:2"><span style="font-size:0.7rem">D</span></span>
-  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="z-index:1"><span style="font-size:0.7rem">E</span></span>
+  <img class="sd-avatar sd-avatar-sm" style="z-index:5;outline:2px solid #ffffff" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop&auto=format&q=80" alt="Seraphina">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:4;outline:2px solid #ffffff" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop&auto=format&q=80" alt="Kael">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:3;outline:2px solid #ffffff" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=32&h=32&fit=crop&auto=format&q=80" alt="Lady Morrow">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:2;outline:2px solid #ffffff" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&auto=format&q=80" alt="Draven">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:1;outline:2px solid #ffffff" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=32&h=32&fit=crop&auto=format&q=80" alt="Vex">
   <span class="sd-avatar sd-avatar-sm sd-stack-overflow">+3</span>
 </div>
 </div>
@@ -400,11 +412,11 @@ Used in game cards to show recent characters (`-space-x-2`, `ring-2 ring-card`).
 <div class="sd-dark">
 <span class="sd-label">Dark mode</span>
 <div class="sd-stack">
-  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060;outline:2px solid #1a1a1a;z-index:5"><span style="font-size:0.7rem">A</span></span>
-  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060;outline:2px solid #1a1a1a;z-index:4"><span style="font-size:0.7rem">B</span></span>
-  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060;outline:2px solid #1a1a1a;z-index:3"><span style="font-size:0.7rem">C</span></span>
-  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060;outline:2px solid #1a1a1a;z-index:2"><span style="font-size:0.7rem">D</span></span>
-  <span class="sd-avatar sd-avatar-sm sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060;outline:2px solid #1a1a1a;z-index:1"><span style="font-size:0.7rem">E</span></span>
+  <img class="sd-avatar sd-avatar-sm" style="z-index:5;outline:2px solid #0a0a0a" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop&auto=format&q=80" alt="Seraphina">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:4;outline:2px solid #0a0a0a" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop&auto=format&q=80" alt="Kael">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:3;outline:2px solid #0a0a0a" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=32&h=32&fit=crop&auto=format&q=80" alt="Lady Morrow">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:2;outline:2px solid #0a0a0a" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&auto=format&q=80" alt="Draven">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:1;outline:2px solid #0a0a0a" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=32&h=32&fit=crop&auto=format&q=80" alt="Vex">
   <span class="sd-avatar sd-avatar-sm sd-stack-overflow" style="background:#222222;border-color:#2a2a2a;color:#a0a0a0;outline:2px solid #0a0a0a">+3</span>
 </div>
 </div>
@@ -429,7 +441,7 @@ Three layout patterns are used across the app depending on context.
 <div class="sd-grid-3">
   <div class="sd-card">
     <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
-      <span class="sd-avatar sd-avatar-md sd-avatar-placeholder"><span style="font-size:0.9rem">✦</span></span>
+      <img class="sd-avatar sd-avatar-md" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&auto=format&q=80" alt="Seraphina Voss">
       <div>
         <p class="sd-card-title" style="font-size:0.9375rem">Seraphina Voss</p>
         <span class="sd-badge sd-badge-adopted">Adopted</span>
@@ -439,7 +451,7 @@ Three layout patterns are used across the app depending on context.
   </div>
   <div class="sd-card">
     <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
-      <span class="sd-avatar sd-avatar-md sd-avatar-placeholder"><span style="font-size:0.9rem">✦</span></span>
+      <img class="sd-avatar sd-avatar-md" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&auto=format&q=80" alt="Brother Kael">
       <div>
         <p class="sd-card-title" style="font-size:0.9375rem">Brother Kael</p>
         <span class="sd-badge sd-badge-available">Available</span>
@@ -449,7 +461,7 @@ Three layout patterns are used across the app depending on context.
   </div>
   <div class="sd-card">
     <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
-      <span class="sd-avatar sd-avatar-md sd-avatar-placeholder"><span style="font-size:0.9rem">✦</span></span>
+      <img class="sd-avatar sd-avatar-md" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&auto=format&q=80" alt="Lady Morrow">
       <div>
         <p class="sd-card-title" style="font-size:0.9375rem">Lady Morrow</p>
         <span class="sd-badge sd-badge-pc">PC</span>
@@ -465,7 +477,7 @@ Three layout patterns are used across the app depending on context.
 <div class="sd-grid-3">
   <div class="sd-card">
     <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
-      <span class="sd-avatar sd-avatar-md sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060"><span style="font-size:0.9rem">✦</span></span>
+      <img class="sd-avatar sd-avatar-md" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&auto=format&q=80" alt="Seraphina Voss">
       <div>
         <p class="sd-card-title" style="font-size:0.9375rem">Seraphina Voss</p>
         <span class="sd-badge sd-badge-adopted">Adopted</span>
@@ -475,7 +487,7 @@ Three layout patterns are used across the app depending on context.
   </div>
   <div class="sd-card">
     <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
-      <span class="sd-avatar sd-avatar-md sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060"><span style="font-size:0.9rem">✦</span></span>
+      <img class="sd-avatar sd-avatar-md" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&auto=format&q=80" alt="Brother Kael">
       <div>
         <p class="sd-card-title" style="font-size:0.9375rem">Brother Kael</p>
         <span class="sd-badge sd-badge-available">Available</span>
@@ -485,7 +497,7 @@ Three layout patterns are used across the app depending on context.
   </div>
   <div class="sd-card">
     <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
-      <span class="sd-avatar sd-avatar-md sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060"><span style="font-size:0.9rem">✦</span></span>
+      <img class="sd-avatar sd-avatar-md" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&auto=format&q=80" alt="Lady Morrow">
       <div>
         <p class="sd-card-title" style="font-size:0.9375rem">Lady Morrow</p>
         <span class="sd-badge sd-badge-pc">PC</span>
