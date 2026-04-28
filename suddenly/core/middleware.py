@@ -7,8 +7,35 @@ from __future__ import annotations
 import logging
 
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
+from django.utils import translation
 
 logger = logging.getLogger(__name__)
+
+
+class UserLanguageMiddleware:
+    """
+    Activates the authenticated user's preferred UI language for the duration
+    of the request, then deactivates it to prevent thread-state leaks.
+    Must be placed AFTER LocaleMiddleware and AuthenticationMiddleware.
+    """
+
+    def __init__(self, get_response: object) -> None:
+        self.get_response = get_response
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        activated = False
+        if request.user.is_authenticated and getattr(request.user, "interface_language", ""):
+            try:
+                translation.activate(request.user.interface_language)
+                request.LANGUAGE_CODE = request.user.interface_language
+                activated = True
+            except Exception:
+                pass  # invalid lang code; fall through to LocaleMiddleware default
+        try:
+            return self.get_response(request)
+        finally:
+            if activated:
+                translation.deactivate()
 
 
 class AuthRateLimitMiddleware:
