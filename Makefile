@@ -1,7 +1,11 @@
-.PHONY: check lint typecheck test i18n-check frontend docs-serve docs-build
+.PHONY: check fix lint typecheck test i18n-check frontend docs-serve docs-build
 .PHONY: docker-up docker-down docker-test docker-check docker-shell docker-migrate docker-build docker-logs
 
 # ─── Local ────────────────────────────────────────────────────────
+
+fix:
+	ruff check --fix .
+	ruff format .
 
 check: lint typecheck test i18n-check
 

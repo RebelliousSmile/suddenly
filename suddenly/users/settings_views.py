@@ -196,9 +196,10 @@ def import_games(request: AuthenticatedRequest) -> HttpResponse:
 
         created_at = parse_datetime(created_at_raw) if created_at_raw else None
 
-        if created_at and Game.objects.filter(
-            owner=request.user, title=title, created_at=created_at
-        ).exists():
+        if (
+            created_at
+            and Game.objects.filter(owner=request.user, title=title, created_at=created_at).exists()
+        ):
             skipped += 1
             continue
 
@@ -277,9 +278,12 @@ def import_characters(request: AuthenticatedRequest) -> HttpResponse:
 
         created_at = parse_datetime(created_at_raw) if created_at_raw else None
 
-        if created_at and Character.objects.filter(
-            creator=request.user, name=name, created_at=created_at
-        ).exists():
+        if (
+            created_at
+            and Character.objects.filter(
+                creator=request.user, name=name, created_at=created_at
+            ).exists()
+        ):
             skipped += 1
             continue
 
