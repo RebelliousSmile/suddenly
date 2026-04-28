@@ -1,27 +1,22 @@
-{# Partial: game system autocomplete results #}
+{# Partial: game system autocomplete results (swapped by HTMX) #}
 {% load i18n %}
 
-{% if results %}
-    {% for system in results %}
-    <button type="button"
-            class="w-full text-left px-3 py-2 text-sm text-primary hover:bg-card-dark/50 transition-colors"
-            @click="systemName = '{{ system.name|escapejs }}'; systemSlug = '{{ system.slug|escapejs }}'; showDropdown = false">
-        {{ system.name }}
-        <span class="text-xs text-muted ml-1">{{ system.slug }}</span>
-    </button>
-    {% endfor %}
-    <button type="button"
-            class="w-full text-left px-3 py-2 text-sm text-muted hover:bg-card-dark/50 transition-colors border-t border-border"
-            @click="systemName = ''; systemSlug = '__custom__'; showDropdown = false">
-        {% trans "Custom system..." %}
-    </button>
-{% else %}
-    {% if q|length >= 2 %}
-    <p class="px-3 py-2 text-sm text-muted">{% trans "No system found." %}</p>
-    {% endif %}
-    <button type="button"
-            class="w-full text-left px-3 py-2 text-sm text-muted hover:bg-card-dark/50 transition-colors"
-            @click="systemName = ''; systemSlug = '__custom__'; showDropdown = false">
-        {% trans "Custom system..." %}
-    </button>
+{% for system in results %}
+<button type="button"
+        class="w-full text-left px-4 py-2.5 text-sm bg-card hover:bg-card-dark/40 transition-colors flex items-center justify-between gap-4"
+        @click="selectSystem('{{ system.name|escapejs }}', '{{ system.slug|escapejs }}')">
+    <span class="text-primary truncate">{{ system.name }}</span>
+    <span class="text-xs text-muted shrink-0 font-mono">{{ system.slug }}</span>
+</button>
+{% endfor %}
+
+{% if q and not results %}
+<p class="px-4 py-3 text-sm text-muted">{% trans "No system found." %}</p>
 {% endif %}
+
+<button type="button"
+        class="w-full text-left px-4 py-2.5 text-sm bg-card hover:bg-card-dark/40 transition-colors border-t border-border flex items-center gap-2 text-muted"
+        @click="selectCustom()">
+    <span class="i-lucide-pencil-line text-xs shrink-0"></span>
+    {% trans "Custom system..." %}
+</button>

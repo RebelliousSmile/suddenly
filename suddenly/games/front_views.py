@@ -133,7 +133,7 @@ def game_create(request: AuthenticatedRequest) -> HttpResponse:
         request,
         full_template="games/game_form.html",
         partial_template="games/game_form.html",
-        context={"game": None, "is_public_checked": True},
+        context={"game": None, "is_public_checked": True, "form_data": {}},
     )
 
 
@@ -289,7 +289,7 @@ def game_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
         request,
         full_template="games/game_form.html",
         partial_template="games/game_form.html",
-        context={"game": game, "is_public_checked": game.is_public},
+        context={"game": game, "is_public_checked": game.is_public, "form_data": {}},
     )
 
 
@@ -318,19 +318,17 @@ def game_delete_bulk(request: AuthenticatedRequest) -> HttpResponse:
 
 
 def game_system_search(request: HttpRequest) -> HttpResponse:
-    """HTMX autocomplete for GameSystem slug/name (used in game form)."""
-    import json
+    """HTMX partial: game system autocomplete results."""
+    from django.template.loader import render_to_string
 
-    query = request.GET.get("q", "").strip()
-    results: list[dict[str, str]] = []
-    if query:
-        results = [
-            {"slug": gs.slug, "name": gs.name}
-            for gs in GameSystem.objects.filter(name__icontains=query, is_deprecated=False).only(
-                "slug", "name"
-            )[:10]
-        ]
-    return HttpResponse(
-        json.dumps(results),
-        content_type="application/json",
+    q = request.GET.get("q_system", request.GET.get("q", "")).strip()
+    qs = GameSystem.objects.filter(is_deprecated=False).only("slug", "name")
+    if q:
+        qs = qs.filter(name__icontains=q)
+    results = list(qs.order_by("name")[:10])
+    html = render_to_string(
+        "games/_system_search_results.html",
+        {"results": results, "q": q},
+        request=request,
     )
+    return HttpResponse(html)
