@@ -48,5 +48,6 @@ nav:
   - "← Back to Suddenly": https://then.suddenly.social
   - Home: index.md
   - Design System: design-system.md
+  - Import & Export: import-export.md
   - Contributing:
     - Translations: translations.md
