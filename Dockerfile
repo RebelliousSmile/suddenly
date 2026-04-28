@@ -25,6 +25,9 @@ COPY frontend/package.json frontend/package-lock.json* ./
 RUN npm install
 
 COPY frontend/ ./
+# UnoCSS scans ../templates/ and ../suddenly/ — copy them before build
+COPY templates/ ../templates/
+COPY suddenly/ ../suddenly/
 RUN npm run build
 # Output: /app/static/dist/ (vite.config.js: outDir = '../static/dist')
 
