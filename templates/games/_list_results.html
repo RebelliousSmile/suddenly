@@ -4,20 +4,28 @@
 {% if games %}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {% for game in games %}
-            <div class="relative group" id="game-{{ game.pk }}">
+            <div class="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-card-hover transition-shadow"
+                 id="game-{{ game.pk }}">
+
                 {% if user.is_authenticated %}
+                <label x-show="selectMode" x-cloak
+                       class="flex items-center gap-3 p-4 sm:p-5 cursor-pointer hover:bg-card-dark/30">
                     <input type="checkbox" name="pks" value="{{ game.pk }}"
                            form="bulk-delete-games-form"
-                           x-show="selectMode" x-cloak
-                           class="absolute top-3 left-3 z-10 h-4 w-4 rounded border-border accent-crimson cursor-pointer">
+                           class="h-4 w-4 shrink-0 rounded border-border accent-crimson">
+                    <div class="min-w-0">
+                        <p class="font-semibold text-primary truncate">{{ game.title }}</p>
+                        {% if game.game_system_ref or game.game_system %}<p class="text-xs text-muted">{{ game.game_system_ref.name|default:game.game_system }}</p>{% endif %}
+                    </div>
+                </label>
                 {% endif %}
 
                 <a href="{% url 'games:detail' pk=game.pk %}"
-                   :class="selectMode ? 'pl-10' : ''"
-                   class="card card-hover card-body block transition-all">
+                   x-show="!selectMode"
+                   class="p-4 sm:p-5 block hover:bg-card-dark/30 transition-colors">
                     <h3 class="font-semibold text-primary mb-1">{{ game.title }}</h3>
-                    {% if game.game_system %}
-                        <p class="text-xs text-muted mb-2">{{ game.game_system }}</p>
+                    {% if game.game_system_ref or game.game_system %}
+                        <p class="text-xs text-muted mb-2">{{ game.game_system_ref.name|default:game.game_system }}</p>
                     {% endif %}
                     {% if game.description %}
                         <p class="text-sm text-secondary line-clamp-2 mb-2">{{ game.description }}</p>
@@ -58,22 +66,23 @@
                 </a>
 
                 {% if user == game.owner %}
-                    <div class="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                         x-show="!selectMode">
-                        <a href="{% url 'games:edit' pk=game.pk %}"
-                           class="btn-ghost btn-xs" title="{% trans "Edit" %}">
-                            <span class="i-lucide-pencil text-sm"></span>
-                        </a>
-                        <form method="post" action="{% url 'games:delete' pk=game.pk %}" class="inline">
-                            {% csrf_token %}
-                            <button type="submit"
-                                    onclick="return confirm('{% trans "Delete this game?" %}')"
-                                    class="btn-ghost btn-xs text-error hover:bg-error/10"
-                                    title="{% trans "Delete" %}">
-                                <span class="i-lucide-trash-2 text-sm"></span>
-                            </button>
-                        </form>
-                    </div>
+                <div class="border-t border-border px-4 sm:px-5 py-3 flex gap-2"
+                     x-show="!selectMode">
+                    <a href="{% url 'games:edit' pk=game.pk %}"
+                       class="btn-secondary btn-sm flex-1 justify-center">
+                        <span class="i-lucide-pencil text-sm"></span>
+                        {% trans "Edit" %}
+                    </a>
+                    <form method="post" action="{% url 'games:delete' pk=game.pk %}" class="flex-1">
+                        {% csrf_token %}
+                        <button type="submit"
+                                onclick="return confirm('{% trans "Delete this game?" %}')"
+                                class="btn-danger btn-sm w-full">
+                            <span class="i-lucide-trash-2 text-sm"></span>
+                            {% trans "Delete" %}
+                        </button>
+                    </form>
+                </div>
                 {% endif %}
             </div>
         {% endfor %}
