@@ -182,6 +182,7 @@ export default defineConfig({
       collections: {
         lucide: () => import('@iconify-json/lucide/icons.json').then(i => i.default),
         'simple-icons': () => import('@iconify-json/simple-icons/icons.json').then(i => i.default),
+        'game-icons': () => import('@iconify-json/game-icons/icons.json').then(i => i.default),
       },
     }),
     presetTypography({
@@ -228,6 +229,10 @@ export default defineConfig({
     'bg-violet/10', 'text-violet', 'border-violet/30',
     // Z-index sémantiques (custom tokens)
     'z-dropdown', 'z-sticky', 'z-overlay', 'z-modal', 'z-toast',
+    // Game Icons — empty states thématiques
+    'i-game-icons-open-book', 'i-game-icons-scroll-quill', 'i-game-icons-two-shadows',
+    'i-game-icons-chat-bubble', 'i-game-icons-dice-six-faces-four',
+    'i-game-icons-manacles', 'i-game-icons-hand', 'i-game-icons-divergence',
     // Icônes fréquentes (utilisées dans des template tags dynamiques)
     'i-lucide-user', 'i-lucide-users', 'i-lucide-book-open', 'i-lucide-link',
     'i-lucide-git-merge', 'i-lucide-git-branch', 'i-lucide-sparkles',

@@ -8,7 +8,7 @@
 <section class="bg-gradient-to-b from-surface to-background py-16 sm:py-24">
     <div class="container-app text-center">
         <h1 class="text-4xl sm:text-5xl font-bold text-primary mb-4">
-            🎭 {% trans "Welcome to" %} <span class="text-crimson">{{ SITE_NAME }}</span>
+            {% trans "Welcome to" %} <span class="text-crimson">{{ SITE_NAME }}</span>
         </h1>
         <p class="text-xl text-secondary mb-6 max-w-2xl mx-auto">
             {{ SITE_DESCRIPTION }}
@@ -52,7 +52,7 @@
         <!-- Publish -->
         <article class="card card-body text-center">
             <div class="w-12 h-12 bg-crimson/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="i-lucide-book-open text-2xl text-crimson"></span>
+                <span class="i-game-icons-open-book text-2xl text-crimson"></span>
             </div>
             <h3 class="font-semibold text-primary mb-2">{% trans "Publish your games" %}</h3>
             <p class="text-sm text-secondary">
@@ -155,7 +155,7 @@
         </div>
         {% else %}
         <div class="text-center py-12 text-muted">
-            <span class="i-lucide-book-open text-4xl block mx-auto mb-4 opacity-40"></span>
+            <span class="i-game-icons-scroll-quill text-4xl block mx-auto mb-4 opacity-40"></span>
             <p>{% trans "No activity yet. Be the first to publish a report!" %}</p>
         </div>
         {% endif %}
@@ -177,7 +177,7 @@
         <div class="flex flex-wrap justify-center gap-4 text-muted">
             <span class="i-simple-icons-mastodon text-2xl hover:text-violet transition-colors"></span>
             <span class="i-simple-icons-activitypub text-2xl hover:text-orange-500 transition-colors"></span>
-            <span class="i-lucide-book-open text-2xl hover:text-green-500 transition-colors"></span>
+            <span class="i-game-icons-open-book text-2xl hover:text-neon transition-colors"></span>
         </div>
     </div>
 </section>

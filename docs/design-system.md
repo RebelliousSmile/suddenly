@@ -950,9 +950,9 @@ Game Icons are free under [CC BY 3.0](https://creativecommons.org/licenses/by/3.
 | Games / Campaigns | `i-game-icons-open-book` | Empty state — no games |
 | Session Reports | `i-game-icons-scroll-quill` | Empty state — no reports |
 | Characters / NPCs | `i-game-icons-two-shadows` | Empty state — no characters |
-| Quotes | `i-game-icons-speech-bubbles` | Empty state — no quotes |
+| Quotes | `i-game-icons-chat-bubble` | Empty state — no quotes |
 | Dice / Game system | `i-game-icons-dice-six-faces-four` | Game system badge |
-| Claim link | `i-game-icons-shackles` | Claim relationship art |
+| Claim link | `i-game-icons-manacles` | Claim relationship art |
 | Adopt link | `i-game-icons-hand` | Adopt relationship art |
 | Fork link | `i-game-icons-divergence` | Fork relationship art |
 | Federation | `i-game-icons-rss` | Federation / ActivityPub |
@@ -973,16 +973,16 @@ Game Icons are free under [CC BY 3.0](https://creativecommons.org/licenses/by/3.
     <span class="sd-icon-name">two-shadows</span>
   </div>
   <div class="sd-icon-item">
-    <img src="https://api.iconify.design/game-icons/speech-bubbles.svg?color=%238a8aaa" width="40" height="40" alt="speech-bubbles">
-    <span class="sd-icon-name">speech-bubbles</span>
+    <img src="https://api.iconify.design/game-icons/chat-bubble.svg?color=%238a8aaa" width="40" height="40" alt="chat-bubble">
+    <span class="sd-icon-name">chat-bubble</span>
   </div>
   <div class="sd-icon-item">
     <img src="https://api.iconify.design/game-icons/dice-six-faces-four.svg?color=%238a8aaa" width="40" height="40" alt="dice">
     <span class="sd-icon-name">dice-six-faces-four</span>
   </div>
   <div class="sd-icon-item">
-    <img src="https://api.iconify.design/game-icons/shackles.svg?color=%23e03558" width="40" height="40" alt="shackles">
-    <span class="sd-icon-name">shackles<br><em>Claim</em></span>
+    <img src="https://api.iconify.design/game-icons/manacles.svg?color=%23e03558" width="40" height="40" alt="manacles">
+    <span class="sd-icon-name">manacles<br><em>Claim</em></span>
   </div>
   <div class="sd-icon-item">
     <img src="https://api.iconify.design/game-icons/hand.svg?color=%23e03558" width="40" height="40" alt="hand">
@@ -1011,16 +1011,16 @@ Game Icons are free under [CC BY 3.0](https://creativecommons.org/licenses/by/3.
     <span class="sd-icon-name" style="color:#606060">two-shadows</span>
   </div>
   <div class="sd-icon-item">
-    <img src="https://api.iconify.design/game-icons/speech-bubbles.svg?color=%23606060" width="40" height="40" alt="speech-bubbles">
-    <span class="sd-icon-name" style="color:#606060">speech-bubbles</span>
+    <img src="https://api.iconify.design/game-icons/chat-bubble.svg?color=%23606060" width="40" height="40" alt="chat-bubble">
+    <span class="sd-icon-name" style="color:#606060">chat-bubble</span>
   </div>
   <div class="sd-icon-item">
     <img src="https://api.iconify.design/game-icons/dice-six-faces-four.svg?color=%23606060" width="40" height="40" alt="dice">
     <span class="sd-icon-name" style="color:#606060">dice-six-faces-four</span>
   </div>
   <div class="sd-icon-item">
-    <img src="https://api.iconify.design/game-icons/shackles.svg?color=%23e03558" width="40" height="40" alt="shackles">
-    <span class="sd-icon-name" style="color:#606060">shackles<br><em>Claim</em></span>
+    <img src="https://api.iconify.design/game-icons/manacles.svg?color=%23e03558" width="40" height="40" alt="manacles">
+    <span class="sd-icon-name" style="color:#606060">manacles<br><em>Claim</em></span>
   </div>
   <div class="sd-icon-item">
     <img src="https://api.iconify.design/game-icons/hand.svg?color=%23e03558" width="40" height="40" alt="hand">
