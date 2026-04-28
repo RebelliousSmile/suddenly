@@ -23,3 +23,6 @@
 | DEC-019 | factory-boy pour génération de données de test | Testing | Accepted | 2026-03-06 |
 | DEC-020 | Cache clés publiques AP via table DB | ActivityPub | Accepted | 2026-03-06 |
 | DEC-021 | Rate limiting inbox par instance | ActivityPub | Accepted | 2026-03-06 |
+| DEC-022 | Namespace AP propre à Suddenly | ActivityPub | Accepted | 2026-04-05 |
+| DEC-023 | Fichiers .mo versionnés, compilation via babel | i18n | Accepted | 2026-04-28 |
+| DEC-024 | Pas de chaînes UI en dur dans les settings Django | i18n | Accepted | 2026-04-28 |

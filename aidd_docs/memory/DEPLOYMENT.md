@@ -4,12 +4,14 @@
 
 - **Steps**:
   1. Set required environment variables
-  2. `pip install --upgrade pip && pip install -e ".[federation]"` (pas `requirements.txt`)
+  2. `pip install --upgrade pip && pip install -e '.[federation]'` (pas `requirements.txt`, guillemets simples pour bash)
   3. `python manage.py migrate`
   4. `python manage.py createcachetable` (si pas de Redis)
   5. `python manage.py collectstatic --noinput`
   6. Générer les clés ActivityPub : `mkdir -p keys && openssl genrsa -out keys/private.pem 2048 && openssl rsa -in keys/private.pem -pubout -out keys/public.pem`
   7. Run via `gunicorn config.wsgi:application`
+
+**Note i18n** : les fichiers `.mo` sont versionnés dans git — pas besoin de `compilemessages` au déploiement. Si des `.po` ont été modifiés localement sans recompilation, relancer depuis une machine avec `gettext` ou via babel (voir DEC-023).
 
 - **Database migration**: Django migrations (`python manage.py migrate`)
 
@@ -77,7 +79,7 @@ suddenly/
 | `DJANGO_LOG_LEVEL` | `INFO` | Log verbosity |
 | `DEBUG` | `False` | Dev only |
 | `SECURE_SSL_REDIRECT` | `True` | Prod security |
-| `EMAIL_HOST` | None | SMTP server |
+| `EMAIL_HOST` | None | SMTP server (absent = dummy backend, l'inscription fonctionne sans vérification email) |
 | `EMAIL_PORT` | `587` | SMTP port |
 | `EMAIL_HOST_USER` | None | SMTP username |
 | `EMAIL_HOST_PASSWORD` | None | SMTP password |
