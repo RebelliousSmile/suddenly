@@ -1,7 +1,16 @@
 {% load static vite i18n %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE|default:'en' }}" class="h-full">
+<html lang="{{ LANGUAGE_CODE|default:'en' }}" class="h-full" x-data="theme">
 <head>
+    <!-- Anti-flash: set theme before CSS loads -->
+    <script>
+(function(){
+  var t = localStorage.getItem('theme') ||
+    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.dataset.theme = t;
+})();
+</script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
@@ -29,7 +38,7 @@
         <nav class="container-app">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
-                <a href="/" class="flex items-center gap-2 text-xl font-semibold text-primary hover:text-crimson transition-colors">
+                <a href="/" class="flex items-center gap-2 text-xl font-semibold text-primary hover:text-violet transition-colors">
                     <img src="{% static 'img/suddenly-logo.svg' %}" alt="{{ SITE_NAME }}" width="28" height="34" class="inline-block">
                     <span class="hidden sm:inline">{{ SITE_NAME }}</span>
                 </a>
@@ -96,6 +105,14 @@
                         </a>
                     {% endif %}
 
+                    <!-- Theme toggle -->
+                    <button @click="toggle()"
+                            class="p-2 text-muted hover:text-primary transition-colors"
+                            :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+                        <span x-show="isDark" x-cloak class="i-lucide-sun text-xl"></span>
+                        <span x-show="!isDark" x-cloak class="i-lucide-moon text-xl"></span>
+                    </button>
+
                     <!-- Language switcher (anonymous; authenticated users use profile) -->
                     {% if not user.is_authenticated %}
                         {% get_current_language as CURRENT_LANGUAGE %}
@@ -139,9 +156,18 @@
                     <a href="{% url 'account_logout' %}" class="block py-2 text-error">{% trans "Log out" %}</a>
                 {% else %}
                     <hr class="my-2 border-border">
-                    <a href="{% url 'account_login' %}" class="block py-2 text-crimson">{% trans "Log in" %}</a>
-                    <a href="{% url 'account_signup' %}" class="block py-2 text-crimson font-medium">{% trans "Sign up" %}</a>
+                    <a href="{% url 'account_login' %}" class="block py-2 text-violet">{% trans "Log in" %}</a>
+                    <a href="{% url 'account_signup' %}" class="block py-2 text-violet font-medium">{% trans "Sign up" %}</a>
                 {% endif %}
+                <hr class="my-2 border-border">
+                <!-- Theme toggle mobile -->
+                <button @click="toggle()"
+                        class="flex items-center gap-2 py-2 text-secondary hover:text-primary transition-colors w-full"
+                        :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+                    <span x-show="isDark" x-cloak class="i-lucide-sun text-xl"></span>
+                    <span x-show="!isDark" x-cloak class="i-lucide-moon text-xl"></span>
+                    <span x-text="isDark ? '{% trans "Light mode" %}' : '{% trans "Dark mode" %}'"></span>
+                </button>
             </div>
         </div>
     </header>
@@ -219,7 +245,7 @@
     </div>
 
     <!-- Loading indicator (styles in frontend/src/htmx-indicator.css) -->
-    <div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-crimson z-toast"></div>
+    <div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-violet z-toast"></div>
 
     <!-- Scripts (Vite build with cache-busting) -->
     {% vite_asset "src/main.js" %}

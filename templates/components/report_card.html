@@ -23,7 +23,7 @@
             
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2">
-                    <a href="#" class="font-medium text-primary hover:text-crimson">
+                    <a href="#" class="font-medium text-primary hover:text-violet">
                         {{ report.author.get_display_name }}
                     </a>
                     
@@ -44,7 +44,7 @@
                     
                     {% if show_game and report.game %}
                         <span class="mx-1">·</span>
-                        <a href="#" class="hover:text-crimson">
+                        <a href="#" class="hover:text-violet">
                             {{ report.game.title }}
                         </a>
                     {% endif %}
@@ -55,7 +55,7 @@
         <!-- Titre -->
         {% if report.title %}
             <h3 class="font-semibold text-primary mb-2">
-                <a href="#" class="hover:text-crimson">
+                <a href="#" class="hover:text-violet">
                     {{ report.title }}
                 </a>
             </h3>

@@ -60,6 +60,23 @@ document.body.addEventListener('htmx:responseError', (event) => {
 // Composants Alpine.js
 // =================================================================
 
+// Theme (dark/light mode)
+Alpine.data('theme', () => ({
+  isDark: false,
+  init() {
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    this.isDark = saved ? saved === 'dark' : prefersDark;
+    document.documentElement.dataset.theme = this.isDark ? 'dark' : 'light';
+  },
+  toggle() {
+    this.isDark = !this.isDark;
+    const theme = this.isDark ? 'dark' : 'light';
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('theme', theme);
+  },
+}))
+
 // Dropdown/Menu
 Alpine.data('dropdown', () => ({
   open: false,

@@ -19,6 +19,7 @@ def make_middleware(captured: list[str]) -> UserLanguageMiddleware:
 
     def get_response(request: HttpRequest) -> HttpResponse:
         from django.utils import translation
+
         captured.append(translation.get_language() or "")
         return HttpResponse("ok")
 

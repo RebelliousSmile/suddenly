@@ -12,11 +12,11 @@
    hx-post="{% url 'mark_notification_read' pk=notification.id %}"
    hx-swap="none"
    class="flex items-start gap-3 px-4 py-3 rounded-card transition-colors
-          {% if not notification.is_read %}bg-crimson/10 hover:bg-crimson/15{% else %}hover:bg-surface{% endif %}">
+          {% if not notification.is_read %}bg-violet/10 hover:bg-violet/10{% else %}hover:bg-surface{% endif %}">
 
     <!-- Indicateur non lu -->
     {% if not notification.is_read %}
-        <span class="w-2 h-2 rounded-full bg-crimson mt-2 flex-shrink-0"></span>
+        <span class="w-2 h-2 rounded-full bg-violet mt-2 flex-shrink-0"></span>
     {% else %}
         <span class="w-2 h-2 mt-2 flex-shrink-0"></span>
     {% endif %}

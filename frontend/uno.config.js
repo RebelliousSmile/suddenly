@@ -13,20 +13,24 @@ const presetSuddenly = () => ({
   name: 'suddenly',
   theme: {
     colors: {
-      // Semi-dark palette — fort contraste entre niveaux
-      background: '#08080f',
-      surface: '#11112a',
+      // CSS variable-driven palette — adapts to light/dark mode via [data-theme]
+      background: 'var(--c-bg)',
+      surface: 'var(--c-surface)',
       card: {
-        DEFAULT: '#1c1c40',
-        dark: '#252558',
+        DEFAULT: 'var(--c-card)',
+        dark: 'var(--c-card-dark)',
       },
-      border: '#4848a0',
-      primary: '#f0f0ff',
-      secondary: '#a8a8d8',
-      muted: '#6868a0',
+      border: 'var(--c-border)',
+      primary: 'var(--c-primary)',
+      secondary: 'var(--c-secondary)',
+      muted: 'var(--c-muted)',
       crimson: {
         DEFAULT: '#e03558',
         hover: '#c82a4a',
+      },
+      violet: {
+        DEFAULT: '#7c3aed',
+        hover: '#6d28d9',
       },
       success: '#16a34a',
       warning: '#d97706',
@@ -58,10 +62,10 @@ const presetSuddenly = () => ({
 
     // Shadows
     boxShadow: {
-      'card': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-      'card-hover': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+      'card': 'var(--shadow-card)',
+      'card-hover': 'var(--shadow-card-hover)',
       'dropdown': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-      'btn': '0 4px 20px rgba(224, 53, 88, 0.35)',
+      'btn': '0 4px 20px rgba(124,58,237,0.35)',
     },
 
     // Z-index scale
@@ -94,8 +98,8 @@ const presetSuddenly = () => ({
     'container-app': 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8',
 
     // Boutons
-    'btn-primary': 'inline-flex items-center justify-center gap-2 bg-crimson text-white px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:bg-crimson-hover hover:-translate-y-0.5 hover:shadow-btn disabled:opacity-50 disabled:cursor-not-allowed',
-    'btn-secondary': 'inline-flex items-center justify-center gap-2 bg-transparent border border-border text-secondary px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:border-crimson hover:text-crimson hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed',
+    'btn-primary': 'inline-flex items-center justify-center gap-2 bg-violet text-white px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:bg-violet-hover hover:-translate-y-0.5 hover:shadow-btn disabled:opacity-50 disabled:cursor-not-allowed',
+    'btn-secondary': 'inline-flex items-center justify-center gap-2 bg-transparent border border-border text-secondary px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:border-violet hover:text-violet hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed',
     'btn-ghost': 'inline-flex items-center justify-center gap-2 bg-transparent text-secondary hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
     'btn-danger': 'inline-flex items-center justify-center gap-2 bg-error text-white px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:bg-error/90 disabled:opacity-50 disabled:cursor-not-allowed',
     'btn-sm': 'px-3 py-1.5 text-sm',
@@ -109,23 +113,25 @@ const presetSuddenly = () => ({
     'card-footer': 'px-4 py-3 sm:px-6 border-t border-border rounded-b-card',
 
     // Formulaires
-    'input-base': 'bg-card border border-border rounded-[12px] text-primary placeholder-muted focus:border-crimson focus:ring-1 focus:ring-crimson outline-none',
-    'form-input': 'block w-full rounded-button border border-border shadow-sm focus:border-crimson focus:ring-crimson sm:text-sm bg-card text-primary',
+    'input-base': 'bg-card border border-border rounded-[12px] text-primary placeholder-muted focus:border-violet focus:ring-1 focus:ring-violet outline-none',
+    'form-input': 'block w-full rounded-button border border-border shadow-sm focus:border-violet focus:ring-violet sm:text-sm bg-card text-primary',
     'form-input-error': 'form-input border-error focus:border-error focus:ring-error',
     'form-label': 'block text-sm font-medium text-secondary mb-1',
     'form-help': 'mt-1 text-sm text-muted',
     'form-error': 'mt-1 text-sm text-error',
-    'form-dropzone': 'mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-border border-dashed rounded-lg hover:border-crimson transition-colors',
-    'form-dropzone-link': 'relative cursor-pointer rounded-md font-medium text-crimson hover:text-crimson-hover focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-crimson',
+    'form-dropzone': 'mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-border border-dashed rounded-lg hover:border-violet transition-colors',
+    'form-dropzone-link': 'relative cursor-pointer rounded-md font-medium text-violet hover:text-violet-hover focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-violet',
 
     // Badges
     'badge': 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-xs font-medium',
 
-    // Badges de statut personnage — teintes sombres lisibles sur bg-card dark cosmos
-    'badge-available': 'badge bg-emerald-900/40 text-emerald-400 border border-emerald-700/50',
-    'badge-claimed': 'badge bg-amber-900/40 text-amber-400 border border-amber-700/50',
-    'badge-adopted': 'badge bg-indigo-900/40 text-indigo-400 border border-indigo-700/50',
-    'badge-forked': 'badge bg-violet-900/40 text-violet-400 border border-violet-700/50',
+    // Badges de statut personnage — couleurs sémantiques, compatibles light/dark
+    'badge-available': 'badge bg-success/10 text-success border border-success/30',
+    'badge-claimed': 'badge bg-violet/10 text-violet border border-violet/30',
+    'badge-adopted': 'badge bg-info/10 text-info border border-info/30',
+    'badge-forked': 'badge bg-warning/10 text-warning border border-warning/30',
+    'badge-pending': 'badge bg-surface text-muted border border-border',
+    'badge-rejected': 'badge bg-error/10 text-error border border-error/30',
     'badge-pc': 'badge bg-sky-900/40 text-sky-400 border border-sky-700/50',
 
     // Avatars
@@ -140,17 +146,17 @@ const presetSuddenly = () => ({
     'dropdown-menu': 'absolute bg-surface border border-border rounded-[12px] shadow-lg py-1 z-dropdown',
 
     // Links
-    'link': 'text-crimson hover:text-crimson-hover hover:underline',
+    'link': 'text-violet hover:text-violet-hover hover:underline',
     'link-muted': 'text-muted hover:text-secondary',
 
     // Text
     'text-heading': 'text-primary font-semibold',
 
     // Label overline
-    'label-overline': 'text-crimson text-[12px] font-medium tracking-[3px] uppercase',
+    'label-overline': 'text-violet text-[12px] font-medium tracking-[3px] uppercase',
 
     // Prose (pour les reports)
-    'prose-report': 'prose prose-invert max-w-none',
+    'prose-report': 'prose max-w-none',
   },
 })
 
@@ -176,7 +182,7 @@ export default defineConfig({
     presetTypography({
       cssExtend: {
         'a': {
-          'color': '#e03558',
+          'color': '#7c3aed',
           'text-decoration': 'none',
         },
         'a:hover': {
@@ -214,6 +220,7 @@ export default defineConfig({
     'border-success/30', 'border-error/30', 'border-warning/30', 'border-info/30',
     'text-success', 'text-error', 'text-warning', 'text-info',
     'hover:bg-error/10', 'hover:bg-card',
+    'bg-violet/10', 'text-violet', 'border-violet/30',
     // Z-index sémantiques (custom tokens)
     'z-dropdown', 'z-sticky', 'z-overlay', 'z-modal', 'z-toast',
     // Icônes fréquentes (utilisées dans des template tags dynamiques)
@@ -223,5 +230,11 @@ export default defineConfig({
     'i-lucide-x', 'i-lucide-search', 'i-lucide-menu', 'i-lucide-bell',
     'i-lucide-cloud', 'i-lucide-cloud-off', 'i-lucide-loader-2',
     'i-lucide-alert-triangle', 'i-lucide-info',
+    'i-lucide-sun', 'i-lucide-moon',
+    // Couleurs violet/crimson pour composants dark-light
+    'bg-violet', 'border-violet', 'hover:text-violet/60',
+    'bg-crimson/10', 'hover:bg-crimson/15',
+    // Badges dynamiques pending/rejected
+    'badge-pending', 'badge-rejected',
   ],
 })

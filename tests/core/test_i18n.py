@@ -33,9 +33,7 @@ class TestNoFuzzyTranslations:
         current: dict = {}
         for line in po_path.read_text(encoding="utf-8").splitlines():
             if line.startswith("#, "):
-                current.setdefault("flags", []).extend(
-                    f.strip() for f in line[3:].split(",")
-                )
+                current.setdefault("flags", []).extend(f.strip() for f in line[3:].split(","))
             elif line.startswith("msgid "):
                 current["msgid"] = line[7:-1]  # strip quotes
             elif line.startswith("msgstr "):
@@ -57,12 +55,9 @@ class TestNoFuzzyTranslations:
         po_path = LOCALE_DIR / "fr" / "LC_MESSAGES" / "django.po"
         entries = self._parse_entries(po_path)
         # Skip header entry (msgid == "")
-        missing = [
-            e for e in entries if e.get("msgid", "") != "" and e.get("msgstr", "") == ""
-        ]
-        assert missing == [], (
-            f"Found {len(missing)} untranslated entries in fr.po: "
-            + ", ".join(repr(e["msgid"]) for e in missing[:5])
+        missing = [e for e in entries if e.get("msgid", "") != "" and e.get("msgstr", "") == ""]
+        assert missing == [], f"Found {len(missing)} untranslated entries in fr.po: " + ", ".join(
+            repr(e["msgid"]) for e in missing[:5]
         )
 
 

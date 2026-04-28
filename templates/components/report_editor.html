@@ -84,10 +84,10 @@
 
         <div class="flex flex-wrap gap-2 mb-2">
             <template x-for="character in cast" :key="character.id || character.name">
-                <span class="badge bg-crimson/20 text-crimson border border-crimson/30 flex items-center gap-1">
+                <span class="badge bg-violet/10 text-violet border border-violet/30 flex items-center gap-1">
                     <span x-text="character.name"></span>
                     <button @click="cast = cast.filter(c => c !== character)"
-                            class="hover:text-crimson/60">
+                            class="hover:text-violet/60">
                         <span class="i-lucide-x text-xs"></span>
                     </button>
                 </span>

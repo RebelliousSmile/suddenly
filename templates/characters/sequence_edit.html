@@ -40,8 +40,8 @@
             {% if sequence.publication_proposed_by == user %}
                 {% include "components/status_banner.html" with type="info" icon="send" message=_("You have proposed publication. Waiting for the other participant's validation.") %}
             {% else %}
-                <div class="mb-4 p-4 rounded-lg bg-crimson/10 border border-crimson/30">
-                    <p class="text-sm text-crimson/80 mb-3">
+                <div class="mb-4 p-4 rounded-lg bg-violet/10 border border-violet/30">
+                    <p class="text-sm text-violet/80 mb-3">
                         <span class="i-lucide-send text-xs mr-1"></span>
                         {% blocktrans with username=sequence.publication_proposed_by.username %}@{{ username }} proposes to publish this sequence.{% endblocktrans %}
                     </p>
