@@ -44,6 +44,16 @@ jobs:
           pip install --upgrade pip
           pip install -e ".[dev,federation]"
 
+      - name: Install Node and build frontend
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build frontend
+        run: |
+          npm install -g pnpm
+          cd frontend && pnpm install --frozen-lockfile && pnpm build
+
       - name: Lint
         run: |
           ruff check .

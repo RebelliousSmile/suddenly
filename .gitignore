@@ -13,7 +13,7 @@ __pycache__/
 build/
 site/
 develop-eggs/
-dist/
+/dist/
 downloads/
 eggs/
 .eggs/
@@ -46,8 +46,8 @@ staticfiles/
 
 # i18n compiled catalogs (generated at deploy time)
 locale/*/LC_MESSAGES/*.mo
-# Vite build output
-static/dist/
+# Vite source maps (debug only, not needed in production)
+static/dist/**/*.map
 
 # Media files (user uploads)
 media/
