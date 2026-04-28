@@ -34,7 +34,7 @@ cd /home/<user>/www/soudainement
 python3.12 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
-pip install -e ".[federation]"
+pip install -e '.[federation]'
 ```
 
 > **Note `gettext`** : `compilemessages` requiert `gettext` système (`msgfmt`). Vérifier sa disponibilité : `which msgfmt`. Sur Alwaysdata, `gettext` est généralement pré-installé. Si absent, solution de repli : committer les fichiers `.mo` directement dans le dépôt (ajouter `locale/*/LC_MESSAGES/*.mo` en exception dans `.gitignore`).
