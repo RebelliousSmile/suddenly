@@ -36,6 +36,7 @@ class PreferencesForm(forms.ModelForm):  # type: ignore[type-arg]
             "preferred_languages",
             "show_unlabeled_content",
             "interface_language",
+            "default_character_background",
         ]
         widgets = {
             "preferred_languages": forms.TextInput(

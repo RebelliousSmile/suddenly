@@ -43,6 +43,11 @@ class User(AbstractUser):
     content_language = models.CharField(max_length=10, default="fr")
     preferred_languages = models.JSONField(default=list, blank=True)
     show_unlabeled_content = models.BooleanField(default=True)
+    # Default background for character cards
+    default_character_background = models.ImageField(
+        upload_to="backgrounds/", blank=True, null=True
+    )
+
     # UI language override — empty string means "use instance default"
     interface_language = models.CharField(
         max_length=10,

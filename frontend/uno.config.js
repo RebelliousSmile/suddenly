@@ -255,5 +255,7 @@ export default defineConfig({
     'border-crimson/50', 'border-violet/50', 'border-amber-300/60', 'text-amber-400',
     // Badges dynamiques pending/rejected
     'badge-pending', 'badge-rejected',
+    // Character card portrait aspect ratio
+    'aspect-[2/3]',
   ],
 })

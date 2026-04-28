@@ -25,7 +25,7 @@ from suddenly.users.models import User
 def settings_preferences(request: AuthenticatedRequest) -> HttpResponse:
     """Language and interface preferences."""
     if request.method == "POST":
-        form = PreferencesForm(request.POST, instance=request.user)
+        form = PreferencesForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
             from django.contrib import messages

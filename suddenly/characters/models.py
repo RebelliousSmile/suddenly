@@ -87,6 +87,9 @@ class Character(BaseModel):
     # External character sheet
     sheet_url = models.URLField(blank=True, null=True, help_text="Link to external character sheet")
 
+    # Tags
+    tags = models.JSONField(default=list, blank=True)
+
     # ActivityPub
     remote = models.BooleanField(default=False)
     ap_id = models.URLField(blank=True, null=True, unique=True)

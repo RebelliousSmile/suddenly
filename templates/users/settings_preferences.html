@@ -6,7 +6,7 @@
 {% block settings_content %}
         <h1 class="text-2xl font-bold text-primary mb-6">{% trans "Preferences" %}</h1>
 
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="card card-body space-y-6">
 
@@ -66,6 +66,51 @@
                     <p class="form-help">{{ form.interface_language.help_text }}</p>
                 {% endif %}
                 {% for error in form.interface_language.errors %}
+                    <p class="form-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <!-- Default Character Background -->
+            <div>
+                <label for="{{ form.default_character_background.id_for_label }}" class="form-label">
+                    {% trans "Default character background" %}
+                    <span class="text-muted">({% trans "optional" %})</span>
+                </label>
+                {% if form.default_character_background.value %}
+                    <div class="mb-4 p-4 bg-surface rounded-lg flex items-center gap-3">
+                        <img src="{{ form.default_character_background.value.url }}" alt="{% trans "Current background" %}" class="w-16 h-24 object-cover rounded-lg">
+                        <div>
+                            <p class="text-sm text-secondary">{% trans "Current image" %}</p>
+                            <label for="{{ form.default_character_background.id_for_label }}-clear" class="text-sm text-error hover:text-error/70">
+                                <input id="{{ form.default_character_background.id_for_label }}-clear"
+                                       name="{{ form.default_character_background.html_name }}-clear"
+                                       type="checkbox">
+                                {% trans "Delete image" %}
+                            </label>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="form-dropzone">
+                    <div class="space-y-1 text-center">
+                        <span class="i-lucide-upload text-3xl text-muted"></span>
+                        <div class="flex text-sm text-secondary">
+                            <label for="{{ form.default_character_background.id_for_label }}" class="form-dropzone-link">
+                                <span>{% trans "Upload an image" %}</span>
+                                <input id="{{ form.default_character_background.id_for_label }}"
+                                       name="{{ form.default_character_background.html_name }}"
+                                       type="file"
+                                       accept="image/*"
+                                       class="sr-only">
+                            </label>
+                            <p class="pl-1">{% trans "or drag and drop" %}</p>
+                        </div>
+                        <p class="text-xs text-muted">{% trans "PNG, JPG or GIF up to 10 MB" %}</p>
+                    </div>
+                </div>
+                {% if form.default_character_background.help_text %}
+                    <p class="form-help mt-2">{{ form.default_character_background.help_text|safe }}</p>
+                {% endif %}
+                {% for error in form.default_character_background.errors %}
                     <p class="form-error">{{ error }}</p>
                 {% endfor %}
             </div>

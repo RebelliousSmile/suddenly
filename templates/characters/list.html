@@ -50,13 +50,13 @@
                    hx-get="{% url 'characters:search' %}"
                    hx-trigger="keyup changed delay:300ms"
                    hx-target="#character-results"
-                   hx-include="[name='status'],[name='system']">
-            <div class="flex gap-3">
+                   hx-include="[name='status'],[name='system'],[name='tag']">
+            <div class="flex gap-3 flex-wrap">
                 <select name="status" class="form-input w-auto"
                         hx-get="{% url 'characters:search' %}"
                         hx-trigger="change"
                         hx-target="#character-results"
-                        hx-include="[name='q'],[name='system']">
+                        hx-include="[name='q'],[name='system'],[name='tag']">
                     <option value="">{% trans "All statuses" %}</option>
                     {% for value, label in statuses %}
                         <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
@@ -70,8 +70,34 @@
                        hx-get="{% url 'characters:search' %}"
                        hx-trigger="keyup changed delay:500ms"
                        hx-target="#character-results"
-                       hx-include="[name='q'],[name='status']">
+                       hx-include="[name='q'],[name='status'],[name='tag']">
             </div>
+            <!-- Tag filters -->
+            {% if all_tags %}
+            <div class="flex flex-wrap gap-2 pt-1">
+                <input type="hidden" name="tag" id="tag-filter" value="{{ active_tag }}">
+                <button type="button"
+                        class="{% if not active_tag %}btn-primary btn-sm{% else %}btn-secondary btn-sm{% endif %}"
+                        hx-get="{% url 'characters:search' %}"
+                        hx-target="#character-results"
+                        hx-include="[name='q'],[name='status'],[name='system']"
+                        hx-vals='{"tag": ""}'
+                        @click="document.getElementById('tag-filter').value = ''">
+                    {% trans "All tags" %}
+                </button>
+                {% for tag in all_tags %}
+                <button type="button"
+                        class="{% if active_tag == tag %}btn-primary btn-sm{% else %}btn-secondary btn-sm{% endif %}"
+                        hx-get="{% url 'characters:search' %}"
+                        hx-target="#character-results"
+                        hx-include="[name='q'],[name='status'],[name='system']"
+                        hx-vals='{"tag": "{{ tag }}"}'
+                        @click="document.getElementById('tag-filter').value = '{{ tag }}'">
+                    {{ tag }}
+                </button>
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
 
         <div id="character-results">

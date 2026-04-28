@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-from django.db.models import QuerySet
+from django.db.models import Count, QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -25,6 +25,19 @@ def character_list(request: HttpRequest) -> HttpResponse:
     """Character list with FTS search and filters (US-07)."""
     qs = _build_character_queryset(request)
 
+    default_bg = ""
+    if request.user.is_authenticated and request.user.default_character_background:
+        default_bg = request.user.default_character_background.url
+
+    # Collect all unique tags from local characters for the filter bar
+    all_tags: list[str] = sorted(
+        {
+            tag
+            for tags in Character.objects.filter(remote=False).values_list("tags", flat=True)
+            for tag in (tags or [])
+        }
+    )
+
     return htmx_render(
         request,
         full_template="characters/list.html",
@@ -35,6 +48,9 @@ def character_list(request: HttpRequest) -> HttpResponse:
             "status_filter": request.GET.get("status", ""),
             "system_filter": request.GET.get("system", ""),
             "statuses": CharacterStatus.choices,
+            "default_bg": default_bg,
+            "active_tag": request.GET.get("tag", ""),
+            "all_tags": all_tags,
         },
     )
 
@@ -81,6 +97,10 @@ def character_search(request: HttpRequest) -> HttpResponse:
     """HTMX endpoint for live character search (partial only)."""
     qs = _build_character_queryset(request)
 
+    default_bg = ""
+    if request.user.is_authenticated and request.user.default_character_background:
+        default_bg = request.user.default_character_background.url
+
     return htmx_render(
         request,
         full_template="characters/_list_results.html",
@@ -88,6 +108,8 @@ def character_search(request: HttpRequest) -> HttpResponse:
         context={
             "characters": qs[:24],
             "query": request.GET.get("q", ""),
+            "default_bg": default_bg,
+            "active_tag": request.GET.get("tag", ""),
         },
     )
 
@@ -97,6 +119,10 @@ def _build_character_queryset(request: HttpRequest) -> QuerySet[Character]:
     qs = (
         Character.objects.filter(remote=False)
         .select_related("creator", "owner", "origin_game")
+        .annotate(
+            report_count=Count("appearances__report", distinct=True),
+            quote_count=Count("quotes", distinct=True),
+        )
         .order_by("-created_at")
     )
 
@@ -109,6 +135,11 @@ def _build_character_queryset(request: HttpRequest) -> QuerySet[Character]:
     system = request.GET.get("system", "").strip()
     if system:
         qs = qs.filter(origin_game__game_system__icontains=system)
+
+    # Tag filter
+    tag = request.GET.get("tag", "").strip()
+    if tag:
+        qs = qs.filter(tags__contains=[tag])
 
     # FTS search (uses GIN index from T13)
     q = request.GET.get("q", "").strip()
@@ -191,6 +222,9 @@ def character_edit(request: AuthenticatedRequest, slug: str) -> HttpResponse:
         character.description = request.POST.get("description", "").strip()
         character.sheet_url = request.POST.get("sheet_url", "").strip() or None
 
+        tags_raw = request.POST.get("tags", "").strip()
+        character.tags = [t.strip() for t in tags_raw.split(",") if t.strip()]
+
         if request.POST.get("avatar-clear"):
             if character.avatar:
                 character.avatar.delete(save=False)
@@ -198,7 +232,9 @@ def character_edit(request: AuthenticatedRequest, slug: str) -> HttpResponse:
         elif "avatar" in request.FILES:
             character.avatar = request.FILES["avatar"]
 
-        character.save(update_fields=["name", "description", "sheet_url", "avatar", "updated_at"])
+        character.save(
+            update_fields=["name", "description", "sheet_url", "tags", "avatar", "updated_at"]
+        )
         return redirect(reverse("characters:detail", kwargs={"slug": character.slug}))
 
     return htmx_render(
