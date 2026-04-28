@@ -107,10 +107,10 @@
 
                     <!-- Theme toggle -->
                     <button @click="toggle()"
-                            class="p-2 text-muted hover:text-primary transition-colors"
+                            class="p-1.5 rounded-lg border border-border text-muted hover:text-primary hover:border-violet/40 transition-all"
                             :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
-                        <span x-show="isDark" x-cloak class="i-lucide-sun text-xl"></span>
-                        <span x-show="!isDark" x-cloak class="i-lucide-moon text-xl"></span>
+                        <span x-show="isDark" x-cloak class="i-lucide-sun text-lg block"></span>
+                        <span x-show="!isDark" x-cloak class="i-lucide-moon text-lg block"></span>
                     </button>
 
                     <!-- Language switcher (anonymous; authenticated users use profile) -->
