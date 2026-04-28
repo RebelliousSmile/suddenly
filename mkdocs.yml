@@ -24,6 +24,7 @@ theme:
 
 extra_css:
   - stylesheets/extra.css
+  - stylesheets/design-system.css
 
 plugins:
   - search
@@ -42,5 +43,6 @@ markdown_extensions:
 nav:
   - "← Back to Suddenly": https://then.suddenly.social
   - Home: index.md
+  - Design System: design-system.md
   - Contributing:
     - Translations: translations.md
