@@ -209,6 +209,11 @@ export default defineConfig({
   safelist: [
     // Statuts dynamiques (générés via character.status dans les templates)
     'badge-available', 'badge-claimed', 'badge-adopted', 'badge-forked', 'badge-pc',
+    // Modificateurs d'opacité (classes dynamiques dans expressions Django, non détectables par le scanner)
+    'bg-success/10', 'bg-error/10', 'bg-warning/10', 'bg-info/10',
+    'border-success/30', 'border-error/30', 'border-warning/30', 'border-info/30',
+    'text-success', 'text-error', 'text-warning', 'text-info',
+    'hover:bg-error/10', 'hover:bg-card',
     // Z-index sémantiques (custom tokens)
     'z-dropdown', 'z-sticky', 'z-overlay', 'z-modal', 'z-toast',
     // Icônes fréquentes (utilisées dans des template tags dynamiques)
