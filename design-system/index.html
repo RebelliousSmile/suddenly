@@ -1,0 +1,3023 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Federated shared fiction network">
+      
+      
+      
+        <link rel="canonical" href="https://rebellioussmile.github.io/suddenly/design-system/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../import-export/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Design System - Suddenly</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../stylesheets/design-system.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#design-system" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Suddenly" class="md-header__button md-logo" aria-label="Suddenly" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Suddenly
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Design System
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/RebelliousSmile/suddenly" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    RebelliousSmile/suddenly
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://then.suddenly.social" class="md-tabs__link">
+        
+  
+  
+    
+  
+  ← Back to Suddenly
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Design System
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../import-export/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Import & Export
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../translations/" class="md-tabs__link">
+          
+  
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Suddenly" class="md-nav__button md-logo" aria-label="Suddenly" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Suddenly
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/RebelliousSmile/suddenly" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    RebelliousSmile/suddenly
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://then.suddenly.social" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ← Back to Suddenly
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design System
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#moodboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Moodboard
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#palette-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Palette &amp; Tokens
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Palette &amp; Tokens">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#semantic-tokens-css-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Semantic tokens (CSS variables)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed-accent-colors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed accent colors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#swatches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Swatches
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#typography" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typography
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Typography">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#type-scale-light" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Type scale — Light
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-scale-dark" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Type scale — Dark
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#buttons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Buttons
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#badges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Badges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inputs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cards
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Links
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#theme-toggle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Theme Toggle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#images-avatars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Images &amp; Avatars
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Images &amp; Avatars">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#avatar-sizes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Avatar sizes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stacked-avatar-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stacked avatar group
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lists-grids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lists &amp; Grids
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lists &amp; Grids">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#card-grid-3-columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Card grid — 3 columns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compact-grid-4-columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compact grid — 4 columns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vertical-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vertical stack
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#empty-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Empty state
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Forms
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Forms">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#text-input-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Text input — states
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#textarea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Textarea
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checkbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checkbox
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-upload-dropzone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File upload dropzone
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-form-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full form example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-banner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error banner
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#settings-navigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Settings navigation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#icons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Icons
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Icons">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ui-icons-lucide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UI Icons — Lucide
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="UI Icons — Lucide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#navigation-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Navigation &amp; Layout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#users-characters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Users &amp; Characters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#character-link-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Character Link types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#content-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content &amp; Actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#status-feedback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status &amp; Feedback
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thematic-icons-game-icons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thematic Icons — Game Icons
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brand-federation-simple-icons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Brand / Federation — Simple Icons
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../import-export/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Import & Export
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../translations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Translations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#moodboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Moodboard
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#palette-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Palette &amp; Tokens
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Palette &amp; Tokens">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#semantic-tokens-css-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Semantic tokens (CSS variables)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed-accent-colors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed accent colors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#swatches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Swatches
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#typography" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typography
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Typography">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#type-scale-light" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Type scale — Light
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-scale-dark" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Type scale — Dark
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#buttons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Buttons
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#badges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Badges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inputs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cards
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Links
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#theme-toggle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Theme Toggle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#images-avatars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Images &amp; Avatars
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Images &amp; Avatars">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#avatar-sizes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Avatar sizes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stacked-avatar-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stacked avatar group
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lists-grids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lists &amp; Grids
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lists &amp; Grids">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#card-grid-3-columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Card grid — 3 columns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compact-grid-4-columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compact grid — 4 columns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vertical-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vertical stack
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#empty-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Empty state
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Forms
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Forms">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#text-input-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Text input — states
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#textarea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Textarea
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checkbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checkbox
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-upload-dropzone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File upload dropzone
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-form-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full form example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-banner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error banner
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#settings-navigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Settings navigation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#icons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Icons
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Icons">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ui-icons-lucide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UI Icons — Lucide
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="UI Icons — Lucide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#navigation-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Navigation &amp; Layout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#users-characters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Users &amp; Characters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#character-link-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Character Link types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#content-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content &amp; Actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#status-feedback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status &amp; Feedback
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thematic-icons-game-icons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thematic Icons — Game Icons
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brand-federation-simple-icons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Brand / Federation — Simple Icons
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="design-system">Design System<a class="headerlink" href="#design-system" title="Permanent link">&para;</a></h1>
+<p>Suddenly's visual language — tokens, typography, and UI components for both light and dark modes.</p>
+<hr />
+<h2 id="moodboard">Moodboard<a class="headerlink" href="#moodboard" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p><strong>Sombre, littéraire, dramatique.</strong> Typographie serif pour la narration, Inter pour l'interface. Les accents vifs (crimson, neon) émergent sur des fonds profonds comme des néons dans la nuit.</p>
+</blockquote>
+<p>The two target aesthetics:</p>
+<ul>
+<li><strong>Dark</strong> — deep cosmos background (<code>#0a0a0a</code>), surfaces slightly lifted (<code>#111111</code>), crimson glow on cards, neon green for success states.</li>
+<li><strong>Light</strong> — warm parchment (<code>#faf9f6</code>), off-white cards, muted purple borders, crimson as primary accent.</li>
+</ul>
+<hr />
+<h2 id="palette-tokens">Palette &amp; Tokens<a class="headerlink" href="#palette-tokens" title="Permanent link">&para;</a></h2>
+<h3 id="semantic-tokens-css-variables">Semantic tokens (CSS variables)<a class="headerlink" href="#semantic-tokens-css-variables" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Variable</th>
+<th>Light</th>
+<th>Dark</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Background</td>
+<td><code>--c-bg</code></td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#faf9f6;border:1px solid #ccc;vertical-align:middle;margin-right:4px"></span><code>#faf9f6</code></td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#0a0a0a;border:1px solid #444;vertical-align:middle;margin-right:4px"></span><code>#0a0a0a</code></td>
+</tr>
+<tr>
+<td>Surface</td>
+<td><code>--c-surface</code></td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#f0ede8;border:1px solid #ccc;vertical-align:middle;margin-right:4px"></span><code>#f0ede8</code></td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#111111;border:1px solid #444;vertical-align:middle;margin-right:4px"></span><code>#111111</code></td>
+</tr>
+<tr>
+<td>Card</td>
+<td><code>--c-card</code></td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#ffffff;border:1px solid #ccc;vertical-align:middle;margin-right:4px"></span><code>#ffffff</code></td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#1a1a1a;border:1px solid #444;vertical-align:middle;margin-right:4px"></span><code>#1a1a1a</code></td>
+</tr>
+<tr>
+<td>Card dark variant</td>
+<td><code>--c-card-dark</code></td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#f5f2ec;border:1px solid #ccc;vertical-align:middle;margin-right:4px"></span><code>#f5f2ec</code></td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#222222;border:1px solid #444;vertical-align:middle;margin-right:4px"></span><code>#222222</code></td>
+</tr>
+<tr>
+<td>Border</td>
+<td><code>--c-border</code></td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#d4cfe8;border:1px solid #ccc;vertical-align:middle;margin-right:4px"></span><code>#d4cfe8</code></td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#2a2a2a;border:1px solid #444;vertical-align:middle;margin-right:4px"></span><code>#2a2a2a</code></td>
+</tr>
+<tr>
+<td>Primary text</td>
+<td><code>--c-primary</code></td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#1a1a2e;border:1px solid #ccc;vertical-align:middle;margin-right:4px"></span><code>#1a1a2e</code></td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#f0f0f0;border:1px solid #444;vertical-align:middle;margin-right:4px"></span><code>#f0f0f0</code></td>
+</tr>
+<tr>
+<td>Secondary text</td>
+<td><code>--c-secondary</code></td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#4a4a6a;border:1px solid #ccc;vertical-align:middle;margin-right:4px"></span><code>#4a4a6a</code></td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#a0a0a0;border:1px solid #444;vertical-align:middle;margin-right:4px"></span><code>#a0a0a0</code></td>
+</tr>
+<tr>
+<td>Muted text</td>
+<td><code>--c-muted</code></td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#8a8aaa;border:1px solid #ccc;vertical-align:middle;margin-right:4px"></span><code>#8a8aaa</code></td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#606060;border:1px solid #444;vertical-align:middle;margin-right:4px"></span><code>#606060</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="fixed-accent-colors">Fixed accent colors<a class="headerlink" href="#fixed-accent-colors" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Hex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Crimson</td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#e03558;vertical-align:middle;margin-right:4px"></span><code>#e03558</code></td>
+<td>Primary CTA, links, focus rings — both modes</td>
+</tr>
+<tr>
+<td>Crimson hover</td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#c82a4a;vertical-align:middle;margin-right:4px"></span><code>#c82a4a</code></td>
+<td>Button hover state</td>
+</tr>
+<tr>
+<td>Violet</td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#7c3aed;vertical-align:middle;margin-right:4px"></span><code>#7c3aed</code></td>
+<td>Per-page accent (profile pages, nav active)</td>
+</tr>
+<tr>
+<td>Neon</td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#00e676;vertical-align:middle;margin-right:4px"></span><code>#00e676</code></td>
+<td>Success / available states in dark mode</td>
+</tr>
+<tr>
+<td>Success</td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#16a34a;vertical-align:middle;margin-right:4px"></span><code>#16a34a</code></td>
+<td>Positive feedback</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#d97706;vertical-align:middle;margin-right:4px"></span><code>#d97706</code></td>
+<td>Caution states</td>
+</tr>
+<tr>
+<td>Error</td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#dc2626;vertical-align:middle;margin-right:4px"></span><code>#dc2626</code></td>
+<td>Destructive actions, validation errors</td>
+</tr>
+<tr>
+<td>Info</td>
+<td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#6366f1;vertical-align:middle;margin-right:4px"></span><code>#6366f1</code></td>
+<td>Informational states</td>
+</tr>
+</tbody>
+</table>
+<h3 id="swatches">Swatches<a class="headerlink" href="#swatches" title="Permanent link">&para;</a></h3>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-row">
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#faf9f6"></span><span class="sd-swatch-name">bg<br>#faf9f6</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#f0ede8"></span><span class="sd-swatch-name">surface<br>#f0ede8</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#ffffff;border:1px solid #d4cfe8"></span><span class="sd-swatch-name">card<br>#ffffff</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#d4cfe8"></span><span class="sd-swatch-name">border<br>#d4cfe8</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#1a1a2e"></span><span class="sd-swatch-name">primary<br>#1a1a2e</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#4a4a6a"></span><span class="sd-swatch-name">secondary<br>#4a4a6a</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#8a8aaa"></span><span class="sd-swatch-name">muted<br>#8a8aaa</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#e03558"></span><span class="sd-swatch-name">crimson<br>#e03558</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#7c3aed"></span><span class="sd-swatch-name">violet<br>#7c3aed</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#00e676"></span><span class="sd-swatch-name">neon<br>#00e676</span></div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-row">
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#0a0a0a;border-color:rgba(255,255,255,0.08)"></span><span class="sd-swatch-name" style="color:#606060">bg<br>#0a0a0a</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#111111;border-color:rgba(255,255,255,0.08)"></span><span class="sd-swatch-name" style="color:#606060">surface<br>#111111</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#1a1a1a;border-color:rgba(255,255,255,0.08)"></span><span class="sd-swatch-name" style="color:#606060">card<br>#1a1a1a</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#2a2a2a;border-color:rgba(255,255,255,0.08)"></span><span class="sd-swatch-name" style="color:#606060">border<br>#2a2a2a</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#f0f0f0"></span><span class="sd-swatch-name" style="color:#606060">primary<br>#f0f0f0</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#a0a0a0"></span><span class="sd-swatch-name" style="color:#606060">secondary<br>#a0a0a0</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#606060"></span><span class="sd-swatch-name" style="color:#606060">muted<br>#606060</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#e03558"></span><span class="sd-swatch-name" style="color:#606060">crimson<br>#e03558</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#7c3aed"></span><span class="sd-swatch-name" style="color:#606060">violet<br>#7c3aed</span></div>
+  <div class="sd-swatch"><span class="sd-swatch-color" style="background:#00e676"></span><span class="sd-swatch-name" style="color:#606060">neon<br>#00e676</span></div>
+</div>
+</div>
+
+<hr />
+<h2 id="typography">Typography<a class="headerlink" href="#typography" title="Permanent link">&para;</a></h2>
+<p>Three families — each with a distinct role:</p>
+<table>
+<thead>
+<tr>
+<th>Family</th>
+<th>Use</th>
+<th>Weights</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Inter</strong></td>
+<td>UI — navigation, labels, buttons, body copy</td>
+<td>400, 500, 600, 700</td>
+</tr>
+<tr>
+<td><strong>Crimson Text</strong></td>
+<td>Narrative — H1/H2/H3 headings, report prose, blockquotes</td>
+<td>400, 600, italic</td>
+</tr>
+<tr>
+<td><strong>JetBrains Mono</strong></td>
+<td>Code — inline and blocks</td>
+<td>400, 500</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Rule</strong>: Inter for all interface chrome. Crimson Text only where narrative voice matters — large headings and long-form text.</p>
+</blockquote>
+<h3 id="type-scale-light">Type scale — Light<a class="headerlink" href="#type-scale-light" title="Permanent link">&para;</a></h3>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<p class="sd-h1 sd-typo-sample">H1 — Crimson Text 600, 2.25rem</p>
+<p class="sd-h2 sd-typo-sample">H2 — Crimson Text 600, 1.6rem</p>
+<p class="sd-h3 sd-typo-sample">H3 — Crimson Text 600, 1.25rem</p>
+<p class="sd-h4 sd-typo-sample">H4 — Inter 600, 1rem</p>
+<p class="sd-h5 sd-typo-sample">H5 — Inter 600, 0.875rem</p>
+<p class="sd-h6 sd-typo-sample">H6 — Inter 600 caps, 0.8rem</p>
+<hr style="border-color:#d4cfe8;margin:1rem 0">
+<p class="sd-body   sd-typo-sample">Body — Inter 400, 1rem / 1.6. The characters mentioned can be claimed, adopted, or forked by other players.</p>
+<p class="sd-small  sd-typo-sample">Small — Inter 400, 0.875rem. Secondary interface text, metadata, timestamps.</p>
+<p class="sd-caption sd-typo-sample">Caption — Inter 400, 0.75rem. Helper text, image captions.</p>
+<p class="sd-overline sd-typo-sample">Overline — Inter 600, 0.7rem, 3px tracking</p>
+<hr style="border-color:#d4cfe8;margin:1rem 0">
+<p class="sd-prose  sd-typo-sample">Prose — Crimson Text 400, 1.1rem / 1.7. The night was long and the fire had gone cold when the stranger finally appeared at the threshold.</p>
+<p class="sd-prose-em sd-typo-sample">Prose italic — Crimson Text italic. "We do not choose our stories," she said, "they choose us."</p>
+<hr style="border-color:#d4cfe8;margin:1rem 0">
+<p class="sd-mono   sd-typo-sample">Mono — JetBrains Mono, 0.875rem. const actor = await federation.resolve(url);</p>
+</div>
+
+<h3 id="type-scale-dark">Type scale — Dark<a class="headerlink" href="#type-scale-dark" title="Permanent link">&para;</a></h3>
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<p class="sd-h1 sd-typo-sample">H1 — Crimson Text 600, 2.25rem</p>
+<p class="sd-h2 sd-typo-sample">H2 — Crimson Text 600, 1.6rem</p>
+<p class="sd-h3 sd-typo-sample">H3 — Crimson Text 600, 1.25rem</p>
+<p class="sd-h4 sd-typo-sample">H4 — Inter 600, 1rem</p>
+<p class="sd-h5 sd-typo-sample">H5 — Inter 600, 0.875rem</p>
+<p class="sd-h6 sd-typo-sample">H6 — Inter 600 caps, 0.8rem</p>
+<hr style="border-color:#2a2a2a;margin:1rem 0">
+<p class="sd-body   sd-typo-sample">Body — Inter 400, 1rem / 1.6. The characters mentioned can be claimed, adopted, or forked by other players.</p>
+<p class="sd-small  sd-typo-sample">Small — Inter 400, 0.875rem. Secondary interface text, metadata, timestamps.</p>
+<p class="sd-caption sd-typo-sample">Caption — Inter 400, 0.75rem. Helper text, image captions.</p>
+<p class="sd-overline sd-typo-sample">Overline — Inter 600, 0.7rem, 3px tracking</p>
+<hr style="border-color:#2a2a2a;margin:1rem 0">
+<p class="sd-prose  sd-typo-sample">Prose — Crimson Text 400, 1.1rem / 1.7. The night was long and the fire had gone cold when the stranger finally appeared at the threshold.</p>
+<p class="sd-prose-em sd-typo-sample">Prose italic — Crimson Text italic. "We do not choose our stories," she said, "they choose us."</p>
+<hr style="border-color:#2a2a2a;margin:1rem 0">
+<p class="sd-mono   sd-typo-sample">Mono — JetBrains Mono, 0.875rem. const actor = await federation.resolve(url);</p>
+</div>
+
+<hr />
+<h2 id="buttons">Buttons<a class="headerlink" href="#buttons" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>btn-primary</code></td>
+<td>Primary CTA — one per screen</td>
+</tr>
+<tr>
+<td><code>btn-secondary</code></td>
+<td>Secondary action alongside primary</td>
+</tr>
+<tr>
+<td><code>btn-ghost</code></td>
+<td>Tertiary / icon-only actions</td>
+</tr>
+<tr>
+<td><code>btn-danger</code></td>
+<td>Destructive actions (delete, reject)</td>
+</tr>
+<tr>
+<td><code>btn-sm</code></td>
+<td>Modifier — compact contexts</td>
+</tr>
+<tr>
+<td><code>btn-lg</code></td>
+<td>Modifier — hero sections</td>
+</tr>
+</tbody>
+</table>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-row">
+  <button class="sd-btn sd-btn-primary">Primary</button>
+  <button class="sd-btn sd-btn-secondary">Secondary</button>
+  <button class="sd-btn sd-btn-ghost">Ghost</button>
+  <button class="sd-btn sd-btn-danger">Danger</button>
+</div>
+<div class="sd-row" style="margin-top:0.75rem">
+  <button class="sd-btn sd-btn-primary sd-btn-sm">Small</button>
+  <button class="sd-btn sd-btn-primary">Default</button>
+  <button class="sd-btn sd-btn-primary sd-btn-lg">Large</button>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-row">
+  <button class="sd-btn sd-btn-primary">Primary</button>
+  <button class="sd-btn sd-btn-secondary">Secondary</button>
+  <button class="sd-btn sd-btn-ghost">Ghost</button>
+  <button class="sd-btn sd-btn-danger">Danger</button>
+</div>
+<div class="sd-row" style="margin-top:0.75rem">
+  <button class="sd-btn sd-btn-primary sd-btn-sm">Small</button>
+  <button class="sd-btn sd-btn-primary">Default</button>
+  <button class="sd-btn sd-btn-primary sd-btn-lg">Large</button>
+</div>
+</div>
+
+<hr />
+<h2 id="badges">Badges<a class="headerlink" href="#badges" title="Permanent link">&para;</a></h2>
+<p>Character status badges — semantic colors consistent across both modes.</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>badge-available</code></td>
+<td>Character has no pending links</td>
+</tr>
+<tr>
+<td><code>badge-claimed</code></td>
+<td>Claim request pending or accepted</td>
+</tr>
+<tr>
+<td><code>badge-adopted</code></td>
+<td>Adoption accepted</td>
+</tr>
+<tr>
+<td><code>badge-forked</code></td>
+<td>Fork relationship established</td>
+</tr>
+<tr>
+<td><code>badge-pc</code></td>
+<td>Player Character (owned by a user)</td>
+</tr>
+<tr>
+<td><code>badge-pending</code></td>
+<td>Request awaiting response</td>
+</tr>
+<tr>
+<td><code>badge-rejected</code></td>
+<td>Request declined</td>
+</tr>
+</tbody>
+</table>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-row">
+  <span class="sd-badge sd-badge-available">Available</span>
+  <span class="sd-badge sd-badge-claimed">Claimed</span>
+  <span class="sd-badge sd-badge-adopted">Adopted</span>
+  <span class="sd-badge sd-badge-forked">Forked</span>
+  <span class="sd-badge sd-badge-pc">PC</span>
+  <span class="sd-badge sd-badge-pending">Pending</span>
+  <span class="sd-badge sd-badge-rejected">Rejected</span>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-row">
+  <span class="sd-badge sd-badge-available">Available</span>
+  <span class="sd-badge sd-badge-claimed">Claimed</span>
+  <span class="sd-badge sd-badge-adopted">Adopted</span>
+  <span class="sd-badge sd-badge-forked">Forked</span>
+  <span class="sd-badge sd-badge-pc">PC</span>
+  <span class="sd-badge sd-badge-pending">Pending</span>
+  <span class="sd-badge sd-badge-rejected">Rejected</span>
+</div>
+</div>
+
+<hr />
+<h2 id="inputs">Inputs<a class="headerlink" href="#inputs" title="Permanent link">&para;</a></h2>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-row" style="flex-direction:column;align-items:flex-start;gap:0.5rem">
+  <label style="font-size:0.8125rem;font-weight:500;color:#4a4a6a;font-family:Inter,sans-serif">Character name <span style="color:#e03558">*</span></label>
+  <input class="sd-input" type="text" placeholder="Enter a name…">
+  <span style="font-size:0.75rem;color:#8a8aaa;font-family:Inter,sans-serif">The name as it appears in session reports.</span>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-row" style="flex-direction:column;align-items:flex-start;gap:0.5rem">
+  <label style="font-size:0.8125rem;font-weight:500;color:#a0a0a0;font-family:Inter,sans-serif">Character name <span style="color:#e03558">*</span></label>
+  <input class="sd-input" type="text" placeholder="Enter a name…">
+  <span style="font-size:0.75rem;color:#606060;font-family:Inter,sans-serif">The name as it appears in session reports.</span>
+</div>
+</div>
+
+<hr />
+<h2 id="cards">Cards<a class="headerlink" href="#cards" title="Permanent link">&para;</a></h2>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-card" style="max-width:320px">
+  <p class="sd-card-title">Seraphina Voss</p>
+  <p class="sd-card-body">NPC introduced in session 3. Former archivist, now rogue. Adopted by <a class="sd-link" href="#">@mireille</a>.</p>
+  <div class="sd-row" style="margin-top:0.75rem">
+    <span class="sd-badge sd-badge-adopted">Adopted</span>
+    <span class="sd-badge sd-badge-pc">PC</span>
+  </div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-card" style="max-width:320px">
+  <p class="sd-card-title">Seraphina Voss</p>
+  <p class="sd-card-body">NPC introduced in session 3. Former archivist, now rogue. Adopted by <a class="sd-link" href="#">@mireille</a>.</p>
+  <div class="sd-row" style="margin-top:0.75rem">
+    <span class="sd-badge sd-badge-adopted">Adopted</span>
+    <span class="sd-badge sd-badge-pc">PC</span>
+  </div>
+</div>
+</div>
+
+<hr />
+<h2 id="links">Links<a class="headerlink" href="#links" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>link</code></td>
+<td>Inline content links — crimson, underline on hover</td>
+</tr>
+<tr>
+<td><code>link-muted</code></td>
+<td>Subtle secondary links — muted, no underline</td>
+</tr>
+</tbody>
+</table>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-row">
+  <a class="sd-link" href="#">link — crimson</a>
+  <a class="sd-link-muted" href="#">link-muted</a>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-row">
+  <a class="sd-link" href="#">link — crimson</a>
+  <a class="sd-link-muted" href="#" style="color:#606060">link-muted</a>
+</div>
+</div>
+
+<hr />
+<h2 id="theme-toggle">Theme Toggle<a class="headerlink" href="#theme-toggle" title="Permanent link">&para;</a></h2>
+<p>The pill switch in the top navigation — moon icon (dark) / sun icon (light).</p>
+<div class="sd-light">
+<span class="sd-label">Light mode — sun active</span>
+<div class="sd-row" style="align-items:center;gap:1rem">
+  <div class="sd-toggle" title="Currently: light mode">
+    <span class="sd-toggle-knob"></span>
+  </div>
+  <span style="font-size:0.8125rem;color:#4a4a6a;font-family:Inter,sans-serif">Amber knob slid right → light mode</span>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode — moon active</span>
+<div class="sd-row" style="align-items:center;gap:1rem">
+  <div class="sd-toggle" title="Currently: dark mode">
+    <span class="sd-toggle-knob"></span>
+  </div>
+  <span style="font-size:0.8125rem;color:#a0a0a0;font-family:Inter,sans-serif">Crimson knob slid left → dark mode</span>
+</div>
+</div>
+
+<hr />
+<h2 id="images-avatars">Images &amp; Avatars<a class="headerlink" href="#images-avatars" title="Permanent link">&para;</a></h2>
+<p>Avatars follow the <code>avatar-*</code> size scale. Always provide a <code>avatar-placeholder</code> fallback when no image is available.</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Size</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>avatar-sm</code></td>
+<td>32 × 32 px</td>
+<td>Stacked groups, inline meta</td>
+</tr>
+<tr>
+<td><code>avatar-md</code></td>
+<td>40 × 40 px</td>
+<td>List items, compact cards</td>
+</tr>
+<tr>
+<td><code>avatar-lg</code></td>
+<td>48 × 48 px</td>
+<td>Card headers</td>
+</tr>
+<tr>
+<td><code>avatar-xl</code></td>
+<td>64 × 64 px</td>
+<td>Profile page header</td>
+</tr>
+<tr>
+<td><code>avatar-placeholder</code></td>
+<td>any size</td>
+<td>Fallback — icon on <code>bg-surface</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="avatar-sizes">Avatar sizes<a class="headerlink" href="#avatar-sizes" title="Permanent link">&para;</a></h3>
+<p>Same image at each scale. The <code>border-radius: 9999px</code> and <code>object-fit: cover</code> are applied by the <code>avatar</code> base class.</p>
+<div class="sd-light">
+<span class="sd-label">Light mode — with image</span>
+<div class="sd-row" style="align-items:flex-end;gap:1.5rem">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <img class="sd-avatar sd-avatar-sm" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop&auto=format&q=80" alt="Seraphina">
+    <span class="sd-swatch-name">sm · 32px</span>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <img class="sd-avatar sd-avatar-md" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&auto=format&q=80" alt="Seraphina">
+    <span class="sd-swatch-name">md · 40px</span>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <img class="sd-avatar sd-avatar-lg" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop&auto=format&q=80" alt="Seraphina">
+    <span class="sd-swatch-name">lg · 48px</span>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <img class="sd-avatar sd-avatar-xl" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&fit=crop&auto=format&q=80" alt="Seraphina">
+    <span class="sd-swatch-name">xl · 64px</span>
+  </div>
+  <div style="width:1px;height:64px;background:#d4cfe8;margin:0 0.5rem"></div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <span class="sd-avatar sd-avatar-xl sd-avatar-placeholder"><span style="font-size:1.4rem">✦</span></span>
+    <span class="sd-swatch-name">placeholder</span>
+  </div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode — with image</span>
+<div class="sd-row" style="align-items:flex-end;gap:1.5rem">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <img class="sd-avatar sd-avatar-sm" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop&auto=format&q=80" alt="Seraphina">
+    <span class="sd-swatch-name" style="color:#606060">sm · 32px</span>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <img class="sd-avatar sd-avatar-md" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&auto=format&q=80" alt="Seraphina">
+    <span class="sd-swatch-name" style="color:#606060">md · 40px</span>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <img class="sd-avatar sd-avatar-lg" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop&auto=format&q=80" alt="Seraphina">
+    <span class="sd-swatch-name" style="color:#606060">lg · 48px</span>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <img class="sd-avatar sd-avatar-xl" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&fit=crop&auto=format&q=80" alt="Seraphina">
+    <span class="sd-swatch-name" style="color:#606060">xl · 64px</span>
+  </div>
+  <div style="width:1px;height:64px;background:#2a2a2a;margin:0 0.5rem"></div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem">
+    <span class="sd-avatar sd-avatar-xl sd-avatar-placeholder" style="background:#1a1a1a;border-color:#2a2a2a;color:#606060"><span style="font-size:1.4rem">✦</span></span>
+    <span class="sd-swatch-name" style="color:#606060">placeholder</span>
+  </div>
+</div>
+</div>
+
+<h3 id="stacked-avatar-group">Stacked avatar group<a class="headerlink" href="#stacked-avatar-group" title="Permanent link">&para;</a></h3>
+<p>Used in game cards to show recent characters (<code>-space-x-2</code>, <code>ring-2 ring-card</code>). Overflow beyond 5 shown as <code>+N</code> chip.</p>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-stack">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:5;outline:2px solid #ffffff" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop&auto=format&q=80" alt="Seraphina">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:4;outline:2px solid #ffffff" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop&auto=format&q=80" alt="Kael">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:3;outline:2px solid #ffffff" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=32&h=32&fit=crop&auto=format&q=80" alt="Lady Morrow">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:2;outline:2px solid #ffffff" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&auto=format&q=80" alt="Draven">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:1;outline:2px solid #ffffff" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=32&h=32&fit=crop&auto=format&q=80" alt="Vex">
+  <span class="sd-avatar sd-avatar-sm sd-stack-overflow">+3</span>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-stack">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:5;outline:2px solid #0a0a0a" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop&auto=format&q=80" alt="Seraphina">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:4;outline:2px solid #0a0a0a" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop&auto=format&q=80" alt="Kael">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:3;outline:2px solid #0a0a0a" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=32&h=32&fit=crop&auto=format&q=80" alt="Lady Morrow">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:2;outline:2px solid #0a0a0a" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&auto=format&q=80" alt="Draven">
+  <img class="sd-avatar sd-avatar-sm" style="z-index:1;outline:2px solid #0a0a0a" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=32&h=32&fit=crop&auto=format&q=80" alt="Vex">
+  <span class="sd-avatar sd-avatar-sm sd-stack-overflow" style="background:#222222;border-color:#2a2a2a;color:#a0a0a0;outline:2px solid #0a0a0a">+3</span>
+</div>
+</div>
+
+<hr />
+<h2 id="lists-grids">Lists &amp; Grids<a class="headerlink" href="#lists-grids" title="Permanent link">&para;</a></h2>
+<p>Three layout patterns are used across the app depending on context.</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Classes</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Card grid</td>
+<td><code>grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4</code></td>
+<td>Characters list, games list</td>
+</tr>
+<tr>
+<td>Compact grid</td>
+<td><code>grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3</code></td>
+<td>Profile characters</td>
+</tr>
+<tr>
+<td>Vertical stack</td>
+<td><code>space-y-3</code></td>
+<td>Profile games, feed, notifications</td>
+</tr>
+<tr>
+<td>Empty state</td>
+<td><code>components/empty_state.html</code></td>
+<td>Any empty list</td>
+</tr>
+</tbody>
+</table>
+<h3 id="card-grid-3-columns">Card grid — 3 columns<a class="headerlink" href="#card-grid-3-columns" title="Permanent link">&para;</a></h3>
+<div class="sd-light">
+<span class="sd-label">Light mode — characters / games list</span>
+<div class="sd-grid-3">
+  <div class="sd-card">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+      <img class="sd-avatar sd-avatar-md" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&auto=format&q=80" alt="Seraphina Voss">
+      <div>
+        <p class="sd-card-title" style="font-size:0.9375rem">Seraphina Voss</p>
+        <span class="sd-badge sd-badge-adopted">Adopted</span>
+      </div>
+    </div>
+    <p class="sd-card-body">Former archivist, now rogue. Introduced in session 3.</p>
+  </div>
+  <div class="sd-card">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+      <img class="sd-avatar sd-avatar-md" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&auto=format&q=80" alt="Brother Kael">
+      <div>
+        <p class="sd-card-title" style="font-size:0.9375rem">Brother Kael</p>
+        <span class="sd-badge sd-badge-available">Available</span>
+      </div>
+    </div>
+    <p class="sd-card-body">Wandering healer. Has not been claimed yet.</p>
+  </div>
+  <div class="sd-card">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+      <img class="sd-avatar sd-avatar-md" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&auto=format&q=80" alt="Lady Morrow">
+      <div>
+        <p class="sd-card-title" style="font-size:0.9375rem">Lady Morrow</p>
+        <span class="sd-badge sd-badge-pc">PC</span>
+      </div>
+    </div>
+    <p class="sd-card-body">Player character — originally an NPC from <a class="sd-link" href="#">Iron Season</a>.</p>
+  </div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-grid-3">
+  <div class="sd-card">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+      <img class="sd-avatar sd-avatar-md" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&auto=format&q=80" alt="Seraphina Voss">
+      <div>
+        <p class="sd-card-title" style="font-size:0.9375rem">Seraphina Voss</p>
+        <span class="sd-badge sd-badge-adopted">Adopted</span>
+      </div>
+    </div>
+    <p class="sd-card-body">Former archivist, now rogue. Introduced in session 3.</p>
+  </div>
+  <div class="sd-card">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+      <img class="sd-avatar sd-avatar-md" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&auto=format&q=80" alt="Brother Kael">
+      <div>
+        <p class="sd-card-title" style="font-size:0.9375rem">Brother Kael</p>
+        <span class="sd-badge sd-badge-available">Available</span>
+      </div>
+    </div>
+    <p class="sd-card-body">Wandering healer. Has not been claimed yet.</p>
+  </div>
+  <div class="sd-card">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+      <img class="sd-avatar sd-avatar-md" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&auto=format&q=80" alt="Lady Morrow">
+      <div>
+        <p class="sd-card-title" style="font-size:0.9375rem">Lady Morrow</p>
+        <span class="sd-badge sd-badge-pc">PC</span>
+      </div>
+    </div>
+    <p class="sd-card-body">Player character — originally an NPC from <a class="sd-link" href="#">Iron Season</a>.</p>
+  </div>
+</div>
+</div>
+
+<h3 id="compact-grid-4-columns">Compact grid — 4 columns<a class="headerlink" href="#compact-grid-4-columns" title="Permanent link">&para;</a></h3>
+<p>Used on profile pages to show a user's characters without full card detail.</p>
+<div class="sd-light">
+<span class="sd-label">Light mode — profile characters</span>
+<div class="sd-grid-4">
+  <div class="sd-card" style="text-align:center;padding:0.875rem">
+    <p class="sd-card-title" style="font-size:0.875rem">Seraphina</p>
+    <span class="sd-badge sd-badge-adopted" style="font-size:0.65rem">Adopted</span>
+  </div>
+  <div class="sd-card" style="text-align:center;padding:0.875rem">
+    <p class="sd-card-title" style="font-size:0.875rem">Kael</p>
+    <span class="sd-badge sd-badge-available" style="font-size:0.65rem">Available</span>
+  </div>
+  <div class="sd-card" style="text-align:center;padding:0.875rem">
+    <p class="sd-card-title" style="font-size:0.875rem">Lady Morrow</p>
+    <span class="sd-badge sd-badge-pc" style="font-size:0.65rem">PC</span>
+  </div>
+  <div class="sd-card" style="text-align:center;padding:0.875rem">
+    <p class="sd-card-title" style="font-size:0.875rem">Draven</p>
+    <span class="sd-badge sd-badge-forked" style="font-size:0.65rem">Forked</span>
+  </div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-grid-4">
+  <div class="sd-card" style="text-align:center;padding:0.875rem">
+    <p class="sd-card-title" style="font-size:0.875rem">Seraphina</p>
+    <span class="sd-badge sd-badge-adopted" style="font-size:0.65rem">Adopted</span>
+  </div>
+  <div class="sd-card" style="text-align:center;padding:0.875rem">
+    <p class="sd-card-title" style="font-size:0.875rem">Kael</p>
+    <span class="sd-badge sd-badge-available" style="font-size:0.65rem">Available</span>
+  </div>
+  <div class="sd-card" style="text-align:center;padding:0.875rem">
+    <p class="sd-card-title" style="font-size:0.875rem">Lady Morrow</p>
+    <span class="sd-badge sd-badge-pc" style="font-size:0.65rem">PC</span>
+  </div>
+  <div class="sd-card" style="text-align:center;padding:0.875rem">
+    <p class="sd-card-title" style="font-size:0.875rem">Draven</p>
+    <span class="sd-badge sd-badge-forked" style="font-size:0.65rem">Forked</span>
+  </div>
+</div>
+</div>
+
+<h3 id="vertical-stack">Vertical stack<a class="headerlink" href="#vertical-stack" title="Permanent link">&para;</a></h3>
+<p>Used for games on profile pages, notifications, feed items. Items breathe with <code>space-y-3</code>.</p>
+<div class="sd-light">
+<span class="sd-label">Light mode — profile games / feed</span>
+<div class="sd-stack-y">
+  <div class="sd-card">
+    <p class="sd-card-title">City of Mist — Season 2</p>
+    <p class="sd-card-body">City of Mist</p>
+  </div>
+  <div class="sd-card">
+    <p class="sd-card-title">Iron Season</p>
+    <p class="sd-card-body">Ironsworn</p>
+  </div>
+  <div class="sd-card">
+    <p class="sd-card-title">The Long Road</p>
+    <p class="sd-card-body">Blades in the Dark</p>
+  </div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-stack-y">
+  <div class="sd-card">
+    <p class="sd-card-title">City of Mist — Season 2</p>
+    <p class="sd-card-body">City of Mist</p>
+  </div>
+  <div class="sd-card">
+    <p class="sd-card-title">Iron Season</p>
+    <p class="sd-card-body">Ironsworn</p>
+  </div>
+  <div class="sd-card">
+    <p class="sd-card-title">The Long Road</p>
+    <p class="sd-card-body">Blades in the Dark</p>
+  </div>
+</div>
+</div>
+
+<h3 id="empty-state">Empty state<a class="headerlink" href="#empty-state" title="Permanent link">&para;</a></h3>
+<p>Used whenever a list has no items. Always includes icon + title, optionally description + CTA.</p>
+<div class="sd-light">
+<span class="sd-label">Light mode — with CTA</span>
+<div class="sd-empty-state">
+  <span class="sd-empty-icon"><i data-lucide="book-open"></i></span>
+  <p class="sd-empty-title">No games yet</p>
+  <p class="sd-empty-desc">Create your first game to start publishing session reports.</p>
+  <button class="sd-btn sd-btn-primary sd-btn-sm">New game</button>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode — search empty</span>
+<div class="sd-empty-state">
+  <span class="sd-empty-icon"><i data-lucide="search-x"></i></span>
+  <p class="sd-empty-title" style="color:#f0f0f0">No characters found</p>
+  <p class="sd-empty-desc" style="color:#606060">Try different search terms or filters.</p>
+</div>
+</div>
+
+<hr />
+<h2 id="forms">Forms<a class="headerlink" href="#forms" title="Permanent link">&para;</a></h2>
+<p>Forms are wrapped in <code>card card-body space-y-4</code>. Each field follows the same structure: label → input → help/error.</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Element</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>form-label</code></td>
+<td><code>&lt;label&gt;</code></td>
+<td>Field label — Inter 500, <code>text-secondary</code></td>
+</tr>
+<tr>
+<td><code>form-input</code></td>
+<td><code>&lt;input&gt;</code>, <code>&lt;textarea&gt;</code>, <code>&lt;select&gt;</code></td>
+<td>Base input style</td>
+</tr>
+<tr>
+<td><code>form-input-error</code></td>
+<td>same elements</td>
+<td>Error state — crimson border + ring</td>
+</tr>
+<tr>
+<td><code>form-help</code></td>
+<td><code>&lt;p&gt;</code></td>
+<td>Helper text below field</td>
+</tr>
+<tr>
+<td><code>form-error</code></td>
+<td><code>&lt;p&gt;</code></td>
+<td>Validation error below field</td>
+</tr>
+<tr>
+<td><code>form-dropzone</code></td>
+<td><code>&lt;div&gt;</code></td>
+<td>File upload zone</td>
+</tr>
+<tr>
+<td><code>form-dropzone-link</code></td>
+<td><code>&lt;label&gt;</code></td>
+<td>Clickable part of dropzone</td>
+</tr>
+</tbody>
+</table>
+<p>Optional fields carry <code>(optional)</code> in muted text next to the label.</p>
+<h3 id="text-input-states">Text input — states<a class="headerlink" href="#text-input-states" title="Permanent link">&para;</a></h3>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div style="display:flex;flex-direction:column;gap:1.25rem">
+  <div>
+    <label class="sd-form-label">Title <span style="color:#e03558">*</span></label>
+    <input class="sd-input" type="text" placeholder="e.g. City of Mist — Season 2" style="max-width:100%">
+  </div>
+  <div>
+    <label class="sd-form-label">Game system <span style="color:#8a8aaa;font-weight:400">(optional)</span></label>
+    <input class="sd-input" type="text" value="Ironsworn" style="max-width:100%">
+    <p class="sd-form-help">The rule system used for this campaign.</p>
+  </div>
+  <div>
+    <label class="sd-form-label">Start date <span style="color:#8a8aaa;font-weight:400">(optional)</span></label>
+    <input class="sd-input sd-input-error" type="date" style="max-width:100%">
+    <p class="sd-form-error">Invalid date format.</p>
+  </div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div style="display:flex;flex-direction:column;gap:1.25rem">
+  <div>
+    <label class="sd-form-label" style="color:#a0a0a0">Title <span style="color:#e03558">*</span></label>
+    <input class="sd-input" type="text" placeholder="e.g. City of Mist — Season 2" style="max-width:100%">
+  </div>
+  <div>
+    <label class="sd-form-label" style="color:#a0a0a0">Game system <span style="color:#606060;font-weight:400">(optional)</span></label>
+    <input class="sd-input" type="text" value="Ironsworn" style="max-width:100%">
+    <p class="sd-form-help" style="color:#606060">The rule system used for this campaign.</p>
+  </div>
+  <div>
+    <label class="sd-form-label" style="color:#a0a0a0">Start date <span style="color:#606060;font-weight:400">(optional)</span></label>
+    <input class="sd-input sd-input-error" type="date" style="max-width:100%">
+    <p class="sd-form-error">Invalid date format.</p>
+  </div>
+</div>
+</div>
+
+<h3 id="textarea">Textarea<a class="headerlink" href="#textarea" title="Permanent link">&para;</a></h3>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div>
+  <label class="sd-form-label">Description <span style="color:#8a8aaa;font-weight:400">(optional)</span></label>
+  <textarea class="sd-input" rows="3" placeholder="Describe your campaign..." style="max-width:100%;resize:vertical"></textarea>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div>
+  <label class="sd-form-label" style="color:#a0a0a0">Description <span style="color:#606060;font-weight:400">(optional)</span></label>
+  <textarea class="sd-input" rows="3" placeholder="Describe your campaign..." style="max-width:100%;resize:vertical"></textarea>
+</div>
+</div>
+
+<h3 id="checkbox">Checkbox<a class="headerlink" href="#checkbox" title="Permanent link">&para;</a></h3>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div style="display:flex;align-items:flex-start;gap:0.75rem">
+  <input type="checkbox" checked class="sd-checkbox">
+  <div>
+    <label class="sd-form-label" style="margin-bottom:0">Public game (visible and followable)</label>
+    <p class="sd-form-help">Anyone can follow this game via ActivityPub.</p>
+  </div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div style="display:flex;align-items:flex-start;gap:0.75rem">
+  <input type="checkbox" checked class="sd-checkbox">
+  <div>
+    <label class="sd-form-label" style="margin-bottom:0;color:#a0a0a0">Public game (visible and followable)</label>
+    <p class="sd-form-help" style="color:#606060">Anyone can follow this game via ActivityPub.</p>
+  </div>
+</div>
+</div>
+
+<h3 id="file-upload-dropzone">File upload dropzone<a class="headerlink" href="#file-upload-dropzone" title="Permanent link">&para;</a></h3>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-dropzone">
+  <i data-lucide="upload"></i>
+  <p style="font-size:0.875rem;margin:0"><span style="color:#e03558;font-weight:500;cursor:pointer">Upload a file</span> or drag and drop</p>
+  <p style="font-size:0.75rem;color:#8a8aaa;margin:0.25rem 0 0">PNG, JPG up to 2 MB</p>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-dropzone" style="background:#1a1a1a;border-color:#2a2a2a">
+  <i data-lucide="upload"></i>
+  <p style="font-size:0.875rem;margin:0;color:#a0a0a0"><span style="color:#e03558;font-weight:500;cursor:pointer">Upload a file</span> or drag and drop</p>
+  <p style="font-size:0.75rem;color:#606060;margin:0.25rem 0 0">PNG, JPG up to 2 MB</p>
+</div>
+</div>
+
+<h3 id="full-form-example">Full form example<a class="headerlink" href="#full-form-example" title="Permanent link">&para;</a></h3>
+<div class="sd-light">
+<span class="sd-label">Light mode — game creation form</span>
+<div class="sd-card">
+<div style="display:flex;flex-direction:column;gap:1rem">
+  <div>
+    <label class="sd-form-label">Title <span style="color:#e03558">*</span></label>
+    <input class="sd-input" type="text" placeholder="e.g. City of Mist — Season 2" style="max-width:100%">
+  </div>
+  <div>
+    <label class="sd-form-label">Game system <span style="color:#8a8aaa;font-weight:400">(optional)</span></label>
+    <input class="sd-input" type="text" placeholder="e.g. D&D 5e, Ironsworn" style="max-width:100%">
+  </div>
+  <div>
+    <label class="sd-form-label">Description <span style="color:#8a8aaa;font-weight:400">(optional)</span></label>
+    <textarea class="sd-input" rows="3" placeholder="Describe your campaign..." style="max-width:100%;resize:vertical"></textarea>
+  </div>
+  <div style="display:flex;align-items:center;gap:0.75rem">
+    <input type="checkbox" checked class="sd-checkbox">
+    <label class="sd-form-label" style="margin-bottom:0">Public game (visible and followable)</label>
+  </div>
+  <div style="display:flex;align-items:center;gap:0.75rem;padding-top:1rem;border-top:1px solid #d4cfe8">
+    <button class="sd-btn sd-btn-primary">Create a game</button>
+    <button class="sd-btn sd-btn-ghost">Cancel</button>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-card">
+<div style="display:flex;flex-direction:column;gap:1rem">
+  <div>
+    <label class="sd-form-label" style="color:#a0a0a0">Title <span style="color:#e03558">*</span></label>
+    <input class="sd-input" type="text" placeholder="e.g. City of Mist — Season 2" style="max-width:100%">
+  </div>
+  <div>
+    <label class="sd-form-label" style="color:#a0a0a0">Game system <span style="color:#606060;font-weight:400">(optional)</span></label>
+    <input class="sd-input" type="text" placeholder="e.g. D&D 5e, Ironsworn" style="max-width:100%">
+  </div>
+  <div>
+    <label class="sd-form-label" style="color:#a0a0a0">Description <span style="color:#606060;font-weight:400">(optional)</span></label>
+    <textarea class="sd-input" rows="3" placeholder="Describe your campaign..." style="max-width:100%;resize:vertical"></textarea>
+  </div>
+  <div style="display:flex;align-items:center;gap:0.75rem">
+    <input type="checkbox" checked class="sd-checkbox">
+    <label class="sd-form-label" style="margin-bottom:0;color:#a0a0a0">Public game (visible and followable)</label>
+  </div>
+  <div style="display:flex;align-items:center;gap:0.75rem;padding-top:1rem;border-top:1px solid #2a2a2a">
+    <button class="sd-btn sd-btn-primary">Create a game</button>
+    <button class="sd-btn sd-btn-ghost" style="color:#a0a0a0">Cancel</button>
+  </div>
+</div>
+</div>
+</div>
+
+<h3 id="error-banner">Error banner<a class="headerlink" href="#error-banner" title="Permanent link">&para;</a></h3>
+<p>Used at the top of a form when server-side validation fails.</p>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-error-banner">A game with this title already exists.</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-error-banner">A game with this title already exists.</div>
+</div>
+
+<hr />
+<h2 id="settings-navigation">Settings navigation<a class="headerlink" href="#settings-navigation" title="Permanent link">&para;</a></h2>
+<p>Multi-page settings use a sidebar on desktop and horizontal scrollable tabs on mobile. The active item receives a <code>bg-surface</code> background and <code>text-primary font-medium</code>.</p>
+<p><strong>Anatomy — desktop sidebar + mobile tabs</strong></p>
+<div class="sd-light" style="padding:0;overflow:hidden;border-radius:12px;display:flex;min-height:220px">
+  <nav style="width:180px;flex-shrink:0;padding:0.75rem 0.5rem;border-right:1px solid #d4cfe8;display:flex;flex-direction:column;gap:2px">
+    <a href="#" class="sd-settings-link sd-settings-active">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </a>
+    <a href="#" class="sd-settings-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      Federation
+    </a>
+    <a href="#" class="sd-settings-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+      Data
+    </a>
+    <a href="#" class="sd-settings-link" style="margin-top:auto;border-top:1px solid #d4cfe8;padding-top:0.5rem;color:#dc2626">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Log out
+    </a>
+  </nav>
+  <main style="flex:1;padding:1.5rem">
+    <p style="font-family:Inter,sans-serif;font-weight:600;color:#1a1a2e;font-size:1rem;margin:0 0 0.5rem">Profile</p>
+    <p style="font-family:Inter,sans-serif;font-size:0.8125rem;color:#8a8aaa;margin:0">Active settings page content.</p>
+  </main>
+</div>
+
+<div class="sd-dark" style="padding:0;overflow:hidden;border-radius:12px;display:flex;min-height:220px">
+  <nav style="width:180px;flex-shrink:0;padding:0.75rem 0.5rem;border-right:1px solid #2a2a2a;display:flex;flex-direction:column;gap:2px">
+    <a href="#" class="sd-settings-link sd-settings-active sd-dark">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </a>
+    <a href="#" class="sd-settings-link sd-dark">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      Federation
+    </a>
+    <a href="#" class="sd-settings-link sd-dark">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+      Data
+    </a>
+    <a href="#" class="sd-settings-link sd-dark" style="margin-top:auto;border-top:1px solid #2a2a2a;padding-top:0.5rem;color:#ef4444">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Log out
+    </a>
+  </nav>
+  <main style="flex:1;padding:1.5rem">
+    <p style="font-family:Inter,sans-serif;font-weight:600;color:#f0f0f0;font-size:1rem;margin:0 0 0.5rem">Profile</p>
+    <p style="font-family:Inter,sans-serif;font-size:0.8125rem;color:#606060;margin:0">Active settings page content.</p>
+  </main>
+</div>
+
+<p><strong>Mobile — horizontal scrollable tabs</strong></p>
+<div class="sd-light" style="padding:0;overflow:hidden;border-radius:12px">
+  <nav style="display:flex;gap:2px;padding:0.5rem 0.5rem 0;overflow-x:auto;border-bottom:1px solid #d4cfe8">
+    <a href="#" class="sd-settings-link sd-settings-active" style="white-space:nowrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </a>
+    <a href="#" class="sd-settings-link" style="white-space:nowrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      Federation
+    </a>
+    <a href="#" class="sd-settings-link" style="white-space:nowrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+      Data
+    </a>
+    <a href="#" class="sd-settings-link" style="white-space:nowrap;color:#dc2626">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Log out
+    </a>
+  </nav>
+  <div style="padding:1rem;font-family:Inter,sans-serif;font-size:0.8125rem;color:#8a8aaa">Content area</div>
+</div>
+
+<p><strong>Template</strong> — extends <code>users/settings_base.html</code>, override <code>{% block settings_content %}</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">{%</span> <span class="k">extends</span> <span class="s2">&quot;users/settings_base.html&quot;</span> <span class="cp">%}</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="cp">{%</span> <span class="k">block</span> <span class="nv">title</span> <span class="cp">%}</span><span class="x">My page — </span><span class="cp">{{</span> <span class="nv">SITE_NAME</span> <span class="cp">}}{%</span> <span class="k">endblock</span> <span class="cp">%}</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="cp">{%</span> <span class="k">block</span> <span class="nv">settings_content</span> <span class="cp">%}</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="x">  &lt;h1 class=&quot;text-2xl font-bold text-primary mb-6&quot;&gt;My page&lt;/h1&gt;</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="x">  ...</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span>
+</code></pre></div>
+<p>Active state detection uses <code>request.resolver_match.url_name</code>.</p>
+<hr />
+<h2 id="icons">Icons<a class="headerlink" href="#icons" title="Permanent link">&para;</a></h2>
+<p>Suddenly uses three icon sources with distinct roles:</p>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Prefix</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://lucide.dev">Lucide</a></td>
+<td><code>i-lucide-*</code></td>
+<td>UI chrome — navigation, actions, status</td>
+</tr>
+<tr>
+<td><a href="https://game-icons.net">Game Icons</a></td>
+<td><code>i-game-icons-*</code></td>
+<td>Thematic — empty states, section art, RPG concepts</td>
+</tr>
+<tr>
+<td><a href="https://simpleicons.org">Simple Icons</a></td>
+<td><code>i-simple-icons-*</code></td>
+<td>Brand logos (Mastodon, ActivityPub)</td>
+</tr>
+</tbody>
+</table>
+<p>All three are loaded via UnoCSS + Iconify. Icons are rendered as CSS masks — size via <code>text-*</code>, color via <code>text-*</code> tokens.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cm">&lt;!-- Lucide — UI --&gt;</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;i-lucide-book-open text-xl text-secondary&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="cm">&lt;!-- Game Icons — thematic / decorative --&gt;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;i-game-icons-open-book text-4xl text-muted&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="cm">&lt;!-- Simple Icons — brand --&gt;</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;i-simple-icons-mastodon text-lg hover:text-violet&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</code></pre></div>
+<blockquote>
+<p><strong>Keep the icon set small.</strong> Every icon not in this list must be added to the <code>safelist</code> in <code>uno.config.js</code> to survive the UnoCSS tree-shake.</p>
+</blockquote>
+<hr />
+<h3 id="ui-icons-lucide">UI Icons — Lucide<a class="headerlink" href="#ui-icons-lucide" title="Permanent link">&para;</a></h3>
+<p>Used for all interface controls. Never use Lucide icons decoratively — they are functional and should always carry a readable label or <code>aria-label</code>.</p>
+<h4 id="navigation-layout">Navigation &amp; Layout<a class="headerlink" href="#navigation-layout" title="Permanent link">&para;</a></h4>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-icon-grid">
+  <div class="sd-icon-item"><i data-lucide="home"></i><span class="sd-icon-name">home</span></div>
+  <div class="sd-icon-item"><i data-lucide="search"></i><span class="sd-icon-name">search</span></div>
+  <div class="sd-icon-item"><i data-lucide="bell"></i><span class="sd-icon-name">bell</span></div>
+  <div class="sd-icon-item"><i data-lucide="inbox"></i><span class="sd-icon-name">inbox</span></div>
+  <div class="sd-icon-item"><i data-lucide="compass"></i><span class="sd-icon-name">compass</span></div>
+  <div class="sd-icon-item"><i data-lucide="more-horizontal"></i><span class="sd-icon-name">more-horizontal</span></div>
+  <div class="sd-icon-item"><i data-lucide="chevron-right"></i><span class="sd-icon-name">chevron-right</span></div>
+  <div class="sd-icon-item"><i data-lucide="arrow-left"></i><span class="sd-icon-name">arrow-left</span></div>
+  <div class="sd-icon-item"><i data-lucide="arrow-right"></i><span class="sd-icon-name">arrow-right</span></div>
+  <div class="sd-icon-item"><i data-lucide="external-link"></i><span class="sd-icon-name">external-link</span></div>
+  <div class="sd-icon-item"><i data-lucide="rss"></i><span class="sd-icon-name">rss</span></div>
+  <div class="sd-icon-item"><i data-lucide="sun"></i><span class="sd-icon-name">sun</span></div>
+  <div class="sd-icon-item"><i data-lucide="moon"></i><span class="sd-icon-name">moon</span></div>
+</div>
+</div>
+
+<h4 id="users-characters">Users &amp; Characters<a class="headerlink" href="#users-characters" title="Permanent link">&para;</a></h4>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-icon-grid">
+  <div class="sd-icon-item"><i data-lucide="user"></i><span class="sd-icon-name">user</span></div>
+  <div class="sd-icon-item"><i data-lucide="users"></i><span class="sd-icon-name">users</span></div>
+  <div class="sd-icon-item"><i data-lucide="user-check"></i><span class="sd-icon-name">user-check</span></div>
+  <div class="sd-icon-item"><i data-lucide="user-plus"></i><span class="sd-icon-name">user-plus</span></div>
+  <div class="sd-icon-item"><i data-lucide="at-sign"></i><span class="sd-icon-name">at-sign</span></div>
+  <div class="sd-icon-item"><i data-lucide="star"></i><span class="sd-icon-name">star</span></div>
+  <div class="sd-icon-item"><i data-lucide="circle-dot"></i><span class="sd-icon-name">circle-dot</span></div>
+  <div class="sd-icon-item"><i data-lucide="heart"></i><span class="sd-icon-name">heart</span></div>
+</div>
+</div>
+
+<h4 id="character-link-types">Character Link types<a class="headerlink" href="#character-link-types" title="Permanent link">&para;</a></h4>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-icon-grid">
+  <div class="sd-icon-item sd-icon-crimson"><i data-lucide="git-merge"></i><span class="sd-icon-name">git-merge<br><em>Claim</em></span></div>
+  <div class="sd-icon-item sd-icon-crimson"><i data-lucide="user-plus"></i><span class="sd-icon-name">user-plus<br><em>Adopt</em></span></div>
+  <div class="sd-icon-item sd-icon-crimson"><i data-lucide="git-branch"></i><span class="sd-icon-name">git-branch<br><em>Fork</em></span></div>
+  <div class="sd-icon-item"><i data-lucide="link"></i><span class="sd-icon-name">link</span></div>
+</div>
+</div>
+
+<h4 id="content-actions">Content &amp; Actions<a class="headerlink" href="#content-actions" title="Permanent link">&para;</a></h4>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-icon-grid">
+  <div class="sd-icon-item"><i data-lucide="book-open"></i><span class="sd-icon-name">book-open</span></div>
+  <div class="sd-icon-item"><i data-lucide="file-text"></i><span class="sd-icon-name">file-text</span></div>
+  <div class="sd-icon-item"><i data-lucide="quote"></i><span class="sd-icon-name">quote</span></div>
+  <div class="sd-icon-item"><i data-lucide="message-circle"></i><span class="sd-icon-name">message-circle</span></div>
+  <div class="sd-icon-item"><i data-lucide="sparkles"></i><span class="sd-icon-name">sparkles</span></div>
+  <div class="sd-icon-item"><i data-lucide="dice-5"></i><span class="sd-icon-name">dice-5</span></div>
+  <div class="sd-icon-item"><i data-lucide="clock"></i><span class="sd-icon-name">clock</span></div>
+  <div class="sd-icon-item"><i data-lucide="plus"></i><span class="sd-icon-name">plus</span></div>
+  <div class="sd-icon-item"><i data-lucide="edit-2"></i><span class="sd-icon-name">edit-2</span></div>
+  <div class="sd-icon-item"><i data-lucide="pencil"></i><span class="sd-icon-name">pencil</span></div>
+  <div class="sd-icon-item"><i data-lucide="trash"></i><span class="sd-icon-name">trash</span></div>
+  <div class="sd-icon-item"><i data-lucide="check"></i><span class="sd-icon-name">check</span></div>
+  <div class="sd-icon-item"><i data-lucide="check-circle"></i><span class="sd-icon-name">check-circle</span></div>
+  <div class="sd-icon-item"><i data-lucide="x"></i><span class="sd-icon-name">x</span></div>
+  <div class="sd-icon-item"><i data-lucide="save"></i><span class="sd-icon-name">save</span></div>
+  <div class="sd-icon-item"><i data-lucide="send"></i><span class="sd-icon-name">send</span></div>
+  <div class="sd-icon-item"><i data-lucide="share"></i><span class="sd-icon-name">share</span></div>
+  <div class="sd-icon-item"><i data-lucide="download"></i><span class="sd-icon-name">download</span></div>
+  <div class="sd-icon-item"><i data-lucide="upload"></i><span class="sd-icon-name">upload</span></div>
+  <div class="sd-icon-item"><i data-lucide="flag"></i><span class="sd-icon-name">flag</span></div>
+</div>
+</div>
+
+<h4 id="status-feedback">Status &amp; Feedback<a class="headerlink" href="#status-feedback" title="Permanent link">&para;</a></h4>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-icon-grid">
+  <div class="sd-icon-item"><i data-lucide="info"></i><span class="sd-icon-name">info</span></div>
+  <div class="sd-icon-item"><i data-lucide="alert-triangle"></i><span class="sd-icon-name">alert-triangle</span></div>
+  <div class="sd-icon-item"><i data-lucide="search-x"></i><span class="sd-icon-name">search-x</span></div>
+  <div class="sd-icon-item"><i data-lucide="lock"></i><span class="sd-icon-name">lock</span></div>
+  <div class="sd-icon-item"><i data-lucide="unlock"></i><span class="sd-icon-name">unlock</span></div>
+  <div class="sd-icon-item"><i data-lucide="globe"></i><span class="sd-icon-name">globe</span></div>
+</div>
+</div>
+
+<hr />
+<h3 id="thematic-icons-game-icons">Thematic Icons — Game Icons<a class="headerlink" href="#thematic-icons-game-icons" title="Permanent link">&para;</a></h3>
+<p>Used for empty states, section illustrations, and decorative accents. Never use for functional controls — these icons are for atmosphere, not interaction.</p>
+<p>Game Icons are free under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. Loaded via <code>@iconify-json/game-icons</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Icon</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Games / Campaigns</td>
+<td><code>i-game-icons-open-book</code></td>
+<td>Empty state — no games</td>
+</tr>
+<tr>
+<td>Session Reports</td>
+<td><code>i-game-icons-scroll-quill</code></td>
+<td>Empty state — no reports</td>
+</tr>
+<tr>
+<td>Characters / NPCs</td>
+<td><code>i-game-icons-two-shadows</code></td>
+<td>Empty state — no characters</td>
+</tr>
+<tr>
+<td>Quotes</td>
+<td><code>i-game-icons-chat-bubble</code></td>
+<td>Empty state — no quotes</td>
+</tr>
+<tr>
+<td>Dice / Game system</td>
+<td><code>i-game-icons-dice-six-faces-four</code></td>
+<td>Game system badge</td>
+</tr>
+<tr>
+<td>Claim link</td>
+<td><code>i-game-icons-manacles</code></td>
+<td>Claim relationship art</td>
+</tr>
+<tr>
+<td>Adopt link</td>
+<td><code>i-game-icons-hand</code></td>
+<td>Adopt relationship art</td>
+</tr>
+<tr>
+<td>Fork link</td>
+<td><code>i-game-icons-divergence</code></td>
+<td>Fork relationship art</td>
+</tr>
+<tr>
+<td>Federation</td>
+<td><code>i-game-icons-rss</code></td>
+<td>Federation / ActivityPub</td>
+</tr>
+</tbody>
+</table>
+<div class="sd-light">
+<span class="sd-label">Light mode — thematic icons at empty-state scale</span>
+<div class="sd-icon-grid" style="grid-template-columns:repeat(auto-fill,minmax(96px,1fr))">
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/open-book.svg?color=%238a8aaa" width="40" height="40" alt="open-book">
+    <span class="sd-icon-name">open-book</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/scroll-quill.svg?color=%238a8aaa" width="40" height="40" alt="scroll-quill">
+    <span class="sd-icon-name">scroll-quill</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/two-shadows.svg?color=%238a8aaa" width="40" height="40" alt="two-shadows">
+    <span class="sd-icon-name">two-shadows</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/chat-bubble.svg?color=%238a8aaa" width="40" height="40" alt="chat-bubble">
+    <span class="sd-icon-name">chat-bubble</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/dice-six-faces-four.svg?color=%238a8aaa" width="40" height="40" alt="dice">
+    <span class="sd-icon-name">dice-six-faces-four</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/manacles.svg?color=%23e03558" width="40" height="40" alt="manacles">
+    <span class="sd-icon-name">manacles<br><em>Claim</em></span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/hand.svg?color=%23e03558" width="40" height="40" alt="hand">
+    <span class="sd-icon-name">hand<br><em>Adopt</em></span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/divergence.svg?color=%23e03558" width="40" height="40" alt="divergence">
+    <span class="sd-icon-name">divergence<br><em>Fork</em></span>
+  </div>
+</div>
+</div>
+
+<div class="sd-dark">
+<span class="sd-label">Dark mode</span>
+<div class="sd-icon-grid" style="grid-template-columns:repeat(auto-fill,minmax(96px,1fr))">
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/open-book.svg?color=%23606060" width="40" height="40" alt="open-book">
+    <span class="sd-icon-name" style="color:#606060">open-book</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/scroll-quill.svg?color=%23606060" width="40" height="40" alt="scroll-quill">
+    <span class="sd-icon-name" style="color:#606060">scroll-quill</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/two-shadows.svg?color=%23606060" width="40" height="40" alt="two-shadows">
+    <span class="sd-icon-name" style="color:#606060">two-shadows</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/chat-bubble.svg?color=%23606060" width="40" height="40" alt="chat-bubble">
+    <span class="sd-icon-name" style="color:#606060">chat-bubble</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/dice-six-faces-four.svg?color=%23606060" width="40" height="40" alt="dice">
+    <span class="sd-icon-name" style="color:#606060">dice-six-faces-four</span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/manacles.svg?color=%23e03558" width="40" height="40" alt="manacles">
+    <span class="sd-icon-name" style="color:#606060">manacles<br><em>Claim</em></span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/hand.svg?color=%23e03558" width="40" height="40" alt="hand">
+    <span class="sd-icon-name" style="color:#606060">hand<br><em>Adopt</em></span>
+  </div>
+  <div class="sd-icon-item">
+    <img src="https://api.iconify.design/game-icons/divergence.svg?color=%23e03558" width="40" height="40" alt="divergence">
+    <span class="sd-icon-name" style="color:#606060">divergence<br><em>Fork</em></span>
+  </div>
+</div>
+</div>
+
+<hr />
+<h3 id="brand-federation-simple-icons">Brand / Federation — Simple Icons<a class="headerlink" href="#brand-federation-simple-icons" title="Permanent link">&para;</a></h3>
+<div class="sd-light">
+<span class="sd-label">Light mode</span>
+<div class="sd-icon-grid">
+  <div class="sd-icon-item">
+    <svg role="img" viewBox="0 0 24 24" width="22" height="22" fill="#1a1a2e" xmlns="http://www.w3.org/2000/svg"><title>Mastodon</title><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>
+    <span class="sd-icon-name">mastodon</span>
+  </div>
+  <div class="sd-icon-item">
+    <svg role="img" viewBox="0 0 24 24" width="22" height="22" fill="#1a1a2e" xmlns="http://www.w3.org/2000/svg"><title>ActivityPub</title><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-.586 4.57c.22-.006.44.004.657.03l-2.64 4.573-2.64-4.573a7.96 7.96 0 0 1 4.623-.03zm3.965 1.055l-2.64 4.573 2.64 4.573a7.96 7.96 0 0 1 0-9.146zm-7.931 0a7.96 7.96 0 0 1 0 9.146L4.808 10.2l2.64-4.574zm9.895 1.945a7.96 7.96 0 0 1 .03 4.623l-4.573-2.64 4.543-1.983zm-11.858.03l4.543 1.984-4.573 2.64a7.96 7.96 0 0 1 .03-4.624zm5.929 2.97l2.64 4.572h-5.28l2.64-4.573zm3.965 1.055l4.573 2.64a7.96 7.96 0 0 1-.03 4.623l-4.543-7.263zm-7.93 0l-4.543 7.263a7.96 7.96 0 0 1-.03-4.623l4.573-2.64zm3.965 2.97l2.64 4.574a7.96 7.96 0 0 1-5.28 0l2.64-4.573zm1.325 5.628l-1.325-2.296-1.325 2.296a7.96 7.96 0 0 0 2.65 0z"/></svg>
+    <span class="sd-icon-name">activitypub</span>
+  </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://unpkg.com/lucide@latest"></script>
+      
+        <script src="../javascripts/icons.js"></script>
+      
+    
+  </body>
+</html>
