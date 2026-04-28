@@ -45,7 +45,7 @@ markdown_extensions:
       permalink: true
 
 nav:
-  - "← Back to Suddenly": https://suddenly.social
+  - "← Back to Suddenly": https://then.suddenly.social
   - Home: index.md
   - Contributing:
     - Translations: translations.md
