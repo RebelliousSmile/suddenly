@@ -37,6 +37,14 @@
             </div>
 
             <!-- Actions -->
+            {% if user == character.creator %}
+                <div class="flex gap-2">
+                    <a href="{% url 'characters:edit' slug=character.slug %}" class="btn-secondary btn-sm">
+                        <span class="i-lucide-pencil"></span> {% trans "Edit" %}
+                    </a>
+                </div>
+            {% endif %}
+
             {% if character.is_available and user.is_authenticated and user != character.creator %}
                 {% if pending_request %}
                     {% include "components/status_banner.html" with type="info" icon="clock" message=_("You have a pending request on this character.") action_label=_("View") action_url="#" %}
