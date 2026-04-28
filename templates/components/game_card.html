@@ -86,9 +86,9 @@
                         <img src="{{ character.avatar.url }}"
                              alt="{{ character.name }}"
                              title="{{ character.name }}"
-                             class="avatar-sm ring-2 ring-white">
+                             class="avatar-sm ring-2 ring-card">
                     {% else %}
-                        <span class="avatar-sm avatar-placeholder ring-2 ring-white"
+                        <span class="avatar-sm avatar-placeholder ring-2 ring-card"
                               title="{{ character.name }}">
                             <span class="i-lucide-user text-xs"></span>
                         </span>
@@ -96,7 +96,7 @@
                 {% endfor %}
 
                 {% if game.characters.count > 5 %}
-                    <span class="avatar-sm bg-card text-secondary ring-2 ring-white flex items-center justify-center text-xs font-medium">
+                    <span class="avatar-sm bg-card text-secondary ring-2 ring-card flex items-center justify-center text-xs font-medium">
                         +{{ game.characters.count|add:"-5" }}
                     </span>
                 {% endif %}

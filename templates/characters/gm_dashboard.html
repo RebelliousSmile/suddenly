@@ -53,7 +53,7 @@
                                         {{ npc.origin_game.title }} · {% blocktrans count counter=npc.appearances.count %}{{ counter }} appearance{% plural %}{{ counter }} appearances{% endblocktrans %}
                                     </p>
                                 </div>
-                                <span class="badge-accent ml-auto">{% blocktrans count counter=npc.pending_count %}{{ counter }} request{% plural %}{{ counter }} requests{% endblocktrans %}</span>
+                                <span class="badge-info ml-auto">{% blocktrans count counter=npc.pending_count %}{{ counter }} request{% plural %}{{ counter }} requests{% endblocktrans %}</span>
                             </div>
 
                             {% for req in npc.pending_requests %}
@@ -71,7 +71,7 @@
                                     </div>
                                     <div class="flex items-center gap-2 flex-shrink-0">
                                         {% if req.status == 'pending' %}
-                                            <span class="badge-accent text-xs">{% trans "To process" %}</span>
+                                            <span class="badge-info text-xs">{% trans "To process" %}</span>
                                         {% else %}
                                             <span class="badge bg-card-dark text-muted border border-border text-xs">{% blocktrans with num=forloop.counter %}In queue (#{{ num }}){% endblocktrans %}</span>
                                         {% endif %}

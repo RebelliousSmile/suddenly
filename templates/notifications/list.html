@@ -10,7 +10,7 @@
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold text-primary">
                 {% trans "Notifications" %}
-                {% if unread_count %}<span class="badge-accent ml-2">{{ unread_count }}</span>{% endif %}
+                {% if unread_count %}<span class="badge-info ml-2">{{ unread_count }}</span>{% endif %}
             </h1>
             {% if unread_count %}
                 <form hx-post="{% url 'feed:notifications_read_all' %}"

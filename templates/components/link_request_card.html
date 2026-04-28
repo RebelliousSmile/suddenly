@@ -16,7 +16,7 @@
         <!-- Header: status + date -->
         <div class="flex items-center justify-between mb-3">
             <span class="badge
-                {% if request.status == 'pending' %}badge-accent
+                {% if request.status == 'pending' %}badge-info
                 {% elif request.status == 'queued' %}badge bg-card-dark text-muted border border-border
                 {% elif request.status == 'accepted' %}badge bg-card-dark text-secondary border border-border
                 {% elif request.status == 'rejected' %}badge bg-card-dark text-muted border border-border

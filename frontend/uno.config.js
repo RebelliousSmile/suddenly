@@ -134,6 +134,7 @@ const presetSuddenly = () => ({
     'badge-claimed': 'badge bg-crimson/10 text-crimson border border-crimson/30',
     'badge-adopted': 'badge bg-info/10 text-info border border-info/30',
     'badge-forked': 'badge bg-warning/10 text-warning border border-warning/30',
+    'badge-info': 'badge bg-info/10 text-info border border-info/30',
     'badge-pending': 'badge bg-surface text-muted border border-border',
     'badge-rejected': 'badge bg-error/10 text-error border border-error/30',
     'badge-pc': 'badge bg-sky-900/40 text-sky-400 border border-sky-700/50',
@@ -218,7 +219,7 @@ export default defineConfig({
   // que les classes présentes littéralement dans les fichiers HTML/PY.
   safelist: [
     // Statuts dynamiques (générés via character.status dans les templates)
-    'badge-available', 'badge-claimed', 'badge-adopted', 'badge-forked', 'badge-pc',
+    'badge-available', 'badge-claimed', 'badge-adopted', 'badge-forked', 'badge-pc', 'badge-info',
     // Modificateurs d'opacité (classes dynamiques dans expressions Django, non détectables par le scanner)
     'bg-success/10', 'bg-error/10', 'bg-warning/10', 'bg-info/10',
     'border-success/30', 'border-error/30', 'border-warning/30', 'border-info/30',
