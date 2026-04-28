@@ -65,7 +65,7 @@
                         <!-- User dropdown -->
                         <div x-data="dropdown" class="relative">
                             <button @click="toggle"
-                                    class="flex items-center text-secondary hover:text-primary bg-transparent outline-none">
+                                    class="flex items-center rounded-full bg-transparent outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-violet/50">
                                 {% if user.avatar %}
                                     <img src="{{ user.avatar.url }}" class="avatar-sm">
                                 {% else %}
