@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     gcc \
     curl \
+    gettext \
     && rm -rf /var/lib/apt/lists/*
 
 # -------------------------------------------------------------------
@@ -67,7 +68,8 @@ COPY --chown=suddenly:suddenly . .
 # Built frontend assets from Vite
 COPY --from=frontend-builder --chown=suddenly:suddenly /app/static/dist/ ./static/dist/
 
-RUN mkdir -p /app/staticfiles /app/media \
+RUN DJANGO_SETTINGS_MODULE=config.settings.development python manage.py compilemessages -l fr -l en \
+    && mkdir -p /app/staticfiles /app/media \
     && chown -R suddenly:suddenly /app/staticfiles /app/media \
     && chmod +x scripts/entrypoint.sh
 
