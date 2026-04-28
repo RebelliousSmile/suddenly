@@ -46,7 +46,7 @@
                                 </span>
                                 <div>
                                     <a href="{% url 'characters:detail' slug=npc.slug %}"
-                                       class="font-semibold text-primary hover:text-violet">
+                                       class="font-semibold text-primary hover:text-crimson">
                                         {{ npc.name }}
                                     </a>
                                     <p class="text-xs text-muted">
@@ -109,7 +109,7 @@
                         <div class="card card-body flex items-center justify-between">
                             <div>
                                 <a href="{% url 'characters:detail' slug=char.slug %}"
-                                   class="font-medium text-primary hover:text-violet">
+                                   class="font-medium text-primary hover:text-crimson">
                                     {{ char.name }}
                                 </a>
                                 <span class="{% if char.status == 'npc' %}badge-available{% else %}badge-{{ char.status }}{% endif %} text-xs ml-2">

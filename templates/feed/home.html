@@ -13,21 +13,21 @@
         <div class="flex border-b border-border mb-6">
             <a href="{% url 'feed:home' %}"
                class="px-4 py-2 text-sm font-medium border-b-2 -mb-px
-                      {% if active_tab == 'subscriptions' %}border-violet text-violet{% else %}border-transparent text-muted hover:text-secondary{% endif %}"
+                      {% if active_tab == 'subscriptions' %}border-crimson text-crimson{% else %}border-transparent text-muted hover:text-secondary{% endif %}"
                {% if active_tab != 'subscriptions' %}hx-get="{% url 'feed:home' %}" hx-target="#feed-content" hx-push-url="true"{% endif %}>
                 <span class="i-lucide-home text-sm mr-1"></span>
                 {% trans "Subscriptions" %}
             </a>
             <a href="{% url 'feed:instance' %}"
                class="px-4 py-2 text-sm font-medium border-b-2 -mb-px
-                      {% if active_tab == 'instance' %}border-violet text-violet{% else %}border-transparent text-muted hover:text-secondary{% endif %}"
+                      {% if active_tab == 'instance' %}border-crimson text-crimson{% else %}border-transparent text-muted hover:text-secondary{% endif %}"
                {% if active_tab != 'instance' %}hx-get="{% url 'feed:instance' %}" hx-target="#feed-content" hx-push-url="true"{% endif %}>
                 <span class="i-lucide-users text-sm mr-1"></span>
                 {% trans "Instance" %}
             </a>
             <a href="{% url 'feed:fediverse' %}"
                class="px-4 py-2 text-sm font-medium border-b-2 -mb-px
-                      {% if active_tab == 'fediverse' %}border-violet text-violet{% else %}border-transparent text-muted hover:text-secondary{% endif %}"
+                      {% if active_tab == 'fediverse' %}border-crimson text-crimson{% else %}border-transparent text-muted hover:text-secondary{% endif %}"
                {% if active_tab != 'fediverse' %}hx-get="{% url 'feed:fediverse' %}" hx-target="#feed-content" hx-push-url="true"{% endif %}>
                 <span class="i-lucide-globe text-sm mr-1"></span>
                 {% trans "Fediverse" %}

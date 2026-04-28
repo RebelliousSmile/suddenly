@@ -12,11 +12,11 @@
    hx-post="{% url 'mark_notification_read' pk=notification.id %}"
    hx-swap="none"
    class="flex items-start gap-3 px-4 py-3 rounded-card transition-colors
-          {% if not notification.is_read %}bg-violet/10 hover:bg-violet/10{% else %}hover:bg-surface{% endif %}">
+          {% if not notification.is_read %}bg-crimson/10 hover:bg-crimson/10{% else %}hover:bg-surface{% endif %}">
 
     <!-- Indicateur non lu -->
     {% if not notification.is_read %}
-        <span class="w-2 h-2 rounded-full bg-violet mt-2 flex-shrink-0"></span>
+        <span class="w-2 h-2 rounded-full bg-crimson mt-2 flex-shrink-0"></span>
     {% else %}
         <span class="w-2 h-2 mt-2 flex-shrink-0"></span>
     {% endif %}
@@ -28,7 +28,7 @@
         {% elif notification.type == 'link_rejected' %}bg-error/15 text-error
         {% elif notification.type == 'new_report' %}bg-info/15 text-info
         {% elif notification.type == 'new_follower' %}bg-info/15 text-info
-        {% elif notification.type == 'shared_sequence' %}bg-violet-100 text-violet-600
+        {% elif notification.type == 'shared_sequence' %}bg-crimson/10 text-crimson
         {% elif notification.type == 'revocation' %}bg-error/15 text-error
         {% endif %}">
         {% if notification.type == 'link_request' %}<span class="i-lucide-git-merge text-sm"></span>

@@ -38,7 +38,7 @@
         <nav class="container-app">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
-                <a href="/" class="flex items-center gap-2 text-xl font-semibold text-primary hover:text-violet transition-colors">
+                <a href="/" class="flex items-center gap-2 text-xl font-semibold text-primary hover:text-crimson transition-colors">
                     <img src="{% static 'img/suddenly-logo.svg' %}" alt="{{ SITE_NAME }}" width="28" height="34" class="inline-block">
                     <span class="hidden sm:inline">{{ SITE_NAME }}</span>
                 </a>
@@ -106,12 +106,12 @@
                     <!-- Theme toggle switch -->
                     <button @click="toggle()"
                             class="relative flex items-center h-7 w-14 rounded-full border border-border bg-card px-0.5 cursor-pointer transition-colors duration-300"
-                            :class="isDark ? 'border-violet/50' : 'border-amber-300/60'"
+                            :class="isDark ? 'border-crimson/50' : 'border-amber-300/60'"
                             :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
-                        <span class="i-lucide-moon absolute left-1.5 text-sm text-violet pointer-events-none"></span>
+                        <span class="i-lucide-moon absolute left-1.5 text-sm text-crimson pointer-events-none"></span>
                         <span class="i-lucide-sun absolute right-1.5 text-sm text-amber-400 pointer-events-none"></span>
                         <span class="w-5 h-5 rounded-full shadow-sm transition-all duration-300 flex-shrink-0 pointer-events-none"
-                              :class="isDark ? 'translate-x-0 bg-violet' : 'translate-x-8 bg-amber-400'">
+                              :class="isDark ? 'translate-x-0 bg-crimson' : 'translate-x-8 bg-amber-400'">
                         </span>
                     </button>
 
@@ -158,8 +158,8 @@
                     <a href="{% url 'account_logout' %}" class="block py-2 text-error">{% trans "Log out" %}</a>
                 {% else %}
                     <hr class="my-2 border-border">
-                    <a href="{% url 'account_login' %}" class="block py-2 text-violet">{% trans "Log in" %}</a>
-                    <a href="{% url 'account_signup' %}" class="block py-2 text-violet font-medium">{% trans "Sign up" %}</a>
+                    <a href="{% url 'account_login' %}" class="block py-2 text-crimson">{% trans "Log in" %}</a>
+                    <a href="{% url 'account_signup' %}" class="block py-2 text-crimson font-medium">{% trans "Sign up" %}</a>
                 {% endif %}
                 <hr class="my-2 border-border">
                 <!-- Theme toggle mobile -->
@@ -167,11 +167,11 @@
                         class="flex items-center gap-3 py-2 text-secondary w-full"
                         :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
                     <span class="relative flex items-center h-7 w-14 rounded-full border bg-card px-0.5 flex-shrink-0 transition-colors duration-300"
-                          :class="isDark ? 'border-violet/50' : 'border-amber-300/60'">
-                        <span class="i-lucide-moon absolute left-1.5 text-sm text-violet pointer-events-none"></span>
+                          :class="isDark ? 'border-crimson/50' : 'border-amber-300/60'">
+                        <span class="i-lucide-moon absolute left-1.5 text-sm text-crimson pointer-events-none"></span>
                         <span class="i-lucide-sun absolute right-1.5 text-sm text-amber-400 pointer-events-none"></span>
                         <span class="w-5 h-5 rounded-full shadow-sm transition-all duration-300 flex-shrink-0 pointer-events-none"
-                              :class="isDark ? 'translate-x-0 bg-violet' : 'translate-x-8 bg-amber-400'">
+                              :class="isDark ? 'translate-x-0 bg-crimson' : 'translate-x-8 bg-amber-400'">
                         </span>
                     </span>
                     <span x-text="isDark ? '{% trans "Light mode" %}' : '{% trans "Dark mode" %}'"></span>
@@ -253,7 +253,7 @@
     </div>
 
     <!-- Loading indicator (styles in frontend/src/htmx-indicator.css) -->
-    <div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-violet z-toast"></div>
+    <div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-crimson z-toast"></div>
 
     <!-- Scripts (Vite build with cache-busting) -->
     {% vite_asset "src/main.js" %}

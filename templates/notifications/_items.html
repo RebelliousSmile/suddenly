@@ -5,10 +5,10 @@
     <div class="divide-y divide-border">
         {% for notif in notifications %}
             <div class="flex items-start gap-3 px-4 py-3 rounded-card transition-colors
-                        {% if not notif.is_read %}bg-violet/10{% else %}hover:bg-surface{% endif %}">
+                        {% if not notif.is_read %}bg-crimson/10{% else %}hover:bg-surface{% endif %}">
 
                 {% if not notif.is_read %}
-                    <span class="w-2 h-2 rounded-full bg-violet mt-2 flex-shrink-0"></span>
+                    <span class="w-2 h-2 rounded-full bg-crimson mt-2 flex-shrink-0"></span>
                 {% else %}
                     <span class="w-2 h-2 mt-2 flex-shrink-0"></span>
                 {% endif %}
@@ -21,7 +21,7 @@
                     {% elif notif.type == 'new_report' %}bg-info/15 text-info
                     {% elif notif.type == 'recommendation' %}bg-accent-100 text-accent-600
                     {% elif notif.type == 'mention' %}bg-info/15 text-info
-                    {% elif notif.type == 'invitation' %}bg-violet/10 text-violet
+                    {% elif notif.type == 'invitation' %}bg-crimson/10 text-crimson
                     {% elif notif.type == 'new_follower' %}bg-info/15 text-info
                     {% elif notif.type == 'shared_sequence' %}bg-info/20 text-info
                     {% elif notif.type == 'revocation' %}bg-error/15 text-error

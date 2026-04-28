@@ -17,7 +17,7 @@
                             </span>
                             <span class="text-muted text-sm mx-1">{% trans "in" %}</span>
                             <a href="{% url 'games:detail' pk=report.game.pk %}"
-                               class="text-secondary hover:text-violet text-sm">
+                               class="text-secondary hover:text-crimson text-sm">
                                 {{ report.game.title }}
                             </a>
                             {% if report.remote %}
@@ -44,7 +44,7 @@
                     <!-- Title + preview -->
                     <h3 class="font-semibold text-lg mb-1">
                         <a href="{% url 'games:report_detail' game_pk=report.game.pk pk=report.pk %}"
-                           class="text-primary hover:text-violet">
+                           class="text-primary hover:text-crimson">
                             {{ report.title|default:_("Untitled") }}
                         </a>
                     </h3>
