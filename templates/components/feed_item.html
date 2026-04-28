@@ -25,11 +25,11 @@
 
             <div class="flex-1 min-w-0">
                 <a href="{% url 'profile' report.author.username %}"
-                   class="font-medium text-primary hover:text-crimson">
+                   class="font-medium text-primary hover:text-violet">
                     {{ report.author.display_name|default:report.author.username }}
                 </a>
                 <span class="text-muted text-sm mx-1">{% trans "in" %}</span>
-                <a href="#" class="text-secondary hover:text-crimson text-sm">
+                <a href="#" class="text-secondary hover:text-violet text-sm">
                     {{ report.game.title }}
                 </a>
             </div>
@@ -42,7 +42,7 @@
 
         <!-- Title -->
         <h3 class="font-semibold text-lg mb-2">
-            <a href="{{ report.get_absolute_url }}" class="text-primary hover:text-crimson">
+            <a href="{{ report.get_absolute_url }}" class="text-primary hover:text-violet">
                 {{ report.title }}
             </a>
         </h3>

@@ -13,12 +13,12 @@
         <div class="flex border-b border-border mb-6">
             <a href="?tab=received"
                class="px-4 py-2 text-sm font-medium border-b-2 -mb-px
-                      {% if active_tab == 'received' %}border-crimson text-crimson{% else %}border-transparent text-muted{% endif %}">
+                      {% if active_tab == 'received' %}border-violet text-violet{% else %}border-transparent text-muted{% endif %}">
                 {% trans "Received" %} ({{ received|length }})
             </a>
             <a href="?tab=sent"
                class="px-4 py-2 text-sm font-medium border-b-2 -mb-px
-                      {% if active_tab == 'sent' %}border-crimson text-crimson{% else %}border-transparent text-muted{% endif %}">
+                      {% if active_tab == 'sent' %}border-violet text-violet{% else %}border-transparent text-muted{% endif %}">
                 {% trans "Sent" %} ({{ sent|length }})
             </a>
         </div>
@@ -59,7 +59,7 @@
                     {% for req in sent %}
                         <div class="card card-body">
                             <div class="flex items-center justify-between mb-2">
-                                <span class="{% if req.status == 'pending' %}badge bg-crimson/20 text-crimson border border-crimson/30{% elif req.status == 'queued' %}badge bg-card-dark text-muted border border-border{% elif req.status == 'accepted' %}badge bg-card-dark text-secondary border border-border{% elif req.status == 'expired' %}badge bg-card-dark text-muted border border-border text-error{% else %}badge bg-card-dark text-muted border border-border{% endif %}">
+                                <span class="{% if req.status == 'pending' %}badge bg-violet/10 text-violet border border-violet/30{% elif req.status == 'queued' %}badge bg-card-dark text-muted border border-border{% elif req.status == 'accepted' %}badge bg-card-dark text-secondary border border-border{% elif req.status == 'expired' %}badge bg-card-dark text-muted border border-border text-error{% else %}badge bg-card-dark text-muted border border-border{% endif %}">
                                     {{ req.get_status_display }}
                                 </span>
                                 <time class="text-xs text-muted">{{ req.created_at|timesince }}</time>
