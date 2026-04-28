@@ -13,8 +13,8 @@
 
         {% if error %}
             <div class="text-center py-16">
-                <span class="i-lucide-alert-triangle text-5xl text-gray-300 mb-4 block"></span>
-                <p class="text-gray-500">{{ error }}</p>
+                <span class="i-lucide-alert-triangle text-5xl text-muted mb-4 block"></span>
+                <p class="text-muted">{{ error }}</p>
             </div>
         {% elif actor %}
             {% include "components/status_banner.html" with type="info" icon="globe" message=_("This profile is hosted on ")|add:domain|add:_(". The displayed data is shared via ActivityPub.") %}
@@ -30,15 +30,15 @@
                         </span>
                     {% endif %}
                     <div>
-                        <h1 class="text-xl font-bold text-gray-900">{{ actor.name|default:actor.preferredUsername }}</h1>
-                        <p class="text-sm text-gray-500">
+                        <h1 class="text-xl font-bold text-primary">{{ actor.name|default:actor.preferredUsername }}</h1>
+                        <p class="text-sm text-muted">
                             @{{ actor.preferredUsername }}@{{ domain }}
                         </p>
                     </div>
                 </div>
 
                 {% if actor.summary %}
-                    <p class="text-gray-600 mb-4">{{ actor.summary|striptags }}</p>
+                    <p class="text-secondary mb-4">{{ actor.summary|striptags }}</p>
                 {% endif %}
 
                 {% if user.is_authenticated %}
@@ -46,7 +46,7 @@
                 {% endif %}
             </div>
 
-            <p class="text-sm text-gray-500 mt-4">
+            <p class="text-sm text-muted mt-4">
                 <a href="{{ ap_id }}" class="link-muted" target="_blank" rel="noopener">
                     {% blocktrans with d=domain %}View full profile on {{ d }}{% endblocktrans %}
                     <span class="i-lucide-external-link text-xs"></span>

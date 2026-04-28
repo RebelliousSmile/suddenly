@@ -8,12 +8,12 @@
     <div class="container-app max-w-lg">
 
         <div class="flex items-center justify-between mb-2">
-            <p class="text-sm text-gray-500">{% trans "Step 2 of 3" %}</p>
+            <p class="text-sm text-muted">{% trans "Step 2 of 3" %}</p>
             <a href="{% url 'feed:onboarding_step1' %}" class="link-muted text-sm">
                 <span class="i-lucide-arrow-left text-xs"></span> {% trans "Back" %}
             </a>
         </div>
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">{% trans "Discover your instance" %}</h1>
+        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "Discover your instance" %}</h1>
 
         <!-- Local timeline preview -->
         {% if recent_reports %}
@@ -23,7 +23,7 @@
                     {% for report in recent_reports %}
                         <div class="card card-body text-sm">
                             <strong>{{ report.title|default:_("Untitled") }}</strong>
-                            <span class="text-gray-500">{% blocktrans with username=report.author.username %}by @{{ username }}{% endblocktrans %}</span>
+                            <span class="text-muted">{% blocktrans with username=report.author.username %}by @{{ username }}{% endblocktrans %}</span>
                         </div>
                     {% endfor %}
                 </div>
@@ -52,7 +52,7 @@
                     {% for g in suggested_games %}
                         <div class="card card-body text-sm">
                             <strong>{{ g.title }}</strong>
-                            {% if g.game_system %}<span class="text-gray-500">· {{ g.game_system }}</span>{% endif %}
+                            {% if g.game_system %}<span class="text-muted">· {{ g.game_system }}</span>{% endif %}
                         </div>
                     {% endfor %}
                 </div>

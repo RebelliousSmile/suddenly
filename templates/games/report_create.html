@@ -7,15 +7,15 @@
 <section class="py-8">
     <div class="container-app max-w-3xl">
 
-        <p class="text-sm text-gray-500 mb-4">
+        <p class="text-sm text-muted mb-4">
             <a href="{% url 'games:detail' pk=game.pk %}" class="link-muted">{{ game.title }}</a>
             › {% trans "New report" %}
         </p>
 
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">{% trans "New report" %}</h1>
+        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "New report" %}</h1>
 
         {% if error %}
-            <div class="mb-4 p-4 rounded-lg bg-red-50 text-red-800 border border-red-200">
+            <div class="mb-4 p-4 rounded-lg bg-error/10 text-error border border-error/30">
                 {{ error }}
             </div>
         {% endif %}
@@ -26,7 +26,7 @@
             <div class="card card-body space-y-4">
                 <div>
                     <label for="title" class="form-label">
-                        {% trans "Title" %} <span class="text-gray-500">({% trans "optional" %})</span>
+                        {% trans "Title" %} <span class="text-muted">({% trans "optional" %})</span>
                     </label>
                     <input type="text" id="title" name="title"
                            value="{{ form_data.title|default:'' }}"
@@ -37,14 +37,14 @@
                 <!-- Cast / Distribution (US-05, US-13) -->
                 <div x-data="{ cast: [], newChar: '' }">
                     <label class="form-label">
-                        {% trans "Cast" %} <span class="text-gray-500">({% trans "optional" %})</span>
+                        {% trans "Cast" %} <span class="text-muted">({% trans "optional" %})</span>
                     </label>
                     <div class="flex flex-wrap gap-2 mb-2">
                         <template x-for="(c, i) in cast" :key="i">
-                            <span class="badge-primary flex items-center gap-1">
+                            <span class="badge bg-crimson/20 text-crimson border border-crimson/30 flex items-center gap-1">
                                 <span x-text="c"></span>
                                 <button type="button" @click="cast.splice(i, 1)"
-                                        class="hover:text-primary-200">
+                                        class="hover:text-crimson/60">
                                     <span class="i-lucide-x text-xs"></span>
                                 </button>
                                 <input type="hidden" :name="'cast['+i+']'" :value="c">
@@ -80,8 +80,8 @@
                          class="dropdown-menu bottom-full left-0 mb-1 w-64">
                         <template x-for="(s, i) in suggestions" :key="s.id">
                             <button @click="selectSuggestion(s)"
-                                    :class="{'bg-primary-50': i === selectedIndex}"
-                                    class="w-full px-3 py-2 text-left text-sm hover:bg-gray-50"
+                                    :class="{'bg-card-dark': i === selectedIndex}"
+                                    class="w-full px-3 py-2 text-left text-sm hover:bg-card"
                                     x-text="s.name">
                             </button>
                         </template>
@@ -89,13 +89,13 @@
 
                     <p class="form-help">
                         <span class="i-lucide-info text-xs mr-1"></span>
-                        {% trans "Markdown supported. Type" %} <code class="bg-gray-100 px-1 rounded">@</code> {% trans "to mention." %}
+                        {% trans "Markdown supported. Type" %} <code class="bg-card px-1 rounded">@</code> {% trans "to mention." %}
                     </p>
                 </div>
 
                 <div>
                     <label for="content_warning" class="form-label">
-                        {% trans "Content warning" %} <span class="text-gray-500">({% trans "optional" %})</span>
+                        {% trans "Content warning" %} <span class="text-muted">({% trans "optional" %})</span>
                     </label>
                     <input type="text" id="content_warning" name="content_warning"
                            value="{{ form_data.content_warning|default:'' }}"
@@ -112,7 +112,7 @@
                         <label class="flex items-center gap-2 py-1">
                             <input type="radio" name="visibility" value="{{ value }}"
                                    {% if value == 'public' %}checked{% endif %}
-                                   class="h-4 w-4 text-primary-600 focus:ring-primary-500">
+                                   class="h-4 w-4 text-crimson focus:ring-crimson">
                             <span class="text-sm">
                                 {% if value == 'public' %}<span class="i-lucide-globe text-xs"></span>{% endif %}
                                 {% if value == 'unlisted' %}<span class="i-lucide-unlock text-xs"></span>{% endif %}

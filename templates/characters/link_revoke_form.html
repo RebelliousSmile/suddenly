@@ -6,7 +6,7 @@
 {% block content %}
 <section class="py-8">
     <div class="container-app max-w-lg">
-        <h1 class="text-xl font-bold text-gray-900 mb-4">
+        <h1 class="text-xl font-bold text-primary mb-4">
             {% if is_creator %}{% blocktrans with name=link.target.name %}Revoke link with {{ name }}{% endblocktrans %}{% else %}{% blocktrans with name=link.target.name %}Renounce {{ name }}{% endblocktrans %}{% endif %}
         </h1>
 
@@ -22,7 +22,7 @@
             {% csrf_token %}
             <div>
                 <label for="reason" class="form-label">
-                    {% trans "Reason" %} <span class="text-gray-500">({% trans "optional" %})</span>
+                    {% trans "Reason" %} <span class="text-muted">({% trans "optional" %})</span>
                 </label>
                 <textarea id="reason" name="reason" rows="3"
                           placeholder="{% if is_creator %}{% trans "Explain why you are revoking..." %}{% else %}{% trans "Message for the creator..." %}{% endif %}"

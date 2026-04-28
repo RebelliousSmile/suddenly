@@ -7,18 +7,18 @@
 <section class="py-8">
     <div class="container-app max-w-2xl">
 
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">{% trans "Link requests" %}</h1>
+        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "Link requests" %}</h1>
 
         <!-- Tabs -->
-        <div class="flex border-b border-gray-200 mb-6">
+        <div class="flex border-b border-border mb-6">
             <a href="?tab=received"
                class="px-4 py-2 text-sm font-medium border-b-2 -mb-px
-                      {% if active_tab == 'received' %}border-primary-500 text-primary-600{% else %}border-transparent text-gray-500{% endif %}">
+                      {% if active_tab == 'received' %}border-crimson text-crimson{% else %}border-transparent text-muted{% endif %}">
                 {% trans "Received" %} ({{ received|length }})
             </a>
             <a href="?tab=sent"
                class="px-4 py-2 text-sm font-medium border-b-2 -mb-px
-                      {% if active_tab == 'sent' %}border-primary-500 text-primary-600{% else %}border-transparent text-gray-500{% endif %}">
+                      {% if active_tab == 'sent' %}border-crimson text-crimson{% else %}border-transparent text-muted{% endif %}">
                 {% trans "Sent" %} ({{ sent|length }})
             </a>
         </div>
@@ -29,16 +29,16 @@
                     {% for req in received %}
                         <div class="card card-body">
                             <div class="flex items-center justify-between mb-2">
-                                <span class="{% if req.status == 'pending' %}badge-accent{% elif req.status == 'queued' %}badge-gray{% elif req.status == 'accepted' %}badge-secondary{% else %}badge-gray{% endif %}">
+                                <span class="{% if req.status == 'pending' %}badge-accent{% elif req.status == 'queued' %}badge bg-card-dark text-muted border border-border{% elif req.status == 'accepted' %}badge bg-card-dark text-secondary border border-border{% else %}badge bg-card-dark text-muted border border-border{% endif %}">
                                     {{ req.get_status_display }}
                                 </span>
-                                <time class="text-xs text-gray-500">{{ req.created_at|timesince }}</time>
+                                <time class="text-xs text-muted">{{ req.created_at|timesince }}</time>
                             </div>
-                            <p class="font-medium text-gray-900 mb-1">
+                            <p class="font-medium text-primary mb-1">
                                 {% blocktrans with username=req.requester.username type=req.get_type_display|upper name=req.target_character.name %}@{{ username }} wants to <strong>{{ type }}</strong> {{ name }}{% endblocktrans %}
                             </p>
                             {% if req.message %}
-                                <p class="text-sm text-gray-600 italic line-clamp-2">« {{ req.message }} »</p>
+                                <p class="text-sm text-secondary italic line-clamp-2">« {{ req.message }} »</p>
                             {% endif %}
                             {% if req.status == 'pending' %}
                                 <div class="flex items-center gap-2 mt-3">
@@ -50,7 +50,7 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <p class="text-sm text-gray-500 text-center py-8">{% trans "No received requests." %}</p>
+                <p class="text-sm text-muted text-center py-8">{% trans "No received requests." %}</p>
             {% endif %}
 
         {% else %}
@@ -59,12 +59,12 @@
                     {% for req in sent %}
                         <div class="card card-body">
                             <div class="flex items-center justify-between mb-2">
-                                <span class="{% if req.status == 'pending' %}badge-primary{% elif req.status == 'queued' %}badge-gray{% elif req.status == 'accepted' %}badge-secondary{% elif req.status == 'expired' %}badge-gray text-red-600{% else %}badge-gray{% endif %}">
+                                <span class="{% if req.status == 'pending' %}badge bg-crimson/20 text-crimson border border-crimson/30{% elif req.status == 'queued' %}badge bg-card-dark text-muted border border-border{% elif req.status == 'accepted' %}badge bg-card-dark text-secondary border border-border{% elif req.status == 'expired' %}badge bg-card-dark text-muted border border-border text-error{% else %}badge bg-card-dark text-muted border border-border{% endif %}">
                                     {{ req.get_status_display }}
                                 </span>
-                                <time class="text-xs text-gray-500">{{ req.created_at|timesince }}</time>
+                                <time class="text-xs text-muted">{{ req.created_at|timesince }}</time>
                             </div>
-                            <p class="font-medium text-gray-900 mb-1">
+                            <p class="font-medium text-primary mb-1">
                                 {{ req.get_type_display|upper }} —
                                 {{ req.target_character.name }}
                                 ({% blocktrans with username=req.target_character.creator.username %}NPC by @{{ username }}{% endblocktrans %})
@@ -74,7 +74,7 @@
                                       action="{% url 'characters:link_request_cancel' pk=req.pk %}"
                                       class="mt-2">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn-ghost btn-sm text-red-600">
+                                    <button type="submit" class="btn-ghost btn-sm text-error">
                                         {% trans "Cancel my request" %}
                                     </button>
                                 </form>
@@ -83,7 +83,7 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <p class="text-sm text-gray-500 text-center py-8">{% trans "No sent requests." %}</p>
+                <p class="text-sm text-muted text-center py-8">{% trans "No sent requests." %}</p>
             {% endif %}
         {% endif %}
 

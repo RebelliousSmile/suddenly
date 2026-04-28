@@ -8,25 +8,25 @@
     <div class="container-app max-w-3xl">
 
         <!-- Breadcrumb -->
-        <p class="text-sm text-gray-500 mb-4">
+        <p class="text-sm text-muted mb-4">
             <a href="{% url 'games:detail' pk=game.pk %}" class="link-muted">{{ game.title }}</a>
             › {{ report.title|default:_("Report") }}
         </p>
 
         <!-- Header -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-gray-900 mb-2">
+            <h1 class="text-2xl font-bold text-primary mb-2">
                 {{ report.title|default:_("Untitled") }}
             </h1>
-            <div class="flex items-center gap-3 text-sm text-gray-500">
+            <div class="flex items-center gap-3 text-sm text-muted">
                 <span>{% blocktrans with username=report.author.username %}by @{{ username }}{% endblocktrans %}</span>
                 {% if report.published_at %}
                     <span>· {% blocktrans with date=report.published_at|timesince %}published {{ date }}{% endblocktrans %}</span>
                 {% else %}
-                    <span class="badge-gray">{% trans "Draft" %}</span>
+                    <span class="badge bg-card-dark text-muted border border-border">{% trans "Draft" %}</span>
                 {% endif %}
                 {% if report.visibility != 'public' %}
-                    <span class="badge-gray">
+                    <span class="badge bg-card-dark text-muted border border-border">
                         {% if report.visibility == 'unlisted' %}{% trans "Unlisted" %}{% endif %}
                         {% if report.visibility == 'followers' %}{% trans "Followers" %}{% endif %}
                     </span>
@@ -36,14 +36,14 @@
 
         <!-- Content Warning -->
         {% if report.content_warning %}
-            <div class="card card-body mb-6 bg-amber-50 border-amber-200"
+            <div class="card card-body mb-6 bg-warning/10 border-warning/30"
                  x-data="{ show: false }">
-                <div class="flex items-center gap-2 text-amber-800">
+                <div class="flex items-center gap-2 text-warning">
                     <span class="i-lucide-alert-triangle"></span>
                     <strong class="text-sm">{{ report.content_warning }}</strong>
                 </div>
                 <button @click="show = !show"
-                        class="btn-ghost btn-sm mt-2 text-amber-700"
+                        class="btn-ghost btn-sm mt-2 text-warning"
                         x-text="show ? '{% trans "Hide" %}' : '{% trans "Show content" %}'">
                 </button>
                 <div x-show="show" x-transition class="mt-4 prose-report">
@@ -65,8 +65,8 @@
                     {% for app in cast %}
                         <a href="{% url 'characters:detail' slug=app.character.slug %}"
                            class="inline-flex items-center gap-1 px-3 py-1 rounded-badge text-sm
-                                  {% if app.character.status == 'npc' %}bg-green-100 text-green-800
-                                  {% else %}bg-blue-100 text-blue-800{% endif %}">
+                                  {% if app.character.status == 'npc' %}bg-success/15 text-success
+                                  {% else %}bg-info/15 text-info{% endif %}">
                             {{ app.character.name }}
                             <span class="text-xs opacity-60">{{ app.get_role_display }}</span>
                         </a>
@@ -80,9 +80,9 @@
             <div class="card card-body mb-6">
                 <h2 class="text-heading mb-3">{% trans "Quotes from this session" %}</h2>
                 {% for quote in quotes %}
-                    <blockquote class="border-l-4 border-primary-300 pl-4 mb-4">
-                        <p class="text-gray-800 italic font-serif text-lg">"{{ quote.content }}"</p>
-                        <footer class="text-xs text-gray-500 mt-1">
+                    <blockquote class="border-l-4 border-crimson/40 pl-4 mb-4">
+                        <p class="text-primary italic font-serif text-lg">"{{ quote.content }}"</p>
+                        <footer class="text-xs text-muted mt-1">
                             — {{ quote.character.name }}
                         </footer>
                     </blockquote>

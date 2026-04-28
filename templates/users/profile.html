@@ -25,10 +25,10 @@
             <div class="flex-1">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-900">
+                        <h1 class="text-3xl font-bold text-primary">
                             {{ profile_user.get_display_name }}
                         </h1>
-                        <p class="text-gray-500">@{{ profile_user.username }}</p>
+                        <p class="text-muted">@{{ profile_user.username }}</p>
                     </div>
 
                     <!-- Actions -->
@@ -47,7 +47,7 @@
 
                 <!-- Bio -->
                 {% if profile_user.bio %}
-                    <p class="text-gray-600 max-w-2xl mb-4">
+                    <p class="text-secondary max-w-2xl mb-4">
                         {{ profile_user.bio|linebreaksbr }}
                     </p>
                 {% endif %}
@@ -56,11 +56,11 @@
                 <div class="flex items-center gap-4 text-sm">
                     <span>
                         <strong>{{ followers_count|default:0 }}</strong>
-                        <span class="text-gray-500">{% blocktrans count counter=followers_count|default:0 %}follower{% plural %}followers{% endblocktrans %}</span>
+                        <span class="text-muted">{% blocktrans count counter=followers_count|default:0 %}follower{% plural %}followers{% endblocktrans %}</span>
                     </span>
                     <span>
                         <strong>{{ following_count|default:0 }}</strong>
-                        <span class="text-gray-500">{% blocktrans count counter=following_count|default:0 %}following{% plural %}following{% endblocktrans %}</span>
+                        <span class="text-muted">{% blocktrans count counter=following_count|default:0 %}following{% plural %}following{% endblocktrans %}</span>
                     </span>
                 </div>
             </div>
@@ -68,7 +68,7 @@
 
         <!-- ActivityPub Actor URL -->
         {% if profile_user.actor_url %}
-            <div class="mt-6 flex items-center gap-2 text-sm text-gray-500">
+            <div class="mt-6 flex items-center gap-2 text-sm text-muted">
                 <span class="i-lucide-globe text-xs"></span>
                 <span>{{ profile_user.actor_url }}</span>
             </div>
@@ -85,13 +85,13 @@
             <div class="space-y-3">
                 {% for game in games %}
                     <div class="card card-body">
-                        <h3 class="font-semibold text-gray-900">{{ game.title }}</h3>
-                        {% if game.game_system %}<p class="text-sm text-gray-500">{{ game.game_system }}</p>{% endif %}
+                        <h3 class="font-semibold text-primary">{{ game.title }}</h3>
+                        {% if game.game_system %}<p class="text-sm text-muted">{{ game.game_system }}</p>{% endif %}
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <p class="text-sm text-gray-500">{% trans "No published games yet." %}</p>
+            <p class="text-sm text-muted">{% trans "No published games yet." %}</p>
         {% endif %}
     </div>
 </section>
@@ -106,12 +106,12 @@
                 {% for character in characters %}
                     <div class="card card-body text-center">
                         <p class="font-medium text-sm">{{ character.name }}</p>
-                        <p class="text-xs text-gray-500">{{ character.get_status_display }}</p>
+                        <p class="text-xs text-muted">{{ character.get_status_display }}</p>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <p class="text-sm text-gray-500">{% trans "No characters yet." %}</p>
+            <p class="text-sm text-muted">{% trans "No characters yet." %}</p>
         {% endif %}
     </div>
 </section>

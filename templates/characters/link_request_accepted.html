@@ -6,9 +6,9 @@
 {% block content %}
 <section class="py-16">
     <div class="container-app max-w-lg text-center">
-        <span class="i-lucide-check-circle text-5xl text-secondary-500 mb-4 block"></span>
-        <h1 class="text-2xl font-bold text-gray-900 mb-2">{% trans "Request accepted!" %}</h1>
-        <p class="text-gray-600 mb-6">
+        <span class="i-lucide-check-circle text-5xl text-muted mb-4 block"></span>
+        <h1 class="text-2xl font-bold text-primary mb-2">{% trans "Request accepted!" %}</h1>
+        <p class="text-secondary mb-6">
             {% blocktrans with name=link_request.target_character.name username=link_request.requester.username %}{{ name }} is now linked to @{{ username }}. A Shared Sequence has been created.{% endblocktrans %}
         </p>
         <div class="flex items-center justify-center gap-3">

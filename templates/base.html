@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
     <!-- Styles (Vite build with cache-busting) -->
     {% vite_css %}
@@ -22,33 +22,33 @@
 
     {% block extra_head %}{% endblock %}
 </head>
-<body class="h-full bg-gray-50 text-gray-900 font-sans antialiased">
+<body class="h-full font-sans antialiased">
 
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-sticky">
+    <header class="bg-surface border-b border-border sticky top-0 z-sticky">
         <nav class="container-app">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
-                <a href="/" class="flex items-center gap-2 text-xl font-semibold text-gray-900 hover:text-primary-600 transition-colors">
+                <a href="/" class="flex items-center gap-2 text-xl font-semibold text-primary hover:text-crimson transition-colors">
                     <img src="{% static 'img/suddenly-logo.svg' %}" alt="{{ SITE_NAME }}" width="28" height="34" class="inline-block">
                     <span class="hidden sm:inline">{{ SITE_NAME }}</span>
                 </a>
 
                 <!-- Navigation desktop -->
                 <div class="hidden md:flex items-center gap-6">
-                    <a href="{% url 'core:home' %}" class="text-gray-600 hover:text-gray-900 transition-colors">
+                    <a href="{% url 'core:home' %}" class="text-secondary hover:text-primary transition-colors">
                         {% trans "Home" %}
                     </a>
-                    <a href="#" class="text-gray-600 hover:text-gray-900 transition-colors">
+                    <a href="#" class="text-secondary hover:text-primary transition-colors">
                         {% trans "Explore" %}
                     </a>
 
                     {% if user.is_authenticated %}
-                        <a href="{% url 'games:list' %}" class="text-gray-600 hover:text-gray-900 transition-colors">
+                        <a href="{% url 'games:list' %}" class="text-secondary hover:text-primary transition-colors">
                             <span class="i-lucide-book-open mr-1"></span>
                             {% trans "My games" %}
                         </a>
-                        <a href="{% url 'characters:list' %}" class="text-gray-600 hover:text-gray-900 transition-colors">
+                        <a href="{% url 'characters:list' %}" class="text-secondary hover:text-primary transition-colors">
                             <span class="i-lucide-users mr-1"></span>
                             {% trans "My characters" %}
                         </a>
@@ -56,7 +56,7 @@
                         <!-- User dropdown -->
                         <div x-data="dropdown" class="relative">
                             <button @click="toggle"
-                                    class="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+                                    class="flex items-center gap-2 text-secondary hover:text-primary">
                                 {% if user.avatar %}
                                     <img src="{{ user.avatar.url }}" class="avatar-sm">
                                 {% else %}
@@ -72,16 +72,16 @@
                                  x-transition
                                  @click.away="close"
                                  class="dropdown-menu right-0 mt-2 w-48">
-                                <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
                                     <span class="i-lucide-user mr-2"></span>
                                     {% trans "Profile" %}
                                 </a>
-                                <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
                                     <span class="i-lucide-settings mr-2"></span>
                                     {% trans "Settings" %}
                                 </a>
-                                <hr class="my-1 border-gray-200">
-                                <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                <hr class="my-1 border-border">
+                                <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-error hover:bg-error/10">
                                     <span class="i-lucide-log-out mr-2"></span>
                                     {% trans "Log out" %}
                                 </a>
@@ -105,19 +105,19 @@
                             <input type="hidden" name="next" value="{{ request.path }}">
                             <select name="language"
                                     onchange="this.form.submit()"
-                                    class="text-xs border border-gray-200 rounded px-1 py-0.5 text-gray-600 bg-white">
+                                    class="bg-card border-border text-secondary text-xs rounded px-1 py-0.5">
                                 {% for lang_code, lang_name in AVAILABLE_LANGUAGES %}
                                     <option value="{{ lang_code }}" {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %}>{{ lang_name }}</option>
                                 {% endfor %}
                             </select>
-                            <noscript><button type="submit" class="text-xs text-gray-600">OK</button></noscript>
+                            <noscript><button type="submit" class="text-xs text-secondary">OK</button></noscript>
                         </form>
                     {% endif %}
                 </div>
 
                 <!-- Mobile menu button -->
                 <button x-data @click="$dispatch('toggle-mobile-menu')"
-                        class="md:hidden p-2 text-gray-600 hover:text-gray-900">
+                        class="md:hidden p-2 text-secondary hover:text-primary">
                     <span class="i-lucide-menu text-xl"></span>
                 </button>
             </div>
@@ -128,19 +128,19 @@
              @toggle-mobile-menu.window="open = !open"
              x-show="open"
              x-transition
-             class="md:hidden border-t border-gray-200 bg-white">
+             class="md:hidden border-t border-border bg-surface">
             <div class="container-app py-4 space-y-2">
-                <a href="{% url 'core:home' %}" class="block py-2 text-gray-600">{% trans "Home" %}</a>
-                <a href="#" class="block py-2 text-gray-600">{% trans "Explore" %}</a>
+                <a href="{% url 'core:home' %}" class="block py-2 text-secondary">{% trans "Home" %}</a>
+                <a href="#" class="block py-2 text-secondary">{% trans "Explore" %}</a>
                 {% if user.is_authenticated %}
-                    <a href="{% url 'games:list' %}" class="block py-2 text-gray-600">{% trans "My games" %}</a>
-                    <a href="{% url 'characters:list' %}" class="block py-2 text-gray-600">{% trans "My characters" %}</a>
-                    <hr class="my-2 border-gray-200">
-                    <a href="{% url 'account_logout' %}" class="block py-2 text-red-600">{% trans "Log out" %}</a>
+                    <a href="{% url 'games:list' %}" class="block py-2 text-secondary">{% trans "My games" %}</a>
+                    <a href="{% url 'characters:list' %}" class="block py-2 text-secondary">{% trans "My characters" %}</a>
+                    <hr class="my-2 border-border">
+                    <a href="{% url 'account_logout' %}" class="block py-2 text-error">{% trans "Log out" %}</a>
                 {% else %}
-                    <hr class="my-2 border-gray-200">
-                    <a href="{% url 'account_login' %}" class="block py-2 text-primary-600">{% trans "Log in" %}</a>
-                    <a href="{% url 'account_signup' %}" class="block py-2 text-primary-600 font-medium">{% trans "Sign up" %}</a>
+                    <hr class="my-2 border-border">
+                    <a href="{% url 'account_login' %}" class="block py-2 text-crimson">{% trans "Log in" %}</a>
+                    <a href="{% url 'account_signup' %}" class="block py-2 text-crimson font-medium">{% trans "Sign up" %}</a>
                 {% endif %}
             </div>
         </div>
@@ -151,10 +151,10 @@
         <div class="container-app mt-4">
             {% for message in messages %}
                 <div class="mb-2 p-4 rounded-lg flex items-center gap-3
-                            {% if message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200{% endif %}
-                            {% if message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200{% endif %}
-                            {% if message.tags == 'warning' %}bg-amber-50 text-amber-800 border border-amber-200{% endif %}
-                            {% if message.tags == 'info' %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+                            {% if message.tags == 'success' %}bg-success/10 text-success border border-success/30{% endif %}
+                            {% if message.tags == 'error' %}bg-error/10 text-error border border-error/30{% endif %}
+                            {% if message.tags == 'warning' %}bg-warning/10 text-warning border border-warning/30{% endif %}
+                            {% if message.tags == 'info' %}bg-info/10 text-info border border-info/30{% endif %}">
                     {% if message.tags == 'success' %}<span class="i-lucide-check-circle"></span>{% endif %}
                     {% if message.tags == 'error' %}<span class="i-lucide-x-circle"></span>{% endif %}
                     {% if message.tags == 'warning' %}<span class="i-lucide-alert-triangle"></span>{% endif %}
@@ -171,20 +171,20 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 mt-16">
+    <footer class="bg-surface border-t border-border mt-16">
         <div class="container-app py-8">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-2 text-gray-600">
+                <div class="flex items-center gap-2 text-secondary">
                     <img src="{% static 'img/suddenly-logo.svg' %}" alt="{{ SITE_NAME }}" width="24" height="29" class="inline-block">
                     <span>{{ SITE_NAME }}</span>
-                    <span class="text-gray-400">—</span>
-                    <span class="text-sm text-gray-500">{% trans "Federated shared fiction network" %}</span>
+                    <span class="text-muted">—</span>
+                    <span class="text-sm text-muted">{% trans "Federated shared fiction network" %}</span>
                 </div>
 
-                <div class="flex items-center gap-4 text-sm text-gray-500">
-                    <a href="{% url 'core:about' %}" class="hover:text-gray-900">{% trans "About" %}</a>
-                    <a href="https://rebellioussmile.github.io/suddenly/" class="hover:text-gray-900">{% trans "Documentation" %}</a>
-                    <a href="https://github.com/RebelliousSmile/suddenly" class="hover:text-gray-900">
+                <div class="flex items-center gap-4 text-sm text-muted">
+                    <a href="{% url 'core:about' %}" class="hover:text-primary">{% trans "About" %}</a>
+                    <a href="https://rebellioussmile.github.io/suddenly/" class="hover:text-primary">{% trans "Documentation" %}</a>
+                    <a href="https://github.com/RebelliousSmile/suddenly" class="hover:text-primary">
                         <span class="i-simple-icons-github mr-1"></span>
                         GitHub
                     </a>
@@ -205,9 +205,9 @@
                  x-transition:leave-start="opacity-100"
                  x-transition:leave-end="opacity-0"
                  :class="{
-                     'bg-green-50 text-green-800 border-green-200': item.type === 'success',
-                     'bg-red-50 text-red-800 border-red-200': item.type === 'error',
-                     'bg-blue-50 text-blue-800 border-blue-200': item.type === 'info',
+                     'bg-success/10 text-success border-success/30': item.type === 'success',
+                     'bg-error/10 text-error border-error/30': item.type === 'error',
+                     'bg-info/10 text-info border-info/30': item.type === 'info',
                  }"
                  class="p-4 rounded-lg shadow-lg border max-w-sm flex items-center gap-3">
                 <span x-text="item.message"></span>
@@ -219,7 +219,7 @@
     </div>
 
     <!-- Loading indicator (styles in frontend/src/htmx-indicator.css) -->
-    <div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-primary-600 z-toast"></div>
+    <div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-crimson z-toast"></div>
 
     <!-- Scripts (Vite build with cache-busting) -->
     {% vite_asset "src/main.js" %}

@@ -2,29 +2,29 @@
 {% load i18n %}
 
 {% if notifications %}
-    <div class="divide-y divide-gray-100">
+    <div class="divide-y divide-border">
         {% for notif in notifications %}
             <div class="flex items-start gap-3 px-4 py-3 rounded-card transition-colors
-                        {% if not notif.is_read %}bg-primary-50{% else %}hover:bg-gray-50{% endif %}">
+                        {% if not notif.is_read %}bg-crimson/10{% else %}hover:bg-surface{% endif %}">
 
                 {% if not notif.is_read %}
-                    <span class="w-2 h-2 rounded-full bg-primary-500 mt-2 flex-shrink-0"></span>
+                    <span class="w-2 h-2 rounded-full bg-crimson mt-2 flex-shrink-0"></span>
                 {% else %}
                     <span class="w-2 h-2 mt-2 flex-shrink-0"></span>
                 {% endif %}
 
                 <!-- Type icon -->
                 <span class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
-                    {% if notif.type == 'link_request' %}bg-amber-100 text-amber-600
-                    {% elif notif.type == 'link_accepted' %}bg-emerald-100 text-emerald-600
-                    {% elif notif.type == 'link_rejected' %}bg-red-100 text-red-600
-                    {% elif notif.type == 'new_report' %}bg-indigo-100 text-indigo-600
+                    {% if notif.type == 'link_request' %}bg-warning/15 text-warning
+                    {% elif notif.type == 'link_accepted' %}bg-success/20 text-success
+                    {% elif notif.type == 'link_rejected' %}bg-error/15 text-error
+                    {% elif notif.type == 'new_report' %}bg-info/15 text-info
                     {% elif notif.type == 'recommendation' %}bg-accent-100 text-accent-600
-                    {% elif notif.type == 'mention' %}bg-blue-100 text-blue-600
-                    {% elif notif.type == 'invitation' %}bg-primary-100 text-primary-600
-                    {% elif notif.type == 'new_follower' %}bg-blue-100 text-blue-600
-                    {% elif notif.type == 'shared_sequence' %}bg-violet-100 text-violet-600
-                    {% elif notif.type == 'revocation' %}bg-red-100 text-red-600
+                    {% elif notif.type == 'mention' %}bg-info/15 text-info
+                    {% elif notif.type == 'invitation' %}bg-crimson/15 text-crimson
+                    {% elif notif.type == 'new_follower' %}bg-info/15 text-info
+                    {% elif notif.type == 'shared_sequence' %}bg-info/20 text-info
+                    {% elif notif.type == 'revocation' %}bg-error/15 text-error
                     {% endif %}">
                     {% if notif.type == 'link_request' %}<span class="i-lucide-git-merge text-sm"></span>
                     {% elif notif.type == 'link_accepted' %}<span class="i-lucide-check text-sm"></span>
@@ -40,10 +40,10 @@
                 </span>
 
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm text-gray-900 {% if not notif.is_read %}font-medium{% endif %}">
+                    <p class="text-sm text-primary {% if not notif.is_read %}font-medium{% endif %}">
                         {{ notif.message }}
                     </p>
-                    <time class="text-xs text-gray-500">
+                    <time class="text-xs text-muted">
                         {{ notif.created_at|timesince }}
                     </time>
                 </div>
@@ -52,7 +52,7 @@
     </div>
 {% else %}
     <div class="text-center py-16">
-        <span class="i-lucide-bell text-5xl text-gray-300 mb-4 block"></span>
-        <p class="text-gray-500">{% trans "No notifications." %}</p>
+        <span class="i-lucide-bell text-5xl text-muted mb-4 block"></span>
+        <p class="text-muted">{% trans "No notifications." %}</p>
     </div>
 {% endif %}

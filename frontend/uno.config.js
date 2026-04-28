@@ -7,54 +7,32 @@ import {
 } from 'unocss'
 
 // =================================================================
-// Preset Suddenly - Couleurs et tokens custom
+// Preset Suddenly - Couleurs et tokens custom (dark cosmos)
 // =================================================================
 const presetSuddenly = () => ({
   name: 'suddenly',
   theme: {
     colors: {
-      // Couleur principale - Indigo/Violet (créativité, fiction)
-      primary: {
-        50: '#eef2ff',
-        100: '#e0e7ff',
-        200: '#c7d2fe',
-        300: '#a5b4fc',
-        400: '#818cf8',
-        500: '#6366f1',
-        600: '#4f46e5',
-        700: '#4338ca',
-        800: '#3730a3',
-        900: '#312e81',
-        950: '#1e1b4b',
+      // Dark cosmos palette
+      background: '#0a0915',
+      surface: '#100e20',
+      card: {
+        DEFAULT: '#18162a',
+        dark: '#211e36',
       },
-      // Secondaire - Emerald (liens, connexions)
-      secondary: {
-        50: '#ecfdf5',
-        100: '#d1fae5',
-        200: '#a7f3d0',
-        300: '#6ee7b7',
-        400: '#34d399',
-        500: '#10b981',
-        600: '#059669',
-        700: '#047857',
-        800: '#065f46',
-        900: '#064e3b',
-        950: '#022c22',
+      border: '#2d2845',
+      primary: '#ede8f5',
+      secondary: '#b0a8cc',
+      muted: '#7a7290',
+      crimson: {
+        DEFAULT: '#e03558',
+        hover: '#c82a4a',
       },
-      // Accent - Amber (attention, actions)
-      accent: {
-        50: '#fffbeb',
-        100: '#fef3c7',
-        200: '#fde68a',
-        300: '#fcd34d',
-        400: '#fbbf24',
-        500: '#f59e0b',
-        600: '#d97706',
-        700: '#b45309',
-        800: '#92400e',
-        900: '#78350f',
-        950: '#451a03',
-      },
+      success: '#16a34a',
+      warning: '#d97706',
+      error: '#e03558',
+      info: '#6366f1',
+
       // Statuts des personnages — utilisés par les badges badge-*
       // (conservés comme référence sémantique, les badges utilisent les palettes Tailwind)
     },
@@ -62,7 +40,7 @@ const presetSuddenly = () => ({
     // Fonts
     fontFamily: {
       sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-      serif: ['Lora', 'Georgia', 'serif'],
+      serif: ['Crimson Text', 'Georgia', 'serif'],
       mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
     },
 
@@ -83,6 +61,7 @@ const presetSuddenly = () => ({
       'card': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
       'card-hover': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
       'dropdown': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+      'btn': '0 4px 20px rgba(224, 53, 88, 0.35)',
     },
 
     // Z-index scale
@@ -108,72 +87,70 @@ const presetSuddenly = () => ({
       'in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
     },
   },
-  
+
   // Shortcuts - classes réutilisables
   shortcuts: {
     // Layout
     'container-app': 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8',
-    
+
     // Boutons
-    'btn': 'inline-flex items-center justify-center gap-2 px-4 py-2 rounded-button font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
-    'btn-primary': 'btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500',
-    'btn-secondary': 'btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-primary-500',
-    'btn-ghost': 'btn text-gray-600 hover:bg-gray-100 focus:ring-gray-500',
-    'btn-danger': 'btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
+    'btn-primary': 'inline-flex items-center justify-center gap-2 bg-crimson text-white px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:bg-crimson-hover hover:-translate-y-0.5 hover:shadow-btn disabled:opacity-50 disabled:cursor-not-allowed',
+    'btn-secondary': 'inline-flex items-center justify-center gap-2 bg-transparent border border-border text-secondary px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:border-crimson hover:text-crimson hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed',
+    'btn-ghost': 'inline-flex items-center justify-center gap-2 bg-transparent text-secondary hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
+    'btn-danger': 'inline-flex items-center justify-center gap-2 bg-error text-white px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:bg-error/90 disabled:opacity-50 disabled:cursor-not-allowed',
     'btn-sm': 'px-3 py-1.5 text-sm',
     'btn-lg': 'px-6 py-3 text-lg',
-    
+
     // Cards
-    'card': 'bg-white rounded-card border border-gray-200 shadow-card',
+    'card': 'bg-card border border-border rounded-2xl p-6',
     'card-hover': 'card hover:shadow-card-hover transition-shadow',
     'card-body': 'p-4 sm:p-6',
-    'card-header': 'px-4 py-3 sm:px-6 border-b border-gray-200',
-    'card-footer': 'px-4 py-3 sm:px-6 border-t border-gray-100 bg-gray-50 rounded-b-card',
-    
+    'card-header': 'px-4 py-3 sm:px-6 border-b border-border',
+    'card-footer': 'px-4 py-3 sm:px-6 border-t border-border rounded-b-card',
+
     // Formulaires
-    'form-input': 'block w-full rounded-button border border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm',
-    'form-input-error': 'form-input border-red-300 focus:border-red-500 focus:ring-red-500',
-    'form-label': 'block text-sm font-medium text-gray-700 mb-1',
-    'form-help': 'mt-1 text-sm text-gray-600',
-    'form-error': 'mt-1 text-sm text-red-600',
-    'form-dropzone': 'mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-500 transition-colors',
-    'form-dropzone-link': 'relative cursor-pointer rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500',
-    
+    'input-base': 'bg-card border border-border rounded-[12px] text-primary placeholder-muted focus:border-crimson focus:ring-1 focus:ring-crimson outline-none',
+    'form-input': 'block w-full rounded-button border border-border shadow-sm focus:border-crimson focus:ring-crimson sm:text-sm bg-card text-primary',
+    'form-input-error': 'form-input border-error focus:border-error focus:ring-error',
+    'form-label': 'block text-sm font-medium text-secondary mb-1',
+    'form-help': 'mt-1 text-sm text-muted',
+    'form-error': 'mt-1 text-sm text-error',
+    'form-dropzone': 'mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-border border-dashed rounded-lg hover:border-crimson transition-colors',
+    'form-dropzone-link': 'relative cursor-pointer rounded-md font-medium text-crimson hover:text-crimson-hover focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-crimson',
+
     // Badges
     'badge': 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-xs font-medium',
-    'badge-primary': 'badge bg-primary-100 text-primary-800',
-    'badge-secondary': 'badge bg-secondary-100 text-secondary-800',
-    'badge-accent': 'badge bg-accent-100 text-accent-800',
-    'badge-gray': 'badge bg-gray-100 text-gray-800',
-    
-    // Badges de statut personnage
-    'badge-available': 'badge bg-green-100 text-green-800',
-    'badge-claimed': 'badge bg-amber-100 text-amber-800',
-    'badge-adopted': 'badge bg-indigo-100 text-indigo-800',
-    'badge-forked': 'badge bg-violet-100 text-violet-800',
-    'badge-pc': 'badge bg-blue-100 text-blue-800',
-    
+
+    // Badges de statut personnage — teintes sombres lisibles sur bg-card dark cosmos
+    'badge-available': 'badge bg-emerald-900/40 text-emerald-400 border border-emerald-700/50',
+    'badge-claimed': 'badge bg-amber-900/40 text-amber-400 border border-amber-700/50',
+    'badge-adopted': 'badge bg-indigo-900/40 text-indigo-400 border border-indigo-700/50',
+    'badge-forked': 'badge bg-violet-900/40 text-violet-400 border border-violet-700/50',
+    'badge-pc': 'badge bg-sky-900/40 text-sky-400 border border-sky-700/50',
+
     // Avatars
-    'avatar': 'rounded-full object-cover bg-gray-200',
+    'avatar': 'rounded-full object-cover bg-surface',
     'avatar-sm': 'avatar w-8 h-8',
     'avatar-md': 'avatar w-10 h-10',
     'avatar-lg': 'avatar w-12 h-12',
     'avatar-xl': 'avatar w-16 h-16',
-    'avatar-placeholder': 'avatar flex items-center justify-center bg-primary-100 text-primary-600',
-    
+    'avatar-placeholder': 'avatar flex items-center justify-center bg-surface text-secondary',
+
     // Dropdown menu
-    'dropdown-menu': 'absolute bg-white rounded-card shadow-dropdown border border-gray-200 py-1 z-dropdown',
+    'dropdown-menu': 'absolute bg-surface border border-border rounded-[12px] shadow-lg py-1 z-dropdown',
 
     // Links
-    'link': 'text-primary-600 hover:text-primary-800 hover:underline',
-    'link-muted': 'text-gray-500 hover:text-gray-700',
-    
+    'link': 'text-crimson hover:text-crimson-hover hover:underline',
+    'link-muted': 'text-muted hover:text-secondary',
+
     // Text
-    'text-muted': 'text-gray-500',
-    'text-heading': 'text-gray-900 font-semibold',
-    
+    'text-heading': 'text-primary font-semibold',
+
+    // Label overline
+    'label-overline': 'text-crimson text-[12px] font-medium tracking-[3px] uppercase',
+
     // Prose (pour les reports)
-    'prose-report': 'prose prose-indigo max-w-none',
+    'prose-report': 'prose prose-invert max-w-none',
   },
 })
 
@@ -199,24 +176,24 @@ export default defineConfig({
     presetTypography({
       cssExtend: {
         'a': {
-          'color': '#4f46e5',
+          'color': '#e03558',
           'text-decoration': 'none',
         },
         'a:hover': {
           'text-decoration': 'underline',
         },
         'blockquote': {
-          'border-left-color': '#6366f1',
+          'border-left-color': '#e03558',
           'font-style': 'normal',
         },
       },
     }),
   ],
-  
+
   transformers: [
     transformerDirectives(),  // Permet @apply dans le CSS
   ],
-  
+
   // Scanner les templates Django
   content: {
     filesystem: [
@@ -224,7 +201,7 @@ export default defineConfig({
       '../suddenly/**/*.py',  // Pour les classes dans les views
     ],
   },
-  
+
   // Safelist - classes toujours incluses
   // IMPORTANT: toute classe générée dynamiquement en Python (template tags,
   // context variables) DOIT être ajoutée ici. Le scanner UnoCSS ne détecte
@@ -232,6 +209,11 @@ export default defineConfig({
   safelist: [
     // Statuts dynamiques (générés via character.status dans les templates)
     'badge-available', 'badge-claimed', 'badge-adopted', 'badge-forked', 'badge-pc',
+    // Modificateurs d'opacité (classes dynamiques dans expressions Django, non détectables par le scanner)
+    'bg-success/10', 'bg-error/10', 'bg-warning/10', 'bg-info/10',
+    'border-success/30', 'border-error/30', 'border-warning/30', 'border-info/30',
+    'text-success', 'text-error', 'text-warning', 'text-info',
+    'hover:bg-error/10', 'hover:bg-card',
     // Z-index sémantiques (custom tokens)
     'z-dropdown', 'z-sticky', 'z-overlay', 'z-modal', 'z-toast',
     // Icônes fréquentes (utilisées dans des template tags dynamiques)
