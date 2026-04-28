@@ -100,6 +100,216 @@ def settings_data(request: AuthenticatedRequest) -> HttpResponse:
 
 
 @login_required
+def export_games(request: AuthenticatedRequest) -> FileResponse:
+    """Export all games owned by the user as JSON (US-32)."""
+    from suddenly.games.models import Game
+
+    games = Game.objects.filter(owner=request.user, remote=False).order_by("created_at")
+    data = [
+        {
+            "title": g.title,
+            "description": g.description,
+            "game_system": g.game_system,
+            "is_public": g.is_public,
+            "created_at": g.created_at.isoformat(),
+        }
+        for g in games
+    ]
+    content = json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8")
+    return FileResponse(
+        io.BytesIO(content),
+        content_type="application/json",
+        as_attachment=True,
+        filename="suddenly-games.json",
+    )
+
+
+@login_required
+def export_characters(request: AuthenticatedRequest) -> FileResponse:
+    """Export all characters created by the user as JSON (US-32)."""
+    from suddenly.characters.models import Character
+
+    characters = (
+        Character.objects.filter(creator=request.user, remote=False)
+        .select_related("origin_game")
+        .order_by("created_at")
+    )
+    data = [
+        {
+            "name": c.name,
+            "description": c.description,
+            "status": c.status,
+            "sheet_url": c.sheet_url or None,
+            "origin_game_title": c.origin_game.title if c.origin_game_id else None,
+            "created_at": c.created_at.isoformat(),
+        }
+        for c in characters
+    ]
+    content = json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8")
+    return FileResponse(
+        io.BytesIO(content),
+        content_type="application/json",
+        as_attachment=True,
+        filename="suddenly-characters.json",
+    )
+
+
+@login_required
+def import_games(request: AuthenticatedRequest) -> HttpResponse:
+    """Import games from a JSON file (US-32).
+
+    Deduplication: skip if (title, created_at) already exists for this owner.
+    Preserves original created_at via queryset .update() after creation.
+    """
+    if request.method != "POST":
+        return render(request, "users/settings_data.html")
+
+    from django.core.files.uploadedfile import UploadedFile
+
+    from suddenly.games.models import Game
+
+    games_file = request.FILES.get("games_file")
+    if not isinstance(games_file, UploadedFile):
+        return render(request, "users/settings_data.html")
+
+    try:
+        data = json.loads(games_file.read().decode("utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return render(request, "users/settings_data.html", {"games_import_error": True})
+
+    if not isinstance(data, list):
+        return render(request, "users/settings_data.html", {"games_import_error": True})
+
+    imported = 0
+    skipped = 0
+
+    for item in data:
+        if not isinstance(item, dict):
+            skipped += 1
+            continue
+
+        title = item.get("title", "").strip()
+        created_at_raw = item.get("created_at", "")
+        if not title:
+            skipped += 1
+            continue
+
+        created_at = parse_datetime(created_at_raw) if created_at_raw else None
+
+        if created_at and Game.objects.filter(
+            owner=request.user, title=title, created_at=created_at
+        ).exists():
+            skipped += 1
+            continue
+
+        game = Game.objects.create(
+            title=title,
+            description=item.get("description", ""),
+            game_system=item.get("game_system", ""),
+            is_public=bool(item.get("is_public", True)),
+            owner=request.user,
+            remote=False,
+        )
+        if created_at:
+            Game.objects.filter(pk=game.pk).update(created_at=created_at)
+        imported += 1
+
+    return render(
+        request,
+        "users/settings_data.html",
+        {
+            "games_import_success": True,
+            "games_imported": imported,
+            "games_skipped": skipped,
+        },
+    )
+
+
+@login_required
+def import_characters(request: AuthenticatedRequest) -> HttpResponse:
+    """Import characters from a JSON file (US-32).
+
+    Deduplication: skip if (name, created_at) already exists for this creator.
+    origin_game resolved by title among user's games; skipped if not found (non-nullable FK).
+    """
+    if request.method != "POST":
+        return render(request, "users/settings_data.html")
+
+    from django.core.files.uploadedfile import UploadedFile
+
+    from suddenly.characters.models import Character
+    from suddenly.games.models import Game
+
+    characters_file = request.FILES.get("characters_file")
+    if not isinstance(characters_file, UploadedFile):
+        return render(request, "users/settings_data.html")
+
+    try:
+        data = json.loads(characters_file.read().decode("utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return render(request, "users/settings_data.html", {"chars_import_error": True})
+
+    if not isinstance(data, list):
+        return render(request, "users/settings_data.html", {"chars_import_error": True})
+
+    user_games: dict[str, Game] = {
+        g.title: g for g in Game.objects.filter(owner=request.user, remote=False)
+    }
+
+    imported = 0
+    skipped = 0
+
+    for item in data:
+        if not isinstance(item, dict):
+            skipped += 1
+            continue
+
+        name = item.get("name", "").strip()
+        created_at_raw = item.get("created_at", "")
+        if not name:
+            skipped += 1
+            continue
+
+        origin_game = user_games.get(item.get("origin_game_title") or "")
+        if origin_game is None:
+            skipped += 1
+            continue
+
+        created_at = parse_datetime(created_at_raw) if created_at_raw else None
+
+        if created_at and Character.objects.filter(
+            creator=request.user, name=name, created_at=created_at
+        ).exists():
+            skipped += 1
+            continue
+
+        status = item.get("status", "npc")
+        character = Character.objects.create(
+            name=name,
+            description=item.get("description", ""),
+            status=status,
+            sheet_url=item.get("sheet_url") or None,
+            origin_game=origin_game,
+            creator=request.user,
+            owner=request.user if status == "pc" else None,
+            remote=False,
+        )
+        if created_at:
+            Character.objects.filter(pk=character.pk).update(created_at=created_at)
+        imported += 1
+
+    return render(
+        request,
+        "users/settings_data.html",
+        {
+            "chars_import_success": True,
+            "chars_imported": imported,
+            "chars_skipped": skipped,
+        },
+    )
+
+
+@login_required
 def block_user(request: AuthenticatedRequest) -> HttpResponse:
     """Block a user (US-33). Placeholder — needs Block model."""
     # TODO: implement Block model and filtering
