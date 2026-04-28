@@ -118,7 +118,7 @@ const presetSuddenly = () => ({
 
     // Formulaires
     'input-base': 'bg-card border border-border rounded-[12px] text-primary placeholder-muted focus:border-crimson focus:ring-1 focus:ring-crimson outline-none',
-    'form-input': 'block w-full rounded-button border border-border shadow-sm focus:border-crimson focus:ring-crimson sm:text-sm bg-card text-primary',
+    'form-input': 'block w-full rounded-[12px] border border-border px-3 py-2.5 shadow-sm focus:border-crimson focus:ring-crimson sm:text-sm bg-card text-primary',
     'form-input-error': 'form-input border-error focus:border-error focus:ring-error',
     'form-label': 'block text-sm font-medium text-secondary mb-1',
     'form-help': 'mt-1 text-sm text-muted',

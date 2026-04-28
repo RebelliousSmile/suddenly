@@ -1,11 +1,9 @@
-{% extends "base.html" %}
+{% extends "users/settings_base.html" %}
 {% load i18n %}
 
 {% block title %}{% trans "Data" %} — {{ SITE_NAME }}{% endblock %}
 
-{% block content %}
-<section class="py-8">
-    <div class="container-app max-w-2xl">
+{% block settings_content %}
         <h1 class="text-2xl font-bold text-primary mb-6">{% trans "My data" %}</h1>
 
         {% if import_success %}
@@ -19,7 +17,8 @@
             <h2 class="text-heading mb-3">{% trans "Import follows" %}</h2>
             <form method="post" action="{% url 'users:import_follows' %}" enctype="multipart/form-data">
                 {% csrf_token %}
-                <input type="file" name="csv_file" accept=".csv" class="form-input mb-3">
+                <label for="csv_file" class="form-label">{% trans "CSV file" %}</label>
+                <input type="file" id="csv_file" name="csv_file" accept=".csv" class="form-input mb-3">
                 <p class="form-help mb-3">{% trans "Mastodon-compatible CSV (column \"Account address\")." %}</p>
                 <button type="submit" class="btn-primary btn-sm">{% trans "Import" %}</button>
             </form>
@@ -44,6 +43,4 @@
                 {% trans "Feature under development." %}
             </p>
         </div>
-    </div>
-</section>
 {% endblock %}

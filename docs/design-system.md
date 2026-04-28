@@ -815,6 +815,101 @@ Used at the top of a form when server-side validation fails.
 
 ---
 
+## Settings navigation
+
+Multi-page settings use a sidebar on desktop and horizontal scrollable tabs on mobile. The active item receives a `bg-surface` background and `text-primary font-medium`.
+
+**Anatomy — desktop sidebar + mobile tabs**
+
+<div class="sd-light" style="padding:0;overflow:hidden;border-radius:12px;display:flex;min-height:220px">
+  <nav style="width:180px;flex-shrink:0;padding:0.75rem 0.5rem;border-right:1px solid #d4cfe8;display:flex;flex-direction:column;gap:2px">
+    <a href="#" class="sd-settings-link sd-settings-active">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </a>
+    <a href="#" class="sd-settings-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      Federation
+    </a>
+    <a href="#" class="sd-settings-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+      Data
+    </a>
+    <a href="#" class="sd-settings-link" style="margin-top:auto;border-top:1px solid #d4cfe8;padding-top:0.5rem;color:#dc2626">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Log out
+    </a>
+  </nav>
+  <main style="flex:1;padding:1.5rem">
+    <p style="font-family:Inter,sans-serif;font-weight:600;color:#1a1a2e;font-size:1rem;margin:0 0 0.5rem">Profile</p>
+    <p style="font-family:Inter,sans-serif;font-size:0.8125rem;color:#8a8aaa;margin:0">Active settings page content.</p>
+  </main>
+</div>
+
+<div class="sd-dark" style="padding:0;overflow:hidden;border-radius:12px;display:flex;min-height:220px">
+  <nav style="width:180px;flex-shrink:0;padding:0.75rem 0.5rem;border-right:1px solid #2a2a2a;display:flex;flex-direction:column;gap:2px">
+    <a href="#" class="sd-settings-link sd-settings-active sd-dark">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </a>
+    <a href="#" class="sd-settings-link sd-dark">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      Federation
+    </a>
+    <a href="#" class="sd-settings-link sd-dark">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+      Data
+    </a>
+    <a href="#" class="sd-settings-link sd-dark" style="margin-top:auto;border-top:1px solid #2a2a2a;padding-top:0.5rem;color:#ef4444">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Log out
+    </a>
+  </nav>
+  <main style="flex:1;padding:1.5rem">
+    <p style="font-family:Inter,sans-serif;font-weight:600;color:#f0f0f0;font-size:1rem;margin:0 0 0.5rem">Profile</p>
+    <p style="font-family:Inter,sans-serif;font-size:0.8125rem;color:#606060;margin:0">Active settings page content.</p>
+  </main>
+</div>
+
+**Mobile — horizontal scrollable tabs**
+
+<div class="sd-light" style="padding:0;overflow:hidden;border-radius:12px">
+  <nav style="display:flex;gap:2px;padding:0.5rem 0.5rem 0;overflow-x:auto;border-bottom:1px solid #d4cfe8">
+    <a href="#" class="sd-settings-link sd-settings-active" style="white-space:nowrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </a>
+    <a href="#" class="sd-settings-link" style="white-space:nowrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      Federation
+    </a>
+    <a href="#" class="sd-settings-link" style="white-space:nowrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+      Data
+    </a>
+    <a href="#" class="sd-settings-link" style="white-space:nowrap;color:#dc2626">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Log out
+    </a>
+  </nav>
+  <div style="padding:1rem;font-family:Inter,sans-serif;font-size:0.8125rem;color:#8a8aaa">Content area</div>
+</div>
+
+**Template** — extends `users/settings_base.html`, override `{% block settings_content %}`:
+
+```django
+{% extends "users/settings_base.html" %}
+{% block title %}My page — {{ SITE_NAME }}{% endblock %}
+{% block settings_content %}
+  <h1 class="text-2xl font-bold text-primary mb-6">My page</h1>
+  ...
+{% endblock %}
+```
+
+Active state detection uses `request.resolver_match.url_name`.
+
+---
+
 ## Icons
 
 Suddenly uses three icon sources with distinct roles:

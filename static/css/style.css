@@ -54,6 +54,12 @@ body {
     background: var(--color-bg);
 }
 
+/* Checkboxes & radios — accent crimson */
+input[type="checkbox"],
+input[type="radio"] {
+    accent-color: #e03558;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {

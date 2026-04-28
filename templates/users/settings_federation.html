@@ -1,11 +1,9 @@
-{% extends "base.html" %}
+{% extends "users/settings_base.html" %}
 {% load i18n %}
 
 {% block title %}{% trans "Federation" %} — {{ SITE_NAME }}{% endblock %}
 
-{% block content %}
-<section class="py-8">
-    <div class="container-app max-w-2xl">
+{% block settings_content %}
         <h1 class="text-2xl font-bold text-primary mb-6">{% trans "Federation" %}</h1>
 
         <div class="card card-body mb-6">
@@ -25,6 +23,4 @@
                 </a>
             </div>
         </div>
-    </div>
-</section>
 {% endblock %}

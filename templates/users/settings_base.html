@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app">
+        <div class="lg:flex lg:gap-10">
+
+            <!-- Navigation — sidebar desktop / tabs horizontaux mobile -->
+            <aside class="flex-shrink-0 lg:w-52 mb-6 lg:mb-0">
+                <nav aria-label="{% trans "Settings" %}">
+                    <div class="flex lg:flex-col gap-0.5 overflow-x-auto pb-2 lg:pb-0
+                                border-b border-border lg:border-0 lg:sticky lg:top-4">
+                        {% with url_name=request.resolver_match.url_name %}
+
+                        <a href="{% url 'users:profile_edit' username=request.user.username %}"
+                           class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm whitespace-nowrap lg:whitespace-normal transition-colors
+                                  {% if url_name == 'profile_edit' %}bg-surface text-primary font-medium{% else %}text-secondary hover:text-primary hover:bg-surface{% endif %}">
+                            <span class="i-lucide-user text-sm flex-shrink-0"></span>
+                            {% trans "Profile" %}
+                        </a>
+
+                        <a href="{% url 'users:settings_federation' %}"
+                           class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm whitespace-nowrap lg:whitespace-normal transition-colors
+                                  {% if url_name == 'settings_federation' %}bg-surface text-primary font-medium{% else %}text-secondary hover:text-primary hover:bg-surface{% endif %}">
+                            <span class="i-lucide-globe text-sm flex-shrink-0"></span>
+                            {% trans "Federation" %}
+                        </a>
+
+                        <a href="{% url 'users:settings_data' %}"
+                           class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm whitespace-nowrap lg:whitespace-normal transition-colors
+                                  {% if url_name == 'settings_data' %}bg-surface text-primary font-medium{% else %}text-secondary hover:text-primary hover:bg-surface{% endif %}">
+                            <span class="i-lucide-database text-sm flex-shrink-0"></span>
+                            {% trans "Data" %}
+                        </a>
+
+                        <a href="{% url 'account_logout' %}"
+                           class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm whitespace-nowrap lg:whitespace-normal transition-colors
+                                  text-error hover:bg-error/10
+                                  lg:mt-auto lg:border-t lg:border-border lg:pt-2">
+                            <span class="i-lucide-log-out text-sm flex-shrink-0"></span>
+                            {% trans "Log out" %}
+                        </a>
+
+                        {% endwith %}
+                    </div>
+                </nav>
+            </aside>
+
+            <!-- Contenu principal -->
+            <main class="flex-1 min-w-0">
+                {% block settings_content %}{% endblock %}
+            </main>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,15 +1,10 @@
-{% extends "base.html" %}
+{% extends "users/settings_base.html" %}
 {% load i18n %}
 
 {% block title %}{% trans "Edit my profile" %} — {{ SITE_NAME }}{% endblock %}
 
-{% block content %}
-<!-- Profile Edit Form -->
-<section class="py-12">
-    <div class="container-app max-w-2xl">
-        <h1 class="text-3xl font-bold text-primary mb-8">
-            {% trans "Edit my profile" %}
-        </h1>
+{% block settings_content %}
+        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "Edit my profile" %}</h1>
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -69,7 +64,7 @@
                         <img src="{{ form.avatar.value.url }}" alt="{% trans "Current avatar" %}" class="avatar-md">
                         <div>
                             <p class="text-sm text-secondary">{% trans "Current image" %}</p>
-                            <label for="{{ form.avatar.id_for_label }}-clear" class="text-sm text-error hover:text-red-500">
+                            <label for="{{ form.avatar.id_for_label }}-clear" class="text-sm text-error hover:text-error/70">
                                 <input id="{{ form.avatar.id_for_label }}-clear"
                                        name="{{ form.avatar.html_name }}-clear"
                                        type="checkbox">
@@ -197,6 +192,4 @@
                 </a>
             </div>
         </form>
-    </div>
-</section>
 {% endblock %}
