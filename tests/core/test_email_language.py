@@ -19,6 +19,7 @@ class TestSuddenlyAccountAdapter:
 
         def fake_send_mail(self: Any, template_prefix: str, email: str, context: dict) -> None:
             from django.utils import translation
+
             captured_lang.append(translation.get_language())
 
         mocker.patch.object(DefaultAccountAdapter, "send_mail", fake_send_mail)
@@ -31,6 +32,7 @@ class TestSuddenlyAccountAdapter:
         settings.LANGUAGE_CODE = "fr"
 
         from django.utils import translation
+
         translation.activate("en")
 
         adapter = SuddenlyAccountAdapter()
@@ -50,6 +52,7 @@ class TestSuddenlyAccountAdapter:
         settings.LANGUAGE_CODE = "fr"
 
         from django.utils import translation
+
         translation.activate("en")
 
         mocker.patch.object(DefaultAccountAdapter, "send_mail", lambda *a, **kw: None)

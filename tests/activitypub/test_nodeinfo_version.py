@@ -26,6 +26,7 @@ class TestNodeInfoVersion:
         with patch("suddenly.core.version.get_version", return_value=fake_version):
             # Re-import to pick up patch inside the view module
             from suddenly.activitypub import views as ap_views
+
             with patch.object(ap_views, "get_version", return_value=fake_version):
                 response = client.get("/.well-known/nodeinfo/2.0")
         assert response.status_code == 200
