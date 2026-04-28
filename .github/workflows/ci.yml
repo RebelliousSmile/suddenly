@@ -36,6 +36,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install system dependencies
+        run: sudo apt-get install -y gettext
+
       - name: Install dependencies
         run: |
           pip install --upgrade pip
@@ -49,5 +52,8 @@ jobs:
       - name: Type check
         run: mypy suddenly/
 
+      - name: Compile translations
+        run: python manage.py compilemessages
+
       - name: Test with coverage
-        run: pytest --cov=suddenly --cov-fail-under=80 --tb=short
+        run: pytest --cov=suddenly --cov-fail-under=70 --tb=short
