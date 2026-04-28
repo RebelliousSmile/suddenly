@@ -38,7 +38,7 @@ const presetSuddenly = () => ({
       },
       success: '#16a34a',
       warning: '#d97706',
-      error: '#e03558',
+      error: '#dc2626',
       info: '#6366f1',
 
       // Statuts des personnages — utilisés par les badges badge-*
@@ -117,13 +117,13 @@ const presetSuddenly = () => ({
     'card-footer': 'px-4 py-3 sm:px-6 border-t border-border rounded-b-card',
 
     // Formulaires
-    'input-base': 'bg-card border border-border rounded-[12px] text-primary placeholder-muted focus:border-violet focus:ring-1 focus:ring-violet outline-none',
-    'form-input': 'block w-full rounded-button border border-border shadow-sm focus:border-violet focus:ring-violet sm:text-sm bg-card text-primary',
+    'input-base': 'bg-card border border-border rounded-[12px] text-primary placeholder-muted focus:border-crimson focus:ring-1 focus:ring-crimson outline-none',
+    'form-input': 'block w-full rounded-button border border-border shadow-sm focus:border-crimson focus:ring-crimson sm:text-sm bg-card text-primary',
     'form-input-error': 'form-input border-error focus:border-error focus:ring-error',
     'form-label': 'block text-sm font-medium text-secondary mb-1',
     'form-help': 'mt-1 text-sm text-muted',
     'form-error': 'mt-1 text-sm text-error',
-    'form-dropzone': 'mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-border border-dashed rounded-lg hover:border-violet transition-colors',
+    'form-dropzone': 'mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-border border-dashed rounded-lg hover:border-crimson transition-colors',
     'form-dropzone-link': 'relative cursor-pointer rounded-md font-medium text-crimson hover:text-crimson-hover focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-crimson',
 
     // Badges
@@ -244,7 +244,6 @@ export default defineConfig({
     'hover:bg-crimson/10',
     // Couleurs violet/crimson pour composants dark-light
     'bg-violet', 'border-violet', 'hover:text-violet/60',
-    'bg-crimson/10', 'hover:bg-crimson/15',
     // Theme toggle switch (Alpine :class bindings)
     'translate-x-0', 'translate-x-8', 'bg-amber-400',
     'border-crimson/50', 'border-violet/50', 'border-amber-300/60', 'text-amber-400',
