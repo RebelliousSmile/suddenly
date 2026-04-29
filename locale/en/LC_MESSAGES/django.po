@@ -2130,3 +2130,11 @@ msgstr ""
 #: .\templates\users\settings_preferences.html:81
 msgid "Current background"
 msgstr ""
+
+#: .\templates\400.html:8
+msgid "Bad request"
+msgstr ""
+
+#: .\templates\400.html:11
+msgid "Your request could not be processed. Please check the URL and try again."
+msgstr ""
