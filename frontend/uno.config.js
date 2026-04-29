@@ -83,6 +83,7 @@ const presetSuddenly = () => ({
     zIndex: {
       'dropdown': '10',
       'sticky': '20',
+      'tooltip': '25',
       'overlay': '30',
       'modal': '40',
       'toast': '50',
@@ -141,11 +142,12 @@ const presetSuddenly = () => ({
     // Badges
     'badge': 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-xs font-medium',
 
-    // Badges de statut personnage — couleurs sémantiques, compatibles light/dark
-    'badge-available': 'badge bg-success/10 text-success border border-success/30',
-    'badge-claimed': 'badge bg-crimson/10 text-crimson border border-crimson/30',
-    'badge-adopted': 'badge bg-info/10 text-info border border-info/30',
-    'badge-forked': 'badge bg-warning/10 text-warning border border-warning/30',
+    // Badges de statut personnage — alignés sur la sémantique des types de lien
+    // available=neon (ouvert, opportunité de création), claimed=info (identité), adopted=success (acquisition), forked=violet (dérivation)
+    'badge-available': 'badge bg-neon/10 text-neon border border-neon/30',
+    'badge-claimed': 'badge bg-info/10 text-info border border-info/30',
+    'badge-adopted': 'badge bg-success/10 text-success border border-success/30',
+    'badge-forked': 'badge bg-violet/10 text-violet border border-violet/30',
     'badge-info': 'badge bg-info/10 text-info border border-info/30',
     'badge-pending': 'badge bg-surface text-muted border border-border',
     'badge-rejected': 'badge bg-error/10 text-error border border-error/30',
@@ -209,12 +211,12 @@ export default defineConfig({
         'a:hover': {
           'text-decoration': 'underline',
         },
-        'h1': { 'color': 'rgb(var(--c-crimson))' },
-        'h2': { 'color': 'rgb(var(--c-crimson) / 0.85)' },
-        'h3': { 'color': 'rgb(var(--c-crimson) / 0.75)' },
-        'h4,h5,h6': { 'color': 'rgb(var(--c-crimson) / 0.65)' },
-        'strong': { 'color': 'rgb(var(--c-crimson) / 0.9)' },
-        'em': { 'color': 'rgb(var(--c-violet))' },
+        'h1': { 'color': 'rgb(var(--c-primary))' },
+        'h2': { 'color': 'rgb(var(--c-primary))' },
+        'h3': { 'color': 'rgb(var(--c-primary))' },
+        'h4,h5,h6': { 'color': 'rgb(var(--c-secondary))' },
+        'strong': { 'color': 'rgb(var(--c-primary))' },
+        'em': { 'color': 'rgb(var(--c-secondary))' },
         'code': {
           'color': 'rgb(var(--c-neon))',
           'background': 'rgb(var(--c-neon) / 0.08)',
@@ -229,8 +231,10 @@ export default defineConfig({
         'blockquote': {
           'border-left-color': 'rgb(var(--c-crimson))',
           'font-style': 'normal',
-          'color': 'rgb(var(--c-crimson) / 0.75)',
+          'color': 'rgb(var(--c-secondary))',
         },
+        'ul > li::marker': { 'color': 'rgb(var(--c-secondary))' },
+        'ol > li::marker': { 'color': 'rgb(var(--c-secondary))' },
       },
     }),
   ],
@@ -261,11 +265,12 @@ export default defineConfig({
     'hover:bg-error/10', 'hover:bg-card',
     'bg-violet/10', 'text-violet', 'border-violet/30',
     // Z-index sémantiques (custom tokens)
-    'z-dropdown', 'z-sticky', 'z-overlay', 'z-modal', 'z-toast',
+    'z-dropdown', 'z-sticky', 'z-tooltip', 'z-overlay', 'z-modal', 'z-toast',
     // Game Icons — empty states thématiques
     'i-game-icons-open-book', 'i-game-icons-scroll-quill', 'i-game-icons-two-shadows',
     'i-game-icons-chat-bubble', 'i-game-icons-dice-six-faces-four',
     'i-game-icons-manacles', 'i-game-icons-hand', 'i-game-icons-divergence',
+    'i-game-icons-hooded-figure', 'i-game-icons-monk-face',
     // Icônes fréquentes (utilisées dans des template tags dynamiques)
     'i-lucide-user', 'i-lucide-users', 'i-lucide-book-open', 'i-lucide-link',
     'i-lucide-git-merge', 'i-lucide-git-branch', 'i-lucide-sparkles',

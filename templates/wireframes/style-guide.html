@@ -17,6 +17,215 @@
 <div class="container-app py-10 px-4 space-y-16">
 
     <!-- ============================================================ -->
+    <!-- 0. SÉMANTIQUE DES COULEURS -->
+    <!-- ============================================================ -->
+    <section>
+        <h2 class="text-2xl font-bold text-primary mb-8 pb-2 border-b border-border">0. Sémantique des couleurs</h2>
+        <p class="text-secondary text-sm mb-8">Chaque couleur a un rôle unique et exclusif. Ne jamais utiliser une couleur hors de son rôle sémantique, même si elle est visuellement appropriée.</p>
+
+        <!-- Couleurs d'action -->
+        <div class="mb-10">
+            <h3 class="text-sm font-semibold text-muted uppercase tracking-widest mb-4">Couleurs d'action — règles strictes</h3>
+            <div class="card overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-surface border-b border-border">
+                        <tr>
+                            <th class="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Couleur</th>
+                            <th class="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Rôle unique</th>
+                            <th class="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Exemples</th>
+                            <th class="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Jamais pour</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border">
+                        <tr>
+                            <td class="px-4 py-3">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-4 h-4 rounded-full shrink-0" style="background:#e03558"></span>
+                                    <span class="font-semibold text-crimson font-mono">Crimson</span>
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-secondary">Interaction UI · Rapport Action</td>
+                            <td class="px-4 py-3 text-muted text-xs">Boutons, liens, CTAs, focus ring, bordure blockquote, fond de rapport action</td>
+                            <td class="px-4 py-3 text-muted text-xs">Titres de prose, gras, statut de personnage</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-4 h-4 rounded-full shrink-0" style="background:#7c3aed"></span>
+                                    <span class="font-semibold text-violet font-mono">Violet</span>
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-secondary">Rapport Narration · badge Fork</td>
+                            <td class="px-4 py-3 text-muted text-xs">Fond de rapport narration, badge-forked</td>
+                            <td class="px-4 py-3 text-muted text-xs">Actions génériques, texte courant, fond de statut</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-4 h-4 rounded-full shrink-0" style="background:#00e676"></span>
+                                    <span class="font-semibold text-neon font-mono">Neon</span>
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-secondary">Rapport Discussion · badge Disponible</td>
+                            <td class="px-4 py-3 text-muted text-xs">Fond de rapport discussion, badge-available, code inline</td>
+                            <td class="px-4 py-3 text-muted text-xs">Navigation, boutons, fond de statut</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Types de rapport → couleurs -->
+        <div class="mb-10">
+            <h3 class="text-sm font-semibold text-muted uppercase tracking-widest mb-4">Types de rapport → couleurs de fond</h3>
+            <p class="text-xs text-muted mb-4">Les fonds tintés sont réservés aux types de rapport. Le statut d'un personnage (claim/adopt/fork) s'exprime uniquement par badge — jamais par un fond coloré.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div class="rounded-xl border border-crimson/30 bg-crimson/10 p-5">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="i-lucide-swords w-5 h-5 text-crimson inline-block"></span>
+                        <span class="font-semibold text-crimson">Action</span>
+                    </div>
+                    <p class="text-xs text-secondary mb-1">Combat, conflit physique, mouvement dramatique</p>
+                    <p class="text-xs font-mono text-muted mt-3">bg-crimson/10 · border-crimson/30</p>
+                </div>
+                <div class="rounded-xl border border-violet/30 bg-violet/10 p-5">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="i-lucide-book-open w-5 h-5 text-violet inline-block"></span>
+                        <span class="font-semibold text-violet">Narration</span>
+                    </div>
+                    <p class="text-xs text-secondary mb-1">Voix du conteur, description omnisciente, récit à la 3e personne</p>
+                    <p class="text-xs font-mono text-muted mt-3">bg-violet/10 · border-violet/30</p>
+                </div>
+                <div class="rounded-xl border border-neon/30 bg-neon/10 p-5">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="i-lucide-message-circle w-5 h-5 text-neon inline-block"></span>
+                        <span class="font-semibold text-neon">Discussion</span>
+                    </div>
+                    <p class="text-xs text-secondary mb-1">Dialogue direct entre personnages, échange vocal</p>
+                    <p class="text-xs font-mono text-muted mt-3">bg-neon/10 · border-neon/30</p>
+                </div>
+                <div class="rounded-xl border border-border bg-surface p-5">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="i-lucide-eye w-5 h-5 text-muted inline-block"></span>
+                        <span class="font-semibold text-secondary">Description</span>
+                    </div>
+                    <p class="text-xs text-secondary mb-1">Décor, atmosphère, cadre — en retrait, pas de couleur forte</p>
+                    <p class="text-xs font-mono text-muted mt-3">bg-surface · border-border</p>
+                </div>
+            </div>
+
+            <!-- Types de lien — badges uniquement -->
+            <div class="card p-4">
+                <p class="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Types de lien — badge uniquement</p>
+                <div class="flex flex-wrap gap-3 items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="badge badge-claimed flex items-center gap-1"><span class="i-lucide-git-merge w-3 h-3 inline-block"></span>Claim</span>
+                        <span class="text-xs text-muted">badge-claimed</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="badge badge-adopted flex items-center gap-1"><span class="i-lucide-user-check w-3 h-3 inline-block"></span>Adopt</span>
+                        <span class="text-xs text-muted">badge-adopted</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="badge badge-forked flex items-center gap-1"><span class="i-lucide-git-branch w-3 h-3 inline-block"></span>Fork</span>
+                        <span class="text-xs text-muted">badge-forked</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="badge badge-available flex items-center gap-1"><span class="i-lucide-circle-dot w-3 h-3 inline-block"></span>Disponible</span>
+                        <span class="text-xs text-muted">badge-available</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tokens structurels -->
+        <div class="mb-10">
+            <h3 class="text-sm font-semibold text-muted uppercase tracking-widest mb-4">Tokens structurels</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div class="rounded-xl border border-border p-4 bg-background">
+                    <p class="text-xs font-mono text-muted mb-1">bg-background</p>
+                    <p class="text-sm font-medium text-primary">Fond de page</p>
+                    <p class="text-xs text-muted">Racine — jamais dans un composant</p>
+                    <p class="text-xs text-warning/80 mt-1">⚠ Usage illustratif</p>
+                </div>
+                <div class="rounded-xl border border-border p-4 bg-surface">
+                    <p class="text-xs font-mono text-muted mb-1">bg-surface</p>
+                    <p class="text-sm font-medium text-primary">Surface</p>
+                    <p class="text-xs text-muted">Panneaux, sidebars, zones élevées</p>
+                </div>
+                <div class="rounded-xl border border-border p-4 bg-card">
+                    <p class="text-xs font-mono text-muted mb-1">bg-card</p>
+                    <p class="text-sm font-medium text-primary">Carte</p>
+                    <p class="text-xs text-muted">Conteneurs, composants délimités</p>
+                </div>
+                <div class="rounded-xl border border-border p-4 bg-card-dark">
+                    <p class="text-xs font-mono text-muted mb-1">bg-card-dark</p>
+                    <p class="text-sm font-medium text-primary">Carte sombre</p>
+                    <p class="text-xs text-muted">Toolbar, headers d'éditeur</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prose -->
+        <div class="mb-10">
+            <h3 class="text-sm font-semibold text-muted uppercase tracking-widest mb-4">Prose (prose-report) — sémantique typographique</h3>
+            <div class="card overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-surface border-b border-border">
+                        <tr>
+                            <th class="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Élément</th>
+                            <th class="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Couleur</th>
+                            <th class="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Raison</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border">
+                        <tr>
+                            <td class="px-4 py-3 font-mono text-xs">h1 / h2 / h3</td>
+                            <td class="px-4 py-3"><span class="text-primary font-medium">text-primary</span></td>
+                            <td class="px-4 py-3 text-muted text-xs">Contenu neutre — la hiérarchie vient de la taille</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-mono text-xs">h4 / h5 / h6</td>
+                            <td class="px-4 py-3"><span class="text-secondary font-medium">text-secondary</span></td>
+                            <td class="px-4 py-3 text-muted text-xs">Sous-titres de moindre importance</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-mono text-xs">strong</td>
+                            <td class="px-4 py-3"><span class="text-primary font-medium">text-primary</span></td>
+                            <td class="px-4 py-3 text-muted text-xs">Le gras suffit comme signal visuel</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-mono text-xs">em</td>
+                            <td class="px-4 py-3"><span class="text-secondary font-medium">text-secondary</span></td>
+                            <td class="px-4 py-3 text-muted text-xs">Nuance discrète, pas d'action</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-mono text-xs">a</td>
+                            <td class="px-4 py-3"><span class="text-crimson font-medium">crimson</span></td>
+                            <td class="px-4 py-3 text-muted text-xs">Seul élément interactif dans la prose</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-mono text-xs">blockquote</td>
+                            <td class="px-4 py-3"><span class="text-secondary font-medium">text-secondary</span> <span class="text-muted text-xs">+ bordure crimson</span></td>
+                            <td class="px-4 py-3 text-muted text-xs">Citation de personnage — bordure crimson = point d'attention</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-mono text-xs">code</td>
+                            <td class="px-4 py-3"><span class="text-neon font-medium">neon</span></td>
+                            <td class="px-4 py-3 text-muted text-xs">Élément technique distinct du texte narratif</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-mono text-xs">ul / ol markers</td>
+                            <td class="px-4 py-3"><span class="text-secondary font-medium">text-secondary</span></td>
+                            <td class="px-4 py-3 text-muted text-xs">Discrets — le contenu de la liste prime</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
     <!-- 1. PALETTE DE COULEURS -->
     <!-- ============================================================ -->
     <section>
@@ -49,7 +258,7 @@
                         <div class="flex-1 h-14 rounded-lg border border-border" style="background:#6d28d9"></div>
                     </div>
                     <p class="font-semibold text-primary text-sm">Violet</p>
-                    <p class="text-xs text-muted mb-1">Accent secondaire, fork, badges</p>
+                    <p class="text-xs text-muted mb-1">Dérivation / fork — badge-forked, lien Fork</p>
                     <div class="flex gap-3 text-xs font-mono text-muted">
                         <span>#7c3aed <span class="text-muted/60">DEFAULT</span></span>
                         <span>#6d28d9 <span class="text-muted/60">hover</span></span>
@@ -64,7 +273,7 @@
                         <div class="flex-1 h-14 rounded-lg border border-border" style="background:#00c853"></div>
                     </div>
                     <p class="font-semibold text-primary text-sm">Neon</p>
-                    <p class="text-xs text-muted mb-1">Accent formulaires, fond teinté</p>
+                    <p class="text-xs text-muted mb-1">Disponible / Création — badge-available, formulaires actifs</p>
                     <div class="flex gap-3 text-xs font-mono text-muted">
                         <span>#00e676 <span class="text-muted/60">DEFAULT</span></span>
                         <span>#00c853 <span class="text-muted/60">hover</span></span>
@@ -153,40 +362,6 @@
             </div>
         </div>
 
-        <!-- Feedback Colors -->
-        <div>
-            <h3 class="text-sm font-semibold text-muted uppercase tracking-widest mb-3">Feedback — messages d'état</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                <div class="rounded-lg border border-success/30 p-4 bg-success/10">
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="i-lucide-check-circle w-4 h-4 text-success inline-block"></span>
-                        <span class="text-sm font-semibold text-success">Success</span>
-                    </div>
-                    <p class="text-xs text-success/80">bg-success/10 · text-success · border-success/30</p>
-                </div>
-                <div class="rounded-lg border border-error/30 p-4 bg-error/10">
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="i-lucide-x-circle w-4 h-4 text-error inline-block"></span>
-                        <span class="text-sm font-semibold text-error">Error</span>
-                    </div>
-                    <p class="text-xs text-error/80">bg-error/10 · text-error · border-error/30</p>
-                </div>
-                <div class="rounded-lg border border-warning/30 p-4 bg-warning/10">
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="i-lucide-alert-triangle w-4 h-4 text-warning inline-block"></span>
-                        <span class="text-sm font-semibold text-warning">Warning</span>
-                    </div>
-                    <p class="text-xs text-warning/80">bg-warning/10 · text-warning · border-warning/30</p>
-                </div>
-                <div class="rounded-lg border border-info/30 p-4 bg-info/10">
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="i-lucide-info w-4 h-4 text-info inline-block"></span>
-                        <span class="text-sm font-semibold text-info">Info</span>
-                    </div>
-                    <p class="text-xs text-info/80">bg-info/10 · text-info · border-info/30</p>
-                </div>
-            </div>
-        </div>
     </section>
 
     <!-- ============================================================ -->
@@ -229,7 +404,7 @@
                 </div>
                 <div class="flex items-baseline gap-4 py-3 border-b border-border">
                     <span class="text-xs text-muted w-24 shrink-0">serif / citation</span>
-                    <blockquote class="text-lg italic" style="font-family: Lora, Georgia, serif">"Le personnage regarda les flammes et sut que rien ne serait plus jamais pareil."</blockquote>
+                    <blockquote class="text-lg italic text-secondary" style="font-family: Lora, Georgia, serif">"Le personnage regarda les flammes et sut que rien ne serait plus jamais pareil."</blockquote>
                 </div>
                 <div class="flex items-baseline gap-4 py-3">
                     <span class="text-xs text-muted w-24 shrink-0">mono / code</span>
@@ -284,7 +459,7 @@
                     <span class="text-xs text-muted">Action tertiaire</span>
                 </div>
                 <div class="flex flex-col items-center gap-2">
-                    <button class="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors">btn-danger</button>
+                    <button class="btn-danger">btn-danger</button>
                     <span class="text-xs text-muted">Action destructive</span>
                 </div>
             </div>
@@ -323,7 +498,7 @@
                     <span class="i-lucide-share w-4 h-4 inline-block"></span>
                     Partager
                 </button>
-                <button class="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors flex items-center gap-2">
+                <button class="btn-danger flex items-center gap-2">
                     <span class="i-lucide-trash w-4 h-4 inline-block"></span>
                     Supprimer
                 </button>
@@ -382,20 +557,20 @@
             <h3 class="text-sm font-semibold text-muted uppercase tracking-widest mb-4">Badges génériques</h3>
             <div class="flex flex-wrap gap-3">
                 <div class="flex flex-col items-center gap-2">
-                    <span class="badge badge-primary">badge-primary</span>
-                    <span class="text-xs text-muted">Crimson</span>
-                </div>
-                <div class="flex flex-col items-center gap-2">
-                    <span class="badge badge-accent">badge-accent</span>
-                    <span class="text-xs text-muted">Warning/amber</span>
-                </div>
-                <div class="flex flex-col items-center gap-2">
                     <span class="badge badge-gray">badge-gray</span>
                     <span class="text-xs text-muted">Brouillon, privé</span>
                 </div>
                 <div class="flex flex-col items-center gap-2">
                     <span class="badge badge-info">badge-info</span>
-                    <span class="text-xs text-muted">badge-info</span>
+                    <span class="text-xs text-muted">Info générique</span>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                    <span class="badge badge-pending">badge-pending</span>
+                    <span class="text-xs text-muted">En attente</span>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                    <span class="badge badge-rejected">badge-rejected</span>
+                    <span class="text-xs text-muted">Rejeté</span>
                 </div>
             </div>
         </div>
@@ -407,34 +582,62 @@
     <section>
         <h2 class="text-2xl font-bold text-primary mb-8 pb-2 border-b border-border">5. Avatars</h2>
 
+        <!-- Sémantique des placeholders -->
+        <div class="card mb-6 p-4">
+            <p class="label-overline mb-1">Sémantique des placeholders</p>
+            <p class="text-xs text-muted mb-4">Deux icônes selon l'état de session — jamais <code class="text-xs">lucide-user</code></p>
+            <div class="flex flex-wrap gap-10">
+                <div class="flex flex-col items-center gap-3">
+                    <p class="text-xs font-semibold text-primary uppercase tracking-widest">Connecté</p>
+                    <div class="flex gap-4 items-end">
+                        <div class="rounded-full flex items-center justify-center" style="width:32px;height:32px;background:rgb(var(--c-surface))"><span class="i-game-icons-hooded-figure w-4 h-4 inline-block text-muted"></span></div>
+                        <div class="rounded-full flex items-center justify-center" style="width:48px;height:48px;background:rgb(var(--c-surface))"><span class="i-game-icons-hooded-figure w-6 h-6 inline-block text-muted"></span></div>
+                        <div class="rounded-full flex items-center justify-center" style="width:64px;height:64px;background:rgb(var(--c-surface))"><span class="i-game-icons-hooded-figure w-8 h-8 inline-block text-muted"></span></div>
+                    </div>
+                    <p class="text-xs text-muted font-mono">i-game-icons-hooded-figure</p>
+                    <p class="text-xs text-muted text-center">Personnage sans photo,<br>utilisateur authentifié</p>
+                </div>
+                <div class="flex flex-col items-center gap-3">
+                    <p class="text-xs font-semibold text-muted uppercase tracking-widest">Déconnecté</p>
+                    <div class="flex gap-4 items-end">
+                        <div class="rounded-full flex items-center justify-center" style="width:32px;height:32px;background:rgb(var(--c-surface))"><span class="i-game-icons-monk-face w-4 h-4 inline-block text-muted"></span></div>
+                        <div class="rounded-full flex items-center justify-center" style="width:48px;height:48px;background:rgb(var(--c-surface))"><span class="i-game-icons-monk-face w-6 h-6 inline-block text-muted"></span></div>
+                        <div class="rounded-full flex items-center justify-center" style="width:64px;height:64px;background:rgb(var(--c-surface))"><span class="i-game-icons-monk-face w-8 h-8 inline-block text-muted"></span></div>
+                    </div>
+                    <p class="text-xs text-muted font-mono">i-game-icons-monk-face</p>
+                    <p class="text-xs text-muted text-center">Visiteur anonyme,<br>session expirée</p>
+                </div>
+            </div>
+        </div>
+
         <div class="flex flex-wrap items-end gap-8">
             <div class="flex flex-col items-center gap-2">
-                <div class="avatar-sm avatar-placeholder rounded-full flex items-center justify-center" style="width:32px;height:32px;background:#e0e7ff">
-                    <span class="i-lucide-user w-4 h-4 inline-block text-crimson"></span>
+                <div class="avatar-sm avatar-placeholder rounded-full flex items-center justify-center" style="width:32px;height:32px;background:rgb(var(--c-surface))">
+                    <span class="i-game-icons-hooded-figure w-4 h-4 inline-block text-muted"></span>
                 </div>
                 <span class="text-xs text-muted">avatar-sm</span>
                 <span class="text-xs text-muted">32px</span>
                 <span class="text-xs text-muted">Listes, metadata</span>
             </div>
             <div class="flex flex-col items-center gap-2">
-                <div class="avatar-md avatar-placeholder rounded-full flex items-center justify-center" style="width:40px;height:40px;background:#e0e7ff">
-                    <span class="i-lucide-user w-5 h-5 inline-block text-crimson"></span>
+                <div class="avatar-md avatar-placeholder rounded-full flex items-center justify-center" style="width:40px;height:40px;background:rgb(var(--c-surface))">
+                    <span class="i-game-icons-hooded-figure w-5 h-5 inline-block text-muted"></span>
                 </div>
                 <span class="text-xs text-muted">avatar-md</span>
                 <span class="text-xs text-muted">40px</span>
                 <span class="text-xs text-muted">En-têtes de cards</span>
             </div>
             <div class="flex flex-col items-center gap-2">
-                <div class="avatar-lg avatar-placeholder rounded-full flex items-center justify-center" style="width:48px;height:48px;background:#e0e7ff">
-                    <span class="i-lucide-user w-6 h-6 inline-block text-crimson"></span>
+                <div class="avatar-lg avatar-placeholder rounded-full flex items-center justify-center" style="width:48px;height:48px;background:rgb(var(--c-surface))">
+                    <span class="i-game-icons-hooded-figure w-6 h-6 inline-block text-muted"></span>
                 </div>
                 <span class="text-xs text-muted">avatar-lg</span>
                 <span class="text-xs text-muted">48px</span>
                 <span class="text-xs text-muted">Cards personnage</span>
             </div>
             <div class="flex flex-col items-center gap-2">
-                <div class="avatar-xl avatar-placeholder rounded-full flex items-center justify-center" style="width:64px;height:64px;background:#e0e7ff">
-                    <span class="i-lucide-user w-8 h-8 inline-block text-crimson"></span>
+                <div class="avatar-xl avatar-placeholder rounded-full flex items-center justify-center" style="width:64px;height:64px;background:rgb(var(--c-surface))">
+                    <span class="i-game-icons-hooded-figure w-8 h-8 inline-block text-muted"></span>
                 </div>
                 <span class="text-xs text-muted">avatar-xl</span>
                 <span class="text-xs text-muted">64px</span>
@@ -500,8 +703,8 @@
                 <div class="card-hover cursor-pointer">
                     <div class="card-body">
                         <div class="flex items-start gap-3">
-                            <div class="rounded-full flex items-center justify-center shrink-0" style="width:48px;height:48px;background:#e0e7ff">
-                                <span class="i-lucide-user w-6 h-6 inline-block text-crimson"></span>
+                            <div class="rounded-full flex items-center justify-center shrink-0" style="width:48px;height:48px;background:rgb(var(--c-surface))">
+                                <span class="i-game-icons-hooded-figure w-6 h-6 inline-block text-muted"></span>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2 flex-wrap">
@@ -605,7 +808,7 @@
             <!-- Date -->
             <div class="min-w-0">
                 <label class="form-label">Date</label>
-                <input type="date" class="block w-full rounded-[12px] border border-solid border-border px-3 py-2.5 focus:border-crimson text-sm bg-input text-primary outline-none cursor-pointer" />
+                <input type="date" class="form-input cursor-pointer" />
             </div>
 
             <!-- Radio -->
@@ -744,7 +947,7 @@
                 <span class="text-xs text-muted text-center">log-out</span>
             </div>
             <div class="flex flex-col items-center gap-1 p-2">
-                <span class="i-lucide-git-merge w-6 h-6 text-warning inline-block"></span>
+                <span class="i-lucide-git-merge w-6 h-6 text-info inline-block"></span>
                 <span class="text-xs text-muted text-center">git-merge</span>
             </div>
             <div class="flex flex-col items-center gap-1 p-2">
@@ -752,7 +955,7 @@
                 <span class="text-xs text-muted text-center">git-branch</span>
             </div>
             <div class="flex flex-col items-center gap-1 p-2">
-                <span class="i-lucide-sparkles w-6 h-6 text-warning inline-block"></span>
+                <span class="i-lucide-sparkles w-6 h-6 text-primary inline-block"></span>
                 <span class="text-xs text-muted text-center">sparkles</span>
             </div>
             <div class="flex flex-col items-center gap-1 p-2">
@@ -913,13 +1116,203 @@
                 <p class="label-overline mb-4">Instance badge (fédération)</p>
                 <div class="flex items-center gap-1 text-xs text-muted mb-2">
                     <span class="i-lucide-globe w-3.5 h-3.5 inline-block"></span>
-                    <span>suddenly.games</span>
+                    <span>suddenly.social</span>
                 </div>
                 <p class="text-xs text-muted">Visible sur contenu distant uniquement</p>
 
                 <p class="label-overline mt-6 mb-4">Overline</p>
                 <p class="label-overline">label-overline — Titre de section</p>
                 <p class="text-xs text-muted mt-1">Crimson, uppercase, tracking large</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 10. TOOLTIP PNJ -->
+    <!-- ============================================================ -->
+    <section>
+        <h2 class="text-2xl font-bold text-primary mb-8 pb-2 border-b border-border">10. Tooltip PNJ</h2>
+        <p class="text-secondary text-sm mb-8">Affiché au survol d'un lien <code class="text-neon text-xs px-1.5 py-0.5 bg-surface rounded">@mention</code> ou d'un lien vers un personnage dans un compte-rendu. Reste visible quand la souris entre dans le tooltip (pour permettre le clic).</p>
+
+        <!-- Démo interactive -->
+        <div class="mb-12">
+            <h3 class="text-sm font-semibold text-muted uppercase tracking-widest mb-6">Démo — survolez les liens</h3>
+
+            <div class="card p-6 prose-report prose max-w-none text-sm">
+                <p>
+                    Le joueur entre dans la taverne et reconnaît immédiatement
+                    <!-- PNJ disponible -->
+                    <span class="relative inline-block"
+                          x-data="{ open: false }"
+                          @mouseenter="open = true"
+                          @mouseleave="open = false"
+                          @touchstart.prevent="open = !open"
+                          @click.outside="open = false">
+                        <a href="#" class="link" @click.prevent>@Sable-Gris</a>
+                        <div x-show="open"
+                             x-transition:enter="transition ease-out duration-150"
+                             x-transition:enter-start="opacity-0 -translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-100"
+                             x-transition:leave-start="opacity-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 -translate-y-1"
+                             x-cloak
+                             class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-tooltip w-72 bg-card border border-border rounded-2xl shadow-dropdown"
+                             @mouseenter="open = true"
+                             @mouseleave="open = false">
+                            <!-- Flèche -->
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 w-3 h-3 bg-card border-b border-r border-border rotate-45 -mt-1.5"></div>
+                            <!-- En-tête personnage -->
+                            <div class="p-4 border-b border-border">
+                                <div class="flex items-start gap-3">
+                                    <div class="rounded-full flex items-center justify-center shrink-0" style="width:44px;height:44px;background:linear-gradient(135deg,rgb(var(--c-surface)),rgb(var(--c-border)))">
+                                        <span class="i-lucide-user w-5 h-5 text-muted inline-block"></span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <span class="font-semibold text-primary text-sm">Sable-Gris</span>
+                                            <span class="badge badge-available flex items-center gap-1">
+                                                <span class="i-lucide-circle-dot w-3 h-3 inline-block"></span>
+                                                Disponible
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center gap-1 text-xs text-muted mt-0.5">
+                                            <span class="i-lucide-globe w-3 h-3 inline-block"></span>
+                                            <span>@alice@suddenly.social</span>
+                                        </div>
+                                        <p class="text-xs text-muted mt-1">Ironsworn · Forgeron des hautes terres</p>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-secondary mt-3 line-clamp-2">Gardien de vieux secrets, il parle peu mais observe tout. Ses mains portent les marques d'une vie de forge.</p>
+                            </div>
+                            <!-- Actions -->
+                            <div class="p-3 flex items-center gap-2">
+                                <a href="#" class="btn-sm inline-flex items-center gap-1 bg-info/10 text-info border border-info/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-info/20 transition-colors">
+                                    <span class="i-lucide-link w-3.5 h-3.5 inline-block"></span>
+                                    Claim
+                                </a>
+                                <a href="#" class="btn-sm inline-flex items-center gap-1 bg-success/10 text-success border border-success/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-success/20 transition-colors">
+                                    <span class="i-lucide-user-check w-3.5 h-3.5 inline-block"></span>
+                                    Adopt
+                                </a>
+                                <a href="#" class="btn-sm inline-flex items-center gap-1 bg-violet/10 text-violet border border-violet/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-violet/20 transition-colors">
+                                    <span class="i-lucide-git-fork w-3.5 h-3.5 inline-block"></span>
+                                    Fork
+                                </a>
+                                <a href="#" class="ml-auto text-xs link-muted flex items-center gap-1">
+                                    Fiche
+                                    <span class="i-lucide-arrow-right w-3 h-3 inline-block"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </span>,
+                    le forgeron solitaire. Plus loin,
+                    <!-- PNJ déjà adopté -->
+                    <span class="relative inline-block"
+                          x-data="{ open: false }"
+                          @mouseenter="open = true"
+                          @mouseleave="open = false"
+                          @touchstart.prevent="open = !open"
+                          @click.outside="open = false">
+                        <a href="#" class="link" @click.prevent>@Brennan</a>
+                        <div x-show="open"
+                             x-transition:enter="transition ease-out duration-150"
+                             x-transition:enter-start="opacity-0 -translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-100"
+                             x-transition:leave-start="opacity-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 -translate-y-1"
+                             x-cloak
+                             class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-tooltip w-72 bg-card border border-border rounded-2xl shadow-dropdown"
+                             @mouseenter="open = true"
+                             @mouseleave="open = false">
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 w-3 h-3 bg-card border-b border-r border-border rotate-45 -mt-1.5"></div>
+                            <div class="p-4 border-b border-border">
+                                <div class="flex items-start gap-3">
+                                    <div class="rounded-full flex items-center justify-center shrink-0" style="width:44px;height:44px;background:linear-gradient(135deg,rgb(var(--c-brand)),rgb(var(--c-violet)))">
+                                        <span class="text-white font-bold text-sm">B</span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <span class="font-semibold text-primary text-sm">Brennan</span>
+                                            <span class="badge badge-adopted flex items-center gap-1">
+                                                <span class="i-lucide-user-check w-3 h-3 inline-block"></span>
+                                                Adopté
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center gap-1 text-xs text-muted mt-0.5">
+                                            <span class="i-lucide-globe w-3 h-3 inline-block"></span>
+                                            <span>@bob@soudainement.fr</span>
+                                        </div>
+                                        <p class="text-xs text-muted mt-1">Blades in the Dark · Informateur</p>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-secondary mt-3 line-clamp-2">Ancien flic reconverti dans la vente d'informations. Toujours au bon endroit au mauvais moment.</p>
+                            </div>
+                            <div class="p-3 flex items-center gap-2">
+                                <a href="#" class="btn-sm inline-flex items-center gap-1 bg-violet/10 text-violet border border-violet/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-violet/20 transition-colors">
+                                    <span class="i-lucide-git-fork w-3.5 h-3.5 inline-block"></span>
+                                    Fork
+                                </a>
+                                <span class="text-xs text-muted">Claim et Adopt non disponibles</span>
+                                <a href="#" class="ml-auto text-xs link-muted flex items-center gap-1">
+                                    Fiche
+                                    <span class="i-lucide-arrow-right w-3 h-3 inline-block"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </span>
+                    lui faisait signe depuis le comptoir.
+                </p>
+            </div>
+        </div>
+
+        <!-- Règles d'affichage des actions selon le statut -->
+        <div>
+            <h3 class="text-sm font-semibold text-muted uppercase tracking-widest mb-4">Actions disponibles selon le statut</h3>
+            <div class="card overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-surface border-b border-border">
+                        <tr>
+                            <th class="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Statut</th>
+                            <th class="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Claim</th>
+                            <th class="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Adopt</th>
+                            <th class="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Fork</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border">
+                        <tr>
+                            <td class="px-4 py-3"><span class="badge badge-available">Disponible</span></td>
+                            <td class="px-4 py-3"><span class="i-lucide-check w-4 h-4 text-success inline-block"></span></td>
+                            <td class="px-4 py-3"><span class="i-lucide-check w-4 h-4 text-success inline-block"></span></td>
+                            <td class="px-4 py-3"><span class="i-lucide-check w-4 h-4 text-success inline-block"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><span class="badge badge-claimed">Réclamé</span></td>
+                            <td class="px-4 py-3"><span class="i-lucide-x w-4 h-4 text-muted inline-block"></span></td>
+                            <td class="px-4 py-3"><span class="i-lucide-x w-4 h-4 text-muted inline-block"></span></td>
+                            <td class="px-4 py-3"><span class="i-lucide-check w-4 h-4 text-success inline-block"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><span class="badge badge-adopted">Adopté</span></td>
+                            <td class="px-4 py-3"><span class="i-lucide-x w-4 h-4 text-muted inline-block"></span></td>
+                            <td class="px-4 py-3"><span class="i-lucide-x w-4 h-4 text-muted inline-block"></span></td>
+                            <td class="px-4 py-3"><span class="i-lucide-check w-4 h-4 text-success inline-block"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><span class="badge badge-forked">Dérivé</span></td>
+                            <td class="px-4 py-3"><span class="i-lucide-x w-4 h-4 text-muted inline-block"></span></td>
+                            <td class="px-4 py-3"><span class="i-lucide-x w-4 h-4 text-muted inline-block"></span></td>
+                            <td class="px-4 py-3"><span class="i-lucide-check w-4 h-4 text-success inline-block"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><span class="badge badge-pc">PJ actif</span></td>
+                            <td class="px-4 py-3"><span class="i-lucide-x w-4 h-4 text-muted inline-block"></span></td>
+                            <td class="px-4 py-3"><span class="i-lucide-x w-4 h-4 text-muted inline-block"></span></td>
+                            <td class="px-4 py-3"><span class="i-lucide-check w-4 h-4 text-success inline-block"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </section>
