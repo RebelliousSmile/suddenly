@@ -22,7 +22,12 @@ from .services import build_character_queryset
 
 def character_list(request: HttpRequest) -> HttpResponse:
     """Character list with FTS search and filters (US-07)."""
-    qs = build_character_queryset(request)
+    qs = build_character_queryset(
+        q=request.GET.get("q", ""),
+        status=request.GET.get("status", ""),
+        system=request.GET.get("system", ""),
+        tag=request.GET.get("tag", ""),
+    )
 
     default_bg = ""
     first_character = None
@@ -103,7 +108,12 @@ def character_detail(request: HttpRequest, slug: str) -> HttpResponse:
 
 def character_search(request: HttpRequest) -> HttpResponse:
     """HTMX endpoint for live character search (partial only)."""
-    qs = build_character_queryset(request)
+    qs = build_character_queryset(
+        q=request.GET.get("q", ""),
+        status=request.GET.get("status", ""),
+        system=request.GET.get("system", ""),
+        tag=request.GET.get("tag", ""),
+    )
 
     default_bg = ""
     if request.user.is_authenticated and request.user.default_character_background:

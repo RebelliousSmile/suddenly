@@ -1,7 +1,5 @@
 """
-Character link services.
-
-Business logic for claim, adopt, and fork workflows.
+Character services — link workflows and queryset builders.
 """
 
 from __future__ import annotations
@@ -11,7 +9,6 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import Count
 from django.db.models.query import QuerySet
-from django.http import HttpRequest
 from django.utils import timezone
 
 from suddenly.users.models import User
@@ -259,8 +256,13 @@ class LinkService:
         return request
 
 
-def build_character_queryset(request: HttpRequest) -> QuerySet[Character]:
-    """Build filtered character queryset from request params."""
+def build_character_queryset(
+    q: str = "",
+    status: str = "",
+    system: str = "",
+    tag: str = "",
+) -> QuerySet[Character]:
+    """Build filtered character queryset from explicit params."""
     qs = (
         Character.objects.filter(remote=False)
         .select_related("creator", "owner", "origin_game")
@@ -271,25 +273,18 @@ def build_character_queryset(request: HttpRequest) -> QuerySet[Character]:
         .order_by("-created_at")
     )
 
-    # Status filter
-    status = request.GET.get("status", "")
     if status and status in CharacterStatus.values:
         qs = qs.filter(status=status)
 
-    # Game system filter
-    system = request.GET.get("system", "").strip()
-    if system:
-        qs = qs.filter(origin_game__game_system__icontains=system)
+    if system.strip():
+        qs = qs.filter(origin_game__game_system__icontains=system.strip())
 
-    # Tag filter
-    tag = request.GET.get("tag", "").strip()
-    if tag:
-        qs = qs.filter(tags__name=tag)
+    if tag.strip():
+        qs = qs.filter(tags__name=tag.strip())
 
     # FTS search (uses GIN index from T13)
-    q = request.GET.get("q", "").strip()
-    if q:
-        search_query = SearchQuery(q, config="french")
+    if q.strip():
+        search_query = SearchQuery(q.strip(), config="french")
         search_vector = SearchVector("name", weight="A", config="french") + SearchVector(
             "description", weight="B", config="french"
         )

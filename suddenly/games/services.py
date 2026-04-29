@@ -6,18 +6,24 @@ Shared queryset builders for the games domain.
 
 from __future__ import annotations
 
+from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.models import AnonymousUser
 from django.db.models import Count, Q
 from django.db.models.query import QuerySet
-from django.http import HttpRequest
 
 from .models import Game
 
 
-def build_game_queryset(request: HttpRequest) -> QuerySet[Game]:
-    """Build filtered game queryset from request params."""
+def build_game_queryset(
+    user: AbstractBaseUser | AnonymousUser,
+    q: str = "",
+    system: str = "",
+    tag: str = "",
+) -> QuerySet[Game]:
+    """Build filtered game queryset from explicit params."""
     public_filter = Q(is_public=True, remote=False)
-    if request.user.is_authenticated:
-        public_filter |= Q(owner=request.user, remote=False)
+    if user.is_authenticated:
+        public_filter |= Q(owner=user, remote=False)
 
     qs = (
         Game.objects.filter(public_filter)
@@ -36,14 +42,13 @@ def build_game_queryset(request: HttpRequest) -> QuerySet[Game]:
         .order_by("-updated_at")
     )
 
-    system = request.GET.get("system", "").strip()
-    if system:
+    if system.strip():
         qs = qs.filter(
-            Q(game_system_ref__name__icontains=system) | Q(game_system__icontains=system)
+            Q(game_system_ref__name__icontains=system.strip())
+            | Q(game_system__icontains=system.strip())
         )
 
-    tag = request.GET.get("tag", "").strip()
-    if tag:
-        qs = qs.filter(tags__name=tag)
+    if tag.strip():
+        qs = qs.filter(tags__name=tag.strip())
 
     return qs

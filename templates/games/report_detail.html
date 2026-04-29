@@ -15,9 +15,18 @@
 
         <!-- Header -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-primary mb-2">
-                {{ report.title|default:_("Untitled") }}
-            </h1>
+            <div class="flex items-start justify-between gap-4 mb-2">
+                <h1 class="text-2xl font-bold text-primary">
+                    {{ report.title|default:_("Untitled") }}
+                </h1>
+                {% if request.user == report.author %}
+                    <a href="{% url 'games:report_edit' game_pk=game.pk pk=report.pk %}"
+                       class="btn-ghost btn-sm shrink-0">
+                        <span class="i-lucide-pencil text-xs"></span>
+                        {% trans "Edit" %}
+                    </a>
+                {% endif %}
+            </div>
             <div class="flex items-center gap-3 text-sm text-muted">
                 <span>{% blocktrans with username=report.author.username %}by @{{ username }}{% endblocktrans %}</span>
                 {% if report.published_at %}

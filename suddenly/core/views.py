@@ -31,7 +31,12 @@ def explorer(request: HttpRequest) -> HttpResponse:
     context: dict[str, Any] = {"active_tab": tab}
 
     if tab == "games":
-        games_qs = build_game_queryset(request)
+        games_qs = build_game_queryset(
+            user=request.user,
+            q=request.GET.get("q", ""),
+            system=request.GET.get("system", ""),
+            tag=request.GET.get("tag", ""),
+        )
         all_tags: list[str] = sorted(
             Game.objects.filter(remote=False, tags__isnull=False)
             .values_list("tags__name", flat=True)
@@ -47,7 +52,12 @@ def explorer(request: HttpRequest) -> HttpResponse:
             }
         )
     else:
-        chars_qs = build_character_queryset(request)
+        chars_qs = build_character_queryset(
+            q=request.GET.get("q", ""),
+            status=request.GET.get("status", ""),
+            system=request.GET.get("system", ""),
+            tag=request.GET.get("tag", ""),
+        )
         all_tags = sorted(
             Character.objects.filter(remote=False, tags__isnull=False)
             .values_list("tags__name", flat=True)
