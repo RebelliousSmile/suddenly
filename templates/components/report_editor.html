@@ -7,7 +7,7 @@
 #}
 {% load i18n %}
 
-<div x-data="mentionInput('{{ report.content|default:""|escapejs }}')"
+<div x-data="markdownEditor('{{ report.content|default:""|escapejs }}')"
      class="space-y-4">
 
     <!-- Title -->
@@ -23,7 +23,7 @@
                class="form-input">
     </div>
 
-    <!-- Content with mentions -->
+    <!-- Content with EasyMDE + @mention -->
     <div class="relative">
         <label for="report-content" class="form-label">
             {% trans "Report" %}
@@ -32,17 +32,14 @@
         <div class="relative">
             <textarea id="report-content"
                       name="content"
-                      x-model="content"
-                      @input="onInput($event)"
-                      @keydown="onKeydown"
                       rows="12"
-                      placeholder="{% trans "Tell us about your session..." %}&#10;&#10;{% trans "Use @name to mention a character." %}"
-                      class="form-input font-mono text-sm resize-y min-h-[300px]"></textarea>
+                      placeholder="{% trans "Tell us about your session..." %}&#10;&#10;{% trans "Use @name to mention a character." %}"></textarea>
 
-            <!-- Mention suggestions -->
+            <!-- Mention suggestions (fixed positioning via dropdownStyle) -->
             <div x-show="showSuggestions"
                  x-transition
-                 class="dropdown-menu bottom-full left-0 mb-1 w-64">
+                 :style="dropdownStyle"
+                 class="dropdown-menu w-64">
                 <template x-for="(suggestion, index) in suggestions" :key="suggestion.id">
                     <button @click="selectSuggestion(suggestion)"
                             :class="{ 'bg-card-dark': index === selectedIndex }"
