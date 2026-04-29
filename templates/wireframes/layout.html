@@ -1,0 +1,546 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Layout — Prototype{% endblock %}
+
+{% block extra_head %}
+<style>
+  .proto-section { margin-bottom: 2rem; }
+  .proto-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-muted, #888); margin-bottom: 0.5rem; }
+  .mock-header {
+    background: var(--color-surface, #fff);
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  .mock-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    height: 4rem;
+  }
+  .mock-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-primary, #111);
+  }
+  .mock-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--color-secondary, #555);
+  }
+  .mock-nav a { color: inherit; text-decoration: none; }
+  .mock-nav a:hover { color: var(--color-primary, #111); }
+  .mock-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .mock-dropdown-wrap { position: relative; display: inline-block; }
+  .mock-dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.5rem);
+    width: 12rem;
+    background: var(--color-surface, #fff);
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    z-index: 50;
+    overflow: hidden;
+  }
+  .mock-dropdown a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: var(--color-secondary, #555);
+    text-decoration: none;
+  }
+  .mock-dropdown a:hover { background: var(--color-card, #f9f9f9); }
+  .mock-dropdown hr { border: none; border-top: 1px solid var(--color-border, #e5e7eb); margin: 0.25rem 0; }
+  .mock-dropdown .logout { color: var(--color-error, #dc2626); }
+  .mock-mobile-drawer {
+    border-top: 1px solid var(--color-border, #e5e7eb);
+    padding: 1rem 1.5rem;
+  }
+  .mock-mobile-drawer a {
+    display: block;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+    color: var(--color-secondary, #555);
+    text-decoration: none;
+  }
+  .mock-mobile-drawer hr { border: none; border-top: 1px solid var(--color-border, #e5e7eb); margin: 0.5rem 0; }
+  .badge-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 9999px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0 0.3rem;
+  }
+  .badge-count-crimson { background: #dc143c; color: #fff; }
+  .mock-icon-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    color: var(--color-secondary, #555);
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .mock-icon-btn sup {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(30%, -30%);
+  }
+  .mock-avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    background: #dc143c22;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #dc143c;
+    cursor: pointer;
+  }
+  .flash-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+  }
+  .flash-bar .close-btn {
+    margin-left: auto;
+    opacity: 0.6;
+    cursor: pointer;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    color: inherit;
+  }
+  .flash-bar .close-btn:hover { opacity: 1; }
+  .mock-footer {
+    background: var(--color-surface, #fff);
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: 0.5rem;
+    padding: 2rem 1.5rem;
+  }
+  .mock-footer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .mock-footer-links {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.875rem;
+  }
+  .mock-footer-links a { color: var(--color-muted, #888); text-decoration: none; }
+  .mock-footer-links a:hover { color: var(--color-primary, #111); }
+  .mock-footer-sep { color: var(--color-muted, #888); }
+  .mock-toast {
+    background: var(--color-surface, #fff);
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    padding: 1rem;
+    max-width: 20rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .mock-toast-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--color-primary, #111);
+  }
+  .mock-toast-body {
+    font-size: 0.8125rem;
+    color: var(--color-secondary, #555);
+    padding-left: 1.5rem;
+  }
+  .mock-toast-time {
+    font-size: 0.75rem;
+    color: var(--color-muted, #888);
+    text-align: right;
+  }
+  .mock-loading-bar-wrap {
+    position: relative;
+    height: 2px;
+    background: var(--color-border, #e5e7eb);
+    border-radius: 9999px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+  }
+  .mock-loading-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 60%;
+    background: #6366f1;
+    border-radius: 9999px;
+    animation: loading-slide 1.4s ease-in-out infinite;
+  }
+  @keyframes loading-slide {
+    0% { left: -40%; width: 40%; }
+    50% { left: 30%; width: 60%; }
+    100% { left: 110%; width: 40%; }
+  }
+  .section-page-content {
+    background: var(--color-card, #f9f9f9);
+    border: 1px dashed var(--color-border, #e5e7eb);
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    font-size: 0.8125rem;
+    color: var(--color-muted, #888);
+    text-align: center;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-app py-8">
+
+  <div class="mb-8">
+    <h1 class="text-2xl font-semibold text-primary mb-1">Layout — Prototype</h1>
+    <p class="text-muted text-sm">Wireframe <code>01-layout.md</code> — Composants de mise en page globale</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 1. HEADER CONNECTÉ                                        -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="card mb-6">
+    <div class="card-header">
+      <h2 class="font-semibold text-primary">1. Header — Utilisateur connecté</h2>
+      <p class="text-xs text-muted mt-0.5">Logo · navigation principale · Dashboard (GM) · demandes [2] · notifications [3] · avatar + dropdown ouvert</p>
+    </div>
+    <div class="card-body">
+      <div class="mock-header">
+        <div class="mock-header-inner">
+          <!-- Logo -->
+          <div class="mock-logo">
+            <span class="i-lucide-dice-5 text-crimson text-2xl"></span>
+            <span>Suddenly</span>
+          </div>
+
+          <!-- Nav principale -->
+          <nav class="mock-nav">
+            <a href="#">Accueil</a>
+            <a href="#">Explorer</a>
+            <a href="#">Mes parties</a>
+            <a href="#">Mes persos</a>
+          </nav>
+
+          <!-- Actions connecté -->
+          <div class="mock-actions">
+            <!-- Dashboard (visible GM) -->
+            <a href="#" class="text-sm text-secondary hover:text-primary" style="text-decoration:none;">
+              <span class="i-lucide-layout-dashboard mr-1"></span>
+              Dashboard
+            </a>
+
+            <!-- Demandes [2] -->
+            <a href="#" class="mock-icon-btn" title="Demandes actives">
+              <span class="i-lucide-link-2 text-lg"></span>
+              <sup>
+                <span class="badge-count badge-count-crimson">2</span>
+              </sup>
+            </a>
+
+            <!-- Notifications [3] -->
+            <a href="#" class="mock-icon-btn" title="Notifications">
+              <span class="i-lucide-bell text-lg"></span>
+              <sup>
+                <span class="badge-count badge-count-crimson">3</span>
+              </sup>
+            </a>
+
+            <!-- Avatar + dropdown (ouvert) -->
+            <div class="mock-dropdown-wrap" style="padding-bottom: 10rem;">
+              <div class="mock-avatar" title="Menu utilisateur">
+                JD
+                <span class="i-lucide-chevron-down text-xs ml-0.5"></span>
+              </div>
+              <!-- Dropdown ouvert -->
+              <div class="mock-dropdown">
+                <a href="#">
+                  <span class="i-lucide-user text-sm"></span>
+                  Mon profil
+                </a>
+                <a href="#">
+                  <span class="i-lucide-link-2 text-sm"></span>
+                  Mes demandes
+                </a>
+                <a href="#">
+                  <span class="i-lucide-settings text-sm"></span>
+                  Paramètres
+                </a>
+                <hr>
+                <a href="#" class="logout">
+                  <span class="i-lucide-log-out text-sm"></span>
+                  Déconnexion
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="mt-3 flex flex-wrap gap-4 text-xs text-muted">
+        <span><span class="badge badge-info mr-1">Dashboard</span> visible si l'utilisateur a créé au moins une partie (GM)</span>
+        <span><span class="badge badge-pending mr-1">[2]</span> demandes actives — clic → <code>/requests/</code></span>
+        <span><span class="badge badge-pending mr-1">[3]</span> notifications non lues — clic → <code>/notifications/</code></span>
+        <span>Dropdown : Alpine.js <code>x-show / @click.away</code></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 2. HEADER VISITEUR                                        -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="card mb-6">
+    <div class="card-header">
+      <h2 class="font-semibold text-primary">2. Header — Visiteur (non connecté)</h2>
+      <p class="text-xs text-muted mt-0.5">Logo · Accueil · Explorer · boutons Connexion + S'inscrire</p>
+    </div>
+    <div class="card-body">
+      <div class="mock-header">
+        <div class="mock-header-inner">
+          <!-- Logo -->
+          <div class="mock-logo">
+            <span class="i-lucide-dice-5 text-crimson text-2xl"></span>
+            <span>Suddenly</span>
+          </div>
+
+          <!-- Nav réduite -->
+          <nav class="mock-nav">
+            <a href="#">Accueil</a>
+            <a href="#">Explorer</a>
+          </nav>
+
+          <!-- CTA -->
+          <div class="mock-actions">
+            <a href="#" class="btn-ghost btn-sm" style="text-decoration:none;">Connexion</a>
+            <a href="#" class="btn-primary btn-sm" style="text-decoration:none;">S'inscrire</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 3. HEADER MOBILE                                          -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="card mb-6">
+    <div class="card-header">
+      <h2 class="font-semibold text-primary">3. Header — Mobile (&lt; 768px)</h2>
+      <p class="text-xs text-muted mt-0.5">Logo + hamburger · drawer ouvert avec nav complète</p>
+    </div>
+    <div class="card-body">
+      <div style="max-width: 24rem;">
+        <div class="mock-header">
+          <!-- Barre mobile -->
+          <div class="mock-header-inner">
+            <div class="mock-logo">
+              <span class="i-lucide-dice-5 text-crimson text-2xl"></span>
+              <span>Suddenly</span>
+            </div>
+            <button class="mock-icon-btn" style="width:2.5rem;height:2.5rem;" title="Menu">
+              <span class="i-lucide-menu text-xl"></span>
+            </button>
+          </div>
+
+          <!-- Drawer ouvert -->
+          <div class="mock-mobile-drawer">
+            <a href="#">Accueil</a>
+            <a href="#">Explorer</a>
+            <a href="#">Mes parties</a>
+            <a href="#">Mes persos</a>
+            <hr>
+            <a href="#" style="display:flex;align-items:center;gap:0.5rem;">
+              <span class="i-lucide-user text-sm"></span>
+              Mon profil
+            </a>
+            <a href="#" style="color:#dc2626;display:flex;align-items:center;gap:0.5rem;">
+              <span class="i-lucide-log-out text-sm"></span>
+              Déconnexion
+            </a>
+          </div>
+        </div>
+      </div>
+      <p class="text-xs text-muted mt-3">Alpine.js <code>@toggle-mobile-menu.window</code> · <code>x-show / x-transition</code></p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 4. FLASH MESSAGES                                         -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="card mb-6">
+    <div class="card-header">
+      <h2 class="font-semibold text-primary">4. Flash messages</h2>
+      <p class="text-xs text-muted mt-0.5">Trois variantes : succès · avertissement · erreur</p>
+    </div>
+    <div class="card-body space-y-3">
+
+      <!-- Success -->
+      <div class="flash-bar bg-success/10 border border-success/30 text-success">
+        <span class="i-lucide-check-circle text-lg flex-shrink-0"></span>
+        <span>Compte-rendu publié avec succès.</span>
+        <button class="close-btn" aria-label="Fermer">
+          <span class="i-lucide-x text-base"></span>
+        </button>
+      </div>
+
+      <!-- Warning -->
+      <div class="flash-bar bg-warning/10 border border-warning/30 text-warning">
+        <span class="i-lucide-alert-triangle text-lg flex-shrink-0"></span>
+        <span>Votre session expire bientôt.</span>
+        <button class="close-btn" aria-label="Fermer">
+          <span class="i-lucide-x text-base"></span>
+        </button>
+      </div>
+
+      <!-- Error -->
+      <div class="flash-bar bg-error/10 border border-error/30 text-error">
+        <span class="i-lucide-x-circle text-lg flex-shrink-0"></span>
+        <span>Erreur lors de la sauvegarde.</span>
+        <button class="close-btn" aria-label="Fermer">
+          <span class="i-lucide-x text-base"></span>
+        </button>
+      </div>
+
+      <!-- Info (bonus) -->
+      <div class="flash-bar bg-info/10 border border-info/30 text-info">
+        <span class="i-lucide-info text-lg flex-shrink-0"></span>
+        <span>Une nouvelle version de Suddenly est disponible.</span>
+        <button class="close-btn" aria-label="Fermer">
+          <span class="i-lucide-x text-base"></span>
+        </button>
+      </div>
+
+      <p class="text-xs text-muted pt-1">
+        Injectés via <code>{% templatetag openblock %} if messages {% templatetag closeblock %}</code> dans <code>base.html</code> · container <code>.container-app mt-4</code>
+      </p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 5. FOOTER                                                 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="card mb-6">
+    <div class="card-header">
+      <h2 class="font-semibold text-primary">5. Footer</h2>
+      <p class="text-xs text-muted mt-0.5">Logo · tagline · liens À propos · Documentation · GitHub</p>
+    </div>
+    <div class="card-body">
+      <div class="mock-footer">
+        <div class="mock-footer-inner">
+          <!-- Logo + tagline -->
+          <div style="display:flex;align-items:center;gap:0.5rem;">
+            <span class="i-lucide-dice-5 text-crimson text-2xl"></span>
+            <span class="font-semibold text-primary">Suddenly</span>
+            <span class="text-muted">—</span>
+            <span class="text-sm text-muted">Réseau fédéré pour joueurs de JDR</span>
+          </div>
+
+          <!-- Liens -->
+          <div class="mock-footer-links">
+            <a href="#">À propos</a>
+            <span class="mock-footer-sep">·</span>
+            <a href="#">Documentation</a>
+            <span class="mock-footer-sep">·</span>
+            <a href="#" style="display:flex;align-items:center;gap:0.25rem;">
+              <span class="i-simple-icons-github text-sm"></span>
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 6. TOAST NOTIFICATION                                     -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="card mb-6">
+    <div class="card-header">
+      <h2 class="font-semibold text-primary">6. Toast notification</h2>
+      <p class="text-xs text-muted mt-0.5">Coin bas-droite · apparaît via HTMX polling/SSE · disparaît après 5 s</p>
+    </div>
+    <div class="card-body">
+      <div style="display:flex;justify-content:flex-end;">
+        <div class="mock-toast">
+          <div class="mock-toast-header">
+            <span class="i-lucide-bell text-crimson text-base"></span>
+            Nouvelle demande
+          </div>
+          <div class="mock-toast-body">
+            Demande d'Adoption sur <strong>Viktor</strong>
+          </div>
+          <div class="mock-toast-time">il y a 2 s</div>
+        </div>
+      </div>
+      <p class="text-xs text-muted mt-3">
+        Alpine.js composant <code>notifications</code> · <code>x-for</code> · <code>x-transition</code> · timeout 5 000 ms · z-index <code>z-toast</code>
+      </p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 7. HTMX LOADING BAR                                       -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="card mb-6">
+    <div class="card-header">
+      <h2 class="font-semibold text-primary">7. Indicateur de chargement HTMX</h2>
+      <p class="text-xs text-muted mt-0.5">Barre indigo 2 px en haut de page pendant les requêtes HTMX</p>
+    </div>
+    <div class="card-body">
+      <p class="text-xs text-muted mb-3">Simulation animée de la barre :</p>
+
+      <!-- Barre simulée -->
+      <div class="mock-loading-bar-wrap">
+        <div class="mock-loading-bar"></div>
+      </div>
+
+      <div class="section-page-content">
+        (contenu de la page)
+      </div>
+
+      <p class="text-xs text-muted mt-3">
+        Élément <code>&lt;div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-crimson z-toast"&gt;</code>
+        dans <code>base.html</code> · visible uniquement pendant les requêtes HTMX via classe <code>.htmx-request</code>
+      </p>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

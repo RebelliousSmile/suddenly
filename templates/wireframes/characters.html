@@ -1,0 +1,907 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Personnages — Prototype{% endblock %}
+{% block content %}
+
+<!-- ================================================================ -->
+<!-- PROTOTYPE LABEL -->
+<!-- ================================================================ -->
+<div class="bg-amber-100 border-b border-amber-300 text-amber-800 text-xs text-center py-1.5 font-medium tracking-wide">
+    Wireframe 07 — Personnages (Characters) — 7 sections empilées : liste / fiche PNJ dispo / fiche PJ actif / fiche dérivé / fiche révoqué / fiche distante / bandeaux statut
+</div>
+
+<!-- ================================================================ -->
+<!-- SECTION 1 — LISTE DES PERSONNAGES (/characters/) -->
+<!-- ================================================================ -->
+<section class="mb-16">
+
+    <!-- Section label -->
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-0">
+        <span class="i-lucide-layout-list w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 1 — Liste des personnages (/characters/)</span>
+    </div>
+
+    <!-- Page header -->
+    <div class="border-b border-border bg-surface">
+        <div class="container-app px-4 py-6">
+            <h1 class="text-2xl font-bold text-primary">Personnages</h1>
+        </div>
+    </div>
+
+    <!-- Tabs Instance / Fediverse -->
+    <div class="border-b border-border bg-surface">
+        <div class="container-app px-4">
+            <nav class="flex gap-0 -mb-px">
+                <a href="#" class="flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 border-crimson text-crimson">
+                    <span class="i-lucide-users w-4 h-4 inline-block"></span>
+                    Instance
+                </a>
+                <a href="#" class="flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-muted hover:text-secondary">
+                    <span class="i-lucide-globe w-4 h-4 inline-block"></span>
+                    Fediverse
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Search + filters -->
+    <div class="bg-surface border-b border-border">
+        <div class="container-app px-4 py-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center flex-wrap">
+            <div class="relative flex-1 max-w-xs">
+                <span class="i-lucide-search w-4 h-4 text-muted absolute left-3 top-1/2 -translate-y-1/2 inline-block"></span>
+                <input
+                    type="text"
+                    class="form-input pl-9 w-full"
+                    placeholder="Rechercher un personnage…"
+                    value=""
+                    hx-get="/htmx/characters/search/?scope=instance"
+                    hx-trigger="keyup changed delay:300ms"
+                    hx-target="#character-results"
+                >
+            </div>
+            <div class="flex items-center gap-3 flex-wrap">
+                <div class="flex items-center gap-2">
+                    <label class="form-label mb-0 whitespace-nowrap text-xs">Statut :</label>
+                    <select class="form-input py-1.5 text-sm">
+                        <option>Tous</option>
+                        <option>Disponible</option>
+                        <option>PJ actif</option>
+                        <option>Dérivé</option>
+                        <option>Réclamé</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-2">
+                    <label class="form-label mb-0 whitespace-nowrap text-xs">Système :</label>
+                    <select class="form-input py-1.5 text-sm">
+                        <option>Tous</option>
+                        <option>City of Mist</option>
+                        <option>Blades in the Dark</option>
+                        <option>Ironsworn</option>
+                        <option>Call of Cthulhu</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Character cards grid -->
+    <div class="container-app px-4 py-8" id="character-results">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+
+            <!-- Card 1 — Viktor (PNJ disponible) -->
+            <div class="card card-hover group relative flex flex-col">
+                <div class="card-body flex flex-col items-center text-center flex-1 pb-3">
+                    <div class="avatar-lg avatar-placeholder bg-emerald-100 text-emerald-700 font-bold mb-3">V</div>
+                    <p class="font-semibold text-primary text-sm mb-1">Viktor</p>
+                    <span class="badge badge-available text-xs mb-2">Disponible</span>
+                    <p class="text-xs text-muted mb-1">City of Mist</p>
+                    <div class="flex items-center gap-2 text-xs text-muted mt-1">
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-file-text w-3 h-3 inline-block"></span>
+                            5 appar.
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-quote w-3 h-3 inline-block"></span>
+                            2
+                        </span>
+                    </div>
+                </div>
+                <!-- Action visible au hover -->
+                <div class="card-footer opacity-0 group-hover:opacity-100 transition-opacity pt-2">
+                    <button class="btn-primary btn-sm w-full flex items-center justify-center gap-1.5">
+                        <span class="i-lucide-link w-3.5 h-3.5 inline-block"></span>
+                        Lier à mon histoire
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 2 — Ombra (PNJ disponible) -->
+            <div class="card card-hover group relative flex flex-col">
+                <div class="card-body flex flex-col items-center text-center flex-1 pb-3">
+                    <div class="avatar-lg avatar-placeholder bg-violet-100 text-violet-700 font-bold mb-3">O</div>
+                    <p class="font-semibold text-primary text-sm mb-1">Ombra</p>
+                    <span class="badge badge-available text-xs mb-2">Disponible</span>
+                    <p class="text-xs text-muted mb-1">Blades in the Dark</p>
+                    <div class="flex items-center gap-2 text-xs text-muted mt-1">
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-file-text w-3 h-3 inline-block"></span>
+                            3 appar.
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-quote w-3 h-3 inline-block"></span>
+                            0
+                        </span>
+                    </div>
+                </div>
+                <div class="card-footer opacity-0 group-hover:opacity-100 transition-opacity pt-2">
+                    <button class="btn-primary btn-sm w-full flex items-center justify-center gap-1.5">
+                        <span class="i-lucide-link w-3.5 h-3.5 inline-block"></span>
+                        Lier à mon histoire
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 3 — Kael (Réclamé / Retcon) -->
+            <div class="card flex flex-col opacity-75">
+                <div class="card-body flex flex-col items-center text-center flex-1 pb-3">
+                    <div class="avatar-lg avatar-placeholder bg-amber-100 text-amber-700 font-bold mb-3">K</div>
+                    <p class="font-semibold text-primary text-sm mb-1">Kael</p>
+                    <span class="badge badge-claimed text-xs mb-2">Réclamé</span>
+                    <p class="text-xs text-muted mb-1">City of Mist</p>
+                    <div class="flex items-center gap-2 text-xs text-muted mt-1">
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-file-text w-3 h-3 inline-block"></span>
+                            1 appar.
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-quote w-3 h-3 inline-block"></span>
+                            0
+                        </span>
+                    </div>
+                </div>
+                <!-- Pas de bouton quand réclamé -->
+                <div class="card-footer pt-2">
+                    <p class="text-xs text-muted text-center italic">Lien en cours</p>
+                </div>
+            </div>
+
+            <!-- Card 4 — Fenris (PNJ disponible) -->
+            <div class="card card-hover group relative flex flex-col">
+                <div class="card-body flex flex-col items-center text-center flex-1 pb-3">
+                    <div class="avatar-lg avatar-placeholder bg-slate-100 text-slate-700 font-bold mb-3">F</div>
+                    <p class="font-semibold text-primary text-sm mb-1">Fenris</p>
+                    <span class="badge badge-available text-xs mb-2">Disponible</span>
+                    <p class="text-xs text-muted mb-1">Ironsworn</p>
+                    <div class="flex items-center gap-2 text-xs text-muted mt-1">
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-file-text w-3 h-3 inline-block"></span>
+                            8 appar.
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-quote w-3 h-3 inline-block"></span>
+                            4
+                        </span>
+                    </div>
+                </div>
+                <div class="card-footer opacity-0 group-hover:opacity-100 transition-opacity pt-2">
+                    <button class="btn-primary btn-sm w-full flex items-center justify-center gap-1.5">
+                        <span class="i-lucide-link w-3.5 h-3.5 inline-block"></span>
+                        Lier à mon histoire
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 5 — Lyra (PJ actif) -->
+            <div class="card card-hover group relative flex flex-col">
+                <div class="card-body flex flex-col items-center text-center flex-1 pb-3">
+                    <div class="avatar-lg avatar-placeholder bg-sky-100 text-sky-700 font-bold mb-3">L</div>
+                    <p class="font-semibold text-primary text-sm mb-1">Lyra</p>
+                    <span class="badge badge-pc text-xs mb-2">PJ actif</span>
+                    <p class="text-xs text-muted mb-1">City of Mist</p>
+                    <div class="flex items-center gap-2 text-xs text-muted mt-1">
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-file-text w-3 h-3 inline-block"></span>
+                            6 appar.
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-quote w-3 h-3 inline-block"></span>
+                            3
+                        </span>
+                    </div>
+                </div>
+                <!-- PJ : on peut dériver -->
+                <div class="card-footer opacity-0 group-hover:opacity-100 transition-opacity pt-2">
+                    <button class="btn-secondary btn-sm w-full flex items-center justify-center gap-1.5">
+                        <span class="i-lucide-git-fork w-3.5 h-3.5 inline-block"></span>
+                        Dériver
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 6 — Shadow (Dérivé) -->
+            <div class="card card-hover flex flex-col">
+                <div class="card-body flex flex-col items-center text-center flex-1 pb-3">
+                    <div class="avatar-lg avatar-placeholder bg-purple-100 text-purple-700 font-bold mb-3">S</div>
+                    <p class="font-semibold text-primary text-sm mb-1">Shadow Viktor</p>
+                    <span class="badge badge-forked text-xs mb-2">Dérivé</span>
+                    <p class="text-xs text-muted mb-1">City of Mist</p>
+                    <div class="flex items-center gap-2 text-xs text-muted mt-1">
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-file-text w-3 h-3 inline-block"></span>
+                            2 appar.
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-quote w-3 h-3 inline-block"></span>
+                            1
+                        </span>
+                    </div>
+                </div>
+                <div class="card-footer opacity-0 group-hover:opacity-100 transition-opacity pt-2">
+                    <button class="btn-secondary btn-sm w-full flex items-center justify-center gap-1.5">
+                        <span class="i-lucide-git-fork w-3.5 h-3.5 inline-block"></span>
+                        Dériver
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 7 — Mira (Adopté) -->
+            <div class="card card-hover flex flex-col">
+                <div class="card-body flex flex-col items-center text-center flex-1 pb-3">
+                    <div class="avatar-lg avatar-placeholder bg-blue-100 text-blue-700 font-bold mb-3">M</div>
+                    <p class="font-semibold text-primary text-sm mb-1">Mira</p>
+                    <span class="badge badge-adopted text-xs mb-2">Adopté</span>
+                    <p class="text-xs text-muted mb-1">Call of Cthulhu</p>
+                    <div class="flex items-center gap-2 text-xs text-muted mt-1">
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-file-text w-3 h-3 inline-block"></span>
+                            4 appar.
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-quote w-3 h-3 inline-block"></span>
+                            2
+                        </span>
+                    </div>
+                </div>
+                <div class="card-footer opacity-0 group-hover:opacity-100 transition-opacity pt-2">
+                    <button class="btn-secondary btn-sm w-full flex items-center justify-center gap-1.5">
+                        <span class="i-lucide-git-fork w-3.5 h-3.5 inline-block"></span>
+                        Dériver
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 8 — Fediverse instance badge example -->
+            <div class="card card-hover group relative flex flex-col">
+                <div class="card-body flex flex-col items-center text-center flex-1 pb-3">
+                    <div class="avatar-lg avatar-placeholder bg-teal-100 text-teal-700 font-bold mb-3">R</div>
+                    <p class="font-semibold text-primary text-sm mb-1">Raven</p>
+                    <span class="badge badge-available text-xs mb-1">Disponible</span>
+                    <p class="text-xs text-muted flex items-center gap-1 justify-center mb-1">
+                        <span class="i-lucide-globe w-3 h-3 inline-block"></span>
+                        suddenly.games
+                    </p>
+                    <p class="text-xs text-muted">Ironsworn</p>
+                    <div class="flex items-center gap-2 text-xs text-muted mt-1">
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-file-text w-3 h-3 inline-block"></span>
+                            11 appar.
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <span class="i-lucide-quote w-3 h-3 inline-block"></span>
+                            6
+                        </span>
+                    </div>
+                </div>
+                <div class="card-footer opacity-0 group-hover:opacity-100 transition-opacity pt-2">
+                    <button class="btn-primary btn-sm w-full flex items-center justify-center gap-1.5">
+                        <span class="i-lucide-link w-3.5 h-3.5 inline-block"></span>
+                        Lier à mon histoire
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Load more -->
+        <div class="text-center mt-8">
+            <button class="btn-secondary flex items-center gap-2 mx-auto">
+                <span class="i-lucide-loader w-4 h-4 inline-block"></span>
+                Charger plus…
+            </button>
+            <p class="text-xs text-muted mt-2">(hx-trigger="revealed" en production)</p>
+        </div>
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 2 — FICHE PERSONNAGE PNJ DISPONIBLE (/characters/viktor/) -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16" id="section-detail-pnj">
+
+    <!-- Section label -->
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-user w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 2 — Fiche personnage : PNJ disponible (/characters/viktor/)</span>
+    </div>
+
+    <!-- Character hero -->
+    <div class="border-b border-border bg-surface">
+        <div class="container-app px-4 py-8">
+            <div class="flex items-start gap-6 flex-wrap">
+
+                <!-- Avatar -->
+                <div class="avatar-xl avatar-placeholder bg-emerald-100 text-emerald-700 font-bold text-2xl shrink-0">V</div>
+
+                <!-- Info -->
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-4 flex-wrap mb-2">
+                        <h1 class="text-2xl font-bold text-primary">Viktor</h1>
+                        <button class="btn-secondary flex items-center gap-2">
+                            <span class="i-lucide-rss w-4 h-4 inline-block"></span>
+                            Suivre
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="badge badge-available">PNJ disponible</span>
+                    </div>
+
+                    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-sm mb-4">
+                        <div class="flex gap-2">
+                            <dt class="text-muted shrink-0">Origine :</dt>
+                            <dd class="text-secondary">City of Mist — Saison 2</dd>
+                        </div>
+                        <div class="flex gap-2">
+                            <dt class="text-muted shrink-0">Créé par :</dt>
+                            <dd><a href="#" class="link">@alice</a></dd>
+                        </div>
+                        <div class="flex gap-2">
+                            <dt class="text-muted shrink-0">Propriétaire :</dt>
+                            <dd class="text-muted">—</dd>
+                        </div>
+                    </dl>
+
+                    <div class="flex flex-col gap-1.5 text-sm">
+                        <a href="#" class="flex items-center gap-2 link-muted">
+                            <span class="i-lucide-external-link w-4 h-4 inline-block"></span>
+                            Fiche technique : lien_externe
+                        </a>
+                        <span class="flex items-center gap-2 text-muted">
+                            <span class="i-lucide-activity w-4 h-4 inline-block"></span>
+                            AP : @viktor@suddenly.social
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div class="border-b border-border">
+        <div class="container-app px-4 py-8">
+            <h2 class="text-base font-bold text-primary mb-3">Description</h2>
+            <p class="text-secondary leading-relaxed max-w-2xl">
+                Ancien détective privé reconverti en consultant pour le Quartier des Reflets. Viktor ne croit pas aux mythes — ou du moins, il essaie de ne pas y croire. Sa façade cynique cache une profonde mélancolie depuis la disparition de sa partenaire trois ans plus tôt.
+            </p>
+        </div>
+    </div>
+
+    <!-- CTA Lier (visible si PNJ dispo + user authentifié) -->
+    <div class="border-b border-border bg-surface">
+        <div class="container-app px-4 py-8">
+            <div class="max-w-xl">
+                <div class="card bg-emerald-50 border-emerald-200">
+                    <div class="card-body text-center py-6">
+                        <span class="i-lucide-link-2 w-8 h-8 text-emerald-600 mx-auto mb-3 block"></span>
+                        <p class="text-secondary mb-4">Ce PNJ vous inspire ? Intégrez-le dans votre histoire en un clic.</p>
+                        <button class="btn-primary flex items-center gap-2 mx-auto">
+                            Lier à mon histoire
+                            <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                        </button>
+                        <p class="text-xs text-muted mt-3">→ ouvre le flow guide (voir 09-links.md) — US-10</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apparitions -->
+    <div class="border-b border-border">
+        <div class="container-app px-4 py-8">
+            <h2 class="text-base font-bold text-primary flex items-center gap-2 mb-4">
+                Apparitions
+                <span class="badge badge-info">5</span>
+                <span class="text-xs font-normal text-muted ml-1">US-06</span>
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-border text-left text-xs text-muted uppercase tracking-wide">
+                            <th class="pb-2 pr-4 font-semibold">Date</th>
+                            <th class="pb-2 pr-4 font-semibold">Compte-rendu</th>
+                            <th class="pb-2 pr-4 font-semibold">Partie</th>
+                            <th class="pb-2 font-semibold">Rôle</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border">
+                        <tr class="hover:bg-surface">
+                            <td class="py-3 pr-4 text-muted text-xs">mars 2026</td>
+                            <td class="py-3 pr-4"><a href="#" class="link text-sm">L'Oracle brisé</a></td>
+                            <td class="py-3 pr-4 text-secondary text-xs">CoM S2</td>
+                            <td class="py-3"><span class="badge badge-pc text-xs">Principal</span></td>
+                        </tr>
+                        <tr class="hover:bg-surface">
+                            <td class="py-3 pr-4 text-muted text-xs">fév. 2026</td>
+                            <td class="py-3 pr-4"><a href="#" class="link text-sm">Le pont des ombres</a></td>
+                            <td class="py-3 pr-4 text-secondary text-xs">CoM S2</td>
+                            <td class="py-3"><span class="badge text-xs">Secondaire</span></td>
+                        </tr>
+                        <tr class="hover:bg-surface">
+                            <td class="py-3 pr-4 text-muted text-xs">fév. 2026</td>
+                            <td class="py-3 pr-4"><a href="#" class="link text-sm">Rencontre au terminal</a></td>
+                            <td class="py-3 pr-4 text-secondary text-xs">CoM S2</td>
+                            <td class="py-3"><span class="badge text-xs">Mentionné</span></td>
+                        </tr>
+                        <tr class="hover:bg-surface">
+                            <td class="py-3 pr-4 text-muted text-xs">jan. 2026</td>
+                            <td class="py-3 pr-4"><a href="#" class="link text-sm">Le rituel de minuit</a></td>
+                            <td class="py-3 pr-4 text-secondary text-xs">CoM S2</td>
+                            <td class="py-3"><span class="badge badge-pc text-xs">Principal</span></td>
+                        </tr>
+                        <tr class="hover:bg-surface">
+                            <td class="py-3 pr-4 text-muted text-xs">jan. 2026</td>
+                            <td class="py-3 pr-4"><a href="#" class="link text-sm">Première rencontre</a></td>
+                            <td class="py-3 pr-4 text-secondary text-xs">CoM S2</td>
+                            <td class="py-3"><span class="badge badge-pc text-xs">Principal</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Citations -->
+    <div class="border-b border-border">
+        <div class="container-app px-4 py-8" id="quotes-section">
+            <h2 class="text-base font-bold text-primary flex items-center gap-2 mb-4">
+                Citations
+                <span class="badge badge-info">2</span>
+                <span class="text-xs font-normal text-muted ml-1">US-08</span>
+            </h2>
+            <div class="space-y-3 max-w-2xl">
+                <blockquote class="card border-l-4 border-crimson rounded-l-none">
+                    <div class="card-body py-4">
+                        <p class="text-secondary italic mb-2">"Les mythes n'existent pas. Et si j'arrête de répéter ça, ils pourraient bien finir par me croire."</p>
+                        <p class="text-xs text-muted">— Viktor, session 3 · <a href="#" class="link-muted">L'Oracle brisé</a></p>
+                    </div>
+                </blockquote>
+                <blockquote class="card border-l-4 border-crimson rounded-l-none">
+                    <div class="card-body py-4">
+                        <p class="text-secondary italic mb-2">"Je ne fais pas confiance aux gens qui sourient trop facilement dans cette ville."</p>
+                        <p class="text-xs text-muted">— Viktor, session 1 · <a href="#" class="link-muted">Première rencontre</a></p>
+                    </div>
+                </blockquote>
+            </div>
+            <p class="text-xs text-muted mt-3">(voir wireframe 08-quotes.md)</p>
+        </div>
+    </div>
+
+    <!-- Lignée -->
+    <div class="container-app px-4 py-8">
+        <h2 class="text-base font-bold text-primary flex items-center gap-2 mb-4">
+            Lignée
+            <span class="text-xs font-normal text-muted ml-1">US-17</span>
+        </h2>
+        <div class="text-sm font-mono space-y-1 text-secondary">
+            <div class="flex items-center gap-2">
+                <span class="i-lucide-user w-4 h-4 text-emerald-600 inline-block"></span>
+                <span class="font-semibold text-primary">Viktor</span>
+                <span class="badge badge-available text-xs">PNJ</span>
+                <span class="text-muted text-xs">origin · @alice</span>
+            </div>
+            <div class="ml-4 flex items-center gap-2">
+                <span class="text-muted">+--</span>
+                <span class="i-lucide-git-fork w-3.5 h-3.5 text-sky-600 inline-block"></span>
+                <a href="#" class="link font-medium">Lyra</a>
+                <span class="badge badge-pc text-xs">PJ</span>
+                <span class="text-muted text-xs">dérivé par @bob</span>
+            </div>
+            <div class="ml-10 flex items-center gap-2">
+                <span class="text-muted">+--</span>
+                <span class="i-lucide-git-fork w-3.5 h-3.5 text-sky-600 inline-block"></span>
+                <a href="#" class="link font-medium">Kira</a>
+                <span class="badge badge-pc text-xs">PJ</span>
+                <span class="text-muted text-xs">dérivé par @charlie</span>
+            </div>
+            <div class="ml-4 flex items-center gap-2">
+                <span class="text-muted">+--</span>
+                <span class="i-lucide-git-fork w-3.5 h-3.5 text-sky-600 inline-block"></span>
+                <a href="#" class="link font-medium">Shadow Viktor</a>
+                <span class="badge badge-forked text-xs">Dérivé</span>
+                <span class="text-muted text-xs">dérivé par @dave</span>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 3 — FICHE PERSONNAGE : PJ ACTIF (/characters/lyra/) -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16" id="section-detail-pj">
+
+    <!-- Section label -->
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-shield w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 3 — Fiche personnage : PJ actif (/characters/lyra/)</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="border-b border-border bg-surface">
+        <div class="container-app px-4 py-8">
+            <div class="flex items-start gap-6 flex-wrap">
+
+                <div class="avatar-xl avatar-placeholder bg-sky-100 text-sky-700 font-bold text-2xl shrink-0">L</div>
+
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-4 flex-wrap mb-2">
+                        <h1 class="text-2xl font-bold text-primary">Lyra</h1>
+                        <button class="btn-secondary flex items-center gap-2">
+                            <span class="i-lucide-rss w-4 h-4 inline-block"></span>
+                            Suivre
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2 mb-3 flex-wrap">
+                        <span class="badge badge-pc">PJ actif</span>
+                    </div>
+
+                    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-sm mb-4">
+                        <div class="flex gap-2">
+                            <dt class="text-muted shrink-0">Propriétaire :</dt>
+                            <dd><a href="#" class="link">@bob</a></dd>
+                        </div>
+                        <div class="flex gap-2">
+                            <dt class="text-muted shrink-0">Lien :</dt>
+                            <dd class="text-secondary">Adopté depuis le 10 fév. 2026</dd>
+                        </div>
+                        <div class="flex gap-2">
+                            <dt class="text-muted shrink-0">Origine :</dt>
+                            <dd class="text-secondary">City of Mist — Saison 2</dd>
+                        </div>
+                        <div class="flex gap-2">
+                            <dt class="text-muted shrink-0">Créé par :</dt>
+                            <dd><a href="#" class="link">@alice</a></dd>
+                        </div>
+                        <div class="flex gap-2 sm:col-span-2">
+                            <dt class="text-muted shrink-0">Séquence partagée :</dt>
+                            <dd class="text-secondary italic">"La rencontre au carrefour"</dd>
+                        </div>
+                    </dl>
+
+                    <div class="flex flex-col sm:flex-row gap-3 mt-4">
+                        <button class="btn-secondary flex items-center gap-2">
+                            <span class="i-lucide-git-fork w-4 h-4 inline-block"></span>
+                            Dériver ce personnage
+                            <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                        </button>
+                        <!-- Visible uniquement pour le propriétaire -->
+                        <button class="btn-danger flex items-center gap-2">
+                            <span class="i-lucide-x-circle w-4 h-4 inline-block"></span>
+                            Renoncer à ce personnage
+                            <span class="badge badge-info text-xs ml-1">owner</span>
+                        </button>
+                    </div>
+                    <p class="text-xs text-muted mt-2">Renonciation → modal (voir 09-links.md) · US-16</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div class="container-app px-4 py-8">
+        <h2 class="text-base font-bold text-primary mb-3">Description</h2>
+        <p class="text-secondary leading-relaxed max-w-2xl">
+            Ancienne informatrice pour le compte de plusieurs factions, Lyra a découvert sa double nature mi-humaine mi-mythique lors d'une confrontation au Pont de l'Aube. Elle navigue désormais entre les deux mondes, cherchant à comprendre son héritage.
+        </p>
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 4 — FICHE PERSONNAGE : PJ ISSU D'UNE DÉRIVATION (/characters/shadow-viktor/) -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16" id="section-detail-fork">
+
+    <!-- Section label -->
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-git-fork w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 4 — Fiche personnage : PJ issu d'une Dérivation (/characters/shadow-viktor/) — US-17</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="border-b border-border bg-surface">
+        <div class="container-app px-4 py-8">
+            <div class="flex items-start gap-6 flex-wrap">
+
+                <div class="avatar-xl avatar-placeholder bg-purple-100 text-purple-700 font-bold text-2xl shrink-0">S</div>
+
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-4 flex-wrap mb-2">
+                        <h1 class="text-2xl font-bold text-primary">Shadow Viktor</h1>
+                        <button class="btn-secondary flex items-center gap-2">
+                            <span class="i-lucide-rss w-4 h-4 inline-block"></span>
+                            Suivre
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="badge badge-forked">Dérivé</span>
+                    </div>
+
+                    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-sm mb-4">
+                        <div class="flex gap-2">
+                            <dt class="text-muted shrink-0">Propriétaire :</dt>
+                            <dd><a href="#" class="link">@dave</a></dd>
+                        </div>
+                        <div class="flex gap-2">
+                            <dt class="text-muted shrink-0">Parent :</dt>
+                            <dd>
+                                <a href="#section-detail-pnj" class="link">Viktor</a>
+                                <span class="text-muted text-xs">(PNJ de @alice)</span>
+                            </dd>
+                        </div>
+                        <div class="flex gap-2">
+                            <dt class="text-muted shrink-0">Lien :</dt>
+                            <dd class="text-secondary">Dérivation depuis le 5 mars 2026</dd>
+                        </div>
+                    </dl>
+
+                    <div class="flex flex-col sm:flex-row gap-3 mt-4">
+                        <button class="btn-secondary flex items-center gap-2">
+                            <span class="i-lucide-git-fork w-4 h-4 inline-block"></span>
+                            Dériver ce personnage
+                            <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                        </button>
+                    </div>
+                    <p class="text-xs text-muted mt-2">→ demande envoyée à @dave (propriétaire actuel, pas le créateur original)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div class="container-app px-4 py-8">
+        <h2 class="text-base font-bold text-primary mb-3">Description</h2>
+        <p class="text-secondary leading-relaxed max-w-2xl">
+            La version sombre de Viktor, explorée dans une ligne temporelle alternative. Là où Viktor résiste au Mythos, Shadow Viktor l'a embrassé complètement — avec des conséquences terrifiantes.
+        </p>
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 5 — FICHE PERSONNAGE : LIEN RÉVOQUÉ (/characters/viktor/ variante) -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16" id="section-detail-revoked">
+
+    <!-- Section label -->
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-x-circle w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 5 — Fiche personnage : lien révoqué — US-16</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="border-b border-border bg-surface">
+        <div class="container-app px-4 py-8">
+            <div class="flex items-start gap-6 flex-wrap">
+
+                <div class="avatar-xl avatar-placeholder bg-emerald-100 text-emerald-700 font-bold text-2xl shrink-0">V</div>
+
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-4 flex-wrap mb-2">
+                        <h1 class="text-2xl font-bold text-primary">Viktor</h1>
+                        <button class="btn-secondary flex items-center gap-2">
+                            <span class="i-lucide-rss w-4 h-4 inline-block"></span>
+                            Suivre
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="badge badge-available">PNJ disponible</span>
+                    </div>
+
+                    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-sm mb-4">
+                        <div class="flex gap-2">
+                            <dt class="text-muted shrink-0">Origine :</dt>
+                            <dd class="text-secondary">City of Mist — Saison 2</dd>
+                        </div>
+                        <div class="flex gap-2">
+                            <dt class="text-muted shrink-0">Créé par :</dt>
+                            <dd><a href="#" class="link">@alice</a></dd>
+                        </div>
+                        <div class="flex gap-2 sm:col-span-2">
+                            <dt class="text-muted shrink-0">Ancien lien :</dt>
+                            <dd class="flex items-center gap-2">
+                                <span class="line-through text-muted">Adopté par @bob</span>
+                                <span class="badge badge-rejected text-xs">Révoqué le 10 mars</span>
+                            </dd>
+                        </div>
+                        <div class="flex gap-2 sm:col-span-2">
+                            <dt class="text-muted shrink-0">Séquence :</dt>
+                            <dd class="flex items-center gap-2 text-muted">
+                                <span class="line-through">"La rencontre au carrefour"</span>
+                                <span class="text-xs">(lien révoqué)</span>
+                            </dd>
+                        </div>
+                    </dl>
+
+                    <div class="mt-4">
+                        <button class="btn-primary flex items-center gap-2">
+                            Lier à mon histoire
+                            <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div class="container-app px-4 py-8">
+        <h2 class="text-base font-bold text-primary mb-3">Description</h2>
+        <p class="text-secondary leading-relaxed max-w-2xl">
+            Ancien détective privé reconverti en consultant pour le Quartier des Reflets. Viktor ne croit pas aux mythes — ou du moins, il essaie de ne pas y croire.
+        </p>
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 6 — FICHE PERSONNAGE : ACTEUR DISTANT / FÉDÉRÉ (/characters/raven@suddenly.games/) -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16" id="section-detail-remote">
+
+    <!-- Section label -->
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-globe w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 6 — Fiche personnage : acteur distant / fédéré — US-22</span>
+    </div>
+
+    <!-- Info banner -->
+    <div class="bg-blue-50 border-b border-blue-200">
+        <div class="container-app px-4 py-3 flex items-start gap-3">
+            <span class="i-lucide-globe w-5 h-5 text-blue-500 shrink-0 mt-0.5 inline-block"></span>
+            <div>
+                <p class="text-sm text-blue-800 font-medium">Ce personnage est hébergé sur une instance distante.</p>
+                <p class="text-sm text-blue-700">Les interactions passent par ActivityPub.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="border-b border-border bg-surface">
+        <div class="container-app px-4 py-8">
+            <div class="flex items-start gap-6 flex-wrap">
+
+                <div class="avatar-xl avatar-placeholder bg-teal-100 text-teal-700 font-bold text-2xl shrink-0">R</div>
+
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-4 flex-wrap mb-2">
+                        <div>
+                            <h1 class="text-2xl font-bold text-primary">Raven</h1>
+                            <p class="flex items-center gap-1.5 text-sm text-muted mt-1">
+                                <span class="i-lucide-globe w-4 h-4 inline-block"></span>
+                                suddenly.games
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <button class="btn-secondary flex items-center gap-2">
+                                <span class="i-lucide-rss w-4 h-4 inline-block"></span>
+                                Suivre
+                            </button>
+                            <button class="btn-primary flex items-center gap-2">
+                                Lier à mon histoire
+                                <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="badge badge-available">PNJ disponible</span>
+                    </div>
+
+                    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-sm">
+                        <div class="flex gap-2">
+                            <dt class="text-muted shrink-0">Origine :</dt>
+                            <dd class="text-secondary">Ironsworn</dd>
+                        </div>
+                        <div class="flex gap-2">
+                            <dt class="text-muted shrink-0">Créé par :</dt>
+                            <dd><a href="#" class="link">@alice@suddenly.games</a></dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div class="container-app px-4 py-8">
+        <h2 class="text-base font-bold text-primary mb-3">Description</h2>
+        <p class="text-secondary leading-relaxed max-w-2xl">
+            Messagère des Marches, Raven voyage entre les territoires des clans avec une neutralité absolue — ou c'est du moins ce que tout le monde croit. Son réseau d'informateurs s'étend jusqu'aux confins du monde connu.
+        </p>
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 7 — BANDEAUX DE STATUT (DEMANDE EN COURS / FILE D'ATTENTE) -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16" id="section-banners">
+
+    <!-- Section label -->
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-bell w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 7 — Bandeaux de statut (demande en cours / file d'attente)</span>
+    </div>
+
+    <div class="container-app px-4 py-8 space-y-6 max-w-2xl">
+
+        <!-- Bandeau : demande d'Adoption en attente -->
+        <div>
+            <p class="text-xs text-muted uppercase tracking-wide font-semibold mb-2">Variante — Demande d'Adoption en attente :</p>
+            <div class="card border-blue-200 bg-blue-50">
+                <div class="card-body flex items-start gap-3 py-4">
+                    <span class="i-lucide-clock w-5 h-5 text-blue-500 shrink-0 mt-0.5 inline-block"></span>
+                    <div class="flex-1">
+                        <p class="text-sm text-blue-800 font-medium">Vous avez une demande d'Adoption en attente sur ce PNJ.</p>
+                        <p class="text-xs text-blue-600 mt-0.5">Envoyée il y a 2h.</p>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button class="btn-ghost btn-sm text-blue-700 border-blue-300">Voir ma demande</button>
+                        <button class="btn-ghost btn-sm text-blue-600">Annuler</button>
+                    </div>
+                </div>
+            </div>
+            <p class="text-xs text-muted mt-1">→ Le bouton [Lier à mon histoire] est masqué quand une demande est active.</p>
+        </div>
+
+        <!-- Bandeau : file d'attente -->
+        <div>
+            <p class="text-xs text-muted uppercase tracking-wide font-semibold mb-2">Variante — Demande en file d'attente :</p>
+            <div class="card border-amber-200 bg-amber-50">
+                <div class="card-body flex items-start gap-3 py-4">
+                    <span class="i-lucide-clock w-5 h-5 text-amber-500 shrink-0 mt-0.5 inline-block"></span>
+                    <div class="flex-1">
+                        <p class="text-sm text-amber-800 font-medium">Votre demande de Dérivation est en file d'attente (#2).</p>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button class="btn-ghost btn-sm text-amber-700 border-amber-300">Voir ma demande</button>
+                        <button class="btn-ghost btn-sm text-amber-600">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bandeau : instance distante -->
+        <div>
+            <p class="text-xs text-muted uppercase tracking-wide font-semibold mb-2">Variante — Instance distante (pour rappel) :</p>
+            <div class="card border-blue-200 bg-blue-50">
+                <div class="card-body flex items-start gap-3 py-4">
+                    <span class="i-lucide-globe w-5 h-5 text-blue-500 shrink-0 mt-0.5 inline-block"></span>
+                    <div class="flex-1">
+                        <p class="text-sm text-blue-800 font-medium">Ce personnage est hébergé sur une instance distante.</p>
+                        <p class="text-xs text-blue-600 mt-0.5">Les interactions passent par ActivityPub.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

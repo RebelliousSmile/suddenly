@@ -1,0 +1,1485 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Feed — Prototype{% endblock %}
+{% block content %}
+
+<!-- ================================================================ -->
+<!-- PROTOTYPE LABEL -->
+<!-- ================================================================ -->
+<div class="bg-amber-100 border-b border-amber-300 text-amber-800 text-xs text-center py-1.5 font-medium tracking-wide">
+    Wireframe 10 — Fil d'actualité — 5 sections : Abonnements · Instance · Fediverse · Explorer · Bouton Follow + Recommandation + Invitation
+</div>
+
+<!-- ================================================================ -->
+<!-- SECTION 1 — FIL D'ACTUALITÉ / ONGLET ABONNEMENTS (US-12) -->
+<!-- ================================================================ -->
+<section class="mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-home w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 1 — Fil d'actualité (/feed/) — Onglet Abonnements (défaut) + état vide</span>
+    </div>
+
+    <!-- Page header -->
+    <div class="border-b border-border bg-surface py-6">
+        <div class="container-app px-4">
+            <h1 class="text-2xl font-bold text-primary">Fil d'actualité</h1>
+        </div>
+    </div>
+
+    <!-- Scope tabs (Alpine.js) -->
+    <div x-data="{ scope: 'abonnements' }">
+
+        <!-- Tab bar -->
+        <div class="border-b border-border bg-surface sticky top-0 z-10">
+            <div class="container-app px-4">
+                <nav class="flex gap-0 -mb-px" role="tablist">
+
+                    <!-- Abonnements -->
+                    <button
+                        type="button"
+                        @click="scope = 'abonnements'"
+                        :class="scope === 'abonnements' ? 'border-b-2 border-crimson text-crimson font-semibold' : 'text-muted hover:text-primary'"
+                        class="flex items-center gap-2 px-4 py-3 text-sm transition-colors">
+                        <span class="i-lucide-home w-4 h-4 inline-block"></span>
+                        Abonnements
+                    </button>
+
+                    <!-- Instance -->
+                    <button
+                        type="button"
+                        @click="scope = 'instance'"
+                        :class="scope === 'instance' ? 'border-b-2 border-crimson text-crimson font-semibold' : 'text-muted hover:text-primary'"
+                        class="flex items-center gap-2 px-4 py-3 text-sm transition-colors">
+                        <span class="i-lucide-users w-4 h-4 inline-block"></span>
+                        Instance
+                    </button>
+
+                    <!-- Fediverse -->
+                    <button
+                        type="button"
+                        @click="scope = 'fediverse'"
+                        :class="scope === 'fediverse' ? 'border-b-2 border-crimson text-crimson font-semibold' : 'text-muted hover:text-primary'"
+                        class="flex items-center gap-2 px-4 py-3 text-sm transition-colors">
+                        <span class="i-lucide-globe w-4 h-4 inline-block"></span>
+                        Fediverse
+                    </button>
+
+                </nav>
+            </div>
+        </div>
+
+        <!-- -------------------------------------------------- -->
+        <!-- TAB: ABONNEMENTS -->
+        <!-- -------------------------------------------------- -->
+        <div x-show="scope === 'abonnements'" class="container-app px-4 py-6 flex flex-col gap-6">
+
+            <!-- PNJ disponibles dans les parties suivies (section ambre) -->
+            <div class="rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-800 p-4">
+                <h2 class="text-sm font-semibold text-amber-800 dark:text-amber-400 flex items-center gap-2 mb-3">
+                    <span class="i-lucide-star w-4 h-4 inline-block"></span>
+                    PNJ disponibles dans vos parties suivies
+                </h2>
+                <div class="flex gap-3 overflow-x-auto pb-1">
+
+                    <!-- NPC card — Viktor -->
+                    <a href="#" class="flex-none card card-hover p-3 w-36 flex flex-col items-center gap-2 text-center group">
+                        <div class="avatar-md avatar-placeholder group-hover:scale-105 transition-transform">V</div>
+                        <div>
+                            <p class="text-sm font-semibold text-primary">Viktor</p>
+                            <p class="text-xs text-muted">City of Mist</p>
+                        </div>
+                        <span class="badge badge-available text-xs">PNJ</span>
+                    </a>
+
+                    <!-- NPC card — Fenris -->
+                    <a href="#" class="flex-none card card-hover p-3 w-36 flex flex-col items-center gap-2 text-center group">
+                        <div class="avatar-md avatar-placeholder group-hover:scale-105 transition-transform">F</div>
+                        <div>
+                            <p class="text-sm font-semibold text-primary">Fenris</p>
+                            <p class="text-xs text-muted">Ironsworn</p>
+                        </div>
+                        <span class="badge badge-available text-xs">PNJ</span>
+                    </a>
+
+                    <!-- NPC card — Nova -->
+                    <a href="#" class="flex-none card card-hover p-3 w-36 flex flex-col items-center gap-2 text-center group">
+                        <div class="avatar-md avatar-placeholder group-hover:scale-105 transition-transform">N</div>
+                        <div>
+                            <p class="text-sm font-semibold text-primary">Nova</p>
+                            <p class="text-xs text-muted">Blades in the Dark</p>
+                        </div>
+                        <span class="badge badge-available text-xs">PNJ</span>
+                    </a>
+
+                    <!-- NPC card — Ombra -->
+                    <a href="#" class="flex-none card card-hover p-3 w-36 flex flex-col items-center gap-2 text-center group">
+                        <div class="avatar-md avatar-placeholder group-hover:scale-105 transition-transform">O</div>
+                        <div>
+                            <p class="text-sm font-semibold text-primary">Ombra</p>
+                            <p class="text-xs text-muted">Vampire: MtM</p>
+                        </div>
+                        <span class="badge badge-available text-xs">PNJ</span>
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Séquences partagées récentes (section violette) -->
+            <div class="rounded-xl border border-violet-200 bg-violet-50 dark:bg-violet-950/20 dark:border-violet-800 p-4">
+                <h2 class="text-sm font-semibold text-violet-800 dark:text-violet-400 flex items-center gap-2 mb-3">
+                    <span class="i-lucide-link-2 w-4 h-4 inline-block"></span>
+                    Séquences partagées récentes
+                </h2>
+                <div class="flex flex-col gap-2">
+
+                    <!-- Sequence item -->
+                    <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-100 dark:hover:bg-violet-900/20 transition-colors group">
+                        <span class="i-lucide-arrow-left-right w-4 h-4 text-violet-500 inline-block shrink-0"></span>
+                        <div>
+                            <p class="text-sm font-medium text-primary">"La rencontre au carrefour"</p>
+                            <p class="text-xs text-muted">Entre <a href="#" class="link-muted">@alice</a> et <a href="#" class="link-muted">@bob</a> · Viktor ↔ Shadow Viktor</p>
+                        </div>
+                        <span class="i-lucide-chevron-right w-4 h-4 text-muted ml-auto inline-block group-hover:text-primary transition-colors"></span>
+                    </a>
+
+                    <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-100 dark:hover:bg-violet-900/20 transition-colors group">
+                        <span class="i-lucide-arrow-left-right w-4 h-4 text-violet-500 inline-block shrink-0"></span>
+                        <div>
+                            <p class="text-sm font-medium text-primary">"Le pacte des ruines"</p>
+                            <p class="text-xs text-muted">Entre <a href="#" class="link-muted">@charlie</a> et <a href="#" class="link-muted">@eve</a> · Fenris ↔ Lyra</p>
+                        </div>
+                        <span class="i-lucide-chevron-right w-4 h-4 text-muted ml-auto inline-block group-hover:text-primary transition-colors"></span>
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Content type filters -->
+            <div class="flex items-center gap-2 flex-wrap" x-data="{ filter: 'tout' }">
+                <span class="text-xs text-muted font-medium mr-1">Filtres :</span>
+                <button @click="filter = 'tout'" :class="filter === 'tout' ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'" type="button">Tout</button>
+                <button @click="filter = 'crs'" :class="filter === 'crs' ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'" type="button">Comptes-rendus</button>
+                <button @click="filter = 'recommandations'" :class="filter === 'recommandations' ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'" type="button">Recommandations</button>
+                <button @click="filter = 'sequences'" :class="filter === 'sequences' ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'" type="button">Séquences</button>
+                <button @click="filter = 'pnj'" :class="filter === 'pnj' ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'" type="button">PNJ</button>
+            </div>
+
+            <!-- Feed list -->
+            <div id="feed-list" class="flex flex-col gap-4">
+
+                <!-- Feed item 1 — direct post -->
+                <div class="card" x-data="{ menuOpen: false, recommended: false }">
+                    <div class="card-body">
+                        <div class="flex items-start gap-3">
+                            <div class="avatar-md avatar-placeholder shrink-0">A</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div>
+                                        <a href="#" class="link font-medium text-sm">@alice</a>
+                                        <span class="text-muted text-xs mx-1">dans</span>
+                                        <a href="#" class="link-muted text-xs">City of Mist</a>
+                                    </div>
+                                    <div class="flex items-center gap-2 shrink-0">
+                                        <span class="text-xs text-muted">il y a 2h</span>
+                                        <!-- Contextual menu -->
+                                        <div class="relative">
+                                            <button @click="menuOpen = !menuOpen" type="button" class="text-muted hover:text-primary p-1 rounded transition-colors">
+                                                <span class="i-lucide-more-horizontal w-4 h-4 inline-block"></span>
+                                            </button>
+                                            <div x-show="menuOpen" @click.outside="menuOpen = false"
+                                                class="absolute right-0 top-7 w-44 card shadow-lg border border-border z-20 overflow-hidden">
+                                                <button type="button" class="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-secondary hover:bg-surface text-left transition-colors">
+                                                    <span class="i-lucide-link w-4 h-4 inline-block text-muted"></span>
+                                                    Copier le lien
+                                                </button>
+                                                <button type="button" class="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-secondary hover:bg-surface text-left transition-colors border-t border-border">
+                                                    <span class="i-lucide-sparkles w-4 h-4 inline-block text-muted"></span>
+                                                    Recommander
+                                                </button>
+                                                <button type="button" class="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-secondary hover:bg-surface text-left transition-colors border-t border-border">
+                                                    <span class="i-lucide-send w-4 h-4 inline-block text-muted"></span>
+                                                    Inviter
+                                                </button>
+                                                <button type="button" class="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-crimson hover:bg-surface text-left transition-colors border-t border-border">
+                                                    <span class="i-lucide-flag w-4 h-4 inline-block"></span>
+                                                    Signaler
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-primary font-medium mt-0.5">Session 12 : L'Oracle brisé</p>
+                                <p class="text-sm text-secondary mt-2 line-clamp-3">
+                                    La nuit tombait sur le Quartier des Reflets quand Viktor poussa la porte du bar. L'Oracle l'attendait, assis dans l'ombre, ses yeux brillant d'une lueur électrique...
+                                </p>
+                                <a href="#" class="link text-xs mt-1 inline-block">Lire la suite</a>
+
+                                <!-- Character tags -->
+                                <div class="flex flex-wrap gap-1.5 mt-3">
+                                    <a href="#" class="badge badge-available text-xs flex items-center gap-1">
+                                        <div class="avatar-sm avatar-placeholder" style="width:1rem;height:1rem;font-size:0.5rem;">V</div>
+                                        Viktor
+                                    </a>
+                                    <a href="#" class="badge badge-pc text-xs flex items-center gap-1">
+                                        <div class="avatar-sm avatar-placeholder" style="width:1rem;height:1rem;font-size:0.5rem;">L</div>
+                                        Lyra
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer flex items-center gap-4 text-muted">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-crimson transition-colors text-sm">
+                            <span class="i-lucide-heart w-4 h-4 inline-block"></span>
+                            <span>4</span>
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
+                            <span class="i-lucide-message-square w-4 h-4 inline-block"></span>
+                            <span>2</span>
+                        </button>
+                        <!-- Recommend button -->
+                        <button
+                            type="button"
+                            @click="recommended = !recommended"
+                            :class="recommended ? 'text-violet-600 dark:text-violet-400' : 'hover:text-violet-600'"
+                            class="flex items-center gap-1.5 transition-colors text-sm"
+                            hx-post="/api/reports/1/recommend/"
+                            hx-target="this"
+                            hx-swap="outerHTML">
+                            <span class="i-lucide-sparkles w-4 h-4 inline-block"></span>
+                            <span x-text="recommended ? 'Recommandé' : 'Recommander'">Recommander</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Feed item 2 — recommended post (sparkles header) -->
+                <div class="card border-l-4 border-violet-400">
+                    <!-- Recommender header -->
+                    <div class="px-4 pt-3 pb-0 flex items-center gap-2 text-xs text-violet-600 dark:text-violet-400">
+                        <span class="i-lucide-sparkles w-3.5 h-3.5 inline-block"></span>
+                        <a href="#" class="font-medium hover:underline">@charlie</a>
+                        <span class="text-muted">recommande</span>
+                        <span class="text-muted ml-auto">il y a 1h</span>
+                    </div>
+                    <!-- Original post -->
+                    <div class="card-body">
+                        <div class="flex items-start gap-3">
+                            <div class="avatar-md avatar-placeholder shrink-0">D</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div>
+                                        <a href="#" class="link font-medium text-sm">@dave</a>
+                                        <span class="text-muted text-xs mx-1">dans</span>
+                                        <a href="#" class="link-muted text-xs">Ironsworn</a>
+                                    </div>
+                                    <span class="text-xs text-muted shrink-0">il y a 1j</span>
+                                </div>
+                                <p class="text-sm text-primary font-medium mt-0.5">Jour 47 : La forge silencieuse</p>
+                                <p class="text-sm text-secondary mt-2 line-clamp-3">
+                                    Fenris s'est arrêté devant la forge abandonnée. L'enclume portait encore les marques de travaux récents, malgré la rouille qui couvrait tout le reste...
+                                </p>
+                                <a href="#" class="link text-xs mt-1 inline-block">Lire la suite</a>
+                                <!-- Character tags -->
+                                <div class="flex flex-wrap gap-1.5 mt-3">
+                                    <a href="#" class="badge badge-available text-xs flex items-center gap-1">
+                                        <div class="avatar-sm avatar-placeholder" style="width:1rem;height:1rem;font-size:0.5rem;">F</div>
+                                        Fenris
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer flex items-center gap-4 text-muted">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-crimson transition-colors text-sm">
+                            <span class="i-lucide-heart w-4 h-4 inline-block"></span>
+                            <span>7</span>
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
+                            <span class="i-lucide-message-square w-4 h-4 inline-block"></span>
+                            <span>3</span>
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-violet-600 transition-colors text-sm">
+                            <span class="i-lucide-sparkles w-4 h-4 inline-block"></span>
+                            Recommander
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Feed item 3 — direct post -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-start gap-3">
+                            <div class="avatar-md avatar-placeholder shrink-0">E</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div>
+                                        <a href="#" class="link font-medium text-sm">@eve</a>
+                                        <span class="text-muted text-xs mx-1">dans</span>
+                                        <a href="#" class="link-muted text-xs">Vampire : La Mascarade</a>
+                                    </div>
+                                    <span class="text-xs text-muted shrink-0">il y a 4h</span>
+                                </div>
+                                <p class="text-sm text-primary font-medium mt-0.5">Nuit 3 — Le Tribunal du Prince</p>
+                                <p class="text-sm text-secondary mt-2 line-clamp-3">
+                                    Le Prince a convoqué tous les anciens du clan au tribunal de la Citadelle. Ombra était là, silencieuse dans l'ombre d'une colonne, son regard fixé sur le Nosferatu délateur...
+                                </p>
+                                <a href="#" class="link text-xs mt-1 inline-block">Lire la suite</a>
+                                <div class="flex flex-wrap gap-1.5 mt-3">
+                                    <a href="#" class="badge badge-available text-xs flex items-center gap-1">
+                                        <div class="avatar-sm avatar-placeholder" style="width:1rem;height:1rem;font-size:0.5rem;">O</div>
+                                        Ombra
+                                    </a>
+                                    <a href="#" class="badge badge-pc text-xs flex items-center gap-1">
+                                        <div class="avatar-sm avatar-placeholder" style="width:1rem;height:1rem;font-size:0.5rem;">S</div>
+                                        Selene
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer flex items-center gap-4 text-muted">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-crimson transition-colors text-sm">
+                            <span class="i-lucide-heart w-4 h-4 inline-block"></span>
+                            <span>11</span>
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
+                            <span class="i-lucide-message-square w-4 h-4 inline-block"></span>
+                            <span>5</span>
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-violet-600 transition-colors text-sm">
+                            <span class="i-lucide-sparkles w-4 h-4 inline-block"></span>
+                            Recommander
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Load more (HTMX infinite scroll trigger) -->
+                <div class="flex justify-center py-4">
+                    <button type="button"
+                        class="btn-ghost btn-sm flex items-center gap-2"
+                        hx-get="/feed/?page=2"
+                        hx-target="#feed-list"
+                        hx-swap="beforeend"
+                        hx-trigger="revealed">
+                        <span class="i-lucide-loader w-4 h-4 inline-block animate-spin"></span>
+                        Charger plus
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Empty state (shown when no follows) -->
+            <div class="card mt-4 border border-dashed border-border">
+                <div class="card-body py-10 text-center">
+                    <span class="i-lucide-home w-10 h-10 text-muted inline-block mb-3"></span>
+                    <p class="font-semibold text-primary mb-1">Votre fil est vide pour l'instant.</p>
+                    <p class="text-sm text-muted mb-6 max-w-sm mx-auto">Suivez des joueurs ou des parties pour voir leurs publications ici.</p>
+                    <div class="flex items-center justify-center gap-3 flex-wrap">
+                        <a href="#" class="btn-primary btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-users w-4 h-4 inline-block"></span>
+                            Explorer mon instance
+                        </a>
+                        <a href="#" class="btn-secondary btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-globe w-4 h-4 inline-block"></span>
+                            Rechercher sur le Fediverse
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- -------------------------------------------------- -->
+        <!-- TAB: INSTANCE -->
+        <!-- -------------------------------------------------- -->
+        <div x-show="scope === 'instance'" class="container-app px-4 py-6 flex flex-col gap-4">
+
+            <!-- Section header -->
+            <div class="flex items-center gap-2 mb-1">
+                <span class="i-lucide-users w-5 h-5 text-primary inline-block"></span>
+                <h2 class="text-lg font-semibold text-primary">Contenu de soudainement.fr</h2>
+            </div>
+
+            <!-- Content type filters -->
+            <div class="flex items-center gap-2 flex-wrap" x-data="{ filter: 'tout' }">
+                <span class="text-xs text-muted font-medium mr-1">Filtres :</span>
+                <button @click="filter = 'tout'" :class="filter === 'tout' ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'" type="button">Tout</button>
+                <button @click="filter = 'crs'" :class="filter === 'crs' ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'" type="button">Comptes-rendus</button>
+                <button @click="filter = 'sequences'" :class="filter === 'sequences' ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'" type="button">Séquences</button>
+                <button @click="filter = 'pnj'" :class="filter === 'pnj' ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'" type="button">PNJ</button>
+            </div>
+
+            <!-- Instance feed list (no globe badge — all content is local) -->
+            <div id="instance-feed" class="flex flex-col gap-4"
+                hx-get="/feed/instance/"
+                hx-trigger="load">
+
+                <!-- Instance feed item 1 — @alice -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-start gap-3">
+                            <div class="avatar-md avatar-placeholder shrink-0">A</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div>
+                                        <a href="#" class="link font-medium text-sm">@alice</a>
+                                        <span class="text-muted text-xs mx-1">dans</span>
+                                        <a href="#" class="link-muted text-xs">City of Mist</a>
+                                    </div>
+                                    <span class="text-xs text-muted shrink-0">il y a 2h</span>
+                                </div>
+                                <p class="text-sm text-primary font-medium mt-0.5">Session 12 : L'Oracle brisé</p>
+                                <p class="text-sm text-secondary mt-2 line-clamp-3">La nuit tombait sur le Quartier des Reflets quand Viktor poussa la porte du bar...</p>
+                                <a href="#" class="link text-xs mt-1 inline-block">Lire la suite</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer flex items-center gap-4 text-muted">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-crimson transition-colors text-sm">
+                            <span class="i-lucide-heart w-4 h-4 inline-block"></span> 4
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
+                            <span class="i-lucide-message-square w-4 h-4 inline-block"></span> 2
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-violet-600 transition-colors text-sm">
+                            <span class="i-lucide-sparkles w-4 h-4 inline-block"></span> Recommander
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Instance feed item 2 — @charlie -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-start gap-3">
+                            <div class="avatar-md avatar-placeholder shrink-0">C</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div>
+                                        <a href="#" class="link font-medium text-sm">@charlie</a>
+                                        <span class="text-muted text-xs mx-1">dans</span>
+                                        <a href="#" class="link-muted text-xs">Vampire : La Mascarade</a>
+                                    </div>
+                                    <span class="text-xs text-muted shrink-0">il y a 6h</span>
+                                </div>
+                                <p class="text-sm text-primary font-medium mt-0.5">Chronique I — L'Éveil du Sang</p>
+                                <p class="text-sm text-secondary mt-2 line-clamp-3">Le Préteur de la Citadelle a finalement parlé. Ses mots ont glacé la salle entière, même les anciens qui croyaient ne plus rien craindre...</p>
+                                <a href="#" class="link text-xs mt-1 inline-block">Lire la suite</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer flex items-center gap-4 text-muted">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-crimson transition-colors text-sm">
+                            <span class="i-lucide-heart w-4 h-4 inline-block"></span> 9
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
+                            <span class="i-lucide-message-square w-4 h-4 inline-block"></span> 1
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-violet-600 transition-colors text-sm">
+                            <span class="i-lucide-sparkles w-4 h-4 inline-block"></span> Recommander
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Instance feed item 3 — @eve -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-start gap-3">
+                            <div class="avatar-md avatar-placeholder shrink-0">E</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div>
+                                        <a href="#" class="link font-medium text-sm">@eve</a>
+                                        <span class="text-muted text-xs mx-1">dans</span>
+                                        <a href="#" class="link-muted text-xs">Ironsworn</a>
+                                    </div>
+                                    <span class="text-xs text-muted shrink-0">il y a 1j</span>
+                                </div>
+                                <p class="text-sm text-primary font-medium mt-0.5">Périple dans les Marches — Acte II</p>
+                                <p class="text-sm text-secondary mt-2 line-clamp-3">Kaela a prêté serment au bord de la rivière gelée. Le chaman de glace lui a accordé trois visions en échange de son vrai nom...</p>
+                                <a href="#" class="link text-xs mt-1 inline-block">Lire la suite</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer flex items-center gap-4 text-muted">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-crimson transition-colors text-sm">
+                            <span class="i-lucide-heart w-4 h-4 inline-block"></span> 3
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
+                            <span class="i-lucide-message-square w-4 h-4 inline-block"></span> 0
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-violet-600 transition-colors text-sm">
+                            <span class="i-lucide-sparkles w-4 h-4 inline-block"></span> Recommander
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- -------------------------------------------------- -->
+        <!-- TAB: FEDIVERSE -->
+        <!-- -------------------------------------------------- -->
+        <div x-show="scope === 'fediverse'" class="container-app px-4 py-6 flex flex-col gap-4">
+
+            <!-- Section header -->
+            <div class="flex items-center gap-2 mb-1">
+                <span class="i-lucide-globe w-5 h-5 text-primary inline-block"></span>
+                <h2 class="text-lg font-semibold text-primary">Fediverse</h2>
+            </div>
+
+            <!-- Content type filters -->
+            <div class="flex items-center gap-2 flex-wrap" x-data="{ filter: 'tout' }">
+                <span class="text-xs text-muted font-medium mr-1">Filtres :</span>
+                <button @click="filter = 'tout'" :class="filter === 'tout' ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'" type="button">Tout</button>
+                <button @click="filter = 'crs'" :class="filter === 'crs' ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'" type="button">Comptes-rendus</button>
+                <button @click="filter = 'sequences'" :class="filter === 'sequences' ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'" type="button">Séquences</button>
+                <button @click="filter = 'pnj'" :class="filter === 'pnj' ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'" type="button">PNJ</button>
+            </div>
+
+            <!-- Fediverse feed list (with instance badge) -->
+            <div id="fediverse-feed" class="flex flex-col gap-4"
+                hx-get="/feed/federated/"
+                hx-trigger="load">
+
+                <!-- Fediverse item 1 — alice@suddenly.games -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-start gap-3">
+                            <div class="avatar-md avatar-placeholder shrink-0">A</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div>
+                                        <a href="#" class="link font-medium text-sm">@alice@suddenly.games</a>
+                                        <span class="text-muted text-xs mx-1">dans</span>
+                                        <a href="#" class="link-muted text-xs">City of Mist</a>
+                                    </div>
+                                    <span class="text-xs text-muted shrink-0">il y a 4h</span>
+                                </div>
+                                <!-- Instance badge -->
+                                <div class="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
+                                    <span class="i-lucide-globe w-3 h-3 inline-block"></span>
+                                    <span>suddenly.games</span>
+                                </div>
+                                <p class="text-sm text-primary font-medium mt-1">Session 8 : Le marché des ombres</p>
+                                <p class="text-sm text-secondary mt-1 line-clamp-3">Le marché nocturne de Kairo grouillait de monde quand Nyx repéra l'Antiquaire pour la première fois depuis des années...</p>
+                                <a href="#" class="link text-xs mt-1 inline-block">Lire la suite</a>
+                                <div class="flex flex-wrap gap-1.5 mt-3">
+                                    <a href="#" class="badge badge-pc text-xs flex items-center gap-1">
+                                        <div class="avatar-sm avatar-placeholder" style="width:1rem;height:1rem;font-size:0.5rem;">V</div>
+                                        Viktor
+                                    </a>
+                                    <a href="#" class="badge badge-available text-xs flex items-center gap-1">
+                                        <div class="avatar-sm avatar-placeholder" style="width:1rem;height:1rem;font-size:0.5rem;">N</div>
+                                        Nyx
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer flex items-center gap-4 text-muted">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-crimson transition-colors text-sm">
+                            <span class="i-lucide-heart w-4 h-4 inline-block"></span> 6
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
+                            <span class="i-lucide-message-square w-4 h-4 inline-block"></span> 1
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-violet-600 transition-colors text-sm">
+                            <span class="i-lucide-sparkles w-4 h-4 inline-block"></span> Recommander
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Fediverse item 2 — frank@jdr.social -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-start gap-3">
+                            <div class="avatar-md avatar-placeholder shrink-0">F</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div>
+                                        <a href="#" class="link font-medium text-sm">@frank@jdr.social</a>
+                                        <span class="text-muted text-xs mx-1">dans</span>
+                                        <a href="#" class="link-muted text-xs">Cyberpunk RED</a>
+                                    </div>
+                                    <span class="text-xs text-muted shrink-0">il y a 1j</span>
+                                </div>
+                                <!-- Instance badge -->
+                                <div class="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
+                                    <span class="i-lucide-globe w-3 h-3 inline-block"></span>
+                                    <span>jdr.social</span>
+                                </div>
+                                <p class="text-sm text-primary font-medium mt-1">Run 12 : Interférence</p>
+                                <p class="text-sm text-secondary mt-1 line-clamp-3">Le Fixeur avait dit que l'extraction serait simple. Il avait tort. ARIA intercepta leurs fréquences deux secondes après le début du run...</p>
+                                <a href="#" class="link text-xs mt-1 inline-block">Lire la suite</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer flex items-center gap-4 text-muted">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-crimson transition-colors text-sm">
+                            <span class="i-lucide-heart w-4 h-4 inline-block"></span> 14
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
+                            <span class="i-lucide-message-square w-4 h-4 inline-block"></span> 4
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-violet-600 transition-colors text-sm">
+                            <span class="i-lucide-sparkles w-4 h-4 inline-block"></span> Recommander
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Fediverse empty state variant -->
+                <div class="card border border-dashed border-border mt-2">
+                    <div class="card-body py-8 text-center">
+                        <span class="text-xs font-semibold text-muted uppercase tracking-wide block mb-3">Variante — État vide Fediverse</span>
+                        <span class="i-lucide-globe w-8 h-8 text-muted inline-block mb-3"></span>
+                        <p class="font-semibold text-primary mb-1">Aucun contenu fédéré pour l'instant.</p>
+                        <p class="text-sm text-muted mb-4 max-w-sm mx-auto">Le contenu apparaîtra quand des joueurs d'autres instances publieront des CRs ou que vous suivrez des acteurs distants.</p>
+                        <a href="#" class="btn-secondary btn-sm inline-flex items-center gap-1.5">
+                            <span class="i-lucide-search w-4 h-4 inline-block"></span>
+                            Rechercher sur le Fediverse
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div><!-- end x-data scope tabs -->
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 2 — BOUTON FOLLOW (partial HTMX réutilisable) -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-user-plus w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 2 — Bouton Follow — États (pas abonné / abonné) + cible distante</span>
+    </div>
+
+    <div class="container-app px-4 py-8 flex flex-col gap-8">
+
+        <p class="text-sm text-muted">Le bouton Follow est un partial HTMX réutilisable, inclus sur les profils joueurs, pages parties et fiches personnage.</p>
+
+        <!-- Follow button states grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <!-- State 1 — Not following (local target) -->
+            <div class="card">
+                <div class="card-header">
+                    <p class="text-xs font-semibold text-muted uppercase tracking-wide">État 1 — Pas abonné (cible locale)</p>
+                </div>
+                <div class="card-body flex flex-col gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="avatar-md avatar-placeholder">B</div>
+                        <div>
+                            <p class="font-medium text-primary text-sm">@bob</p>
+                            <p class="text-xs text-muted">8 parties · 42 CRs</p>
+                        </div>
+                    </div>
+                    <!-- Follow button — not following -->
+                    <button type="button"
+                        class="btn-primary btn-sm flex items-center gap-1.5"
+                        hx-post="/follow/user/bob/"
+                        hx-target="this"
+                        hx-swap="outerHTML">
+                        <span class="i-lucide-user-plus w-4 h-4 inline-block"></span>
+                        Suivre
+                    </button>
+                </div>
+                <div class="card-footer text-xs text-muted">
+                    Follow(status=ACCEPTED) immédiat · cible locale
+                </div>
+            </div>
+
+            <!-- State 2 — Following (toggle on hover) -->
+            <div class="card">
+                <div class="card-header">
+                    <p class="text-xs font-semibold text-muted uppercase tracking-wide">État 2 — Abonné (hover = "Ne plus suivre")</p>
+                </div>
+                <div class="card-body flex flex-col gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="avatar-md avatar-placeholder">A</div>
+                        <div>
+                            <p class="font-medium text-primary text-sm">@alice</p>
+                            <p class="text-xs text-muted">12 parties · 87 CRs</p>
+                        </div>
+                    </div>
+                    <!-- Follow button — following (hover state) -->
+                    <button type="button"
+                        x-data
+                        @mouseenter="$el.querySelector('.label-follow').textContent = 'Ne plus suivre'; $el.classList.add('btn-danger'); $el.classList.remove('btn-secondary')"
+                        @mouseleave="$el.querySelector('.label-follow').textContent = 'Abonné'; $el.classList.remove('btn-danger'); $el.classList.add('btn-secondary')"
+                        class="btn-secondary btn-sm flex items-center gap-1.5"
+                        hx-post="/unfollow/user/alice/"
+                        hx-target="this"
+                        hx-swap="outerHTML">
+                        <span class="i-lucide-check w-4 h-4 inline-block"></span>
+                        <span class="label-follow">Abonné</span>
+                    </button>
+                </div>
+                <div class="card-footer text-xs text-muted">
+                    hx-post="/unfollow/" → retourne partial "pas abonné"
+                </div>
+            </div>
+
+            <!-- State 3 — Pending (remote target) -->
+            <div class="card">
+                <div class="card-header">
+                    <p class="text-xs font-semibold text-muted uppercase tracking-wide">État 3 — En attente (cible distante)</p>
+                </div>
+                <div class="card-body flex flex-col gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="avatar-md avatar-placeholder">F</div>
+                        <div>
+                            <p class="font-medium text-primary text-sm">@frank@jdr.social</p>
+                            <div class="flex items-center gap-1 text-xs text-gray-500">
+                                <span class="i-lucide-globe w-3 h-3 inline-block"></span>
+                                jdr.social
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Follow button — pending -->
+                    <button type="button"
+                        disabled
+                        class="btn-ghost btn-sm flex items-center gap-1.5 opacity-70 cursor-not-allowed">
+                        <span class="i-lucide-clock w-4 h-4 inline-block"></span>
+                        Demande envoyée
+                    </button>
+                </div>
+                <div class="card-footer text-xs text-muted">
+                    Follow(status=PENDING) · AP Follow envoyé · en attente d'Accept
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Follow on game and character pages -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Game follow -->
+            <div class="card">
+                <div class="card-header">
+                    <p class="text-xs font-semibold text-muted uppercase tracking-wide">Suivre une partie</p>
+                </div>
+                <div class="card-body flex items-center justify-between gap-3">
+                    <div>
+                        <p class="font-medium text-primary text-sm">City of Mist — Saison 2</p>
+                        <p class="text-xs text-muted">@alice · 12 comptes-rendus</p>
+                    </div>
+                    <button type="button"
+                        class="btn-primary btn-sm flex items-center gap-1.5 shrink-0"
+                        hx-post="/follow/game/city-of-mist-s2/"
+                        hx-target="this"
+                        hx-swap="outerHTML">
+                        <span class="i-lucide-bookmark w-4 h-4 inline-block"></span>
+                        Suivre
+                    </button>
+                </div>
+            </div>
+
+            <!-- Character follow -->
+            <div class="card">
+                <div class="card-header">
+                    <p class="text-xs font-semibold text-muted uppercase tracking-wide">Suivre un personnage</p>
+                </div>
+                <div class="card-body flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="avatar-sm avatar-placeholder">V</div>
+                        <div>
+                            <p class="font-medium text-primary text-sm">Viktor</p>
+                            <p class="text-xs text-muted">PNJ · City of Mist · @alice</p>
+                        </div>
+                    </div>
+                    <button type="button"
+                        class="btn-secondary btn-sm flex items-center gap-1.5 shrink-0"
+                        hx-post="/unfollow/character/viktor/"
+                        hx-target="this"
+                        hx-swap="outerHTML">
+                        <span class="i-lucide-check w-4 h-4 inline-block"></span>
+                        Abonné
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 3 — RECOMMANDATION + INVITATION -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-sparkles w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 3 — Recommandation (Announce AP) + Invitation + Notification</span>
+    </div>
+
+    <div class="container-app px-4 py-8 flex flex-col gap-8">
+
+        <!-- Recommend button states -->
+        <div>
+            <p class="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Bouton Recommander — états</p>
+            <div class="flex flex-wrap gap-4 items-start">
+
+                <!-- Before recommendation -->
+                <div class="card flex-1 min-w-60">
+                    <div class="card-header">
+                        <p class="text-xs text-muted">Avant recommandation</p>
+                    </div>
+                    <div class="card-footer flex items-center gap-4 text-muted">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-crimson transition-colors text-sm">
+                            <span class="i-lucide-heart w-4 h-4 inline-block"></span> 4
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
+                            <span class="i-lucide-message-square w-4 h-4 inline-block"></span> 2
+                        </button>
+                        <button type="button"
+                            class="flex items-center gap-1.5 hover:text-violet-600 transition-colors text-sm"
+                            hx-post="/api/reports/1/recommend/"
+                            hx-target="this"
+                            hx-swap="outerHTML">
+                            <span class="i-lucide-sparkles w-4 h-4 inline-block"></span>
+                            Recommander
+                        </button>
+                        <button type="button" class="ml-auto flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
+                            <span class="i-lucide-more-horizontal w-4 h-4 inline-block"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- After recommendation (active state) -->
+                <div class="card flex-1 min-w-60">
+                    <div class="card-header">
+                        <p class="text-xs text-muted">Après recommandation (actif)</p>
+                    </div>
+                    <div class="card-footer flex items-center gap-4 text-muted">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-crimson transition-colors text-sm">
+                            <span class="i-lucide-heart w-4 h-4 inline-block"></span> 4
+                        </button>
+                        <button type="button" class="flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
+                            <span class="i-lucide-message-square w-4 h-4 inline-block"></span> 2
+                        </button>
+                        <!-- Active state — text-violet-600 -->
+                        <button type="button"
+                            class="flex items-center gap-1.5 text-violet-600 dark:text-violet-400 text-sm"
+                            hx-post="/api/reports/1/recommend/"
+                            hx-target="this"
+                            hx-swap="outerHTML">
+                            <span class="i-lucide-sparkles w-4 h-4 inline-block"></span>
+                            Recommandé
+                        </button>
+                        <button type="button" class="ml-auto flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
+                            <span class="i-lucide-more-horizontal w-4 h-4 inline-block"></span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CR recommandé dans le fil (full rendering) -->
+        <div>
+            <p class="text-xs font-semibold text-muted uppercase tracking-wide mb-3">CR recommandé dans le fil — rendu complet</p>
+            <div class="max-w-2xl">
+                <div class="card border-l-4 border-violet-400">
+                    <!-- Recommender header -->
+                    <div class="px-4 pt-3 pb-2 flex items-center gap-2 text-xs text-violet-600 dark:text-violet-400 border-b border-border/50">
+                        <span class="i-lucide-sparkles w-3.5 h-3.5 inline-block"></span>
+                        <a href="#" class="font-semibold hover:underline">@charlie</a>
+                        <span class="text-muted">recommande</span>
+                        <span class="text-muted ml-auto">il y a 1h</span>
+                    </div>
+                    <!-- Original post body -->
+                    <div class="card-body">
+                        <div class="flex items-start gap-3">
+                            <div class="avatar-md avatar-placeholder shrink-0">D</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div>
+                                        <a href="#" class="link font-medium text-sm">@dave</a>
+                                        <span class="text-muted text-xs mx-1">dans</span>
+                                        <a href="#" class="link-muted text-xs">Ironsworn</a>
+                                    </div>
+                                    <span class="text-xs text-muted shrink-0">il y a 1j</span>
+                                </div>
+                                <p class="text-sm text-primary font-medium mt-0.5">Jour 47 : La forge silencieuse</p>
+                                <p class="text-sm text-secondary mt-2 line-clamp-3">Fenris s'est arrêté devant la forge abandonnée. L'enclume portait encore les marques de travaux récents, malgré la rouille qui couvrait tout le reste. Il y avait quelqu'un ici, très récemment...</p>
+                                <a href="#" class="link text-xs mt-1 inline-block">Lire la suite</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-xs text-muted font-mono">
+                        AP: Announce(Article) · reçu Mastodon = boost
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal d'invitation -->
+        <div>
+            <p class="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Modal d'invitation — "Inviter à découvrir ce CR"</p>
+            <div class="max-w-lg">
+                <div class="card border border-border shadow-lg">
+                    <!-- Modal header -->
+                    <div class="card-header flex items-center justify-between">
+                        <h3 class="font-semibold text-primary flex items-center gap-2">
+                            <span class="i-lucide-send w-4 h-4 inline-block text-muted"></span>
+                            Inviter à découvrir ce CR
+                        </h3>
+                        <button type="button" class="text-muted hover:text-primary transition-colors">
+                            <span class="i-lucide-x w-4 h-4 inline-block"></span>
+                        </button>
+                    </div>
+                    <div class="card-body flex flex-col gap-4">
+
+                        <!-- CR reference -->
+                        <div class="flex items-center gap-2 text-sm bg-surface rounded-lg px-3 py-2 border border-border">
+                            <span class="i-lucide-file-text w-4 h-4 text-muted inline-block shrink-0"></span>
+                            <span class="text-secondary">Session 12 : L'Oracle brisé — <a href="#" class="link">@alice</a> dans City of Mist</span>
+                        </div>
+
+                        <!-- Recipient search -->
+                        <div>
+                            <label class="form-label" for="invite-search">Qui voulez-vous inviter ?</label>
+                            <div class="relative">
+                                <span class="i-lucide-search w-4 h-4 text-muted absolute left-3 top-1/2 -translate-y-1/2 inline-block pointer-events-none"></span>
+                                <input
+                                    id="invite-search"
+                                    type="text"
+                                    class="form-input pl-9 w-full"
+                                    placeholder="Rechercher parmi vos followers..."
+                                    hx-get="/htmx/followers/suggest/"
+                                    hx-target="#followers-suggest"
+                                    hx-trigger="input delay:200ms">
+                            </div>
+
+                            <!-- Suggested followers -->
+                            <div id="followers-suggest" class="mt-2 flex flex-col gap-1">
+                                <button type="button" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface transition-colors text-left w-full">
+                                    <div class="avatar-sm avatar-placeholder">C</div>
+                                    <div>
+                                        <p class="text-sm font-medium text-primary">@charlie</p>
+                                        <p class="text-xs text-muted">suit 3 de vos parties</p>
+                                    </div>
+                                    <span class="i-lucide-plus w-4 h-4 text-muted ml-auto inline-block"></span>
+                                </button>
+                                <button type="button" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface transition-colors text-left w-full">
+                                    <div class="avatar-sm avatar-placeholder">E</div>
+                                    <div>
+                                        <p class="text-sm font-medium text-primary">@eve</p>
+                                        <p class="text-xs text-muted">joue aussi à City of Mist</p>
+                                    </div>
+                                    <span class="i-lucide-plus w-4 h-4 text-muted ml-auto inline-block"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Optional message -->
+                        <div>
+                            <label class="form-label" for="invite-message">Message (optionnel)</label>
+                            <textarea
+                                id="invite-message"
+                                class="form-input w-full resize-none"
+                                rows="3"
+                                placeholder="Ajouter un message personnalisé...">"Il y a un PNJ génial dans ce CR, je pense que tu adorerais l'adopter !"</textarea>
+                        </div>
+
+                    </div>
+                    <div class="card-footer flex items-center justify-end gap-3">
+                        <button type="button" class="btn-ghost btn-sm">Annuler</button>
+                        <button type="submit" class="btn-primary btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-send w-4 h-4 inline-block"></span>
+                            Envoyer l'invitation
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification reçue -->
+        <div>
+            <p class="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Notification reçue (destinataire)</p>
+            <div class="max-w-lg">
+                <div class="card border-l-4 border-blue-400">
+                    <div class="card-body">
+                        <div class="flex items-start gap-3">
+                            <span class="i-lucide-send w-5 h-5 text-blue-500 inline-block shrink-0 mt-0.5"></span>
+                            <div>
+                                <p class="text-sm font-medium text-primary mb-0.5">
+                                    <a href="#" class="link">@bob</a> vous invite à découvrir
+                                </p>
+                                <p class="text-sm text-primary font-semibold">"Session 12 : L'Oracle brisé"</p>
+                                <p class="text-sm text-secondary mt-2 italic">
+                                    "Il y a un PNJ génial dans ce CR, je pense que tu adorerais l'adopter !"
+                                </p>
+                                <a href="#" class="btn-primary btn-sm inline-flex items-center gap-1.5 mt-3">
+                                    <span class="i-lucide-book-open w-4 h-4 inline-block"></span>
+                                    Lire le CR
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-xs text-muted">
+                        Notification privée · AP: Note directe ou type Invite
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 4 — PAGE EXPLORER (/explore/) — US-22 -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-compass w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 4 — Page Explorer (/explore/) — US-22</span>
+    </div>
+
+    <!-- Explorer page header -->
+    <div class="border-b border-border bg-surface py-6">
+        <div class="container-app px-4">
+            <h1 class="text-2xl font-bold text-primary mb-4">Explorer</h1>
+            <!-- Search bar -->
+            <div class="relative max-w-xl">
+                <span class="i-lucide-search w-4 h-4 text-muted absolute left-3 top-1/2 -translate-y-1/2 inline-block pointer-events-none"></span>
+                <input
+                    type="text"
+                    class="form-input pl-9 w-full"
+                    placeholder="Rechercher joueurs, parties, personnages..."
+                    hx-get="/explore/search/"
+                    hx-target="#explore-results"
+                    hx-trigger="input delay:300ms">
+            </div>
+            <p class="text-xs text-muted mt-2">
+                <span class="i-lucide-at-sign w-3 h-3 inline-block"></span>
+                Tapez <code>@user@instance</code> pour une recherche fédérée
+            </p>
+        </div>
+    </div>
+
+    <div class="container-app px-4 py-8 flex flex-col gap-10">
+
+        <!-- LOCAL SECTION -->
+        <div>
+            <h2 class="text-base font-semibold text-primary flex items-center gap-2 mb-5">
+                <span class="i-lucide-users w-5 h-5 inline-block"></span>
+                Sur soudainement.fr
+            </h2>
+
+            <!-- Active games -->
+            <div class="mb-6">
+                <h3 class="text-sm font-semibold text-muted uppercase tracking-wide mb-3">Parties actives</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+
+                    <a href="#" class="card card-hover">
+                        <div class="card-body">
+                            <p class="font-semibold text-primary text-sm">City of Mist — Saison 2</p>
+                            <p class="text-xs text-muted mt-0.5">City of Mist · @alice · 12 CRs</p>
+                        </div>
+                        <div class="card-footer">
+                            <button type="button" class="btn-primary btn-sm w-full"
+                                hx-post="/follow/game/city-of-mist-s2/"
+                                hx-target="this"
+                                hx-swap="outerHTML">
+                                Suivre
+                            </button>
+                        </div>
+                    </a>
+
+                    <a href="#" class="card card-hover">
+                        <div class="card-body">
+                            <p class="font-semibold text-primary text-sm">Périple dans les Marches</p>
+                            <p class="text-xs text-muted mt-0.5">Ironsworn · @eve · 8 CRs</p>
+                        </div>
+                        <div class="card-footer">
+                            <button type="button" class="btn-primary btn-sm w-full"
+                                hx-post="/follow/game/peripleMarches/"
+                                hx-target="this"
+                                hx-swap="outerHTML">
+                                Suivre
+                            </button>
+                        </div>
+                    </a>
+
+                    <a href="#" class="card card-hover">
+                        <div class="card-body">
+                            <p class="font-semibold text-primary text-sm">Chroniques de Sang</p>
+                            <p class="text-xs text-muted mt-0.5">Vampire : MtM · @charlie · 5 CRs</p>
+                        </div>
+                        <div class="card-footer">
+                            <button type="button" class="btn-secondary btn-sm w-full"
+                                hx-post="/unfollow/game/chroniques-sang/"
+                                hx-target="this"
+                                hx-swap="outerHTML">
+                                <span class="i-lucide-check w-3.5 h-3.5 inline-block"></span>
+                                Abonné
+                            </button>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Active players -->
+            <div class="mb-6">
+                <h3 class="text-sm font-semibold text-muted uppercase tracking-wide mb-3">Joueurs actifs</h3>
+                <div class="card divide-y divide-border">
+
+                    <div class="flex items-center gap-3 px-4 py-3">
+                        <div class="avatar-md avatar-placeholder shrink-0">A</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-primary text-sm">@alice</p>
+                            <p class="text-xs text-muted">12 parties · 87 CRs</p>
+                        </div>
+                        <button type="button" class="btn-primary btn-sm shrink-0"
+                            hx-post="/follow/user/alice/"
+                            hx-target="this"
+                            hx-swap="outerHTML">
+                            Suivre
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-3 px-4 py-3">
+                        <div class="avatar-md avatar-placeholder shrink-0">B</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-primary text-sm">@bob</p>
+                            <p class="text-xs text-muted">8 parties · 54 CRs</p>
+                        </div>
+                        <button type="button" class="btn-secondary btn-sm shrink-0"
+                            hx-post="/unfollow/user/bob/"
+                            hx-target="this"
+                            hx-swap="outerHTML">
+                            <span class="i-lucide-check w-3.5 h-3.5 inline-block mr-1"></span>
+                            Abonné
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-3 px-4 py-3">
+                        <div class="avatar-md avatar-placeholder shrink-0">C</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-primary text-sm">@charlie</p>
+                            <p class="text-xs text-muted">5 parties · 29 CRs</p>
+                        </div>
+                        <button type="button" class="btn-primary btn-sm shrink-0"
+                            hx-post="/follow/user/charlie/"
+                            hx-target="this"
+                            hx-swap="outerHTML">
+                            Suivre
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Available NPCs -->
+            <div class="mb-6">
+                <h3 class="text-sm font-semibold text-muted uppercase tracking-wide mb-3">PNJ disponibles</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+
+                    <a href="#" class="card card-hover p-3 flex flex-col items-center gap-2 text-center group">
+                        <div class="avatar-md avatar-placeholder group-hover:scale-105 transition-transform">V</div>
+                        <div>
+                            <p class="text-sm font-semibold text-primary">Viktor</p>
+                            <p class="text-xs text-muted">City of Mist</p>
+                        </div>
+                        <span class="badge badge-available text-xs">PNJ</span>
+                    </a>
+
+                    <a href="#" class="card card-hover p-3 flex flex-col items-center gap-2 text-center group">
+                        <div class="avatar-md avatar-placeholder group-hover:scale-105 transition-transform">F</div>
+                        <div>
+                            <p class="text-sm font-semibold text-primary">Fenris</p>
+                            <p class="text-xs text-muted">Ironsworn</p>
+                        </div>
+                        <span class="badge badge-available text-xs">PNJ</span>
+                    </a>
+
+                    <a href="#" class="card card-hover p-3 flex flex-col items-center gap-2 text-center group">
+                        <div class="avatar-md avatar-placeholder group-hover:scale-105 transition-transform">M</div>
+                        <div>
+                            <p class="text-sm font-semibold text-primary">Mireille</p>
+                            <p class="text-xs text-muted">Ironsworn</p>
+                        </div>
+                        <span class="badge badge-available text-xs">PNJ</span>
+                    </a>
+
+                    <a href="#" class="card card-hover p-3 flex flex-col items-center gap-2 text-center group">
+                        <div class="avatar-md avatar-placeholder group-hover:scale-105 transition-transform">R</div>
+                        <div>
+                            <p class="text-sm font-semibold text-primary">Rafael</p>
+                            <p class="text-xs text-muted">Call of Cthulhu</p>
+                        </div>
+                        <span class="badge badge-available text-xs">PNJ</span>
+                    </a>
+
+                </div>
+            </div>
+
+            <a href="/explore/local/" class="btn-ghost btn-sm inline-flex items-center gap-1.5">
+                Voir tout le contenu local
+                <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+            </a>
+        </div>
+
+        <!-- FEDIVERSE SECTION -->
+        <div>
+            <h2 class="text-base font-semibold text-primary flex items-center gap-2 mb-5">
+                <span class="i-lucide-globe w-5 h-5 inline-block"></span>
+                Sur le Fediverse
+            </h2>
+
+            <!-- Known instances -->
+            <div class="mb-6">
+                <h3 class="text-sm font-semibold text-muted uppercase tracking-wide mb-3">Instances Suddenly connues</h3>
+                <div class="flex flex-col gap-3">
+
+                    <div class="card">
+                        <div class="card-body flex items-start justify-between gap-3">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="i-lucide-globe w-4 h-4 text-muted inline-block"></span>
+                                    <p class="font-semibold text-primary text-sm">suddenly.games</p>
+                                    <span class="badge badge-info text-xs">Suddenly 0.1.0</span>
+                                    <span class="text-xs text-muted">84 joueurs</span>
+                                </div>
+                                <p class="text-sm text-secondary italic">"Instance francophone de JDR narratif"</p>
+                            </div>
+                            <a href="/explore/suddenly.games/" class="btn-ghost btn-sm shrink-0 flex items-center gap-1">
+                                Explorer
+                                <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body flex items-start justify-between gap-3">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="i-lucide-globe w-4 h-4 text-muted inline-block"></span>
+                                    <p class="font-semibold text-primary text-sm">jdr.social</p>
+                                    <span class="badge badge-info text-xs">Suddenly 0.1.0</span>
+                                    <span class="text-xs text-muted">42 joueurs</span>
+                                </div>
+                                <p class="text-sm text-secondary italic">"JDR et fiction collaborative"</p>
+                            </div>
+                            <a href="/explore/jdr.social/" class="btn-ghost btn-sm shrink-0 flex items-center gap-1">
+                                Explorer
+                                <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Federated popular players -->
+            <div class="mb-6">
+                <h3 class="text-sm font-semibold text-muted uppercase tracking-wide mb-3">Joueurs fédérés populaires</h3>
+                <div class="card divide-y divide-border">
+
+                    <div class="flex items-center gap-3 px-4 py-3">
+                        <div class="avatar-md avatar-placeholder shrink-0">A</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-primary text-sm">@alice@suddenly.games</p>
+                            <div class="flex items-center gap-1 text-xs text-gray-500">
+                                <span class="i-lucide-globe w-3 h-3 inline-block"></span>
+                                suddenly.games · 12 parties
+                            </div>
+                        </div>
+                        <button type="button" class="btn-primary btn-sm shrink-0"
+                            hx-post="/follow/user/alice@suddenly.games/"
+                            hx-target="this"
+                            hx-swap="outerHTML">
+                            Suivre
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-3 px-4 py-3">
+                        <div class="avatar-md avatar-placeholder shrink-0">F</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-primary text-sm">@frank@jdr.social</p>
+                            <div class="flex items-center gap-1 text-xs text-gray-500">
+                                <span class="i-lucide-globe w-3 h-3 inline-block"></span>
+                                jdr.social · 6 parties
+                            </div>
+                        </div>
+                        <button type="button" class="btn-primary btn-sm shrink-0"
+                            hx-post="/follow/user/frank@jdr.social/"
+                            hx-target="this"
+                            hx-swap="outerHTML">
+                            Suivre
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <a href="/explore/federated/" class="btn-ghost btn-sm inline-flex items-center gap-1.5">
+                Rechercher sur le Fediverse
+                <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+            </a>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 5 — EXPLORER UNE INSTANCE DISTANTE (/explore/suddenly.games/) -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-globe w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 5 — Explorer une instance distante (/explore/suddenly.games/)</span>
+    </div>
+
+    <!-- Remote instance header -->
+    <div class="border-b border-border bg-surface py-6">
+        <div class="container-app px-4">
+            <div class="flex items-center gap-2 text-muted text-sm mb-3">
+                <span class="i-lucide-globe w-4 h-4 inline-block"></span>
+                <a href="/explore/" class="link-muted">Explorer</a>
+                <span class="i-lucide-chevron-right w-3.5 h-3.5 inline-block"></span>
+                <span>suddenly.games</span>
+            </div>
+            <h1 class="text-2xl font-bold text-primary mb-1 flex items-center gap-2">
+                <span class="i-lucide-globe w-6 h-6 inline-block text-muted"></span>
+                suddenly.games
+            </h1>
+            <p class="text-sm text-muted mb-2">Suddenly 0.1.0 · 84 joueurs · Fédérée depuis jan. 2026</p>
+            <p class="text-sm text-secondary italic">"Instance francophone de JDR narratif"</p>
+        </div>
+    </div>
+
+    <div class="container-app px-4 py-8 flex flex-col gap-8">
+
+        <!-- Remote instance — public games -->
+        <div>
+            <h2 class="text-sm font-semibold text-muted uppercase tracking-wide mb-3">Parties publiques</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+
+                <a href="#" class="card card-hover">
+                    <div class="card-body">
+                        <p class="font-semibold text-primary text-sm">Les Héritiers du Vide</p>
+                        <p class="text-xs text-muted mt-0.5">Ironsworn · @alice@suddenly.games</p>
+                        <!-- Instance badge -->
+                        <div class="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                            <span class="i-lucide-globe w-3 h-3 inline-block"></span>
+                            suddenly.games
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn-primary btn-sm w-full">Suivre</button>
+                    </div>
+                </a>
+
+                <a href="#" class="card card-hover">
+                    <div class="card-body">
+                        <p class="font-semibold text-primary text-sm">Blades of the Coin</p>
+                        <p class="text-xs text-muted mt-0.5">Blades in the Dark · @bob@suddenly.games</p>
+                        <div class="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                            <span class="i-lucide-globe w-3 h-3 inline-block"></span>
+                            suddenly.games
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn-primary btn-sm w-full">Suivre</button>
+                    </div>
+                </a>
+
+                <a href="#" class="card card-hover">
+                    <div class="card-body">
+                        <p class="font-semibold text-primary text-sm">Les Masques du Prince</p>
+                        <p class="text-xs text-muted mt-0.5">Vampire : MtM · @claire@suddenly.games</p>
+                        <div class="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                            <span class="i-lucide-globe w-3 h-3 inline-block"></span>
+                            suddenly.games
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn-primary btn-sm w-full">Suivre</button>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+        <!-- Remote instance — players -->
+        <div>
+            <h2 class="text-sm font-semibold text-muted uppercase tracking-wide mb-3">Joueurs</h2>
+            <div class="card divide-y divide-border">
+
+                <div class="flex items-center gap-3 px-4 py-3">
+                    <div class="avatar-md avatar-placeholder shrink-0">A</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-medium text-primary text-sm">@alice@suddenly.games</p>
+                        <p class="text-xs text-muted">12 parties</p>
+                    </div>
+                    <button type="button" class="btn-primary btn-sm shrink-0">Suivre</button>
+                </div>
+
+                <div class="flex items-center gap-3 px-4 py-3">
+                    <div class="avatar-md avatar-placeholder shrink-0">B</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-medium text-primary text-sm">@bob@suddenly.games</p>
+                        <p class="text-xs text-muted">8 parties</p>
+                    </div>
+                    <button type="button" class="btn-ghost btn-sm shrink-0 opacity-70 cursor-not-allowed" disabled>
+                        <span class="i-lucide-clock w-3.5 h-3.5 inline-block mr-1"></span>
+                        En attente
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Remote instance — available NPCs -->
+        <div>
+            <h2 class="text-sm font-semibold text-muted uppercase tracking-wide mb-3">PNJ disponibles</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+
+                <a href="#" class="card card-hover p-3 flex flex-col items-center gap-2 text-center group">
+                    <div class="avatar-md avatar-placeholder group-hover:scale-105 transition-transform">K</div>
+                    <div>
+                        <p class="text-sm font-semibold text-primary">Kira</p>
+                        <p class="text-xs text-muted">Ironsworn</p>
+                        <div class="flex items-center justify-center gap-1 text-xs text-gray-500 mt-0.5">
+                            <span class="i-lucide-globe w-3 h-3 inline-block"></span>
+                            suddenly.games
+                        </div>
+                    </div>
+                    <span class="badge badge-available text-xs">PNJ</span>
+                </a>
+
+                <a href="#" class="card card-hover p-3 flex flex-col items-center gap-2 text-center group">
+                    <div class="avatar-md avatar-placeholder group-hover:scale-105 transition-transform">S</div>
+                    <div>
+                        <p class="text-sm font-semibold text-primary">Shade</p>
+                        <p class="text-xs text-muted">Blades in the Dark</p>
+                        <div class="flex items-center justify-center gap-1 text-xs text-gray-500 mt-0.5">
+                            <span class="i-lucide-globe w-3 h-3 inline-block"></span>
+                            suddenly.games
+                        </div>
+                    </div>
+                    <span class="badge badge-available text-xs">PNJ</span>
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

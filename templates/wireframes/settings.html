@@ -1,0 +1,971 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Paramètres — Prototype{% endblock %}
+{% block content %}
+
+<!-- ================================================================ -->
+<!-- PROTOTYPE LABEL -->
+<!-- ================================================================ -->
+<div class="bg-amber-100 border-b border-amber-300 text-amber-800 text-xs text-center py-1.5 font-medium tracking-wide">
+    Wireframe 15 — Paramètres utilisateur — 7 onglets : Profil · Compte · Sécurité · Langues · Notifications · Fédération · Données
+</div>
+
+<!-- ================================================================ -->
+<!-- SETTINGS PAGE /settings/ -->
+<!-- ================================================================ -->
+<section>
+
+    <!-- Page header -->
+    <div class="border-b border-border bg-surface py-6">
+        <div class="container-app px-4">
+            <h1 class="text-2xl font-bold text-primary flex items-center gap-3">
+                <span class="i-lucide-settings w-6 h-6 inline-block text-muted"></span>
+                Paramètres
+            </h1>
+        </div>
+    </div>
+
+    <div class="container-app px-4 py-8">
+        <div x-data="{ tab: 'profil' }" class="flex flex-col lg:flex-row gap-8">
+
+            <!-- -------------------------------------------------------- -->
+            <!-- SIDEBAR NAV -->
+            <!-- -------------------------------------------------------- -->
+            <nav class="lg:w-52 flex-shrink-0">
+                <ul class="flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
+
+                    <li>
+                        <button type="button"
+                            @click="tab = 'profil'"
+                            :class="tab === 'profil' ? 'bg-crimson/10 text-crimson font-semibold' : 'text-secondary hover:bg-surface hover:text-primary'"
+                            class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2.5 transition-colors whitespace-nowrap">
+                            <span class="i-lucide-user w-4 h-4 inline-block shrink-0"></span>
+                            Profil
+                        </button>
+                    </li>
+
+                    <li>
+                        <button type="button"
+                            @click="tab = 'compte'"
+                            :class="tab === 'compte' ? 'bg-crimson/10 text-crimson font-semibold' : 'text-secondary hover:bg-surface hover:text-primary'"
+                            class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2.5 transition-colors whitespace-nowrap">
+                            <span class="i-lucide-at-sign w-4 h-4 inline-block shrink-0"></span>
+                            Compte
+                        </button>
+                    </li>
+
+                    <li>
+                        <button type="button"
+                            @click="tab = 'securite'"
+                            :class="tab === 'securite' ? 'bg-crimson/10 text-crimson font-semibold' : 'text-secondary hover:bg-surface hover:text-primary'"
+                            class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2.5 transition-colors whitespace-nowrap">
+                            <span class="i-lucide-shield w-4 h-4 inline-block shrink-0"></span>
+                            Sécurité
+                        </button>
+                    </li>
+
+                    <li>
+                        <button type="button"
+                            @click="tab = 'langues'"
+                            :class="tab === 'langues' ? 'bg-crimson/10 text-crimson font-semibold' : 'text-secondary hover:bg-surface hover:text-primary'"
+                            class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2.5 transition-colors whitespace-nowrap">
+                            <span class="i-lucide-languages w-4 h-4 inline-block shrink-0"></span>
+                            Langues
+                        </button>
+                    </li>
+
+                    <li>
+                        <button type="button"
+                            @click="tab = 'notifications'"
+                            :class="tab === 'notifications' ? 'bg-crimson/10 text-crimson font-semibold' : 'text-secondary hover:bg-surface hover:text-primary'"
+                            class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2.5 transition-colors whitespace-nowrap">
+                            <span class="i-lucide-bell w-4 h-4 inline-block shrink-0"></span>
+                            Notifications
+                        </button>
+                    </li>
+
+                    <li>
+                        <button type="button"
+                            @click="tab = 'federation'"
+                            :class="tab === 'federation' ? 'bg-crimson/10 text-crimson font-semibold' : 'text-secondary hover:bg-surface hover:text-primary'"
+                            class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2.5 transition-colors whitespace-nowrap">
+                            <span class="i-lucide-globe w-4 h-4 inline-block shrink-0"></span>
+                            Fédération
+                        </button>
+                    </li>
+
+                    <li>
+                        <button type="button"
+                            @click="tab = 'donnees'"
+                            :class="tab === 'donnees' ? 'bg-crimson/10 text-crimson font-semibold' : 'text-secondary hover:bg-surface hover:text-primary'"
+                            class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2.5 transition-colors whitespace-nowrap">
+                            <span class="i-lucide-database w-4 h-4 inline-block shrink-0"></span>
+                            Mes données
+                        </button>
+                    </li>
+
+                </ul>
+            </nav>
+
+            <!-- -------------------------------------------------------- -->
+            <!-- CONTENT AREA -->
+            <!-- -------------------------------------------------------- -->
+            <div class="flex-1 min-w-0">
+
+                <!-- ==================================================== -->
+                <!-- TAB: PROFIL -->
+                <!-- ==================================================== -->
+                <div x-show="tab === 'profil'">
+                    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
+                        <span class="i-lucide-user w-4 h-4 text-muted inline-block"></span>
+                        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Onglet Profil — redirect vers /users/alice/edit/</span>
+                    </div>
+
+                    <div class="max-w-lg">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="text-xl font-bold text-primary">Modifier mon profil</h2>
+                            </div>
+                            <div class="card-body">
+                                <form method="post" enctype="multipart/form-data" novalidate>
+
+                                    <!-- Display name -->
+                                    <div class="mb-5">
+                                        <label for="edit-name" class="form-label">Nom d'affichage</label>
+                                        <input id="edit-name" type="text" class="form-input" value="Alice Dupont">
+                                    </div>
+
+                                    <!-- Bio -->
+                                    <div class="mb-5">
+                                        <label for="edit-bio" class="form-label">Biographie</label>
+                                        <textarea id="edit-bio" class="form-input" rows="3">Joueuse de City of Mist et Blades in the Dark.
+Mes PNJ cherchent des histoires.</textarea>
+                                    </div>
+
+                                    <!-- Avatar upload -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Avatar</label>
+                                        <div class="form-dropzone">
+                                            <span class="i-lucide-upload-cloud w-8 h-8 text-muted inline-block mb-2"></span>
+                                            <p class="text-sm text-secondary">Glisser une image ici ou</p>
+                                            <label class="form-dropzone-link cursor-pointer">
+                                                cliquer pour choisir
+                                                <input type="file" class="hidden" accept="image/*">
+                                            </label>
+                                            <p class="text-xs text-muted mt-1">PNG, JPG, GIF — max 2 Mo</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Delete avatar -->
+                                    <div class="mb-5 flex items-center gap-2">
+                                        <input id="edit-delete-avatar" type="checkbox" class="rounded border-border text-crimson focus:ring-crimson">
+                                        <label for="edit-delete-avatar" class="text-sm text-secondary cursor-pointer">Supprimer l'avatar</label>
+                                    </div>
+
+                                    <!-- Custom fields -->
+                                    <div class="mb-6">
+                                        <p class="form-label mb-3">Champs personnalisés <span class="text-muted font-normal">(max 4)</span></p>
+
+                                        <!-- Field 1 -->
+                                        <div class="flex gap-2 mb-2">
+                                            <input type="text" class="form-input w-1/3" placeholder="Label" value="Pronoms">
+                                            <input type="text" class="form-input flex-1" placeholder="Valeur" value="elle/elle">
+                                            <button type="button" class="btn-ghost btn-sm flex-shrink-0 text-crimson" title="Supprimer">
+                                                <span class="i-lucide-x w-4 h-4 inline-block"></span>
+                                            </button>
+                                        </div>
+
+                                        <!-- Field 2 -->
+                                        <div class="flex gap-2 mb-2">
+                                            <input type="text" class="form-input w-1/3" placeholder="Label" value="Site">
+                                            <input type="text" class="form-input flex-1" placeholder="Valeur" value="https://alice.blog">
+                                            <button type="button" class="btn-ghost btn-sm flex-shrink-0 text-crimson" title="Supprimer">
+                                                <span class="i-lucide-x w-4 h-4 inline-block"></span>
+                                            </button>
+                                        </div>
+
+                                        <!-- Add field -->
+                                        <button type="button" class="btn-ghost btn-sm flex items-center gap-1.5 mt-1">
+                                            <span class="i-lucide-plus w-4 h-4 inline-block"></span>
+                                            Ajouter un champ
+                                        </button>
+                                    </div>
+
+                                    <!-- Actions -->
+                                    <div class="flex items-center gap-4 pt-2 border-t border-border">
+                                        <button type="submit" class="btn-primary">
+                                            <span class="i-lucide-check w-4 h-4 inline-block mr-1.5"></span>
+                                            Enregistrer
+                                        </button>
+                                        <a href="#" class="link-muted text-sm">Annuler</a>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================================================== -->
+                <!-- TAB: COMPTE -->
+                <!-- ==================================================== -->
+                <div x-show="tab === 'compte'">
+                    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
+                        <span class="i-lucide-at-sign w-4 h-4 text-muted inline-block"></span>
+                        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Onglet Compte — /settings/account/</span>
+                    </div>
+
+                    <div class="max-w-lg">
+
+                        <!-- Account info form -->
+                        <div class="card mb-8">
+                            <div class="card-header">
+                                <h2 class="text-lg font-bold text-primary">Compte</h2>
+                            </div>
+                            <div class="card-body">
+                                <form novalidate>
+
+                                    <!-- Username -->
+                                    <div class="mb-5">
+                                        <label for="account-username" class="form-label">Nom d'utilisateur</label>
+                                        <input id="account-username" type="text" class="form-input" value="alice">
+                                        <p class="form-help flex items-center gap-1">
+                                            <span class="i-lucide-info w-3.5 h-3.5 inline-block shrink-0"></span>
+                                            Visible comme <span class="font-mono font-medium">@alice</span>
+                                        </p>
+                                    </div>
+
+                                    <!-- Email -->
+                                    <div class="mb-6">
+                                        <label for="account-email" class="form-label">Adresse e-mail</label>
+                                        <input id="account-email" type="email" class="form-input" value="alice@example.com">
+                                    </div>
+
+                                    <!-- Actions -->
+                                    <div class="flex items-center gap-4 pt-2 border-t border-border">
+                                        <button type="submit" class="btn-primary">
+                                            <span class="i-lucide-save w-4 h-4 inline-block mr-1.5"></span>
+                                            Enregistrer
+                                        </button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Danger zone -->
+                        <div class="bg-error/10 border border-error/30 rounded-lg p-4">
+                            <h3 class="text-base font-bold text-crimson mb-4 flex items-center gap-2">
+                                <span class="i-lucide-alert-triangle w-4 h-4 inline-block"></span>
+                                Zone dangereuse
+                            </h3>
+
+                            <!-- Disable account -->
+                            <div class="mb-4 pb-4 border-b border-error/20">
+                                <button type="button" class="btn-secondary btn-sm mb-2">
+                                    <span class="i-lucide-eye-off w-4 h-4 inline-block mr-1.5"></span>
+                                    Désactiver mon compte
+                                </button>
+                                <p class="text-sm text-secondary">
+                                    Votre compte sera masqué et vos followers distants seront notifiés (Delete activity). Vous pourrez le réactiver sous 30 jours.
+                                </p>
+                            </div>
+
+                            <!-- Delete account -->
+                            <div>
+                                <button type="button" class="btn-danger btn-sm mb-2">
+                                    <span class="i-lucide-trash-2 w-4 h-4 inline-block mr-1.5"></span>
+                                    Supprimer définitivement
+                                </button>
+                                <p class="text-sm text-crimson/80">
+                                    Irréversible. Toutes vos données seront effacées après un délai de grâce de 30 jours.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ==================================================== -->
+                <!-- TAB: SÉCURITÉ -->
+                <!-- ==================================================== -->
+                <div x-show="tab === 'securite'">
+                    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
+                        <span class="i-lucide-shield w-4 h-4 text-muted inline-block"></span>
+                        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Onglet Sécurité — /settings/security/</span>
+                    </div>
+
+                    <div class="max-w-lg">
+
+                        <!-- Change password -->
+                        <div class="card mb-8">
+                            <div class="card-header">
+                                <h2 class="text-lg font-bold text-primary">Changer le mot de passe</h2>
+                            </div>
+                            <div class="card-body">
+                                <form novalidate>
+
+                                    <div class="mb-4">
+                                        <label for="sec-current-pw" class="form-label">Mot de passe actuel</label>
+                                        <input id="sec-current-pw" type="password" class="form-input" placeholder="••••••••">
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="sec-new-pw" class="form-label">Nouveau mot de passe</label>
+                                        <input id="sec-new-pw" type="password" class="form-input" placeholder="••••••••">
+                                    </div>
+
+                                    <div class="mb-6">
+                                        <label for="sec-confirm-pw" class="form-label">Confirmer le nouveau</label>
+                                        <input id="sec-confirm-pw" type="password" class="form-input" placeholder="••••••••">
+                                    </div>
+
+                                    <div class="pt-2 border-t border-border">
+                                        <button type="submit" class="btn-primary">
+                                            <span class="i-lucide-key w-4 h-4 inline-block mr-1.5"></span>
+                                            Changer le mot de passe
+                                        </button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Active sessions -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="text-lg font-bold text-primary">Sessions actives</h2>
+                            </div>
+                            <div class="card-body flex flex-col gap-4">
+
+                                <!-- Session 1 — current -->
+                                <div class="flex items-start justify-between gap-3">
+                                    <div class="flex items-start gap-3">
+                                        <div class="shrink-0 w-9 h-9 rounded-full bg-surface flex items-center justify-center border border-border">
+                                            <span class="i-lucide-monitor w-4.5 h-4.5 inline-block text-secondary"></span>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-primary">Firefox, Linux</p>
+                                            <p class="text-xs text-muted">Connecté depuis 2h</p>
+                                            <span class="badge badge-info text-xs mt-1">Session actuelle</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="border-t border-border"></div>
+
+                                <!-- Session 2 — other device -->
+                                <div class="flex items-start justify-between gap-3">
+                                    <div class="flex items-start gap-3">
+                                        <div class="shrink-0 w-9 h-9 rounded-full bg-surface flex items-center justify-center border border-border">
+                                            <span class="i-lucide-smartphone w-4.5 h-4.5 inline-block text-secondary"></span>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-primary">Safari, iOS</p>
+                                            <p class="text-xs text-muted">Dernière activité il y a 3j</p>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn-ghost btn-sm text-crimson flex-shrink-0">
+                                        <span class="i-lucide-log-out w-4 h-4 inline-block mr-1"></span>
+                                        Révoquer
+                                    </button>
+                                </div>
+
+                                <!-- Session 3 — other device -->
+                                <div class="border-t border-border"></div>
+                                <div class="flex items-start justify-between gap-3">
+                                    <div class="flex items-start gap-3">
+                                        <div class="shrink-0 w-9 h-9 rounded-full bg-surface flex items-center justify-center border border-border">
+                                            <span class="i-lucide-chrome w-4.5 h-4.5 inline-block text-secondary"></span>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-primary">Chrome, Windows</p>
+                                            <p class="text-xs text-muted">Dernière activité il y a 7j</p>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn-ghost btn-sm text-crimson flex-shrink-0">
+                                        <span class="i-lucide-log-out w-4 h-4 inline-block mr-1"></span>
+                                        Révoquer
+                                    </button>
+                                </div>
+
+                            </div>
+                            <div class="card-footer">
+                                <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5">
+                                    <span class="i-lucide-log-out w-4 h-4 inline-block"></span>
+                                    Révoquer toutes les autres sessions
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ==================================================== -->
+                <!-- TAB: LANGUES -->
+                <!-- ==================================================== -->
+                <div x-show="tab === 'langues'">
+                    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
+                        <span class="i-lucide-languages w-4 h-4 text-muted inline-block"></span>
+                        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Onglet Langues — /settings/languages/</span>
+                    </div>
+
+                    <div class="max-w-lg">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="text-lg font-bold text-primary">Langues</h2>
+                            </div>
+                            <div class="card-body">
+                                <form novalidate>
+
+                                    <!-- Content language -->
+                                    <div class="mb-5">
+                                        <label for="lang-content" class="form-label">Langue de mes publications</label>
+                                        <select id="lang-content" class="form-input">
+                                            <option value="fr" selected>fr (Français)</option>
+                                            <option value="en">en (English)</option>
+                                            <option value="de">de (Deutsch)</option>
+                                            <option value="es">es (Español)</option>
+                                        </select>
+                                        <p class="form-help">Les CRs et citations que vous publiez seront étiquetés avec cette langue.</p>
+                                    </div>
+
+                                    <!-- Preferred languages -->
+                                    <div class="mb-5">
+                                        <label class="form-label">Langues que je veux voir</label>
+                                        <div class="flex flex-col gap-2 mt-2">
+
+                                            <label class="flex items-center gap-2 cursor-pointer">
+                                                <input type="checkbox" checked class="rounded border-border text-crimson focus:ring-crimson accent-crimson">
+                                                <span class="text-sm text-primary">Français</span>
+                                            </label>
+
+                                            <label class="flex items-center gap-2 cursor-pointer">
+                                                <input type="checkbox" checked class="rounded border-border text-crimson focus:ring-crimson accent-crimson">
+                                                <span class="text-sm text-primary">English</span>
+                                            </label>
+
+                                            <label class="flex items-center gap-2 cursor-pointer">
+                                                <input type="checkbox" class="rounded border-border text-crimson focus:ring-crimson accent-crimson">
+                                                <span class="text-sm text-primary">Deutsch</span>
+                                            </label>
+
+                                            <label class="flex items-center gap-2 cursor-pointer">
+                                                <input type="checkbox" class="rounded border-border text-crimson focus:ring-crimson accent-crimson">
+                                                <span class="text-sm text-primary">Español</span>
+                                            </label>
+
+                                            <button type="button" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit mt-1">
+                                                <span class="i-lucide-plus w-4 h-4 inline-block"></span>
+                                                Ajouter une langue
+                                            </button>
+
+                                        </div>
+                                    </div>
+
+                                    <!-- Show untagged content -->
+                                    <div class="mb-6">
+                                        <label class="flex items-start gap-2 cursor-pointer">
+                                            <input type="checkbox" class="rounded border-border text-crimson focus:ring-crimson accent-crimson mt-0.5">
+                                            <span class="text-sm text-primary">Afficher le contenu sans langue définie</span>
+                                        </label>
+                                        <p class="form-help mt-1 flex items-start gap-1">
+                                            <span class="i-lucide-info w-3.5 h-3.5 inline-block shrink-0 mt-0.5"></span>
+                                            Si décoché, le contenu sans étiquette de langue sera masqué de votre fil.
+                                        </p>
+                                    </div>
+
+                                    <!-- Actions -->
+                                    <div class="pt-2 border-t border-border">
+                                        <button type="submit" class="btn-primary">
+                                            <span class="i-lucide-save w-4 h-4 inline-block mr-1.5"></span>
+                                            Enregistrer
+                                        </button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================================================== -->
+                <!-- TAB: NOTIFICATIONS -->
+                <!-- ==================================================== -->
+                <div x-show="tab === 'notifications'">
+                    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
+                        <span class="i-lucide-bell w-4 h-4 text-muted inline-block"></span>
+                        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Onglet Notifications — /settings/notifications/ (US-21)</span>
+                    </div>
+
+                    <div class="max-w-lg">
+                        <form>
+                            <div class="card border border-border rounded-xl overflow-hidden">
+
+                                <!-- Table header -->
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border bg-surface">
+                                    <div class="py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wide">Type</div>
+                                    <div class="py-3 px-6 text-xs font-semibold text-muted uppercase tracking-wide text-center">In-app</div>
+                                    <div class="py-3 px-6 text-xs font-semibold text-muted uppercase tracking-wide text-center">E-mail</div>
+                                </div>
+
+                                <!-- Row: Demandes de lien -->
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                                    <div class="py-3.5 px-4 flex items-center gap-2">
+                                        <span class="i-lucide-git-merge w-4 h-4 inline-block text-amber-500 shrink-0"></span>
+                                        <span class="text-sm text-primary">Demandes de lien</span>
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60" title="Les notifications in-app sont toujours actives">
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" checked name="email_link_request" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                    </div>
+                                </div>
+
+                                <!-- Row: Réponses -->
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                                    <div class="py-3.5 px-4 flex items-center gap-2">
+                                        <span class="i-lucide-message-circle w-4 h-4 inline-block text-emerald-500 shrink-0"></span>
+                                        <span class="text-sm text-primary">Réponses aux demandes</span>
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" checked name="email_link_response" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                    </div>
+                                </div>
+
+                                <!-- Row: Séquences Partagées -->
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                                    <div class="py-3.5 px-4 flex items-center gap-2">
+                                        <span class="i-lucide-edit w-4 h-4 inline-block text-violet-500 shrink-0"></span>
+                                        <span class="text-sm text-primary">Séquences Partagées</span>
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" checked name="email_shared_sequence" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                    </div>
+                                </div>
+
+                                <!-- Row: Nouveaux CRs -->
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                                    <div class="py-3.5 px-4 flex items-center gap-2">
+                                        <span class="i-lucide-book-open w-4 h-4 inline-block text-indigo-500 shrink-0"></span>
+                                        <span class="text-sm text-primary">Nouveaux comptes-rendus</span>
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" name="email_new_report" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                    </div>
+                                </div>
+
+                                <!-- Row: Recommandations -->
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                                    <div class="py-3.5 px-4 flex items-center gap-2">
+                                        <span class="i-lucide-sparkles w-4 h-4 inline-block text-violet-500 shrink-0"></span>
+                                        <span class="text-sm text-primary">Recommandations</span>
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" name="email_recommendation" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                    </div>
+                                </div>
+
+                                <!-- Row: Mentions -->
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                                    <div class="py-3.5 px-4 flex items-center gap-2">
+                                        <span class="i-lucide-at-sign w-4 h-4 inline-block text-blue-500 shrink-0"></span>
+                                        <span class="text-sm text-primary">Mentions</span>
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" checked name="email_mention" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                    </div>
+                                </div>
+
+                                <!-- Row: Invitations -->
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                                    <div class="py-3.5 px-4 flex items-center gap-2">
+                                        <span class="i-lucide-send w-4 h-4 inline-block text-crimson shrink-0"></span>
+                                        <span class="text-sm text-primary">Invitations</span>
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" checked name="email_invitation" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                    </div>
+                                </div>
+
+                                <!-- Row: Nouveaux followers -->
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                                    <div class="py-3.5 px-4 flex items-center gap-2">
+                                        <span class="i-lucide-user-plus w-4 h-4 inline-block text-sky-500 shrink-0"></span>
+                                        <span class="text-sm text-primary">Nouveaux followers</span>
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" name="email_new_follower" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                    </div>
+                                </div>
+
+                                <!-- Row: Révocations -->
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 hover:bg-surface/60 transition-colors">
+                                    <div class="py-3.5 px-4 flex items-center gap-2">
+                                        <span class="i-lucide-alert-triangle w-4 h-4 inline-block text-red-500 shrink-0"></span>
+                                        <span class="text-sm text-primary">Révocations de lien</span>
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                                    </div>
+                                    <div class="py-3.5 px-6 flex items-center justify-center">
+                                        <input type="checkbox" checked name="email_revocation" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                    </div>
+                                </div>
+
+                                <!-- Info banner -->
+                                <div class="border-t border-border bg-info/5 px-4 py-3 flex items-start gap-2 text-info text-sm">
+                                    <span class="i-lucide-info w-4 h-4 inline-block shrink-0 mt-0.5"></span>
+                                    <span>Les notifications in-app sont toujours actives et ne peuvent pas être désactivées.</span>
+                                </div>
+
+                            </div>
+
+                            <!-- Save -->
+                            <div class="mt-6 flex items-center gap-3">
+                                <button type="submit" class="btn-primary flex items-center gap-2">
+                                    <span class="i-lucide-save w-4 h-4 inline-block"></span>
+                                    Enregistrer
+                                </button>
+                                <button type="button" class="btn-ghost btn-sm text-muted">Annuler</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ==================================================== -->
+                <!-- TAB: FÉDÉRATION -->
+                <!-- ==================================================== -->
+                <div x-show="tab === 'federation'">
+                    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
+                        <span class="i-lucide-globe w-4 h-4 text-muted inline-block"></span>
+                        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Onglet Fédération — /settings/federation/</span>
+                    </div>
+
+                    <div class="max-w-lg flex flex-col gap-6">
+
+                        <!-- ActivityPub identity -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="text-lg font-bold text-primary">Fédération</h2>
+                            </div>
+                            <div class="card-body flex flex-col gap-5">
+
+                                <!-- AP identifier -->
+                                <div>
+                                    <p class="form-label">Votre identifiant ActivityPub</p>
+                                    <div class="flex items-center gap-3 mt-1">
+                                        <span class="font-mono text-sm text-primary bg-surface border border-border rounded px-3 py-2 flex-1">@alice@suddenly.social</span>
+                                        <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5 flex-shrink-0">
+                                            <span class="i-lucide-copy w-4 h-4 inline-block"></span>
+                                            Copier
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Public key -->
+                                <div>
+                                    <p class="form-label">Clé publique (PEM)</p>
+                                    <textarea class="form-input font-mono text-xs" rows="5" readonly>-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1v3+a8LzqJQbgG3t...
+-----END PUBLIC KEY-----</textarea>
+                                    <p class="form-help flex items-start gap-1 mt-1">
+                                        <span class="i-lucide-info w-3.5 h-3.5 inline-block shrink-0 mt-0.5"></span>
+                                        Utilisée pour vérifier vos activités sur les instances distantes.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Followed instances -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="text-base font-bold text-primary">Instances suivies</h2>
+                            </div>
+                            <div class="card-body flex flex-col gap-3">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm font-medium text-primary">suddenly.games</p>
+                                        <p class="text-xs text-muted">3 acteurs suivis</p>
+                                    </div>
+                                </div>
+                                <div class="border-t border-border"></div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm font-medium text-primary">mastodon.social</p>
+                                        <p class="text-xs text-muted">1 acteur suivi</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Blocked accounts -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="text-base font-bold text-primary flex items-center gap-2">
+                                    <span class="i-lucide-shield-off w-4 h-4 inline-block text-muted"></span>
+                                    Comptes bloqués
+                                </h2>
+                            </div>
+                            <div class="card-body flex flex-col gap-4">
+
+                                <!-- Block input -->
+                                <div class="flex gap-2">
+                                    <input type="text" class="form-input flex-1" placeholder="Bloquer un utilisateur...">
+                                    <button type="button" class="btn-secondary btn-sm flex-shrink-0">Bloquer</button>
+                                </div>
+                                <p class="form-help flex items-start gap-1 -mt-2">
+                                    <span class="i-lucide-info w-3.5 h-3.5 inline-block shrink-0 mt-0.5"></span>
+                                    Vous ne verrez plus son contenu et il ne pourra plus interagir avec vous.
+                                </p>
+
+                                <!-- Blocked list -->
+                                <div class="border-t border-border pt-3 flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm font-medium text-primary font-mono">@troll123</p>
+                                        <p class="text-xs text-muted">Bloqué le 5 mars</p>
+                                    </div>
+                                    <button type="button" class="btn-ghost btn-sm text-secondary">
+                                        Débloquer
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Muted accounts -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="text-base font-bold text-primary flex items-center gap-2">
+                                    <span class="i-lucide-bell-off w-4 h-4 inline-block text-muted"></span>
+                                    Comptes masqués (mute)
+                                </h2>
+                            </div>
+                            <div class="card-body flex flex-col gap-4">
+
+                                <!-- Mute input -->
+                                <div class="flex gap-2">
+                                    <input type="text" class="form-input flex-1" placeholder="Masquer un utilisateur...">
+                                    <button type="button" class="btn-secondary btn-sm flex-shrink-0">Masquer</button>
+                                </div>
+                                <p class="form-help flex items-start gap-1 -mt-2">
+                                    <span class="i-lucide-info w-3.5 h-3.5 inline-block shrink-0 mt-0.5"></span>
+                                    Son contenu sera masqué de vos fils mais il pourra encore interagir.
+                                </p>
+
+                                <p class="text-sm text-muted italic">Aucun compte masqué.</p>
+
+                            </div>
+                        </div>
+
+                        <!-- Blocked instances -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="text-base font-bold text-primary flex items-center gap-2">
+                                    <span class="i-lucide-server-off w-4 h-4 inline-block text-muted"></span>
+                                    Instances bloquées (personnel)
+                                </h2>
+                            </div>
+                            <div class="card-body flex flex-col gap-4">
+
+                                <!-- Block instance input -->
+                                <div class="flex gap-2">
+                                    <input type="text" class="form-input flex-1" placeholder="Ajouter une instance à bloquer...">
+                                    <button type="button" class="btn-secondary btn-sm flex-shrink-0">Bloquer</button>
+                                </div>
+                                <p class="form-help flex items-start gap-1 -mt-2">
+                                    <span class="i-lucide-info w-3.5 h-3.5 inline-block shrink-0 mt-0.5"></span>
+                                    Vous ne verrez plus le contenu de cette instance.
+                                </p>
+
+                                <p class="text-sm text-muted italic">Aucune instance bloquée.</p>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ==================================================== -->
+                <!-- TAB: DONNÉES -->
+                <!-- ==================================================== -->
+                <div x-show="tab === 'donnees'">
+                    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
+                        <span class="i-lucide-database w-4 h-4 text-muted inline-block"></span>
+                        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Onglet Mes données — /settings/data/</span>
+                    </div>
+
+                    <div class="max-w-lg flex flex-col gap-6">
+
+                        <!-- Import / Export follows -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="text-lg font-bold text-primary">Mes données</h2>
+                            </div>
+                            <div class="card-body">
+                                <h3 class="text-sm font-semibold text-primary mb-3">Import / Export d'abonnements</h3>
+                                <div class="flex flex-col gap-4">
+
+                                    <!-- Export follows -->
+                                    <div>
+                                        <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5 mb-1.5">
+                                            <span class="i-lucide-download w-4 h-4 inline-block"></span>
+                                            Exporter mes follows (CSV)
+                                        </button>
+                                        <p class="form-help flex items-start gap-1">
+                                            <span class="i-lucide-info w-3.5 h-3.5 inline-block shrink-0 mt-0.5"></span>
+                                            Format CSV compatible Mastodon. Contient vos abonnements joueurs, parties, personnages.
+                                        </p>
+                                    </div>
+
+                                    <div class="border-t border-border"></div>
+
+                                    <!-- Import follows -->
+                                    <div>
+                                        <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5 mb-1.5">
+                                            <span class="i-lucide-upload w-4 h-4 inline-block"></span>
+                                            Importer des follows (CSV)
+                                        </button>
+                                        <p class="form-help flex items-start gap-1">
+                                            <span class="i-lucide-info w-3.5 h-3.5 inline-block shrink-0 mt-0.5"></span>
+                                            Importez un fichier CSV Mastodon ou Suddenly. Les comptes seront suivis automatiquement.
+                                        </p>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Full data export -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="text-base font-bold text-primary">Exporter mes données complètes</h3>
+                            </div>
+                            <div class="card-body">
+                                <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5 mb-2">
+                                    <span class="i-lucide-archive w-4 h-4 inline-block"></span>
+                                    Télécharger une archive
+                                </button>
+                                <p class="form-help flex items-start gap-1">
+                                    <span class="i-lucide-info w-3.5 h-3.5 inline-block shrink-0 mt-0.5"></span>
+                                    Archive ZIP contenant : profil, parties, CRs, citations, personnages, liens, abonnements. Format : ActivityPub JSON-LD. Génération sous 24h.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Import data -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="text-base font-bold text-primary">Importer des données</h3>
+                            </div>
+                            <div class="card-body">
+                                <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5 mb-2">
+                                    <span class="i-lucide-package-open w-4 h-4 inline-block"></span>
+                                    Importer depuis une archive
+                                </button>
+                                <p class="form-help flex items-start gap-1">
+                                    <span class="i-lucide-info w-3.5 h-3.5 inline-block shrink-0 mt-0.5"></span>
+                                    Importez une archive Suddenly ou compatible ActivityPub. Les doublons seront détectés.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Account alias (incoming migration) -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="text-base font-bold text-primary flex items-center gap-2">
+                                    <span class="i-lucide-link w-4 h-4 inline-block text-muted"></span>
+                                    Alias de compte
+                                    <span class="badge badge-info text-xs">Migration entrante</span>
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <form novalidate class="flex flex-col gap-3">
+                                    <div>
+                                        <label for="data-alias" class="form-label">Ancien compte</label>
+                                        <input id="data-alias" type="text" class="form-input font-mono" placeholder="@alice@ancien.instance">
+                                    </div>
+                                    <div>
+                                        <button type="submit" class="btn-secondary btn-sm flex items-center gap-1.5">
+                                            <span class="i-lucide-plus w-4 h-4 inline-block"></span>
+                                            Ajouter un alias
+                                        </button>
+                                    </div>
+                                    <p class="form-help flex items-start gap-1">
+                                        <span class="i-lucide-info w-3.5 h-3.5 inline-block shrink-0 mt-0.5"></span>
+                                        Permet à votre ancien compte de migrer vers celui-ci.
+                                    </p>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Migration to another instance -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="text-base font-bold text-primary flex items-center gap-2">
+                                    <span class="i-lucide-arrow-right-circle w-4 h-4 inline-block text-muted"></span>
+                                    Migrer vers une autre instance
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <form novalidate class="flex flex-col gap-4">
+                                    <div>
+                                        <label for="data-dest" class="form-label">Instance de destination</label>
+                                        <input id="data-dest" type="text" class="form-input font-mono" placeholder="suddenly.games">
+                                    </div>
+
+                                    <!-- Warning banner -->
+                                    <div class="bg-amber-50 dark:bg-amber-950/20 border border-amber-300 dark:border-amber-700 rounded-lg p-3 flex items-start gap-2">
+                                        <span class="i-lucide-alert-triangle w-4 h-4 inline-block text-amber-600 dark:text-amber-400 shrink-0 mt-0.5"></span>
+                                        <p class="text-sm text-amber-800 dark:text-amber-300">
+                                            Votre profil sera redirigé vers la nouvelle instance. Vos followers seront notifiés via Move activity. Processus irréversible.
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <button type="submit" class="btn-danger btn-sm flex items-center gap-1.5">
+                                            <span class="i-lucide-move-right w-4 h-4 inline-block"></span>
+                                            Initier la migration
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <!-- /content area -->
+
+        </div>
+        <!-- /flex layout -->
+    </div>
+
+</section>
+
+{% endblock %}

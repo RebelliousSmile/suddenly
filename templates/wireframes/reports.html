@@ -1,0 +1,713 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Comptes-rendus — Prototype{% endblock %}
+{% block content %}
+
+<!-- ================================================================ -->
+<!-- PROTOTYPE LABEL -->
+<!-- ================================================================ -->
+<div class="bg-amber-100 border-b border-amber-300 text-amber-800 text-xs text-center py-1.5 font-medium tracking-wide">
+    Wireframe 06 — Comptes-rendus — 4 sections : Détail · Éditeur · Content Warning feed · Règles de visibilité
+</div>
+
+<!-- ================================================================ -->
+<!-- SECTION 1 — DÉTAIL DU COMPTE-RENDU -->
+<!-- ================================================================ -->
+<section class="mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-file-text w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 1 — Détail du compte-rendu (/games/{slug}/reports/{id}/)</span>
+    </div>
+
+    <!-- Breadcrumb + header -->
+    <div class="border-b border-border bg-surface py-6">
+        <div class="container-app px-4">
+
+            <!-- Breadcrumb -->
+            <div class="flex items-center gap-2 text-sm text-muted mb-4">
+                <a href="#" class="link-muted">City of Mist</a>
+                <span class="i-lucide-chevron-right w-3.5 h-3.5 inline-block"></span>
+                <a href="#" class="link-muted">Session 12</a>
+            </div>
+
+            <!-- Title -->
+            <h1 class="text-3xl font-bold text-primary mb-4">L'Oracle brisé</h1>
+
+            <!-- Author + date -->
+            <div class="flex items-center gap-3">
+                <div class="avatar-md avatar-placeholder">A</div>
+                <div>
+                    <a href="#" class="link font-medium text-sm">Alice</a>
+                    <span class="text-muted text-sm mx-1">·</span>
+                    <span class="text-muted text-sm">publiée le 15 mars 2026</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Distribution (cast) -->
+    <div class="border-b border-border py-5">
+        <div class="container-app px-4">
+            <h2 class="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Distribution</h2>
+            <div class="flex flex-wrap gap-3">
+
+                <!-- Viktor — PNJ disponible, rôle Principal -->
+                <div class="flex flex-col items-center gap-1">
+                    <a href="#" class="flex items-center gap-2 badge badge-available px-3 py-1.5 text-sm font-medium rounded-full">
+                        <div class="avatar-sm avatar-placeholder">V</div>
+                        Viktor <span class="text-xs opacity-70">(PNJ)</span>
+                    </a>
+                    <span class="text-xs text-muted">Principal</span>
+                </div>
+
+                <!-- Lyra — PJ, rôle Principal -->
+                <div class="flex flex-col items-center gap-1">
+                    <a href="#" class="flex items-center gap-2 badge badge-pc px-3 py-1.5 text-sm font-medium rounded-full">
+                        <div class="avatar-sm avatar-placeholder">L</div>
+                        Lyra <span class="text-xs opacity-70">(PJ)</span>
+                    </a>
+                    <span class="text-xs text-muted">Principal</span>
+                </div>
+
+                <!-- Ombra — PNJ disponible, rôle Secondaire -->
+                <div class="flex flex-col items-center gap-1">
+                    <a href="#" class="flex items-center gap-2 badge badge-available px-3 py-1.5 text-sm font-medium rounded-full">
+                        <div class="avatar-sm avatar-placeholder">O</div>
+                        Ombra <span class="text-xs opacity-70">(PNJ)</span>
+                    </a>
+                    <span class="text-xs text-muted">Secondaire</span>
+                </div>
+
+                <!-- Kael — réclamé, rôle Mentionné -->
+                <div class="flex flex-col items-center gap-1">
+                    <a href="#" class="flex items-center gap-2 badge badge-claimed px-3 py-1.5 text-sm font-medium rounded-full">
+                        <div class="avatar-sm avatar-placeholder">K</div>
+                        Kael <span class="text-xs opacity-70">(réclamé)</span>
+                    </a>
+                    <span class="text-xs text-muted">Mentionné</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Report prose content -->
+    <div class="border-b border-border py-8">
+        <div class="container-app px-4">
+            <div class="prose-report max-w-none">
+                <p>La nuit tombait sur le Quartier des Reflets quand <strong>Viktor</strong> poussa la porte du bar. L'Oracle l'attendait, assis dans l'ombre, ses yeux brillant d'une lueur électrique, presque féline. Nul autre client n'osait s'approcher de cette table.</p>
+
+                <p><strong>Lyra</strong> arriva par la porte de derrière, son manteau ruisselant de pluie. Elle posa un dossier sur la table sans un mot, laissant les photographies glisser sous la lumière tamisée. L'Oracle les parcourut du regard, ses doigts fins traçant des cercles invisibles sur le bois patiné.</p>
+
+                <blockquote>
+                    <p>« Les mythes ne meurent pas. Ils changent de masque. » — Viktor</p>
+                </blockquote>
+
+                <p>C'est alors qu'<strong>Ombra</strong> fit son entrée, encapuchonnée, se glissant entre les tables comme une ombre parmi les ombres. Son arrivée déclencha une réaction inattendue chez l'Oracle : pour la première fois depuis le début de la scène, il se leva.</p>
+
+                <p>Au fond de la salle, une silhouette que personne n'avait remarquée se leva à son tour. <strong>Kael</strong>. Ses yeux croisant ceux de Lyra une fraction de seconde avant que la lumière ne s'éteigne d'un coup.</p>
+
+                <p>Quand les lampes se rallumèrent, l'Oracle avait disparu. Sur la table, à la place des photographies, une simple carte de visite gravée d'un symbole que Viktor reconnut immédiatement : le sceau de la Première Cité.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quotes section -->
+    <div class="border-b border-border py-6">
+        <div class="container-app px-4">
+            <h2 class="text-sm font-semibold text-primary mb-4">Citations de cette session</h2>
+
+            <div class="flex flex-col gap-3 mb-4">
+
+                <!-- Quote 1 -->
+                <div class="card p-4">
+                    <blockquote class="text-secondary italic mb-2">
+                        « Les mythes ne meurent pas. Ils changent de masque. »
+                    </blockquote>
+                    <div class="flex items-center gap-2">
+                        <div class="avatar-sm avatar-placeholder">V</div>
+                        <span class="text-sm text-muted">Viktor</span>
+                        <span class="text-xs text-muted">·</span>
+                        <span class="text-xs text-muted">Session 12</span>
+                    </div>
+                </div>
+
+                <!-- Quote 2 -->
+                <div class="card p-4">
+                    <blockquote class="text-secondary italic mb-2">
+                        « Je ne suis pas venue pour négocier. »
+                    </blockquote>
+                    <div class="flex items-center gap-2">
+                        <div class="avatar-sm avatar-placeholder">L</div>
+                        <span class="text-sm text-muted">Lyra</span>
+                        <span class="text-xs text-muted">·</span>
+                        <span class="text-xs text-muted">Session 12</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Add quote CTA (HTMX target) -->
+            <button type="button"
+                class="btn-ghost btn-sm flex items-center gap-2"
+                hx-get="#"
+                hx-target="#quote-form-container"
+                hx-swap="innerHTML">
+                <span class="i-lucide-plus w-4 h-4 inline-block"></span>
+                Ajouter une citation
+            </button>
+            <div id="quote-form-container" class="mt-3"></div>
+        </div>
+    </div>
+
+    <!-- Reactions + share bar -->
+    <div class="py-4">
+        <div class="container-app px-4">
+            <div class="flex items-center gap-6">
+
+                <!-- Likes -->
+                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-crimson transition-colors">
+                    <span class="i-lucide-heart w-5 h-5 inline-block"></span>
+                    <span class="text-sm font-medium">4</span>
+                </button>
+
+                <!-- Comments -->
+                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-primary transition-colors">
+                    <span class="i-lucide-message-square w-5 h-5 inline-block"></span>
+                    <span class="text-sm font-medium">2</span>
+                </button>
+
+                <!-- Share -->
+                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-primary transition-colors ml-auto">
+                    <span class="i-lucide-share w-5 h-5 inline-block"></span>
+                    <span class="text-sm">Partager</span>
+                </button>
+
+                <!-- Edit (owner only) -->
+                <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5">
+                    <span class="i-lucide-pencil w-4 h-4 inline-block"></span>
+                    Modifier
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 2 — ÉDITEUR DE COMPTE-RENDU -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-edit-3 w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 2 — Éditeur de compte-rendu (/games/{slug}/reports/new/)</span>
+    </div>
+
+    <div class="container-app px-4 py-8">
+
+        <!-- Page heading -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-primary">Nouveau compte-rendu</h1>
+            <p class="text-muted text-sm mt-1">City of Mist — Saison 2</p>
+        </div>
+
+        <form class="flex flex-col gap-8">
+
+            <!-- -------------------------------------------------- -->
+            <!-- CAST / DISTRIBUTION PANEL (US-13) -->
+            <!-- -------------------------------------------------- -->
+            <div class="card">
+                <div class="card-header flex items-center justify-between">
+                    <h2 class="font-semibold text-primary flex items-center gap-2">
+                        <span class="i-lucide-users w-4 h-4 inline-block text-muted"></span>
+                        Distribution
+                        <span class="badge badge-info text-xs">US-13</span>
+                    </h2>
+                    <span class="text-xs text-muted">Recherchez et sélectionnez les personnages</span>
+                </div>
+                <div class="card-body flex flex-col gap-4">
+
+                    <!-- Search field with HTMX dropdown -->
+                    <div class="relative" x-data="{ open: true }">
+                        <div class="relative">
+                            <span class="i-lucide-search w-4 h-4 text-muted absolute left-3 top-1/2 -translate-y-1/2 inline-block pointer-events-none"></span>
+                            <input
+                                type="text"
+                                class="form-input pl-9 w-full"
+                                placeholder="Ajouter un personnage..."
+                                hx-get="/htmx/characters/suggest/"
+                                hx-target="#cast-suggestions"
+                                hx-trigger="input delay:200ms"
+                                hx-vals='{"game_id": "city-of-mist-s2"}'
+                                @focus="open = true"
+                                value="Ly"
+                            >
+                        </div>
+
+                        <!-- Suggestions dropdown (Alpine.js + HTMX) -->
+                        <div id="cast-suggestions"
+                            class="absolute z-50 w-full mt-1 card shadow-lg border border-border overflow-hidden"
+                            x-show="open"
+                            @click.outside="open = false">
+
+                            <!-- Result: existing character -->
+                            <button type="button" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface text-left transition-colors">
+                                <div class="avatar-sm avatar-placeholder">L</div>
+                                <div>
+                                    <p class="text-sm font-medium text-primary">Lyra</p>
+                                    <p class="text-xs text-muted">PJ de @bob · City of Mist</p>
+                                </div>
+                                <span class="badge badge-pc ml-auto text-xs">PJ</span>
+                            </button>
+
+                            <!-- Result: another character -->
+                            <button type="button" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface text-left transition-colors border-t border-border">
+                                <div class="avatar-sm avatar-placeholder">Lr</div>
+                                <div>
+                                    <p class="text-sm font-medium text-primary">Lyriel</p>
+                                    <p class="text-xs text-muted">PNJ · Shadowrun campaign</p>
+                                </div>
+                                <span class="badge badge-available ml-auto text-xs">PNJ</span>
+                            </button>
+
+                            <!-- Create new NPC -->
+                            <button type="button" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface text-left transition-colors border-t border-border text-crimson">
+                                <span class="i-lucide-plus-circle w-4 h-4 inline-block"></span>
+                                <span class="text-sm font-medium">Créer "Ly" comme nouveau PNJ</span>
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <!-- Selected characters with role selector -->
+                    <div class="flex flex-col gap-2">
+                        <p class="text-xs font-semibold text-muted uppercase tracking-wide">Personnages sélectionnés</p>
+
+                        <!-- Viktor -->
+                        <div class="flex items-center gap-3 py-2 px-3 bg-surface rounded-lg border border-border">
+                            <div class="avatar-sm avatar-placeholder">V</div>
+                            <span class="text-sm font-medium text-primary flex-1">Viktor</span>
+                            <span class="badge badge-available text-xs">PNJ</span>
+                            <select class="form-input py-1 text-xs w-36">
+                                <option selected>Principal</option>
+                                <option>Secondaire</option>
+                                <option>Mentionné</option>
+                            </select>
+                            <button type="button" class="text-muted hover:text-crimson transition-colors" title="Retirer">
+                                <span class="i-lucide-x w-4 h-4 inline-block"></span>
+                            </button>
+                        </div>
+
+                        <!-- Lyra -->
+                        <div class="flex items-center gap-3 py-2 px-3 bg-surface rounded-lg border border-border">
+                            <div class="avatar-sm avatar-placeholder">L</div>
+                            <span class="text-sm font-medium text-primary flex-1">Lyra</span>
+                            <span class="badge badge-pc text-xs">PJ</span>
+                            <select class="form-input py-1 text-xs w-36">
+                                <option selected>Principal</option>
+                                <option>Secondaire</option>
+                                <option>Mentionné</option>
+                            </select>
+                            <button type="button" class="text-muted hover:text-crimson transition-colors" title="Retirer">
+                                <span class="i-lucide-x w-4 h-4 inline-block"></span>
+                            </button>
+                        </div>
+
+                        <!-- Kael -->
+                        <div class="flex items-center gap-3 py-2 px-3 bg-surface rounded-lg border border-border">
+                            <div class="avatar-sm avatar-placeholder">K</div>
+                            <span class="text-sm font-medium text-primary flex-1">Kael</span>
+                            <span class="badge badge-available text-xs">PNJ (nouveau)</span>
+                            <select class="form-input py-1 text-xs w-36">
+                                <option>Principal</option>
+                                <option>Secondaire</option>
+                                <option selected>Mentionné</option>
+                            </select>
+                            <button type="button" class="text-muted hover:text-crimson transition-colors" title="Retirer">
+                                <span class="i-lucide-x w-4 h-4 inline-block"></span>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- -------------------------------------------------- -->
+            <!-- TITLE FIELD -->
+            <!-- -------------------------------------------------- -->
+            <div>
+                <label class="form-label" for="report-title">Titre</label>
+                <input
+                    id="report-title"
+                    type="text"
+                    class="form-input w-full"
+                    placeholder="Donnez un titre à cette session..."
+                    value="L'Oracle brisé">
+            </div>
+
+            <!-- -------------------------------------------------- -->
+            <!-- CONTENT EDITOR (Markdown + @mention autocomplete) -->
+            <!-- -------------------------------------------------- -->
+            <div>
+                <label class="form-label" for="report-content">Contenu (Markdown)</label>
+                <p class="form-help mb-2">
+                    <span class="i-lucide-at-sign w-3.5 h-3.5 inline-block"></span>
+                    Tapez <code>@</code> pour mentionner un personnage du cast. Le nom sera automatiquement complété.
+                </p>
+
+                <!-- Editor container with mock mention dropdown -->
+                <div class="relative border border-border rounded-xl overflow-visible bg-white dark:bg-neutral-900">
+
+                    <!-- Fake EasyMDE toolbar -->
+                    <div class="flex items-center gap-1 px-3 py-2 border-b border-border bg-surface text-muted flex-wrap">
+                        <button type="button" class="p-1.5 hover:bg-border rounded font-bold text-sm" title="Gras">B</button>
+                        <button type="button" class="p-1.5 hover:bg-border rounded italic text-sm" title="Italique">I</button>
+                        <button type="button" class="p-1.5 hover:bg-border rounded text-sm" title="Citation">❝</button>
+                        <span class="w-px h-4 bg-border mx-1"></span>
+                        <button type="button" class="p-1.5 hover:bg-border rounded text-sm flex items-center gap-1" title="Lien">
+                            <span class="i-lucide-link w-3.5 h-3.5 inline-block"></span>
+                        </button>
+                        <button type="button" class="p-1.5 hover:bg-border rounded text-sm flex items-center gap-1" title="Liste">
+                            <span class="i-lucide-list w-3.5 h-3.5 inline-block"></span>
+                        </button>
+                        <span class="w-px h-4 bg-border mx-1"></span>
+                        <button type="button" class="p-1.5 hover:bg-border rounded text-sm flex items-center gap-1" title="Aperçu">
+                            <span class="i-lucide-eye w-3.5 h-3.5 inline-block"></span>
+                        </button>
+                    </div>
+
+                    <!-- Textarea content (simulated CodeMirror) -->
+                    <div class="relative">
+                        <textarea
+                            id="report-content"
+                            class="w-full p-4 font-mono text-sm text-primary bg-transparent min-h-64 resize-y focus:outline-none"
+                            style="border: none; outline: none;">La nuit tombait sur le Quartier des Reflets quand @Viktor poussa la porte du bar. L'Oracle l'attendait, assis dans l'ombre.
+
+@Ly</textarea>
+
+                        <!-- @mention autocomplete dropdown (Alpine.js, position:fixed in real impl) -->
+                        <div class="absolute left-8 bg-white dark:bg-neutral-900 border border-border rounded-xl shadow-lg z-50 min-w-52 overflow-hidden"
+                            style="top: calc(100% - 2.5rem);">
+                            <p class="text-xs text-muted px-3 pt-2 pb-1 uppercase tracking-wide font-semibold">Personnages</p>
+                            <button type="button" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-surface text-left transition-colors bg-surface">
+                                <div class="avatar-sm avatar-placeholder">L</div>
+                                <div>
+                                    <p class="text-sm font-medium text-primary">Lyra</p>
+                                    <p class="text-xs text-muted">PJ · @bob</p>
+                                </div>
+                            </button>
+                            <button type="button" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-surface text-left transition-colors border-t border-border">
+                                <div class="avatar-sm avatar-placeholder">Lr</div>
+                                <div>
+                                    <p class="text-sm font-medium text-primary">Lyriel</p>
+                                    <p class="text-xs text-muted">PNJ · Shadowrun</p>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Autosave indicator -->
+                    <div class="flex items-center gap-2 px-4 py-2 border-t border-border bg-surface text-xs text-muted">
+                        <span class="i-lucide-cloud-check w-3.5 h-3.5 inline-block text-green-500"></span>
+                        Brouillon sauvegardé à 14:32
+                    </div>
+                </div>
+            </div>
+
+            <!-- -------------------------------------------------- -->
+            <!-- CONTENT WARNING -->
+            <!-- -------------------------------------------------- -->
+            <div class="card border border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-800">
+                <div class="card-body">
+                    <label class="form-label flex items-center gap-2 mb-1" for="content-warning">
+                        <span class="i-lucide-alert-triangle w-4 h-4 inline-block text-amber-600"></span>
+                        Avertissement de contenu
+                        <span class="text-xs font-normal text-muted">(optionnel)</span>
+                    </label>
+                    <input
+                        id="content-warning"
+                        type="text"
+                        class="form-input w-full"
+                        placeholder="Violence, thèmes sombres..."
+                        value="Violence, thèmes sombres">
+                    <p class="form-help mt-2 flex items-start gap-1.5">
+                        <span class="i-lucide-info w-3.5 h-3.5 inline-block mt-0.5 shrink-0 text-amber-600"></span>
+                        Si rempli, le compte-rendu sera masqué derrière un bouton "Afficher le contenu" dans les fils d'actualité.
+                    </p>
+                </div>
+            </div>
+
+            <!-- -------------------------------------------------- -->
+            <!-- VISIBILITY -->
+            <!-- -------------------------------------------------- -->
+            <div>
+                <p class="form-label mb-3">Visibilité</p>
+                <div class="flex flex-col gap-3">
+
+                    <!-- Public -->
+                    <label class="flex items-start gap-3 cursor-pointer group">
+                        <input type="radio" name="visibility" value="public" class="mt-0.5" checked>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="i-lucide-globe w-4 h-4 inline-block text-primary"></span>
+                                <span class="font-medium text-primary text-sm">Public</span>
+                            </div>
+                            <p class="text-xs text-muted mt-0.5">Visible par tous · fédéré dans le Fediverse · apparaît dans les fils</p>
+                        </div>
+                    </label>
+
+                    <!-- Non-listé -->
+                    <label class="flex items-start gap-3 cursor-pointer group">
+                        <input type="radio" name="visibility" value="unlisted" class="mt-0.5">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="i-lucide-unlock w-4 h-4 inline-block text-muted"></span>
+                                <span class="font-medium text-primary text-sm">Non-listé</span>
+                            </div>
+                            <p class="text-xs text-muted mt-0.5">Visible par lien direct · fédéré · n'apparaît pas dans les fils</p>
+                        </div>
+                    </label>
+
+                    <!-- Abonnés -->
+                    <label class="flex items-start gap-3 cursor-pointer group">
+                        <input type="radio" name="visibility" value="followers" class="mt-0.5">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="i-lucide-lock w-4 h-4 inline-block text-muted"></span>
+                                <span class="font-medium text-primary text-sm">Abonnés seulement</span>
+                            </div>
+                            <p class="text-xs text-muted mt-0.5">Visible uniquement par vos followers · fédéré en followers-only</p>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- -------------------------------------------------- -->
+            <!-- ACTION BUTTONS -->
+            <!-- -------------------------------------------------- -->
+            <div class="flex items-center gap-3 flex-wrap pt-2 border-t border-border">
+                <button type="submit" name="status" value="published" class="btn-primary flex items-center gap-2">
+                    <span class="i-lucide-send w-4 h-4 inline-block"></span>
+                    Publier
+                </button>
+                <button type="submit" name="status" value="draft" class="btn-secondary flex items-center gap-2">
+                    <span class="i-lucide-save w-4 h-4 inline-block"></span>
+                    Sauvegarder brouillon
+                </button>
+                <!-- Visible uniquement en mode édition -->
+                <button type="button" class="btn-danger btn-sm ml-auto flex items-center gap-2">
+                    <span class="i-lucide-trash-2 w-4 h-4 inline-block"></span>
+                    Supprimer
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 3 — CONTENT WARNING DANS LE FEED -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-alert-triangle w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 3 — Content Warning dans le fil d'actualité</span>
+    </div>
+
+    <div class="container-app px-4 py-8 max-w-2xl">
+
+        <p class="text-xs text-muted mb-4">Apparence dans le fil quand un avertissement de contenu est renseigné. Clic → Alpine.js toggle.</p>
+
+        <!-- Feed card with content warning — collapsed state -->
+        <div class="card mb-4" x-data="{ expanded: false }">
+            <div class="card-body">
+
+                <!-- Author row -->
+                <div class="flex items-start gap-3 mb-3">
+                    <div class="avatar-md avatar-placeholder">A</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between gap-2">
+                            <div>
+                                <a href="#" class="link font-medium text-sm">@alice</a>
+                                <span class="text-muted text-xs mx-1">dans</span>
+                                <a href="#" class="link-muted text-xs">City of Mist</a>
+                            </div>
+                            <span class="text-xs text-muted shrink-0">il y a 2h</span>
+                        </div>
+                        <p class="text-sm text-primary font-medium mt-0.5">Session 12 : L'Oracle brisé</p>
+                    </div>
+                </div>
+
+                <!-- Content warning banner -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center gap-2 text-sm text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg px-3 py-2">
+                        <span class="i-lucide-alert-triangle w-4 h-4 inline-block shrink-0"></span>
+                        <span>Violence, thèmes sombres</span>
+                    </div>
+
+                    <!-- Toggle button -->
+                    <button
+                        type="button"
+                        class="btn-ghost btn-sm self-start flex items-center gap-1.5"
+                        @click="expanded = !expanded">
+                        <span x-show="!expanded" class="i-lucide-eye w-4 h-4 inline-block"></span>
+                        <span x-show="expanded" class="i-lucide-eye-off w-4 h-4 inline-block"></span>
+                        <span x-text="expanded ? 'Masquer le contenu' : 'Afficher le contenu'">Afficher le contenu</span>
+                    </button>
+                </div>
+
+                <!-- Expandable content -->
+                <div x-show="expanded" x-transition class="mt-3 pt-3 border-t border-border">
+                    <p class="text-sm text-secondary line-clamp-4">
+                        La nuit tombait sur le Quartier des Reflets quand Viktor poussa la porte du bar. L'Oracle l'attendait, assis dans l'ombre, ses yeux brillant d'une lueur électrique. Lyra arriva par la porte de derrière, son manteau ruisselant de pluie...
+                    </p>
+                    <a href="#" class="link text-sm mt-2 inline-block">Lire la suite</a>
+                </div>
+
+            </div>
+            <div class="card-footer flex items-center gap-4 text-muted">
+                <button class="flex items-center gap-1 hover:text-crimson transition-colors text-sm">
+                    <span class="i-lucide-heart w-4 h-4 inline-block"></span> 4
+                </button>
+                <button class="flex items-center gap-1 hover:text-primary transition-colors text-sm">
+                    <span class="i-lucide-message-square w-4 h-4 inline-block"></span> 2
+                </button>
+                <button class="flex items-center gap-1 hover:text-primary transition-colors text-sm ml-auto">
+                    <span class="i-lucide-share w-4 h-4 inline-block"></span> Partager
+                </button>
+            </div>
+        </div>
+
+        <!-- Feed card WITHOUT content warning (reference) -->
+        <p class="text-xs text-muted mb-3 mt-6">Référence — Sans avertissement de contenu :</p>
+        <div class="card">
+            <div class="card-body">
+                <div class="flex items-start gap-3 mb-3">
+                    <div class="avatar-md avatar-placeholder">B</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between gap-2">
+                            <div>
+                                <a href="#" class="link font-medium text-sm">@bob</a>
+                                <span class="text-muted text-xs mx-1">dans</span>
+                                <a href="#" class="link-muted text-xs">Ironsworn</a>
+                            </div>
+                            <span class="text-xs text-muted shrink-0">il y a 5h</span>
+                        </div>
+                        <p class="text-sm text-primary font-medium mt-0.5">Acte III — Le Conclave des Ombres</p>
+                    </div>
+                </div>
+                <p class="text-sm text-secondary line-clamp-3">
+                    Erika affronte le Conclave des Ombres. Mireille se révèle être une alliée inattendue, prête à trahir ses maîtres pour un serment oublié depuis des décennies...
+                </p>
+                <a href="#" class="link text-sm mt-2 inline-block">Lire la suite</a>
+            </div>
+            <div class="card-footer flex items-center gap-4 text-muted">
+                <button class="flex items-center gap-1 hover:text-crimson transition-colors text-sm">
+                    <span class="i-lucide-heart w-4 h-4 inline-block"></span> 7
+                </button>
+                <button class="flex items-center gap-1 hover:text-primary transition-colors text-sm">
+                    <span class="i-lucide-message-square w-4 h-4 inline-block"></span> 0
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 4 — RÈGLES DE VISIBILITÉ (référence) -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-table w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 4 — Règles de visibilité (référence)</span>
+    </div>
+
+    <div class="container-app px-4 py-8">
+        <p class="text-sm text-muted mb-6">Tableau de référence pour les règles de visibilité et la fédération ActivityPub.</p>
+
+        <div class="card overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-surface border-b border-border">
+                            <th class="text-left px-4 py-3 font-semibold text-primary">Visibilité</th>
+                            <th class="text-center px-4 py-3 font-semibold text-primary">Timeline instance</th>
+                            <th class="text-center px-4 py-3 font-semibold text-primary">Timeline Fediverse</th>
+                            <th class="text-center px-4 py-3 font-semibold text-primary">Profil public</th>
+                            <th class="text-left px-4 py-3 font-semibold text-primary">Fédération AP</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border">
+                        <tr class="hover:bg-surface/50 transition-colors">
+                            <td class="px-4 py-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="i-lucide-globe w-4 h-4 inline-block text-green-600"></span>
+                                    <span class="font-medium">Public</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="i-lucide-check w-4 h-4 inline-block text-green-600"></span>
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="i-lucide-check w-4 h-4 inline-block text-green-600"></span>
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="i-lucide-check w-4 h-4 inline-block text-green-600"></span>
+                            </td>
+                            <td class="px-4 py-3 text-muted text-xs font-mono">Create(Article)</td>
+                        </tr>
+                        <tr class="hover:bg-surface/50 transition-colors">
+                            <td class="px-4 py-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="i-lucide-unlock w-4 h-4 inline-block text-amber-600"></span>
+                                    <span class="font-medium">Non-listé</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="i-lucide-x w-4 h-4 inline-block text-muted"></span>
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="i-lucide-x w-4 h-4 inline-block text-muted"></span>
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="text-xs text-muted">Lien direct</span>
+                            </td>
+                            <td class="px-4 py-3 text-muted text-xs font-mono">Create(Article) unlisted</td>
+                        </tr>
+                        <tr class="hover:bg-surface/50 transition-colors">
+                            <td class="px-4 py-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="i-lucide-lock w-4 h-4 inline-block text-crimson"></span>
+                                    <span class="font-medium">Abonnés</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="i-lucide-x w-4 h-4 inline-block text-muted"></span>
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="i-lucide-x w-4 h-4 inline-block text-muted"></span>
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="i-lucide-x w-4 h-4 inline-block text-muted"></span>
+                            </td>
+                            <td class="px-4 py-3 text-muted text-xs font-mono">Create(Article) followers-only</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

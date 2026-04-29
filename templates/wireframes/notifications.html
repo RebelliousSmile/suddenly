@@ -1,0 +1,623 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Notifications — Prototype{% endblock %}
+{% block content %}
+
+<!-- ================================================================ -->
+<!-- PROTOTYPE LABEL -->
+<!-- ================================================================ -->
+<div class="bg-amber-100 border-b border-amber-300 text-amber-800 text-xs text-center py-1.5 font-medium tracking-wide">
+    Wireframe 11 — Notifications — 2 sections : Centre de notifications · Paramètres de notification
+</div>
+
+<!-- ================================================================ -->
+<!-- SECTION 1 — CENTRE DE NOTIFICATIONS (/notifications/) US-20 -->
+<!-- ================================================================ -->
+<section class="mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-bell w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 1 — Centre de notifications /notifications/ (US-20)</span>
+    </div>
+
+    <!-- Badge header preview -->
+    <div class="bg-surface border-b border-border py-3 px-4">
+        <p class="text-xs font-semibold text-muted uppercase tracking-wide mb-2">Badge cloche dans le header (HTMX polling 30s ou SSE)</p>
+        <div class="flex items-center gap-4">
+            <!-- Simulated header bell icon with badge -->
+            <div class="relative inline-flex items-center">
+                <span class="i-lucide-bell w-6 h-6 inline-block text-primary"></span>
+                <span class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-crimson text-white text-[10px] font-bold px-1">3</span>
+            </div>
+            <span class="text-xs text-muted">← nombre de notifications non lues</span>
+        </div>
+    </div>
+
+    <!-- Page header -->
+    <div class="border-b border-border bg-surface py-6">
+        <div class="container-app px-4">
+            <div class="flex items-center justify-between gap-4 flex-wrap mb-4">
+                <h1 class="text-2xl font-bold text-primary flex items-center gap-3">
+                    Notifications
+                    <span class="flex items-center justify-center min-w-[24px] h-[24px] rounded-full bg-crimson text-white text-xs font-bold px-1.5">3</span>
+                </h1>
+                <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5">
+                    <span class="i-lucide-check-check w-4 h-4 inline-block"></span>
+                    Tout marquer comme lu
+                </button>
+            </div>
+            <!-- Filter -->
+            <div class="flex items-center gap-2">
+                <label class="text-sm text-muted">Filtre :</label>
+                <select class="form-input py-1.5 text-sm">
+                    <option>Toutes</option>
+                    <option>Non lues</option>
+                    <option>Demandes de lien</option>
+                    <option>Comptes-rendus</option>
+                    <option>Followers</option>
+                    <option>Séquences</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-app px-4 py-6">
+        <div class="flex flex-col gap-3 max-w-2xl">
+
+            <!-- Notification 1 — Demande de lien (NON LU) — amber/merge -->
+            <div class="card border-l-4 border-l-amber-400 border border-border rounded-xl hover:shadow-sm transition-shadow bg-amber-50/40 dark:bg-amber-950/10">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <!-- Icon -->
+                        <div class="shrink-0 w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mt-0.5">
+                            <span class="i-lucide-git-merge w-4.5 h-4.5 inline-block text-amber-600 dark:text-amber-400"></span>
+                        </div>
+                        <!-- Content -->
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wide">Demande de lien</span>
+                                    <span class="inline-block w-2 h-2 rounded-full bg-crimson shrink-0" title="Non lu"></span>
+                                </div>
+                                <span class="text-xs text-muted shrink-0">il y a 2h</span>
+                            </div>
+                            <p class="text-sm text-primary mb-2">
+                                <a href="#" class="link font-medium">@bob</a> veut adopter votre PNJ <a href="#" class="link font-medium">Viktor</a>
+                            </p>
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-amber-700 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-200">
+                                Voir la demande
+                                <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification 2 — Demande acceptée (NON LU) — emerald/check -->
+            <div class="card border-l-4 border-l-emerald-500 border border-border rounded-xl hover:shadow-sm transition-shadow bg-emerald-50/40 dark:bg-emerald-950/10">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="shrink-0 w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mt-0.5">
+                            <span class="i-lucide-check w-4.5 h-4.5 inline-block text-emerald-600 dark:text-emerald-400"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wide">Demande acceptée</span>
+                                    <span class="inline-block w-2 h-2 rounded-full bg-crimson shrink-0" title="Non lu"></span>
+                                </div>
+                                <span class="text-xs text-muted shrink-0">il y a 1j</span>
+                            </div>
+                            <p class="text-sm text-primary mb-2">
+                                <a href="#" class="link font-medium">@dave</a> a accepté votre demande d'Adoption sur <a href="#" class="link font-medium">Fenris</a>
+                            </p>
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-emerald-700 dark:text-emerald-400 hover:text-emerald-900 dark:hover:text-emerald-200">
+                                Voir la Séquence Partagée
+                                <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification 3 — Recommandation (NON LU) — accent/sparkles -->
+            <div class="card border-l-4 border-l-violet-500 border border-border rounded-xl hover:shadow-sm transition-shadow bg-violet-50/40 dark:bg-violet-950/10">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="shrink-0 w-9 h-9 rounded-full bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center mt-0.5">
+                            <span class="i-lucide-sparkles w-4.5 h-4.5 inline-block text-violet-600 dark:text-violet-400"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-semibold text-violet-700 dark:text-violet-400 uppercase tracking-wide">Recommandation</span>
+                                    <span class="inline-block w-2 h-2 rounded-full bg-crimson shrink-0" title="Non lu"></span>
+                                </div>
+                                <span class="text-xs text-muted shrink-0">il y a 1j</span>
+                            </div>
+                            <p class="text-sm text-primary mb-2">
+                                <a href="#" class="link font-medium">@elena</a> a recommandé votre CR <a href="#" class="link font-medium">« L'Oracle brisé »</a>
+                            </p>
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-violet-700 dark:text-violet-400 hover:text-violet-900 dark:hover:text-violet-200">
+                                Voir le CR
+                                <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification 4 — Nouveau CR (LU) — indigo/book-open -->
+            <div class="card border border-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="shrink-0 w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-900/20 flex items-center justify-center mt-0.5">
+                            <span class="i-lucide-book-open w-4.5 h-4.5 inline-block text-indigo-500 dark:text-indigo-400"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
+                                <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide">Nouveau CR</span>
+                                <span class="text-xs text-muted shrink-0">il y a 2j</span>
+                            </div>
+                            <p class="text-sm text-primary mb-2">
+                                <a href="#" class="link font-medium">@alice</a> a publié <a href="#" class="link font-medium">« L'Oracle brisé »</a> dans <a href="#" class="link-muted">City of Mist</a>
+                            </p>
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-muted hover:text-primary">
+                                Lire le CR
+                                <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification 5 — Mention (LU) — blue/at-sign -->
+            <div class="card border border-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="shrink-0 w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center mt-0.5">
+                            <span class="i-lucide-at-sign w-4.5 h-4.5 inline-block text-blue-500 dark:text-blue-400"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
+                                <span class="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">Mention</span>
+                                <span class="text-xs text-muted shrink-0">il y a 2j</span>
+                            </div>
+                            <p class="text-sm text-primary mb-2">
+                                <a href="#" class="link font-medium">@charlie</a> vous a mentionné dans <a href="#" class="link font-medium">« La tour de l'exilé »</a>
+                            </p>
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-muted hover:text-primary">
+                                Voir la mention
+                                <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification 6 — Nouveau follower (LU) — blue/user-plus -->
+            <div class="card border border-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="shrink-0 w-9 h-9 rounded-full bg-sky-100 dark:bg-sky-900/20 flex items-center justify-center mt-0.5">
+                            <span class="i-lucide-user-plus w-4.5 h-4.5 inline-block text-sky-500 dark:text-sky-400"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
+                                <span class="text-xs font-semibold text-sky-600 dark:text-sky-400 uppercase tracking-wide">Nouveau follower</span>
+                                <span class="text-xs text-muted shrink-0">il y a 3j</span>
+                            </div>
+                            <p class="text-sm text-primary mb-2">
+                                <a href="#" class="link font-medium">@charlie</a> vous suit maintenant
+                            </p>
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-muted hover:text-primary">
+                                Voir le profil
+                                <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification 7 — Invitation (LU) — primary/send -->
+            <div class="card border border-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="shrink-0 w-9 h-9 rounded-full bg-crimson/10 flex items-center justify-center mt-0.5">
+                            <span class="i-lucide-send w-4.5 h-4.5 inline-block text-crimson"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
+                                <span class="text-xs font-semibold text-crimson uppercase tracking-wide">Invitation</span>
+                                <span class="text-xs text-muted shrink-0">il y a 3j</span>
+                            </div>
+                            <p class="text-sm text-primary mb-2">
+                                <a href="#" class="link font-medium">@alice</a> vous invite à découvrir le PNJ <a href="#" class="link font-medium">Fenris le Loup-garou</a>
+                            </p>
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-muted hover:text-primary">
+                                Voir le PNJ
+                                <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification 8 — Séquence Partagée (LU) — violet/edit -->
+            <div class="card border border-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="shrink-0 w-9 h-9 rounded-full bg-violet-100 dark:bg-violet-900/20 flex items-center justify-center mt-0.5">
+                            <span class="i-lucide-edit w-4.5 h-4.5 inline-block text-violet-500 dark:text-violet-400"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
+                                <span class="text-xs font-semibold text-violet-600 dark:text-violet-400 uppercase tracking-wide">Séquence Partagée</span>
+                                <span class="text-xs text-muted shrink-0">il y a 4j</span>
+                            </div>
+                            <p class="text-sm text-primary mb-2">
+                                <a href="#" class="link font-medium">@alice</a> propose de publier <a href="#" class="link font-medium">« La rencontre au carrefour »</a>
+                            </p>
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-muted hover:text-primary">
+                                Voir la séquence
+                                <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification 9 — Révocation (LU) — red/alert-triangle -->
+            <div class="card border border-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="shrink-0 w-9 h-9 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center mt-0.5">
+                            <span class="i-lucide-alert-triangle w-4.5 h-4.5 inline-block text-red-500 dark:text-red-400"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
+                                <span class="text-xs font-semibold text-red-600 dark:text-red-400 uppercase tracking-wide">Révocation</span>
+                                <span class="text-xs text-muted shrink-0">il y a 5j</span>
+                            </div>
+                            <p class="text-sm text-primary mb-2">
+                                <a href="#" class="link font-medium">@dave</a> a révoqué le lien d'Adoption sur <a href="#" class="link font-medium">Morwenn</a>
+                            </p>
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-muted hover:text-primary">
+                                Voir les détails
+                                <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification 10 — Demande refusée (LU) — red/x -->
+            <div class="card border border-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="shrink-0 w-9 h-9 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center mt-0.5">
+                            <span class="i-lucide-x w-4.5 h-4.5 inline-block text-red-500 dark:text-red-400"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
+                                <span class="text-xs font-semibold text-red-600 dark:text-red-400 uppercase tracking-wide">Demande refusée</span>
+                                <span class="text-xs text-muted shrink-0">il y a 6j</span>
+                            </div>
+                            <p class="text-sm text-primary mb-2">
+                                <a href="#" class="link font-medium">@elena</a> a refusé votre demande de Dérivation sur <a href="#" class="link font-medium">Kael le Berserker</a>
+                            </p>
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-muted hover:text-primary">
+                                Voir la demande
+                                <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Load more -->
+        <div class="mt-6 text-center max-w-2xl">
+            <button type="button" class="btn-secondary btn-sm"
+                hx-get="/htmx/notifications/?page=2"
+                hx-target="#notif-list"
+                hx-swap="beforeend">
+                Charger plus...
+            </button>
+        </div>
+
+    </div>
+
+    <!-- ---- Tableau récapitulatif des types de notifications ---- -->
+    <div class="bg-surface border-t border-border py-4">
+        <div class="container-app px-4">
+            <p class="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Récapitulatif — Types de notifications</p>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse max-w-2xl">
+                    <thead>
+                        <tr class="border-b border-border">
+                            <th class="text-left py-2 pr-4 text-xs font-semibold text-muted uppercase tracking-wide">Type</th>
+                            <th class="text-left py-2 pr-4 text-xs font-semibold text-muted uppercase tracking-wide">Icône</th>
+                            <th class="text-left py-2 pr-4 text-xs font-semibold text-muted uppercase tracking-wide">Couleur</th>
+                            <th class="text-left py-2 text-xs font-semibold text-muted uppercase tracking-wide">Déclencheur</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-secondary">
+                        <tr class="border-b border-border/50">
+                            <td class="py-2 pr-4 font-medium text-primary">Demande de lien</td>
+                            <td class="py-2 pr-4"><span class="i-lucide-git-merge w-4 h-4 inline-block text-amber-500"></span></td>
+                            <td class="py-2 pr-4"><span class="badge bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 text-xs">amber</span></td>
+                            <td class="py-2">LinkRequest créée sur mon PNJ</td>
+                        </tr>
+                        <tr class="border-b border-border/50">
+                            <td class="py-2 pr-4 font-medium text-primary">Réponse (acceptée)</td>
+                            <td class="py-2 pr-4"><span class="i-lucide-check w-4 h-4 inline-block text-emerald-500"></span></td>
+                            <td class="py-2 pr-4"><span class="badge bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 text-xs">emerald</span></td>
+                            <td class="py-2">Ma demande acceptée</td>
+                        </tr>
+                        <tr class="border-b border-border/50">
+                            <td class="py-2 pr-4 font-medium text-primary">Réponse (refusée)</td>
+                            <td class="py-2 pr-4"><span class="i-lucide-x w-4 h-4 inline-block text-red-500"></span></td>
+                            <td class="py-2 pr-4"><span class="badge bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400 text-xs">red</span></td>
+                            <td class="py-2">Ma demande refusée</td>
+                        </tr>
+                        <tr class="border-b border-border/50">
+                            <td class="py-2 pr-4 font-medium text-primary">Nouveau CR</td>
+                            <td class="py-2 pr-4"><span class="i-lucide-book-open w-4 h-4 inline-block text-indigo-500"></span></td>
+                            <td class="py-2 pr-4"><span class="badge bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-400 text-xs">indigo</span></td>
+                            <td class="py-2">Joueur/partie suivi publie</td>
+                        </tr>
+                        <tr class="border-b border-border/50">
+                            <td class="py-2 pr-4 font-medium text-primary">Recommandation</td>
+                            <td class="py-2 pr-4"><span class="i-lucide-sparkles w-4 h-4 inline-block text-violet-500"></span></td>
+                            <td class="py-2 pr-4"><span class="badge bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 text-xs">violet (accent)</span></td>
+                            <td class="py-2">Quelqu'un recommande votre CR</td>
+                        </tr>
+                        <tr class="border-b border-border/50">
+                            <td class="py-2 pr-4 font-medium text-primary">Mention</td>
+                            <td class="py-2 pr-4"><span class="i-lucide-at-sign w-4 h-4 inline-block text-blue-500"></span></td>
+                            <td class="py-2 pr-4"><span class="badge bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 text-xs">blue</span></td>
+                            <td class="py-2">Mention dans un CR</td>
+                        </tr>
+                        <tr class="border-b border-border/50">
+                            <td class="py-2 pr-4 font-medium text-primary">Invitation</td>
+                            <td class="py-2 pr-4"><span class="i-lucide-send w-4 h-4 inline-block text-crimson"></span></td>
+                            <td class="py-2 pr-4"><span class="badge bg-crimson/10 text-crimson text-xs">primary (crimson)</span></td>
+                            <td class="py-2">Invitation CR/PNJ</td>
+                        </tr>
+                        <tr class="border-b border-border/50">
+                            <td class="py-2 pr-4 font-medium text-primary">Nouveau follower</td>
+                            <td class="py-2 pr-4"><span class="i-lucide-user-plus w-4 h-4 inline-block text-sky-500"></span></td>
+                            <td class="py-2 pr-4"><span class="badge bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-400 text-xs">sky/blue</span></td>
+                            <td class="py-2">Quelqu'un me suit</td>
+                        </tr>
+                        <tr class="border-b border-border/50">
+                            <td class="py-2 pr-4 font-medium text-primary">Séquence Partagée</td>
+                            <td class="py-2 pr-4"><span class="i-lucide-edit w-4 h-4 inline-block text-violet-500"></span></td>
+                            <td class="py-2 pr-4"><span class="badge bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 text-xs">violet</span></td>
+                            <td class="py-2">Invitation / proposition publication</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 pr-4 font-medium text-primary">Révocation</td>
+                            <td class="py-2 pr-4"><span class="i-lucide-alert-triangle w-4 h-4 inline-block text-red-500"></span></td>
+                            <td class="py-2 pr-4"><span class="badge bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400 text-xs">red</span></td>
+                            <td class="py-2">Lien révoqué</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 2 — PARAMÈTRES NOTIFICATIONS (/settings/notifications/) US-21 -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-settings w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 2 — Paramètres de notification /settings/notifications/ (US-21)</span>
+    </div>
+
+    <!-- Page header -->
+    <div class="border-b border-border bg-surface py-6">
+        <div class="container-app px-4">
+            <h1 class="text-2xl font-bold text-primary">Préférences de notification</h1>
+        </div>
+    </div>
+
+    <div class="container-app px-4 py-8 max-w-2xl">
+
+        <form>
+            <div class="card border border-border rounded-xl overflow-hidden">
+
+                <!-- Table header -->
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border bg-surface">
+                    <div class="py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wide">Type</div>
+                    <div class="py-3 px-6 text-xs font-semibold text-muted uppercase tracking-wide text-center">In-app</div>
+                    <div class="py-3 px-6 text-xs font-semibold text-muted uppercase tracking-wide text-center">E-mail</div>
+                </div>
+
+                <!-- Row: Demandes de lien -->
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                    <div class="py-3.5 px-4 flex items-center gap-2">
+                        <span class="i-lucide-git-merge w-4 h-4 inline-block text-amber-500 shrink-0"></span>
+                        <span class="text-sm text-primary">Demandes de lien</span>
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <!-- In-app: always on, disabled -->
+                        <input type="checkbox" checked disabled
+                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60"
+                            title="Les notifications in-app sont toujours actives">
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <input type="checkbox" checked name="email_link_request"
+                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Row: Réponses -->
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                    <div class="py-3.5 px-4 flex items-center gap-2">
+                        <span class="i-lucide-message-circle w-4 h-4 inline-block text-emerald-500 shrink-0"></span>
+                        <span class="text-sm text-primary">Réponses aux demandes</span>
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <input type="checkbox" checked disabled
+                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <input type="checkbox" checked name="email_link_response"
+                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Row: SharedSequence -->
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                    <div class="py-3.5 px-4 flex items-center gap-2">
+                        <span class="i-lucide-edit w-4 h-4 inline-block text-violet-500 shrink-0"></span>
+                        <span class="text-sm text-primary">Séquences Partagées</span>
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <input type="checkbox" checked disabled
+                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <input type="checkbox" checked name="email_shared_sequence"
+                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Row: Nouveaux CRs -->
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                    <div class="py-3.5 px-4 flex items-center gap-2">
+                        <span class="i-lucide-book-open w-4 h-4 inline-block text-indigo-500 shrink-0"></span>
+                        <span class="text-sm text-primary">Nouveaux comptes-rendus</span>
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <input type="checkbox" checked disabled
+                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <!-- email: off by default per wireframe -->
+                        <input type="checkbox" name="email_new_report"
+                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Row: Recommandations -->
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                    <div class="py-3.5 px-4 flex items-center gap-2">
+                        <span class="i-lucide-sparkles w-4 h-4 inline-block text-violet-500 shrink-0"></span>
+                        <span class="text-sm text-primary">Recommandations</span>
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <input type="checkbox" checked disabled
+                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <input type="checkbox" name="email_recommendation"
+                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Row: Mentions -->
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                    <div class="py-3.5 px-4 flex items-center gap-2">
+                        <span class="i-lucide-at-sign w-4 h-4 inline-block text-blue-500 shrink-0"></span>
+                        <span class="text-sm text-primary">Mentions</span>
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <input type="checkbox" checked disabled
+                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <input type="checkbox" checked name="email_mention"
+                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Row: Invitations -->
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                    <div class="py-3.5 px-4 flex items-center gap-2">
+                        <span class="i-lucide-send w-4 h-4 inline-block text-crimson shrink-0"></span>
+                        <span class="text-sm text-primary">Invitations</span>
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <input type="checkbox" checked disabled
+                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <input type="checkbox" checked name="email_invitation"
+                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Row: Nouveaux followers -->
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                    <div class="py-3.5 px-4 flex items-center gap-2">
+                        <span class="i-lucide-user-plus w-4 h-4 inline-block text-sky-500 shrink-0"></span>
+                        <span class="text-sm text-primary">Nouveaux followers</span>
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <input type="checkbox" checked disabled
+                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <input type="checkbox" name="email_new_follower"
+                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Row: Révocations -->
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 hover:bg-surface/60 transition-colors">
+                    <div class="py-3.5 px-4 flex items-center gap-2">
+                        <span class="i-lucide-alert-triangle w-4 h-4 inline-block text-red-500 shrink-0"></span>
+                        <span class="text-sm text-primary">Révocations de lien</span>
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <input type="checkbox" checked disabled
+                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                    </div>
+                    <div class="py-3.5 px-6 flex items-center justify-center">
+                        <input type="checkbox" checked name="email_revocation"
+                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Info banner -->
+                <div class="border-t border-border bg-info/5 px-4 py-3 flex items-start gap-2 text-info text-sm">
+                    <span class="i-lucide-info w-4 h-4 inline-block shrink-0 mt-0.5"></span>
+                    <span>Les notifications in-app sont toujours actives et ne peuvent pas être désactivées.</span>
+                </div>
+
+            </div>
+
+            <!-- Save button -->
+            <div class="mt-6 flex items-center gap-3">
+                <button type="submit" class="btn-primary flex items-center gap-2">
+                    <span class="i-lucide-save w-4 h-4 inline-block"></span>
+                    Enregistrer
+                </button>
+                <button type="button" class="btn-ghost btn-sm text-muted">Annuler</button>
+            </div>
+
+            <!-- Success confirmation state (shown after save) -->
+            <div class="mt-4">
+                <p class="text-xs font-semibold text-muted uppercase tracking-wide mb-2">État — Confirmation après enregistrement</p>
+                <div class="flex items-center gap-2 text-sm text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-lg px-4 py-2.5 max-w-sm">
+                    <span class="i-lucide-check-circle w-4 h-4 inline-block shrink-0"></span>
+                    Préférences enregistrées.
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

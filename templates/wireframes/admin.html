@@ -1,0 +1,619 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Admin — Prototype{% endblock %}
+{% block content %}
+
+<!-- ================================================================ -->
+<!-- PROTOTYPE LABEL -->
+<!-- ================================================================ -->
+<div class="bg-amber-100 border-b border-amber-300 text-amber-800 text-xs text-center py-1.5 font-medium tracking-wide">
+    Wireframe 13 — Administration d'instance — 4 sections : Dashboard admin · Signalements · Modal suppression · Gestion des instances
+</div>
+
+<!-- ================================================================ -->
+<!-- SECTION 1 — DASHBOARD ADMIN (/admin-panel/) — US-25 -->
+<!-- ================================================================ -->
+<section class="mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-shield w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 1 — Dashboard admin (/admin-panel/) — US-25</span>
+    </div>
+
+    <!-- Page header -->
+    <div class="border-b border-border bg-surface py-6">
+        <div class="container-app px-4 flex items-center gap-3">
+            <h1 class="text-2xl font-bold text-primary">Administration</h1>
+            <span class="badge badge-info text-xs font-semibold">Admin</span>
+        </div>
+    </div>
+
+    <div class="container-app px-4 py-8">
+
+        <!-- Stats grid 2x2 -->
+        <div class="grid sm:grid-cols-2 gap-4">
+
+            <!-- Signalements -->
+            <div class="card border border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/10">
+                <div class="card-body flex flex-col gap-3">
+                    <div class="flex items-center gap-2 text-amber-600 dark:text-amber-400">
+                        <span class="i-lucide-flag w-5 h-5 inline-block"></span>
+                        <span class="text-sm font-semibold uppercase tracking-wide">Signalements</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <p class="text-2xl font-bold text-primary leading-none">5 <span class="text-base font-normal text-secondary">en attente</span></p>
+                        <p class="text-sm text-secondary">2 cette semaine</p>
+                    </div>
+                    <div class="pt-2 border-t border-amber-200 dark:border-amber-800">
+                        <a href="#" class="btn-primary btn-sm flex items-center gap-1.5 w-fit">
+                            Voir signalements
+                            <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instances -->
+            <div class="card border border-border">
+                <div class="card-body flex flex-col gap-3">
+                    <div class="flex items-center gap-2 text-muted">
+                        <span class="i-lucide-globe w-5 h-5 inline-block"></span>
+                        <span class="text-sm font-semibold uppercase tracking-wide">Instances</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <p class="text-2xl font-bold text-primary leading-none">12 <span class="text-base font-normal text-secondary">fédérées</span></p>
+                        <p class="text-sm text-secondary">1 bloquée · 3 limitées</p>
+                    </div>
+                    <div class="pt-2 border-t border-border">
+                        <a href="#" class="btn-secondary btn-sm flex items-center gap-1.5 w-fit">
+                            Gérer instances
+                            <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Utilisateurs -->
+            <div class="card border border-border">
+                <div class="card-body flex flex-col gap-3">
+                    <div class="flex items-center gap-2 text-muted">
+                        <span class="i-lucide-users w-5 h-5 inline-block"></span>
+                        <span class="text-sm font-semibold uppercase tracking-wide">Utilisateurs</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <p class="text-2xl font-bold text-primary leading-none">142 <span class="text-base font-normal text-secondary">inscrits</span></p>
+                        <p class="text-sm text-secondary flex items-center gap-1">
+                            <span class="i-lucide-alert-triangle w-3.5 h-3.5 inline-block text-amber-500"></span>
+                            3 suspendus
+                        </p>
+                    </div>
+                    <div class="pt-2 border-t border-border">
+                        <a href="#" class="btn-secondary btn-sm flex items-center gap-1.5 w-fit">
+                            Gérer utilisateurs
+                            <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activité -->
+            <div class="card border border-border">
+                <div class="card-body flex flex-col gap-3">
+                    <div class="flex items-center gap-2 text-muted">
+                        <span class="i-lucide-activity w-5 h-5 inline-block"></span>
+                        <span class="text-sm font-semibold uppercase tracking-wide">Activité</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <p class="text-2xl font-bold text-primary leading-none">1,2k <span class="text-base font-normal text-secondary">activités/jour</span></p>
+                        <p class="text-sm text-secondary">98% locales</p>
+                    </div>
+                    <div class="pt-2 border-t border-border">
+                        <a href="#" class="btn-secondary btn-sm flex items-center gap-1.5 w-fit">
+                            Journal d'activité
+                            <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 2 — SIGNALEMENTS (/admin-panel/reports/) — US-27 -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-flag w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 2 — Signalements (/admin-panel/reports/) — US-27 — liste avec actions de modération</span>
+    </div>
+
+    <!-- Page header + filter -->
+    <div class="border-b border-border bg-surface py-6">
+        <div class="container-app px-4">
+            <h1 class="text-2xl font-bold text-primary mb-4">Signalements</h1>
+            <div class="flex items-center gap-3">
+                <label class="text-sm font-medium text-secondary">Filtre :</label>
+                <select class="form-input text-sm py-1 px-3 w-auto">
+                    <option selected>En attente</option>
+                    <option>Tous</option>
+                    <option>Résolus</option>
+                    <option>Classés</option>
+                </select>
+                <span class="badge badge-pending text-xs ml-1">5 en attente</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-app px-4 py-6">
+        <div class="flex flex-col gap-4">
+
+            <!-- Signalement #42 — contenu local -->
+            <div class="card border border-amber-200 dark:border-amber-800">
+                <div class="card-body flex flex-col gap-4">
+
+                    <!-- Header signalement -->
+                    <div class="flex items-start justify-between gap-3 flex-wrap">
+                        <div class="flex items-center gap-2">
+                            <span class="i-lucide-flag w-4 h-4 inline-block text-amber-500"></span>
+                            <span class="font-semibold text-primary text-sm">#42 — Contenu inapproprié</span>
+                            <span class="badge badge-pending text-xs">En attente</span>
+                        </div>
+                        <span class="text-xs text-muted">il y a 3h</span>
+                    </div>
+
+                    <!-- Détails -->
+                    <div class="bg-surface border border-border rounded-xl px-4 py-3 flex flex-col gap-2">
+                        <div class="flex items-center gap-2 text-sm text-secondary">
+                            <span class="font-medium text-primary w-28 shrink-0">Signalé par :</span>
+                            <a href="#" class="link font-medium">@alice</a>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-secondary">
+                            <span class="font-medium text-primary w-28 shrink-0">Cible :</span>
+                            <span>CR <em>« Session 8 »</em> par <a href="#" class="link">@troll123</a></span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-secondary">
+                            <span class="font-medium text-primary w-28 shrink-0">Instance :</span>
+                            <span class="badge badge-available text-xs">locale</span>
+                        </div>
+                        <div class="flex items-start gap-2 text-sm text-secondary">
+                            <span class="font-medium text-primary w-28 shrink-0">Commentaire :</span>
+                            <blockquote class="italic">"Description graphique non sollicitée"</blockquote>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex flex-wrap gap-2 pt-1">
+                        <a href="#" class="btn-secondary btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-eye w-4 h-4 inline-block"></span>
+                            Voir le contenu
+                        </a>
+                        <button type="button" class="btn-danger btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-trash-2 w-4 h-4 inline-block"></span>
+                            Supprimer le contenu
+                        </button>
+                        <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-alert-triangle w-4 h-4 inline-block"></span>
+                            Avertir l'auteur
+                        </button>
+                        <button type="button" class="btn-danger btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-ban w-4 h-4 inline-block"></span>
+                            Suspendre le compte
+                        </button>
+                        <button type="button" class="btn-ghost btn-sm text-muted flex items-center gap-1.5">
+                            <span class="i-lucide-x w-4 h-4 inline-block"></span>
+                            Classer sans suite
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Signalement #41 — instance distante -->
+            <div class="card border border-border">
+                <div class="card-body flex flex-col gap-4">
+
+                    <!-- Header signalement -->
+                    <div class="flex items-start justify-between gap-3 flex-wrap">
+                        <div class="flex items-center gap-2">
+                            <span class="i-lucide-flag w-4 h-4 inline-block text-amber-500"></span>
+                            <span class="font-semibold text-primary text-sm">#41 — Spam</span>
+                            <span class="badge badge-pending text-xs">En attente</span>
+                        </div>
+                        <span class="text-xs text-muted">il y a 1j</span>
+                    </div>
+
+                    <!-- Détails -->
+                    <div class="bg-surface border border-border rounded-xl px-4 py-3 flex flex-col gap-2">
+                        <div class="flex items-center gap-2 text-sm text-secondary">
+                            <span class="font-medium text-primary w-28 shrink-0">Signalé par :</span>
+                            <a href="#" class="link font-medium">@bob</a>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-secondary">
+                            <span class="font-medium text-primary w-28 shrink-0">Cible :</span>
+                            <span>Profil <a href="#" class="link">@spammer</a> (instance : <span class="font-mono text-xs text-crimson">evil.social</span>)</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-secondary">
+                            <span class="font-medium text-primary w-28 shrink-0">Instance :</span>
+                            <span class="badge badge-info text-xs">distante</span>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex flex-wrap gap-2 pt-1">
+                        <a href="#" class="btn-secondary btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-user w-4 h-4 inline-block"></span>
+                            Voir le profil
+                        </a>
+                        <button type="button" class="btn-danger btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-shield-off w-4 h-4 inline-block"></span>
+                            Bloquer l'instance evil.social
+                        </button>
+                        <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-send w-4 h-4 inline-block"></span>
+                            Transférer à l'instance distante
+                        </button>
+                        <button type="button" class="btn-ghost btn-sm text-muted flex items-center gap-1.5">
+                            <span class="i-lucide-x w-4 h-4 inline-block"></span>
+                            Classer sans suite
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 3 — MODAL SUPPRESSION DE CONTENU — US-25 -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-trash-2 w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 3 — Modal suppression de contenu — US-25</span>
+    </div>
+
+    <div class="container-app px-4 py-8">
+
+        <p class="text-xs text-muted mb-6">
+            Modal affiché après clic sur « Supprimer le contenu » depuis la liste des signalements.
+        </p>
+
+        <!-- Modal inline (prototype) -->
+        <div class="max-w-lg mx-auto">
+            <div class="card border border-border rounded-2xl overflow-hidden shadow-lg">
+
+                <!-- Modal header -->
+                <div class="card-header border-b border-border flex items-center justify-between">
+                    <h2 class="font-semibold text-primary flex items-center gap-2">
+                        <span class="i-lucide-trash-2 w-4 h-4 inline-block text-crimson"></span>
+                        Supprimer le contenu
+                    </h2>
+                    <button type="button" class="btn-ghost btn-sm p-1 text-muted">
+                        <span class="i-lucide-x w-5 h-5 inline-block"></span>
+                    </button>
+                </div>
+
+                <div class="card-body flex flex-col gap-5">
+
+                    <!-- Contenu ciblé -->
+                    <div class="flex items-center gap-2 text-sm text-secondary">
+                        <span class="i-lucide-file-text w-4 h-4 inline-block text-muted shrink-0"></span>
+                        CR <em>« Session 8 »</em> par <a href="#" class="link font-medium">@troll123</a>
+                    </div>
+
+                    <!-- Alerte soft-delete -->
+                    <div class="flex items-start gap-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-xl px-4 py-3">
+                        <span class="i-lucide-alert-triangle w-4 h-4 inline-block text-amber-500 shrink-0 mt-0.5"></span>
+                        <div class="text-sm text-secondary">
+                            <p>Le contenu sera masqué <span class="font-medium">(soft delete)</span>.</p>
+                            <p>L'auteur sera notifié avec votre message.</p>
+                        </div>
+                    </div>
+
+                    <!-- Raison -->
+                    <div class="flex flex-col gap-1.5">
+                        <label class="form-label" for="delete-reason">Raison de la suppression</label>
+                        <textarea
+                            id="delete-reason"
+                            class="form-input w-full min-h-20 resize-y text-sm"
+                            placeholder="Expliquez la raison (envoyée à l'auteur)..."></textarea>
+                    </div>
+
+                    <!-- Checkbox suspension -->
+                    <div class="flex items-center gap-2.5">
+                        <input type="checkbox" id="also-suspend" class="w-4 h-4 rounded border-border accent-crimson cursor-pointer">
+                        <label for="also-suspend" class="text-sm text-secondary cursor-pointer">
+                            Suspendre également le compte de <span class="font-medium text-primary">@troll123</span>
+                        </label>
+                    </div>
+
+                </div>
+
+                <!-- Modal footer -->
+                <div class="card-footer border-t border-border flex items-center justify-end gap-3">
+                    <button type="button" class="btn-ghost btn-sm text-muted">Annuler</button>
+                    <button type="button" class="btn-danger btn-sm flex items-center gap-1.5">
+                        <span class="i-lucide-trash-2 w-4 h-4 inline-block"></span>
+                        Confirmer la suppression
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 4 — GESTION DES INSTANCES (/admin-panel/instances/) — US-26 -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-globe w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 4 — Gestion des instances (/admin-panel/instances/) — US-26</span>
+    </div>
+
+    <!-- Page header + search + filter -->
+    <div class="border-b border-border bg-surface py-6">
+        <div class="container-app px-4">
+            <h1 class="text-2xl font-bold text-primary mb-4">Instances fédérées</h1>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="relative flex-1 max-w-sm">
+                    <span class="i-lucide-search w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted inline-block"></span>
+                    <input type="search" class="form-input pl-9 text-sm" placeholder="Rechercher une instance...">
+                </div>
+                <div class="flex items-center gap-2">
+                    <label class="text-sm font-medium text-secondary">Filtre :</label>
+                    <select class="form-input text-sm py-1 px-3 w-auto">
+                        <option selected>Toutes</option>
+                        <option>Fédérées</option>
+                        <option>Limitées</option>
+                        <option>Bloquées</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-app px-4 py-6">
+        <div class="flex flex-col gap-3">
+
+            <!-- mastodon.social — Fédérée -->
+            <div class="card border border-border">
+                <div class="card-body flex items-center justify-between gap-4 flex-wrap">
+                    <div class="flex items-start gap-3 flex-1 min-w-0">
+                        <div class="avatar-sm avatar-placeholder bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-400 shrink-0 font-bold text-xs">M</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap mb-1">
+                                <span class="font-semibold text-primary font-mono text-sm">mastodon.social</span>
+                                <span class="text-xs text-muted">Mastodon 4.2.1</span>
+                                <span class="badge badge-available text-xs flex items-center gap-1">
+                                    <span class="i-lucide-check-circle w-3 h-3 inline-block"></span>
+                                    Fédérée
+                                </span>
+                            </div>
+                            <p class="text-xs text-muted">12,4M utilisateurs · Dernière vérif. : il y a 2h</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-minus-circle w-4 h-4 inline-block"></span>
+                            Limiter
+                        </button>
+                        <button type="button" class="btn-danger btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-shield-off w-4 h-4 inline-block"></span>
+                            Bloquer
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- suddenly.games — Fédérée -->
+            <div class="card border border-border">
+                <div class="card-body flex items-center justify-between gap-4 flex-wrap">
+                    <div class="flex items-start gap-3 flex-1 min-w-0">
+                        <div class="avatar-sm avatar-placeholder bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 shrink-0 font-bold text-xs">S</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap mb-1">
+                                <span class="font-semibold text-primary font-mono text-sm">suddenly.games</span>
+                                <span class="text-xs text-muted">Suddenly 0.1.0</span>
+                                <span class="badge badge-available text-xs flex items-center gap-1">
+                                    <span class="i-lucide-check-circle w-3 h-3 inline-block"></span>
+                                    Fédérée
+                                </span>
+                            </div>
+                            <p class="text-xs text-muted">84 utilisateurs · Dernière vérif. : il y a 1h</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-minus-circle w-4 h-4 inline-block"></span>
+                            Limiter
+                        </button>
+                        <button type="button" class="btn-danger btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-shield-off w-4 h-4 inline-block"></span>
+                            Bloquer
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- spam.zone — Bloquée -->
+            <div class="card border border-red-200 dark:border-red-800 bg-red-50/30 dark:bg-red-950/10">
+                <div class="card-body flex items-center justify-between gap-4 flex-wrap">
+                    <div class="flex items-start gap-3 flex-1 min-w-0">
+                        <div class="avatar-sm avatar-placeholder bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400 shrink-0 font-bold text-xs">!</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap mb-1">
+                                <span class="font-semibold text-primary font-mono text-sm">spam.zone</span>
+                                <span class="text-xs text-muted">Pleroma 2.x</span>
+                                <span class="badge badge-rejected text-xs flex items-center gap-1">
+                                    <span class="i-lucide-shield-off w-3 h-3 inline-block"></span>
+                                    Bloquée
+                                </span>
+                            </div>
+                            <p class="text-xs text-muted">? utilisateurs · Bloquée le 15 mars 2026</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-shield-check w-4 h-4 inline-block"></span>
+                            Débloquer
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- edgy.social — Limitée -->
+            <div class="card border border-amber-200 dark:border-amber-800 bg-amber-50/30 dark:bg-amber-950/10">
+                <div class="card-body flex items-center justify-between gap-4 flex-wrap">
+                    <div class="flex items-start gap-3 flex-1 min-w-0">
+                        <div class="avatar-sm avatar-placeholder bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 shrink-0 font-bold text-xs">E</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap mb-1">
+                                <span class="font-semibold text-primary font-mono text-sm">edgy.social</span>
+                                <span class="text-xs text-muted">Mastodon 4.1.0</span>
+                                <span class="badge badge-pending text-xs flex items-center gap-1">
+                                    <span class="i-lucide-minus-circle w-3 h-3 inline-block"></span>
+                                    Limitée
+                                </span>
+                            </div>
+                            <p class="text-xs text-muted">2,1k utilisateurs · Limitée le 10 mars 2026</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-shield-check w-4 h-4 inline-block"></span>
+                            Débloquer
+                        </button>
+                        <button type="button" class="btn-danger btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-shield-off w-4 h-4 inline-block"></span>
+                            Bloquer
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- États d'instance — légende -->
+        <div class="mt-8 border border-border rounded-xl overflow-hidden">
+            <div class="px-4 py-2.5 bg-surface border-b border-border flex items-center gap-2">
+                <span class="i-lucide-info w-4 h-4 inline-block text-muted"></span>
+                <span class="text-xs font-semibold text-muted uppercase tracking-wide">Référence — états d'instance</span>
+            </div>
+            <div class="divide-y divide-border">
+                <div class="flex items-start gap-3 px-4 py-3">
+                    <span class="badge badge-available text-xs w-20 text-center shrink-0">Fédérée</span>
+                    <p class="text-sm text-secondary">Interactions normales avec l'instance.</p>
+                </div>
+                <div class="flex items-start gap-3 px-4 py-3">
+                    <span class="badge badge-pending text-xs w-20 text-center shrink-0">Limitée</span>
+                    <p class="text-sm text-secondary">Contenu absent des fils publics, visible uniquement si suivi explicite.</p>
+                </div>
+                <div class="flex items-start gap-3 px-4 py-3">
+                    <span class="badge badge-rejected text-xs w-20 text-center shrink-0">Bloquée</span>
+                    <p class="text-sm text-secondary">Toutes activités rejetées, contenu existant masqué.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 5 — MODAL BLOCAGE D'INSTANCE -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-shield-off w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 5 — Modal blocage d'instance — affiché après clic sur « Bloquer »</span>
+    </div>
+
+    <div class="container-app px-4 py-8">
+
+        <p class="text-xs text-muted mb-6">
+            Modal affiché après clic sur « Bloquer » depuis la liste des instances.
+        </p>
+
+        <!-- Modal inline (prototype) -->
+        <div class="max-w-lg mx-auto">
+            <div class="card border border-border rounded-2xl overflow-hidden shadow-lg">
+
+                <!-- Modal header -->
+                <div class="card-header border-b border-border flex items-center justify-between">
+                    <h2 class="font-semibold text-primary flex items-center gap-2">
+                        <span class="i-lucide-shield-off w-4 h-4 inline-block text-crimson"></span>
+                        Bloquer <span class="font-mono ml-1">spam.zone</span>
+                    </h2>
+                    <button type="button" class="btn-ghost btn-sm p-1 text-muted">
+                        <span class="i-lucide-x w-5 h-5 inline-block"></span>
+                    </button>
+                </div>
+
+                <div class="card-body flex flex-col gap-5">
+
+                    <!-- Alerte conséquences -->
+                    <div class="flex items-start gap-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl px-4 py-3">
+                        <span class="i-lucide-alert-triangle w-4 h-4 inline-block text-red-500 shrink-0 mt-0.5"></span>
+                        <div class="text-sm text-secondary flex flex-col gap-1">
+                            <p class="font-medium text-red-700 dark:text-red-400 mb-1">Cette action :</p>
+                            <ul class="flex flex-col gap-0.5">
+                                <li class="flex items-center gap-2">
+                                    <span class="i-lucide-x w-3.5 h-3.5 inline-block text-red-400 shrink-0"></span>
+                                    Rejettera toutes les activités entrantes
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="i-lucide-x w-3.5 h-3.5 inline-block text-red-400 shrink-0"></span>
+                                    Masquera le contenu existant de cette instance
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="i-lucide-x w-3.5 h-3.5 inline-block text-red-400 shrink-0"></span>
+                                    Empêchera vos utilisateurs d'interagir avec elle
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Raison interne -->
+                    <div class="flex flex-col gap-1.5">
+                        <label class="form-label" for="block-reason">Raison <span class="font-normal text-muted">(journal interne)</span></label>
+                        <input
+                            id="block-reason"
+                            type="text"
+                            class="form-input text-sm"
+                            placeholder="Ex. : Instance de spam signalée plusieurs fois...">
+                    </div>
+
+                </div>
+
+                <!-- Modal footer -->
+                <div class="card-footer border-t border-border flex items-center justify-end gap-3">
+                    <button type="button" class="btn-ghost btn-sm text-muted">Annuler</button>
+                    <button type="button" class="btn-danger btn-sm flex items-center gap-1.5">
+                        <span class="i-lucide-shield-off w-4 h-4 inline-block"></span>
+                        Confirmer le blocage
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

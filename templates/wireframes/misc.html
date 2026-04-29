@@ -1,0 +1,710 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Divers — Prototype{% endblock %}
+{% block content %}
+
+<!-- ================================================================ -->
+<!-- PROTOTYPE LABEL -->
+<!-- ================================================================ -->
+<div class="bg-amber-100 border-b border-amber-300 text-amber-800 text-xs text-center py-1.5 font-medium tracking-wide">
+    Wireframe 16 — Divers — Onboarding (3 étapes) · Modal signalement · Modal suppression · Pages d'erreur (404 / 403 / 500)
+</div>
+
+<div class="container-app px-4 py-10 flex flex-col gap-16">
+
+    <!-- ============================================================ -->
+    <!-- SECTION 1 — ONBOARDING                                       -->
+    <!-- ============================================================ -->
+    <section>
+        <div class="mb-4 flex items-center gap-2">
+            <span class="i-lucide-party-popper w-5 h-5 inline-block text-muted"></span>
+            <h2 class="text-xs font-semibold text-muted uppercase tracking-widest">Section 1 — Onboarding — /onboarding/</h2>
+        </div>
+
+        <div x-data="{ step: 1 }" class="flex flex-col gap-8">
+
+            <!-- Step indicator tabs (prototype nav) -->
+            <div class="flex gap-2">
+                <template x-for="s in [1, 2, 3]" :key="s">
+                    <button type="button"
+                        @click="step = s"
+                        :class="step === s ? 'bg-crimson text-white' : 'bg-surface border border-border text-secondary hover:text-primary'"
+                        class="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors">
+                        Étape <span x-text="s"></span>
+                    </button>
+                </template>
+            </div>
+
+            <!-- ---------------------------------------------------- -->
+            <!-- STEP 1 — Compléter son profil                        -->
+            <!-- ---------------------------------------------------- -->
+            <div x-show="step === 1">
+                <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg">
+                    <span class="i-lucide-user w-4 h-4 text-muted inline-block"></span>
+                    <span class="text-xs font-semibold text-muted uppercase tracking-widest">Étape 1 — Compléter son profil</span>
+                </div>
+
+                <div class="max-w-xl">
+                    <!-- Welcome header -->
+                    <div class="mb-8">
+                        <h1 class="text-2xl font-bold text-primary mb-1">Bienvenue sur Suddenly, alice !</h1>
+                        <div class="flex items-center justify-between mt-4">
+                            <div class="flex items-center gap-3">
+                                <!-- Steps dots -->
+                                <span class="w-2.5 h-2.5 rounded-full bg-crimson inline-block"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-border inline-block"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-border inline-block"></span>
+                                <span class="text-sm text-muted ml-1">Étape 1 de 3</span>
+                            </div>
+                            <button type="button" class="btn-ghost btn-sm flex items-center gap-1.5 text-muted">
+                                Passer l'introduction
+                                <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="text-lg font-bold text-primary">Complétez votre profil</h2>
+                        </div>
+                        <div class="card-body">
+                            <form novalidate>
+
+                                <!-- Display name -->
+                                <div class="mb-5">
+                                    <label for="onb-name" class="form-label">Nom d'affichage</label>
+                                    <input id="onb-name" type="text" class="form-input" placeholder="Comment souhaitez-vous être appelé ?">
+                                </div>
+
+                                <!-- Bio -->
+                                <div class="mb-5">
+                                    <label for="onb-bio" class="form-label">
+                                        Biographie
+                                        <span class="text-muted font-normal">(optionnel)</span>
+                                    </label>
+                                    <textarea id="onb-bio" class="form-input" rows="3" placeholder="Parlez de vos jeux, de vos personnages..."></textarea>
+                                </div>
+
+                                <!-- Avatar -->
+                                <div class="mb-8">
+                                    <label class="form-label">
+                                        Avatar
+                                        <span class="text-muted font-normal">(optionnel)</span>
+                                    </label>
+                                    <div class="mt-2 border-2 border-dashed border-border rounded-xl p-6 flex flex-col items-center gap-2 hover:border-crimson/40 transition-colors cursor-pointer">
+                                        <span class="i-lucide-upload-cloud w-8 h-8 text-muted inline-block"></span>
+                                        <p class="text-sm text-secondary">Glisser une image ici ou</p>
+                                        <label class="text-sm text-crimson font-medium cursor-pointer hover:underline">
+                                            cliquer pour choisir
+                                            <input type="file" class="hidden" accept="image/*">
+                                        </label>
+                                        <p class="text-xs text-muted">PNG, JPG, GIF — max 2 Mo</p>
+                                    </div>
+                                </div>
+
+                                <!-- Next -->
+                                <div class="flex items-center justify-end pt-2 border-t border-border">
+                                    <button type="button" @click="step = 2" class="btn-primary flex items-center gap-2">
+                                        Continuer
+                                        <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ---------------------------------------------------- -->
+            <!-- STEP 2 — Découverte de l'instance                    -->
+            <!-- ---------------------------------------------------- -->
+            <div x-show="step === 2">
+                <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg">
+                    <span class="i-lucide-compass w-4 h-4 text-muted inline-block"></span>
+                    <span class="text-xs font-semibold text-muted uppercase tracking-widest">Étape 2 — Découverte de l'instance</span>
+                </div>
+
+                <div class="max-w-xl">
+                    <!-- Step header -->
+                    <div class="mb-8 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-2.5 h-2.5 rounded-full bg-border inline-block"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-crimson inline-block"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-border inline-block"></span>
+                            <span class="text-sm text-muted ml-1">Étape 2 de 3</span>
+                        </div>
+                        <button type="button" class="btn-ghost btn-sm flex items-center gap-1.5 text-muted">
+                            Passer l'introduction
+                            <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                        </button>
+                    </div>
+
+                    <h2 class="text-xl font-bold text-primary mb-6">Découvrez votre instance</h2>
+
+                    <!-- Migration notice -->
+                    <div class="bg-info/5 border border-info/20 rounded-xl p-4 flex flex-col gap-2 mb-6">
+                        <p class="text-sm font-medium text-primary">Vous migrez d'une autre instance ?</p>
+                        <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5 w-fit">
+                            <span class="i-lucide-upload w-4 h-4 inline-block"></span>
+                            Importer mes follows (CSV)
+                        </button>
+                    </div>
+
+                    <!-- Recent local reports -->
+                    <div class="mb-6">
+                        <h3 class="text-sm font-semibold text-secondary uppercase tracking-wide mb-3">Aperçu de l'activité locale</h3>
+                        <div class="flex flex-col gap-2">
+                            <div class="card card-hover">
+                                <div class="card-body py-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-crimson/30 to-crimson/10 flex items-center justify-center shrink-0">
+                                            <span class="text-xs font-bold text-crimson">M</span>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-primary">Session 14 : La Forêt des Miroirs</p>
+                                            <p class="text-xs text-muted">@mirkwood · il y a 2h</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card card-hover">
+                                <div class="card-body py-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-violet-400/30 to-violet-400/10 flex items-center justify-center shrink-0">
+                                            <span class="text-xs font-bold text-violet-600">S</span>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-primary">Séance 7 : L'Oracle Brisé</p>
+                                            <p class="text-xs text-muted">@sablier · il y a 5h</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active players -->
+                    <div class="mb-6">
+                        <h3 class="text-sm font-semibold text-secondary uppercase tracking-wide mb-3">Joueurs actifs sur cette instance</h3>
+                        <div class="flex flex-col divide-y divide-border border border-border rounded-xl overflow-hidden">
+
+                            <div class="flex items-center gap-3 px-4 py-3 bg-surface hover:bg-surface/80 transition-colors">
+                                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400/30 to-emerald-400/10 flex items-center justify-center shrink-0 border border-border">
+                                    <span class="text-sm font-bold text-emerald-700">A</span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-primary">@alice</p>
+                                    <p class="text-xs text-muted">12 parties</p>
+                                </div>
+                                <button type="button" class="btn-secondary btn-sm flex-shrink-0">Suivre</button>
+                            </div>
+
+                            <div class="flex items-center gap-3 px-4 py-3 bg-surface hover:bg-surface/80 transition-colors">
+                                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-400/30 to-sky-400/10 flex items-center justify-center shrink-0 border border-border">
+                                    <span class="text-sm font-bold text-sky-700">B</span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-primary">@bob</p>
+                                    <p class="text-xs text-muted">8 parties</p>
+                                </div>
+                                <button type="button" class="btn-secondary btn-sm flex-shrink-0">Suivre</button>
+                            </div>
+
+                            <div class="flex items-center gap-3 px-4 py-3 bg-surface hover:bg-surface/80 transition-colors">
+                                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400/30 to-amber-400/10 flex items-center justify-center shrink-0 border border-border">
+                                    <span class="text-sm font-bold text-amber-700">C</span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-primary">@charlie</p>
+                                    <p class="text-xs text-muted">5 parties</p>
+                                </div>
+                                <button type="button" class="btn-secondary btn-sm flex-shrink-0">Suivre</button>
+                            </div>
+
+                            <div class="flex items-center gap-3 px-4 py-3 bg-surface hover:bg-surface/80 transition-colors">
+                                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-rose-400/30 to-rose-400/10 flex items-center justify-center shrink-0 border border-border">
+                                    <span class="text-sm font-bold text-rose-700">D</span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-primary">@dave</p>
+                                    <p class="text-xs text-muted">3 parties</p>
+                                </div>
+                                <button type="button" class="btn-secondary btn-sm flex-shrink-0">Suivre</button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Popular games -->
+                    <div class="mb-8">
+                        <h3 class="text-sm font-semibold text-secondary uppercase tracking-wide mb-3">Parties populaires</h3>
+                        <div class="flex flex-col gap-2">
+
+                            <div class="card card-hover">
+                                <div class="card-body py-3 flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-crimson/20 to-crimson/5 flex items-center justify-center shrink-0">
+                                        <span class="i-lucide-shield w-4 h-4 inline-block text-crimson"></span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-primary truncate">Les Gardiens de l'Aube — Blades in the Dark</p>
+                                        <p class="text-xs text-muted">@alice · 12 CRs</p>
+                                    </div>
+                                    <button type="button" class="btn-secondary btn-sm flex-shrink-0">Suivre</button>
+                                </div>
+                            </div>
+
+                            <div class="card card-hover">
+                                <div class="card-body py-3 flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-violet-400/20 to-violet-400/5 flex items-center justify-center shrink-0">
+                                        <span class="i-lucide-wand w-4 h-4 inline-block text-violet-600"></span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-primary truncate">Chroniques d'Eorzéa — PBTA</p>
+                                        <p class="text-xs text-muted">@charlie · 8 CRs</p>
+                                    </div>
+                                    <button type="button" class="btn-secondary btn-sm flex-shrink-0">Suivre</button>
+                                </div>
+                            </div>
+
+                            <div class="card card-hover">
+                                <div class="card-body py-3 flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-sky-400/20 to-sky-400/5 flex items-center justify-center shrink-0">
+                                        <span class="i-lucide-compass w-4 h-4 inline-block text-sky-600"></span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-primary truncate">Expédition Kethara — Ironsworn</p>
+                                        <p class="text-xs text-muted">@bob · 5 CRs</p>
+                                    </div>
+                                    <button type="button" class="btn-secondary btn-sm flex-shrink-0">Suivre</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="flex items-center justify-between pt-2 border-t border-border">
+                        <button type="button" @click="step = 1" class="btn-ghost btn-sm flex items-center gap-1.5 text-secondary">
+                            <span class="i-lucide-arrow-left w-4 h-4 inline-block"></span>
+                            Retour
+                        </button>
+                        <button type="button" @click="step = 3" class="btn-primary flex items-center gap-2">
+                            Continuer
+                            <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ---------------------------------------------------- -->
+            <!-- STEP 3 — Première action                             -->
+            <!-- ---------------------------------------------------- -->
+            <div x-show="step === 3">
+                <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg">
+                    <span class="i-lucide-rocket w-4 h-4 text-muted inline-block"></span>
+                    <span class="text-xs font-semibold text-muted uppercase tracking-widest">Étape 3 — Première action</span>
+                </div>
+
+                <div class="max-w-xl">
+                    <!-- Step header -->
+                    <div class="mb-8 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-2.5 h-2.5 rounded-full bg-border inline-block"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-border inline-block"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-crimson inline-block"></span>
+                            <span class="text-sm text-muted ml-1">Étape 3 de 3</span>
+                        </div>
+                    </div>
+
+                    <h2 class="text-xl font-bold text-primary mb-6">Que voulez-vous faire en premier ?</h2>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+
+                        <!-- Card: Créer une partie -->
+                        <a href="#" class="card card-hover flex flex-col gap-3 p-5 no-underline group">
+                            <div class="w-10 h-10 rounded-xl bg-crimson/10 flex items-center justify-center">
+                                <span class="i-lucide-book-open w-5 h-5 inline-block text-crimson"></span>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-primary group-hover:text-crimson transition-colors">Créer ma première partie</p>
+                                <p class="text-sm text-muted mt-1">Commencez à documenter vos sessions de JDR</p>
+                            </div>
+                            <div class="mt-auto">
+                                <span class="btn-primary btn-sm inline-flex items-center gap-1.5">
+                                    Créer une partie
+                                    <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                                </span>
+                            </div>
+                        </a>
+
+                        <!-- Card: Explorer les personnages -->
+                        <a href="#" class="card card-hover flex flex-col gap-3 p-5 no-underline group">
+                            <div class="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center">
+                                <span class="i-lucide-search w-5 h-5 inline-block text-violet-600"></span>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-primary group-hover:text-violet-700 transition-colors">Explorer les personnages</p>
+                                <p class="text-sm text-muted mt-1">Découvrez les PNJ d'autres joueurs</p>
+                            </div>
+                            <div class="mt-auto">
+                                <span class="btn-secondary btn-sm inline-flex items-center gap-1.5">
+                                    Explorer
+                                    <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                                </span>
+                            </div>
+                        </a>
+
+                    </div>
+
+                    <!-- Card: Fil d'actualité -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                        <a href="#" class="card card-hover flex flex-col gap-3 p-5 no-underline group">
+                            <div class="w-10 h-10 rounded-xl bg-sky-500/10 flex items-center justify-center">
+                                <span class="i-lucide-rss w-5 h-5 inline-block text-sky-600"></span>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-primary group-hover:text-sky-700 transition-colors">Voir mon fil d'actualité</p>
+                                <p class="text-sm text-muted mt-1">Suivez les publications de la communauté</p>
+                            </div>
+                            <div class="mt-auto">
+                                <span class="btn-secondary btn-sm inline-flex items-center gap-1.5">
+                                    Aller au fil
+                                    <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="flex items-center justify-between pt-2 border-t border-border">
+                        <button type="button" @click="step = 2" class="btn-ghost btn-sm flex items-center gap-1.5 text-secondary">
+                            <span class="i-lucide-arrow-left w-4 h-4 inline-block"></span>
+                            Retour
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 2 — MODAL SIGNALEMENT                                -->
+    <!-- ============================================================ -->
+    <section>
+        <div class="mb-4 flex items-center gap-2">
+            <span class="i-lucide-flag w-5 h-5 inline-block text-muted"></span>
+            <h2 class="text-xs font-semibold text-muted uppercase tracking-widest">Section 2 — Modal signalement — US-27</h2>
+        </div>
+
+        <div x-data="{ modal: 'form', dropdown: false }" class="flex flex-col gap-6">
+
+            <!-- Trigger context: card with dropdown -->
+            <div>
+                <p class="text-xs text-muted mb-3 uppercase tracking-wide font-semibold">Bouton déclencheur (dans les cartes)</p>
+                <div class="card max-w-md">
+                    <div class="card-body">
+                        <div class="flex items-start gap-3">
+                            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-crimson/20 to-crimson/5 flex items-center justify-center shrink-0">
+                                <span class="text-sm font-bold text-crimson">T</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-semibold text-primary">Session 8 : Le Pacte de Sel</p>
+                                <p class="text-xs text-muted">@troll123 · il y a 3h</p>
+                                <p class="text-sm text-secondary mt-1.5">Ce soir, l'équipe a négocié avec les Marchands de Sel...</p>
+                            </div>
+                        </div>
+                        <!-- Action bar -->
+                        <div class="flex items-center justify-between mt-4 pt-3 border-t border-border">
+                            <div class="flex items-center gap-4">
+                                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-crimson transition-colors text-sm">
+                                    <span class="i-lucide-heart w-4 h-4 inline-block"></span>
+                                    4
+                                </button>
+                                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-primary transition-colors text-sm">
+                                    <span class="i-lucide-message-circle w-4 h-4 inline-block"></span>
+                                    2
+                                </button>
+                                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-primary transition-colors text-sm">
+                                    <span class="i-lucide-share w-4 h-4 inline-block"></span>
+                                </button>
+                            </div>
+                            <!-- Context menu -->
+                            <div class="relative" x-data="{ open: false }">
+                                <button type="button" @click="open = !open" class="btn-ghost btn-sm text-muted">
+                                    <span class="i-lucide-more-horizontal w-4 h-4 inline-block"></span>
+                                </button>
+                                <div x-show="open" @click.outside="open = false"
+                                     class="absolute right-0 bottom-full mb-1 w-44 bg-surface border border-border rounded-xl shadow-lg z-10 overflow-hidden py-1">
+                                    <button type="button" class="w-full text-left px-4 py-2 text-sm text-secondary hover:bg-surface/80 hover:text-primary transition-colors flex items-center gap-2">
+                                        <span class="i-lucide-link w-4 h-4 inline-block"></span>
+                                        Copier le lien
+                                    </button>
+                                    <div class="border-t border-border my-1"></div>
+                                    <button type="button" @click="open = false; $dispatch('open-report')" class="w-full text-left px-4 py-2 text-sm text-crimson hover:bg-crimson/5 transition-colors flex items-center gap-2">
+                                        <span class="i-lucide-flag w-4 h-4 inline-block"></span>
+                                        Signaler
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal states switcher -->
+            <div>
+                <p class="text-xs text-muted mb-3 uppercase tracking-wide font-semibold">États du modal (cliquer pour basculer)</p>
+                <div class="flex gap-2">
+                    <button type="button" @click="modal = 'form'"
+                        :class="modal === 'form' ? 'bg-crimson text-white' : 'bg-surface border border-border text-secondary hover:text-primary'"
+                        class="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors">
+                        Formulaire
+                    </button>
+                    <button type="button" @click="modal = 'confirm'"
+                        :class="modal === 'confirm' ? 'bg-crimson text-white' : 'bg-surface border border-border text-secondary hover:text-primary'"
+                        class="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors">
+                        Confirmation
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal: report form -->
+            <div x-show="modal === 'form'" class="max-w-md">
+                <div class="bg-surface border border-border rounded-2xl shadow-lg overflow-hidden">
+
+                    <!-- Modal header -->
+                    <div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-border">
+                        <h3 class="text-base font-bold text-primary">Signaler ce contenu</h3>
+                        <button type="button" class="btn-ghost btn-sm text-muted">
+                            <span class="i-lucide-x w-4 h-4 inline-block"></span>
+                        </button>
+                    </div>
+
+                    <div class="px-5 py-4">
+
+                        <!-- Content reference -->
+                        <div class="bg-surface border border-border rounded-lg px-3 py-2 mb-5 flex items-center gap-2">
+                            <span class="i-lucide-book-open w-4 h-4 inline-block text-muted shrink-0"></span>
+                            <p class="text-sm text-secondary truncate">CR "Session 8" par <span class="font-medium text-primary">@troll123</span></p>
+                        </div>
+
+                        <!-- Category -->
+                        <fieldset class="mb-5">
+                            <legend class="form-label mb-2">Catégorie</legend>
+                            <div class="flex flex-col gap-2">
+                                <label class="flex items-center gap-2.5 cursor-pointer group">
+                                    <input type="radio" name="report-cat" value="spam" class="accent-crimson w-4 h-4">
+                                    <span class="text-sm text-primary group-hover:text-crimson transition-colors">Spam</span>
+                                </label>
+                                <label class="flex items-center gap-2.5 cursor-pointer group">
+                                    <input type="radio" name="report-cat" value="harassment" class="accent-crimson w-4 h-4">
+                                    <span class="text-sm text-primary group-hover:text-crimson transition-colors">Harcèlement</span>
+                                </label>
+                                <label class="flex items-center gap-2.5 cursor-pointer group">
+                                    <input type="radio" name="report-cat" value="inappropriate" checked class="accent-crimson w-4 h-4">
+                                    <span class="text-sm text-primary group-hover:text-crimson transition-colors">Contenu inapproprié</span>
+                                </label>
+                                <label class="flex items-center gap-2.5 cursor-pointer group">
+                                    <input type="radio" name="report-cat" value="other" class="accent-crimson w-4 h-4">
+                                    <span class="text-sm text-primary group-hover:text-crimson transition-colors">Autre</span>
+                                </label>
+                            </div>
+                        </fieldset>
+
+                        <!-- Comment -->
+                        <div class="mb-5">
+                            <label for="report-comment" class="form-label">
+                                Commentaire
+                                <span class="text-muted font-normal">(optionnel)</span>
+                            </label>
+                            <textarea id="report-comment" class="form-input" rows="3" placeholder="Décrivez le problème en quelques mots..."></textarea>
+                        </div>
+
+                        <!-- Info banner -->
+                        <div class="bg-info/5 border border-info/20 rounded-lg px-3 py-2.5 flex items-start gap-2 mb-5 text-sm text-secondary">
+                            <span class="i-lucide-info w-4 h-4 inline-block text-info shrink-0 mt-0.5"></span>
+                            <p>Le signalement sera envoyé à l'admin de votre instance. Si le contenu provient d'une instance distante, l'admin pourra transmettre le signalement.</p>
+                        </div>
+
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="flex items-center justify-end gap-3 px-5 py-4 border-t border-border bg-surface">
+                        <button type="button" class="link-muted text-sm">Annuler</button>
+                        <button type="button" @click="modal = 'confirm'" class="btn-primary flex items-center gap-1.5">
+                            <span class="i-lucide-flag w-4 h-4 inline-block"></span>
+                            Envoyer le signalement
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Modal: confirmation -->
+            <div x-show="modal === 'confirm'" class="max-w-md">
+                <div class="bg-surface border border-border rounded-2xl shadow-lg overflow-hidden">
+
+                    <div class="px-5 py-6 flex flex-col gap-4">
+                        <div class="flex items-center gap-3">
+                            <span class="i-lucide-check-circle w-6 h-6 inline-block text-emerald-500"></span>
+                            <p class="text-base font-semibold text-primary">Signalement envoyé.</p>
+                        </div>
+                        <p class="text-sm text-secondary">L'équipe de modération examinera votre signalement. Vous serez notifié de la décision.</p>
+                    </div>
+
+                    <div class="flex items-center justify-end px-5 py-4 border-t border-border bg-surface">
+                        <button type="button" @click="modal = 'form'" class="btn-secondary">Fermer</button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 3 — MODAL SUPPRESSION GÉNÉRIQUE                      -->
+    <!-- ============================================================ -->
+    <section>
+        <div class="mb-4 flex items-center gap-2">
+            <span class="i-lucide-trash-2 w-5 h-5 inline-block text-muted"></span>
+            <h2 class="text-xs font-semibold text-muted uppercase tracking-widest">Section 3 — Modal suppression générique</h2>
+        </div>
+
+        <div class="max-w-md">
+            <div class="bg-surface border border-border rounded-2xl shadow-lg overflow-hidden">
+
+                <!-- Modal header -->
+                <div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-border">
+                    <h3 class="text-base font-bold text-primary">Supprimer ce compte-rendu ?</h3>
+                    <button type="button" class="btn-ghost btn-sm text-muted">
+                        <span class="i-lucide-x w-4 h-4 inline-block"></span>
+                    </button>
+                </div>
+
+                <div class="px-5 py-4">
+
+                    <!-- Content reference -->
+                    <div class="bg-surface border border-border rounded-lg px-3 py-2 mb-5 flex items-center gap-2">
+                        <span class="i-lucide-book-open w-4 h-4 inline-block text-muted shrink-0"></span>
+                        <p class="text-sm font-medium text-primary truncate">Session 12 : L'Oracle Brisé</p>
+                    </div>
+
+                    <!-- Warning -->
+                    <div class="bg-error/5 border border-error/20 rounded-lg px-3 py-2.5 flex items-start gap-2 text-sm">
+                        <span class="i-lucide-alert-triangle w-4 h-4 inline-block text-crimson shrink-0 mt-0.5"></span>
+                        <p class="text-secondary">
+                            <span class="font-semibold text-crimson">Cette action est irréversible.</span>
+                            Le contenu sera supprimé et les mentions de personnages seront retirées.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Modal footer -->
+                <div class="flex items-center justify-end gap-3 px-5 py-4 border-t border-border bg-surface">
+                    <button type="button" class="link-muted text-sm">Annuler</button>
+                    <button type="button" class="btn-danger flex items-center gap-1.5">
+                        <span class="i-lucide-trash-2 w-4 h-4 inline-block"></span>
+                        Supprimer
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 4 — PAGES D'ERREUR                                   -->
+    <!-- ============================================================ -->
+    <section>
+        <div class="mb-4 flex items-center gap-2">
+            <span class="i-lucide-alert-circle w-5 h-5 inline-block text-muted"></span>
+            <h2 class="text-xs font-semibold text-muted uppercase tracking-widest">Section 4 — Pages d'erreur</h2>
+        </div>
+
+        <div class="flex flex-col gap-6">
+
+            <!-- 404 -->
+            <div>
+                <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-4 rounded-t-lg">
+                    <span class="badge badge-info text-xs font-mono">404</span>
+                    <span class="text-xs font-semibold text-muted uppercase tracking-widest">Page non trouvée</span>
+                </div>
+                <div class="border border-border rounded-2xl overflow-hidden">
+                    <div class="py-16 px-8 flex flex-col items-center text-center gap-4 bg-surface">
+                        <div class="w-16 h-16 rounded-2xl bg-surface border-2 border-border flex items-center justify-center mb-2">
+                            <span class="i-lucide-search-x w-8 h-8 inline-block text-muted"></span>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-primary mb-2">Page non trouvée</h1>
+                            <p class="text-secondary max-w-sm">Le personnage que vous cherchez a peut-être changé d'histoire.</p>
+                        </div>
+                        <div class="flex items-center gap-3 mt-2">
+                            <a href="#" class="btn-primary">Retour à l'accueil</a>
+                            <a href="#" class="btn-secondary">Explorer</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 403 -->
+            <div>
+                <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-4 rounded-t-lg">
+                    <span class="badge badge-info text-xs font-mono">403</span>
+                    <span class="text-xs font-semibold text-muted uppercase tracking-widest">Accès refusé</span>
+                </div>
+                <div class="border border-border rounded-2xl overflow-hidden">
+                    <div class="py-16 px-8 flex flex-col items-center text-center gap-4 bg-surface">
+                        <div class="w-16 h-16 rounded-2xl bg-surface border-2 border-border flex items-center justify-center mb-2">
+                            <span class="i-lucide-shield-x w-8 h-8 inline-block text-muted"></span>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-primary mb-2">Accès refusé</h1>
+                            <p class="text-secondary max-w-sm">Vous n'avez pas les droits pour accéder à cette page.</p>
+                        </div>
+                        <div class="flex items-center gap-3 mt-2">
+                            <a href="#" class="btn-primary">Retour à l'accueil</a>
+                            <a href="#" class="btn-secondary flex items-center gap-1.5">
+                                <span class="i-lucide-log-in w-4 h-4 inline-block"></span>
+                                Se connecter
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 500 -->
+            <div>
+                <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-4 rounded-t-lg">
+                    <span class="bg-crimson/10 text-crimson text-xs font-mono font-semibold px-2 py-0.5 rounded-full">500</span>
+                    <span class="text-xs font-semibold text-muted uppercase tracking-widest">Erreur serveur</span>
+                </div>
+                <div class="border border-border rounded-2xl overflow-hidden">
+                    <div class="py-16 px-8 flex flex-col items-center text-center gap-4 bg-surface">
+                        <div class="w-16 h-16 rounded-2xl bg-surface border-2 border-crimson/20 flex items-center justify-center mb-2">
+                            <span class="i-lucide-alert-triangle w-8 h-8 inline-block text-crimson"></span>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-primary mb-2">Oups, quelque chose s'est mal passé</h1>
+                            <p class="text-secondary max-w-sm">L'équipe a été notifiée. Réessayez dans quelques instants.</p>
+                        </div>
+                        <div class="flex items-center gap-3 mt-2">
+                            <a href="#" class="btn-primary">Retour à l'accueil</a>
+                            <button type="button" onclick="window.location.reload()" class="btn-secondary flex items-center gap-1.5">
+                                <span class="i-lucide-refresh-cw w-4 h-4 inline-block"></span>
+                                Recharger
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</div>
+
+{% endblock %}

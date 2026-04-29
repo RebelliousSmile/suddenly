@@ -1,0 +1,541 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Profil — Prototype{% endblock %}
+{% block content %}
+
+<!-- ================================================================ -->
+<!-- PROTOTYPE LABEL -->
+<!-- ================================================================ -->
+<div class="bg-amber-100 border-b border-amber-300 text-amber-800 text-xs text-center py-1.5 font-medium tracking-wide">
+    Wireframe 04 — Profil utilisateur — 3 variantes empilées (public / édition / compte migré)
+</div>
+
+<!-- ================================================================ -->
+<!-- VARIANT 1 — PUBLIC PROFILE /users/alice/ -->
+<!-- ================================================================ -->
+<section class="mb-16">
+
+    <!-- Section label -->
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-user w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Variante 1 — Profil public (/users/alice/)</span>
+    </div>
+
+    <div class="container-app px-4 py-10">
+
+        <!-- -------------------------------------------------------- -->
+        <!-- PROFILE HEADER -->
+        <!-- -------------------------------------------------------- -->
+        <div class="flex flex-col sm:flex-row gap-6 mb-8">
+
+            <!-- Avatar -->
+            <div class="flex-shrink-0">
+                <div class="avatar-xl avatar-placeholder">A</div>
+            </div>
+
+            <!-- Info -->
+            <div class="flex-1 min-w-0">
+
+                <!-- Name + handle -->
+                <h1 class="text-2xl font-bold text-primary mb-0.5">Alice Dupont</h1>
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="text-secondary font-mono text-sm">@alice@suddenly.social</span>
+                    <button class="btn-ghost btn-sm flex items-center gap-1" title="Copier l'adresse">
+                        <span class="i-lucide-copy w-3.5 h-3.5 inline-block"></span>
+                        <span class="text-xs">Copier</span>
+                    </button>
+                </div>
+
+                <!-- Bio -->
+                <p class="text-secondary mb-4">
+                    Joueuse de City of Mist et Blades in the Dark.<br>
+                    Mes PNJ cherchent des histoires.
+                </p>
+
+                <!-- Meta -->
+                <p class="text-sm text-muted mb-4">
+                    Inscrite depuis jan. 2025 ·
+                    <a href="#" class="link">42 abonnés</a> ·
+                    <a href="#" class="link">18 abonnements</a>
+                </p>
+
+                <!-- Custom fields -->
+                <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1.5 mb-5 text-sm">
+                    <div class="flex gap-2">
+                        <dt class="text-muted font-medium whitespace-nowrap">Pronoms</dt>
+                        <dd class="text-secondary">elle/elle</dd>
+                    </div>
+                    <div class="flex gap-2">
+                        <dt class="text-muted font-medium whitespace-nowrap">Site</dt>
+                        <dd class="flex items-center gap-1">
+                            <a href="https://alice.blog" class="link" target="_blank" rel="noopener">https://alice.blog</a>
+                            <span class="i-lucide-badge-check w-4 h-4 text-info inline-block" title="Lien vérifié"></span>
+                        </dd>
+                    </div>
+                    <div class="flex gap-2 sm:col-span-2">
+                        <dt class="text-muted font-medium whitespace-nowrap">Systèmes</dt>
+                        <dd class="text-secondary">City of Mist, BitD</dd>
+                    </div>
+                </dl>
+
+                <!-- Action buttons -->
+                <div class="flex flex-wrap gap-3">
+                    <a href="#" class="btn-primary">
+                        <span class="i-lucide-user-plus w-4 h-4 inline-block mr-1.5"></span>
+                        Suivre
+                    </a>
+                    <!-- Visible only to profile owner -->
+                    <a href="#" class="btn-secondary">
+                        <span class="i-lucide-pencil w-4 h-4 inline-block mr-1.5"></span>
+                        Modifier le profil
+                        <span class="text-xs opacity-60 ml-1">(propriétaire uniquement)</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- -------------------------------------------------------- -->
+        <!-- PARTIES RÉCENTES -->
+        <!-- -------------------------------------------------------- -->
+        <div class="mb-10">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-primary">Parties récentes</h2>
+                <a href="#" class="link-muted text-sm flex items-center gap-1">
+                    Voir +
+                    <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                </a>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+                <!-- Game card 1 -->
+                <div class="card card-hover">
+                    <div class="card-body">
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <h3 class="font-semibold text-primary text-sm leading-snug">City of Mist — Saison 2</h3>
+                            <span class="i-lucide-book-open w-4 h-4 text-muted flex-shrink-0 inline-block mt-0.5"></span>
+                        </div>
+                        <p class="text-xs text-muted mb-1">City of Mist</p>
+                        <p class="text-xs text-secondary">12 comptes-rendus</p>
+                    </div>
+                </div>
+
+                <!-- Game card 2 -->
+                <div class="card card-hover">
+                    <div class="card-body">
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <h3 class="font-semibold text-primary text-sm leading-snug">Blades in the Dark — La Guilde</h3>
+                            <span class="i-lucide-book-open w-4 h-4 text-muted flex-shrink-0 inline-block mt-0.5"></span>
+                        </div>
+                        <p class="text-xs text-muted mb-1">Blades in the Dark</p>
+                        <p class="text-xs text-secondary">8 comptes-rendus</p>
+                    </div>
+                </div>
+
+                <!-- Game card 3 -->
+                <div class="card card-hover">
+                    <div class="card-body">
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <h3 class="font-semibold text-primary text-sm leading-snug">Ironsworn — Périple solo</h3>
+                            <span class="i-lucide-book-open w-4 h-4 text-muted flex-shrink-0 inline-block mt-0.5"></span>
+                        </div>
+                        <p class="text-xs text-muted mb-1">Ironsworn</p>
+                        <p class="text-xs text-secondary">3 comptes-rendus</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- -------------------------------------------------------- -->
+        <!-- PERSONNAGES -->
+        <!-- -------------------------------------------------------- -->
+        <div class="mb-10">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-primary">Personnages</h2>
+                <a href="#" class="link-muted text-sm flex items-center gap-1">
+                    Voir +
+                    <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                </a>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+                <!-- Character card 1 — Viktor (PNJ disponible) -->
+                <div class="card card-hover">
+                    <div class="card-body">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="avatar-md avatar-placeholder">V</div>
+                            <div>
+                                <p class="font-semibold text-primary text-sm">Viktor</p>
+                                <p class="text-xs text-muted">City of Mist</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="badge badge-available">Disponible</span>
+                            <span class="badge">PNJ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Character card 2 — Lyra (PJ actif) -->
+                <div class="card card-hover">
+                    <div class="card-body">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="avatar-md avatar-placeholder">L</div>
+                            <div>
+                                <p class="font-semibold text-primary text-sm">Lyra</p>
+                                <p class="text-xs text-muted">Blades in the Dark</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="badge badge-pc">PJ</span>
+                            <span class="badge badge-adopted">Actif</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Character card 3 — Ombra (PNJ disponible) -->
+                <div class="card card-hover">
+                    <div class="card-body">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="avatar-md avatar-placeholder">O</div>
+                            <div>
+                                <p class="font-semibold text-primary text-sm">Ombra</p>
+                                <p class="text-xs text-muted">Ironsworn</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="badge badge-available">Disponible</span>
+                            <span class="badge">PNJ</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- -------------------------------------------------------- -->
+        <!-- DERNIERS COMPTES-RENDUS -->
+        <!-- -------------------------------------------------------- -->
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-primary">Derniers comptes-rendus</h2>
+                <a href="#" class="link-muted text-sm flex items-center gap-1">
+                    Voir +
+                    <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                </a>
+            </div>
+            <div class="flex flex-col gap-4">
+
+                <!-- Report 1 -->
+                <div class="card card-hover">
+                    <div class="card-body">
+                        <h3 class="font-semibold text-primary mb-1">La nuit des miroirs brisés</h3>
+                        <p class="text-xs text-muted mb-2">City of Mist — Saison 2</p>
+                        <p class="text-sm text-secondary line-clamp-2">L'équipe enquête sur une série de disparitions dans le quartier de Kairo. Viktor fait son apparition dans le dernier acte, bouleversant tout l'équilibre narratif.</p>
+                    </div>
+                    <div class="card-footer flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="avatar-sm avatar-placeholder">A</div>
+                            <span class="text-xs text-muted">@alice</span>
+                        </div>
+                        <span class="text-xs text-muted">il y a 2 jours</span>
+                    </div>
+                </div>
+
+                <!-- Report 2 -->
+                <div class="card card-hover">
+                    <div class="card-body">
+                        <h3 class="font-semibold text-primary mb-1">Session 7 — Le Forgeron de Duskvol</h3>
+                        <p class="text-xs text-muted mb-2">Blades in the Dark — La Guilde</p>
+                        <p class="text-sm text-secondary line-clamp-2">Lyra négocie avec le Conclave. Une information sur l'origine de Ombra refait surface, changeant les enjeux de toute la campagne.</p>
+                    </div>
+                    <div class="card-footer flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="avatar-sm avatar-placeholder">A</div>
+                            <span class="text-xs text-muted">@alice</span>
+                        </div>
+                        <span class="text-xs text-muted">il y a 5 jours</span>
+                    </div>
+                </div>
+
+                <!-- Report 3 -->
+                <div class="card card-hover">
+                    <div class="card-body">
+                        <h3 class="font-semibold text-primary mb-1">Acte II — Le Serment de Fer</h3>
+                        <p class="text-xs text-muted mb-2">Ironsworn — Périple solo</p>
+                        <p class="text-sm text-secondary line-clamp-2">Ombra révèle son véritable nom lors du rituel. La quête prend une nouvelle dimension inattendue dans les Marches du nord.</p>
+                    </div>
+                    <div class="card-footer flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="avatar-sm avatar-placeholder">A</div>
+                            <span class="text-xs text-muted">@alice</span>
+                        </div>
+                        <span class="text-xs text-muted">il y a 1 semaine</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- VARIANT 2 — EDIT PROFILE /users/alice/edit/ -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16">
+
+    <!-- Section label -->
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-pencil w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Variante 2 — Édition du profil (/users/alice/edit/)</span>
+    </div>
+
+    <div class="container-app px-4 py-10">
+        <div class="max-w-lg mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-xl font-bold text-primary">Modifier mon profil</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" novalidate>
+
+                        <!-- Display name -->
+                        <div class="mb-5">
+                            <label for="edit-name" class="form-label">Nom d'affichage</label>
+                            <input id="edit-name" type="text" class="form-input" value="Alice Dupont">
+                        </div>
+
+                        <!-- Bio -->
+                        <div class="mb-5">
+                            <label for="edit-bio" class="form-label">Biographie</label>
+                            <textarea id="edit-bio" class="form-input" rows="3">Joueuse de City of Mist et Blades in the Dark.
+Mes PNJ cherchent des histoires.</textarea>
+                        </div>
+
+                        <!-- Avatar upload -->
+                        <div class="mb-3">
+                            <label class="form-label">Avatar</label>
+                            <div class="form-dropzone">
+                                <span class="i-lucide-upload-cloud w-8 h-8 text-muted inline-block mb-2"></span>
+                                <p class="text-sm text-secondary">Glisser une image ici ou</p>
+                                <label class="form-dropzone-link cursor-pointer">
+                                    cliquer pour choisir
+                                    <input type="file" class="hidden" accept="image/*">
+                                </label>
+                                <p class="text-xs text-muted mt-1">PNG, JPG, GIF — max 2 Mo</p>
+                            </div>
+                        </div>
+
+                        <!-- Delete avatar -->
+                        <div class="mb-5 flex items-center gap-2">
+                            <input id="edit-delete-avatar" type="checkbox" class="rounded border-border text-crimson focus:ring-crimson">
+                            <label for="edit-delete-avatar" class="text-sm text-secondary cursor-pointer">Supprimer l'avatar</label>
+                        </div>
+
+                        <!-- Content language -->
+                        <div class="mb-5">
+                            <label for="edit-lang-content" class="form-label">Langue du contenu</label>
+                            <select id="edit-lang-content" class="form-input">
+                                <option value="fr" selected>Français (fr)</option>
+                                <option value="en">English (en)</option>
+                                <option value="de">Deutsch (de)</option>
+                                <option value="es">Español (es)</option>
+                            </select>
+                            <p class="form-help">Langue dans laquelle vous rédigez vos comptes-rendus.</p>
+                        </div>
+
+                        <!-- Preferred languages -->
+                        <div class="mb-5">
+                            <label for="edit-lang-preferred" class="form-label">Langues préférées</label>
+                            <input id="edit-lang-preferred" type="text" class="form-input" value="fr, en">
+                            <p class="form-help">Langues séparées par des virgules. Filtrent le contenu affiché dans votre fil.</p>
+                        </div>
+
+                        <!-- Show untagged content -->
+                        <div class="mb-6 flex items-start gap-2">
+                            <input id="edit-show-untagged" type="checkbox" class="rounded border-border text-crimson focus:ring-crimson mt-0.5">
+                            <label for="edit-show-untagged" class="text-sm text-secondary cursor-pointer">
+                                Afficher le contenu sans langue définie
+                            </label>
+                        </div>
+
+                        <!-- Custom fields -->
+                        <div class="mb-6">
+                            <p class="form-label mb-3">Champs personnalisés <span class="text-muted font-normal">(max 4)</span></p>
+
+                            <!-- Field 1 (pre-filled) -->
+                            <div class="flex gap-2 mb-2">
+                                <input type="text" class="form-input w-1/3" placeholder="Label" value="Pronoms">
+                                <input type="text" class="form-input flex-1" placeholder="Valeur" value="elle/elle">
+                                <button type="button" class="btn-ghost btn-sm flex-shrink-0 text-crimson" title="Supprimer">
+                                    <span class="i-lucide-x w-4 h-4 inline-block"></span>
+                                </button>
+                            </div>
+
+                            <!-- Add field -->
+                            <button type="button" class="btn-ghost btn-sm flex items-center gap-1.5 mt-1">
+                                <span class="i-lucide-plus w-4 h-4 inline-block"></span>
+                                Ajouter un champ
+                            </button>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex items-center gap-4 pt-2 border-t border-border">
+                            <button type="submit" class="btn-primary">
+                                <span class="i-lucide-check w-4 h-4 inline-block mr-1.5"></span>
+                                Enregistrer
+                            </button>
+                            <a href="#" class="link-muted text-sm">Annuler</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- VARIANT 3 — MIGRATED ACCOUNT BANNER -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson">
+
+    <!-- Section label -->
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-arrow-right-circle w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Variante 3 — Compte migré (lecture seule)</span>
+    </div>
+
+    <div class="container-app px-4 py-10">
+
+        <!-- Migration banner -->
+        <div class="bg-info/10 border border-info/30 rounded-lg p-4 mb-8 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <span class="i-lucide-arrow-right w-5 h-5 text-info flex-shrink-0 inline-block mt-0.5 sm:mt-0"></span>
+            <div class="flex-1">
+                <p class="text-info font-medium text-sm">
+                    Ce compte a migré vers
+                    <span class="font-mono font-semibold">@alice@new-instance.social</span>
+                </p>
+                <p class="text-info/80 text-xs mt-0.5">Ce profil est conservé en lecture seule. Les comptes-rendus restent accessibles.</p>
+            </div>
+            <a href="#" class="btn-secondary btn-sm flex-shrink-0 flex items-center gap-1.5">
+                Voir le nouveau profil
+                <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+            </a>
+        </div>
+
+        <!-- Read-only profile header -->
+        <div class="flex flex-col sm:flex-row gap-6 mb-8 opacity-80">
+
+            <!-- Avatar -->
+            <div class="flex-shrink-0">
+                <div class="avatar-xl avatar-placeholder">A</div>
+            </div>
+
+            <!-- Info -->
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5">
+                    <h1 class="text-2xl font-bold text-primary">Alice Dupont</h1>
+                    <span class="badge text-xs">Migré</span>
+                </div>
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="text-secondary font-mono text-sm">@alice@suddenly.social</span>
+                </div>
+
+                <p class="text-secondary mb-4">
+                    Joueuse de City of Mist et Blades in the Dark.<br>
+                    Mes PNJ cherchent des histoires.
+                </p>
+
+                <p class="text-sm text-muted mb-4">
+                    Inscrite depuis jan. 2025 ·
+                    <a href="#" class="link">42 abonnés</a> ·
+                    <a href="#" class="link">18 abonnements</a>
+                </p>
+
+                <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1.5 mb-5 text-sm">
+                    <div class="flex gap-2">
+                        <dt class="text-muted font-medium whitespace-nowrap">Pronoms</dt>
+                        <dd class="text-secondary">elle/elle</dd>
+                    </div>
+                    <div class="flex gap-2">
+                        <dt class="text-muted font-medium whitespace-nowrap">Site</dt>
+                        <dd class="flex items-center gap-1">
+                            <a href="https://alice.blog" class="link" target="_blank" rel="noopener">https://alice.blog</a>
+                            <span class="i-lucide-badge-check w-4 h-4 text-info inline-block" title="Lien vérifié"></span>
+                        </dd>
+                    </div>
+                    <div class="flex gap-2 sm:col-span-2">
+                        <dt class="text-muted font-medium whitespace-nowrap">Systèmes</dt>
+                        <dd class="text-secondary">City of Mist, BitD</dd>
+                    </div>
+                </dl>
+
+                <!-- Disabled action buttons -->
+                <div class="flex flex-wrap gap-3">
+                    <button class="btn-primary disabled opacity-50 cursor-not-allowed" disabled title="Ce compte a migré">
+                        <span class="i-lucide-user-plus w-4 h-4 inline-block mr-1.5"></span>
+                        Suivre
+                    </button>
+                    <button class="btn-secondary disabled opacity-50 cursor-not-allowed" disabled title="Ce compte a migré">
+                        <span class="i-lucide-link w-4 h-4 inline-block mr-1.5"></span>
+                        Lier
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Read-only recent reports -->
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-primary flex items-center gap-2">
+                    Comptes-rendus archivés
+                    <span class="i-lucide-archive w-4 h-4 text-muted inline-block"></span>
+                </h2>
+            </div>
+            <div class="flex flex-col gap-4">
+
+                <!-- Report 1 (read-only) -->
+                <div class="card opacity-75">
+                    <div class="card-body">
+                        <h3 class="font-semibold text-primary mb-1">La nuit des miroirs brisés</h3>
+                        <p class="text-xs text-muted mb-2">City of Mist — Saison 2</p>
+                        <p class="text-sm text-secondary line-clamp-2">L'équipe enquête sur une série de disparitions dans le quartier de Kairo. Viktor fait son apparition dans le dernier acte.</p>
+                    </div>
+                    <div class="card-footer flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="avatar-sm avatar-placeholder">A</div>
+                            <span class="text-xs text-muted">@alice</span>
+                        </div>
+                        <span class="text-xs text-muted">il y a 2 jours</span>
+                    </div>
+                </div>
+
+                <!-- Report 2 (read-only) -->
+                <div class="card opacity-75">
+                    <div class="card-body">
+                        <h3 class="font-semibold text-primary mb-1">Session 7 — Le Forgeron de Duskvol</h3>
+                        <p class="text-xs text-muted mb-2">Blades in the Dark — La Guilde</p>
+                        <p class="text-sm text-secondary line-clamp-2">Lyra négocie avec le Conclave. Une information sur l'origine de Ombra refait surface.</p>
+                    </div>
+                    <div class="card-footer flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="avatar-sm avatar-placeholder">A</div>
+                            <span class="text-xs text-muted">@alice</span>
+                        </div>
+                        <span class="text-xs text-muted">il y a 5 jours</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,650 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Dashboard GM — Prototype{% endblock %}
+{% block content %}
+
+<!-- ================================================================ -->
+<!-- PROTOTYPE LABEL -->
+<!-- ================================================================ -->
+<div class="bg-amber-100 border-b border-amber-300 text-amber-800 text-xs text-center py-1.5 font-medium tracking-wide">
+    Wireframe 12 — Dashboard Game Master — 3 sections : Tableau de bord · Mes PNJ (avec onglets) · Arbitrage inline
+</div>
+
+<!-- ================================================================ -->
+<!-- SECTION 1 — TABLEAU DE BORD (/dashboard/) US-14 -->
+<!-- ================================================================ -->
+<section class="mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-layout-dashboard w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 1 — Tableau de bord (/dashboard/) — vue synthèse GM</span>
+    </div>
+
+    <!-- Page header -->
+    <div class="border-b border-border bg-surface py-6">
+        <div class="container-app px-4">
+            <h1 class="text-2xl font-bold text-primary">Tableau de bord</h1>
+        </div>
+    </div>
+
+    <div class="container-app px-4 py-8">
+
+        <!-- Stats grid 2x2 -->
+        <div class="grid sm:grid-cols-2 gap-4 mb-8">
+
+            <!-- Mes parties -->
+            <div class="card border border-border">
+                <div class="card-body flex flex-col gap-3">
+                    <div class="flex items-center gap-2 text-muted">
+                        <span class="i-lucide-book-open w-5 h-5 inline-block"></span>
+                        <span class="text-sm font-semibold uppercase tracking-wide">Mes parties</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <p class="text-2xl font-bold text-primary leading-none">3 <span class="text-base font-normal text-secondary">parties actives</span></p>
+                        <p class="text-sm text-secondary">8 CRs ce mois</p>
+                    </div>
+                    <div class="pt-2 border-t border-border">
+                        <a href="#" class="btn-secondary btn-sm flex items-center gap-1.5 w-fit">
+                            Voir mes parties
+                            <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mes personnages -->
+            <div class="card border border-border">
+                <div class="card-body flex flex-col gap-3">
+                    <div class="flex items-center gap-2 text-muted">
+                        <span class="i-lucide-users w-5 h-5 inline-block"></span>
+                        <span class="text-sm font-semibold uppercase tracking-wide">Mes personnages</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <p class="text-2xl font-bold text-primary leading-none">12 <span class="text-base font-normal text-secondary">personnages</span></p>
+                        <p class="text-sm text-secondary">6 PNJ disponibles</p>
+                        <p class="text-sm font-medium text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                            <span class="i-lucide-bell w-4 h-4 inline-block"></span>
+                            3 demandes en attente
+                        </p>
+                    </div>
+                    <div class="pt-2 border-t border-border">
+                        <a href="#" class="btn-secondary btn-sm flex items-center gap-1.5 w-fit">
+                            Voir mes persos
+                            <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- À traiter -->
+            <div class="card border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/20">
+                <div class="card-body flex flex-col gap-3">
+                    <div class="flex items-center gap-2 text-amber-600 dark:text-amber-400">
+                        <span class="i-lucide-bell w-5 h-5 inline-block"></span>
+                        <span class="text-sm font-semibold uppercase tracking-wide">À traiter</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <p class="text-2xl font-bold text-primary leading-none">3 <span class="text-base font-normal text-secondary">demandes de lien</span></p>
+                        <p class="text-sm text-secondary">en attente de réponse</p>
+                    </div>
+                    <div class="pt-2 border-t border-amber-200 dark:border-amber-800">
+                        <a href="#" class="btn-primary btn-sm flex items-center gap-1.5 w-fit">
+                            Gérer les demandes
+                            <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Séquences -->
+            <div class="card border border-border">
+                <div class="card-body flex flex-col gap-3">
+                    <div class="flex items-center gap-2 text-muted">
+                        <span class="i-lucide-pencil w-5 h-5 inline-block"></span>
+                        <span class="text-sm font-semibold uppercase tracking-wide">Séquences</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <p class="text-2xl font-bold text-primary leading-none">1 <span class="text-base font-normal text-secondary">brouillon en cours</span></p>
+                        <p class="text-sm text-secondary">0 publication proposée</p>
+                    </div>
+                    <div class="pt-2 border-t border-border">
+                        <a href="#" class="btn-secondary btn-sm flex items-center gap-1.5 w-fit">
+                            Voir les séquences
+                            <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Activité récente -->
+        <div>
+            <h2 class="text-base font-semibold text-primary mb-4 flex items-center gap-2">
+                <span class="i-lucide-activity w-4 h-4 inline-block text-muted"></span>
+                Activité récente sur mes PNJ
+            </h2>
+            <div class="card border border-border divide-y divide-border">
+
+                <!-- Item 1 — adoption demandée -->
+                <div class="flex items-start gap-3 px-4 py-3">
+                    <div class="avatar-sm avatar-placeholder bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 shrink-0 mt-0.5">B</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-primary">
+                            <a href="#" class="link font-medium">@bob</a>
+                            <span class="text-secondary"> demande l'</span>
+                            <span class="font-medium text-crimson">Adoption</span>
+                            <span class="text-secondary"> de </span>
+                            <a href="#" class="link font-medium">Viktor</a>
+                        </p>
+                    </div>
+                    <span class="text-xs text-muted shrink-0 mt-0.5">il y a 2h</span>
+                </div>
+
+                <!-- Item 2 — retcon accepté -->
+                <div class="flex items-start gap-3 px-4 py-3">
+                    <div class="avatar-sm avatar-placeholder bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 shrink-0 mt-0.5">F</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-primary">
+                            <a href="#" class="link font-medium">@frank</a>
+                            <span class="text-secondary"> a accepté le </span>
+                            <span class="font-medium text-emerald-600 dark:text-emerald-400">Retcon</span>
+                            <span class="text-secondary"> de </span>
+                            <a href="#" class="link font-medium">Kael</a>
+                        </p>
+                    </div>
+                    <span class="text-xs text-muted shrink-0 mt-0.5">il y a 1j</span>
+                </div>
+
+                <!-- Item 3 — dérivation -->
+                <div class="flex items-start gap-3 px-4 py-3">
+                    <div class="avatar-sm avatar-placeholder bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 shrink-0 mt-0.5">D</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-primary">
+                            <a href="#" class="link font-medium">@dave</a>
+                            <span class="text-secondary"> a dérivé </span>
+                            <a href="#" class="link font-medium">Shadow Viktor</a>
+                            <span class="text-secondary"> de Viktor</span>
+                        </p>
+                    </div>
+                    <span class="text-xs text-muted shrink-0 mt-0.5">il y a 3j</span>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 2 — MES PNJ (/characters/mine/) US-14 -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-user-cog w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 2 — Mes PNJ (/characters/mine/) — onglets + priorité + liste liés</span>
+    </div>
+
+    <!-- Page header + onglets -->
+    <div class="border-b border-border bg-surface py-6">
+        <div class="container-app px-4">
+            <h1 class="text-2xl font-bold text-primary mb-5">Mes personnages</h1>
+            <!-- Tabs -->
+            <div class="flex items-center gap-1 flex-wrap">
+                <button type="button" class="btn-primary btn-sm rounded-full px-4">Tous</button>
+                <button type="button" class="btn-ghost btn-sm rounded-full px-4 text-secondary">PNJ disponibles</button>
+                <button type="button" class="btn-ghost btn-sm rounded-full px-4 text-secondary flex items-center gap-1.5">
+                    En attente
+                    <span class="badge bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 text-xs font-bold">2</span>
+                </button>
+                <button type="button" class="btn-ghost btn-sm rounded-full px-4 text-secondary">Liés</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-app px-4 py-6">
+
+        <!-- Sub-section : PNJ avec demandes en attente (priorité) -->
+        <div class="mb-10">
+            <h2 class="text-sm font-semibold text-amber-600 dark:text-amber-400 mb-4 flex items-center gap-2">
+                <span class="i-lucide-bell w-4 h-4 inline-block"></span>
+                PNJ avec demandes en attente (2)
+                <span class="badge bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 text-xs ml-1">Priorité</span>
+            </h2>
+            <div class="flex flex-col gap-4">
+
+                <!-- Viktor — 2 demandes -->
+                <div class="card border border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/10">
+                    <div class="card-body">
+                        <!-- NPC header -->
+                        <div class="flex items-start gap-3 mb-4">
+                            <div class="avatar-md avatar-placeholder bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300 shrink-0">V</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap mb-1">
+                                    <a href="#" class="font-semibold text-primary hover:text-crimson transition-colors">Viktor</a>
+                                    <span class="badge badge-available text-xs">PNJ disponible</span>
+                                </div>
+                                <p class="text-xs text-muted">City of Mist · 5 apparitions · 2 citations</p>
+                            </div>
+                        </div>
+
+                        <!-- Demandes -->
+                        <div class="bg-surface border border-border rounded-xl divide-y divide-border">
+
+                            <!-- Header demandes -->
+                            <div class="flex items-center gap-2 px-3 py-2">
+                                <span class="i-lucide-bell w-3.5 h-3.5 inline-block text-amber-500"></span>
+                                <span class="text-xs font-semibold text-secondary">2 demandes en attente :</span>
+                            </div>
+
+                            <!-- Demande 1 — @bob Adoption — PENDING (traitable) -->
+                            <div class="flex items-center justify-between gap-3 px-3 py-2.5 flex-wrap">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-medium text-primary">1.</span>
+                                    <div class="avatar-sm avatar-placeholder text-xs">B</div>
+                                    <span class="text-sm text-primary">
+                                        <a href="#" class="link font-medium">@bob</a>
+                                        <span class="text-muted"> veut </span>
+                                        <span class="font-medium text-crimson flex-inline items-center gap-0.5">
+                                            <span class="i-lucide-heart w-3.5 h-3.5 inline-block align-middle"></span>
+                                            ADOPTER
+                                        </span>
+                                    </span>
+                                    <span class="text-xs text-muted">il y a 2h</span>
+                                </div>
+                                <a href="#" class="btn-primary btn-sm flex items-center gap-1.5">
+                                    Traiter
+                                    <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                                </a>
+                            </div>
+
+                            <!-- Demande 2 — @charlie Fork — QUEUED (en file) -->
+                            <div class="flex items-center justify-between gap-3 px-3 py-2.5 flex-wrap opacity-70">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-medium text-primary">2.</span>
+                                    <div class="avatar-sm avatar-placeholder text-xs">C</div>
+                                    <span class="text-sm text-primary">
+                                        <a href="#" class="link font-medium">@charlie</a>
+                                        <span class="text-muted"> veut </span>
+                                        <span class="font-medium text-blue-500 flex-inline items-center gap-0.5">
+                                            <span class="i-lucide-git-branch w-3.5 h-3.5 inline-block align-middle"></span>
+                                            DÉRIVER
+                                        </span>
+                                    </span>
+                                    <span class="text-xs text-muted">il y a 1j</span>
+                                </div>
+                                <span class="text-xs text-muted flex items-center gap-1">
+                                    <span class="i-lucide-clock w-3.5 h-3.5 inline-block"></span>
+                                    en file (#2)
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ombra — 1 demande -->
+                <div class="card border border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/10">
+                    <div class="card-body">
+                        <!-- NPC header -->
+                        <div class="flex items-start gap-3 mb-4">
+                            <div class="avatar-md avatar-placeholder bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300 shrink-0">O</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap mb-1">
+                                    <a href="#" class="font-semibold text-primary hover:text-crimson transition-colors">Ombra</a>
+                                    <span class="badge badge-available text-xs">PNJ disponible</span>
+                                </div>
+                                <p class="text-xs text-muted">Blades in the Dark · 3 apparitions · 0 citation</p>
+                            </div>
+                        </div>
+
+                        <!-- Demandes -->
+                        <div class="bg-surface border border-border rounded-xl divide-y divide-border">
+
+                            <div class="flex items-center gap-2 px-3 py-2">
+                                <span class="i-lucide-bell w-3.5 h-3.5 inline-block text-amber-500"></span>
+                                <span class="text-xs font-semibold text-secondary">1 demande en attente :</span>
+                            </div>
+
+                            <!-- Demande 1 — @eve Claim — PENDING -->
+                            <div class="flex items-center justify-between gap-3 px-3 py-2.5 flex-wrap">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-medium text-primary">1.</span>
+                                    <div class="avatar-sm avatar-placeholder text-xs">E</div>
+                                    <span class="text-sm text-primary">
+                                        <a href="#" class="link font-medium">@eve</a>
+                                        <span class="text-muted"> veut </span>
+                                        <span class="font-medium text-muted flex-inline items-center gap-0.5">
+                                            <span class="i-lucide-git-merge w-3.5 h-3.5 inline-block align-middle"></span>
+                                            RÉCLAMER
+                                        </span>
+                                    </span>
+                                    <span class="text-xs text-muted">il y a 3j</span>
+                                </div>
+                                <a href="#" class="btn-primary btn-sm flex items-center gap-1.5">
+                                    Traiter
+                                    <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Sub-section : PNJ disponibles sans demande -->
+        <div class="mb-10">
+            <h2 class="text-sm font-semibold text-primary mb-4 flex items-center gap-2">
+                <span class="i-lucide-user-check w-4 h-4 inline-block text-emerald-500"></span>
+                PNJ disponibles sans demande (4)
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+
+                <!-- Fenris -->
+                <div class="card card-hover border border-border text-center">
+                    <div class="card-body flex flex-col items-center gap-2">
+                        <div class="avatar-md avatar-placeholder bg-stone-200 text-stone-600 dark:bg-stone-700 dark:text-stone-300">F</div>
+                        <div>
+                            <p class="font-semibold text-sm text-primary">Fenris</p>
+                            <p class="text-xs text-muted">Ironsworn</p>
+                            <p class="text-xs text-muted mt-0.5">8 app.</p>
+                        </div>
+                        <a href="#" class="link text-xs flex items-center gap-1">
+                            Fiche
+                            <span class="i-lucide-arrow-right w-3 h-3 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Nova -->
+                <div class="card card-hover border border-border text-center">
+                    <div class="card-body flex flex-col items-center gap-2">
+                        <div class="avatar-md avatar-placeholder bg-sky-100 text-sky-600 dark:bg-sky-900/40 dark:text-sky-400">N</div>
+                        <div>
+                            <p class="font-semibold text-sm text-primary">Nova</p>
+                            <p class="text-xs text-muted">Blades in the Dark</p>
+                            <p class="text-xs text-muted mt-0.5">1 app.</p>
+                        </div>
+                        <a href="#" class="link text-xs flex items-center gap-1">
+                            Fiche
+                            <span class="i-lucide-arrow-right w-3 h-3 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Thane -->
+                <div class="card card-hover border border-border text-center">
+                    <div class="card-body flex flex-col items-center gap-2">
+                        <div class="avatar-md avatar-placeholder bg-teal-100 text-teal-600 dark:bg-teal-900/40 dark:text-teal-400">T</div>
+                        <div>
+                            <p class="font-semibold text-sm text-primary">Thane</p>
+                            <p class="text-xs text-muted">City of Mist</p>
+                            <p class="text-xs text-muted mt-0.5">2 app.</p>
+                        </div>
+                        <a href="#" class="link text-xs flex items-center gap-1">
+                            Fiche
+                            <span class="i-lucide-arrow-right w-3 h-3 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Asha -->
+                <div class="card card-hover border border-border text-center">
+                    <div class="card-body flex flex-col items-center gap-2">
+                        <div class="avatar-md avatar-placeholder bg-rose-100 text-rose-600 dark:bg-rose-900/40 dark:text-rose-400">A</div>
+                        <div>
+                            <p class="font-semibold text-sm text-primary">Asha</p>
+                            <p class="text-xs text-muted">City of Mist</p>
+                            <p class="text-xs text-muted mt-0.5">3 app.</p>
+                        </div>
+                        <a href="#" class="link text-xs flex items-center gap-1">
+                            Fiche
+                            <span class="i-lucide-arrow-right w-3 h-3 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Sub-section : Personnages liés -->
+        <div>
+            <h2 class="text-sm font-semibold text-primary mb-4 flex items-center gap-2">
+                <span class="i-lucide-link-2 w-4 h-4 inline-block text-muted"></span>
+                Personnages liés (3)
+            </h2>
+            <div class="flex flex-col gap-3">
+
+                <!-- Kael — Retcon par @frank -->
+                <div class="card border border-border">
+                    <div class="card-body flex items-start justify-between gap-3 flex-wrap">
+                        <div class="flex items-start gap-3">
+                            <div class="avatar-sm avatar-placeholder bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 shrink-0 mt-0.5">K</div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                                    <a href="#" class="font-semibold text-sm text-primary hover:text-crimson">Kael</a>
+                                    <span class="badge badge-claimed text-xs">Réclamé par @frank</span>
+                                </div>
+                                <p class="text-xs text-secondary">
+                                    <span class="font-medium">Lien :</span> Retcon
+                                    <span class="text-border mx-1">·</span>
+                                    <span class="font-medium">Séquence :</span> « Le retour du prodigue »
+                                </p>
+                                <p class="text-xs text-muted mt-0.5">Séquence publiée le 20 fév 2026</p>
+                            </div>
+                        </div>
+                        <a href="#" class="link-muted text-xs flex items-center gap-1 shrink-0">
+                            Voir séquence
+                            <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Lyra — Adoptée par @bob -->
+                <div class="card border border-border">
+                    <div class="card-body flex items-start justify-between gap-3 flex-wrap">
+                        <div class="flex items-start gap-3">
+                            <div class="avatar-sm avatar-placeholder bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-400 shrink-0 mt-0.5">L</div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                                    <a href="#" class="font-semibold text-sm text-primary hover:text-crimson">Lyra</a>
+                                    <span class="badge badge-adopted text-xs">Adoptée par @bob</span>
+                                </div>
+                                <p class="text-xs text-secondary">
+                                    <span class="font-medium">Lien :</span> Adoption
+                                    <span class="text-border mx-1">·</span>
+                                    <span class="font-medium">Séquence :</span> « La rencontre au carrefour »
+                                </p>
+                                <p class="text-xs text-muted flex items-center gap-1 mt-0.5">
+                                    <span class="i-lucide-pencil w-3 h-3 inline-block"></span>
+                                    Séquence en brouillon
+                                </p>
+                            </div>
+                        </div>
+                        <a href="#" class="link-muted text-xs flex items-center gap-1 shrink-0">
+                            Voir séquence
+                            <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Shadow Viktor — Dérivé par @dave -->
+                <div class="card border border-border">
+                    <div class="card-body flex items-start justify-between gap-3 flex-wrap">
+                        <div class="flex items-start gap-3">
+                            <div class="avatar-sm avatar-placeholder bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 shrink-0 mt-0.5">S</div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                                    <a href="#" class="font-semibold text-sm text-primary hover:text-crimson">Shadow Viktor</a>
+                                    <span class="badge badge-pending text-xs">Dérivé par @dave</span>
+                                </div>
+                                <p class="text-xs text-secondary">
+                                    <span class="font-medium">Lien :</span> Dérivation
+                                    <span class="text-border mx-1">·</span>
+                                    Viktor reste PNJ disponible
+                                </p>
+                            </div>
+                        </div>
+                        <a href="#" class="link-muted text-xs flex items-center gap-1 shrink-0">
+                            Voir fiche
+                            <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- SECTION 3 — ARBITRAGE INLINE (fiche Viktor, vue GM) -->
+<!-- ================================================================ -->
+<section class="border-t-4 border-crimson mb-16">
+
+    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-gavel w-4 h-4 text-muted inline-block"></span>
+        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 3 — Arbitrage inline (sur fiche PNJ, visible uniquement pour le créateur)</span>
+    </div>
+
+    <div class="container-app px-4 py-8 max-w-2xl">
+
+        <p class="text-xs text-muted mb-4">
+            Bloc visible uniquement pour le créateur du PNJ sur sa fiche. Alternative à la page dédiée /requests/.
+        </p>
+
+        <!-- Bloc arbitrage inline -->
+        <div class="card border border-border rounded-2xl overflow-hidden">
+
+            <!-- Header -->
+            <div class="card-header flex items-center justify-between bg-amber-50 dark:bg-amber-950/20 border-b border-amber-200 dark:border-amber-800">
+                <div class="flex items-center gap-2">
+                    <span class="i-lucide-bell w-4 h-4 inline-block text-amber-500"></span>
+                    <h2 class="font-semibold text-primary text-sm">Demandes en attente (2)</h2>
+                </div>
+                <a href="#" class="link-muted text-xs flex items-center gap-1">
+                    Voir toutes
+                    <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                </a>
+            </div>
+
+            <div class="divide-y divide-border">
+
+                <!-- Demande 1 — @bob ADOPT — PENDING (traitable) -->
+                <div class="card-body flex flex-col gap-3">
+                    <div class="flex items-start justify-between gap-3 flex-wrap">
+                        <div class="flex items-center gap-2">
+                            <span class="badge bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 text-xs font-semibold uppercase tracking-wide flex items-center gap-1">
+                                <span class="i-lucide-heart w-3 h-3 inline-block"></span>
+                                Adopt
+                            </span>
+                            <span class="text-sm font-medium text-primary">@bob</span>
+                        </div>
+                        <span class="text-xs text-muted">il y a 2h</span>
+                    </div>
+                    <blockquote class="text-sm text-secondary italic border-l-2 border-border pl-3">
+                        « J'aimerais reprendre Viktor dans ma campagne Ironsworn. Son passé de Lié me donne des idées
+                        pour l'arc central de mes joueurs... »
+                    </blockquote>
+                    <!-- Actions inline -->
+                    <div class="flex items-center gap-2 pt-1">
+                        <button type="button" class="btn-primary btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-check w-4 h-4 inline-block"></span>
+                            Accepter
+                        </button>
+                        <button type="button" class="btn-danger btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-x w-4 h-4 inline-block"></span>
+                            Refuser
+                        </button>
+                        <a href="#" class="btn-ghost btn-sm text-muted ml-auto flex items-center gap-1">
+                            Détail
+                            <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Demande 2 — @charlie FORK — QUEUED (en file) -->
+                <div class="card-body flex flex-col gap-3 opacity-70">
+                    <div class="flex items-start justify-between gap-3 flex-wrap">
+                        <div class="flex items-center gap-2">
+                            <span class="badge bg-neutral-200 text-neutral-600 dark:bg-neutral-700 dark:text-neutral-300 text-xs font-semibold uppercase tracking-wide flex items-center gap-1">
+                                <span class="i-lucide-git-branch w-3 h-3 inline-block"></span>
+                                Fork
+                            </span>
+                            <span class="text-sm font-medium text-primary">@charlie</span>
+                            <span class="text-xs text-muted">(en file, 2e)</span>
+                        </div>
+                        <span class="text-xs text-muted">il y a 1j</span>
+                    </div>
+                    <blockquote class="text-sm text-secondary italic border-l-2 border-border pl-3">
+                        « Je voudrais créer Lyra, inspirée de Viktor, une version plus jeune avec un rapport différent à
+                        son héritage... »
+                    </blockquote>
+                    <p class="text-xs text-muted flex items-center gap-1">
+                        <span class="i-lucide-clock w-3.5 h-3.5 inline-block"></span>
+                        Traitable après la demande de @bob
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Variante : formulaire de refus inline -->
+        <div class="mt-8">
+            <p class="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Variante — formulaire de refus inline (après clic "Refuser")</p>
+            <div class="card border border-red-200 dark:border-red-800 rounded-xl overflow-hidden">
+                <div class="card-body flex flex-col gap-3">
+                    <div class="flex items-center gap-2">
+                        <span class="i-lucide-x-circle w-4 h-4 inline-block text-crimson"></span>
+                        <p class="text-sm font-medium text-primary">Refuser la demande d'adoption de <strong>@bob</strong></p>
+                    </div>
+                    <div>
+                        <label class="form-label text-xs" for="reject-reason">Raison du refus <span class="font-normal text-muted">(envoyée à @bob)</span></label>
+                        <textarea
+                            id="reject-reason"
+                            class="form-input w-full min-h-20 resize-y text-sm"
+                            placeholder="Expliquez votre décision (optionnel)..."></textarea>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" class="btn-danger btn-sm flex items-center gap-1.5">
+                            <span class="i-lucide-x w-4 h-4 inline-block"></span>
+                            Confirmer le refus
+                        </button>
+                        <button type="button" class="btn-ghost btn-sm text-muted">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Variante : confirmation post-arbitrage -->
+        <div class="mt-8">
+            <p class="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Variante — confirmation post-acceptation</p>
+            <div class="card border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/20 rounded-xl">
+                <div class="card-body flex items-start gap-3">
+                    <span class="i-lucide-check-circle w-5 h-5 inline-block text-green-600 shrink-0 mt-0.5"></span>
+                    <div>
+                        <p class="text-sm font-medium text-primary mb-0.5">Demande acceptée !</p>
+                        <p class="text-sm text-secondary">
+                            <strong>Viktor</strong> est maintenant le PJ de <strong>@bob</strong>.
+                            Une Séquence Partagée a été créée pour sceller la transition.
+                        </p>
+                        <a href="#" class="btn-ghost btn-sm mt-2 flex items-center gap-1.5 text-green-700 dark:text-green-400 pl-0">
+                            Ouvrir la Séquence Partagée
+                            <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
