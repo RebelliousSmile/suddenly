@@ -209,9 +209,27 @@ export default defineConfig({
         'a:hover': {
           'text-decoration': 'underline',
         },
+        'h1': { 'color': 'rgb(var(--c-crimson))' },
+        'h2': { 'color': 'rgb(var(--c-crimson) / 0.85)' },
+        'h3': { 'color': 'rgb(var(--c-crimson) / 0.75)' },
+        'h4,h5,h6': { 'color': 'rgb(var(--c-crimson) / 0.65)' },
+        'strong': { 'color': 'rgb(var(--c-crimson) / 0.9)' },
+        'em': { 'color': 'rgb(var(--c-violet))' },
+        'code': {
+          'color': 'rgb(var(--c-neon))',
+          'background': 'rgb(var(--c-neon) / 0.08)',
+          'border-radius': '0.3rem',
+          'padding': '0.1em 0.4em',
+        },
+        'pre code': {
+          'color': 'inherit',
+          'background': 'transparent',
+          'padding': '0',
+        },
         'blockquote': {
           'border-left-color': 'rgb(var(--c-crimson))',
           'font-style': 'normal',
+          'color': 'rgb(var(--c-crimson) / 0.75)',
         },
       },
     }),

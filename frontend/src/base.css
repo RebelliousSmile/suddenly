@@ -54,11 +54,11 @@
 }
 
 [data-theme="dark"] {
-  --c-bg: #0a0a0a;
-  --c-surface: #111111;
-  --c-card: #1a1a1a;
-  --c-card-dark: #222222;
-  --c-border: #2a2a2a;
+  --c-bg: #0b0705;
+  --c-surface: #170d08;
+  --c-card: #25150e;
+  --c-card-dark: #1d0f09;
+  --c-border: #3d2215;
   --c-input-bg: rgba(224, 53, 88, 0.06); /* fallback solid pour background-color */
   --c-primary: #f0f0f0;
   --c-secondary: #a0a0a0;
@@ -67,7 +67,7 @@
   --c-brand-hover: 129 140 248;
   --shadow-card: 0 0 24px rgba(224,53,88,0.12), 0 2px 8px rgba(0,0,0,0.4);
   --shadow-card-hover: 0 0 36px rgba(224,53,88,0.22), 0 4px 16px rgba(0,0,0,0.5);
-  --body-bg: radial-gradient(ellipse at top, rgba(60,10,20,0.6), #0a0a0a) #0a0a0a;
+  --body-bg: radial-gradient(ellipse at top, rgba(60,20,10,0.55), #0b0705) #0b0705;
 
   /* Semantic feedback — dark mode: lighter shades for readability on near-black */
   --c-success: 74 222 128;   /* green-400  #4ade80 */
@@ -91,3 +91,15 @@ body {
 a { text-decoration: none; }
 
 [x-cloak] { display: none !important; }
+
+/* CodeMirror — coloration syntaxique markdown (EasyMDE) */
+.CodeMirror .cm-header   { color: rgb(var(--c-crimson)); font-weight: 600; }
+.CodeMirror .cm-header-1 { color: rgb(var(--c-crimson)); }
+.CodeMirror .cm-header-2 { color: rgb(var(--c-crimson) / 0.85); }
+.CodeMirror .cm-header-3 { color: rgb(var(--c-crimson) / 0.75); }
+.CodeMirror .cm-strong   { color: rgb(var(--c-crimson) / 0.9); }
+.CodeMirror .cm-em       { color: rgb(var(--c-violet)); font-style: italic; }
+.CodeMirror .cm-comment  { color: rgb(var(--c-neon)); }   /* code inline */
+.CodeMirror .cm-quote    { color: rgb(var(--c-crimson) / 0.7); }
+.CodeMirror .cm-link     { color: rgb(var(--c-crimson)); }
+.CodeMirror .cm-url      { color: rgb(var(--c-crimson) / 0.6); }
