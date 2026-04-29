@@ -2,11 +2,11 @@
   <!-- Trait penché comme un stylo avec bords horizontaux -->
   <polygon 
     points="44,25 56,25 40,85 28,85" 
-    fill="#6364FF"
+    fill="#6366f1"
   />
   
   <!-- Trois points avec plus d'espace -->
-  <circle cx="30" cy="100" r="7" fill="#6364FF"/>
-  <circle cx="50" cy="100" r="7" fill="#6364FF"/>
-  <circle cx="70" cy="100" r="7" fill="#6364FF"/>
+  <circle cx="30" cy="100" r="7" fill="#6366f1"/>
+  <circle cx="50" cy="100" r="7" fill="#6366f1"/>
+  <circle cx="70" cy="100" r="7" fill="#6366f1"/>
 </svg>
