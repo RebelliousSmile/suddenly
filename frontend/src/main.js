@@ -150,7 +150,7 @@ Alpine.data('markdownEditor', (initialValue = '') => ({
       initialValue,
       spellChecker: false,
       autosave: { enabled: false },
-      toolbar: ['bold', 'italic', 'heading', '|', 'quote', 'unordered-list', 'ordered-list', '|', 'link', '|', 'preview', 'side-by-side', 'fullscreen'],
+      toolbar: ['bold', 'italic', 'heading', '|', 'quote', 'unordered-list', 'ordered-list', '|', 'link', '|', 'preview', 'fullscreen'],
     })
 
     const cm = this._easyMde.codemirror
