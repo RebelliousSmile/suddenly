@@ -1,4 +1,5 @@
 :root {
+  /* Structural tokens */
   --c-bg: #faf9f6;
   --c-surface: #f0ede8;
   --c-card: #ffffff;
@@ -10,6 +11,20 @@
   --shadow-card: 0 2px 16px rgba(0,0,0,0.07);
   --shadow-card-hover: 0 4px 24px rgba(0,0,0,0.12);
   --body-bg: #faf9f6;
+
+  /* Action colors — RGB channels (supports bg-crimson/10 opacity modifiers) */
+  --c-crimson: 224 53 88;
+  --c-crimson-hover: 200 42 74;
+  --c-violet: 124 58 237;
+  --c-violet-hover: 109 40 217;
+  --c-neon: 0 230 118;
+  --c-neon-hover: 0 200 83;
+
+  /* Semantic feedback — light mode: darker shades for readability on white */
+  --c-success: 21 128 61;    /* green-700  #15803d */
+  --c-warning: 180 83 9;     /* amber-700  #b45309 */
+  --c-error: 153 27 27;      /* red-800    #991b1b — distinct from crimson */
+  --c-info: 3 105 161;       /* sky-700    #0369a1 — distinct from violet */
 }
 
 [data-theme="light"] {
@@ -24,6 +39,12 @@
   --shadow-card: 0 2px 16px rgba(0,0,0,0.07);
   --shadow-card-hover: 0 4px 24px rgba(0,0,0,0.12);
   --body-bg: #faf9f6;
+
+  /* Semantic feedback — light mode */
+  --c-success: 21 128 61;
+  --c-warning: 180 83 9;
+  --c-error: 153 27 27;
+  --c-info: 3 105 161;
 }
 
 [data-theme="dark"] {
@@ -38,6 +59,12 @@
   --shadow-card: 0 0 24px rgba(224,53,88,0.12), 0 2px 8px rgba(0,0,0,0.4);
   --shadow-card-hover: 0 0 36px rgba(224,53,88,0.22), 0 4px 16px rgba(0,0,0,0.5);
   --body-bg: radial-gradient(ellipse at top, rgba(60,10,20,0.6), #0a0a0a) #0a0a0a;
+
+  /* Semantic feedback — dark mode: lighter shades for readability on near-black */
+  --c-success: 74 222 128;   /* green-400  #4ade80 */
+  --c-warning: 251 191 36;   /* amber-400  #fbbf24 */
+  --c-error: 252 165 165;    /* red-300    #fca5a5 — soft, distinct from crimson */
+  --c-info: 125 211 252;     /* sky-300    #7dd3fc — distinct from violet */
 }
 
 body {

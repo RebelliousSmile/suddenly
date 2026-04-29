@@ -24,22 +24,24 @@ const presetSuddenly = () => ({
       primary: 'var(--c-primary)',
       secondary: 'var(--c-secondary)',
       muted: 'var(--c-muted)',
+      // Action colors — CSS var driven, supports opacity modifiers (bg-crimson/10)
       crimson: {
-        DEFAULT: '#e03558',
-        hover: '#c82a4a',
+        DEFAULT: 'rgb(var(--c-crimson) / <alpha-value>)',
+        hover: 'rgb(var(--c-crimson-hover) / <alpha-value>)',
       },
       violet: {
-        DEFAULT: '#7c3aed',
-        hover: '#6d28d9',
+        DEFAULT: 'rgb(var(--c-violet) / <alpha-value>)',
+        hover: 'rgb(var(--c-violet-hover) / <alpha-value>)',
       },
       neon: {
-        DEFAULT: '#00e676',
-        hover: '#00c853',
+        DEFAULT: 'rgb(var(--c-neon) / <alpha-value>)',
+        hover: 'rgb(var(--c-neon-hover) / <alpha-value>)',
       },
-      success: '#16a34a',
-      warning: '#d97706',
-      error: '#dc2626',
-      info: '#6366f1',
+      // Semantic feedback — adaptive per mode via base.css CSS vars
+      success: 'rgb(var(--c-success) / <alpha-value>)',
+      warning: 'rgb(var(--c-warning) / <alpha-value>)',
+      error: 'rgb(var(--c-error) / <alpha-value>)',
+      info: 'rgb(var(--c-info) / <alpha-value>)',
 
       // Statuts des personnages — utilisés par les badges badge-*
       // (conservés comme référence sémantique, les badges utilisent les palettes Tailwind)
@@ -191,14 +193,14 @@ export default defineConfig({
     presetTypography({
       cssExtend: {
         'a': {
-          'color': '#e03558',
+          'color': 'rgb(var(--c-crimson))',
           'text-decoration': 'none',
         },
         'a:hover': {
           'text-decoration': 'underline',
         },
         'blockquote': {
-          'border-left-color': '#e03558',
+          'border-left-color': 'rgb(var(--c-crimson))',
           'font-style': 'normal',
         },
       },

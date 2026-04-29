@@ -127,7 +127,7 @@
 
             <!-- Séquences partagées récentes (section violette) -->
             <div class="rounded-xl border border-violet-200 bg-violet-50 dark:bg-violet-950/20 dark:border-violet-800 p-4">
-                <h2 class="text-sm font-semibold text-violet-800 dark:text-violet-400 flex items-center gap-2 mb-3">
+                <h2 class="text-sm font-semibold text-violet dark:text-violet flex items-center gap-2 mb-3">
                     <span class="i-lucide-link-2 w-4 h-4 inline-block"></span>
                     Séquences partagées récentes
                 </h2>
@@ -135,7 +135,7 @@
 
                     <!-- Sequence item -->
                     <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-100 dark:hover:bg-violet-900/20 transition-colors group">
-                        <span class="i-lucide-arrow-left-right w-4 h-4 text-violet-500 inline-block shrink-0"></span>
+                        <span class="i-lucide-arrow-left-right w-4 h-4 text-violet inline-block shrink-0"></span>
                         <div>
                             <p class="text-sm font-medium text-primary">"La rencontre au carrefour"</p>
                             <p class="text-xs text-muted">Entre <a href="#" class="link-muted">@alice</a> et <a href="#" class="link-muted">@bob</a> · Viktor ↔ Shadow Viktor</p>
@@ -144,7 +144,7 @@
                     </a>
 
                     <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-100 dark:hover:bg-violet-900/20 transition-colors group">
-                        <span class="i-lucide-arrow-left-right w-4 h-4 text-violet-500 inline-block shrink-0"></span>
+                        <span class="i-lucide-arrow-left-right w-4 h-4 text-violet inline-block shrink-0"></span>
                         <div>
                             <p class="text-sm font-medium text-primary">"Le pacte des ruines"</p>
                             <p class="text-xs text-muted">Entre <a href="#" class="link-muted">@charlie</a> et <a href="#" class="link-muted">@eve</a> · Fenris ↔ Lyra</p>
@@ -242,7 +242,7 @@
                         <button
                             type="button"
                             @click="recommended = !recommended"
-                            :class="recommended ? 'text-violet-600 dark:text-violet-400' : 'hover:text-violet-600'"
+                            :class="recommended ? 'text-violet dark:text-violet' : 'hover:text-violet'"
                             class="flex items-center gap-1.5 transition-colors text-sm"
                             hx-post="/api/reports/1/recommend/"
                             hx-target="this"
@@ -256,7 +256,7 @@
                 <!-- Feed item 2 — recommended post (sparkles header) -->
                 <div class="card border-l-4 border-violet-400">
                     <!-- Recommender header -->
-                    <div class="px-4 pt-3 pb-0 flex items-center gap-2 text-xs text-violet-600 dark:text-violet-400">
+                    <div class="px-4 pt-3 pb-0 flex items-center gap-2 text-xs text-violet dark:text-violet">
                         <span class="i-lucide-sparkles w-3.5 h-3.5 inline-block"></span>
                         <a href="#" class="font-medium hover:underline">@charlie</a>
                         <span class="text-muted">recommande</span>
@@ -299,7 +299,7 @@
                             <span class="i-lucide-message-square w-4 h-4 inline-block"></span>
                             <span>3</span>
                         </button>
-                        <button type="button" class="flex items-center gap-1.5 hover:text-violet-600 transition-colors text-sm">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-violet transition-colors text-sm">
                             <span class="i-lucide-sparkles w-4 h-4 inline-block"></span>
                             Recommander
                         </button>
@@ -347,7 +347,7 @@
                             <span class="i-lucide-message-square w-4 h-4 inline-block"></span>
                             <span>5</span>
                         </button>
-                        <button type="button" class="flex items-center gap-1.5 hover:text-violet-600 transition-colors text-sm">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-violet transition-colors text-sm">
                             <span class="i-lucide-sparkles w-4 h-4 inline-block"></span>
                             Recommander
                         </button>
@@ -441,7 +441,7 @@
                         <button type="button" class="flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
                             <span class="i-lucide-message-square w-4 h-4 inline-block"></span> 2
                         </button>
-                        <button type="button" class="flex items-center gap-1.5 hover:text-violet-600 transition-colors text-sm">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-violet transition-colors text-sm">
                             <span class="i-lucide-sparkles w-4 h-4 inline-block"></span> Recommander
                         </button>
                     </div>
@@ -474,7 +474,7 @@
                         <button type="button" class="flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
                             <span class="i-lucide-message-square w-4 h-4 inline-block"></span> 1
                         </button>
-                        <button type="button" class="flex items-center gap-1.5 hover:text-violet-600 transition-colors text-sm">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-violet transition-colors text-sm">
                             <span class="i-lucide-sparkles w-4 h-4 inline-block"></span> Recommander
                         </button>
                     </div>
@@ -507,7 +507,7 @@
                         <button type="button" class="flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
                             <span class="i-lucide-message-square w-4 h-4 inline-block"></span> 0
                         </button>
-                        <button type="button" class="flex items-center gap-1.5 hover:text-violet-600 transition-colors text-sm">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-violet transition-colors text-sm">
                             <span class="i-lucide-sparkles w-4 h-4 inline-block"></span> Recommander
                         </button>
                     </div>
@@ -583,7 +583,7 @@
                         <button type="button" class="flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
                             <span class="i-lucide-message-square w-4 h-4 inline-block"></span> 1
                         </button>
-                        <button type="button" class="flex items-center gap-1.5 hover:text-violet-600 transition-colors text-sm">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-violet transition-colors text-sm">
                             <span class="i-lucide-sparkles w-4 h-4 inline-block"></span> Recommander
                         </button>
                     </div>
@@ -621,7 +621,7 @@
                         <button type="button" class="flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
                             <span class="i-lucide-message-square w-4 h-4 inline-block"></span> 4
                         </button>
-                        <button type="button" class="flex items-center gap-1.5 hover:text-violet-600 transition-colors text-sm">
+                        <button type="button" class="flex items-center gap-1.5 hover:text-violet transition-colors text-sm">
                             <span class="i-lucide-sparkles w-4 h-4 inline-block"></span> Recommander
                         </button>
                     </div>
@@ -839,7 +839,7 @@
                             <span class="i-lucide-message-square w-4 h-4 inline-block"></span> 2
                         </button>
                         <button type="button"
-                            class="flex items-center gap-1.5 hover:text-violet-600 transition-colors text-sm"
+                            class="flex items-center gap-1.5 hover:text-violet transition-colors text-sm"
                             hx-post="/api/reports/1/recommend/"
                             hx-target="this"
                             hx-swap="outerHTML">
@@ -864,9 +864,9 @@
                         <button type="button" class="flex items-center gap-1.5 hover:text-primary transition-colors text-sm">
                             <span class="i-lucide-message-square w-4 h-4 inline-block"></span> 2
                         </button>
-                        <!-- Active state — text-violet-600 -->
+                        <!-- Active state — text-violet -->
                         <button type="button"
-                            class="flex items-center gap-1.5 text-violet-600 dark:text-violet-400 text-sm"
+                            class="flex items-center gap-1.5 text-violet dark:text-violet text-sm"
                             hx-post="/api/reports/1/recommend/"
                             hx-target="this"
                             hx-swap="outerHTML">
@@ -888,7 +888,7 @@
             <div class="max-w-2xl">
                 <div class="card border-l-4 border-violet-400">
                     <!-- Recommender header -->
-                    <div class="px-4 pt-3 pb-2 flex items-center gap-2 text-xs text-violet-600 dark:text-violet-400 border-b border-border/50">
+                    <div class="px-4 pt-3 pb-2 flex items-center gap-2 text-xs text-violet dark:text-violet border-b border-border/50">
                         <span class="i-lucide-sparkles w-3.5 h-3.5 inline-block"></span>
                         <a href="#" class="font-semibold hover:underline">@charlie</a>
                         <span class="text-muted">recommande</span>
