@@ -54,7 +54,7 @@
             </div>
 
             <!-- Avatar -->
-            {% include "components/form_image_upload.html" with field_id=form.avatar.id_for_label field_name=form.avatar.html_name field_label=form.avatar.label field_optional=True current_url=form.avatar.value.url|default:'' clear_id=form.avatar.id_for_label|add:"-clear" clear_name=form.avatar.html_name|add:"-clear" %}
+            {% include "components/form_image_upload.html" with field_id=form.avatar.id_for_label field_name=form.avatar.html_name field_label=form.avatar.label field_optional=True current_url=avatar_url clear_id=form.avatar.id_for_label|add:"-clear" clear_name=form.avatar.html_name|add:"-clear" %}
             <div>
                 {% if form.avatar.help_text %}
                     <p class="form-help mt-2">{{ form.avatar.help_text|safe }}</p>

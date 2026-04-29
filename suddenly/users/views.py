@@ -82,5 +82,14 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):  # type: ignore[type-arg]
     def get_object(self, queryset: QuerySet[User] | None = None) -> User:
         return self.request.user  # type: ignore[return-value]
 
+    def get_context_data(self, **kwargs: object) -> dict[str, object]:
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        try:
+            context["avatar_url"] = user.avatar.url if user.avatar else ""  # type: ignore[union-attr]
+        except ValueError:
+            context["avatar_url"] = ""
+        return context
+
     def get_success_url(self) -> str:
         return reverse("users:profile", kwargs={"username": self.request.user.username})

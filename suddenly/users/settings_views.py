@@ -34,7 +34,12 @@ def settings_preferences(request: AuthenticatedRequest) -> HttpResponse:
             return redirect(reverse("users:settings_preferences"))
     else:
         form = PreferencesForm(instance=request.user)
-    return render(request, "users/settings_preferences.html", {"form": form})
+    try:
+        default_bg = request.user.default_character_background
+        bg_url = default_bg.url if default_bg else ""
+    except ValueError:
+        bg_url = ""
+    return render(request, "users/settings_preferences.html", {"form": form, "bg_url": bg_url})
 
 
 @login_required
