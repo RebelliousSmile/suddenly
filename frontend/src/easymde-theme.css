@@ -1,0 +1,90 @@
+/* =================================================================
+   EasyMDE — Overrides for light/dark theme
+   ================================================================= */
+
+/* Container */
+.EasyMDEContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Toolbar */
+.editor-toolbar {
+  background: var(--c-card-dark);
+  border-color: var(--c-border);
+  border-radius: 0.5rem 0.5rem 0 0;
+  padding: 4px 8px;
+  opacity: 1;
+}
+
+.editor-toolbar button {
+  color: var(--c-secondary) !important;
+  border: none;
+}
+
+.editor-toolbar button:hover,
+.editor-toolbar button.active {
+  background: var(--c-surface);
+  color: var(--c-primary) !important;
+  border-color: var(--c-border);
+}
+
+.editor-toolbar i.separator {
+  border-color: var(--c-border);
+}
+
+/* Editor area (CodeMirror) */
+.CodeMirror {
+  background: var(--c-card);
+  color: var(--c-primary);
+  border-color: var(--c-border);
+  border-radius: 0 0 0.5rem 0.5rem;
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+  font-size: 0.875rem;
+  padding: 0.5rem;
+  min-height: 300px;
+}
+
+.CodeMirror-scroll {
+  min-height: 280px;
+}
+
+.CodeMirror-cursor {
+  border-left-color: var(--c-primary);
+}
+
+.CodeMirror-selected,
+.CodeMirror-focused .CodeMirror-selected {
+  background: rgba(224, 53, 88, 0.2);
+}
+
+/* Placeholder */
+.CodeMirror pre.CodeMirror-placeholder {
+  color: var(--c-muted);
+}
+
+/* Status bar */
+.editor-statusbar {
+  color: var(--c-muted);
+  border-top-color: var(--c-border);
+  font-size: 0.75rem;
+  padding: 4px 8px;
+}
+
+/* Preview & side-by-side */
+.editor-preview,
+.editor-preview-side {
+  background: var(--c-card);
+  color: var(--c-primary);
+  border-color: var(--c-border);
+}
+
+.editor-preview-side {
+  border-left-color: var(--c-border);
+}
+
+/* Fullscreen */
+.EasyMDEContainer.fullscreen .CodeMirror,
+.EasyMDEContainer.fullscreen .editor-toolbar {
+  background: var(--c-bg);
+}

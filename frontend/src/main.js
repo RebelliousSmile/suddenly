@@ -12,6 +12,9 @@ import 'easymde/dist/easymde.min.css'
 // Base reset
 import './base.css'
 
+// EasyMDE theme overrides (light + dark)
+import './easymde-theme.css'
+
 // HTMX loading indicator styles
 import './htmx-indicator.css'
 
