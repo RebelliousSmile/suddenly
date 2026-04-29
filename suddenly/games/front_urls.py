@@ -19,4 +19,29 @@ urlpatterns = [
     path("<uuid:game_pk>/reports/<uuid:pk>/", front_views.report_detail, name="report_detail"),
     path("<uuid:game_pk>/reports/new/", front_views.report_create, name="report_create"),
     path("<uuid:game_pk>/reports/<uuid:pk>/edit/", front_views.report_edit, name="report_edit"),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/rapports/new/",
+        front_views.rapport_create,
+        name="rapport_create",
+    ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/rapports/<uuid:rapport_pk>/edit/",
+        front_views.rapport_edit,
+        name="rapport_edit",
+    ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/rapports/<uuid:rapport_pk>/delete/",
+        front_views.rapport_delete,
+        name="rapport_delete",
+    ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/rapports/<uuid:rapport_pk>/markers/new/",
+        front_views.marker_create,
+        name="marker_create",
+    ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/rapports/<uuid:rapport_pk>/markers/<uuid:marker_pk>/delete/",
+        front_views.marker_delete,
+        name="marker_delete",
+    ),
 ]

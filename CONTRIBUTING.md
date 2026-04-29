@@ -87,9 +87,18 @@ cp .env.example .env
 # Appliquer les migrations
 python manage.py migrate
 
+# Installer les hooks Git (pre-commit + pre-push)
+make install-hooks
+
 # Lancer le serveur de développement
 python manage.py runserver
 ```
+
+> **Hooks Git** : `make install-hooks` installe deux niveaux de vérification :
+> - **pre-commit** — ruff (lint + format), intégrité des fichiers PO
+> - **pre-push** — mypy + pytest (suite complète)
+>
+> Les tests ne bloquent donc pas chaque commit, uniquement le push.
 
 ### Variables d'Environnement
 

@@ -1,0 +1,55 @@
+{% load i18n %}
+<div id="rapport-{{ rapport.pk }}" class="card card-body">
+    <div class="flex items-start justify-between gap-3">
+        <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+                <span class="badge bg-card-dark text-muted border border-border text-xs">
+                    {{ rapport.get_kind_display }}
+                </span>
+                {% if rapport.actor %}
+                    <span class="text-xs text-muted">
+                        <span class="i-lucide-user text-xs"></span>
+                        {{ rapport.actor.name }}
+                    </span>
+                {% endif %}
+            </div>
+            <p class="text-secondary text-sm">{{ rapport.content }}</p>
+
+            {% if rapport.markers.all %}
+                <div id="markers-{{ rapport.pk }}" class="flex flex-wrap gap-1.5 mt-2">
+                    {% for marker in rapport.markers.all %}
+                        {% include "games/partials/marker_badge.html" %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div id="markers-{{ rapport.pk }}" class="flex flex-wrap gap-1.5 mt-2"></div>
+            {% endif %}
+
+            <div id="marker-form-{{ rapport.pk }}" class="mt-2"></div>
+        </div>
+        <div class="flex items-center gap-1 shrink-0">
+            {% if request.user == rapport.report.author %}
+                <button hx-get="{% url 'games:marker_create' rapport.report.game.pk rapport.report.pk rapport.pk %}"
+                        hx-target="#marker-form-{{ rapport.pk }}"
+                        hx-swap="innerHTML"
+                        class="btn-ghost btn-sm text-muted"
+                        title="{% trans "Add a marker" %}">
+                    <span class="i-lucide-bookmark-plus text-xs"></span>
+                </button>
+            {% endif %}
+            <button hx-get="{% url 'games:rapport_edit' rapport.report.game.pk rapport.report.pk rapport.pk %}"
+                    hx-target="#rapport-{{ rapport.pk }}"
+                    hx-swap="outerHTML"
+                    class="btn-ghost btn-sm">
+                <span class="i-lucide-pencil text-xs"></span>
+            </button>
+            <button hx-post="{% url 'games:rapport_delete' rapport.report.game.pk rapport.report.pk rapport.pk %}"
+                    hx-target="#rapport-{{ rapport.pk }}"
+                    hx-swap="outerHTML"
+                    hx-confirm="{% trans "Delete this entry?" %}"
+                    class="btn-ghost btn-sm text-error hover:bg-error/10">
+                <span class="i-lucide-trash-2 text-xs"></span>
+            </button>
+        </div>
+    </div>
+</div>

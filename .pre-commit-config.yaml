@@ -8,16 +8,6 @@ repos:
 
   - repo: local
     hooks:
-      - id: mypy
-        name: mypy
-        entry: mypy
-        language: system
-        types: [python]
-        args: [suddenly/]
-        pass_filenames: false
-
-  - repo: local
-    hooks:
       - id: check-po-fuzzy
         name: no fuzzy or untranslated entries in fr.po
         entry: python scripts/check_po_integrity.py
@@ -25,11 +15,27 @@ repos:
         files: ^locale/fr/.*\.po$
         pass_filenames: false
 
-  - repo: local
-    hooks:
       - id: generate-knowledge
         name: generate KNOWLEDGE.md from memory bank
         entry: python scripts/generate_knowledge.py
         language: system
         files: ^aidd_docs/memory/
         pass_filenames: false
+
+      - id: mypy
+        name: mypy
+        entry: mypy
+        language: system
+        types: [python]
+        args: [suddenly/]
+        pass_filenames: false
+        stages: [pre-push]
+
+      - id: pytest
+        name: pytest
+        entry: pytest
+        language: system
+        args: [--tb=short, --no-header, -q]
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]

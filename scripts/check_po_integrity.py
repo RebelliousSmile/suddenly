@@ -32,6 +32,8 @@ def check(po_path: Path) -> list[str]:
 
 
 if __name__ == "__main__":
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[attr-defined]
+
     if not PO_PATH.exists():
         print(f"WARNING: {PO_PATH} not found, skipping check")
         sys.exit(0)

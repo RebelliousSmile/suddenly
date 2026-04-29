@@ -1,7 +1,11 @@
-.PHONY: check fix lint typecheck test i18n-check frontend docs-serve docs-build
+.PHONY: check fix lint typecheck test i18n-check frontend docs-serve docs-build install-hooks
 .PHONY: docker-up docker-down docker-test docker-check docker-shell docker-migrate docker-build docker-logs
 
 # ─── Local ────────────────────────────────────────────────────────
+
+install-hooks:
+	pre-commit install
+	pre-commit install --hook-type pre-push
 
 fix:
 	ruff check --fix .

@@ -3,6 +3,7 @@ Game and Report models for Suddenly.
 """
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -226,3 +227,85 @@ class ReportCast(BaseModel):
     def is_new_character(self) -> bool:
         """Returns True if this cast entry will create a new NPC."""
         return self.character is None and bool(self.new_character_name)
+
+
+class RapportKind(models.TextChoices):
+    DESCRIPTION = "description", _("Description")
+    ACTION = "action", _("Action")
+    DISCUSSION = "discussion", _("Discussion")
+    NARRATION = "narration", _("Narration")
+
+
+class Rapport(BaseModel):
+    report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name="rapports")
+    kind = models.CharField(max_length=20, choices=RapportKind.choices)
+    content = models.TextField()
+    actor = models.ForeignKey(
+        "characters.Character",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="rapport_appearances",
+    )
+
+    class Meta:
+        ordering = ["created_at"]
+        indexes = [
+            models.Index(fields=["report", "kind"]),
+        ]
+
+    def clean(self) -> None:
+        if self.kind == RapportKind.DISCUSSION and self.actor is None:
+            raise ValidationError({"actor": "Actor is required for discussion type."})
+        if self.kind != RapportKind.DISCUSSION and self.actor is not None:
+            raise ValidationError({"actor": "Actor must be empty for non-discussion types."})
+
+    def __str__(self) -> str:
+        return f"{self.get_kind_display()} — {self.report}"
+
+
+class MarkerKind(models.TextChoices):
+    START = "start", _("Start")
+    END = "end", _("End")
+    CHARACTER_APPEARS = "character_appears", _("Character appears")
+    CHARACTER_LEAVES = "character_leaves", _("Character leaves")
+    ORACLE = "oracle", _("Oracle")
+
+
+CHARACTER_MARKER_KINDS: frozenset[str] = frozenset(
+    {MarkerKind.CHARACTER_APPEARS, MarkerKind.CHARACTER_LEAVES}
+)
+
+
+class RapportMarker(BaseModel):
+    """
+    A structural marker within a Rapport sequence.
+
+    Marks events such as scene start/end, character entrances/exits, and oracle moments.
+    Character-related marker kinds require a linked character.
+    """
+
+    rapport = models.ForeignKey(Rapport, on_delete=models.CASCADE, related_name="markers")
+    kind = models.CharField(max_length=30, choices=MarkerKind.choices)
+    character = models.ForeignKey(
+        "characters.Character",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="rapport_markers",
+    )
+
+    class Meta:
+        ordering = ["created_at"]
+        indexes = [
+            models.Index(fields=["rapport", "kind"]),
+        ]
+
+    def clean(self) -> None:
+        if self.kind in CHARACTER_MARKER_KINDS and self.character is None:
+            raise ValidationError({"character": "Character is required for this marker type."})
+        if self.kind not in CHARACTER_MARKER_KINDS and self.character is not None:
+            raise ValidationError({"character": "Character must be empty for this marker type."})
+
+    def __str__(self) -> str:
+        return f"{self.get_kind_display()} — {self.rapport}"

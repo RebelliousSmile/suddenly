@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 
 from django.contrib import admin
 
-from .models import Game, GameSystem, Report, ReportCast
+from .models import Game, GameSystem, Rapport, RapportMarker, Report, ReportCast
 
 if TYPE_CHECKING:
     _GameSystemBase = admin.ModelAdmin[GameSystem]
@@ -16,12 +16,16 @@ if TYPE_CHECKING:
     _ReportBase = admin.ModelAdmin[Report]
     _ReportCastBase = admin.ModelAdmin[ReportCast]
     _ReportCastInlineBase = admin.TabularInline[ReportCast, Report]
+    _RapportInlineBase = admin.TabularInline[Rapport, Report]
+    _RapportMarkerInlineBase = admin.TabularInline[RapportMarker, Report]
 else:
     _GameSystemBase = admin.ModelAdmin
     _GameBase = admin.ModelAdmin
     _ReportBase = admin.ModelAdmin
     _ReportCastBase = admin.ModelAdmin
     _ReportCastInlineBase = admin.TabularInline
+    _RapportInlineBase = admin.TabularInline
+    _RapportMarkerInlineBase = admin.TabularInline
 
 
 @admin.register(GameSystem)
@@ -47,6 +51,18 @@ class ReportCastInline(_ReportCastInlineBase):
     raw_id_fields = ["character"]
 
 
+class RapportInline(_RapportInlineBase):
+    model = Rapport
+    fields = ["kind", "actor", "content"]
+    extra = 0
+
+
+class RapportMarkerInline(_RapportMarkerInlineBase):
+    model = RapportMarker
+    fields = ["kind", "character"]
+    extra = 0
+
+
 @admin.register(Report)
 class ReportAdmin(_ReportBase):
     list_display = ["title", "game", "author", "status", "published_at", "created_at"]
@@ -54,7 +70,7 @@ class ReportAdmin(_ReportBase):
     search_fields = ["title", "content", "game__title", "author__username"]
     raw_id_fields = ["game", "author"]
     ordering = ["-created_at"]
-    inlines = [ReportCastInline]
+    inlines = [ReportCastInline, RapportInline, RapportMarkerInline]
 
 
 @admin.register(ReportCast)
