@@ -1,11 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% if report %}
-    {% block title %}{% trans "Edit report" %} — {{ game.title }} — {{ SITE_NAME }}{% endblock %}
-{% else %}
-    {% block title %}{% trans "New report" %} — {{ game.title }} — {{ SITE_NAME }}{% endblock %}
-{% endif %}
+{% block title %}{% if report %}{% trans "Edit report" %}{% else %}{% trans "New report" %}{% endif %} — {{ game.title }} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
