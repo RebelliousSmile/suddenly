@@ -7,12 +7,12 @@ fix:
 	ruff check --fix .
 	ruff format .
 
-check: lint typecheck i18n-check test
+check: lint typecheck test i18n-check
 
 i18n-check:
 	python manage.py makemessages -l fr -l en --no-wrap --ignore=venv --ignore=node_modules --ignore=staticfiles
 	python manage.py compilemessages -l fr -l en
-	pytest tests/core/test_i18n.py tests/core/test_locale_formatting.py -v
+	pytest tests/core/test_i18n.py tests/core/test_locale_formatting.py -v --no-cov --reuse-db
 
 lint:
 	ruff check .
