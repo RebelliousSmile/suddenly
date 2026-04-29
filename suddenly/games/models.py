@@ -3,6 +3,7 @@ Game and Report models for Suddenly.
 """
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -218,3 +219,38 @@ class ReportCast(BaseModel):
     def is_new_character(self) -> bool:
         """Returns True if this cast entry will create a new NPC."""
         return self.character is None and bool(self.new_character_name)
+
+
+class RapportKind(models.TextChoices):
+    DESCRIPTION = "description", _("Description")
+    ACTION = "action", _("Action")
+    DISCUSSION = "discussion", _("Discussion")
+    NARRATION = "narration", _("Narration")
+
+
+class Rapport(BaseModel):
+    report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name="rapports")
+    kind = models.CharField(max_length=20, choices=RapportKind.choices)
+    content = models.TextField()
+    actor = models.ForeignKey(
+        "characters.Character",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="rapport_appearances",
+    )
+
+    class Meta:
+        ordering = ["created_at"]
+        indexes = [
+            models.Index(fields=["report", "kind"]),
+        ]
+
+    def clean(self) -> None:
+        if self.kind == RapportKind.DISCUSSION and self.actor is None:
+            raise ValidationError({"actor": "Actor is required for discussion type."})
+        if self.kind != RapportKind.DISCUSSION and self.actor is not None:
+            raise ValidationError({"actor": "Actor must be empty for non-discussion types."})
+
+    def __str__(self) -> str:
+        return f"{self.get_kind_display()} — {self.report}"

@@ -5,7 +5,7 @@ HTMX-first views for games and reports (DA-1).
 from __future__ import annotations
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -14,7 +14,17 @@ from suddenly.core.models import InstanceSettings
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
-from .models import CastRole, Game, GameSystem, Report, ReportCast, ReportStatus, ReportVisibility
+from .models import (
+    CastRole,
+    Game,
+    GameSystem,
+    Rapport,
+    Report,
+    ReportCast,
+    ReportStatus,
+    ReportVisibility,
+)
+from .rapport_forms import RapportForm
 from .services import build_game_queryset
 
 
@@ -520,3 +530,93 @@ def game_system_search(request: HttpRequest) -> HttpResponse:
         request=request,
     )
     return HttpResponse(html)
+
+
+@login_required
+def rapport_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:
+    from django.shortcuts import render as _render
+    from django.template.loader import render_to_string
+
+    report = get_object_or_404(Report.objects.select_related("game"), pk=pk, game__pk=game_pk)
+    if report.author != request.user:
+        return HttpResponseForbidden()
+    if request.method == "POST":
+        form = RapportForm(request.POST, game=report.game)
+        form.full_clean()
+        if form.is_valid():
+            rapport = form.save(commit=False)
+            rapport.report = report
+            rapport.save()
+            html = render_to_string(
+                "games/partials/rapport_item.html", {"rapport": rapport}, request=request
+            )
+            return HttpResponse(html)
+        return _render(
+            request,
+            "games/rapport_form.html",
+            {"form": form, "report": report},
+            status=422,
+        )
+    form = RapportForm(game=report.game)
+    return htmx_render(
+        request,
+        full_template="games/rapport_form.html",
+        partial_template="games/rapport_form.html",
+        context={"form": form, "report": report},
+    )
+
+
+@login_required
+def rapport_edit(
+    request: AuthenticatedRequest, game_pk: str, pk: str, rapport_pk: str
+) -> HttpResponse:
+    from django.shortcuts import render as _render
+    from django.template.loader import render_to_string
+
+    rapport = get_object_or_404(
+        Rapport.objects.select_related("report__game", "report__author"),
+        pk=rapport_pk,
+        report__pk=pk,
+        report__game__pk=game_pk,
+    )
+    if rapport.report.author != request.user:
+        return HttpResponseForbidden()
+    if request.method == "POST":
+        form = RapportForm(request.POST, instance=rapport, game=rapport.report.game)
+        form.full_clean()
+        if form.is_valid():
+            form.save()
+            html = render_to_string(
+                "games/partials/rapport_item.html", {"rapport": rapport}, request=request
+            )
+            return HttpResponse(html)
+        return _render(
+            request,
+            "games/rapport_form.html",
+            {"form": form, "report": rapport.report},
+            status=422,
+        )
+    form = RapportForm(instance=rapport, game=rapport.report.game)
+    return htmx_render(
+        request,
+        full_template="games/rapport_form.html",
+        partial_template="games/rapport_form.html",
+        context={"form": form, "report": rapport.report},
+    )
+
+
+@login_required
+def rapport_delete(
+    request: AuthenticatedRequest, game_pk: str, pk: str, rapport_pk: str
+) -> HttpResponse:
+    rapport = get_object_or_404(
+        Rapport.objects.select_related("report__author"),
+        pk=rapport_pk,
+        report__pk=pk,
+        report__game__pk=game_pk,
+    )
+    if rapport.report.author != request.user:
+        return HttpResponseForbidden()
+    if request.method == "POST":
+        rapport.delete()
+    return HttpResponse("")

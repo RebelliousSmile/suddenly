@@ -99,6 +99,28 @@
             </div>
         {% endif %}
 
+        <!-- Rapports -->
+        <div class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-heading">{% trans "Rapports" %}</h2>
+                {% if request.user == report.author %}
+                    <button hx-get="{% url 'games:rapport_create' report.game.pk report.pk %}"
+                            hx-target="#rapport-form-container"
+                            hx-swap="innerHTML"
+                            class="btn-secondary btn-sm">
+                        <span class="i-lucide-plus text-xs"></span>
+                        {% trans "Add a Rapport" %}
+                    </button>
+                {% endif %}
+            </div>
+            <div id="rapports-list" class="space-y-2">
+                {% for rapport in report.rapports.all %}
+                    {% include "games/partials/rapport_item.html" %}
+                {% endfor %}
+            </div>
+            <div id="rapport-form-container" class="mt-3"></div>
+        </div>
+
     </div>
 </section>
 {% endblock %}

@@ -1,0 +1,82 @@
+{% load i18n %}
+<div id="rapport-form-container"
+     x-data="{ kind: '{{ form.kind.value|default:'' }}' }">
+    {% if form.non_field_errors %}
+        <div class="mb-3 p-3 rounded-lg bg-error/10 text-error border border-error/30 text-sm">
+            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+        </div>
+    {% endif %}
+    <form hx-post="{% url 'games:rapport_create' report.game.pk report.pk %}"
+          hx-target="#rapport-form-container"
+          hx-swap="outerHTML"
+          class="card card-body space-y-4">
+        {% csrf_token %}
+
+        <div>
+            <label class="form-label">{% trans "Type" %}</label>
+            <div class="flex flex-wrap gap-3">
+                {% for value, label in form.kind.field.choices %}
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="kind" value="{{ value }}"
+                               {% if form.kind.value == value %}checked{% endif %}
+                               @change="kind = '{{ value }}'"
+                               class="h-4 w-4 text-crimson focus:ring-crimson">
+                        <span class="text-sm">{{ label }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+            {% if form.kind.errors %}
+                <p class="form-error text-error text-xs mt-1">{{ form.kind.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label for="id_content" class="form-label">{% trans "Content" %}</label>
+            <textarea id="id_content" name="content" rows="4"
+                      placeholder="{% trans "Write the rapport entry..." %}"
+                      class="form-input w-full">{{ form.content.value|default:'' }}</textarea>
+            {% if form.content.errors %}
+                <p class="form-error text-error text-xs mt-1">{{ form.content.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div x-show="kind === 'discussion'">
+            <label for="id_actor" class="form-label">{% trans "Actor" %}</label>
+            {% if form.actor.field.queryset.exists %}
+                <select id="id_actor" name="actor" class="form-input w-full">
+                    <option value="">{% trans "— Select a character —" %}</option>
+                    {% for character in form.actor.field.queryset %}
+                        <option value="{{ character.pk }}"
+                                {% if form.actor.value == character.pk|stringformat:'s' %}selected{% endif %}>
+                            {{ character.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <p class="text-sm text-muted">
+                    {% trans "No character available for this game." %}
+                    <a href="{% url 'games:detail' report.game.pk %}" class="link-muted">
+                        {% trans "Go back to the game." %}
+                    </a>
+                </p>
+            {% endif %}
+            {% if form.actor.errors %}
+                <p class="form-error text-error text-xs mt-1">{{ form.actor.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button type="submit" class="btn-primary btn-sm">
+                <span class="i-lucide-plus text-xs"></span>
+                {% trans "Add" %}
+            </button>
+            <button type="button"
+                    hx-get=""
+                    hx-target="#rapport-form-container"
+                    hx-swap="innerHTML"
+                    class="btn-ghost btn-sm">
+                {% trans "Cancel" %}
+            </button>
+        </div>
+    </form>
+</div>
