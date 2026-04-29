@@ -125,6 +125,13 @@ class Report(BaseModel):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reports"
     )
 
+    # Language
+    language = models.CharField(
+        max_length=10,
+        choices=settings.LANGUAGES,
+        default="fr",
+    )
+
     # Status & visibility
     status = models.CharField(
         max_length=20, choices=ReportStatus.choices, default=ReportStatus.DRAFT
