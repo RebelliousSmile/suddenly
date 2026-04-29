@@ -70,7 +70,7 @@ class ReportAdmin(_ReportBase):
     search_fields = ["title", "content", "game__title", "author__username"]
     raw_id_fields = ["game", "author"]
     ordering = ["-created_at"]
-    inlines = [ReportCastInline, RapportInline]
+    inlines = [ReportCastInline, RapportInline, RapportMarkerInline]
 
 
 @admin.register(ReportCast)
