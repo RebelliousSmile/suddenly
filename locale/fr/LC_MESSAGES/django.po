@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Suddenly 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-29 12:07+0200\n"
+"POT-Creation-Date: 2026-04-29 13:51+0200\n"
 "PO-Revision-Date: 2026-04-28 10:19+0200\n"
 "Last-Translator: Suddenly Team\n"
 "Language-Team: French\n"
@@ -1118,6 +1118,10 @@ msgid "%(counter)s quote"
 msgid_plural "%(counter)s quotes"
 msgstr[0] "%(counter)s citation"
 msgstr[1] "%(counter)s citations"
+
+#: .\templates\components\docs_sidebar.html:5
+msgid "← Application"
+msgstr "← Application"
 
 #: .\templates\components\feed_item.html:31
 #: .\templates\components\quote_card.html:46

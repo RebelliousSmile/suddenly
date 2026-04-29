@@ -49,6 +49,8 @@ urlpatterns = [
     path("", include("suddenly.core.front_urls")),
     path("characters/", include("suddenly.characters.front_urls")),
     path("games/", include("suddenly.games.front_urls")),
+    # Docs
+    path("docs/", include("suddenly.docs.urls")),
     # Main app
     path("", include("suddenly.core.urls")),
 ]

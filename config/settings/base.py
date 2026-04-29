@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "suddenly.games",
     "suddenly.characters",
     "suddenly.activitypub",
+    "suddenly.docs",
 ]
 
 MIDDLEWARE = [
