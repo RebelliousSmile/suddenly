@@ -143,7 +143,6 @@ aidd_docs/templates/*
 !.claude/skills/
 .claude/skills/*
 !.claude/skills/custom/
-!.claude/skills/cheap-wireframes/
 .github/*
 !.github/workflows/
 CLAUDE.md
