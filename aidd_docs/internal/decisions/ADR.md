@@ -29,3 +29,5 @@
 | DEC-025 | Rôle is_admin distinct de is_staff | GMH admin panel | Accepted | 2026-04-29 |
 | DEC-026 | InstanceSettings singleton pour config d'instance | GMH admin panel | Accepted | 2026-04-29 |
 | DEC-027 | Tags en ManyToManyField vers core.Tag, pas JSONField | Tags | Accepted | 2026-04-29 |
+| DEC-028 | build_*_queryset en services publics, pas helpers privés | Explorer | Accepted | 2026-04-29 |
+| DEC-029 | Explorer et Jouer hors du bloc auth dans la nav | Explorer | Accepted | 2026-04-29 |
