@@ -49,6 +49,7 @@
                 <input type="text" id="tags" name="tags"
                        value="{% if form_data.tags %}{{ form_data.tags }}{% else %}{% if character.pk %}{{ character.tags.all|join:', ' }}{% endif %}{% endif %}"
                        placeholder="fantasy, hero, villain..."
+                       @keydown.enter.prevent
                        class="form-input">
                 <p class="form-help">{% trans "Tags séparés par des virgules" %}</p>
             </div>
