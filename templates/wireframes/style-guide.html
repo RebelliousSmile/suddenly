@@ -553,71 +553,119 @@
     <section>
         <h2 class="text-2xl font-bold text-primary mb-8 pb-2 border-b border-border">7. Éléments de formulaire</h2>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Comparaison de styles -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
 
-            <!-- Input normal -->
-            <div class="space-y-4">
+            <!-- Option A: Bordure colorée -->
+            <div class="card space-y-4">
+                <p class="label-overline mb-2">Option A — Bordure colorée</p>
+
                 <div>
-                    <label class="form-label block mb-1">form-label — Champ texte</label>
-                    <input type="text" class="form-input w-full" placeholder="Placeholder…" />
-                    <p class="form-help mt-1">form-help — Texte d'aide (text-gray-600, ratio 7:1)</p>
+                    <label class="form-label">Champ texte</label>
+                    <input type="text" class="block w-full rounded-[12px] border border-violet/30 px-3 py-2.5 focus:border-crimson text-sm bg-card text-primary outline-none" placeholder="Placeholder…" />
+                    <p class="form-help">form-help — Texte d'aide</p>
                 </div>
 
-                <!-- Input error -->
                 <div>
-                    <label class="form-label block mb-1">Champ en erreur</label>
-                    <input type="text" class="form-input-error w-full" value="valeur incorrecte" />
-                    <p class="form-error mt-1">form-error — Ce champ est requis.</p>
+                    <label class="form-label">Champ en erreur</label>
+                    <input type="text" class="block w-full rounded-[12px] border border-error px-3 py-2.5 focus:border-error text-sm bg-card text-primary outline-none" value="valeur incorrecte" />
+                    <p class="form-error">Ce champ est requis.</p>
                 </div>
 
-                <!-- Textarea -->
                 <div>
-                    <label class="form-label block mb-1">Textarea</label>
-                    <textarea class="form-input w-full h-24 resize-none" placeholder="Rédigez votre compte-rendu…"></textarea>
-                    <p class="form-help mt-1">Police monospace JetBrains Mono dans l'éditeur CR</p>
+                    <label class="form-label">Select</label>
+                    <div class="relative">
+                        <select class="block w-full rounded-[12px] border border-violet/30 px-3 py-2.5 pr-10 focus:border-crimson text-sm bg-card text-primary outline-none appearance-none">
+                            <option value="">Choisir une option…</option>
+                            <option value="public">Public</option>
+                            <option value="unlisted">Non-listé</option>
+                            <option value="followers">Abonnés seulement</option>
+                        </select>
+                        <span class="i-lucide-chevron-down absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none"></span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label">Textarea</label>
+                    <textarea class="block w-full rounded-[12px] border border-violet/30 px-3 py-2.5 focus:border-crimson text-sm bg-card text-primary outline-none h-20 resize-none" placeholder="Rédigez votre compte-rendu…"></textarea>
                 </div>
             </div>
 
-            <!-- Select + Checkbox -->
-            <div class="space-y-4">
+            <!-- Option B: Fond teinté -->
+            <div class="card space-y-4">
+                <p class="label-overline mb-2">Option B — Fond teinté</p>
+
                 <div>
-                    <label class="form-label block mb-1">Select</label>
-                    <select class="form-input w-full">
-                        <option value="">Choisir une option…</option>
-                        <option value="public">Public</option>
-                        <option value="unlisted">Non-listé</option>
-                        <option value="followers">Abonnés seulement</option>
-                    </select>
+                    <label class="form-label">Champ texte</label>
+                    <input type="text" class="block w-full rounded-[12px] border border-violet/30 px-3 py-2.5 focus:border-crimson text-sm bg-violet/10 text-primary outline-none" placeholder="Placeholder…" />
+                    <p class="form-help">form-help — Texte d'aide</p>
                 </div>
 
-                <!-- Checkboxes -->
                 <div>
-                    <label class="form-label block mb-2">Checkboxes</label>
-                    <div class="space-y-2">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" class="w-4 h-4 text-crimson rounded border-border" checked />
-                            <span class="text-sm text-primary">Option cochée</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" class="w-4 h-4 text-crimson rounded border-border" />
-                            <span class="text-sm text-primary">Option non cochée</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer opacity-50">
-                            <input type="checkbox" class="w-4 h-4 text-crimson rounded border-border" disabled />
-                            <span class="text-sm text-primary">Option désactivée</span>
-                        </label>
+                    <label class="form-label">Champ en erreur</label>
+                    <input type="text" class="block w-full rounded-[12px] border border-error px-3 py-2.5 focus:border-error text-sm bg-error/10 text-primary outline-none" value="valeur incorrecte" />
+                    <p class="form-error">Ce champ est requis.</p>
+                </div>
+
+                <div>
+                    <label class="form-label">Select</label>
+                    <div class="relative">
+                        <select class="block w-full rounded-[12px] border border-violet/30 px-3 py-2.5 pr-10 focus:border-crimson text-sm bg-violet/10 text-primary outline-none appearance-none">
+                            <option value="">Choisir une option…</option>
+                            <option value="public">Public</option>
+                            <option value="unlisted">Non-listé</option>
+                            <option value="followers">Abonnés seulement</option>
+                        </select>
+                        <span class="i-lucide-chevron-down absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none"></span>
                     </div>
                 </div>
 
-                <!-- Dropzone -->
                 <div>
-                    <label class="form-label block mb-1">Zone de dépôt (form-dropzone)</label>
-                    <div class="form-dropzone">
-                        <span class="i-lucide-upload w-6 h-6 text-muted inline-block"></span>
-                        <p class="text-sm text-secondary">Glissez votre fichier ici ou</p>
-                        <span class="form-dropzone-link link text-sm font-medium">Téléverser</span>
-                        <p class="text-xs text-muted">PNG, JPG, GIF — max 5 Mo</p>
-                    </div>
+                    <label class="form-label">Textarea</label>
+                    <textarea class="block w-full rounded-[12px] border border-violet/30 px-3 py-2.5 focus:border-crimson text-sm bg-violet/10 text-primary outline-none h-20 resize-none" placeholder="Rédigez votre compte-rendu…"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Switches + Dropzone -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            <!-- Switches -->
+            <div x-data="{ s1: true, s2: false }">
+                <label class="form-label block mb-3">Switches</label>
+                <div class="space-y-3">
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <button type="button" @click="s1 = !s1"
+                            :class="s1 ? 'bg-crimson' : 'bg-muted'"
+                            class="switch-track">
+                            <span :class="s1 ? 'translate-x-6' : 'translate-x-0'" class="switch-thumb"></span>
+                        </button>
+                        <span class="text-sm text-primary" x-text="s1 ? 'Activé' : 'Désactivé'"></span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <button type="button" @click="s2 = !s2"
+                            :class="s2 ? 'bg-crimson' : 'bg-muted'"
+                            class="switch-track">
+                            <span :class="s2 ? 'translate-x-6' : 'translate-x-0'" class="switch-thumb"></span>
+                        </button>
+                        <span class="text-sm text-primary">Désactivé par défaut</span>
+                    </label>
+                    <label class="flex items-center gap-3 opacity-50 cursor-not-allowed">
+                        <div class="switch-track bg-muted pointer-events-none">
+                            <span class="switch-thumb translate-x-0"></span>
+                        </div>
+                        <span class="text-sm text-primary">Désactivé (disabled)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Dropzone -->
+            <div>
+                <label class="form-label block mb-1">Zone de dépôt (form-dropzone)</label>
+                <div class="form-dropzone">
+                    <span class="i-lucide-upload w-6 h-6 text-muted"></span>
+                    <p class="text-sm text-secondary">Glissez votre fichier ici ou <span class="form-dropzone-link text-sm font-medium">Téléverser</span></p>
+                    <p class="text-xs text-muted">PNG, JPG, GIF — max 5 Mo</p>
                 </div>
             </div>
         </div>
@@ -627,11 +675,11 @@
     <!-- 8. ICÔNES -->
     <!-- ============================================================ -->
     <section>
-        <h2 class="text-2xl font-bold text-primary mb-8 pb-2 border-b border-border">8. Icônes — Lucide</h2>
-        <p class="text-sm text-muted mb-6">Format UnoCSS : <code class="text-xs px-1.5 py-0.5 bg-surface rounded font-mono">i-lucide-{nom}</code>. Taille par défaut : 1.2em.</p>
+        <h2 class="text-2xl font-bold text-primary mb-8 pb-2 border-b border-border">8. Icônes</h2>
 
-        <div class="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-10 gap-4">
-            <!-- Navigation -->
+        <!-- Lucide -->
+        <p class="label-overline mb-4">Lucide — <code class="text-xs px-1.5 py-0.5 bg-surface rounded font-mono normal-case tracking-normal">i-lucide-{nom}</code></p>
+        <div class="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-10 gap-4 mb-10">
             <div class="flex flex-col items-center gap-1 p-2">
                 <span class="i-lucide-home w-6 h-6 text-primary inline-block"></span>
                 <span class="text-xs text-muted text-center">home</span>
@@ -664,28 +712,18 @@
                 <span class="i-lucide-log-out w-6 h-6 text-primary inline-block"></span>
                 <span class="text-xs text-muted text-center">log-out</span>
             </div>
-            <!-- Personnage -->
             <div class="flex flex-col items-center gap-1 p-2">
-                <span class="i-lucide-git-merge w-6 h-6 text-amber-600 inline-block"></span>
+                <span class="i-lucide-git-merge w-6 h-6 text-warning inline-block"></span>
                 <span class="text-xs text-muted text-center">git-merge</span>
-            </div>
-            <div class="flex flex-col items-center gap-1 p-2">
-                <span class="i-lucide-heart w-6 h-6 text-red-500 inline-block"></span>
-                <span class="text-xs text-muted text-center">heart</span>
             </div>
             <div class="flex flex-col items-center gap-1 p-2">
                 <span class="i-lucide-git-branch w-6 h-6 text-violet inline-block"></span>
                 <span class="text-xs text-muted text-center">git-branch</span>
             </div>
             <div class="flex flex-col items-center gap-1 p-2">
-                <span class="i-lucide-sparkles w-6 h-6 text-amber-500 inline-block"></span>
+                <span class="i-lucide-sparkles w-6 h-6 text-warning inline-block"></span>
                 <span class="text-xs text-muted text-center">sparkles</span>
             </div>
-            <div class="flex flex-col items-center gap-1 p-2">
-                <span class="i-lucide-star w-6 h-6 text-blue-500 inline-block"></span>
-                <span class="text-xs text-muted text-center">star</span>
-            </div>
-            <!-- Actions -->
             <div class="flex flex-col items-center gap-1 p-2">
                 <span class="i-lucide-plus w-6 h-6 text-primary inline-block"></span>
                 <span class="text-xs text-muted text-center">plus</span>
@@ -695,18 +733,17 @@
                 <span class="text-xs text-muted text-center">edit</span>
             </div>
             <div class="flex flex-col items-center gap-1 p-2">
-                <span class="i-lucide-trash w-6 h-6 text-red-500 inline-block"></span>
+                <span class="i-lucide-trash w-6 h-6 text-error inline-block"></span>
                 <span class="text-xs text-muted text-center">trash</span>
             </div>
             <div class="flex flex-col items-center gap-1 p-2">
-                <span class="i-lucide-check w-6 h-6 text-green-600 inline-block"></span>
+                <span class="i-lucide-check w-6 h-6 text-success inline-block"></span>
                 <span class="text-xs text-muted text-center">check</span>
             </div>
             <div class="flex flex-col items-center gap-1 p-2">
-                <span class="i-lucide-x w-6 h-6 text-red-500 inline-block"></span>
+                <span class="i-lucide-x w-6 h-6 text-error inline-block"></span>
                 <span class="text-xs text-muted text-center">x</span>
             </div>
-            <!-- États -->
             <div class="flex flex-col items-center gap-1 p-2">
                 <span class="i-lucide-globe w-6 h-6 text-primary inline-block"></span>
                 <span class="text-xs text-muted text-center">globe</span>
@@ -715,43 +752,126 @@
                 <span class="i-lucide-lock w-6 h-6 text-secondary inline-block"></span>
                 <span class="text-xs text-muted text-center">lock</span>
             </div>
+            <div class="flex flex-col items-center gap-1 p-2">
+                <span class="i-lucide-link w-6 h-6 text-secondary inline-block"></span>
+                <span class="text-xs text-muted text-center">link</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 p-2">
+                <span class="i-lucide-user w-6 h-6 text-primary inline-block"></span>
+                <span class="text-xs text-muted text-center">user</span>
+            </div>
+        </div>
+
+        <!-- Game Icons — empty states thématiques -->
+        <p class="label-overline mb-4">Game Icons — empty states <code class="text-xs px-1.5 py-0.5 bg-surface rounded font-mono normal-case tracking-normal">i-game-icons-{nom}</code></p>
+        <div class="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-6">
+            <div class="flex flex-col items-center gap-2 p-3 card text-center">
+                <span class="i-game-icons-open-book w-10 h-10 text-muted inline-block"></span>
+                <span class="text-xs text-muted">open-book</span>
+                <span class="text-xs text-secondary">Rapports vides</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 p-3 card text-center">
+                <span class="i-game-icons-scroll-quill w-10 h-10 text-muted inline-block"></span>
+                <span class="text-xs text-muted">scroll-quill</span>
+                <span class="text-xs text-secondary">Contenu vide</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 p-3 card text-center">
+                <span class="i-game-icons-two-shadows w-10 h-10 text-muted inline-block"></span>
+                <span class="text-xs text-muted">two-shadows</span>
+                <span class="text-xs text-secondary">Pas de personnages</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 p-3 card text-center">
+                <span class="i-game-icons-chat-bubble w-10 h-10 text-muted inline-block"></span>
+                <span class="text-xs text-muted">chat-bubble</span>
+                <span class="text-xs text-secondary">Pas de citations</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 p-3 card text-center">
+                <span class="i-game-icons-dice-six-faces-four w-10 h-10 text-muted inline-block"></span>
+                <span class="text-xs text-muted">dice-six-faces-four</span>
+                <span class="text-xs text-secondary">Pas de parties</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 p-3 card text-center">
+                <span class="i-game-icons-manacles w-10 h-10 text-muted inline-block"></span>
+                <span class="text-xs text-muted">manacles</span>
+                <span class="text-xs text-secondary">Liens</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 p-3 card text-center">
+                <span class="i-game-icons-hand w-10 h-10 text-muted inline-block"></span>
+                <span class="text-xs text-muted">hand</span>
+                <span class="text-xs text-secondary">Claim</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 p-3 card text-center">
+                <span class="i-game-icons-divergence w-10 h-10 text-muted inline-block"></span>
+                <span class="text-xs text-muted">divergence</span>
+                <span class="text-xs text-secondary">Fork</span>
+            </div>
         </div>
     </section>
 
     <!-- ============================================================ -->
-    <!-- 9. LIENS ET TEXTE -->
+    <!-- 9. LIENS, TEXTE ET LOGO -->
     <!-- ============================================================ -->
     <section>
-        <h2 class="text-2xl font-bold text-primary mb-8 pb-2 border-b border-border">9. Liens et texte utilitaire</h2>
+        <h2 class="text-2xl font-bold text-primary mb-8 pb-2 border-b border-border">9. Liens, texte et logo</h2>
 
-        <div class="flex flex-wrap gap-8">
-            <div class="flex flex-col gap-3">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Liens et texte -->
+            <div class="flex flex-col gap-4">
+                <p class="label-overline mb-2">Liens &amp; texte</p>
                 <div>
                     <a href="#" class="link">link — Lien principal</a>
-                    <p class="text-xs text-muted mt-1">Couleur primary, underline au hover</p>
+                    <p class="text-xs text-muted mt-1">Crimson, underline au hover</p>
                 </div>
                 <div>
                     <a href="#" class="link-muted">link-muted — Lien discret</a>
-                    <p class="text-xs text-muted mt-1">Couleur gray, hover primary</p>
+                    <p class="text-xs text-muted mt-1">Secondary → primary au hover</p>
                 </div>
                 <div>
-                    <span class="text-muted">text-muted — Gris 500</span>
-                    <p class="text-xs text-muted mt-1">Métadonnées</p>
+                    <span class="text-muted">text-muted</span>
+                    <p class="text-xs text-muted mt-1">Métadonnées, timestamps</p>
                 </div>
                 <div>
-                    <span class="text-primary font-semibold">text-heading — Gray-900 semibold</span>
-                    <p class="text-xs text-muted mt-1">Titres de cards</p>
+                    <span class="text-secondary">text-secondary</span>
+                    <p class="text-xs text-muted mt-1">Sous-titres, labels</p>
                 </div>
+                <div>
+                    <span class="text-primary font-semibold">text-primary — text-heading</span>
+                    <p class="text-xs text-muted mt-1">Titres, contenus principaux</p>
+                </div>
+            </div>
+
+            <!-- Logo brand -->
+            <div>
+                <p class="label-overline mb-4">Logo &amp; couleur brand</p>
+                <div class="flex items-center gap-4 mb-4">
+                    <img src="/static/img/suddenly-logo.svg" alt="Suddenly" width="40" height="48" class="inline-block" />
+                    <div>
+                        <p class="text-sm font-semibold text-primary">Suddenly</p>
+                        <p class="text-xs text-muted font-mono">#6364FF — brand</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg" style="background: rgb(var(--c-brand))"></div>
+                    <div class="w-8 h-8 rounded-lg opacity-70" style="background: rgb(var(--c-brand))"></div>
+                    <div class="w-8 h-8 rounded-lg opacity-40" style="background: rgb(var(--c-brand))"></div>
+                    <div class="w-8 h-8 rounded-lg opacity-15" style="background: rgb(var(--c-brand))"></div>
+                </div>
+                <p class="text-xs text-muted mt-2">bg-brand / bg-brand/70 / bg-brand/40 / bg-brand/15</p>
             </div>
 
             <!-- Instance badge -->
             <div>
-                <p class="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Instance badge (fédération)</p>
-                <div class="flex items-center gap-1 text-xs text-muted">
+                <p class="label-overline mb-4">Instance badge (fédération)</p>
+                <div class="flex items-center gap-1 text-xs text-muted mb-2">
                     <span class="i-lucide-globe w-3.5 h-3.5 inline-block"></span>
                     <span>suddenly.games</span>
                 </div>
-                <p class="text-xs text-muted mt-1">Visible sur contenu distant uniquement</p>
+                <p class="text-xs text-muted">Visible sur contenu distant uniquement</p>
+
+                <p class="label-overline mt-6 mb-4">Overline</p>
+                <p class="label-overline">label-overline — Titre de section</p>
+                <p class="text-xs text-muted mt-1">Crimson, uppercase, tracking large</p>
             </div>
         </div>
     </section>

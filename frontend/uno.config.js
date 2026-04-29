@@ -37,6 +37,10 @@ const presetSuddenly = () => ({
         DEFAULT: 'rgb(var(--c-neon) / <alpha-value>)',
         hover: 'rgb(var(--c-neon-hover) / <alpha-value>)',
       },
+      brand: {
+        DEFAULT: 'rgb(var(--c-brand) / <alpha-value>)',
+        hover: 'rgb(var(--c-brand-hover) / <alpha-value>)',
+      },
       // Semantic feedback — adaptive per mode via base.css CSS vars
       success: 'rgb(var(--c-success) / <alpha-value>)',
       warning: 'rgb(var(--c-warning) / <alpha-value>)',
@@ -125,8 +129,13 @@ const presetSuddenly = () => ({
     'form-label': 'block text-sm font-medium text-secondary mb-1',
     'form-help': 'mt-1 text-sm text-muted',
     'form-error': 'mt-1 text-sm text-error',
-    'form-dropzone': 'mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-border border-dashed rounded-lg hover:border-crimson transition-colors',
+    'form-select': 'form-input appearance-none cursor-pointer pr-10',
+    'form-dropzone': 'mt-1 flex flex-col items-center justify-center gap-1 px-6 pt-5 pb-6 border-2 border-border border-dashed rounded-lg hover:border-crimson transition-colors',
     'form-dropzone-link': 'relative cursor-pointer rounded-md font-medium text-crimson hover:text-crimson-hover focus-within:outline-none',
+
+    // Switch (remplace checkbox)
+    'switch-track': 'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full p-0.5 transition-colors duration-200 focus-visible:outline-none cursor-pointer',
+    'switch-thumb': 'inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200',
 
     // Badges
     'badge': 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-xs font-medium',
@@ -157,7 +166,7 @@ const presetSuddenly = () => ({
 
     // Links
     'link': 'text-crimson hover:text-crimson-hover hover:underline',
-    'link-muted': 'text-muted hover:text-secondary',
+    'link-muted': 'text-secondary hover:text-primary',
 
     // Text
     'text-heading': 'text-primary font-semibold',
@@ -246,6 +255,8 @@ export default defineConfig({
     'i-lucide-cloud', 'i-lucide-cloud-off', 'i-lucide-loader-2',
     'i-lucide-alert-triangle', 'i-lucide-info',
     'i-lucide-sun', 'i-lucide-moon',
+    // Couleur brand (logo #6364FF)
+    'text-brand', 'bg-brand', 'bg-brand/10', 'bg-brand/15', 'border-brand', 'border-brand/30',
     // Couleurs neon (neon accent)
     'text-neon', 'bg-neon/10', 'border-neon/30',
     // Couleurs crimson (accent primaire)
@@ -256,7 +267,7 @@ export default defineConfig({
     // Couleurs violet/crimson pour composants dark-light
     'bg-violet', 'border-violet', 'hover:text-violet/60',
     // Theme toggle + form switch (Alpine :class bindings)
-    'translate-x-0', 'translate-x-6', 'translate-x-8', 'bg-amber-400',
+    'translate-x-0', 'translate-x-6', 'translate-x-8', 'bg-amber-400', 'bg-muted',
     'border-crimson/50', 'border-violet/50', 'border-amber-300/60', 'text-amber-400',
     // Badges dynamiques pending/rejected
     'badge-pending', 'badge-rejected',

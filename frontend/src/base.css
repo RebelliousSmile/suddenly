@@ -19,6 +19,8 @@
   --c-violet-hover: 109 40 217;
   --c-neon: 0 230 118;
   --c-neon-hover: 0 200 83;
+  --c-brand: 99 100 255;      /* #6364FF — couleur logo */
+  --c-brand-hover: 80 81 230;
 
   /* Semantic feedback — light mode: darker shades for readability on white */
   --c-success: 21 128 61;    /* green-700  #15803d */
@@ -39,6 +41,8 @@
   --shadow-card: 0 2px 16px rgba(0,0,0,0.07);
   --shadow-card-hover: 0 4px 24px rgba(0,0,0,0.12);
   --body-bg: #faf9f6;
+  --c-brand: 99 100 255;
+  --c-brand-hover: 80 81 230;
 
   /* Semantic feedback — light mode */
   --c-success: 21 128 61;
@@ -56,6 +60,8 @@
   --c-primary: #f0f0f0;
   --c-secondary: #a0a0a0;
   --c-muted: #606060;
+  --c-brand: 99 100 255;
+  --c-brand-hover: 130 131 255;
   --shadow-card: 0 0 24px rgba(224,53,88,0.12), 0 2px 8px rgba(0,0,0,0.4);
   --shadow-card-hover: 0 0 36px rgba(224,53,88,0.22), 0 4px 16px rgba(0,0,0,0.5);
   --body-bg: radial-gradient(ellipse at top, rgba(60,10,20,0.6), #0a0a0a) #0a0a0a;
