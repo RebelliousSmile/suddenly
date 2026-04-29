@@ -18,6 +18,15 @@ repos:
 
   - repo: local
     hooks:
+      - id: check-po-fuzzy
+        name: no fuzzy or untranslated entries in fr.po
+        entry: python scripts/check_po_integrity.py
+        language: system
+        files: ^locale/fr/.*\.po$
+        pass_filenames: false
+
+  - repo: local
+    hooks:
       - id: generate-knowledge
         name: generate KNOWLEDGE.md from memory bank
         entry: python scripts/generate_knowledge.py

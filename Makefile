@@ -7,7 +7,7 @@ fix:
 	ruff check --fix .
 	ruff format .
 
-check: lint typecheck test i18n-check
+check: lint typecheck i18n-check test
 
 i18n-check:
 	python manage.py makemessages -l fr -l en --no-wrap --ignore=venv --ignore=node_modules --ignore=staticfiles
