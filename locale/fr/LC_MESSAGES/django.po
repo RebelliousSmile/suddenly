@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Suddenly 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-29 09:02+0200\n"
+"POT-Creation-Date: 2026-04-29 10:19+0200\n"
 "PO-Revision-Date: 2026-04-28 10:19+0200\n"
 "Last-Translator: Suddenly Team\n"
 "Language-Team: French\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: .\suddenly\characters\front_views.py:226
+#: .\suddenly\characters\front_views.py:182
 msgid "Name is required."
 msgstr "Le nom est obligatoire."
 
@@ -125,7 +125,7 @@ msgid "Published"
 msgstr "Publié"
 
 #: .\suddenly\core\context_processors.py:24
-#: .\suddenly\core\context_processors.py:28 .\templates\base.html:226
+#: .\suddenly\core\context_processors.py:28 .\templates\base.html:220
 #: .\templates\core\home.html:4
 msgid "Federated shared fiction network"
 msgstr "Réseau fédéré de fiction partagée"
@@ -134,7 +134,7 @@ msgstr "Réseau fédéré de fiction partagée"
 msgid "Content is required."
 msgstr "Le contenu est obligatoire."
 
-#: .\suddenly\games\front_views.py:248 .\suddenly\games\front_views.py:382
+#: .\suddenly\games\front_views.py:210 .\suddenly\games\front_views.py:344
 msgid "Title is required."
 msgstr "Le titre est obligatoire."
 
@@ -166,7 +166,7 @@ msgstr "Vous n'avez pas la permission d'accéder à cette page."
 msgid "Back to home"
 msgstr "Retour à l'accueil"
 
-#: .\templates\403.html:16 .\templates\base.html:105 .\templates\base.html:172
+#: .\templates\403.html:16 .\templates\base.html:100 .\templates\base.html:166
 #: .\templates\core\home.html:27
 msgid "Log in"
 msgstr "Connexion"
@@ -179,7 +179,8 @@ msgstr "Page introuvable"
 msgid "The character you are looking for may have changed story."
 msgstr "Le personnage que vous cherchez a peut-être changé d'histoire."
 
-#: .\templates\404.html:16 .\templates\base.html:52 .\templates\base.html:159
+#: .\templates\404.html:16 .\templates\base.html:52 .\templates\base.html:154
+#: .\templates\core\explorer.html:4 .\templates\core\explorer.html:12
 #: .\templates\core\home.html:38
 msgid "Explore"
 msgstr "Explorer"
@@ -262,8 +263,8 @@ msgstr "Confirmer le blocage"
 #: .\templates\characters\link_revoke_form.html:35
 #: .\templates\characters\list.html:45 .\templates\components\modal.html:71
 #: .\templates\games\create.html:74 .\templates\games\game_form.html:128
-#: .\templates\games\list.html:42 .\templates\games\report_compose.html:130
-#: .\templates\games\report_create.html:136
+#: .\templates\games\list.html:42 .\templates\games\report_compose.html:127
+#: .\templates\games\report_create.html:133
 #: .\templates\gmh\instance_block.html:16
 #: .\templates\users\profile_edit.html:77
 msgid "Cancel"
@@ -333,54 +334,48 @@ msgstr "Suspendu"
 msgid "No users."
 msgstr "Aucun utilisateur."
 
-#: .\templates\base.html:49 .\templates\base.html:158
+#: .\templates\base.html:49 .\templates\base.html:153
 msgid "Home"
 msgstr "Accueil"
 
-#: .\templates\base.html:58 .\templates\base.html:161
-#: .\templates\users\settings_data.html:48
-msgid "My games"
-msgstr "Mes parties"
+#: .\templates\base.html:55 .\templates\base.html:155
+msgid "Play"
+msgstr "Jouer"
 
-#: .\templates\base.html:62 .\templates\base.html:162
-#: .\templates\users\settings_data.html:86
-msgid "My characters"
-msgstr "Mes personnages"
-
-#: .\templates\base.html:84 .\templates\users\settings_base.html:20
+#: .\templates\base.html:79 .\templates\users\settings_base.html:20
 msgid "Profile"
 msgstr "Profil"
 
-#: .\templates\base.html:88 .\templates\users\settings_base.html:11
+#: .\templates\base.html:83 .\templates\users\settings_base.html:11
 msgid "Settings"
 msgstr "Paramètres"
 
-#: .\templates\base.html:93 .\templates\base.html:165
+#: .\templates\base.html:88 .\templates\base.html:159
 msgid "Admin"
 msgstr "Admin"
 
-#: .\templates\base.html:99 .\templates\base.html:169
+#: .\templates\base.html:94 .\templates\base.html:163
 #: .\templates\users\settings_base.html:49
 msgid "Log out"
 msgstr "Déconnexion"
 
-#: .\templates\base.html:108 .\templates\base.html:173
+#: .\templates\base.html:103 .\templates\base.html:167
 msgid "Sign up"
 msgstr "Inscription"
 
-#: .\templates\base.html:188
+#: .\templates\base.html:182
 msgid "Light mode"
 msgstr "Mode clair"
 
-#: .\templates\base.html:188
+#: .\templates\base.html:182
 msgid "Dark mode"
 msgstr "Mode sombre"
 
-#: .\templates\base.html:230 .\templates\core\about.html:4
+#: .\templates\base.html:224 .\templates\core\about.html:4
 msgid "About"
 msgstr "À propos"
 
-#: .\templates\base.html:231
+#: .\templates\base.html:225
 msgid "Documentation"
 msgstr "Documentation"
 
@@ -432,10 +427,10 @@ msgstr "Contexte"
 #: .\templates\games\create.html:30 .\templates\games\create.html:40
 #: .\templates\games\create.html:50 .\templates\games\game_form.html:49
 #: .\templates\games\game_form.html:94 .\templates\games\game_form.html:106
-#: .\templates\games\report_compose.html:91
+#: .\templates\games\report_compose.html:88
 #: .\templates\games\report_create.html:29
 #: .\templates\games\report_create.html:40
-#: .\templates\games\report_create.html:98 .\templates\onboarding\step1.html:20
+#: .\templates\games\report_create.html:95 .\templates\onboarding\step1.html:20
 #: .\templates\onboarding\step1.html:30 .\templates\users\profile_edit.html:17
 #: .\templates\users\profile_edit.html:39
 #: .\templates\users\settings_preferences.html:36
@@ -448,8 +443,8 @@ msgid "Narrative situation..."
 msgstr "Situation narrative..."
 
 #: .\templates\characters\_quote_form.html:32
-#: .\templates\games\report_compose.html:91
-#: .\templates\games\report_create.html:98
+#: .\templates\games\report_compose.html:88
+#: .\templates\games\report_create.html:95
 msgid "Content warning"
 msgstr "Avertissement de contenu"
 
@@ -1018,7 +1013,8 @@ msgid "%(name)s is available again as an NPC."
 msgstr "%(name)s est à nouveau disponible en tant que PNJ."
 
 #: .\templates\characters\list.html:4 .\templates\characters\list.html:15
-#: .\templates\games\detail.html:72 .\templates\users\profile.html:102
+#: .\templates\core\explorer.html:20 .\templates\games\detail.html:72
+#: .\templates\users\profile.html:102
 msgid "Characters"
 msgstr "Personnages"
 
@@ -1042,15 +1038,16 @@ msgstr "Supprimer les personnages sélectionnés ?"
 msgid "Delete selection"
 msgstr "Supprimer la sélection"
 
-#: .\templates\characters\list.html:55
+#: .\templates\characters\list.html:55 .\templates\core\explorer.html:35
 msgid "Search a character..."
 msgstr "Rechercher un personnage..."
 
-#: .\templates\characters\list.html:67
+#: .\templates\characters\list.html:67 .\templates\core\explorer.html:50
 msgid "All statuses"
 msgstr "Tous les statuts"
 
-#: .\templates\characters\list.html:75 .\templates\games\list.html:52
+#: .\templates\characters\list.html:75 .\templates\core\explorer.html:58
+#: .\templates\core\explorer.html:83 .\templates\games\list.html:52
 msgid "Game system..."
 msgstr "Système de jeu..."
 
@@ -1221,50 +1218,50 @@ msgstr "vu il y a %(time)s"
 msgid "Read more"
 msgstr "Lire la suite"
 
-#: .\templates\components\report_editor.html:39
+#: .\templates\components\report_editor.html:35
 msgid "Tell us about your session..."
 msgstr "Racontez votre session..."
 
-#: .\templates\components\report_editor.html:39
+#: .\templates\components\report_editor.html:35
 msgid "Use @name to mention a character."
 msgstr "Utilisez @nom pour mentionner un personnage."
 
-#: .\templates\components\report_editor.html:67
+#: .\templates\components\report_editor.html:63
 msgid "No character found"
 msgstr "Aucun personnage trouvé"
 
-#: .\templates\components\report_editor.html:75
+#: .\templates\components\report_editor.html:70
 msgid "Markdown supported. Type <code class=\"bg-card px-1 rounded\">@</code> to mention a character."
 msgstr "Markdown supporté. Tapez <code class=\"bg-card px-1 rounded\">@</code> pour mentionner un personnage."
 
-#: .\templates\components\report_editor.html:82
+#: .\templates\components\report_editor.html:77
 #: .\templates\games\report_create.html:40
 #: .\templates\games\report_detail.html:63
 msgid "Cast"
 msgstr "Distribution"
 
-#: .\templates\components\report_editor.html:82
+#: .\templates\components\report_editor.html:77
 msgid "characters in this scene"
 msgstr "personnages dans cette scène"
 
-#: .\templates\components\report_editor.html:106
+#: .\templates\components\report_editor.html:101
 #: .\templates\games\report_create.html:57
 msgid "Add a character..."
 msgstr "Ajouter un personnage..."
 
-#: .\templates\components\report_editor.html:135
-#: .\templates\games\report_compose.html:124
-#: .\templates\games\report_create.html:130
+#: .\templates\components\report_editor.html:130
+#: .\templates\games\report_compose.html:121
+#: .\templates\games\report_create.html:127
 msgid "Publish"
 msgstr "Publier"
 
-#: .\templates\components\report_editor.html:143
-#: .\templates\games\report_compose.html:128
-#: .\templates\games\report_create.html:134
+#: .\templates\components\report_editor.html:138
+#: .\templates\games\report_compose.html:125
+#: .\templates\games\report_create.html:131
 msgid "Save draft"
 msgstr "Enregistrer le brouillon"
 
-#: .\templates\components\report_editor.html:148
+#: .\templates\components\report_editor.html:143
 msgid "Delete this draft?"
 msgstr "Supprimer ce brouillon ?"
 
@@ -1314,6 +1311,19 @@ msgstr "Contact"
 #: .\templates\core\about.html:63
 msgid "For any questions, contact the administrator of this instance."
 msgstr "Pour toute question, contactez l'administrateur de cette instance."
+
+#: .\templates\core\explorer.html:13
+msgid "Which character do you want to play today?"
+msgstr "Avec quel personnage voulez-vous jouer aujourd'hui ?"
+
+#: .\templates\core\explorer.html:24 .\templates\games\list.html:4
+#: .\templates\games\list.html:15 .\templates\games\report_compose.html:11
+msgid "Games"
+msgstr "Parties"
+
+#: .\templates\core\explorer.html:73
+msgid "Search a game..."
+msgstr "Rechercher une partie..."
 
 #: .\templates\core\home.html:11
 msgid "Welcome to"
@@ -1585,11 +1595,6 @@ msgstr "Choisir un système..."
 msgid "Search..."
 msgstr "Rechercher..."
 
-#: .\templates\games\list.html:4 .\templates\games\list.html:15
-#: .\templates\games\report_compose.html:11
-msgid "Games"
-msgstr "Parties"
-
 #: .\templates\games\list.html:34
 msgid "Delete selected games?"
 msgstr "Supprimer les parties sélectionnées ?"
@@ -1625,33 +1630,33 @@ msgstr "Langue"
 msgid "Content"
 msgstr "Contenu"
 
-#: .\templates\games\report_compose.html:68
-#: .\templates\games\report_create.html:74
+#: .\templates\games\report_compose.html:65
+#: .\templates\games\report_create.html:71
 msgid "Tell your session... Type @ to mention a character."
 msgstr "Racontez votre session... Tapez @ pour mentionner un personnage."
 
-#: .\templates\games\report_compose.html:85
-#: .\templates\games\report_create.html:92
+#: .\templates\games\report_compose.html:82
+#: .\templates\games\report_create.html:89
 msgid "Markdown supported. Type"
 msgstr "Markdown supporté. Tapez"
 
-#: .\templates\games\report_compose.html:85
-#: .\templates\games\report_create.html:92
+#: .\templates\games\report_compose.html:82
+#: .\templates\games\report_create.html:89
 msgid "to mention."
 msgstr "pour mentionner."
 
-#: .\templates\games\report_compose.html:95
-#: .\templates\games\report_create.html:102
+#: .\templates\games\report_compose.html:92
+#: .\templates\games\report_create.html:99
 msgid "e.g. Violence, dark themes"
 msgstr "ex. Violence, thèmes sombres"
 
-#: .\templates\games\report_compose.html:98
-#: .\templates\games\report_create.html:105
+#: .\templates\games\report_compose.html:95
+#: .\templates\games\report_create.html:102
 msgid "If filled, content will be hidden behind a 'Show' button."
 msgstr "Si renseigné, le contenu sera masqué derrière un bouton « Afficher »."
 
-#: .\templates\games\report_compose.html:103
-#: .\templates\games\report_create.html:110
+#: .\templates\games\report_compose.html:100
+#: .\templates\games\report_create.html:107
 msgid "Visibility"
 msgstr "Visibilité"
 
@@ -1904,6 +1909,10 @@ msgid_plural "%(counter)s games imported (%(skipped)s skipped)."
 msgstr[0] "%(counter)s partie importée (%(skipped)s ignorée)."
 msgstr[1] "%(counter)s parties importées (%(skipped)s ignorées)."
 
+#: .\templates\users\settings_data.html:48
+msgid "My games"
+msgstr "Mes parties"
+
 #: .\templates\users\settings_data.html:51
 msgid "Download my games (JSON)"
 msgstr "Télécharger mes parties (JSON)"
@@ -1923,6 +1932,10 @@ msgid "%(counter)s character imported (%(skipped)s skipped)."
 msgid_plural "%(counter)s characters imported (%(skipped)s skipped)."
 msgstr[0] "%(counter)s personnage importé (%(skipped)s ignoré)."
 msgstr[1] "%(counter)s personnages importés (%(skipped)s ignorés)."
+
+#: .\templates\users\settings_data.html:86
+msgid "My characters"
+msgstr "Mes personnages"
 
 #: .\templates\users\settings_data.html:89
 msgid "Download my characters (JSON)"

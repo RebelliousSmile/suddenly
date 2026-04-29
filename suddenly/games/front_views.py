@@ -5,7 +5,6 @@ HTMX-first views for games and reports (DA-1).
 from __future__ import annotations
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -16,6 +15,7 @@ from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
 from .models import CastRole, Game, GameSystem, Report, ReportCast, ReportStatus, ReportVisibility
+from .services import build_game_queryset
 
 
 @login_required
@@ -113,47 +113,9 @@ def report_compose(request: AuthenticatedRequest) -> HttpResponse:
     )
 
 
-def _build_game_queryset(request: HttpRequest) -> QuerySet[Game]:
-    """Build filtered game queryset from request params."""
-    from django.db.models import Count, Q
-
-    public_filter = Q(is_public=True, remote=False)
-    if request.user.is_authenticated:
-        public_filter |= Q(owner=request.user, remote=False)
-
-    qs = (
-        Game.objects.filter(public_filter)
-        .select_related("owner", "game_system_ref")
-        .annotate(
-            report_count=Count("reports", distinct=True),
-            char_npc=Count("characters", filter=Q(characters__status="npc"), distinct=True),
-            char_pc=Count("characters", filter=Q(characters__status="pc"), distinct=True),
-            char_adopted=Count(
-                "characters",
-                filter=Q(characters__status__in=["claimed", "adopted"]),
-                distinct=True,
-            ),
-            char_forked=Count("characters", filter=Q(characters__status="forked"), distinct=True),
-        )
-        .order_by("-updated_at")
-    )
-
-    system = request.GET.get("system", "").strip()
-    if system:
-        qs = qs.filter(
-            Q(game_system_ref__name__icontains=system) | Q(game_system__icontains=system)
-        )
-
-    tag = request.GET.get("tag", "").strip()
-    if tag:
-        qs = qs.filter(tags__name=tag)
-
-    return qs
-
-
 def game_list(request: HttpRequest) -> HttpResponse:
     """Game list with filters (US-02)."""
-    qs = _build_game_queryset(request)
+    qs = build_game_queryset(request)
 
     all_tags: list[str] = sorted(
         Game.objects.filter(remote=False, tags__isnull=False)
@@ -176,7 +138,7 @@ def game_list(request: HttpRequest) -> HttpResponse:
 
 def game_search(request: HttpRequest) -> HttpResponse:
     """HTMX endpoint for live game search (partial only)."""
-    qs = _build_game_queryset(request)
+    qs = build_game_queryset(request)
     return htmx_render(
         request,
         full_template="games/_list_results.html",

@@ -20,6 +20,54 @@ def home(request: HttpRequest) -> HttpResponse:
     return render(request, "core/home.html", {"recent_reports": get_recent_public_reports()})
 
 
+def explorer(request: HttpRequest) -> HttpResponse:
+    """Public discovery page — characters and games tabs."""
+    from suddenly.characters.models import Character, CharacterStatus
+    from suddenly.characters.services import build_character_queryset
+    from suddenly.games.models import Game
+    from suddenly.games.services import build_game_queryset
+
+    tab = request.GET.get("tab", "characters")
+    context: dict[str, Any] = {"active_tab": tab}
+
+    if tab == "games":
+        games_qs = build_game_queryset(request)
+        all_tags: list[str] = sorted(
+            Game.objects.filter(remote=False, tags__isnull=False)
+            .values_list("tags__name", flat=True)
+            .distinct()
+        )
+        context.update(
+            {
+                "games": games_qs[:24],
+                "system_filter": request.GET.get("system", ""),
+                "active_tag": request.GET.get("tag", ""),
+                "all_tags": all_tags,
+                "query": request.GET.get("q", ""),
+            }
+        )
+    else:
+        chars_qs = build_character_queryset(request)
+        all_tags = sorted(
+            Character.objects.filter(remote=False, tags__isnull=False)
+            .values_list("tags__name", flat=True)
+            .distinct()
+        )
+        context.update(
+            {
+                "characters": chars_qs[:24],
+                "query": request.GET.get("q", ""),
+                "status_filter": request.GET.get("status", ""),
+                "system_filter": request.GET.get("system", ""),
+                "active_tag": request.GET.get("tag", ""),
+                "all_tags": all_tags,
+                "statuses": CharacterStatus.choices,
+            }
+        )
+
+    return render(request, "core/explorer.html", context)
+
+
 def about(request: HttpRequest) -> HttpResponse:
     """Instance about page (US-31, wireframe 17)."""
     from suddenly.activitypub.models import FederatedServer
