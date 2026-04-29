@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-29 11:03+0200\n"
+"POT-Creation-Date: 2026-04-29 11:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -132,12 +132,12 @@ msgstr ""
 msgid "Federated shared fiction network"
 msgstr ""
 
-#: .\suddenly\games\front_views.py:66 .\suddenly\games\front_views.py:297
-#: .\suddenly\games\front_views.py:362
+#: .\suddenly\games\front_views.py:66 .\suddenly\games\front_views.py:308
+#: .\suddenly\games\front_views.py:373
 msgid "Content is required."
 msgstr ""
 
-#: .\suddenly\games\front_views.py:220 .\suddenly\games\front_views.py:426
+#: .\suddenly\games\front_views.py:231 .\suddenly\games\front_views.py:437
 msgid "Title is required."
 msgstr ""
 
@@ -266,9 +266,9 @@ msgstr ""
 #: .\templates\characters\link_revoke_form.html:35
 #: .\templates\characters\list.html:45 .\templates\components\modal.html:71
 #: .\templates\games\create.html:74 .\templates\games\game_form.html:128
-#: .\templates\games\list.html:42 .\templates\games\report_compose.html:130
-#: .\templates\games\report_form.html:183
-#: .\templates\games\report_form.html:185
+#: .\templates\games\list.html:42 .\templates\games\report_compose.html:126
+#: .\templates\games\report_form.html:179
+#: .\templates\games\report_form.html:181
 #: .\templates\gmh\instance_block.html:16
 #: .\templates\users\profile_edit.html:77
 msgid "Cancel"
@@ -389,14 +389,14 @@ msgid "No character found for \"%(q)s\"."
 msgstr ""
 
 #: .\templates\characters\_list_results.html:71
-#: .\templates\users\profile.html:114
+#: .\templates\users\profile.html:124
 msgid "No characters yet."
 msgstr ""
 
 #: .\templates\characters\_quote_card.html:17
 #: .\templates\characters\detail.html:84 .\templates\characters\detail.html:114
 #: .\templates\characters\gm_dashboard.html:120
-#: .\templates\games\_list_results.html:64 .\templates\games\detail.html:50
+#: .\templates\games\_list_results.html:64 .\templates\games\detail.html:54
 #: .\templates\games\report_detail.html:31 .\templates\onboarding\step2.html:26
 #, python-format
 msgid "by @%(username)s"
@@ -431,9 +431,9 @@ msgstr ""
 #: .\templates\games\create.html:30 .\templates\games\create.html:40
 #: .\templates\games\create.html:50 .\templates\games\game_form.html:49
 #: .\templates\games\game_form.html:94 .\templates\games\game_form.html:106
-#: .\templates\games\report_compose.html:91
-#: .\templates\games\report_form.html:60 .\templates\games\report_form.html:72
-#: .\templates\games\report_form.html:125 .\templates\onboarding\step1.html:20
+#: .\templates\games\report_compose.html:87
+#: .\templates\games\report_form.html:56 .\templates\games\report_form.html:68
+#: .\templates\games\report_form.html:121 .\templates\onboarding\step1.html:20
 #: .\templates\onboarding\step1.html:30 .\templates\users\profile_edit.html:17
 #: .\templates\users\profile_edit.html:39
 #: .\templates\users\settings_preferences.html:36
@@ -446,8 +446,8 @@ msgid "Narrative situation..."
 msgstr ""
 
 #: .\templates\characters\_quote_form.html:32
-#: .\templates\games\report_compose.html:91
-#: .\templates\games\report_form.html:125
+#: .\templates\games\report_compose.html:87
+#: .\templates\games\report_form.html:121
 msgid "Content warning"
 msgstr ""
 
@@ -458,7 +458,7 @@ msgstr ""
 #: .\templates\characters\_quote_form.html:47
 #: .\templates\characters\character_form.html:98
 #: .\templates\characters\sequence_edit.html:83
-#: .\templates\games\game_form.html:122 .\templates\games\report_form.html:170
+#: .\templates\games\game_form.html:122 .\templates\games\report_form.html:166
 #: .\templates\gmh\instance_settings.html:68
 msgid "Save"
 msgstr ""
@@ -554,7 +554,7 @@ msgstr ""
 #: .\templates\characters\detail.html:43
 #: .\templates\games\_list_results.html:74 .\templates\games\detail.html:28
 #: .\templates\games\report_detail.html:26
-#: .\templates\games\report_form.html:18
+#: .\templates\games\report_form.html:14
 msgid "Edit"
 msgstr ""
 
@@ -575,7 +575,7 @@ msgid "Appearances"
 msgstr ""
 
 #: .\templates\characters\detail.html:81 .\templates\feed\_feed_items.html:48
-#: .\templates\games\detail.html:47 .\templates\games\report_detail.html:20
+#: .\templates\games\detail.html:51 .\templates\games\report_detail.html:20
 #: .\templates\onboarding\step2.html:25
 msgid "Untitled"
 msgstr ""
@@ -1018,8 +1018,8 @@ msgid "%(name)s is available again as an NPC."
 msgstr ""
 
 #: .\templates\characters\list.html:4 .\templates\characters\list.html:15
-#: .\templates\core\explorer.html:20 .\templates\games\detail.html:72
-#: .\templates\users\profile.html:102
+#: .\templates\core\explorer.html:20 .\templates\games\detail.html:76
+#: .\templates\users\profile.html:95 .\templates\users\profile.html:112
 msgid "Characters"
 msgstr ""
 
@@ -1090,7 +1090,7 @@ msgstr ""
 #: .\templates\characters\sequence_edit.html:66
 #: .\templates\components\report_editor.html:16
 #: .\templates\games\create.html:21 .\templates\games\game_form.html:21
-#: .\templates\games\report_form.html:60
+#: .\templates\games\report_form.html:56
 msgid "Title"
 msgstr ""
 
@@ -1139,7 +1139,7 @@ msgstr ""
 #: .\templates\components\report_editor.html:29
 #: .\templates\games\report_detail.html:4
 #: .\templates\games\report_detail.html:13
-#: .\templates\games\report_form.html:17
+#: .\templates\games\report_form.html:13
 msgid "Report"
 msgstr ""
 
@@ -1224,50 +1224,50 @@ msgstr ""
 msgid "Read more"
 msgstr ""
 
-#: .\templates\components\report_editor.html:39
+#: .\templates\components\report_editor.html:36
 msgid "Tell us about your session..."
 msgstr ""
 
-#: .\templates\components\report_editor.html:39
+#: .\templates\components\report_editor.html:36
 msgid "Use @name to mention a character."
 msgstr ""
 
-#: .\templates\components\report_editor.html:67
+#: .\templates\components\report_editor.html:64
 msgid "No character found"
 msgstr ""
 
-#: .\templates\components\report_editor.html:75
+#: .\templates\components\report_editor.html:72
 msgid "Markdown supported. Type <code class=\"bg-card px-1 rounded\">@</code> to mention a character."
 msgstr ""
 
-#: .\templates\components\report_editor.html:82
+#: .\templates\components\report_editor.html:79
 #: .\templates\games\report_detail.html:72
-#: .\templates\games\report_form.html:72
+#: .\templates\games\report_form.html:68
 msgid "Cast"
 msgstr ""
 
-#: .\templates\components\report_editor.html:82
+#: .\templates\components\report_editor.html:79
 msgid "characters in this scene"
 msgstr ""
 
-#: .\templates\components\report_editor.html:106
-#: .\templates\games\report_form.html:89
+#: .\templates\components\report_editor.html:103
+#: .\templates\games\report_form.html:85
 msgid "Add a character..."
 msgstr ""
 
-#: .\templates\components\report_editor.html:135
-#: .\templates\games\report_compose.html:124
-#: .\templates\games\report_form.html:175
+#: .\templates\components\report_editor.html:132
+#: .\templates\games\report_compose.html:120
+#: .\templates\games\report_form.html:171
 msgid "Publish"
 msgstr ""
 
-#: .\templates\components\report_editor.html:143
-#: .\templates\games\report_compose.html:128
-#: .\templates\games\report_form.html:179
+#: .\templates\components\report_editor.html:140
+#: .\templates\games\report_compose.html:124
+#: .\templates\games\report_form.html:175
 msgid "Save draft"
 msgstr ""
 
-#: .\templates\components\report_editor.html:148
+#: .\templates\components\report_editor.html:145
 msgid "Delete this draft?"
 msgstr ""
 
@@ -1492,7 +1492,8 @@ msgstr ""
 msgid "Available NPCs in your followed games"
 msgstr ""
 
-#: .\templates\games\_list_results.html:34 .\templates\games\detail.html:37
+#: .\templates\games\_list_results.html:34 .\templates\games\detail.html:41
+#: .\templates\users\profile.html:91
 msgid "Reports"
 msgstr ""
 
@@ -1573,11 +1574,11 @@ msgstr ""
 msgid "By @%(username)s"
 msgstr ""
 
-#: .\templates\games\detail.html:65
+#: .\templates\games\detail.html:69
 msgid "No published report."
 msgstr ""
 
-#: .\templates\games\detail.html:88
+#: .\templates\games\detail.html:92
 msgid "No characters in this game."
 msgstr ""
 
@@ -1608,8 +1609,8 @@ msgstr ""
 #: .\templates\games\report_compose.html:4
 #: .\templates\games\report_compose.html:12
 #: .\templates\games\report_compose.html:15
-#: .\templates\games\report_form.html:7 .\templates\games\report_form.html:20
-#: .\templates\games\report_form.html:26
+#: .\templates\games\report_form.html:4 .\templates\games\report_form.html:16
+#: .\templates\games\report_form.html:22
 msgid "New report"
 msgstr ""
 
@@ -1631,37 +1632,37 @@ msgid "Language"
 msgstr ""
 
 #: .\templates\games\report_compose.html:63
-#: .\templates\games\report_form.html:101
+#: .\templates\games\report_form.html:97
 msgid "Content"
 msgstr ""
 
-#: .\templates\games\report_compose.html:68
-#: .\templates\games\report_form.html:103
+#: .\templates\games\report_compose.html:65
+#: .\templates\games\report_form.html:99
 msgid "Tell your session... Type @ to mention a character."
 msgstr ""
 
-#: .\templates\games\report_compose.html:85
-#: .\templates\games\report_form.html:119
+#: .\templates\games\report_compose.html:81
+#: .\templates\games\report_form.html:115
 msgid "Markdown supported. Type"
 msgstr ""
 
-#: .\templates\games\report_compose.html:85
-#: .\templates\games\report_form.html:119
+#: .\templates\games\report_compose.html:81
+#: .\templates\games\report_form.html:115
 msgid "to mention."
 msgstr ""
 
-#: .\templates\games\report_compose.html:95
-#: .\templates\games\report_form.html:129
+#: .\templates\games\report_compose.html:91
+#: .\templates\games\report_form.html:125
 msgid "e.g. Violence, dark themes"
 msgstr ""
 
-#: .\templates\games\report_compose.html:98
-#: .\templates\games\report_form.html:132
+#: .\templates\games\report_compose.html:94
+#: .\templates\games\report_form.html:128
 msgid "If filled, content will be hidden behind a 'Show' button."
 msgstr ""
 
-#: .\templates\games\report_compose.html:103
-#: .\templates\games\report_form.html:137
+#: .\templates\games\report_compose.html:99
+#: .\templates\games\report_form.html:133
 msgid "Visibility"
 msgstr ""
 
@@ -1686,31 +1687,31 @@ msgstr ""
 msgid "Quotes from this session"
 msgstr ""
 
-#: .\templates\games\report_form.html:5 .\templates\games\report_form.html:26
+#: .\templates\games\report_form.html:4 .\templates\games\report_form.html:22
 msgid "Edit report"
 msgstr ""
 
-#: .\templates\games\report_form.html:35
+#: .\templates\games\report_form.html:31
 msgid "Tips"
 msgstr ""
 
-#: .\templates\games\report_form.html:39
+#: .\templates\games\report_form.html:35
 msgid "Minimum 50 characters — enough to set the scene."
 msgstr ""
 
-#: .\templates\games\report_form.html:40
+#: .\templates\games\report_form.html:36
 msgid "Type @ to mention a character and link them to this report."
 msgstr ""
 
-#: .\templates\games\report_form.html:41
+#: .\templates\games\report_form.html:37
 msgid "Markdown supported: **bold**, *italic*, > quote, - list."
 msgstr ""
 
-#: .\templates\games\report_form.html:42
+#: .\templates\games\report_form.html:38
 msgid "Add a content warning to hide sensitive content behind a 'Show' button."
 msgstr ""
 
-#: .\templates\games\report_form.html:64
+#: .\templates\games\report_form.html:60
 msgid "Session title..."
 msgstr ""
 
@@ -1856,7 +1857,7 @@ msgstr[1] ""
 msgid "Recent games"
 msgstr ""
 
-#: .\templates\users\profile.html:94
+#: .\templates\users\profile.html:104
 msgid "No published games yet."
 msgstr ""
 

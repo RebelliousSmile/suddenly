@@ -163,7 +163,10 @@ def game_search(request: HttpRequest) -> HttpResponse:
 
 def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
     """Game detail with reports and characters (US-02)."""
+    from django.contrib.contenttypes.models import ContentType
     from django.db.models import Q
+
+    from suddenly.characters.models import Follow
 
     visibility = Q(is_public=True)
     if request.user.is_authenticated:
@@ -180,6 +183,13 @@ def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
     )
     characters = game.characters.select_related("creator", "owner").order_by("-created_at")[:12]
 
+    is_following = False
+    if request.user.is_authenticated and request.user != game.owner:
+        ct = ContentType.objects.get_for_model(game)
+        is_following = Follow.objects.filter(
+            follower=request.user, content_type=ct, object_id=game.pk
+        ).exists()
+
     return htmx_render(
         request,
         full_template="games/detail.html",
@@ -189,6 +199,7 @@ def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
             "reports": reports,
             "characters": characters,
             "is_owner": request.user == game.owner if request.user.is_authenticated else False,
+            "is_following": is_following,
         },
     )
 

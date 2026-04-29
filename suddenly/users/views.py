@@ -32,7 +32,9 @@ class ProfileView(DetailView):  # type: ignore[type-arg]
         profile_user = self.object
 
         # Games and characters
-        context["games"] = profile_user.games.filter(is_public=True).order_by("-updated_at")[:10]
+        from suddenly.games.services import build_game_queryset
+
+        context["games"] = build_game_queryset(self.request.user).filter(owner=profile_user)[:10]
         context["characters"] = profile_user.created_characters.order_by("-created_at")[:12]
 
         # Follow stats — single query with conditional aggregation

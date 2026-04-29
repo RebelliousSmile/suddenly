@@ -29,6 +29,10 @@
                     </a>
                 </div>
             {% endif %}
+
+            {% if user.is_authenticated and not is_owner %}
+                {% include "components/follow_button.html" with target=game target_type="game" is_following=is_following %}
+            {% endif %}
         </div>
 
         <!-- Reports -->

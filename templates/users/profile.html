@@ -84,10 +84,20 @@
         {% if games %}
             <div class="space-y-3">
                 {% for game in games %}
-                    <div class="card card-body">
+                    <a href="{% url 'games:detail' pk=game.pk %}" class="card card-body block hover:bg-card-dark/30 transition-colors">
                         <h3 class="font-semibold text-primary">{{ game.title }}</h3>
-                        {% if game.game_system %}<p class="text-sm text-muted">{{ game.game_system }}</p>{% endif %}
-                    </div>
+                        {% if game.game_system_ref or game.game_system %}<p class="text-sm text-muted">{{ game.game_system_ref.name|default:game.game_system }}</p>{% endif %}
+                        <div class="flex gap-3 text-xs text-muted mt-1">
+                            <span class="flex items-center gap-1" title="{% trans "Reports" %}">
+                                <span class="i-lucide-scroll-text"></span>
+                                {{ game.report_count|default:0 }}
+                            </span>
+                            <span class="flex items-center gap-1" title="{% trans "Characters" %}">
+                                <span class="i-lucide-user"></span>
+                                {{ game.char_npc|default:0 }}
+                            </span>
+                        </div>
+                    </a>
                 {% endfor %}
             </div>
         {% else %}
