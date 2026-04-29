@@ -24,6 +24,7 @@ const presetSuddenly = () => ({
       primary: 'var(--c-primary)',
       secondary: 'var(--c-secondary)',
       muted: 'var(--c-muted)',
+      input: 'var(--c-input-bg)',
       // Action colors — CSS var driven, supports opacity modifiers (bg-crimson/10)
       crimson: {
         DEFAULT: 'rgb(var(--c-crimson) / <alpha-value>)',
@@ -123,8 +124,8 @@ const presetSuddenly = () => ({
     'card-footer': 'px-4 py-3 sm:px-6 border-t border-border rounded-b-card',
 
     // Formulaires
-    'input-base': 'bg-neon/10 border border-neon/30 rounded-[12px] text-primary placeholder-muted focus:border-crimson outline-none',
-    'form-input': 'block w-full rounded-[12px] border border-neon/30 px-3 py-2.5 focus:border-crimson sm:text-sm bg-neon/10 text-primary outline-none',
+    'input-base': 'appearance-none bg-input border border-solid border-border rounded-[12px] text-primary placeholder-muted focus:border-crimson outline-none',
+    'form-input': 'appearance-none block w-full min-w-0 rounded-[12px] border border-solid border-border px-3 py-2.5 focus:border-crimson sm:text-sm bg-input text-primary outline-none',
     'form-input-error': 'form-input bg-error/10 border-error focus:border-error',
     'form-label': 'block text-sm font-medium text-secondary mb-1',
     'form-help': 'mt-1 text-sm text-muted',
@@ -257,6 +258,8 @@ export default defineConfig({
     'i-lucide-sun', 'i-lucide-moon',
     // Couleur brand (logo #6364FF)
     'text-brand', 'bg-brand', 'bg-brand/10', 'bg-brand/15', 'border-brand', 'border-brand/30',
+    // Card dark (option C formulaires)
+    'bg-card-dark',
     // Couleurs neon (neon accent)
     'text-neon', 'bg-neon/10', 'border-neon/30',
     // Couleurs crimson (accent primaire)

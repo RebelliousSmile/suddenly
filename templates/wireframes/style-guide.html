@@ -553,85 +553,82 @@
     <section>
         <h2 class="text-2xl font-bold text-primary mb-8 pb-2 border-b border-border">7. Éléments de formulaire</h2>
 
-        <!-- Comparaison de styles -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-
-            <!-- Option A: Bordure colorée -->
-            <div class="card space-y-4">
-                <p class="label-overline mb-2">Option A — Bordure colorée</p>
-
-                <div>
+        <!-- Champs de base (Option A retenue) -->
+        <div class="card mb-8">
+            <p class="label-overline mb-4">Champs de base — form-input</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="min-w-0">
                     <label class="form-label">Champ texte</label>
-                    <input type="text" class="block w-full rounded-[12px] border border-neon/30 px-3 py-2.5 focus:border-crimson text-sm bg-card text-primary outline-none" placeholder="Placeholder…" />
-                    <p class="form-help">form-help — Texte d'aide</p>
+                    <input type="text" class="form-input" placeholder="Placeholder…" />
+                    <p class="form-help">form-help</p>
                 </div>
-
-                <div>
-                    <label class="form-label">Champ en erreur</label>
-                    <input type="text" class="block w-full rounded-[12px] border border-error px-3 py-2.5 focus:border-error text-sm bg-card text-primary outline-none" value="valeur incorrecte" />
+                <div class="min-w-0">
+                    <label class="form-label">Erreur</label>
+                    <input type="text" class="form-input-error" value="valeur incorrecte" />
                     <p class="form-error">Ce champ est requis.</p>
                 </div>
-
-                <div>
+                <div class="min-w-0">
                     <label class="form-label">Select</label>
                     <div class="relative">
-                        <select class="block w-full rounded-[12px] border border-neon/30 px-3 py-2.5 pr-10 focus:border-crimson text-sm bg-card text-primary outline-none appearance-none">
-                            <option value="">Choisir une option…</option>
-                            <option value="public">Public</option>
-                            <option value="unlisted">Non-listé</option>
-                            <option value="followers">Abonnés seulement</option>
+                        <select class="form-select">
+                            <option value="">Choisir…</option>
+                            <option>Public</option>
+                            <option>Non-listé</option>
+                            <option>Abonnés seulement</option>
                         </select>
                         <span class="i-lucide-chevron-down absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none"></span>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div>
-                    <label class="form-label">Textarea</label>
-                    <textarea class="block w-full rounded-[12px] border border-neon/30 px-3 py-2.5 focus:border-crimson text-sm bg-card text-primary outline-none h-20 resize-none" placeholder="Rédigez votre compte-rendu…"></textarea>
+        <!-- Champs spéciaux -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+
+            <!-- Recherche avec icône -->
+            <div class="min-w-0">
+                <label class="form-label">Recherche (avec icône)</label>
+                <div class="relative">
+                    <span class="i-lucide-search absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none"></span>
+                    <input type="search" class="appearance-none block w-full min-w-0 rounded-[12px] border border-solid border-border pl-9 pr-3 py-2.5 focus:border-crimson text-sm outline-none" placeholder="Rechercher un personnage…" />
                 </div>
             </div>
 
-            <!-- Option B: Fond teinté -->
-            <div class="card space-y-4">
-                <p class="label-overline mb-2">Option B — Fond teinté</p>
+            <!-- Nombre -->
+            <div class="min-w-0">
+                <label class="form-label">Nombre</label>
+                <input type="number" class="form-input" placeholder="0" min="0" />
+            </div>
 
-                <div>
-                    <label class="form-label">Champ texte</label>
-                    <input type="text" class="block w-full rounded-[12px] border border-neon/30 px-3 py-2.5 focus:border-crimson text-sm bg-neon/10 text-primary outline-none" placeholder="Placeholder…" />
-                    <p class="form-help">form-help — Texte d'aide</p>
-                </div>
+            <!-- Date -->
+            <div class="min-w-0">
+                <label class="form-label">Date</label>
+                <input type="date" class="block w-full min-w-0 rounded-[12px] border border-solid border-border px-3 py-2.5 focus:border-crimson text-sm text-primary outline-none" />
+            </div>
 
-                <div>
-                    <label class="form-label">Champ en erreur</label>
-                    <input type="text" class="block w-full rounded-[12px] border border-error px-3 py-2.5 focus:border-error text-sm bg-error/10 text-primary outline-none" value="valeur incorrecte" />
-                    <p class="form-error">Ce champ est requis.</p>
-                </div>
-
-                <div>
-                    <label class="form-label">Select</label>
-                    <div class="relative">
-                        <select class="block w-full rounded-[12px] border border-neon/30 px-3 py-2.5 pr-10 focus:border-crimson text-sm bg-neon/10 text-primary outline-none appearance-none">
-                            <option value="">Choisir une option…</option>
-                            <option value="public">Public</option>
-                            <option value="unlisted">Non-listé</option>
-                            <option value="followers">Abonnés seulement</option>
-                        </select>
-                        <span class="i-lucide-chevron-down absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none"></span>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="form-label">Textarea</label>
-                    <textarea class="block w-full rounded-[12px] border border-neon/30 px-3 py-2.5 focus:border-crimson text-sm bg-neon/10 text-primary outline-none h-20 resize-none" placeholder="Rédigez votre compte-rendu…"></textarea>
+            <!-- Radio -->
+            <div class="min-w-0" x-data="{ radio: 'public' }">
+                <label class="form-label block mb-2">Visibilité (radio)</label>
+                <div class="space-y-2">
+                    <template x-for="opt in [{v:'public',l:'Public'},{v:'unlisted',l:'Non-listé'},{v:'followers',l:'Abonnés seulement'}]" :key="opt.v">
+                        <label class="flex items-center gap-2.5 cursor-pointer" @click="radio = opt.v">
+                            <div class="w-4 h-4 rounded-full border border-solid shrink-0 flex items-center justify-center transition-colors"
+                                 :class="radio === opt.v ? 'border-crimson' : 'border-border'">
+                                <div class="w-2 h-2 rounded-full bg-crimson transition-opacity"
+                                     :class="radio === opt.v ? 'opacity-100' : 'opacity-0'"></div>
+                            </div>
+                            <span class="text-sm text-primary" x-text="opt.l"></span>
+                        </label>
+                    </template>
                 </div>
             </div>
         </div>
 
         <!-- Switches + Dropzone -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
 
             <!-- Switches -->
-            <div x-data="{ s1: true, s2: false }">
+            <div x-data="{ s1: true, s2: false }" class="min-w-0">
                 <label class="form-label block mb-3">Switches</label>
                 <div class="space-y-3">
                     <label class="flex items-center gap-3 cursor-pointer">
@@ -666,6 +663,38 @@
                     <span class="i-lucide-upload w-6 h-6 text-muted"></span>
                     <p class="text-sm text-secondary">Glissez votre fichier ici ou <span class="form-dropzone-link text-sm font-medium">Téléverser</span></p>
                     <p class="text-xs text-muted">PNG, JPG, GIF — max 5 Mo</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Éditeur Markdown (EasyMDE) -->
+        <div class="mb-2">
+            <h3 class="text-lg font-semibold text-primary mb-4">Éditeur Markdown</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <!-- Éditeur -->
+                <div>
+                    <label class="form-label block mb-2">Éditeur (EasyMDE)</label>
+                    <div x-data="markdownEditor('**Titre de scène**\n\nVoici un paragraphe avec du *texte en italique* et du **gras**. On peut aussi écrire du `code inline`.\n\n## Sous-titre\n\nUne liste d\'actions :\n- Le joueur entre dans la taverne\n- Il remarque une silhouette familière\n- @Mira lui fait signe depuis le fond\n\n> *« Je savais que tu viendrais. »* — Mira')">
+                        <textarea></textarea>
+                    </div>
+                </div>
+
+                <!-- Rendu markdown -->
+                <div>
+                    <label class="form-label block mb-2">Rendu HTML (prose-report)</label>
+                    <div class="prose-report prose bg-card border border-border rounded-2xl p-6 text-sm">
+                        <p><strong>Titre de scène</strong></p>
+                        <p>Voici un paragraphe avec du <em>texte en italique</em> et du <strong>gras</strong>. On peut aussi écrire du <code>code inline</code>.</p>
+                        <h2>Sous-titre</h2>
+                        <p>Une liste d'actions :</p>
+                        <ul>
+                            <li>Le joueur entre dans la taverne</li>
+                            <li>Il remarque une silhouette familière</li>
+                            <li><a href="#">@Mira</a> lui fait signe depuis le fond</li>
+                        </ul>
+                        <blockquote><p><em>« Je savais que tu viendrais. »</em> — Mira</p></blockquote>
+                    </div>
                 </div>
             </div>
         </div>

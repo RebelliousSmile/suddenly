@@ -5,6 +5,7 @@
   --c-card: #ffffff;
   --c-card-dark: #f5f2ec;
   --c-border: #d4cfe8;
+  --c-input-bg: #f0ede8;   /* = surface en light — fond inputs */
   --c-primary: #1a1a2e;
   --c-secondary: #4a4a6a;
   --c-muted: #8a8aaa;
@@ -35,6 +36,7 @@
   --c-card: #ffffff;
   --c-card-dark: #f5f2ec;
   --c-border: #d4cfe8;
+  --c-input-bg: #f0ede8;
   --c-primary: #1a1a2e;
   --c-secondary: #4a4a6a;
   --c-muted: #8a8aaa;
@@ -57,6 +59,7 @@
   --c-card: #1a1a1a;
   --c-card-dark: #222222;
   --c-border: #2a2a2a;
+  --c-input-bg: rgba(224, 53, 88, 0.06); /* fallback solid pour background-color */
   --c-primary: #f0f0f0;
   --c-secondary: #a0a0a0;
   --c-muted: #606060;
@@ -76,6 +79,13 @@
 body {
   background: var(--body-bg);
   color: var(--c-primary);
+}
+
+/* Inputs dark mode — dégradé directionnel crimson → transparent, très basse opacité */
+[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background: linear-gradient(135deg, rgba(224, 53, 88, 0.09) 0%, rgba(224, 53, 88, 0.03) 100%);
 }
 
 a { text-decoration: none; }
