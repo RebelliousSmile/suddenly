@@ -10,6 +10,29 @@
     Style Guide — Design tokens, composants, typographie, icônes
 </div>
 
+<!-- ================================================================ -->
+<!-- THEME TOGGLE (local, indépendant du thème du site) -->
+<!-- ================================================================ -->
+<div x-data="{ previewTheme: null }"
+     :data-theme="previewTheme"
+     :style="previewTheme ? 'background: var(--c-bg); color: var(--c-primary);' : ''">
+
+<div class="sticky top-0 z-sticky border-b border-border bg-card/90 backdrop-blur-sm px-4 py-2 flex items-center gap-2">
+    <span class="text-xs text-muted">Prévisualisation :</span>
+    <button @click="previewTheme = null"
+            :class="!previewTheme ? 'btn-primary btn-sm' : 'btn-secondary btn-sm'">
+        Thème actif
+    </button>
+    <button @click="previewTheme = 'light'"
+            :class="previewTheme === 'light' ? 'btn-primary btn-sm' : 'btn-secondary btn-sm'">
+        <span class="i-lucide-sun w-3.5 h-3.5 inline-block mr-1"></span>Light
+    </button>
+    <button @click="previewTheme = 'dark'"
+            :class="previewTheme === 'dark' ? 'btn-primary btn-sm' : 'btn-secondary btn-sm'">
+        <span class="i-lucide-moon w-3.5 h-3.5 inline-block mr-1"></span>Dark
+    </button>
+</div>
+
 <div class="container-app py-10 px-4 space-y-16">
 
     <!-- ============================================================ -->
@@ -733,6 +756,7 @@
         </div>
     </section>
 
-</div>
+</div><!-- /container-app -->
+</div><!-- /x-data previewTheme -->
 
 {% endblock %}

@@ -12,6 +12,20 @@
   --body-bg: #faf9f6;
 }
 
+[data-theme="light"] {
+  --c-bg: #faf9f6;
+  --c-surface: #f0ede8;
+  --c-card: #ffffff;
+  --c-card-dark: #f5f2ec;
+  --c-border: #d4cfe8;
+  --c-primary: #1a1a2e;
+  --c-secondary: #4a4a6a;
+  --c-muted: #8a8aaa;
+  --shadow-card: 0 2px 16px rgba(0,0,0,0.07);
+  --shadow-card-hover: 0 4px 24px rgba(0,0,0,0.12);
+  --body-bg: #faf9f6;
+}
+
 [data-theme="dark"] {
   --c-bg: #0a0a0a;
   --c-surface: #111111;
