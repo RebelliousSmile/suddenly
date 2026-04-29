@@ -14,6 +14,7 @@
 | `04-profile.md` | Profil public, edition profil | US-01 |
 | `05-games.md` | Liste parties, detail partie, creation partie | US-02, US-03 |
 | `06-reports.md` | Detail CR, editeur CR + cast + @mentions | US-04, US-05, US-13 |
+| `18-report-character-links.md` | CR complet : marqueurs NPC/PC/claim/adopt/fork, toutes variantes (CW, draft, unlisted, followers, distant, auteur) | US-04, US-05, US-09 a US-11 |
 | `07-characters.md` | Liste FTS, fiche perso, variantes (PJ, fork, distant, revoque) | US-06, US-07, US-17, US-22 |
 | `08-quotes.md` | Citations sur fiche perso, ajout HTMX | US-08 |
 | `09-links.md` | Modals claim/adopt/fork, file d'attente, revocation, cross-instance, SharedSequence | US-09 a US-11, US-15, US-16, US-18-19, US-23 |
