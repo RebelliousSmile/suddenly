@@ -8,7 +8,7 @@
   {% for section in nav %}
   <details open class="mb-4">
     <summary class="cursor-pointer font-semibold text-primary mb-2 list-none flex items-center gap-2">
-      <span class="i-lucide-chevron-right w-3 h-3 details-open:rotate-90 transition-transform"></span>
+      <span class="i-lucide-chevron-right w-3 h-3"></span>
       {{ section.section }}
     </summary>
     <ul class="space-y-0.5 ml-2">
@@ -19,7 +19,7 @@
                   {% if current_section == section.slug and current_slug == entry.slug %}
                   bg-primary/10 text-primary font-medium
                   {% else %}
-                  text-muted hover:bg-surface hover:text-foreground
+                  text-muted hover:bg-surface hover:text-primary
                   {% endif %}">
           {{ entry.label }}
         </a>

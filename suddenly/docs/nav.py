@@ -1,10 +1,24 @@
 from pathlib import Path
+from typing import TypedDict
 
 from django.conf import settings
 
 BASE: Path = settings.BASE_DIR
 
-NAV: list[dict[str, object]] = [
+
+class NavEntry(TypedDict):
+    slug: str
+    label: str
+    path: Path
+
+
+class NavSection(TypedDict):
+    section: str
+    slug: str
+    entries: list[NavEntry]
+
+
+NAV: list[NavSection] = [
     {
         "section": "Documentation",
         "slug": "doc",
@@ -252,13 +266,7 @@ NAV: list[dict[str, object]] = [
 def resolve(section_slug: str, entry_slug: str) -> Path | None:
     for section in NAV:
         if section["slug"] == section_slug:
-            entries = section["entries"]
-            if not isinstance(entries, list):
-                continue
-            for entry in entries:
-                if not isinstance(entry, dict):
-                    continue
+            for entry in section["entries"]:
                 if entry["slug"] == entry_slug:
-                    path = entry["path"]
-                    return path if isinstance(path, Path) else None
+                    return entry["path"]
     return None

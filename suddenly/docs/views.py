@@ -30,17 +30,10 @@ def page(request: HttpRequest, section: str, slug: str) -> HttpResponse:
     current_section_label = ""
     for s in NAV:
         if s["slug"] == section:
-            section_label = s["section"]
-            current_section_label = section_label if isinstance(section_label, str) else ""
-            entries = s["entries"]
-            if not isinstance(entries, list):
-                continue
-            for e in entries:
-                if not isinstance(e, dict):
-                    continue
+            current_section_label = s["section"]
+            for e in s["entries"]:
                 if e["slug"] == slug:
-                    entry_label = e["label"]
-                    current_label = entry_label if isinstance(entry_label, str) else ""
+                    current_label = e["label"]
 
     return render(
         request,
