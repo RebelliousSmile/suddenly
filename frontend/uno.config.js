@@ -138,6 +138,9 @@ const presetSuddenly = () => ({
     'badge-pending': 'badge bg-surface text-muted border border-border',
     'badge-rejected': 'badge bg-error/10 text-error border border-error/30',
     'badge-pc': 'badge bg-sky-900/40 text-sky-400 border border-sky-700/50',
+    'badge-primary': 'badge bg-crimson/10 text-crimson border border-crimson/30',
+    'badge-gray': 'badge bg-surface text-muted border border-border',
+    'badge-accent': 'badge bg-warning/10 text-warning border border-warning/30',
 
     // Avatars
     'avatar': 'rounded-full object-cover bg-surface',
