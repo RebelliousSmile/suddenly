@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Suddenly 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-29 14:20+0200\n"
+"POT-Creation-Date: 2026-04-29 14:28+0200\n"
 "PO-Revision-Date: 2026-04-28 10:19+0200\n"
 "Last-Translator: Suddenly Team\n"
 "Language-Team: French\n"
@@ -2136,14 +2136,6 @@ msgstr "Image de fond par défaut des personnages"
 #: .\templates\users\settings_preferences.html:81
 msgid "Current background"
 msgstr "Fond actuel"
-
-#: .\templates\400.html:8
-msgid "Bad request"
-msgstr "Requête invalide"
-
-#: .\templates\400.html:11
-msgid "Your request could not be processed. Please check the URL and try again."
-msgstr "Votre requête n'a pas pu être traitée. Vérifiez l'URL et réessayez."
 
 #~ msgid "e.g. Session 12 — The Broken Oracle"
 #~ msgstr "ex. Session 12 — L'Oracle brisé"
