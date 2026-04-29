@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Explore" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app" x-data="{ selectMode: false }">
+
+        <!-- Hero -->
+        <div class="bg-gradient-to-br from-surface to-background rounded-2xl p-8 mb-6 text-center">
+            <h1 class="text-3xl font-bold text-primary mb-2">{% trans "Explore" %}</h1>
+            <p class="text-secondary text-lg">{% trans "Which character do you want to play today?" %}</p>
+        </div>
+
+        <!-- Tab nav -->
+        <div class="flex border-b border-border mb-6">
+            <a href="{% url 'core:explorer' %}?tab=characters"
+               class="px-4 py-2 text-sm font-medium border-b-2 -mb-px {% if active_tab == 'characters' %}border-crimson text-crimson{% else %}border-transparent text-muted hover:text-secondary{% endif %}">
+                {% trans "Characters" %}
+            </a>
+            <a href="{% url 'core:explorer' %}?tab=games"
+               class="px-4 py-2 text-sm font-medium border-b-2 -mb-px {% if active_tab == 'games' %}border-crimson text-crimson{% else %}border-transparent text-muted hover:text-secondary{% endif %}">
+                {% trans "Games" %}
+            </a>
+        </div>
+
+        <!-- Search + filters -->
+        <div class="mb-6 space-y-3">
+
+            {% if active_tab == 'characters' %}
+            <!-- Search input -->
+            <div class="relative mb-4">
+                <input type="text" name="q" value="{{ query }}"
+                       placeholder="{% trans "Search a character..." %}"
+                       class="form-input pr-10"
+                       hx-get="{% url 'characters:search' %}"
+                       hx-trigger="keyup changed delay:300ms"
+                       hx-target="#explorer-results"
+                       hx-include="[name='status'],[name='system'],[name='tag']">
+                <span class="i-lucide-search absolute right-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none text-lg"></span>
+            </div>
+            <!-- Filters -->
+            <div class="flex gap-3 flex-wrap">
+                <select name="status" class="form-input w-auto"
+                        hx-get="{% url 'characters:search' %}"
+                        hx-trigger="change"
+                        hx-target="#explorer-results"
+                        hx-include="[name='q'],[name='system'],[name='tag']">
+                    <option value="">{% trans "All statuses" %}</option>
+                    {% for value, label in statuses %}
+                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <input type="text" name="system" value="{{ system_filter }}"
+                       placeholder="{% trans "Game system..." %}"
+                       class="form-input w-auto"
+                       hx-get="{% url 'characters:search' %}"
+                       hx-trigger="keyup changed delay:500ms"
+                       hx-target="#explorer-results"
+                       hx-include="[name='q'],[name='status'],[name='tag']">
+            </div>
+            <!-- Tag filters -->
+            {% url 'characters:search' as char_search_url %}
+            {% include "components/tag_filter.html" with search_url=char_search_url results_target="#explorer-results" include_fields="[name='q'],[name='status'],[name='system']" all_tags=all_tags active_tag=active_tag %}
+
+            {% else %}
+            <!-- Search input (games) -->
+            <div class="relative mb-4">
+                <input type="text" name="q" value="{{ query }}"
+                       placeholder="{% trans "Search a game..." %}"
+                       class="form-input pr-10"
+                       hx-get="{% url 'games:search' %}"
+                       hx-trigger="keyup changed delay:300ms"
+                       hx-target="#explorer-results"
+                       hx-include="[name='system'],[name='tag']">
+                <span class="i-lucide-search absolute right-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none text-lg"></span>
+            </div>
+            <!-- Filters -->
+            <input type="text" name="system" value="{{ system_filter }}"
+                   placeholder="{% trans "Game system..." %}"
+                   class="form-input w-auto"
+                   hx-get="{% url 'games:search' %}"
+                   hx-trigger="keyup changed delay:500ms"
+                   hx-target="#explorer-results"
+                   hx-include="[name='q'],[name='tag']">
+            <!-- Tag filters -->
+            {% url 'games:search' as game_search_url %}
+            {% include "components/tag_filter.html" with search_url=game_search_url results_target="#explorer-results" include_fields="[name='system']" all_tags=all_tags active_tag=active_tag %}
+            {% endif %}
+
+        </div>
+
+        <!-- Results -->
+        <div id="explorer-results">
+            {% if active_tab == 'games' %}
+                {% include "games/_list_results.html" %}
+            {% else %}
+                {% include "characters/_list_results.html" %}
+            {% endif %}
+        </div>
+
+    </div>
+</section>
+{% endblock %}

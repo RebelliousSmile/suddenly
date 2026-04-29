@@ -8,8 +8,6 @@ DRF ViewSets in views.py remain for the JSON API.
 from __future__ import annotations
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-from django.db.models import Count, QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -19,11 +17,17 @@ from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
 from .models import Character, CharacterStatus
+from .services import build_character_queryset
 
 
 def character_list(request: HttpRequest) -> HttpResponse:
     """Character list with FTS search and filters (US-07)."""
-    qs = _build_character_queryset(request)
+    qs = build_character_queryset(
+        q=request.GET.get("q", ""),
+        status=request.GET.get("status", ""),
+        system=request.GET.get("system", ""),
+        tag=request.GET.get("tag", ""),
+    )
 
     default_bg = ""
     first_character = None
@@ -104,7 +108,12 @@ def character_detail(request: HttpRequest, slug: str) -> HttpResponse:
 
 def character_search(request: HttpRequest) -> HttpResponse:
     """HTMX endpoint for live character search (partial only)."""
-    qs = _build_character_queryset(request)
+    qs = build_character_queryset(
+        q=request.GET.get("q", ""),
+        status=request.GET.get("status", ""),
+        system=request.GET.get("system", ""),
+        tag=request.GET.get("tag", ""),
+    )
 
     default_bg = ""
     if request.user.is_authenticated and request.user.default_character_background:
@@ -121,49 +130,6 @@ def character_search(request: HttpRequest) -> HttpResponse:
             "active_tag": request.GET.get("tag", ""),
         },
     )
-
-
-def _build_character_queryset(request: HttpRequest) -> QuerySet[Character]:
-    """Build filtered character queryset from request params."""
-    qs = (
-        Character.objects.filter(remote=False)
-        .select_related("creator", "owner", "origin_game")
-        .annotate(
-            report_count=Count("appearances__report", distinct=True),
-            quote_count=Count("quotes", distinct=True),
-        )
-        .order_by("-created_at")
-    )
-
-    # Status filter
-    status = request.GET.get("status", "")
-    if status and status in CharacterStatus.values:
-        qs = qs.filter(status=status)
-
-    # Game system filter
-    system = request.GET.get("system", "").strip()
-    if system:
-        qs = qs.filter(origin_game__game_system__icontains=system)
-
-    # Tag filter
-    tag = request.GET.get("tag", "").strip()
-    if tag:
-        qs = qs.filter(tags__name=tag)
-
-    # FTS search (uses GIN index from T13)
-    q = request.GET.get("q", "").strip()
-    if q:
-        search_query = SearchQuery(q, config="french")
-        search_vector = SearchVector("name", weight="A", config="french") + SearchVector(
-            "description", weight="B", config="french"
-        )
-        qs = (
-            qs.annotate(rank=SearchRank(search_vector, search_query))
-            .filter(rank__gt=0.01)
-            .order_by("-rank")
-        )
-
-    return qs
 
 
 @login_required

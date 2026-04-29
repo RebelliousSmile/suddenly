@@ -1,13 +1,14 @@
 """
-Character link services.
-
-Business logic for claim, adopt, and fork workflows.
+Character services — link workflows and queryset builders.
 """
 
 from __future__ import annotations
 
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.core.exceptions import ValidationError
 from django.db import transaction
+from django.db.models import Count
+from django.db.models.query import QuerySet
 from django.utils import timezone
 
 from suddenly.users.models import User
@@ -253,3 +254,44 @@ class LinkService:
         request.save()
 
         return request
+
+
+def build_character_queryset(
+    q: str = "",
+    status: str = "",
+    system: str = "",
+    tag: str = "",
+) -> QuerySet[Character]:
+    """Build filtered character queryset from explicit params."""
+    qs = (
+        Character.objects.filter(remote=False)
+        .select_related("creator", "owner", "origin_game")
+        .annotate(
+            report_count=Count("appearances__report", distinct=True),
+            quote_count=Count("quotes", distinct=True),
+        )
+        .order_by("-created_at")
+    )
+
+    if status and status in CharacterStatus.values:
+        qs = qs.filter(status=status)
+
+    if system.strip():
+        qs = qs.filter(origin_game__game_system__icontains=system.strip())
+
+    if tag.strip():
+        qs = qs.filter(tags__name=tag.strip())
+
+    # FTS search (uses GIN index from T13)
+    if q.strip():
+        search_query = SearchQuery(q.strip(), config="french")
+        search_vector = SearchVector("name", weight="A", config="french") + SearchVector(
+            "description", weight="B", config="french"
+        )
+        qs = (
+            qs.annotate(rank=SearchRank(search_vector, search_query))
+            .filter(rank__gt=0.01)
+            .order_by("-rank")
+        )
+
+    return qs

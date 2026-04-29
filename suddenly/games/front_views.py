@@ -5,7 +5,6 @@ HTMX-first views for games and reports (DA-1).
 from __future__ import annotations
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -16,6 +15,7 @@ from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
 from .models import CastRole, Game, GameSystem, Report, ReportCast, ReportStatus, ReportVisibility
+from .services import build_game_queryset
 
 
 @login_required
@@ -113,47 +113,14 @@ def report_compose(request: AuthenticatedRequest) -> HttpResponse:
     )
 
 
-def _build_game_queryset(request: HttpRequest) -> QuerySet[Game]:
-    """Build filtered game queryset from request params."""
-    from django.db.models import Count, Q
-
-    public_filter = Q(is_public=True, remote=False)
-    if request.user.is_authenticated:
-        public_filter |= Q(owner=request.user, remote=False)
-
-    qs = (
-        Game.objects.filter(public_filter)
-        .select_related("owner", "game_system_ref")
-        .annotate(
-            report_count=Count("reports", distinct=True),
-            char_npc=Count("characters", filter=Q(characters__status="npc"), distinct=True),
-            char_pc=Count("characters", filter=Q(characters__status="pc"), distinct=True),
-            char_adopted=Count(
-                "characters",
-                filter=Q(characters__status__in=["claimed", "adopted"]),
-                distinct=True,
-            ),
-            char_forked=Count("characters", filter=Q(characters__status="forked"), distinct=True),
-        )
-        .order_by("-updated_at")
-    )
-
-    system = request.GET.get("system", "").strip()
-    if system:
-        qs = qs.filter(
-            Q(game_system_ref__name__icontains=system) | Q(game_system__icontains=system)
-        )
-
-    tag = request.GET.get("tag", "").strip()
-    if tag:
-        qs = qs.filter(tags__name=tag)
-
-    return qs
-
-
 def game_list(request: HttpRequest) -> HttpResponse:
     """Game list with filters (US-02)."""
-    qs = _build_game_queryset(request)
+    qs = build_game_queryset(
+        user=request.user,
+        q=request.GET.get("q", ""),
+        system=request.GET.get("system", ""),
+        tag=request.GET.get("tag", ""),
+    )
 
     all_tags: list[str] = sorted(
         Game.objects.filter(remote=False, tags__isnull=False)
@@ -176,7 +143,12 @@ def game_list(request: HttpRequest) -> HttpResponse:
 
 def game_search(request: HttpRequest) -> HttpResponse:
     """HTMX endpoint for live game search (partial only)."""
-    qs = _build_game_queryset(request)
+    qs = build_game_queryset(
+        user=request.user,
+        q=request.GET.get("q", ""),
+        system=request.GET.get("system", ""),
+        tag=request.GET.get("tag", ""),
+    )
     return htmx_render(
         request,
         full_template="games/_list_results.html",
@@ -317,12 +289,14 @@ def report_create(request: AuthenticatedRequest, game_pk: str) -> HttpResponse:
         if not content:
             return htmx_render(
                 request,
-                full_template="games/report_create.html",
-                partial_template="games/report_create.html",
+                full_template="games/report_form.html",
+                partial_template="games/report_form.html",
                 context={
                     "game": game,
-                    "error": "Le contenu est obligatoire.",
+                    "report": None,
+                    "error": _("Content is required."),
                     "form_data": request.POST,
+                    "visibilities": ReportVisibility.choices,
                 },
             )
 
@@ -352,11 +326,81 @@ def report_create(request: AuthenticatedRequest, game_pk: str) -> HttpResponse:
 
     return htmx_render(
         request,
-        full_template="games/report_create.html",
-        partial_template="games/report_create.html",
+        full_template="games/report_form.html",
+        partial_template="games/report_form.html",
         context={
             "game": game,
+            "report": None,
             "visibilities": ReportVisibility.choices,
+            "form_data": {},
+        },
+    )
+
+
+@login_required
+def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:
+    """Edit an existing report (author only)."""
+    report = get_object_or_404(
+        Report.objects.select_related("game"),
+        pk=pk,
+        game_id=game_pk,
+        author=request.user,
+    )
+
+    if request.method == "POST":
+        content = request.POST.get("content", "").strip()
+        action = request.POST.get("action", "draft")
+
+        if not content:
+            return htmx_render(
+                request,
+                full_template="games/report_form.html",
+                partial_template="games/report_form.html",
+                context={
+                    "report": report,
+                    "game": report.game,
+                    "error": _("Content is required."),
+                    "form_data": request.POST,
+                    "visibilities": ReportVisibility.choices,
+                },
+            )
+
+        report.title = request.POST.get("title", "").strip()
+        report.content = content
+        report.content_warning = request.POST.get("content_warning", "").strip()
+        report.visibility = request.POST.get("visibility", ReportVisibility.PUBLIC)
+
+        if action == "publish" and report.status != ReportStatus.PUBLISHED:
+            from django.utils import timezone
+
+            report.status = ReportStatus.PUBLISHED
+            report.published_at = timezone.now()
+
+        report.save(
+            update_fields=[
+                "title",
+                "content",
+                "content_warning",
+                "visibility",
+                "status",
+                "published_at",
+                "updated_at",
+            ]
+        )
+
+        return redirect(
+            reverse("games:report_detail", kwargs={"game_pk": report.game.pk, "pk": report.pk})
+        )
+
+    return htmx_render(
+        request,
+        full_template="games/report_form.html",
+        partial_template="games/report_form.html",
+        context={
+            "report": report,
+            "game": report.game,
+            "visibilities": ReportVisibility.choices,
+            "form_data": {},
         },
     )
 
