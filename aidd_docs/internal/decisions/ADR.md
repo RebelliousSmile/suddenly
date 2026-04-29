@@ -26,3 +26,6 @@
 | DEC-022 | Namespace AP propre à Suddenly | ActivityPub | Accepted | 2026-04-05 |
 | DEC-023 | Fichiers .mo versionnés, compilation via babel | i18n | Accepted | 2026-04-28 |
 | DEC-024 | Pas de chaînes UI en dur dans les settings Django | i18n | Accepted | 2026-04-28 |
+| DEC-025 | Rôle is_admin distinct de is_staff | GMH admin panel | Accepted | 2026-04-29 |
+| DEC-026 | InstanceSettings singleton pour config d'instance | GMH admin panel | Accepted | 2026-04-29 |
+| DEC-027 | Tags en ManyToManyField vers core.Tag, pas JSONField | Tags | Accepted | 2026-04-29 |

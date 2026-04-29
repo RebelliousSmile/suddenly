@@ -9,17 +9,18 @@ flowchart TD
 
     subgraph "suddenly/"
         subgraph "core/"
-            C["BaseModel · utils · mixins · context_processors"]
+            C["BaseModel · Tag · InstanceSettings · utils · mixins · context_processors"]
+            CA["admin panel /gmh/ (admin_views · admin_urls · decorators)"]
         end
         subgraph "users/"
-            U["User (AbstractUser + AP fields + language prefs)"]
+            U["User (AbstractUser + AP fields + language prefs + is_admin)"]
             US["signals: AP actor init on signup (user_signed_up)"]
         end
         subgraph "games/"
-            G["Game · Report · ReportCast"]
+            G["Game (tags M2M) · Report (tags M2M) · ReportCast"]
         end
         subgraph "characters/"
-            CH["Character · Quote · CharacterAppearance"]
+            CH["Character (tags M2M) · Quote · CharacterAppearance"]
             CL["LinkRequest · CharacterLink · SharedSequence · Follow"]
             CS["LinkService (claim / adopt / fork)"]
         end
@@ -100,6 +101,7 @@ activitypub/    ← imports users, games, characters (for serialization)
 | `.claude/rules/custom/05-pytest.md` | `tests/**/*.py`, `**/test_*.py` |
 | `.claude/rules/custom/08-activitypub.md` | `suddenly/activitypub/**` |
 | `.claude/rules/custom/08-characters.md` | `suddenly/characters/**` |
+| `.claude/rules/custom/03-m2m-edit-views.md` | `suddenly/**/front_views.py`, `templates/**` |
 
 ## Agents
 
