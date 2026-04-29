@@ -31,3 +31,6 @@
 | DEC-027 | Tags en ManyToManyField vers core.Tag, pas JSONField | Tags | Accepted | 2026-04-29 |
 | DEC-028 | build_*_queryset en services publics, pas helpers privés | Explorer | Accepted | 2026-04-29 |
 | DEC-029 | Explorer et Jouer hors du bloc auth dans la nav | Explorer | Accepted | 2026-04-29 |
+| DEC-030 | EasyMDE comme éditeur Markdown dans les reports | Report editor | Accepted | 2026-04-29 |
+| DEC-031 | static/dist/ versionné dans git (déploiement sans Node) | Déploiement | Accepted | 2026-04-29 |
+| DEC-032 | Template unifié report_form.html pour create + edit | Report editor | Accepted | 2026-04-29 |
