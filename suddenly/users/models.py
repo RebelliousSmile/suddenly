@@ -56,6 +56,9 @@ class User(AbstractUser):
         help_text=_("UI language. Empty = use instance default."),
     )
 
+    # Admin
+    is_admin = models.BooleanField(default=False)
+
     # ActivityPub
     remote = models.BooleanField(default=False, db_index=True, help_text="True if federated user")
     ap_id = models.URLField(blank=True, null=True, unique=True)  # unique already implies index
