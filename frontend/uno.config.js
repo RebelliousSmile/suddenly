@@ -123,8 +123,8 @@ const presetSuddenly = () => ({
     'card-footer': 'px-4 py-3 sm:px-6 border-t border-border rounded-b-card',
 
     // Formulaires
-    'input-base': 'bg-violet/10 border border-violet/30 rounded-[12px] text-primary placeholder-muted focus:border-crimson outline-none',
-    'form-input': 'block w-full rounded-[12px] border border-violet/30 px-3 py-2.5 focus:border-crimson sm:text-sm bg-violet/10 text-primary outline-none',
+    'input-base': 'bg-neon/10 border border-neon/30 rounded-[12px] text-primary placeholder-muted focus:border-crimson outline-none',
+    'form-input': 'block w-full rounded-[12px] border border-neon/30 px-3 py-2.5 focus:border-crimson sm:text-sm bg-neon/10 text-primary outline-none',
     'form-input-error': 'form-input bg-error/10 border-error focus:border-error',
     'form-label': 'block text-sm font-medium text-secondary mb-1',
     'form-help': 'mt-1 text-sm text-muted',
