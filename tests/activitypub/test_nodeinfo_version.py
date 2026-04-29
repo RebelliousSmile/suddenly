@@ -10,7 +10,8 @@ from unittest.mock import patch
 import pytest
 from django.test import Client
 
-from suddenly.core.version import get_available_languages, get_version
+from suddenly.core.models import InstanceSettings
+from suddenly.core.version import get_version
 
 
 @pytest.mark.django_db
@@ -33,23 +34,24 @@ class TestNodeInfoVersion:
         data = response.json()
         assert data["software"]["version"] == fake_version
 
-    def test_metadata_languages_matches_get_available_languages(self, client: Client) -> None:
+    def test_metadata_languages_contains_instance_language(self, client: Client) -> None:
+        """NodeInfo languages list reflects the active instance language."""
         response = client.get("/.well-known/nodeinfo/2.0")
         assert response.status_code == 200
         data = response.json()
         assert "languages" in data["metadata"]
-        assert data["metadata"]["languages"] == get_available_languages()
+        instance_lang = InstanceSettings.get().language
+        assert data["metadata"]["languages"] == [instance_lang]
 
-    def test_metadata_languages_reflects_available_po_files(
-        self, client: Client, tmp_path: Any, settings: Any
+    def test_metadata_languages_reflects_instance_settings(
+        self, client: Client, settings: Any
     ) -> None:
-        for lang in ("en", "fr"):
-            lc_dir = tmp_path / "locale" / lang / "LC_MESSAGES"
-            lc_dir.mkdir(parents=True)
-            (lc_dir / "django.po").write_text("# translation\nmsgid ''\nmsgstr ''\n")
-        settings.BASE_DIR = tmp_path
-        get_available_languages.cache_clear()
+        """Changing InstanceSettings.language changes the languages list in NodeInfo."""
+        instance = InstanceSettings.get()
+        # Toggle to the other language
+        new_lang = "en" if instance.language == "fr" else "fr"
+        instance.language = new_lang
+        instance.save()
         response = client.get("/.well-known/nodeinfo/2.0")
         data = response.json()
-        assert data["metadata"]["languages"] == ["en", "fr"]
-        get_available_languages.cache_clear()
+        assert data["metadata"]["languages"] == [new_lang]

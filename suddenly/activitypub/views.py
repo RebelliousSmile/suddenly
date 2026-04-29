@@ -131,10 +131,28 @@ def nodeinfo_index(request: HttpRequest) -> JsonResponse:
 @require_GET
 def nodeinfo(request: HttpRequest) -> JsonResponse:
     """NodeInfo 2.0 endpoint with instance metadata."""
+    from django.db.utils import OperationalError, ProgrammingError
+
+    from suddenly.core.models import InstanceSettings
+
     user_count = User.objects.filter(remote=False, is_active=True).count()
     game_count = Game.objects.filter(remote=False, is_public=True).count()
     character_count = Character.objects.filter(remote=False).count()
     report_count = Report.objects.filter(remote=False, status="published").count()
+
+    try:
+        instance = InstanceSettings.get()
+        open_registrations: bool = instance.registrations_open
+        instance_languages: list[str] = [instance.language]
+        node_name: str | None = instance.name or getattr(settings, "SITE_NAME", None)
+        node_description: str | None = instance.description or getattr(
+            settings, "SITE_DESCRIPTION", None
+        )
+    except (OperationalError, ProgrammingError, Exception):  # noqa: BLE001 — boot-safe fallback
+        open_registrations = True
+        instance_languages = get_available_languages()
+        node_name = getattr(settings, "SITE_NAME", None)
+        node_description = getattr(settings, "SITE_DESCRIPTION", None)
 
     return JsonResponse(
         {
@@ -152,11 +170,11 @@ def nodeinfo(request: HttpRequest) -> JsonResponse:
                 },
                 "localPosts": report_count,
             },
-            "openRegistrations": True,
+            "openRegistrations": open_registrations,
             "metadata": {
-                "nodeName": settings.SITE_NAME,
-                "nodeDescription": settings.SITE_DESCRIPTION,
-                "languages": get_available_languages(),
+                "nodeName": node_name,
+                "nodeDescription": node_description,
+                "languages": instance_languages,
                 "games": game_count,
                 "characters": character_count,
             },
