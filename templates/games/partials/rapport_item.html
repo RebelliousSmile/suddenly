@@ -1,7 +1,31 @@
-{% load i18n %}
+{% load i18n utils %}
 <div id="rapport-{{ rapport.pk }}" class="card card-body">
     <div class="flex items-start justify-between gap-3">
         <div class="flex-1 min-w-0">
+
+            {% with parent_links=rapport.parent_links.all %}
+                {% if parent_links %}
+                    <div class="flex flex-wrap gap-1.5 mb-2">
+                        {% for link in parent_links %}
+                            {% if link.parent_rapport %}
+                                <span class="inline-flex items-center gap-1 text-xs text-muted border border-border rounded px-1.5 py-0.5">
+                                    <span class="i-lucide-corner-down-right text-xs"></span>
+                                    <span class="badge bg-card-dark text-muted border border-border text-xs">
+                                        {{ link.parent_rapport.get_kind_display }}
+                                    </span>
+                                    {{ link.parent_rapport.content|truncatechars:40 }}
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center gap-1 text-xs text-muted border border-border rounded px-1.5 py-0.5">
+                                    <span class="i-lucide-globe text-xs"></span>
+                                    {{ link.parent_iri|domain_from_url }}
+                                </span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
             <div class="flex items-center gap-2 mb-1">
                 <span class="badge bg-card-dark text-muted border border-border text-xs">
                     {{ rapport.get_kind_display }}
@@ -26,8 +50,24 @@
             {% endif %}
 
             <div id="marker-form-{{ rapport.pk }}" class="mt-2"></div>
+
+            {% if remote_parent_error %}
+                <div class="mt-2 p-2 rounded bg-error/10 text-error border border-error/30 text-xs">
+                    {{ remote_parent_error }}
+                </div>
+            {% endif %}
+
         </div>
         <div class="flex items-center gap-1 shrink-0">
+            {% if request.user.is_authenticated %}
+                <button hx-get="{% url 'games:rapport_reply' rapport.report.game.pk rapport.report.pk rapport.pk %}"
+                        hx-target="#reply-form-slot-{{ rapport.pk }}"
+                        hx-swap="outerHTML"
+                        class="btn-ghost btn-sm text-muted"
+                        title="{% trans "Reply" %}">
+                    <span class="i-lucide-corner-down-right text-xs"></span>
+                </button>
+            {% endif %}
             {% if request.user == rapport.report.author %}
                 <button hx-get="{% url 'games:marker_create' rapport.report.game.pk rapport.report.pk rapport.pk %}"
                         hx-target="#marker-form-{{ rapport.pk }}"
@@ -52,4 +92,36 @@
             </button>
         </div>
     </div>
+
+    {% if request.user == rapport.report.author %}
+        <div x-data="{ showRemoteForm: false }" class="mt-2">
+            <button type="button"
+                    @click="showRemoteForm = !showRemoteForm"
+                    class="btn-ghost btn-sm text-muted text-xs">
+                <span class="i-lucide-link text-xs"></span>
+                {% trans "+ Remote parent" %}
+            </button>
+            <form x-show="showRemoteForm"
+                  x-cloak
+                  hx-post="{% url 'games:rapport_add_remote_parent' rapport.report.game.pk rapport.report.pk rapport.pk %}"
+                  hx-target="#rapport-{{ rapport.pk }}"
+                  hx-swap="outerHTML"
+                  class="flex items-center gap-2 mt-2">
+                {% csrf_token %}
+                <input type="url"
+                       name="parent_iri"
+                       placeholder="https://example.com/rapports/..."
+                       class="form-input flex-1 text-sm">
+                <button type="submit" class="btn-primary btn-sm">
+                    {% trans "Add" %}
+                </button>
+                <button type="button"
+                        @click="showRemoteForm = false"
+                        class="btn-ghost btn-sm">
+                    {% trans "Cancel" %}
+                </button>
+            </form>
+        </div>
+    {% endif %}
 </div>
+<div id="reply-form-slot-{{ rapport.pk }}"></div>

@@ -5,6 +5,7 @@ Game and Report models for Suddenly.
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from suddenly.core.models import BaseModel
@@ -262,6 +263,65 @@ class Rapport(BaseModel):
 
     def __str__(self) -> str:
         return f"{self.get_kind_display()} — {self.report}"
+
+
+class RapportLink(BaseModel):
+    """
+    A directional link from a Rapport to one of its parents.
+
+    Each row stores exactly one parent reference: either a local FK to another
+    Rapport, or a remote ActivityPub IRI (URL). Exactly one must be set —
+    enforced in clean().
+    """
+
+    rapport = models.ForeignKey(
+        Rapport,
+        on_delete=models.CASCADE,
+        related_name="parent_links",
+    )
+    parent_rapport = models.ForeignKey(
+        Rapport,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="child_links",
+    )
+    parent_iri = models.URLField(
+        null=True,
+        blank=True,
+        max_length=500,
+    )
+
+    class Meta:
+        ordering = ["created_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["rapport", "parent_rapport"],
+                condition=Q(parent_rapport__isnull=False),
+                name="unique_local_parent",
+            ),
+            models.UniqueConstraint(
+                fields=["rapport", "parent_iri"],
+                condition=Q(parent_iri__isnull=False),
+                name="unique_remote_parent",
+            ),
+        ]
+
+    def clean(self) -> None:
+        has_local = self.parent_rapport_id is not None
+        has_remote = bool(self.parent_iri)
+        if has_local and has_remote:
+            raise ValidationError(
+                "A RapportLink must have exactly one parent: "
+                "either parent_rapport or parent_iri, not both."
+            )
+        if not has_local and not has_remote:
+            raise ValidationError(
+                "A RapportLink must have exactly one parent: either parent_rapport or parent_iri."
+            )
+
+    def __str__(self) -> str:
+        return f"{self.rapport} → {self.parent_rapport or self.parent_iri}"
 
 
 class MarkerKind(models.TextChoices):

@@ -8,24 +8,28 @@ from typing import TYPE_CHECKING
 
 from django.contrib import admin
 
-from .models import Game, GameSystem, Rapport, RapportMarker, Report, ReportCast
+from .models import Game, GameSystem, Rapport, RapportLink, RapportMarker, Report, ReportCast
 
 if TYPE_CHECKING:
     _GameSystemBase = admin.ModelAdmin[GameSystem]
     _GameBase = admin.ModelAdmin[Game]
     _ReportBase = admin.ModelAdmin[Report]
     _ReportCastBase = admin.ModelAdmin[ReportCast]
+    _RapportAdminBase = admin.ModelAdmin[Rapport]
     _ReportCastInlineBase = admin.TabularInline[ReportCast, Report]
     _RapportInlineBase = admin.TabularInline[Rapport, Report]
     _RapportMarkerInlineBase = admin.TabularInline[RapportMarker, Report]
+    _RapportLinkInlineBase = admin.TabularInline[RapportLink, Rapport]
 else:
     _GameSystemBase = admin.ModelAdmin
     _GameBase = admin.ModelAdmin
     _ReportBase = admin.ModelAdmin
     _ReportCastBase = admin.ModelAdmin
+    _RapportAdminBase = admin.ModelAdmin
     _ReportCastInlineBase = admin.TabularInline
     _RapportInlineBase = admin.TabularInline
     _RapportMarkerInlineBase = admin.TabularInline
+    _RapportLinkInlineBase = admin.TabularInline
 
 
 @admin.register(GameSystem)
@@ -63,6 +67,14 @@ class RapportMarkerInline(_RapportMarkerInlineBase):
     extra = 0
 
 
+class RapportLinkInline(_RapportLinkInlineBase):
+    model = RapportLink
+    fk_name = "rapport"
+    fields = ["parent_rapport", "parent_iri"]
+    extra = 0
+    raw_id_fields = ["parent_rapport"]
+
+
 @admin.register(Report)
 class ReportAdmin(_ReportBase):
     list_display = ["title", "game", "author", "status", "published_at", "created_at"]
@@ -71,6 +83,16 @@ class ReportAdmin(_ReportBase):
     raw_id_fields = ["game", "author"]
     ordering = ["-created_at"]
     inlines = [ReportCastInline, RapportInline]
+
+
+@admin.register(Rapport)
+class RapportAdmin(_RapportAdminBase):
+    list_display = ["__str__", "report", "kind", "created_at"]
+    list_filter = ["kind", "created_at"]
+    search_fields = ["content", "report__title"]
+    raw_id_fields = ["report", "actor"]
+    ordering = ["-created_at"]
+    inlines = [RapportLinkInline]
 
 
 @admin.register(ReportCast)

@@ -12,7 +12,7 @@ import factory
 from django.contrib.auth import get_user_model
 
 from suddenly.characters.models import Character
-from suddenly.games.models import Game, Report
+from suddenly.games.models import Game, Rapport, RapportKind, Report
 
 User = get_user_model()
 
@@ -66,3 +66,14 @@ class ReportFactory(factory.django.DjangoModelFactory):
     author = factory.SubFactory(UserFactory)
     game = factory.SubFactory(GameFactory)
     status = "draft"
+
+
+class RapportFactory(factory.django.DjangoModelFactory):
+    """Factory for Rapport model."""
+
+    class Meta:
+        model = Rapport
+
+    report = factory.SubFactory(ReportFactory)
+    kind = RapportKind.DESCRIPTION
+    content = factory.Sequence(lambda n: f"Rapport content {n}")

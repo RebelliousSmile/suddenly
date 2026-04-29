@@ -44,4 +44,14 @@ urlpatterns = [
         front_views.marker_delete,
         name="marker_delete",
     ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/rapports/<uuid:rapport_pk>/reply/",
+        front_views.rapport_reply,
+        name="rapport_reply",
+    ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/rapports/<uuid:rapport_pk>/add-remote-parent/",
+        front_views.rapport_add_remote_parent,
+        name="rapport_add_remote_parent",
+    ),
 ]

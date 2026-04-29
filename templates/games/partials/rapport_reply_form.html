@@ -1,0 +1,88 @@
+{% load i18n %}
+<div id="reply-form-slot-{{ parent.pk }}"
+     x-data="{ kind: '{{ form.kind.value|default:'' }}' }">
+
+    <div class="mb-3 p-3 rounded-lg bg-muted/10 border border-border text-sm flex items-center gap-2">
+        <span class="i-lucide-corner-down-right text-muted text-xs"></span>
+        <span class="text-muted">{% trans "In reply to:" %}</span>
+        <span class="badge bg-card-dark text-muted border border-border text-xs">
+            {{ parent.get_kind_display }}
+        </span>
+        <span class="text-secondary truncate">{{ parent.content|truncatechars:60 }}</span>
+    </div>
+
+    {% if form.non_field_errors %}
+        <div class="mb-3 p-3 rounded-lg bg-error/10 text-error border border-error/30 text-sm">
+            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+        </div>
+    {% endif %}
+
+    <form hx-post="{% url 'games:rapport_reply' game.pk report.pk parent.pk %}"
+          hx-target="#reply-form-slot-{{ parent.pk }}"
+          hx-swap="outerHTML"
+          class="card card-body space-y-4">
+        {% csrf_token %}
+
+        <div>
+            <label class="form-label">{% trans "Type" %}</label>
+            <div class="flex flex-wrap gap-3">
+                {% for value, label in form.kind.field.choices %}
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="kind" value="{{ value }}"
+                               {% if form.kind.value == value %}checked{% endif %}
+                               @change="kind = '{{ value }}'"
+                               class="h-4 w-4 text-crimson focus:ring-crimson">
+                        <span class="text-sm">{{ label }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+            {% if form.kind.errors %}
+                <p class="form-error text-error text-xs mt-1">{{ form.kind.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label for="id_reply_content_{{ parent.pk }}" class="form-label">{% trans "Content" %}</label>
+            <textarea id="id_reply_content_{{ parent.pk }}" name="content" rows="4"
+                      placeholder="{% trans "Write your reply..." %}"
+                      class="form-input w-full">{{ form.content.value|default:'' }}</textarea>
+            {% if form.content.errors %}
+                <p class="form-error text-error text-xs mt-1">{{ form.content.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div x-show="kind === 'discussion'">
+            <label for="id_reply_actor_{{ parent.pk }}" class="form-label">{% trans "Actor" %}</label>
+            {% if form.actor.field.queryset.exists %}
+                <select id="id_reply_actor_{{ parent.pk }}" name="actor" class="form-input w-full">
+                    <option value="">{% trans "— Select a character —" %}</option>
+                    {% for character in form.actor.field.queryset %}
+                        <option value="{{ character.pk }}"
+                                {% if form.actor.value == character.pk|stringformat:'s' %}selected{% endif %}>
+                            {{ character.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <p class="text-sm text-muted">
+                    {% trans "No character available for this game." %}
+                </p>
+            {% endif %}
+            {% if form.actor.errors %}
+                <p class="form-error text-error text-xs mt-1">{{ form.actor.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button type="submit" class="btn-primary btn-sm">
+                <span class="i-lucide-corner-down-right text-xs"></span>
+                {% trans "Reply" %}
+            </button>
+            <button type="button"
+                    onclick="document.getElementById('reply-form-slot-{{ parent.pk }}').innerHTML = ''"
+                    class="btn-ghost btn-sm">
+                {% trans "Cancel" %}
+            </button>
+        </div>
+    </form>
+</div>

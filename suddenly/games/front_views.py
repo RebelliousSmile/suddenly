@@ -5,6 +5,7 @@ HTMX-first views for games and reports (DA-1).
 from __future__ import annotations
 
 import datetime
+from typing import TYPE_CHECKING
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
@@ -16,12 +17,16 @@ from suddenly.core.models import InstanceSettings
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
+if TYPE_CHECKING:
+    from suddenly.users.models import User
+
 from .marker_forms import RapportMarkerForm
 from .models import (
     CastRole,
     Game,
     GameSystem,
     Rapport,
+    RapportLink,
     RapportMarker,
     Report,
     ReportCast,
@@ -274,7 +279,10 @@ def game_create(request: AuthenticatedRequest) -> HttpResponse:
 def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
     """Report detail page (US-04)."""
     report = get_object_or_404(
-        Report.objects.select_related("game", "author"),
+        Report.objects.select_related("game", "author").prefetch_related(
+            "rapports__parent_links",
+            "rapports__parent_links__parent_rapport",
+        ),
         pk=pk,
         game_id=game_pk,
     )
@@ -733,3 +741,148 @@ def marker_delete(
     if request.method == "POST":
         marker.delete()
     return HttpResponse("")
+
+
+def _user_has_character_in_game(user: User, game: Game) -> bool:
+    """Return True if the user has at least one character originating from this game."""
+    from suddenly.characters.models import Character
+
+    return Character.objects.filter(creator=user, origin_game=game).exists()
+
+
+@login_required
+def rapport_reply(
+    request: AuthenticatedRequest, game_pk: str, pk: str, rapport_pk: str
+) -> HttpResponse:
+    """Reply to a Rapport by creating a child Rapport with a local RapportLink parent."""
+    from django.shortcuts import render as _render
+    from django.template.loader import render_to_string
+
+    rapport = get_object_or_404(
+        Rapport.objects.select_related("report__game", "report__author"),
+        pk=rapport_pk,
+        report__pk=pk,
+        report__game__pk=game_pk,
+    )
+    game = rapport.report.game
+
+    if not _user_has_character_in_game(request.user, game):
+        return HttpResponseForbidden()
+
+    if request.method == "POST":
+        form = RapportForm(request.POST, game=game)
+        form.full_clean()
+        if form.is_valid():
+            child_rapport = form.save(commit=False)
+            child_rapport.report = rapport.report
+            child_rapport.full_clean()
+            child_rapport.save()
+
+            link = RapportLink(rapport=child_rapport, parent_rapport=rapport)
+            link.full_clean()
+            link.save()
+
+            child_rapport_refreshed = (
+                Rapport.objects.prefetch_related(
+                    "parent_links",
+                    "parent_links__parent_rapport",
+                    "markers",
+                    "markers__character",
+                )
+                .select_related("report__game", "report__author", "actor")
+                .get(pk=child_rapport.pk)
+            )
+
+            html = render_to_string(
+                "games/partials/rapport_item.html",
+                {"rapport": child_rapport_refreshed, "report": child_rapport_refreshed.report},
+                request=request,
+            )
+            return HttpResponse(html)
+
+        return _render(
+            request,
+            "games/partials/rapport_reply_form.html",
+            {"form": form, "parent": rapport, "report": rapport.report, "game": game},
+            status=422,
+        )
+
+    # GET
+    form = RapportForm(game=game)
+    return _render(
+        request,
+        "games/partials/rapport_reply_form.html",
+        {"form": form, "parent": rapport, "report": rapport.report, "game": game},
+    )
+
+
+@login_required
+def rapport_add_remote_parent(
+    request: AuthenticatedRequest, game_pk: str, pk: str, rapport_pk: str
+) -> HttpResponse:
+    """Add a remote ActivityPub IRI as a parent of a Rapport (author only, POST-only)."""
+    from django.core.validators import URLValidator
+    from django.template.loader import render_to_string
+
+    if request.method != "POST":
+        from django.http import HttpResponseNotAllowed
+
+        return HttpResponseNotAllowed(["POST"])
+
+    rapport = get_object_or_404(
+        Rapport.objects.select_related("report__game", "report__author"),
+        pk=rapport_pk,
+        report__pk=pk,
+        report__game__pk=game_pk,
+    )
+
+    if rapport.report.author != request.user:
+        return HttpResponseForbidden()
+
+    parent_iri = request.POST.get("parent_iri", "").strip()
+    validate_url = URLValidator()
+
+    try:
+        validate_url(parent_iri)
+    except Exception:
+        rapport_refreshed = (
+            Rapport.objects.prefetch_related(
+                "parent_links",
+                "parent_links__parent_rapport",
+                "markers",
+                "markers__character",
+            )
+            .select_related("report__game", "report__author", "actor")
+            .get(pk=rapport.pk)
+        )
+        html = render_to_string(
+            "games/partials/rapport_item.html",
+            {
+                "rapport": rapport_refreshed,
+                "report": rapport_refreshed.report,
+                "remote_parent_error": _("Please enter a valid URL."),
+            },
+            request=request,
+        )
+        return HttpResponse(html, status=422)
+
+    link = RapportLink(rapport=rapport, parent_iri=parent_iri)
+    link.full_clean()
+    link.save()
+
+    rapport_refreshed = (
+        Rapport.objects.prefetch_related(
+            "parent_links",
+            "parent_links__parent_rapport",
+            "markers",
+            "markers__character",
+        )
+        .select_related("report__game", "report__author", "actor")
+        .get(pk=rapport.pk)
+    )
+    html = render_to_string(
+        "games/partials/rapport_item.html",
+        {"rapport": rapport_refreshed, "report": rapport_refreshed.report},
+        request=request,
+    )
+    return HttpResponse(html)
