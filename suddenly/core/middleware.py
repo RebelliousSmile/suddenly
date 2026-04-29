@@ -13,6 +13,33 @@ from django.utils import translation
 logger = logging.getLogger(__name__)
 
 
+class InstanceLanguageMiddleware:
+    """
+    Activates the instance-wide language for every request.
+
+    Reads the language from ``InstanceSettings.get().language`` so that the
+    instance admin can change the default language without touching
+    environment variables.
+
+    Must be placed BEFORE ``UserLanguageMiddleware`` so that per-user
+    preferences (set by that middleware) take precedence when present.
+    Falls back silently when the DB is unavailable (e.g. first boot).
+    """
+
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
+        self.get_response = get_response
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        try:
+            from suddenly.core.models import InstanceSettings  # local import avoids circular deps
+
+            lang = InstanceSettings.get().language
+            translation.activate(lang)
+        except Exception:  # noqa: BLE001 — boot-safe; fall through to Django default
+            pass
+        return self.get_response(request)
+
+
 class UserLanguageMiddleware:
     """
     Activates the authenticated user's preferred UI language for the duration

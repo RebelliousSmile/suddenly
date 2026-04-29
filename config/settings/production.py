@@ -63,6 +63,7 @@ AP_BASE_URL = f"https://{DOMAIN}"
 # Email — SMTP if configured, silent dummy otherwise (verification is optional)
 _email_host = os.environ.get("EMAIL_HOST")
 if _email_host:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
     EMAIL_HOST = _email_host
     EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
     EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
