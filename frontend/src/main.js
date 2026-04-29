@@ -5,6 +5,10 @@
 // UnoCSS - génère les styles
 import 'virtual:uno.css'
 
+// EasyMDE — Markdown editor
+import EasyMDE from 'easymde'
+import 'easymde/dist/easymde.min.css'
+
 // Base reset
 import './base.css'
 
@@ -125,37 +129,64 @@ Alpine.data('notifications', () => ({
   },
 }))
 
-// Mention autocomplete (pour l'éditeur de reports)
-Alpine.data('mentionInput', (initialValue = '') => ({
-  content: initialValue,
+// Markdown editor with EasyMDE + @mention autocomplete
+Alpine.data('markdownEditor', (initialValue = '') => ({
   suggestions: [],
   showSuggestions: false,
   selectedIndex: 0,
-  _cursorPos: 0,
+  dropdownStyle: { top: '0px', left: '0px' },
+  _easyMde: null,
   _mentionStart: -1,
 
-  onInput(event) {
-    const textarea = event.target
-    this._cursorPos = textarea.selectionStart
-    // Find the @ that starts the current mention (search backwards from cursor)
-    const textBeforeCursor = this.content.slice(0, this._cursorPos)
+  init() {
+    const textarea = this.$el.querySelector('textarea')
+    if (!textarea) return
+
+    this._easyMde = new EasyMDE({
+      element: textarea,
+      initialValue,
+      spellChecker: false,
+      autosave: { enabled: false },
+      toolbar: ['bold', 'italic', 'heading', '|', 'quote', 'unordered-list', 'ordered-list', '|', 'link', '|', 'preview', 'side-by-side', 'fullscreen'],
+    })
+
+    const cm = this._easyMde.codemirror
+    cm.on('change', () => this._onCmChange(cm))
+    cm.on('keydown', (_cm, event) => this._onKeydown(event))
+  },
+
+  _onCmChange(cm) {
+    const cursor = cm.getCursor()
+    const lineText = cm.getLine(cursor.line)
+    const textBeforeCursor = lineText.slice(0, cursor.ch)
     const mentionMatch = textBeforeCursor.match(/@(\w*)$/)
+
     if (mentionMatch) {
-      this._mentionStart = this._cursorPos - mentionMatch[0].length
-      this.search(mentionMatch[1])
+      this._mentionStart = cursor.ch - mentionMatch[0].length
+      this._updateDropdownPosition(cm)
+      this._search(mentionMatch[1])
     } else {
       this.showSuggestions = false
       this._mentionStart = -1
     }
   },
 
-  async search(query) {
+  _updateDropdownPosition(cm) {
+    const coords = cm.cursorCoords(true, 'window')
+    this.dropdownStyle = {
+      position: 'fixed',
+      top: `${coords.bottom + 4}px`,
+      left: `${coords.left}px`,
+      'z-index': '9999',
+    }
+  },
+
+  async _search(query) {
     if (query.length < 2) {
       this.suggestions = []
       this.showSuggestions = false
       return
     }
-
     try {
       const response = await fetch(`/api/characters/search/?q=${encodeURIComponent(query)}`)
       if (!response.ok) return
@@ -163,34 +194,23 @@ Alpine.data('mentionInput', (initialValue = '') => ({
       this.showSuggestions = this.suggestions.length > 0
       this.selectedIndex = 0
     } catch (e) {
-      console.error('Search error:', e)
+      console.error('Mention search error:', e)
     }
   },
 
   selectSuggestion(suggestion) {
-    if (this._mentionStart < 0) return
-    // Replace from the @ to the cursor position with the selected name
-    const before = this.content.slice(0, this._mentionStart)
-    const after = this.content.slice(this._cursorPos)
+    if (!this._easyMde || this._mentionStart < 0) return
+    const cm = this._easyMde.codemirror
+    const cursor = cm.getCursor()
     const mention = `@${suggestion.name} `
-    this.content = before + mention + after
+    cm.replaceRange(mention, { line: cursor.line, ch: this._mentionStart }, cursor)
     this.showSuggestions = false
     this._mentionStart = -1
-
-    // Restore cursor position after the inserted mention
-    this.$nextTick(() => {
-      const textarea = this.$el.querySelector('textarea')
-      if (textarea) {
-        const newPos = before.length + mention.length
-        textarea.focus()
-        textarea.setSelectionRange(newPos, newPos)
-      }
-    })
+    cm.focus()
   },
 
-  onKeydown(event) {
+  _onKeydown(event) {
     if (!this.showSuggestions) return
-
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault()
