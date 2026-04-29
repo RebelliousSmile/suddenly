@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Suddenly 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-29 14:20+0200\n"
+"POT-Creation-Date: 2026-04-29 14:28+0200\n"
 "PO-Revision-Date: 2026-04-28 10:19+0200\n"
 "Last-Translator: Suddenly Team\n"
 "Language-Team: French\n"
@@ -194,6 +194,18 @@ msgstr "Utiliser le défaut de l'instance"
 msgid "UI language. Empty = use instance default."
 msgstr "Langue de l'interface. Vide = utiliser le défaut de l'instance."
 
+#: .\templates\400.html:4 .\templates\400.html:10
+msgid "Bad request"
+msgstr "Requête invalide"
+
+#: .\templates\400.html:12
+msgid "Your request could not be processed. Please check the URL and try again."
+msgstr "Votre requête n'a pas pu être traitée. Vérifiez l'URL et réessayez."
+
+#: .\templates\400.html:15 .\templates\403.html:15 .\templates\404.html:15
+msgid "Back to home"
+msgstr "Retour à l'accueil"
+
 #: .\templates\403.html:4 .\templates\403.html:10
 msgid "Access denied"
 msgstr "Accès refusé"
@@ -202,11 +214,7 @@ msgstr "Accès refusé"
 msgid "You do not have permission to access this page."
 msgstr "Vous n'avez pas la permission d'accéder à cette page."
 
-#: .\templates\403.html:15 .\templates\404.html:15
-msgid "Back to home"
-msgstr "Retour à l'accueil"
-
-#: .\templates\403.html:16 .\templates\base.html:100 .\templates\base.html:166
+#: .\templates\403.html:17 .\templates\base.html:100 .\templates\base.html:166
 #: .\templates\core\home.html:27
 msgid "Log in"
 msgstr "Connexion"
@@ -2128,14 +2136,6 @@ msgstr "Image de fond par défaut des personnages"
 #: .\templates\users\settings_preferences.html:81
 msgid "Current background"
 msgstr "Fond actuel"
-
-#: .\templates\400.html:8
-msgid "Bad request"
-msgstr "Requête invalide"
-
-#: .\templates\400.html:11
-msgid "Your request could not be processed. Please check the URL and try again."
-msgstr "Votre requête n'a pas pu être traitée. Vérifiez l'URL et réessayez."
 
 #~ msgid "e.g. Session 12 — The Broken Oracle"
 #~ msgstr "ex. Session 12 — L'Oracle brisé"
