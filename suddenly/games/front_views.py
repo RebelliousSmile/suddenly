@@ -4,6 +4,8 @@ HTMX-first views for games and reports (DA-1).
 
 from __future__ import annotations
 
+import datetime
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -176,11 +178,7 @@ def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
         Game.objects.select_related("owner", "game_system_ref").filter(visibility), pk=pk
     )
 
-    reports = (
-        game.reports.filter(status=ReportStatus.PUBLISHED)
-        .select_related("author")
-        .order_by("-published_at")[:20]
-    )
+    reports = game.reports.filter(status=ReportStatus.PUBLISHED).select_related("author")[:20]
     characters = game.characters.select_related("creator", "owner").order_by("-created_at")[:12]
 
     is_following = False
@@ -234,6 +232,12 @@ def game_create(request: AuthenticatedRequest) -> HttpResponse:
                 },
             )
 
+        started_at_raw = request.POST.get("started_at", "").strip()
+        try:
+            started_at = datetime.date.fromisoformat(started_at_raw) if started_at_raw else None
+        except ValueError:
+            started_at = None
+
         cover = request.FILES.get("cover")
         game = Game.objects.create(
             title=title,
@@ -243,6 +247,7 @@ def game_create(request: AuthenticatedRequest) -> HttpResponse:
             is_public=is_public,
             owner=request.user,
             cover=cover,
+            started_at=started_at,
         )
         return redirect(reverse("games:detail", kwargs={"pk": game.pk}))
 
@@ -311,6 +316,14 @@ def report_create(request: AuthenticatedRequest, game_pk: str) -> HttpResponse:
                 },
             )
 
+        session_date_raw = request.POST.get("session_date", "").strip()
+        try:
+            session_date = (
+                datetime.date.fromisoformat(session_date_raw) if session_date_raw else None
+            )
+        except ValueError:
+            session_date = None
+
         report = Report.objects.create(
             title=title,
             content=content,
@@ -319,6 +332,7 @@ def report_create(request: AuthenticatedRequest, game_pk: str) -> HttpResponse:
             game=game,
             author=request.user,
             status=ReportStatus.DRAFT,
+            session_date=session_date,
         )
 
         if action == "publish":
@@ -381,6 +395,14 @@ def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRes
         report.content_warning = request.POST.get("content_warning", "").strip()
         report.visibility = request.POST.get("visibility", ReportVisibility.PUBLIC)
 
+        session_date_raw = request.POST.get("session_date", "").strip()
+        try:
+            report.session_date = (
+                datetime.date.fromisoformat(session_date_raw) if session_date_raw else None
+            )
+        except ValueError:
+            report.session_date = None
+
         if action == "publish" and report.status != ReportStatus.PUBLISHED:
             from django.utils import timezone
 
@@ -393,6 +415,7 @@ def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRes
                 "content",
                 "content_warning",
                 "visibility",
+                "session_date",
                 "status",
                 "published_at",
                 "updated_at",
@@ -454,6 +477,14 @@ def game_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
         game.game_system_ref = system_ref
         game.is_public = is_public_checked
 
+        started_at_raw = request.POST.get("started_at", "").strip()
+        try:
+            game.started_at = (
+                datetime.date.fromisoformat(started_at_raw) if started_at_raw else None
+            )
+        except ValueError:
+            game.started_at = None
+
         if request.POST.get("cover-clear"):
             if game.cover:
                 game.cover.delete(save=False)
@@ -468,6 +499,7 @@ def game_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
                 "game_system",
                 "game_system_ref",
                 "is_public",
+                "started_at",
                 "cover",
                 "updated_at",
             ]

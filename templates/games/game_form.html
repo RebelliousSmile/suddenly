@@ -98,6 +98,13 @@
                           class="form-input">{% if form_data.description %}{{ form_data.description }}{% elif game %}{{ game.description }}{% endif %}</textarea>
             </div>
 
+            <div>
+                <label class="label" for="id_started_at">{% trans "Date de début" %} <span class="text-muted text-sm">({% trans "optionnelle" %})</span></label>
+                <input type="date" id="id_started_at" name="started_at"
+                       value="{{ form_data.started_at|default:game.started_at|default:'' }}"
+                       class="input">
+            </div>
+
             {% trans "Public game (visible and followable)" as label_is_public %}
             {% include "components/form_switch.html" with field_id="is_public" field_name="is_public" field_label=label_is_public field_checked=is_public_checked %}
 

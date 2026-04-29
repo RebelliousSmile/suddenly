@@ -21,6 +21,9 @@
             {% if game.description %}
                 <p class="text-secondary mt-3 max-w-2xl">{{ game.description }}</p>
             {% endif %}
+            {% if game.started_at %}
+                <p class="text-sm text-muted">{% trans "Depuis le" %} {{ game.started_at|date:"d/m/Y" }}</p>
+            {% endif %}
 
             {% if is_owner %}
                 <div class="mt-4">
@@ -52,7 +55,11 @@
                                     </h3>
                                     <p class="text-xs text-muted">
                                         {% blocktrans with username=report.author.username %}by @{{ username }}{% endblocktrans %}
-                                        {% if report.published_at %}· {{ report.published_at|timesince }}{% endif %}
+                                        {% if report.session_date %}
+                                            · <span class="text-sm text-muted">{% trans "Session du" %} {{ report.session_date|date:"d/m/Y" }}</span>
+                                        {% elif report.published_at %}
+                                            · <span class="text-sm text-muted">{{ report.published_at|timesince }}</span>
+                                        {% endif %}
                                     </p>
                                 </div>
                                 {% if report.content_warning %}

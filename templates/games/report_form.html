@@ -130,6 +130,13 @@
                 </div>
 
                 <div>
+                    <label class="label" for="id_session_date">{% trans "Date de session" %} <span class="text-muted text-sm">({% trans "optionnelle" %})</span></label>
+                    <input type="date" id="id_session_date" name="session_date"
+                           value="{{ form_data.session_date|default:report.session_date|default:'' }}"
+                           class="input">
+                </div>
+
+                <div>
                     <label class="form-label">{% trans "Visibility" %}</label>
                     {% for value, label in visibilities %}
                         <label class="flex items-center gap-2 py-1">

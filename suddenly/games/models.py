@@ -68,6 +68,9 @@ class Game(BaseModel):
     public_key = models.TextField(blank=True, help_text="PEM-encoded public key")
     private_key = models.TextField(blank=True, help_text="PEM-encoded private key (local only)")
 
+    # Timeline
+    started_at = models.DateField(null=True, blank=True)
+
     class Meta:
         ordering = ["-updated_at"]
         indexes = [
@@ -143,6 +146,7 @@ class Report(BaseModel):
         help_text="Who can see this report (US-29)",
     )
     published_at = models.DateTimeField(blank=True, null=True)
+    session_date = models.DateField(null=True, blank=True)
 
     # Tags (hashtags for discovery)
     tags = models.ManyToManyField("core.Tag", blank=True, related_name="reports")
@@ -152,7 +156,11 @@ class Report(BaseModel):
     ap_id = models.URLField(blank=True, null=True, unique=True)
 
     class Meta:
-        ordering = ["-published_at", "-created_at"]
+        ordering = [
+            models.F("session_date").asc(nulls_last=True),
+            models.F("published_at").desc(nulls_last=True),
+            "-created_at",
+        ]
         indexes = [
             models.Index(fields=["game", "published_at"]),
             models.Index(fields=["status"]),

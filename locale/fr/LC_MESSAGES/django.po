@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Suddenly 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-29 11:39+0200\n"
+"POT-Creation-Date: 2026-04-29 12:07+0200\n"
 "PO-Revision-Date: 2026-04-28 10:19+0200\n"
 "Last-Translator: Suddenly Team\n"
 "Language-Team: French\n"
@@ -57,20 +57,20 @@ msgstr "Éphémère"
 msgid "Private"
 msgstr "Privée"
 
-#: .\suddenly\characters\models.py:171 .\suddenly\games\models.py:102
+#: .\suddenly\characters\models.py:171 .\suddenly\games\models.py:105
 #: .\templates\characters\_quote_form.html:42
 msgid "Public"
 msgstr "Public"
 
-#: .\suddenly\characters\models.py:248 .\suddenly\games\models.py:172
+#: .\suddenly\characters\models.py:248 .\suddenly\games\models.py:180
 msgid "Main"
 msgstr "Principal"
 
-#: .\suddenly\characters\models.py:249 .\suddenly\games\models.py:173
+#: .\suddenly\characters\models.py:249 .\suddenly\games\models.py:181
 msgid "Supporting"
 msgstr "Secondaire"
 
-#: .\suddenly\characters\models.py:250 .\suddenly\games\models.py:174
+#: .\suddenly\characters\models.py:250 .\suddenly\games\models.py:182
 msgid "Mentioned"
 msgstr "Mentionné"
 
@@ -112,14 +112,14 @@ msgstr "Annulé"
 msgid "Expired"
 msgstr "Expiré"
 
-#: .\suddenly\characters\models.py:383 .\suddenly\games\models.py:95
+#: .\suddenly\characters\models.py:383 .\suddenly\games\models.py:98
 #: .\templates\characters\sequence_edit.html:19
 #: .\templates\components\report_card.html:33
 #: .\templates\games\report_detail.html:35
 msgid "Draft"
 msgstr "Brouillon"
 
-#: .\suddenly\characters\models.py:384 .\suddenly\games\models.py:96
+#: .\suddenly\characters\models.py:384 .\suddenly\games\models.py:99
 #: .\templates\characters\sequence_edit.html:21
 msgid "Published"
 msgstr "Publié"
@@ -130,20 +130,20 @@ msgstr "Publié"
 msgid "Federated shared fiction network"
 msgstr "Réseau fédéré de fiction partagée"
 
-#: .\suddenly\games\front_views.py:66 .\suddenly\games\front_views.py:308
-#: .\suddenly\games\front_views.py:373
+#: .\suddenly\games\front_views.py:68 .\suddenly\games\front_views.py:313
+#: .\suddenly\games\front_views.py:387
 msgid "Content is required."
 msgstr "Le contenu est obligatoire."
 
-#: .\suddenly\games\front_views.py:231 .\suddenly\games\front_views.py:437
+#: .\suddenly\games\front_views.py:229 .\suddenly\games\front_views.py:460
 msgid "Title is required."
 msgstr "Le titre est obligatoire."
 
-#: .\suddenly\games\models.py:103 .\templates\games\report_detail.html:39
+#: .\suddenly\games\models.py:106 .\templates\games\report_detail.html:39
 msgid "Unlisted"
 msgstr "Non répertorié"
 
-#: .\suddenly\games\models.py:104
+#: .\suddenly\games\models.py:107
 msgid "Followers only"
 msgstr "Abonnés uniquement"
 
@@ -263,10 +263,10 @@ msgstr "Confirmer le blocage"
 #: .\templates\characters\link_request_reject_form.html:25
 #: .\templates\characters\link_revoke_form.html:35
 #: .\templates\characters\list.html:45 .\templates\components\modal.html:71
-#: .\templates\games\create.html:74 .\templates\games\game_form.html:128
+#: .\templates\games\create.html:74 .\templates\games\game_form.html:135
 #: .\templates\games\list.html:42 .\templates\games\report_compose.html:126
-#: .\templates\games\report_form.html:179
-#: .\templates\games\report_form.html:181
+#: .\templates\games\report_form.html:186
+#: .\templates\games\report_form.html:188
 #: .\templates\gmh\instance_block.html:16
 #: .\templates\users\profile_edit.html:77
 msgid "Cancel"
@@ -394,7 +394,7 @@ msgstr "Aucun personnage pour l'instant."
 #: .\templates\characters\_quote_card.html:17
 #: .\templates\characters\detail.html:84 .\templates\characters\detail.html:114
 #: .\templates\characters\gm_dashboard.html:120
-#: .\templates\games\_list_results.html:64 .\templates\games\detail.html:54
+#: .\templates\games\_list_results.html:64 .\templates\games\detail.html:57
 #: .\templates\games\report_detail.html:31 .\templates\onboarding\step2.html:26
 #, python-format
 msgid "by @%(username)s"
@@ -428,7 +428,7 @@ msgstr "Contexte"
 #: .\templates\components\report_editor.html:16
 #: .\templates\games\create.html:30 .\templates\games\create.html:40
 #: .\templates\games\create.html:50 .\templates\games\game_form.html:49
-#: .\templates\games\game_form.html:94 .\templates\games\game_form.html:106
+#: .\templates\games\game_form.html:94 .\templates\games\game_form.html:113
 #: .\templates\games\report_compose.html:87
 #: .\templates\games\report_form.html:56 .\templates\games\report_form.html:68
 #: .\templates\games\report_form.html:121 .\templates\onboarding\step1.html:20
@@ -456,7 +456,7 @@ msgstr "ex. Contenu adulte"
 #: .\templates\characters\_quote_form.html:47
 #: .\templates\characters\character_form.html:98
 #: .\templates\characters\sequence_edit.html:83
-#: .\templates\games\game_form.html:122 .\templates\games\report_form.html:166
+#: .\templates\games\game_form.html:129 .\templates\games\report_form.html:173
 #: .\templates\gmh\instance_settings.html:68
 msgid "Save"
 msgstr "Enregistrer"
@@ -487,12 +487,12 @@ msgid "Sheet URL"
 msgstr "URL de la fiche"
 
 #: .\templates\characters\character_form.html:47
-#: .\templates\games\game_form.html:106
+#: .\templates\games\game_form.html:113
 msgid "Tags"
 msgstr "Tags"
 
 #: .\templates\characters\character_form.html:54
-#: .\templates\games\game_form.html:113
+#: .\templates\games\game_form.html:120
 msgid "Tags séparés par des virgules"
 msgstr "Tags séparés par des virgules"
 
@@ -550,7 +550,7 @@ msgid "Owner: @%(username)s"
 msgstr "Propriétaire : @%(username)s"
 
 #: .\templates\characters\detail.html:43
-#: .\templates\games\_list_results.html:74 .\templates\games\detail.html:28
+#: .\templates\games\_list_results.html:74 .\templates\games\detail.html:31
 #: .\templates\games\report_detail.html:26
 #: .\templates\games\report_form.html:14
 msgid "Edit"
@@ -573,7 +573,7 @@ msgid "Appearances"
 msgstr "Apparitions"
 
 #: .\templates\characters\detail.html:81 .\templates\feed\_feed_items.html:48
-#: .\templates\games\detail.html:51 .\templates\games\report_detail.html:20
+#: .\templates\games\detail.html:54 .\templates\games\report_detail.html:20
 #: .\templates\onboarding\step2.html:25
 msgid "Untitled"
 msgstr "Sans titre"
@@ -1016,7 +1016,7 @@ msgid "%(name)s is available again as an NPC."
 msgstr "%(name)s est à nouveau disponible en tant que PNJ."
 
 #: .\templates\characters\list.html:4 .\templates\characters\list.html:15
-#: .\templates\core\explorer.html:20 .\templates\games\detail.html:76
+#: .\templates\core\explorer.html:20 .\templates\games\detail.html:83
 #: .\templates\users\profile.html:95 .\templates\users\profile.html:112
 msgid "Characters"
 msgstr "Personnages"
@@ -1255,13 +1255,13 @@ msgstr "Ajouter un personnage..."
 
 #: .\templates\components\report_editor.html:132
 #: .\templates\games\report_compose.html:120
-#: .\templates\games\report_form.html:171
+#: .\templates\games\report_form.html:178
 msgid "Publish"
 msgstr "Publier"
 
 #: .\templates\components\report_editor.html:140
 #: .\templates\games\report_compose.html:124
-#: .\templates\games\report_form.html:175
+#: .\templates\games\report_form.html:182
 msgid "Save draft"
 msgstr "Enregistrer le brouillon"
 
@@ -1490,7 +1490,7 @@ msgstr "Fédivers"
 msgid "Available NPCs in your followed games"
 msgstr "PNJ disponibles dans vos parties suivies"
 
-#: .\templates\games\_list_results.html:34 .\templates\games\detail.html:41
+#: .\templates\games\_list_results.html:34 .\templates\games\detail.html:44
 #: .\templates\users\profile.html:91
 msgid "Reports"
 msgstr "Comptes-rendus"
@@ -1555,15 +1555,15 @@ msgstr "Pour les campagnes passées. Laissez vide pour aujourd'hui."
 msgid "Describe your campaign..."
 msgstr "Décrivez votre campagne..."
 
-#: .\templates\games\create.html:62 .\templates\games\game_form.html:101
+#: .\templates\games\create.html:62 .\templates\games\game_form.html:108
 msgid "Public game (visible and followable)"
 msgstr "Partie publique (visible et suivable)"
 
-#: .\templates\games\create.html:66 .\templates\games\game_form.html:116
+#: .\templates\games\create.html:66 .\templates\games\game_form.html:123
 msgid "Cover image"
 msgstr "Image de couverture"
 
-#: .\templates\games\create.html:72 .\templates\games\game_form.html:124
+#: .\templates\games\create.html:72 .\templates\games\game_form.html:131
 msgid "Create a game"
 msgstr "Créer une partie"
 
@@ -1572,11 +1572,19 @@ msgstr "Créer une partie"
 msgid "By @%(username)s"
 msgstr "Par @%(username)s"
 
-#: .\templates\games\detail.html:69
+#: .\templates\games\detail.html:25
+msgid "Depuis le"
+msgstr "Depuis le"
+
+#: .\templates\games\detail.html:59
+msgid "Session du"
+msgstr "Session du"
+
+#: .\templates\games\detail.html:76
 msgid "No published report."
 msgstr "Aucun compte-rendu publié."
 
-#: .\templates\games\detail.html:92
+#: .\templates\games\detail.html:99
 msgid "No characters in this game."
 msgstr "Aucun personnage dans cette partie."
 
@@ -1599,6 +1607,14 @@ msgstr "Choisir un système..."
 #: .\templates\games\game_form.html:78
 msgid "Search..."
 msgstr "Rechercher..."
+
+#: .\templates\games\game_form.html:102
+msgid "Date de début"
+msgstr "Date de début"
+
+#: .\templates\games\game_form.html:102 .\templates\games\report_form.html:133
+msgid "optionnelle"
+msgstr "optionnelle"
 
 #: .\templates\games\list.html:34
 msgid "Delete selected games?"
@@ -1660,7 +1676,7 @@ msgid "If filled, content will be hidden behind a 'Show' button."
 msgstr "Si renseigné, le contenu sera masqué derrière un bouton « Afficher »."
 
 #: .\templates\games\report_compose.html:99
-#: .\templates\games\report_form.html:133
+#: .\templates\games\report_form.html:140
 msgid "Visibility"
 msgstr "Visibilité"
 
@@ -1712,6 +1728,10 @@ msgstr "Ajoutez un avertissement pour masquer le contenu sensible derrière un b
 #: .\templates\games\report_form.html:60
 msgid "Session title..."
 msgstr "Titre de la session..."
+
+#: .\templates\games\report_form.html:133
+msgid "Date de session"
+msgstr "Date de session"
 
 #: .\templates\gmh\base.html:26 .\templates\gmh\instance_settings.html:4
 #: .\templates\gmh\instance_settings.html:7
