@@ -18,7 +18,7 @@ msgstr ""
 
 #: .\suddenly\characters\front_views.py:215
 msgid "Name is required."
-msgstr ""
+msgstr "Le nom est obligatoire."
 
 #: .\suddenly\characters\models.py:24
 msgid "NPC"
@@ -132,7 +132,7 @@ msgstr "Réseau fédéré de fiction partagée"
 
 #: .\suddenly\games\front_views.py:114 .\suddenly\games\front_views.py:248
 msgid "Title is required."
-msgstr ""
+msgstr "Le titre est obligatoire."
 
 #: .\suddenly\games\models.py:103 .\templates\games\report_detail.html:30
 msgid "Unlisted"
@@ -144,11 +144,11 @@ msgstr "Abonnés uniquement"
 
 #: .\suddenly\users\forms.py:46
 msgid "Use instance default"
-msgstr ""
+msgstr "Utiliser le défaut de l'instance"
 
 #: .\suddenly\users\models.py:56
 msgid "UI language. Empty = use instance default."
-msgstr ""
+msgstr "Langue de l'interface. Vide = utiliser le défaut de l'instance."
 
 #: .\templates\403.html:4 .\templates\403.html:10
 msgid "Access denied"
@@ -352,7 +352,7 @@ msgstr "Paramètres"
 
 #: .\templates\base.html:93 .\templates\base.html:165
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
 #: .\templates\base.html:99 .\templates\base.html:169
 #: .\templates\users\settings_base.html:49
@@ -365,11 +365,11 @@ msgstr "Inscription"
 
 #: .\templates\base.html:188
 msgid "Light mode"
-msgstr ""
+msgstr "Mode clair"
 
 #: .\templates\base.html:188
 msgid "Dark mode"
-msgstr ""
+msgstr "Mode sombre"
 
 #: .\templates\base.html:230 .\templates\core\about.html:4
 msgid "About"
@@ -460,21 +460,17 @@ msgstr "Enregistrer"
 
 #: .\templates\characters\character_form.html:4
 #: .\templates\characters\character_form.html:10
-#, fuzzy
-#| msgid "characters"
 msgid "Edit character"
-msgstr "personnages"
+msgstr "Modifier le personnage"
 
 #: .\templates\characters\character_form.html:4
 #: .\templates\characters\character_form.html:10
-#, fuzzy
-#| msgid "See characters"
 msgid "New character"
-msgstr "Voir les personnages"
+msgstr "Nouveau personnage"
 
 #: .\templates\characters\character_form.html:21
 msgid "Name"
-msgstr ""
+msgstr "Nom"
 
 #: .\templates\characters\character_form.html:29
 #: .\templates\characters\detail.html:63 .\templates\games\create.html:50
@@ -485,21 +481,21 @@ msgstr "Description"
 
 #: .\templates\characters\character_form.html:37
 msgid "Sheet URL"
-msgstr ""
+msgstr "URL de la fiche"
 
 #: .\templates\characters\character_form.html:47
 #: .\templates\games\game_form.html:106
 msgid "Tags"
-msgstr ""
+msgstr "Tags"
 
 #: .\templates\characters\character_form.html:54
 #: .\templates\games\game_form.html:113
 msgid "Tags séparés par des virgules"
-msgstr ""
+msgstr "Tags séparés par des virgules"
 
 #: .\templates\characters\character_form.html:60
 msgid "Avatar"
-msgstr ""
+msgstr "Avatar"
 
 #: .\templates\characters\character_form.html:64
 msgid "Current avatar"
@@ -537,10 +533,8 @@ msgid "PNG, JPG or GIF up to 10 MB"
 msgstr "PNG, JPG ou GIF jusqu'à 10 Mo"
 
 #: .\templates\characters\character_form.html:100
-#, fuzzy
-#| msgid "NPCs created"
 msgid "Create"
-msgstr "PNJ créés"
+msgstr "Créer"
 
 #: .\templates\characters\detail.html:34
 #, python-format
@@ -1023,23 +1017,19 @@ msgstr "Personnages"
 
 #: .\templates\characters\list.html:20 .\templates\games\list.html:24
 msgid "Select"
-msgstr ""
+msgstr "Sélectionner"
 
 #: .\templates\characters\list.html:27 .\templates\games\list.html:31
-#, fuzzy
-#| msgid "See all"
 msgid "Select all"
-msgstr "Tout voir"
+msgstr "Tout sélectionner"
 
 #: .\templates\characters\list.html:30
-#, fuzzy
-#| msgid "linked characters"
 msgid "Delete selected characters?"
-msgstr "personnages liés"
+msgstr "Supprimer les personnages sélectionnés ?"
 
 #: .\templates\characters\list.html:33 .\templates\games\list.html:37
 msgid "Delete selection"
-msgstr ""
+msgstr "Supprimer la sélection"
 
 #: .\templates\characters\list.html:48
 msgid "Search a character..."
@@ -1054,10 +1044,8 @@ msgid "Game system..."
 msgstr "Système de jeu..."
 
 #: .\templates\characters\list.html:86
-#, fuzzy
-#| msgid "All statuses"
 msgid "All tags"
-msgstr "Tous les statuts"
+msgstr "Tous les tags"
 
 #: .\templates\characters\sequence_edit.html:4
 #: .\templates\characters\sequence_edit.html:12
@@ -1239,10 +1227,8 @@ msgid "No character found"
 msgstr "Aucun personnage trouvé"
 
 #: .\templates\components\report_editor.html:75
-#, fuzzy
-#| msgid "Markdown supported. Type <code class=\"bg-gray-100 px-1 rounded\">@</code> to mention a character."
 msgid "Markdown supported. Type <code class=\"bg-card px-1 rounded\">@</code> to mention a character."
-msgstr "Markdown supporté. Tapez <code class=\"bg-gray-100 px-1 rounded\">@</code> pour mentionner un personnage."
+msgstr "Markdown supporté. Tapez <code class=\"bg-card px-1 rounded\">@</code> pour mentionner un personnage."
 
 #: .\templates\components\report_editor.html:82
 #: .\templates\games\report_create.html:40
@@ -1321,10 +1307,8 @@ msgid "Welcome to"
 msgstr "Bienvenue sur"
 
 #: .\templates\core\home.html:17
-#, fuzzy
-#| msgid "Publish your game reports. The NPCs you mention can be <strong class=\"text-gray-700\">claimed</strong>, <strong class=\"text-gray-700\">adopted</strong> or <strong class=\"text-gray-700\">forked</strong> by other players."
 msgid "Publish your game reports. The NPCs you mention can be <strong class=\"text-secondary\">claimed</strong>, <strong class=\"text-secondary\">adopted</strong> or <strong class=\"text-secondary\">forked</strong> by other players."
-msgstr "Publiez vos comptes-rendus de parties. Les PNJ que vous mentionnez peuvent être <strong class=\"text-gray-700\">révélés</strong>, <strong class=\"text-gray-700\">adoptés</strong> ou <strong class=\"text-gray-700\">dérivés</strong> par d'autres joueurs."
+msgstr "Publiez vos comptes-rendus de parties. Les PNJ que vous mentionnez peuvent être <strong class=\"text-secondary\">révélés</strong>, <strong class=\"text-secondary\">adoptés</strong> ou <strong class=\"text-secondary\">dérivés</strong> par d'autres joueurs."
 
 #: .\templates\core\home.html:24
 msgid "Join the network"
@@ -1484,49 +1468,40 @@ msgid "Reports"
 msgstr "Comptes-rendus"
 
 #: .\templates\games\_list_results.html:41
-#, fuzzy, python-format
-#| msgid "NPC by @%(username)s"
+#, python-format
 msgid "NPC %(n)s"
-msgstr "PNJ de @%(username)s"
+msgstr "%(n)s PNJ"
 
 #: .\templates\games\_list_results.html:47
 #, python-format
 msgid "PC %(n)s"
-msgstr ""
+msgstr "%(n)s PJ"
 
 #: .\templates\games\_list_results.html:53
-#, fuzzy, python-format
-#| msgid "Adopt %(name)s"
+#, python-format
 msgid "adopted %(n)s"
-msgstr "Adopter %(name)s"
+msgstr "%(n)s adopté(s)"
 
 #: .\templates\games\_list_results.html:59
-#, fuzzy, python-format
-#| msgid "Fork %(name)s"
+#, python-format
 msgid "forked %(n)s"
-msgstr "Dériver %(name)s"
+msgstr "%(n)s dérivé(s)"
 
 #: .\templates\games\_list_results.html:79
-#, fuzzy
-#| msgid "Delete this draft?"
 msgid "Delete this game?"
-msgstr "Supprimer ce brouillon ?"
+msgstr "Supprimer cette partie ?"
 
 #: .\templates\games\_list_results.html:93
 msgid "No games yet."
 msgstr "Aucune partie pour l'instant."
 
 #: .\templates\games\_system_search_results.html:14
-#, fuzzy
-#| msgid "No character found"
 msgid "No system found."
-msgstr "Aucun personnage trouvé"
+msgstr "Aucun système trouvé."
 
 #: .\templates\games\_system_search_results.html:21
-#, fuzzy
-#| msgid "Game system..."
 msgid "Custom system..."
-msgstr "Système de jeu..."
+msgstr "Système personnalisé..."
 
 #: .\templates\games\create.html:24 .\templates\games\game_form.html:24
 msgid "e.g. City of Mist — Season 2"
@@ -1557,10 +1532,8 @@ msgid "Public game (visible and followable)"
 msgstr "Partie publique (visible et suivable)"
 
 #: .\templates\games\create.html:66 .\templates\games\game_form.html:116
-#, fuzzy
-#| msgid "Current image"
 msgid "Cover image"
-msgstr "Image actuelle"
+msgstr "Image de couverture"
 
 #: .\templates\games\create.html:72 .\templates\games\game_form.html:124
 msgid "Create a game"
@@ -1580,34 +1553,24 @@ msgid "No characters in this game."
 msgstr "Aucun personnage dans cette partie."
 
 #: .\templates\games\game_form.html:4 .\templates\games\game_form.html:10
-#, fuzzy
-#| msgid "Edit"
 msgid "Edit game"
-msgstr "Modifier"
+msgstr "Modifier la partie"
 
 #: .\templates\games\game_form.html:55
-#, fuzzy
-#| msgid "Game system..."
 msgid "Custom system name..."
-msgstr "Système de jeu..."
+msgstr "Nom du système personnalisé..."
 
 #: .\templates\games\game_form.html:58
-#, fuzzy
-#| msgid "Back to choice"
 msgid "Back to catalog"
-msgstr "Retour au choix"
+msgstr "Retour au catalogue"
 
 #: .\templates\games\game_form.html:68
-#, fuzzy
-#| msgid "Game system..."
 msgid "Choose a system..."
-msgstr "Système de jeu..."
+msgstr "Choisir un système..."
 
 #: .\templates\games\game_form.html:78
-#, fuzzy
-#| msgid "Searching..."
 msgid "Search..."
-msgstr "Recherche en cours..."
+msgstr "Rechercher..."
 
 #: .\templates\games\list.html:4 .\templates\games\list.html:15
 msgid "Games"
@@ -1615,7 +1578,7 @@ msgstr "Parties"
 
 #: .\templates\games\list.html:34
 msgid "Delete selected games?"
-msgstr ""
+msgstr "Supprimer les parties sélectionnées ?"
 
 #: .\templates\games\report_create.html:4
 #: .\templates\games\report_create.html:12
@@ -1678,26 +1641,20 @@ msgstr "Citations de cette session"
 
 #: .\templates\gmh\base.html:26 .\templates\gmh\instance_settings.html:4
 #: .\templates\gmh\instance_settings.html:7
-#, fuzzy
-#| msgid "Instance rules"
 msgid "Instance settings"
-msgstr "Règles de l'instance"
+msgstr "Paramètres de l'instance"
 
 #: .\templates\gmh\instance_settings.html:26
-#, fuzzy
-#| msgid "Instance"
 msgid "Instance name"
-msgstr "Instance"
+msgstr "Nom de l'instance"
 
 #: .\templates\gmh\instance_settings.html:48
 msgid "Language"
-msgstr ""
+msgstr "Langue"
 
 #: .\templates\gmh\instance_settings.html:62
-#, fuzzy
-#| msgid "Administration"
 msgid "Open registrations"
-msgstr "Administration"
+msgstr "Inscriptions ouvertes"
 
 #: .\templates\notifications\_items.html:56
 msgid "No notifications."
@@ -1853,7 +1810,7 @@ msgstr "Enregistrer les modifications"
 #: .\templates\users\settings_preferences.html:4
 #: .\templates\users\settings_preferences.html:7
 msgid "Preferences"
-msgstr ""
+msgstr "Préférences"
 
 #: .\templates\users\settings_base.html:41
 #: .\templates\users\settings_data.html:4
@@ -1877,10 +1834,8 @@ msgid "Import follows"
 msgstr "Importer des abonnements"
 
 #: .\templates\users\settings_data.html:20
-#, fuzzy
-#| msgid "View profile"
 msgid "CSV file"
-msgstr "Voir le profil"
+msgstr "Fichier CSV"
 
 #: .\templates\users\settings_data.html:22
 msgid "Mastodon-compatible CSV (column \\"
@@ -1903,54 +1858,46 @@ msgstr "Télécharger mes abonnements (CSV)"
 #: .\templates\users\settings_data.html:38
 #: .\templates\users\settings_data.html:76
 msgid "Invalid file. Please upload a valid Suddenly JSON export."
-msgstr ""
+msgstr "Fichier invalide. Veuillez téléverser un export JSON Suddenly valide."
 
 #: .\templates\users\settings_data.html:43
 #, python-format
 msgid "%(counter)s game imported (%(skipped)s skipped)."
 msgid_plural "%(counter)s games imported (%(skipped)s skipped)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(counter)s partie importée (%(skipped)s ignorée)."
+msgstr[1] "%(counter)s parties importées (%(skipped)s ignorées)."
 
 #: .\templates\users\settings_data.html:51
-#, fuzzy
-#| msgid "Download my follows (CSV)"
 msgid "Download my games (JSON)"
-msgstr "Télécharger mes abonnements (CSV)"
+msgstr "Télécharger mes parties (JSON)"
 
 #: .\templates\users\settings_data.html:55
 msgid "Import games (JSON)"
-msgstr ""
+msgstr "Importer des parties (JSON)"
 
 #: .\templates\users\settings_data.html:60
 #: .\templates\users\settings_data.html:104
 msgid "Expected format"
-msgstr ""
+msgstr "Format attendu"
 
 #: .\templates\users\settings_data.html:81
-#, fuzzy, python-format
-#| msgid "%(counter)s account imported."
-#| msgid_plural "%(counter)s accounts imported."
+#, python-format
 msgid "%(counter)s character imported (%(skipped)s skipped)."
 msgid_plural "%(counter)s characters imported (%(skipped)s skipped)."
-msgstr[0] "%(counter)s compte importé."
-msgstr[1] "%(counter)s comptes importés."
+msgstr[0] "%(counter)s personnage importé (%(skipped)s ignoré)."
+msgstr[1] "%(counter)s personnages importés (%(skipped)s ignorés)."
 
 #: .\templates\users\settings_data.html:89
-#, fuzzy
-#| msgid "Download my follows (CSV)"
 msgid "Download my characters (JSON)"
-msgstr "Télécharger mes abonnements (CSV)"
+msgstr "Télécharger mes personnages (JSON)"
 
 #: .\templates\users\settings_data.html:94
 msgid "Import your games first. Characters referencing a game not found in your account will be skipped."
-msgstr ""
+msgstr "Importez d'abord vos parties. Les personnages référençant une partie introuvable dans votre compte seront ignorés."
 
 #: .\templates\users\settings_data.html:99
-#, fuzzy
-#| msgid "Explore characters"
 msgid "Import characters (JSON)"
-msgstr "Explorer les personnages"
+msgstr "Importer des personnages (JSON)"
 
 #: .\templates\users\settings_data.html:120
 msgid "Migrate to another instance"
@@ -1986,16 +1933,12 @@ msgstr "Codes de langue séparés par des virgules, ex. fr, en"
 
 #: .\templates\users\settings_preferences.html:56
 msgid "Interface language"
-msgstr ""
+msgstr "Langue de l'interface"
 
 #: .\templates\users\settings_preferences.html:76
-#, fuzzy
-#| msgid "No character found"
 msgid "Default character background"
-msgstr "Aucun personnage trouvé"
+msgstr "Image de fond par défaut des personnages"
 
 #: .\templates\users\settings_preferences.html:81
-#, fuzzy
-#| msgid "Current image"
 msgid "Current background"
-msgstr "Image actuelle"
+msgstr "Fond actuel"
