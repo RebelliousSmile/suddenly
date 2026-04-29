@@ -1,0 +1,25 @@
+{% extends "docs/base.html" %}
+{% load i18n %}
+
+{% block title %}Documentation — {{ SITE_NAME }}{% endblock %}
+
+{% block doc_content %}
+<div class="space-y-8">
+  <div>
+    <h1 class="text-3xl font-bold text-foreground mb-2">Documentation</h1>
+    <p class="text-muted">
+      Référence pour les développeurs rejoignant le projet et pour les agents AI — architecture, standards, wireframes et guides de déploiement.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    {% for section in nav %}
+    <a href="{% url 'docs:page' section.slug section.entries.0.slug %}"
+       class="block bg-surface border border-border rounded-lg p-4 hover:border-primary transition-colors">
+      <h2 class="font-semibold text-foreground mb-1">{{ section.section }}</h2>
+      <p class="text-muted text-sm">{{ section.entries|length }} page{{ section.entries|length|pluralize }}</p>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

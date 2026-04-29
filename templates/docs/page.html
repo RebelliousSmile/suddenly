@@ -1,0 +1,22 @@
+{% extends "docs/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ current_label }} — {{ SITE_NAME }}{% endblock %}
+
+{% block doc_content %}
+<div class="space-y-6">
+  <!-- Breadcrumb -->
+  <nav class="text-sm text-muted flex items-center gap-2">
+    <a href="{% url 'docs:index' %}" class="hover:text-primary">Documentation</a>
+    <span>/</span>
+    <span>{{ current_section_label }}</span>
+    <span>/</span>
+    <span class="text-foreground">{{ current_label }}</span>
+  </nav>
+
+  <!-- Content -->
+  <div class="prose-report">
+    {{ content|safe }}
+  </div>
+</div>
+{% endblock %}

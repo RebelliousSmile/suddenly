@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-29 12:07+0200\n"
+"POT-Creation-Date: 2026-04-29 13:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1120,6 +1120,10 @@ msgid "%(counter)s quote"
 msgid_plural "%(counter)s quotes"
 msgstr[0] ""
 msgstr[1] ""
+
+#: .\templates\components\docs_sidebar.html:5
+msgid "← Application"
+msgstr ""
 
 #: .\templates\components\feed_item.html:31
 #: .\templates\components\quote_card.html:46
