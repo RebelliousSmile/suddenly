@@ -1,0 +1,35 @@
+{% load i18n %}
+{% comment %}
+Tag filter bar.
+Parameters:
+  search_url      — URL for hx-get
+  results_target  — CSS selector for hx-target (e.g. "#game-results")
+  include_fields  — CSS selector string for hx-include (e.g. "[name='q'],[name='system']")
+  all_tags        — list of tag name strings
+  active_tag      — currently active tag string (empty = all)
+{% endcomment %}
+{% if all_tags %}
+<div class="flex flex-wrap gap-2 pt-1">
+    <input type="hidden" name="tag" id="tag-filter" value="{{ active_tag }}">
+    <button type="button"
+            class="{% if not active_tag %}btn-primary btn-sm{% else %}btn-secondary btn-sm{% endif %}"
+            hx-get="{{ search_url }}"
+            hx-target="{{ results_target }}"
+            hx-include="{{ include_fields }}"
+            hx-vals='{"tag": ""}'
+            @click="document.getElementById('tag-filter').value = ''">
+        {% trans "All tags" %}
+    </button>
+    {% for tag in all_tags %}
+    <button type="button"
+            class="{% if active_tag == tag %}btn-primary btn-sm{% else %}btn-secondary btn-sm{% endif %}"
+            hx-get="{{ search_url }}"
+            hx-target="{{ results_target }}"
+            hx-include="{{ include_fields }}"
+            hx-vals='{"tag": "{{ tag }}"}'
+            @click="document.getElementById('tag-filter').value = '{{ tag }}'">
+        {{ tag }}
+    </button>
+    {% endfor %}
+</div>
+{% endif %}

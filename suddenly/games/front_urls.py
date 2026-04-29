@@ -8,6 +8,8 @@ app_name = "games"
 
 urlpatterns = [
     path("", front_views.game_list, name="list"),
+    path("search/", front_views.game_search, name="search"),
+    path("compose/", front_views.report_compose, name="compose"),
     path("new/", front_views.game_create, name="create"),
     path("bulk-delete/", front_views.game_delete_bulk, name="delete_bulk"),
     path("systems/search/", front_views.game_system_search, name="system_search"),

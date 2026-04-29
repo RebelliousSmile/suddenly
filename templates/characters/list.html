@@ -73,31 +73,8 @@
                        hx-include="[name='q'],[name='status'],[name='tag']">
             </div>
             <!-- Tag filters -->
-            {% if all_tags %}
-            <div class="flex flex-wrap gap-2 pt-1">
-                <input type="hidden" name="tag" id="tag-filter" value="{{ active_tag }}">
-                <button type="button"
-                        class="{% if not active_tag %}btn-primary btn-sm{% else %}btn-secondary btn-sm{% endif %}"
-                        hx-get="{% url 'characters:search' %}"
-                        hx-target="#character-results"
-                        hx-include="[name='q'],[name='status'],[name='system']"
-                        hx-vals='{"tag": ""}'
-                        @click="document.getElementById('tag-filter').value = ''">
-                    {% trans "All tags" %}
-                </button>
-                {% for tag in all_tags %}
-                <button type="button"
-                        class="{% if active_tag == tag %}btn-primary btn-sm{% else %}btn-secondary btn-sm{% endif %}"
-                        hx-get="{% url 'characters:search' %}"
-                        hx-target="#character-results"
-                        hx-include="[name='q'],[name='status'],[name='system']"
-                        hx-vals='{"tag": "{{ tag }}"}'
-                        @click="document.getElementById('tag-filter').value = '{{ tag }}'">
-                    {{ tag }}
-                </button>
-                {% endfor %}
-            </div>
-            {% endif %}
+            {% url 'characters:search' as tag_search_url %}
+            {% include "components/tag_filter.html" with search_url=tag_search_url results_target="#character-results" include_fields="[name='q'],[name='status'],[name='system']" all_tags=all_tags active_tag=active_tag %}
         </div>
 
         <div id="character-results">

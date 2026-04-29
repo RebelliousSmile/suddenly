@@ -5,19 +5,116 @@ HTMX-first views for games and reports (DA-1).
 from __future__ import annotations
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from suddenly.core.models import InstanceSettings
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
-from .models import Game, GameSystem, Report, ReportStatus, ReportVisibility
+from .models import CastRole, Game, GameSystem, Report, ReportCast, ReportStatus, ReportVisibility
 
 
-def game_list(request: HttpRequest) -> HttpResponse:
-    """Game list with filters (US-02)."""
+@login_required
+def report_compose(request: AuthenticatedRequest) -> HttpResponse:
+    """Quick compose page for a new report, linked to a character's game."""
+    from django.conf import settings as django_settings
+
+    from suddenly.characters.models import Character
+
+    characters = (
+        Character.objects.filter(
+            origin_game__owner=request.user,
+            origin_game__remote=False,
+        )
+        .select_related("origin_game")
+        .order_by("name")
+    )
+
+    default_language = InstanceSettings.get().language
+    selected_slug = request.GET.get("character", "")
+
+    if request.method == "POST":
+        character_slug = request.POST.get("character_slug", "").strip()
+        content = request.POST.get("content", "").strip()
+        language = request.POST.get("language", default_language)
+        cw = request.POST.get("content_warning", "").strip()
+        visibility = request.POST.get("visibility", ReportVisibility.PUBLIC)
+        action = request.POST.get("action", "draft")
+
+        character = get_object_or_404(
+            Character,
+            slug=character_slug,
+            origin_game__owner=request.user,
+            origin_game__remote=False,
+        )
+
+        if not content:
+            return htmx_render(
+                request,
+                full_template="games/report_compose.html",
+                partial_template="games/report_compose.html",
+                context={
+                    "characters": characters,
+                    "selected_slug": character_slug,
+                    "default_language": language,
+                    "visibilities": ReportVisibility.choices,
+                    "languages": django_settings.LANGUAGES,
+                    "error": _("Content is required."),
+                    "form_data": request.POST,
+                },
+            )
+
+        report = Report.objects.create(
+            content=content,
+            content_warning=cw,
+            visibility=visibility,
+            language=language,
+            game=character.origin_game,
+            author=request.user,
+            status=ReportStatus.DRAFT,
+        )
+
+        ReportCast.objects.create(
+            report=report,
+            character=character,
+            role=CastRole.MAIN,
+        )
+
+        if action == "publish":
+            from django.utils import timezone
+
+            report.status = ReportStatus.PUBLISHED
+            report.published_at = timezone.now()
+            report.save()
+
+        return redirect(
+            reverse(
+                "games:report_detail",
+                kwargs={"game_pk": character.origin_game.pk, "pk": report.pk},
+            )
+        )
+
+    return htmx_render(
+        request,
+        full_template="games/report_compose.html",
+        partial_template="games/report_compose.html",
+        context={
+            "characters": characters,
+            "selected_slug": selected_slug,
+            "default_language": default_language,
+            "visibilities": ReportVisibility.choices,
+            "languages": django_settings.LANGUAGES,
+            "form_data": {},
+        },
+    )
+
+
+def _build_game_queryset(request: HttpRequest) -> QuerySet[Game]:
+    """Build filtered game queryset from request params."""
     from django.db.models import Count, Q
 
     public_filter = Q(is_public=True, remote=False)
@@ -47,11 +144,48 @@ def game_list(request: HttpRequest) -> HttpResponse:
             Q(game_system_ref__name__icontains=system) | Q(game_system__icontains=system)
         )
 
+    tag = request.GET.get("tag", "").strip()
+    if tag:
+        qs = qs.filter(tags__name=tag)
+
+    return qs
+
+
+def game_list(request: HttpRequest) -> HttpResponse:
+    """Game list with filters (US-02)."""
+    qs = _build_game_queryset(request)
+
+    all_tags: list[str] = sorted(
+        Game.objects.filter(remote=False, tags__isnull=False)
+        .values_list("tags__name", flat=True)
+        .distinct()
+    )
+
     return htmx_render(
         request,
         full_template="games/list.html",
         partial_template="games/_list_results.html",
-        context={"games": qs[:24], "system_filter": system},
+        context={
+            "games": qs[:24],
+            "system_filter": request.GET.get("system", ""),
+            "active_tag": request.GET.get("tag", ""),
+            "all_tags": all_tags,
+        },
+    )
+
+
+def game_search(request: HttpRequest) -> HttpResponse:
+    """HTMX endpoint for live game search (partial only)."""
+    qs = _build_game_queryset(request)
+    return htmx_render(
+        request,
+        full_template="games/_list_results.html",
+        partial_template="games/_list_results.html",
+        context={
+            "games": qs[:24],
+            "system_filter": request.GET.get("system", ""),
+            "active_tag": request.GET.get("tag", ""),
+        },
     )
 
 
