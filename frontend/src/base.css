@@ -1,3 +1,8 @@
+/* Reset box-sizing — non inclus dans le preflight UnoCSS */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 :root {
   /* Structural tokens */
   --c-bg: #faf9f6;
