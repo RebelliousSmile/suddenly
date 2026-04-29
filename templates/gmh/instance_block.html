@@ -1,0 +1,20 @@
+{% extends "gmh/base.html" %}
+{% load i18n %}
+
+{% block title %}{% blocktrans with name=server.server_name %}Block {{ name }}{% endblocktrans %} — {{ SITE_NAME }}{% endblock %}
+
+{% block gmh_content %}
+<div class="max-w-lg">
+    <h1 class="text-xl font-bold text-primary mb-4">{% blocktrans with name=server.server_name %}Block {{ name }}{% endblocktrans %}</h1>
+
+    {% include "components/status_banner.html" with type="error" icon="alert-triangle" message=_("This action will reject all incoming activities and hide content from this instance.") %}
+
+    <form method="post" class="mt-6">
+        {% csrf_token %}
+        <div class="flex items-center gap-3">
+            <button type="submit" class="btn-danger">{% trans "Confirm block" %}</button>
+            <a href="{% url 'gmh:instances' %}" class="btn-ghost">{% trans "Cancel" %}</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

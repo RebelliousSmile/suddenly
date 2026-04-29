@@ -4,7 +4,7 @@ from django.urls import path
 
 from . import admin_views
 
-app_name = "admin_panel"
+app_name = "gmh"
 
 urlpatterns = [
     path("", admin_views.admin_dashboard, name="dashboard"),
@@ -19,6 +19,7 @@ urlpatterns = [
         admin_views.admin_instance_unblock,
         name="instance_unblock",
     ),
+    path("settings/", admin_views.instance_settings, name="instance_settings"),
     path("users/", admin_views.admin_users, name="users"),
     path(
         "users/<uuid:pk>/suspend/",

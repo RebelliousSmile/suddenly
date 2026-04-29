@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.http import HttpRequest, JsonResponse
 from django.urls import include, path
+from django.views.generic import RedirectView
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
@@ -41,8 +42,9 @@ urlpatterns = [
     path("@", include("suddenly.users.urls")),
     # Federation front-end (search, remote profiles)
     path("federation/", include("suddenly.activitypub.federation_urls")),
-    # Admin panel (staff only — NOT Django admin)
-    path("admin-panel/", include("suddenly.core.admin_urls")),
+    # Admin panel (instance admins only — NOT Django admin)
+    path("gmh/", include("suddenly.core.admin_urls")),
+    path("admin-panel/", RedirectView.as_view(url="/gmh/", permanent=True)),
     # Front-end views (DA-1: HTMX-first)
     path("", include("suddenly.core.front_urls")),
     path("characters/", include("suddenly.characters.front_urls")),

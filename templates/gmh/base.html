@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container-app py-8">
+    <div class="flex flex-col md:flex-row gap-8">
+
+        <!-- Sidebar navigation -->
+        <aside class="md:w-56 flex-shrink-0">
+            <nav class="card card-body space-y-1">
+                <p class="text-xs font-semibold text-muted uppercase tracking-wider mb-3">
+                    {% trans "Administration" %}
+                </p>
+
+                <a href="{% url 'gmh:dashboard' %}"
+                   class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
+                          {% if request.resolver_match.url_name == 'dashboard' %}text-primary font-semibold bg-card-dark{% else %}text-secondary hover:text-primary hover:bg-card-dark{% endif %}">
+                    <span class="i-lucide-layout-dashboard text-base"></span>
+                    {% trans "Dashboard" %}
+                </a>
+
+                <a href="{% url 'gmh:instance_settings' %}"
+                   class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
+                          {% if request.resolver_match.url_name == 'instance_settings' %}text-primary font-semibold bg-card-dark{% else %}text-secondary hover:text-primary hover:bg-card-dark{% endif %}">
+                    <span class="i-lucide-settings text-base"></span>
+                    {% trans "Instance settings" %}
+                </a>
+
+                <a href="{% url 'gmh:instances' %}"
+                   class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
+                          {% if request.resolver_match.url_name == 'instances' or request.resolver_match.url_name == 'instance_block' or request.resolver_match.url_name == 'instance_unblock' %}text-primary font-semibold bg-card-dark{% else %}text-secondary hover:text-primary hover:bg-card-dark{% endif %}">
+                    <span class="i-lucide-globe text-base"></span>
+                    {% trans "Federated instances" %}
+                </a>
+
+                <a href="{% url 'gmh:users' %}"
+                   class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
+                          {% if request.resolver_match.url_name == 'users' or request.resolver_match.url_name == 'user_suspend' %}text-primary font-semibold bg-card-dark{% else %}text-secondary hover:text-primary hover:bg-card-dark{% endif %}">
+                    <span class="i-lucide-users text-base"></span>
+                    {% trans "Users" %}
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main content area -->
+        <main class="flex-1 min-w-0">
+            {% block gmh_content %}{% endblock %}
+        </main>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "gmh/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Users" %} — {% trans "Administration" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block gmh_content %}
+<h1 class="text-2xl font-bold text-primary mb-6">{% trans "Users" %}</h1>
+
+{% if users_list %}
+    <div class="space-y-2">
+        {% for u in users_list %}
+            <div class="card card-body flex items-center justify-between">
+                <div>
+                    <span class="font-medium">@{{ u.username }}</span>
+                    {% if u.display_name %}<span class="text-muted text-sm ml-1">({{ u.display_name }})</span>{% endif %}
+                    <p class="text-xs text-muted">{% blocktrans with date=u.date_joined|timesince %}Joined {{ date }}{% endblocktrans %}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    {% if u.is_active %}
+                        <span class="badge-available text-xs">{% trans "Active" %}</span>
+                        {% if u != user %}
+                            <form method="post" action="{% url 'gmh:user_suspend' pk=u.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-ghost btn-sm text-error"
+                                        onclick="return confirm('{% blocktrans with username=u.username %}Suspend @{{ username }}?{% endblocktrans %}')">
+                                    {% trans "Suspend" %}
+                                </button>
+                            </form>
+                        {% endif %}
+                    {% else %}
+                        <span class="badge bg-error/15 text-error text-xs">{% trans "Suspended" %}</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-muted text-center py-8">{% trans "No users." %}</p>
+{% endif %}
+{% endblock %}

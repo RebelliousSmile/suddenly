@@ -1,0 +1,72 @@
+{% extends "gmh/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Instance settings" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block gmh_content %}
+<h1 class="text-2xl font-bold text-primary mb-6">{% trans "Instance settings" %}</h1>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="mb-4 p-4 rounded-lg flex items-center gap-3
+                    {% if message.tags == 'success' %}bg-success/10 text-success border border-success/30{% endif %}
+                    {% if message.tags == 'error' %}bg-error/10 text-error border border-error/30{% endif %}">
+            {% if message.tags == 'success' %}<span class="i-lucide-check-circle"></span>{% endif %}
+            {% if message.tags == 'error' %}<span class="i-lucide-x-circle"></span>{% endif %}
+            <span>{{ message }}</span>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<form method="post" class="card card-body space-y-6 max-w-lg">
+    {% csrf_token %}
+
+    <div class="space-y-1">
+        <label for="id_name" class="text-sm font-medium text-secondary">
+            {% trans "Instance name" %} <span class="text-error">*</span>
+        </label>
+        <input type="text"
+               id="id_name"
+               name="name"
+               value="{{ instance.name }}"
+               required
+               class="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-primary placeholder-muted focus:outline-none focus:ring-2 focus:ring-crimson/50">
+    </div>
+
+    <div class="space-y-1">
+        <label for="id_description" class="text-sm font-medium text-secondary">
+            {% trans "Description" %}
+        </label>
+        <textarea id="id_description"
+                  name="description"
+                  rows="4"
+                  class="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-primary placeholder-muted focus:outline-none focus:ring-2 focus:ring-crimson/50">{{ instance.description }}</textarea>
+    </div>
+
+    <div class="space-y-1">
+        <label for="id_language" class="text-sm font-medium text-secondary">
+            {% trans "Language" %}
+        </label>
+        <select id="id_language"
+                name="language"
+                class="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-crimson/50">
+            {% for lang_code, lang_name in languages %}
+                <option value="{{ lang_code }}" {% if lang_code == instance.language %}selected{% endif %}>
+                    {{ lang_name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="space-y-1">
+        {% include "components/form_switch.html" with field_id="id_registrations_open" field_name="registrations_open" field_label=_("Open registrations") field_checked=instance.registrations_open %}
+    </div>
+
+    <div>
+        <button type="submit" class="btn-primary">
+            <span class="i-lucide-save mr-2"></span>
+            {% trans "Save" %}
+        </button>
+    </div>
+</form>
+{% endblock %}
