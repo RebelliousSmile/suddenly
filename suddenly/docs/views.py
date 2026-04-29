@@ -3,6 +3,7 @@ from __future__ import annotations
 import markdown
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import render
+from django.template.exceptions import TemplateDoesNotExist
 
 from . import nav as nav_module
 from .nav import NAV
@@ -47,3 +48,10 @@ def page(request: HttpRequest, section: str, slug: str) -> HttpResponse:
             "current_section_label": current_section_label,
         },
     )
+
+
+def wireframe_prototype(request: HttpRequest, name: str) -> HttpResponse:
+    try:
+        return render(request, f"wireframes/{name}.html")
+    except TemplateDoesNotExist:
+        raise Http404
