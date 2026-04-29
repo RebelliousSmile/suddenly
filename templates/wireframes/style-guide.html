@@ -98,27 +98,27 @@
             <h3 class="text-sm font-semibold text-muted uppercase tracking-widest mb-4">Couleurs sémantiques</h3>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div class="card p-3">
-                    <div class="h-10 rounded mb-2" style="background:#16a34a"></div>
+                    <div class="h-10 rounded mb-2" style="background:rgb(var(--c-success))"></div>
                     <p class="text-xs font-semibold text-success">Success</p>
-                    <p class="text-xs font-mono text-muted">#16a34a</p>
+                    <p class="text-xs font-mono text-muted">--c-success</p>
                     <p class="text-xs text-muted font-mono">text-success</p>
                 </div>
                 <div class="card p-3">
-                    <div class="h-10 rounded mb-2" style="background:#d97706"></div>
+                    <div class="h-10 rounded mb-2" style="background:rgb(var(--c-warning))"></div>
                     <p class="text-xs font-semibold text-warning">Warning</p>
-                    <p class="text-xs font-mono text-muted">#d97706</p>
+                    <p class="text-xs font-mono text-muted">--c-warning</p>
                     <p class="text-xs text-muted font-mono">text-warning</p>
                 </div>
                 <div class="card p-3">
-                    <div class="h-10 rounded mb-2" style="background:#dc2626"></div>
+                    <div class="h-10 rounded mb-2" style="background:rgb(var(--c-error))"></div>
                     <p class="text-xs font-semibold text-error">Error</p>
-                    <p class="text-xs font-mono text-muted">#dc2626</p>
+                    <p class="text-xs font-mono text-muted">--c-error</p>
                     <p class="text-xs text-muted font-mono">text-error</p>
                 </div>
                 <div class="card p-3">
-                    <div class="h-10 rounded mb-2" style="background:#6366f1"></div>
+                    <div class="h-10 rounded mb-2" style="background:rgb(var(--c-info))"></div>
                     <p class="text-xs font-semibold text-info">Info</p>
-                    <p class="text-xs font-mono text-muted">#6366f1</p>
+                    <p class="text-xs font-mono text-muted">--c-info</p>
                     <p class="text-xs text-muted font-mono">text-info</p>
                 </div>
             </div>
@@ -461,7 +461,7 @@
             </div>
             <!-- With image simulation -->
             <div class="flex flex-col items-center gap-2">
-                <div class="rounded-full overflow-hidden" style="width:64px;height:64px;background:linear-gradient(135deg,#6366f1,#10b981)">
+                <div class="rounded-full overflow-hidden" style="width:64px;height:64px;background:linear-gradient(135deg,rgb(var(--c-brand)),rgb(var(--c-neon)))">
                     <div class="w-full h-full flex items-center justify-center text-white font-bold text-xl">A</div>
                 </div>
                 <span class="text-xs text-muted">Avec image</span>
@@ -638,7 +638,7 @@
                         <button type="button" @click="s1 = !s1"
                             :class="s1 ? 'bg-crimson' : 'bg-muted'"
                             class="switch-track">
-                            <span :class="s1 ? 'translate-x-6' : 'translate-x-0'" class="switch-thumb"></span>
+                            <span :class="s1 ? 'translate-x-5' : 'translate-x-0'" class="switch-thumb"></span>
                         </button>
                         <span class="text-sm text-primary" x-text="s1 ? 'Activé' : 'Désactivé'"></span>
                     </label>
@@ -646,7 +646,7 @@
                         <button type="button" @click="s2 = !s2"
                             :class="s2 ? 'bg-crimson' : 'bg-muted'"
                             class="switch-track">
-                            <span :class="s2 ? 'translate-x-6' : 'translate-x-0'" class="switch-thumb"></span>
+                            <span :class="s2 ? 'translate-x-5' : 'translate-x-0'" class="switch-thumb"></span>
                         </button>
                         <span class="text-sm text-primary">Désactivé par défaut</span>
                     </label>
@@ -768,12 +768,12 @@
             <div class="flex flex-col items-center gap-2 p-3 card text-center">
                 <span class="i-game-icons-open-book w-10 h-10 text-muted inline-block"></span>
                 <span class="text-xs text-muted">open-book</span>
-                <span class="text-xs text-secondary">Rapports vides</span>
+                <span class="text-xs text-secondary">Pas de rapports</span>
             </div>
             <div class="flex flex-col items-center gap-2 p-3 card text-center">
                 <span class="i-game-icons-scroll-quill w-10 h-10 text-muted inline-block"></span>
                 <span class="text-xs text-muted">scroll-quill</span>
-                <span class="text-xs text-secondary">Contenu vide</span>
+                <span class="text-xs text-secondary">Pas de contenu</span>
             </div>
             <div class="flex flex-col items-center gap-2 p-3 card text-center">
                 <span class="i-game-icons-two-shadows w-10 h-10 text-muted inline-block"></span>
@@ -793,12 +793,12 @@
             <div class="flex flex-col items-center gap-2 p-3 card text-center">
                 <span class="i-game-icons-manacles w-10 h-10 text-muted inline-block"></span>
                 <span class="text-xs text-muted">manacles</span>
-                <span class="text-xs text-secondary">Liens</span>
+                <span class="text-xs text-secondary">Claim</span>
             </div>
             <div class="flex flex-col items-center gap-2 p-3 card text-center">
                 <span class="i-game-icons-hand w-10 h-10 text-muted inline-block"></span>
                 <span class="text-xs text-muted">hand</span>
-                <span class="text-xs text-secondary">Claim</span>
+                <span class="text-xs text-secondary">Adopt</span>
             </div>
             <div class="flex flex-col items-center gap-2 p-3 card text-center">
                 <span class="i-game-icons-divergence w-10 h-10 text-muted inline-block"></span>

@@ -134,7 +134,7 @@ const presetSuddenly = () => ({
     'form-dropzone-link': 'relative cursor-pointer rounded-md font-medium text-crimson hover:text-crimson-hover focus-within:outline-none',
 
     // Switch (remplace checkbox)
-    'switch-track': 'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full p-0.5 transition-colors duration-200 focus-visible:outline-none cursor-pointer',
+    'switch-track': 'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full p-0.5 border border-border transition-colors duration-200 focus-visible:outline-none cursor-pointer',
     'switch-thumb': 'inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200',
 
     // Badges
@@ -267,7 +267,7 @@ export default defineConfig({
     // Couleurs violet/crimson pour composants dark-light
     'bg-violet', 'border-violet', 'hover:text-violet/60',
     // Theme toggle + form switch (Alpine :class bindings)
-    'translate-x-0', 'translate-x-6', 'translate-x-8', 'bg-amber-400', 'bg-muted',
+    'translate-x-0', 'translate-x-5', 'translate-x-6', 'translate-x-8', 'bg-amber-400', 'bg-muted',
     'border-crimson/50', 'border-violet/50', 'border-amber-300/60', 'text-amber-400',
     // Badges dynamiques pending/rejected
     'badge-pending', 'badge-rejected',
