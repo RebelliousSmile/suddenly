@@ -26,8 +26,18 @@ def character_list(request: HttpRequest) -> HttpResponse:
     qs = _build_character_queryset(request)
 
     default_bg = ""
-    if request.user.is_authenticated and request.user.default_character_background:
-        default_bg = request.user.default_character_background.url
+    first_character = None
+    if request.user.is_authenticated:
+        if request.user.default_character_background:
+            default_bg = request.user.default_character_background.url
+        first_character = (
+            Character.objects.filter(
+                origin_game__owner=request.user,
+                origin_game__remote=False,
+            )
+            .order_by("name")
+            .first()
+        )
 
     # Collect all unique tags from local characters for the filter bar
     all_tags: list[str] = sorted(
@@ -49,6 +59,7 @@ def character_list(request: HttpRequest) -> HttpResponse:
             "default_bg": default_bg,
             "active_tag": request.GET.get("tag", ""),
             "all_tags": all_tags,
+            "first_character": first_character,
         },
     )
 

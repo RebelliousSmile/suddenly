@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "New report" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-3xl">
+
+        <p class="text-sm text-muted mb-4">
+            <a href="{% url 'games:list' %}" class="link-muted">{% trans "Games" %}</a>
+            › {% trans "New report" %}
+        </p>
+
+        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "New report" %}</h1>
+
+        {% if error %}
+            <div class="mb-4 p-4 rounded-lg bg-error/10 text-error border border-error/30">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        {% if not characters %}
+            <div class="card card-body text-center py-12">
+                <span class="i-lucide-users text-4xl text-muted mb-4 block"></span>
+                <p class="text-muted mb-4">{% trans "No characters linked to your games yet." %}</p>
+                <a href="{% url 'characters:list' %}" class="btn-primary">
+                    {% trans "Create a character" %}
+                </a>
+            </div>
+        {% else %}
+
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+
+            <div class="card card-body space-y-4">
+
+                <div>
+                    <label for="character_slug" class="form-label">{% trans "Character" %}</label>
+                    <select id="character_slug" name="character_slug" class="form-input" required>
+                        {% for character in characters %}
+                            <option value="{{ character.slug }}"
+                                {% if character.slug == selected_slug %}selected{% endif %}>
+                                {{ character.name }} — {{ character.origin_game.title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label for="language" class="form-label">{% trans "Language" %}</label>
+                    <select id="language" name="language" class="form-input">
+                        {% for code, label in languages %}
+                            <option value="{{ code }}"
+                                {% if code == default_language %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div x-data="mentionInput('{{ form_data.content|default:''|escapejs }}')" class="relative">
+                    <label for="content" class="form-label">{% trans "Content" %}</label>
+                    <textarea id="content" name="content" rows="12"
+                              x-model="content"
+                              @input="onInput($event)"
+                              @keydown="onKeydown"
+                              placeholder="{% trans "Tell your session... Type @ to mention a character." %}"
+                              required
+                              class="form-input font-mono text-sm resize-y min-h-[300px]"></textarea>
+
+                    <div x-show="showSuggestions" x-transition
+                         class="dropdown-menu bottom-full left-0 mb-1 w-64">
+                        <template x-for="(s, i) in suggestions" :key="s.id">
+                            <button @click="selectSuggestion(s)"
+                                    :class="{'bg-card-dark': i === selectedIndex}"
+                                    class="w-full px-3 py-2 text-left text-sm hover:bg-card"
+                                    x-text="s.name">
+                            </button>
+                        </template>
+                    </div>
+
+                    <p class="form-help">
+                        <span class="i-lucide-info text-xs mr-1"></span>
+                        {% trans "Markdown supported. Type" %} <code class="bg-card px-1 rounded">@</code> {% trans "to mention." %}
+                    </p>
+                </div>
+
+                <div>
+                    <label for="content_warning" class="form-label">
+                        {% trans "Content warning" %} <span class="text-muted">({% trans "optional" %})</span>
+                    </label>
+                    <input type="text" id="content_warning" name="content_warning"
+                           value="{{ form_data.content_warning|default:'' }}"
+                           placeholder="{% trans "e.g. Violence, dark themes" %}"
+                           class="form-input">
+                    <p class="form-help">
+                        {% trans "If filled, content will be hidden behind a 'Show' button." %}
+                    </p>
+                </div>
+
+                <div>
+                    <label class="form-label">{% trans "Visibility" %}</label>
+                    {% for value, label in visibilities %}
+                        <label class="flex items-center gap-2 py-1">
+                            <input type="radio" name="visibility" value="{{ value }}"
+                                   {% if value == 'public' %}checked{% endif %}
+                                   class="h-4 w-4 text-crimson focus:ring-crimson">
+                            <span class="text-sm">
+                                {% if value == 'public' %}<span class="i-lucide-globe text-xs"></span>{% endif %}
+                                {% if value == 'unlisted' %}<span class="i-lucide-unlock text-xs"></span>{% endif %}
+                                {% if value == 'followers' %}<span class="i-lucide-lock text-xs"></span>{% endif %}
+                                {{ label }}
+                            </span>
+                        </label>
+                    {% endfor %}
+                </div>
+
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button type="submit" name="action" value="publish" class="btn-primary">
+                    <span class="i-lucide-send"></span>
+                    {% trans "Publish" %}
+                </button>
+                <button type="submit" name="action" value="draft" class="btn-secondary">
+                    <span class="i-lucide-save"></span>
+                    {% trans "Save draft" %}
+                </button>
+                <a href="{% url 'characters:list' %}" class="btn-ghost">{% trans "Cancel" %}</a>
+            </div>
+        </form>
+
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

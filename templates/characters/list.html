@@ -15,6 +15,13 @@
             <h1 class="text-2xl font-bold text-primary">{% trans "Characters" %}</h1>
             {% if user.is_authenticated %}
             <div class="flex items-center gap-2">
+                {% if first_character %}
+                <a href="{% url 'games:compose' %}?character={{ first_character.slug }}"
+                   class="btn-primary btn-sm" x-show="!selectMode">
+                    <span class="i-lucide-pen"></span>
+                    {% trans "Start" %}
+                </a>
+                {% endif %}
                 <button type="button" @click="selectMode = true"
                         class="btn-ghost btn-sm" x-show="!selectMode"
                         title="{% trans "Select" %}">
