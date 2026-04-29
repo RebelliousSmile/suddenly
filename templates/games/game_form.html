@@ -62,7 +62,7 @@
 
                 {# Mode catalogue : déclencheur #}
                 <button type="button" x-show="!isCustom"
-                        @click="open = true; $nextTick(() => { $refs.systemSearch.focus(); htmx.ajax('GET', '{% url &quot;games:system_search&quot; %}', {target: '#system-dropdown-list'}) })"
+                        @click="open = true; $nextTick(() => { $refs.systemSearch.focus(); htmx.ajax('GET', '{% url 'games:system_search' %}', {target: '#system-dropdown-list'}) })"
                         class="form-input text-left w-full flex items-center justify-between gap-2 cursor-pointer">
                     <span x-show="systemName" x-text="systemName" class="text-primary truncate"></span>
                     <span x-show="!systemName" class="text-muted">{% trans "Choose a system..." %}</span>
@@ -100,6 +100,18 @@
 
             {% trans "Public game (visible and followable)" as label_is_public %}
             {% include "components/form_switch.html" with field_id="is_public" field_name="is_public" field_label=label_is_public field_checked=is_public_checked %}
+
+            <div>
+                <label for="tags" class="form-label">
+                    {% trans "Tags" %} <span class="text-muted">({% trans "optional" %})</span>
+                </label>
+                <input type="text" id="tags" name="tags"
+                       value="{% if form_data.tags %}{{ form_data.tags }}{% else %}{% if game.pk %}{{ game.tags.all|join:', ' }}{% endif %}{% endif %}"
+                       placeholder="fantasy, investigation, horror..."
+                       @keydown.enter.prevent
+                       class="form-input">
+                <p class="form-help">{% trans "Tags séparés par des virgules" %}</p>
+            </div>
 
             {% trans "Cover image" as label_cover %}
             {% include "components/form_image_upload.html" with field_id="cover" field_name="cover" field_label=label_cover field_optional=True current_url=game.cover.url|default:'' clear_id="cover-clear" clear_name="cover-clear" %}

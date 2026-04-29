@@ -88,7 +88,7 @@ class Character(BaseModel):
     sheet_url = models.URLField(blank=True, null=True, help_text="Link to external character sheet")
 
     # Tags
-    tags = models.JSONField(default=list, blank=True)
+    tags = models.ManyToManyField("core.Tag", blank=True, related_name="characters")
 
     # ActivityPub
     remote = models.BooleanField(default=False)

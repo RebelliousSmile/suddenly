@@ -283,6 +283,16 @@ def game_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
                 "updated_at",
             ]
         )
+
+        tags_raw = request.POST.get("tags", "").strip()
+        from suddenly.core.models import Tag
+
+        tag_objects = [
+            Tag.objects.get_or_create(name=name)[0]
+            for name in [t.strip() for t in tags_raw.split(",") if t.strip()]
+        ]
+        game.tags.set(tag_objects)
+
         return redirect(reverse("games:detail", kwargs={"pk": game.pk}))
 
     return htmx_render(
