@@ -2137,5 +2137,13 @@ msgstr "Image de fond par défaut des personnages"
 msgid "Current background"
 msgstr "Fond actuel"
 
+#: .\templates\400.html:8
+msgid "Bad request"
+msgstr "Requête invalide"
+
+#: .\templates\400.html:11
+msgid "Your request could not be processed. Please check the URL and try again."
+msgstr "Votre requête n'a pas pu être traitée. Vérifiez l'URL et réessayez."
+
 #~ msgid "e.g. Session 12 — The Broken Oracle"
 #~ msgstr "ex. Session 12 — L'Oracle brisé"
