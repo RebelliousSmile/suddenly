@@ -587,7 +587,7 @@
                          class="absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-[12px] shadow-dropdown overflow-hidden z-dropdown">
                         <template x-for="item in filtered" :key="item">
                             <button type="button" @click="select(item)"
-                                    class="w-full flex items-center gap-2 px-4 py-2 text-sm text-secondary hover:bg-card hover:text-primary transition-colors">
+                                    class="w-full flex items-center gap-2 px-4 py-2 text-sm bg-transparent text-secondary hover:bg-card hover:text-primary transition-colors">
                                 <span class="i-lucide-user w-3.5 h-3.5 shrink-0"></span>
                                 <span x-text="item"></span>
                             </button>
