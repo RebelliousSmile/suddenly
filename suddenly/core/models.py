@@ -5,11 +5,13 @@ Tous les modèles de l'application héritent de BaseModel.
 """
 
 import uuid
+from typing import Any
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.utils import OperationalError, ProgrammingError
 
 
 class BaseModel(models.Model):
@@ -206,3 +208,71 @@ class UserMute(BaseModel):
 
     def __str__(self) -> str:
         return f"{self.muter} mutes {self.muted}"
+
+
+class InstanceSettings(models.Model):
+    """
+    Singleton model for instance-wide configuration.
+
+    Only one row ever exists (pk=1). Use `InstanceSettings.get()` to access it.
+    Direct instantiation outside of `get()` is discouraged.
+    """
+
+    name = models.CharField(max_length=100, blank=False)
+    description = models.TextField(blank=True)
+    language = models.CharField(
+        max_length=10,
+        choices=settings.LANGUAGES,
+        default="fr",
+    )
+    registrations_open = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Instance Settings"
+        verbose_name_plural = "Instance Settings"
+
+    def __str__(self) -> str:
+        return self.name
+
+    def save(self, *args: Any, **kwargs: Any) -> None:
+        # Enforce singleton: pk is always 1.
+        self.pk = 1
+        # Invalidate the cache so the next call to get() re-fetches from DB.
+        from django.core.cache import cache  # local import avoids any circular-import risk
+
+        cache.delete("instance_settings")
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def get(cls) -> "InstanceSettings":
+        """
+        Return the singleton InstanceSettings, using a 5-minute cache.
+
+        Falls back to a default unsaved instance when the DB is unavailable
+        (e.g. during the very first `migrate` run before tables exist).
+        """
+        from django.core.cache import cache  # local import avoids any circular-import risk
+
+        cached: InstanceSettings | None = cache.get("instance_settings")
+        if cached is not None:
+            return cached
+
+        try:
+            instance, _ = cls.objects.get_or_create(
+                pk=1,
+                defaults={
+                    "name": getattr(settings, "SITE_NAME", "Suddenly"),
+                    "description": getattr(settings, "SITE_DESCRIPTION", "") or "",
+                    "language": getattr(settings, "LANGUAGE_CODE", "fr"),
+                },
+            )
+            cache.set("instance_settings", instance, 300)
+            return instance
+        except (OperationalError, ProgrammingError):
+            # DB not yet available (e.g. first boot before migrations).
+            return cls(
+                pk=1,
+                name=getattr(settings, "SITE_NAME", "Suddenly"),
+                description=getattr(settings, "SITE_DESCRIPTION", "") or "",
+                language=getattr(settings, "LANGUAGE_CODE", "fr"),
+            )
