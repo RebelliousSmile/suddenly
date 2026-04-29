@@ -31,11 +31,9 @@ def character_list(request: HttpRequest) -> HttpResponse:
 
     # Collect all unique tags from local characters for the filter bar
     all_tags: list[str] = sorted(
-        {
-            tag
-            for tags in Character.objects.filter(remote=False).values_list("tags", flat=True)
-            for tag in (tags or [])
-        }
+        Character.objects.filter(remote=False, tags__isnull=False)
+        .values_list("tags__name", flat=True)
+        .distinct()
     )
 
     return htmx_render(
@@ -139,7 +137,7 @@ def _build_character_queryset(request: HttpRequest) -> QuerySet[Character]:
     # Tag filter
     tag = request.GET.get("tag", "").strip()
     if tag:
-        qs = qs.filter(tags__contains=[tag])
+        qs = qs.filter(tags__name=tag)
 
     # FTS search (uses GIN index from T13)
     q = request.GET.get("q", "").strip()
@@ -223,7 +221,6 @@ def character_edit(request: AuthenticatedRequest, slug: str) -> HttpResponse:
         character.sheet_url = request.POST.get("sheet_url", "").strip() or None
 
         tags_raw = request.POST.get("tags", "").strip()
-        character.tags = [t.strip() for t in tags_raw.split(",") if t.strip()]
 
         if request.POST.get("avatar-clear"):
             if character.avatar:
@@ -232,9 +229,12 @@ def character_edit(request: AuthenticatedRequest, slug: str) -> HttpResponse:
         elif "avatar" in request.FILES:
             character.avatar = request.FILES["avatar"]
 
-        character.save(
-            update_fields=["name", "description", "sheet_url", "tags", "avatar", "updated_at"]
-        )
+        character.save(update_fields=["name", "description", "sheet_url", "avatar", "updated_at"])
+        from suddenly.core.models import Tag
+
+        tag_names = [t.strip() for t in tags_raw.split(",") if t.strip()]
+        tag_objects = [Tag.objects.get_or_create(name=name)[0] for name in tag_names]
+        character.tags.set(tag_objects)
         return redirect(reverse("characters:detail", kwargs={"slug": character.slug}))
 
     return htmx_render(
