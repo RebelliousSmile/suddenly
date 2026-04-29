@@ -68,8 +68,7 @@
                 <div x-data="markdownEditor('{{ form_data.content|default:''|escapejs }}')" class="relative">
                     <label for="content" class="form-label">{% trans "Content" %}</label>
                     <textarea id="content" name="content" rows="12"
-                              placeholder="{% trans "Tell your session... Type @ to mention a character." %}"
-                              required></textarea>
+                              placeholder="{% trans "Tell your session... Type @ to mention a character." %}"></textarea>
 
                     <div x-show="showSuggestions" x-transition
                          :style="dropdownStyle"
