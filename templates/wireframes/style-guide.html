@@ -6,31 +6,12 @@
 <!-- ================================================================ -->
 <!-- PROTOTYPE LABEL -->
 <!-- ================================================================ -->
-<div class="bg-amber-100 border-b border-amber-300 text-amber-800 text-xs text-center py-1.5 font-medium tracking-wide">
-    Style Guide — Design tokens, composants, typographie, icônes
-</div>
-
-<!-- ================================================================ -->
-<!-- THEME TOGGLE (local, indépendant du thème du site) -->
-<!-- ================================================================ -->
-<div x-data="{ previewTheme: null }"
-     :data-theme="previewTheme"
-     :style="previewTheme ? 'background: var(--c-bg); color: var(--c-primary);' : ''">
-
-<div class="sticky top-0 z-sticky border-b border-border bg-card/90 backdrop-blur-sm px-4 py-2 flex items-center gap-2">
-    <span class="text-xs text-muted">Prévisualisation :</span>
-    <button @click="previewTheme = null"
-            :class="!previewTheme ? 'btn-primary btn-sm' : 'btn-secondary btn-sm'">
-        Thème actif
-    </button>
-    <button @click="previewTheme = 'light'"
-            :class="previewTheme === 'light' ? 'btn-primary btn-sm' : 'btn-secondary btn-sm'">
-        <span class="i-lucide-sun w-3.5 h-3.5 inline-block mr-1"></span>Light
-    </button>
-    <button @click="previewTheme = 'dark'"
-            :class="previewTheme === 'dark' ? 'btn-primary btn-sm' : 'btn-secondary btn-sm'">
-        <span class="i-lucide-moon w-3.5 h-3.5 inline-block mr-1"></span>Dark
-    </button>
+<div class="bg-amber-100 border-b border-amber-300 text-amber-800 text-xs py-1.5 font-medium tracking-wide flex items-center justify-between px-4">
+    <span>Style Guide — Design tokens, composants, typographie, icônes</span>
+    <a href="/docs/w/overview/" class="flex items-center gap-1 opacity-70 hover:opacity-100">
+        <span class="i-lucide-arrow-left w-3.5 h-3.5 inline-block"></span>
+        Tous les wireframes
+    </a>
 </div>
 
 <div class="container-app py-10 px-4 space-y-16">
@@ -585,12 +566,33 @@
         <!-- Champs spéciaux -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
 
-            <!-- Recherche avec icône -->
-            <div class="min-w-0">
+            <!-- Recherche avec autocomplete -->
+            <div class="min-w-0" x-data="{
+                query: '',
+                open: false,
+                items: ['Aria Voss', 'Brennan Cross', 'Cira Moon', 'Dex Harlow', 'Elena Frost', 'Faolan Grey', 'Gwen Ashford'],
+                get filtered() { return this.query.length > 0 ? this.items.filter(i => i.toLowerCase().includes(this.query.toLowerCase())) : this.items },
+                select(item) { this.query = item; this.open = false; }
+            }" @click.outside="open = false">
                 <label class="form-label">Recherche (avec icône)</label>
                 <div class="relative">
-                    <span class="i-lucide-search absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none"></span>
-                    <input type="search" class="appearance-none block w-full min-w-0 rounded-[12px] border border-solid border-border pl-9 pr-3 py-2.5 focus:border-crimson text-sm outline-none" placeholder="Rechercher un personnage…" />
+                    <span class="i-lucide-search absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none z-10"></span>
+                    <input type="search"
+                           x-model="query"
+                           @focus="open = true"
+                           @input="open = true"
+                           class="form-input pl-9"
+                           placeholder="Rechercher un personnage…" />
+                    <div x-show="open" x-cloak
+                         class="absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-[12px] shadow-dropdown overflow-hidden z-dropdown">
+                        <template x-for="item in filtered" :key="item">
+                            <button type="button" @click="select(item)"
+                                    class="w-full flex items-center gap-2 px-4 py-2 text-sm text-secondary hover:bg-card hover:text-primary transition-colors">
+                                <span class="i-lucide-user w-3.5 h-3.5 shrink-0"></span>
+                                <span x-text="item"></span>
+                            </button>
+                        </template>
+                    </div>
                 </div>
             </div>
 
@@ -603,7 +605,7 @@
             <!-- Date -->
             <div class="min-w-0">
                 <label class="form-label">Date</label>
-                <input type="date" class="block w-full min-w-0 rounded-[12px] border border-solid border-border px-3 py-2.5 focus:border-crimson text-sm text-primary outline-none" />
+                <input type="date" class="block w-full rounded-[12px] border border-solid border-border px-3 py-2.5 focus:border-crimson text-sm bg-input text-primary outline-none cursor-pointer" />
             </div>
 
             <!-- Radio -->
@@ -906,6 +908,5 @@
     </section>
 
 </div><!-- /container-app -->
-</div><!-- /x-data previewTheme -->
 
 {% endblock %}
