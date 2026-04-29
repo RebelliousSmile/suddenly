@@ -87,6 +87,12 @@
                                     <span class="i-lucide-settings mr-2"></span>
                                     {% trans "Settings" %}
                                 </a>
+                                {% if request.user.is_admin %}
+                                <a href="{% url 'gmh:dashboard' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                                    <span class="i-lucide-shield mr-2"></span>
+                                    {% trans "Admin" %}
+                                </a>
+                                {% endif %}
                                 <hr class="my-1 border-border">
                                 <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-error hover:bg-error/10">
                                     <span class="i-lucide-log-out mr-2"></span>
@@ -154,6 +160,11 @@
                 {% if user.is_authenticated %}
                     <a href="{% url 'games:list' %}" class="block py-2 text-secondary">{% trans "My games" %}</a>
                     <a href="{% url 'characters:list' %}" class="block py-2 text-secondary">{% trans "My characters" %}</a>
+                    {% if request.user.is_admin %}
+                    <a href="{% url 'gmh:dashboard' %}" class="block py-2 text-secondary">
+                        <span class="i-lucide-shield mr-1"></span> {% trans "Admin" %}
+                    </a>
+                    {% endif %}
                     <hr class="my-2 border-border">
                     <a href="{% url 'account_logout' %}" class="block py-2 text-error">{% trans "Log out" %}</a>
                 {% else %}
