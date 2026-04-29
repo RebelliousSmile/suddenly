@@ -60,7 +60,7 @@
                         <!-- User dropdown -->
                         <div x-data="dropdown" class="relative">
                             <button @click="toggle"
-                                    class="flex items-center rounded-full bg-transparent border-0 outline-none focus:outline-none">
+                                    class="relative flex items-center rounded-full bg-transparent border-0 outline-none focus:outline-none">
                                 {% if user.avatar %}
                                     <img src="{{ user.avatar.url }}" class="avatar-sm">
                                 {% else %}
@@ -68,30 +68,45 @@
                                         <span class="i-lucide-user text-sm"></span>
                                     </span>
                                 {% endif %}
+                                {% if pending_requests_count or unread_notifications_count or new_stats_count %}
+                                    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-crimson border-2 border-surface"></span>
+                                {% endif %}
                             </button>
 
                             <div x-show="open"
                                  x-transition
                                  @click.away="close"
-                                 class="dropdown-menu right-0 mt-2 w-48">
+                                 class="dropdown-menu right-0 mt-2 w-56">
                                 <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                    <span class="i-lucide-user mr-2"></span>
-                                    {% trans "Profile" %}
+                                    <span class="i-lucide-user mr-2"></span>{% trans "Mon profil" %}
+                                </a>
+                                <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                                    <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Tableau de bord" %}
                                 </a>
                                 <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                    <span class="i-lucide-settings mr-2"></span>
-                                    {% trans "Settings" %}
+                                    <span class="i-lucide-settings mr-2"></span>{% trans "Préférences" %}
                                 </a>
                                 {% if request.user.is_admin %}
                                 <a href="{% url 'gmh:dashboard' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                    <span class="i-lucide-shield mr-2"></span>
-                                    {% trans "Admin" %}
+                                    <span class="i-lucide-shield mr-2"></span>{% trans "Admin" %}
                                 </a>
                                 {% endif %}
                                 <hr class="my-1 border-border">
+                                <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
+                                    <span><span class="i-lucide-inbox mr-2"></span>{% trans "Demandes" %}</span>
+                                    {% if pending_requests_count %}<span class="badge-primary">{{ pending_requests_count }}</span>{% endif %}
+                                </a>
+                                <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
+                                    <span><span class="i-lucide-bell mr-2"></span>{% trans "Notifications" %}</span>
+                                    {% if unread_notifications_count %}<span class="badge-primary">{{ unread_notifications_count }}</span>{% endif %}
+                                </a>
+                                <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
+                                    <span><span class="i-lucide-gem mr-2"></span>{% trans "Stats & succès" %}</span>
+                                    {% if new_stats_count %}<span class="badge-primary">{{ new_stats_count }}</span>{% endif %}
+                                </a>
+                                <hr class="my-1 border-border">
                                 <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-error hover:bg-error/10">
-                                    <span class="i-lucide-log-out mr-2"></span>
-                                    {% trans "Log out" %}
+                                    <span class="i-lucide-log-out mr-2"></span>{% trans "Déconnexion" %}
                                 </a>
                             </div>
                         </div>
@@ -135,36 +150,85 @@
                     {% endif %}
                 </div>
 
-                <!-- Mobile menu button -->
-                <button x-data @click="$dispatch('toggle-mobile-menu')"
-                        class="md:hidden p-2 text-secondary hover:text-primary">
-                    <span class="i-lucide-menu text-xl"></span>
-                </button>
+                <!-- Mobile controls -->
+                <div class="md:hidden flex items-center gap-2">
+                    {% if user.is_authenticated %}
+                    <!-- Avatar button (mobile) -->
+                    <div x-data="dropdown" class="relative">
+                        <button @click="toggle"
+                                class="relative flex items-center rounded-full bg-transparent border-0 outline-none focus:outline-none p-1">
+                            {% if user.avatar %}
+                                <img src="{{ user.avatar.url }}" class="avatar-sm">
+                            {% else %}
+                                <span class="avatar-sm avatar-placeholder">
+                                    <span class="i-lucide-user text-sm"></span>
+                                </span>
+                            {% endif %}
+                            {% if pending_requests_count or unread_notifications_count or new_stats_count %}
+                                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-crimson border-2 border-surface"></span>
+                            {% endif %}
+                        </button>
+                        <div x-show="open"
+                             x-transition
+                             @click.away="close"
+                             class="dropdown-menu right-0 mt-2 w-56">
+                            <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                                <span class="i-lucide-user mr-2"></span>{% trans "Mon profil" %}
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                                <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Tableau de bord" %}
+                            </a>
+                            <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                                <span class="i-lucide-settings mr-2"></span>{% trans "Préférences" %}
+                            </a>
+                            {% if request.user.is_admin %}
+                            <a href="{% url 'gmh:dashboard' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                                <span class="i-lucide-shield mr-2"></span>{% trans "Admin" %}
+                            </a>
+                            {% endif %}
+                            <hr class="my-1 border-border">
+                            <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
+                                <span><span class="i-lucide-inbox mr-2"></span>{% trans "Demandes" %}</span>
+                                {% if pending_requests_count %}<span class="badge-primary">{{ pending_requests_count }}</span>{% endif %}
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
+                                <span><span class="i-lucide-bell mr-2"></span>{% trans "Notifications" %}</span>
+                                {% if unread_notifications_count %}<span class="badge-primary">{{ unread_notifications_count }}</span>{% endif %}
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
+                                <span><span class="i-lucide-gem mr-2"></span>{% trans "Stats & succès" %}</span>
+                                {% if new_stats_count %}<span class="badge-primary">{{ new_stats_count }}</span>{% endif %}
+                            </a>
+                            <hr class="my-1 border-border">
+                            <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-error hover:bg-error/10">
+                                <span class="i-lucide-log-out mr-2"></span>{% trans "Déconnexion" %}
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <!-- Burger menu button -->
+                    <button x-data @click="$dispatch('toggle-mobile-menu')"
+                            class="p-2 text-secondary hover:text-primary bg-transparent border-0">
+                        <span class="i-lucide-menu text-xl"></span>
+                    </button>
+                </div>
             </div>
         </nav>
 
-        <!-- Mobile menu -->
+        <!-- Mobile nav drawer -->
         <div x-data="{ open: false }"
              @toggle-mobile-menu.window="open = !open"
              x-show="open"
              x-transition
              class="md:hidden border-t border-border bg-surface">
             <div class="container-app py-4 space-y-2">
-                <a href="{% url 'core:home' %}" class="block py-2 text-secondary">{% trans "Home" %}</a>
-                <a href="{% url 'core:explorer' %}" class="block py-2 text-secondary">{% trans "Explore" %}</a>
-                <a href="{% url 'feed:home' %}" class="block py-2 text-secondary">{% trans "Play" %}</a>
-                {% if user.is_authenticated %}
-                    {% if request.user.is_admin %}
-                    <a href="{% url 'gmh:dashboard' %}" class="block py-2 text-secondary">
-                        <span class="i-lucide-shield mr-1"></span> {% trans "Admin" %}
-                    </a>
-                    {% endif %}
+                <a href="{% url 'core:home' %}" class="block py-2 text-secondary">{% trans "Accueil" %}</a>
+                <a href="{% url 'core:explorer' %}" class="block py-2 text-secondary">{% trans "Explorer" %}</a>
+                <a href="{% url 'feed:home' %}" class="block py-2 text-secondary">{% trans "Jouer" %}</a>
+                {% if not user.is_authenticated %}
                     <hr class="my-2 border-border">
-                    <a href="{% url 'account_logout' %}" class="block py-2 text-error">{% trans "Log out" %}</a>
-                {% else %}
-                    <hr class="my-2 border-border">
-                    <a href="{% url 'account_login' %}" class="block py-2 text-crimson">{% trans "Log in" %}</a>
-                    <a href="{% url 'account_signup' %}" class="block py-2 text-crimson font-medium">{% trans "Sign up" %}</a>
+                    <a href="{% url 'account_login' %}" class="block py-2 text-crimson">{% trans "Connexion" %}</a>
+                    <a href="{% url 'account_signup' %}" class="block py-2 text-crimson font-medium">{% trans "S'inscrire" %}</a>
                 {% endif %}
                 <hr class="my-2 border-border">
                 <!-- Theme toggle mobile -->
@@ -212,21 +276,31 @@
     <!-- Footer -->
     <footer class="bg-surface border-t border-border mt-16">
         <div class="container-app py-8">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-2 text-secondary">
-                    <img src="{% static 'img/suddenly-logo.svg' %}" alt="{{ SITE_NAME }}" width="24" height="29" class="inline-block">
-                    <span>{{ SITE_NAME }}</span>
-                    <span class="text-muted">—</span>
-                    <span class="text-sm text-muted">{% trans "Federated shared fiction network" %}</span>
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <!-- Logo + baseline -->
+                <div class="flex items-center gap-2 shrink-0">
+                    <img src="{% static 'img/suddenly-logo.svg' %}" alt="{{ SITE_NAME }}" width="20" height="24" class="inline-block">
+                    <div>
+                        <p class="font-semibold text-sm text-primary leading-tight">{{ SITE_NAME }}</p>
+                        <p class="text-xs text-muted">{% trans "Federated shared fiction network" %}</p>
+                    </div>
                 </div>
-
-                <div class="flex items-center gap-4 text-sm">
-                    <a href="{% url 'core:about' %}" class="text-muted hover:text-primary transition-colors">{% trans "About" %}</a>
-                    <a href="{% url 'docs:index' %}" class="text-muted hover:text-primary transition-colors">{% trans "Documentation" %}</a>
-                    <a href="https://github.com/RebelliousSmile/suddenly" class="text-muted hover:text-primary transition-colors">
-                        <span class="i-simple-icons-github mr-1"></span>
-                        GitHub
-                    </a>
+                <!-- Links -->
+                <div class="text-xs text-right leading-6">
+                    <p class="text-muted">
+                        <span class="font-medium text-secondary">{{ request.get_host }} :</span>
+                        <a href="{% url 'core:about' %}" class="text-muted hover:text-primary mx-2">{% trans "À propos" %}</a>·
+                        <a href="#" class="text-muted hover:text-primary mx-2">{% trans "Annuaire des profils" %}</a>·
+                        <a href="#" class="text-muted hover:text-primary ml-2">{% trans "Politique de confidentialité" %}</a>
+                    </p>
+                    <p class="text-muted">
+                        <span class="font-medium text-secondary">{{ SITE_NAME }} :</span>
+                        <a href="{% url 'core:about' %}" class="text-muted hover:text-primary mx-2">{% trans "À propos" %}</a>·
+                        <a href="#" class="text-muted hover:text-primary mx-2">{% trans "Les applications" %}</a>·
+                        <a href="#" class="text-muted hover:text-primary mx-2">{% trans "Raccourcis clavier" %}</a>·
+                        <a href="https://github.com/RebelliousSmile/suddenly" class="text-muted hover:text-primary mx-2">{% trans "Voir le code source" %}</a>·
+                        <span class="ml-2">v0.x.x</span>
+                    </p>
                 </div>
             </div>
         </div>
