@@ -22,6 +22,7 @@
   "dependencies": {
     "@iconify-json/game-icons": "^1.2.4",
     "alpinejs": "^3.14.0",
+    "easymde": "^2.18.0",
     "htmx.org": "^1.9.0"
   }
 }

@@ -14,6 +14,9 @@ importers:
       alpinejs:
         specifier: ^3.14.0
         version: 3.15.11
+      easymde:
+        specifier: ^2.18.0
+        version: 2.20.0
       htmx.org:
         specifier: ^1.9.0
         version: 1.9.12
@@ -661,8 +664,17 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@types/codemirror@5.60.17':
+    resolution: {integrity: sha512-AZq2FIsUHVMlp7VSe2hTfl5w4pcUkoFkM3zVsRKsn1ca8CXRDYvnin04+HP2REkwsxemuHqvDofdlhUWNpbwfw==}
+
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
+
+  '@types/marked@4.3.2':
+    resolution: {integrity: sha512-a79Yc3TOk6dGdituy8hmTTJXjOkZ7zsFYV10L337ttq/rec8lRMDBpV7fL3uLx6TgbFCa5DU/h8FmIBQPSbU0w==}
+
+  '@types/tern@0.23.9':
+    resolution: {integrity: sha512-ypzHFE/wBzh+BlH6rrBgS5I/Z7RD21pGhZ2rltb/+ZrVM1awdZwjx7hE5XfuYgHWk9uvV5HLZN3SloevCAp3Bw==}
 
   '@unocss/astro@0.62.4':
     resolution: {integrity: sha512-98KfkbrNhBLx2+uYxMiGsldIeIZ6/PbL4yaGRHeHoiHd7p4HmIyCF+auYe4Psntx3Yr8kU+XSIAhGDYebvTidQ==}
@@ -784,6 +796,12 @@ packages:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
     engines: {node: '>= 8.10.0'}
 
+  codemirror-spell-checker@1.1.2:
+    resolution: {integrity: sha512-2Tl6n0v+GJRsC9K3MLCdLaMOmvWL0uukajNJseorZJsslaxZyZMgENocPU8R0DyoTAiKsyqiemSOZo7kjGV0LQ==}
+
+  codemirror@5.65.21:
+    resolution: {integrity: sha512-6teYk0bA0nR3QP0ihGMoxuKzpl5W80FpnHpBJpgy66NK3cZv5b/d/HY8PnRvfSsCG1MTfr92u2WUl+wT0E40mQ==}
+
   colorette@2.0.20:
     resolution: {integrity: sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==}
 
@@ -818,6 +836,9 @@ packages:
 
   duplexer@0.1.2:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
+
+  easymde@2.20.0:
+    resolution: {integrity: sha512-V1Z5f92TfR42Na852OWnIZMbM7zotWQYTddNaLYZFVKj7APBbyZ3FYJ27gBw2grMW3R6Qdv9J8n5Ij7XRSIgXQ==}
 
   esbuild@0.21.5:
     resolution: {integrity: sha512-mg3OPMV4hXywwpoDxu3Qda5xCKQi+vCTZq8S9J/EpkhB2HzKXq4SNFZE3+NK93JYxc8VMSep+lOUSC/RVKaBqw==}
@@ -916,6 +937,11 @@ packages:
 
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
+
+  marked@4.3.0:
+    resolution: {integrity: sha512-PRsaiG84bK+AMvxziE/lCFss8juXjNaWzVbN5tXAm4XjeaS9NAHhop+PjQxz2A9h8Q4M/xGmzP8vqNwy6JeK0A==}
+    engines: {node: '>= 12'}
+    hasBin: true
 
   mdn-data@2.0.30:
     resolution: {integrity: sha512-GaqWWShW4kv/G9IEucWScBx9G1/vsFZZJUO+tD26M8J8z3Kw5RDQjaoZe03YAClgeS/SWPOcb4nkFBTEi5DUEA==}
@@ -1021,6 +1047,9 @@ packages:
     resolution: {integrity: sha512-5C1sg4USs1lfG0GFb2RLXsdpXqBSEhAaA/0kPL01wxzpMqLILNxIxIOKiILz+cdg/pLnOUxFYOR5yhHU666wbw==}
     engines: {node: '>=18.0.0'}
     hasBin: true
+
+  typo-js@1.3.1:
+    resolution: {integrity: sha512-elJkpCL6Z77Ghw0Lv0lGnhBAjSTOQ5FhiVOCfOuxhaoTT2xtLVbqikYItK5HHchzPbHEUFAcjOH669T2ZzeCbg==}
 
   ufo@1.6.3:
     resolution: {integrity: sha512-yDJTmhydvl5lJzBmy/hyOAA0d+aqCBuwl818haVdYCRrWV84o7YyeVm4QlVHStqNrrJSTb6jKuFAVqAFsr+K3Q==}
@@ -1432,7 +1461,17 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.60.2':
     optional: true
 
+  '@types/codemirror@5.60.17':
+    dependencies:
+      '@types/tern': 0.23.9
+
   '@types/estree@1.0.8': {}
+
+  '@types/marked@4.3.2': {}
+
+  '@types/tern@0.23.9':
+    dependencies:
+      '@types/estree': 1.0.8
 
   '@unocss/astro@0.62.4(rollup@4.60.2)(vite@5.4.21)':
     dependencies:
@@ -1622,6 +1661,12 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
+  codemirror-spell-checker@1.1.2:
+    dependencies:
+      typo-js: 1.3.1
+
+  codemirror@5.65.21: {}
+
   colorette@2.0.20: {}
 
   confbox@0.1.8: {}
@@ -1644,6 +1689,14 @@ snapshots:
   destr@2.0.5: {}
 
   duplexer@0.1.2: {}
+
+  easymde@2.20.0:
+    dependencies:
+      '@types/codemirror': 5.60.17
+      '@types/marked': 4.3.2
+      codemirror: 5.65.21
+      codemirror-spell-checker: 1.1.2
+      marked: 4.3.0
 
   esbuild@0.21.5:
     optionalDependencies:
@@ -1800,6 +1853,8 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
+  marked@4.3.0: {}
+
   mdn-data@2.0.30: {}
 
   mlly@1.8.2:
@@ -1923,6 +1978,8 @@ snapshots:
       get-tsconfig: 4.14.0
     optionalDependencies:
       fsevents: 2.3.3
+
+  typo-js@1.3.1: {}
 
   ufo@1.6.3: {}
 
