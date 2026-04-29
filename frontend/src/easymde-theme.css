@@ -6,12 +6,14 @@
 .EasyMDEContainer {
   display: flex;
   flex-direction: column;
+  border: 1px solid var(--c-border);
+  border-radius: 0.5rem;
 }
 
 /* Toolbar */
 .editor-toolbar {
   background: var(--c-card-dark);
-  border-color: var(--c-border);
+  border-color: transparent;
   border-radius: 0.5rem 0.5rem 0 0;
   padding: 4px 8px;
   opacity: 1;
@@ -34,16 +36,26 @@
 }
 
 /* Editor area (CodeMirror) */
-.CodeMirror {
+.EasyMDEContainer .CodeMirror {
   background: var(--c-card);
   color: var(--c-primary);
-  border-color: var(--c-border);
+  border: 1px solid rgb(var(--c-crimson) / 0.5);
   border-radius: 0 0 0.5rem 0.5rem;
   font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
   font-size: 0.875rem;
   padding: 0.5rem;
   min-height: 300px;
 }
+
+/* Syntax highlight — aligné sur la sémantique prose-report :
+   seuls les liens sont crimson ; titres/gras/italique restent neutres */
+.cm-header        { color: var(--c-primary) !important; font-weight: 700; }
+.cm-strong        { color: var(--c-primary) !important; }
+.cm-em            { color: var(--c-secondary) !important; }
+.cm-quote         { color: var(--c-secondary) !important; }
+.cm-link          { color: rgb(var(--c-crimson)) !important; }
+.cm-url           { color: rgb(var(--c-crimson) / 0.7) !important; }
+.cm-comment       { color: var(--c-muted) !important; }
 
 .CodeMirror-scroll {
   min-height: 280px;
