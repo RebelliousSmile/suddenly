@@ -1,0 +1,682 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Wireframes — Suddenly — Prototype{% endblock %}
+{% block content %}
+
+<!-- ================================================================ -->
+<!-- PROTOTYPE LABEL -->
+<!-- ================================================================ -->
+<div class="bg-amber-100 border-b border-amber-300 text-amber-800 text-xs text-center py-1.5 font-medium tracking-wide">
+    Index — Collection de wireframes Suddenly
+</div>
+
+<div class="container-app py-10 px-4">
+
+    <!-- ============================================================ -->
+    <!-- EN-TÊTE -->
+    <!-- ============================================================ -->
+    <div class="mb-10">
+        <div class="flex items-start gap-4 flex-wrap">
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="i-lucide-layout w-6 h-6 text-indigo-600 inline-block"></span>
+                    <span class="badge badge-primary">Design system UnoCSS · HTMX · Alpine.js</span>
+                </div>
+                <h1 class="text-2xl font-bold text-primary mb-2">Wireframes — Suddenly</h1>
+                <p class="text-secondary max-w-2xl">Index de tous les prototypes HTML. Chaque wireframe couvre un ou plusieurs écrans et user stories. Palettes Primary (Indigo), Secondary (Emerald), Accent (Amber).</p>
+            </div>
+            <div class="flex gap-3 flex-wrap">
+                <div class="card p-4 text-center">
+                    <p class="text-3xl font-bold text-indigo-600">19</p>
+                    <p class="text-xs text-muted mt-1">Wireframes</p>
+                </div>
+                <div class="card p-4 text-center">
+                    <p class="text-3xl font-bold text-emerald-600">33</p>
+                    <p class="text-xs text-muted mt-1">User stories</p>
+                </div>
+                <div class="card p-4 text-center">
+                    <p class="text-3xl font-bold text-amber-600">4</p>
+                    <p class="text-xs text-muted mt-1">Personas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- GRILLE DES WIREFRAMES -->
+    <!-- ============================================================ -->
+    <section class="mb-14">
+        <h2 class="text-xl font-semibold text-primary mb-6 flex items-center gap-2">
+            <span class="i-lucide-grid w-5 h-5 inline-block"></span>
+            Tous les wireframes
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+            <!-- 01 - layout -->
+            <a href="/docs/w/layout/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-layout w-5 h-5 text-indigo-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">01</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Layout</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Header, footer, navigation, flash messages</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="text-xs text-muted italic">Aucune US directe</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 02 - home -->
+            <a href="/docs/w/home/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-home w-5 h-5 text-indigo-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">02</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Accueil</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Page d'accueil — visiteur et connecté</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="text-xs text-muted italic">Hero, onboarding visiteur</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 03 - auth -->
+            <a href="/docs/w/auth/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-user w-5 h-5 text-indigo-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">03</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Auth</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Login, signup, logout</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="badge badge-primary btn-sm">US-01</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 04 - profile -->
+            <a href="/docs/w/profile/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-user-check w-5 h-5 text-indigo-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">04</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Profil</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Profil public, édition profil</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="badge badge-primary btn-sm">US-01</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 05 - games -->
+            <a href="/docs/w/games/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-book-open w-5 h-5 text-indigo-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">05</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Parties</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Liste parties, détail, création</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="badge badge-primary btn-sm">US-02</span>
+                                <span class="badge badge-primary btn-sm">US-03</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 06 - reports -->
+            <a href="/docs/w/reports/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-file-text w-5 h-5 text-indigo-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">06</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Comptes-rendus</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Détail CR, éditeur + cast + @mentions</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="badge badge-primary btn-sm">US-04</span>
+                                <span class="badge badge-primary btn-sm">US-05</span>
+                                <span class="badge badge-primary btn-sm">US-13</span>
+                                <span class="badge badge-accent btn-sm">US-29</span>
+                                <span class="badge badge-accent btn-sm">US-30</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 07 - characters -->
+            <a href="/docs/w/characters/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-users w-5 h-5 text-indigo-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">07</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Personnages</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Liste FTS, fiche perso, variantes PJ/fork/distant</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="badge badge-primary btn-sm">US-06</span>
+                                <span class="badge badge-primary btn-sm">US-07</span>
+                                <span class="badge badge-primary btn-sm">US-17</span>
+                                <span class="badge badge-primary btn-sm">US-22</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 08 - quotes -->
+            <a href="/docs/w/quotes/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-message-circle w-5 h-5 text-indigo-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">08</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Citations</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Citations sur fiche perso, ajout HTMX</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="badge badge-primary btn-sm">US-08</span>
+                                <span class="badge badge-accent btn-sm">US-30</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 09 - links -->
+            <a href="/docs/w/links/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-link w-5 h-5 text-indigo-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">09</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Liens</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Modals claim/adopt/fork, file d'attente, révocation, SharedSequence</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="badge badge-primary btn-sm">US-09</span>
+                                <span class="badge badge-primary btn-sm">US-10</span>
+                                <span class="badge badge-primary btn-sm">US-11</span>
+                                <span class="badge badge-primary btn-sm">US-15</span>
+                                <span class="badge badge-primary btn-sm">US-16</span>
+                                <span class="badge badge-primary btn-sm">US-18</span>
+                                <span class="badge badge-primary btn-sm">US-19</span>
+                                <span class="badge badge-primary btn-sm">US-23</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 10 - feed -->
+            <a href="/docs/w/feed/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-rss w-5 h-5 text-indigo-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">10</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Fil d'actualité</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Fil, bouton follow, page explorer</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="badge badge-primary btn-sm">US-12</span>
+                                <span class="badge badge-accent btn-sm">US-28</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 11 - notifications -->
+            <a href="/docs/w/notifications/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-bell w-5 h-5 text-indigo-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">11</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Notifications</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Centre de notifications, badge, paramètres canal</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="badge badge-primary btn-sm">US-20</span>
+                                <span class="badge badge-primary btn-sm">US-21</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 12 - gm-dashboard -->
+            <a href="/docs/w/gm-dashboard/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-compass w-5 h-5 text-emerald-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">12</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Dashboard GM</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Vue "Mes PNJ", arbitrage inline</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="badge badge-primary btn-sm">US-14</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 13 - admin -->
+            <a href="/docs/w/admin/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-shield-x w-5 h-5 text-red-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">13</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Admin</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Dashboard admin, signalements, gestion instances</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="badge badge-primary btn-sm">US-25</span>
+                                <span class="badge badge-primary btn-sm">US-26</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 14 - federation -->
+            <a href="/docs/w/federation/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-globe w-5 h-5 text-indigo-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">14</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Fédération</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Recherche fédérée, profil distant, rendu Mastodon, NodeInfo/WebFinger</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="badge badge-primary btn-sm">US-22</span>
+                                <span class="badge badge-primary btn-sm">US-24</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 15 - settings -->
+            <a href="/docs/w/settings/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-settings w-5 h-5 text-indigo-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">15</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Paramètres</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Compte, sécurité, langues, fédération, données, migration</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="badge badge-accent btn-sm">US-32</span>
+                                <span class="badge badge-accent btn-sm">US-33</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 16 - misc -->
+            <a href="/docs/w/misc/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-sparkles w-5 h-5 text-indigo-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">16</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Divers</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Onboarding 3 étapes, modal signalement, pages erreur</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="badge badge-primary btn-sm">US-27</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 17 - instance-about -->
+            <a href="/docs/w/instance-about/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-info w-5 h-5 text-emerald-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">17</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">À propos de l'instance</h3>
+                                <span class="badge badge-secondary text-xs">Nouveau</span>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Description, règles, stats, admin, logiciel, fédération</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="badge badge-accent btn-sm">US-31</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 18 - report-character-links -->
+            <a href="/docs/w/report-links/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-git-merge w-5 h-5 text-indigo-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-gray font-mono text-xs">18</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">CR — Liens personnages</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Marqueurs NPC/PC/claim/adopt/fork, toutes variantes (CW, draft, unlisted, distant)</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="badge badge-primary btn-sm">US-04</span>
+                                <span class="badge badge-primary btn-sm">US-05</span>
+                                <span class="badge badge-primary btn-sm">US-09</span>
+                                <span class="badge badge-primary btn-sm">US-10</span>
+                                <span class="badge badge-primary btn-sm">US-11</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Style guide (hors numérotation) -->
+            <a href="/docs/w/style-guide/" class="card-hover group">
+                <div class="card-body">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
+                            <span class="i-lucide-palette w-5 h-5 text-amber-600 inline-block"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge badge-accent font-mono text-xs">SG</span>
+                                <h3 class="font-semibold text-primary group-hover:text-indigo-600 transition-colors">Style Guide</h3>
+                            </div>
+                            <p class="text-xs text-muted mb-2">Palette, typographie, boutons, badges, avatars, formulaires, icônes</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="text-xs text-muted italic">Référence design tokens</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- COUVERTURE PAR PERSONA -->
+    <!-- ============================================================ -->
+    <section>
+        <h2 class="text-xl font-semibold text-primary mb-6 flex items-center gap-2">
+            <span class="i-lucide-users w-5 h-5 inline-block"></span>
+            Couverture par persona
+        </h2>
+
+        <div class="card overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-gray-50 border-b border-border">
+                            <th class="text-left px-4 py-3 font-semibold text-primary">Persona</th>
+                            <th class="text-left px-4 py-3 font-semibold text-primary">Wireframes couverts</th>
+                            <th class="text-left px-4 py-3 font-semibold text-primary">Couverture</th>
+                            <th class="text-left px-4 py-3 font-semibold text-primary">Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border">
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-4 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
+                                        <span class="i-lucide-user w-4 h-4 text-indigo-600 inline-block"></span>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-primary">Joueur solo</p>
+                                        <p class="text-xs text-muted">Inscription, profil, parties, CRs, persos</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4">
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="badge badge-gray text-xs">01</span>
+                                    <span class="badge badge-gray text-xs">02</span>
+                                    <span class="badge badge-gray text-xs">03</span>
+                                    <span class="badge badge-gray text-xs">04</span>
+                                    <span class="badge badge-gray text-xs">05</span>
+                                    <span class="badge badge-gray text-xs">06</span>
+                                    <span class="badge badge-gray text-xs">07</span>
+                                    <span class="badge badge-gray text-xs">08</span>
+                                    <span class="badge badge-gray text-xs">09</span>
+                                    <span class="badge badge-gray text-xs">10</span>
+                                    <span class="badge badge-gray text-xs">11</span>
+                                    <span class="badge badge-gray text-xs">14</span>
+                                    <span class="badge badge-gray text-xs">15</span>
+                                    <span class="badge badge-gray text-xs">16</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4 text-secondary text-sm">Inscription, profil, parties, CRs, persos, citations, liens, feed, notifs, recherche fédérée, settings, onboarding</td>
+                            <td class="px-4 py-4">
+                                <span class="badge badge-secondary flex items-center gap-1 w-fit">
+                                    <span class="i-lucide-check-circle w-3 h-3 inline-block"></span>
+                                    Complet
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-4 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                                        <span class="i-lucide-compass w-4 h-4 text-emerald-600 inline-block"></span>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-primary">Game Master</p>
+                                        <p class="text-xs text-muted">Éditeur cast, arbitrage, dashboard</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4">
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="badge badge-gray text-xs">06</span>
+                                    <span class="badge badge-gray text-xs">09</span>
+                                    <span class="badge badge-gray text-xs">12</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4 text-secondary text-sm">Éditeur cast, arbitrage demandes (page + inline), dashboard GM, vue PNJ avec file d'attente</td>
+                            <td class="px-4 py-4">
+                                <span class="badge badge-secondary flex items-center gap-1 w-fit">
+                                    <span class="i-lucide-check-circle w-3 h-3 inline-block"></span>
+                                    Complet
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-4 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                                        <span class="i-lucide-shield-x w-4 h-4 text-red-600 inline-block"></span>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-primary">Admin d'instance</p>
+                                        <p class="text-xs text-muted">Modération, signalements, instances</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4">
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="badge badge-gray text-xs">13</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4 text-secondary text-sm">Modération, signalements, gestion instances (bloquer/limiter/fédérer)</td>
+                            <td class="px-4 py-4">
+                                <span class="badge badge-secondary flex items-center gap-1 w-fit">
+                                    <span class="i-lucide-check-circle w-3 h-3 inline-block"></span>
+                                    Complet
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-4 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-purple-100 flex items-center justify-center shrink-0">
+                                        <span class="i-simple-icons-mastodon w-4 h-4 text-purple-600 inline-block"></span>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-primary">Habituée du Fediverse</p>
+                                        <p class="text-xs text-muted">Mia — social.coop — Mastodon/BookWyrm</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4">
+                                <div class="flex flex-wrap gap-1">
+                                    <a href="/docs/w/fediverse-audit/" class="badge badge-accent text-xs hover:bg-amber-200 transition-colors">Audit</a>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4 text-secondary text-sm">10 manques identifiés, 2 critiques (boost, visibilité CRs), plan d'action en 10 actions</td>
+                            <td class="px-4 py-4">
+                                <span class="badge flex items-center gap-1 w-fit" style="background:#fef3c7;color:#92400e">
+                                    <span class="i-lucide-alert-triangle w-3 h-3 inline-block"></span>
+                                    En cours
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- COUVERTURE USER STORIES -->
+    <!-- ============================================================ -->
+    <section class="mt-14">
+        <h2 class="text-xl font-semibold text-primary mb-6 flex items-center gap-2">
+            <span class="i-lucide-check-circle w-5 h-5 inline-block"></span>
+            User stories couvertes (33 US)
+        </h2>
+
+        <div class="rounded-lg border border-border overflow-hidden">
+            <div class="bg-gray-50 px-4 py-2 border-b border-border flex items-center gap-2">
+                <span class="i-lucide-info w-4 h-4 text-muted inline-block"></span>
+                <span class="text-xs text-muted">Issues GitHub : rebellioussmile/suddenly #30 à #62. Les US en <strong class="text-amber-700">amber</strong> sont issues de l'audit Fediverse (US-28 à US-33).</span>
+            </div>
+            <div class="p-4">
+                <div class="flex flex-wrap gap-2">
+                    <a href="/docs/w/auth/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-01</a>
+                    <a href="/docs/w/games/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-02</a>
+                    <a href="/docs/w/games/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-03</a>
+                    <a href="/docs/w/reports/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-04</a>
+                    <a href="/docs/w/reports/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-05</a>
+                    <a href="/docs/w/characters/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-06</a>
+                    <a href="/docs/w/characters/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-07</a>
+                    <a href="/docs/w/quotes/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-08</a>
+                    <a href="/docs/w/links/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-09</a>
+                    <a href="/docs/w/links/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-10</a>
+                    <a href="/docs/w/links/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-11</a>
+                    <a href="/docs/w/feed/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-12</a>
+                    <a href="/docs/w/reports/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-13</a>
+                    <a href="/docs/w/gm-dashboard/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-14</a>
+                    <a href="/docs/w/links/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-15</a>
+                    <a href="/docs/w/links/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-16</a>
+                    <a href="/docs/w/characters/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-17</a>
+                    <a href="/docs/w/links/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-18</a>
+                    <a href="/docs/w/links/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-19</a>
+                    <a href="/docs/w/notifications/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-20</a>
+                    <a href="/docs/w/notifications/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-21</a>
+                    <a href="/docs/w/federation/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-22</a>
+                    <a href="/docs/w/links/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-23</a>
+                    <a href="/docs/w/federation/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-24</a>
+                    <a href="/docs/w/admin/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-25</a>
+                    <a href="/docs/w/admin/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-26</a>
+                    <a href="/docs/w/misc/" class="badge badge-primary hover:bg-indigo-200 transition-colors">US-27</a>
+                    <a href="/docs/w/feed/" class="badge badge-accent hover:bg-amber-200 transition-colors">US-28</a>
+                    <a href="/docs/w/reports/" class="badge badge-accent hover:bg-amber-200 transition-colors">US-29</a>
+                    <a href="/docs/w/reports/" class="badge badge-accent hover:bg-amber-200 transition-colors">US-30</a>
+                    <a href="/docs/w/instance-about/" class="badge badge-accent hover:bg-amber-200 transition-colors">US-31</a>
+                    <a href="/docs/w/settings/" class="badge badge-accent hover:bg-amber-200 transition-colors">US-32</a>
+                    <a href="/docs/w/settings/" class="badge badge-accent hover:bg-amber-200 transition-colors">US-33</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+{% endblock %}
