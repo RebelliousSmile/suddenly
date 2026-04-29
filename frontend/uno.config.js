@@ -104,29 +104,29 @@ const presetSuddenly = () => ({
     'container-app': 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8',
 
     // Boutons
-    'btn-primary': 'inline-flex items-center justify-center gap-2 bg-crimson text-white px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:bg-crimson-hover hover:-translate-y-0.5 hover:shadow-btn disabled:opacity-50 disabled:cursor-not-allowed',
-    'btn-secondary': 'inline-flex items-center justify-center gap-2 bg-transparent border border-border text-secondary px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:border-crimson hover:text-crimson hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed',
-    'btn-ghost': 'inline-flex items-center justify-center gap-2 bg-transparent text-secondary hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
-    'btn-danger': 'inline-flex items-center justify-center gap-2 bg-error text-white px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:bg-error/90 disabled:opacity-50 disabled:cursor-not-allowed',
+    'btn-primary': 'inline-flex items-center justify-center gap-2 bg-crimson text-white px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:bg-crimson-hover hover:-translate-y-0.5 hover:shadow-btn focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed',
+    'btn-secondary': 'inline-flex items-center justify-center gap-2 bg-transparent border border-border text-secondary px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:border-crimson hover:text-crimson hover:-translate-y-0.5 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed',
+    'btn-ghost': 'inline-flex items-center justify-center gap-2 bg-transparent text-secondary hover:text-primary transition-colors focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed',
+    'btn-danger': 'inline-flex items-center justify-center gap-2 bg-error text-white px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:bg-error/90 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed',
     'btn-sm': 'px-3 py-1.5 text-sm',
     'btn-lg': 'px-6 py-3 text-lg',
 
     // Cards
     'card': 'bg-card border border-border rounded-2xl p-6',
-    'card-hover': 'card hover:shadow-card-hover transition-shadow',
+    'card-hover': 'card hover:shadow-card-hover hover:border-crimson/30 hover:-translate-y-0.5 transition-all cursor-pointer',
     'card-body': 'p-4 sm:p-6',
     'card-header': 'px-4 py-3 sm:px-6 border-b border-border',
     'card-footer': 'px-4 py-3 sm:px-6 border-t border-border rounded-b-card',
 
     // Formulaires
-    'input-base': 'bg-card border border-border rounded-[12px] text-primary placeholder-muted focus:border-crimson focus:ring-1 focus:ring-crimson outline-none',
-    'form-input': 'block w-full rounded-[12px] border border-border px-3 py-2.5 shadow-sm focus:border-crimson focus:ring-crimson sm:text-sm bg-card text-primary',
-    'form-input-error': 'form-input border-error focus:border-error focus:ring-error',
+    'input-base': 'bg-card border border-border rounded-[12px] text-primary placeholder-muted focus:border-crimson outline-none',
+    'form-input': 'block w-full rounded-[12px] border border-border px-3 py-2.5 focus:border-crimson sm:text-sm bg-card text-primary outline-none',
+    'form-input-error': 'form-input border-error focus:border-error',
     'form-label': 'block text-sm font-medium text-secondary mb-1',
     'form-help': 'mt-1 text-sm text-muted',
     'form-error': 'mt-1 text-sm text-error',
     'form-dropzone': 'mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-border border-dashed rounded-lg hover:border-crimson transition-colors',
-    'form-dropzone-link': 'relative cursor-pointer rounded-md font-medium text-crimson hover:text-crimson-hover focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-crimson',
+    'form-dropzone-link': 'relative cursor-pointer rounded-md font-medium text-crimson hover:text-crimson-hover focus-within:outline-none',
 
     // Badges
     'badge': 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-xs font-medium',
