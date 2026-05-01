@@ -48,11 +48,11 @@
                     <a href="{% url 'core:home' %}" class="text-secondary hover:text-primary transition-colors">
                         {% trans "Home" %}
                     </a>
-                    <a href="{% url 'core:explorer' %}" class="text-secondary hover:text-primary transition-colors">
-                        {% trans "Explore" %}
-                    </a>
                     <a href="{% url 'feed:home' %}" class="text-secondary hover:text-primary transition-colors">
                         {% trans "Play" %}
+                    </a>
+                    <a href="{% url 'core:explorer' %}" class="text-secondary hover:text-primary transition-colors">
+                        {% trans "Explore" %}
                     </a>
 
                     {% if user.is_authenticated %}
@@ -78,13 +78,13 @@
                                  @click.away="close"
                                  class="dropdown-menu right-0 mt-2 w-56">
                                 <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                    <span class="i-lucide-user mr-2"></span>{% trans "Mon profil" %}
+                                    <span class="i-lucide-user mr-2"></span>{% trans "My profile" %}
                                 </a>
                                 <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                    <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Tableau de bord" %}
+                                    <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Dashboard" %}
                                 </a>
                                 <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                    <span class="i-lucide-settings mr-2"></span>{% trans "Préférences" %}
+                                    <span class="i-lucide-settings mr-2"></span>{% trans "Preferences" %}
                                 </a>
                                 {% if request.user.is_admin %}
                                 <a href="{% url 'gmh:dashboard' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
@@ -93,7 +93,7 @@
                                 {% endif %}
                                 <hr class="my-1 border-border">
                                 <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
-                                    <span><span class="i-lucide-inbox mr-2"></span>{% trans "Demandes" %}</span>
+                                    <span><span class="i-lucide-inbox mr-2"></span>{% trans "Requests" %}</span>
                                     {% if pending_requests_count %}<span class="badge-primary">{{ pending_requests_count }}</span>{% endif %}
                                 </a>
                                 <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
@@ -101,12 +101,12 @@
                                     {% if unread_notifications_count %}<span class="badge-primary">{{ unread_notifications_count }}</span>{% endif %}
                                 </a>
                                 <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
-                                    <span><span class="i-lucide-gem mr-2"></span>{% trans "Stats & succès" %}</span>
+                                    <span><span class="i-lucide-gem mr-2"></span>{% trans "Stats & achievements" %}</span>
                                     {% if new_stats_count %}<span class="badge-primary">{{ new_stats_count }}</span>{% endif %}
                                 </a>
                                 <hr class="my-1 border-border">
                                 <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-error hover:bg-error/10">
-                                    <span class="i-lucide-log-out mr-2"></span>{% trans "Déconnexion" %}
+                                    <span class="i-lucide-log-out mr-2"></span>{% trans "Log out" %}
                                 </a>
                             </div>
                         </div>
@@ -173,13 +173,13 @@
                              @click.away="close"
                              class="dropdown-menu right-0 mt-2 w-56">
                             <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                <span class="i-lucide-user mr-2"></span>{% trans "Mon profil" %}
+                                <span class="i-lucide-user mr-2"></span>{% trans "My profile" %}
                             </a>
                             <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Tableau de bord" %}
+                                <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Dashboard" %}
                             </a>
                             <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                <span class="i-lucide-settings mr-2"></span>{% trans "Préférences" %}
+                                <span class="i-lucide-settings mr-2"></span>{% trans "Preferences" %}
                             </a>
                             {% if request.user.is_admin %}
                             <a href="{% url 'gmh:dashboard' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
@@ -188,7 +188,7 @@
                             {% endif %}
                             <hr class="my-1 border-border">
                             <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
-                                <span><span class="i-lucide-inbox mr-2"></span>{% trans "Demandes" %}</span>
+                                <span><span class="i-lucide-inbox mr-2"></span>{% trans "Requests" %}</span>
                                 {% if pending_requests_count %}<span class="badge-primary">{{ pending_requests_count }}</span>{% endif %}
                             </a>
                             <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
@@ -196,12 +196,12 @@
                                 {% if unread_notifications_count %}<span class="badge-primary">{{ unread_notifications_count }}</span>{% endif %}
                             </a>
                             <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
-                                <span><span class="i-lucide-gem mr-2"></span>{% trans "Stats & succès" %}</span>
+                                <span><span class="i-lucide-gem mr-2"></span>{% trans "Stats & achievements" %}</span>
                                 {% if new_stats_count %}<span class="badge-primary">{{ new_stats_count }}</span>{% endif %}
                             </a>
                             <hr class="my-1 border-border">
                             <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-error hover:bg-error/10">
-                                <span class="i-lucide-log-out mr-2"></span>{% trans "Déconnexion" %}
+                                <span class="i-lucide-log-out mr-2"></span>{% trans "Log out" %}
                             </a>
                         </div>
                     </div>
@@ -222,13 +222,13 @@
              x-transition
              class="md:hidden border-t border-border bg-surface">
             <div class="container-app py-4 space-y-2">
-                <a href="{% url 'core:home' %}" class="block py-2 text-secondary">{% trans "Accueil" %}</a>
-                <a href="{% url 'core:explorer' %}" class="block py-2 text-secondary">{% trans "Explorer" %}</a>
-                <a href="{% url 'feed:home' %}" class="block py-2 text-secondary">{% trans "Jouer" %}</a>
+                <a href="{% url 'core:home' %}" class="block py-2 text-secondary">{% trans "Home" %}</a>
+                <a href="{% url 'feed:home' %}" class="block py-2 text-secondary">{% trans "Play" %}</a>
+                <a href="{% url 'core:explorer' %}" class="block py-2 text-secondary">{% trans "Explore" %}</a>
                 {% if not user.is_authenticated %}
                     <hr class="my-2 border-border">
-                    <a href="{% url 'account_login' %}" class="block py-2 text-crimson">{% trans "Connexion" %}</a>
-                    <a href="{% url 'account_signup' %}" class="block py-2 text-crimson font-medium">{% trans "S'inscrire" %}</a>
+                    <a href="{% url 'account_login' %}" class="block py-2 text-crimson">{% trans "Log in" %}</a>
+                    <a href="{% url 'account_signup' %}" class="block py-2 text-crimson font-medium">{% trans "Sign up" %}</a>
                 {% endif %}
                 <hr class="my-2 border-border">
                 <!-- Theme toggle mobile -->
@@ -289,16 +289,16 @@
                 <div class="text-xs text-right leading-6">
                     <p class="text-muted">
                         <span class="font-medium text-secondary">{{ request.get_host }} :</span>
-                        <a href="{% url 'core:about' %}" class="text-muted hover:text-primary mx-2">{% trans "À propos" %}</a>·
-                        <a href="#" class="text-muted hover:text-primary mx-2">{% trans "Annuaire des profils" %}</a>·
-                        <a href="#" class="text-muted hover:text-primary ml-2">{% trans "Politique de confidentialité" %}</a>
+                        <a href="{% url 'core:about' %}" class="text-muted hover:text-primary mx-2">{% trans "About" %}</a>·
+                        <a href="#" class="text-muted hover:text-primary mx-2">{% trans "Profile directory" %}</a>·
+                        <a href="#" class="text-muted hover:text-primary ml-2">{% trans "Privacy policy" %}</a>
                     </p>
                     <p class="text-muted">
                         <span class="font-medium text-secondary">{{ SITE_NAME }} :</span>
-                        <a href="{% url 'core:about' %}" class="text-muted hover:text-primary mx-2">{% trans "À propos" %}</a>·
-                        <a href="#" class="text-muted hover:text-primary mx-2">{% trans "Les applications" %}</a>·
-                        <a href="#" class="text-muted hover:text-primary mx-2">{% trans "Raccourcis clavier" %}</a>·
-                        <a href="https://github.com/RebelliousSmile/suddenly" class="text-muted hover:text-primary mx-2">{% trans "Voir le code source" %}</a>·
+                        <a href="{% url 'core:about' %}" class="text-muted hover:text-primary mx-2">{% trans "About" %}</a>·
+                        <a href="#" class="text-muted hover:text-primary mx-2">{% trans "Apps" %}</a>·
+                        <a href="#" class="text-muted hover:text-primary mx-2">{% trans "Keyboard shortcuts" %}</a>·
+                        <a href="https://github.com/RebelliousSmile/suddenly" class="text-muted hover:text-primary mx-2">{% trans "View source code" %}</a>·
                         <span class="ml-2">v0.x.x</span>
                     </p>
                 </div>

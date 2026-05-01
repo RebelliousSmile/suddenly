@@ -32,6 +32,11 @@ urlpatterns = [
         link_views.link_request_cancel,
         name="link_request_cancel",
     ),
+    path(
+        "requests/<uuid:pk>/card/",
+        link_views.link_request_card_partial,
+        name="link_request_card_partial",
+    ),
     # Link revocation (US-16)
     path("links/<uuid:pk>/revoke/", link_views.link_revoke, name="link_revoke"),
     # SharedSequence editor
