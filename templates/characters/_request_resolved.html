@@ -1,0 +1,25 @@
+{% load i18n %}
+<div id="request-{{ link_request.id }}" class="card card-body opacity-60">
+    <div class="flex items-center justify-between mb-2">
+        <span class="badge
+            {% if link_request.status == 'accepted' %}bg-success/20 text-success border border-success/30
+            {% else %}bg-card-dark text-muted border border-border
+            {% endif %}">
+            {{ link_request.get_status_display }}
+        </span>
+        <time class="text-xs text-muted" datetime="{{ link_request.resolved_at|date:'c' }}">
+            {{ link_request.resolved_at|timesince }}
+        </time>
+    </div>
+    <p class="text-sm text-secondary">
+        @{{ link_request.requester.username }} —
+        {{ link_request.get_type_display|upper }}
+        {{ link_request.target_character.name }}
+    </p>
+    {% if shared_sequence %}
+        <a href="{% url 'characters:sequence_edit' pk=shared_sequence.pk %}"
+           class="link text-sm mt-2 block">
+            {% trans "Open shared sequence →" %}
+        </a>
+    {% endif %}
+</div>

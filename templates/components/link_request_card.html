@@ -24,7 +24,7 @@
                 {% elif request.status == 'cancelled' %}badge bg-card-dark text-muted border border-border
                 {% endif %}">
                 {{ request.get_status_display }}
-                {% if request.status == 'queued' %}(#{{ request.queue_position }}){% endif %}
+                {% if request.status == 'queued' and queue_position %}(#{{ queue_position }}){% endif %}
             </span>
             <time class="text-xs text-muted" datetime="{{ request.created_at|date:'c' }}">
                 {{ request.created_at|timesince }}
@@ -76,14 +76,14 @@
     <!-- Actions -->
     {% if request.status == 'pending' and perspective == 'received' %}
         <div class="card-footer flex items-center gap-2">
-            <button hx-post="{% url 'accept_request' pk=request.id %}"
+            <button hx-get="{% url 'characters:link_request_accept' pk=request.id %}"
                     hx-target="#request-{{ request.id }}"
                     hx-swap="outerHTML"
                     class="btn-primary btn-sm">
                 <span class="i-lucide-check text-sm"></span>
                 {% trans "Accept" %}
             </button>
-            <button hx-post="{% url 'reject_request' pk=request.id %}"
+            <button hx-post="{% url 'characters:link_request_reject' pk=request.id %}"
                     hx-target="#request-{{ request.id }}"
                     hx-swap="outerHTML"
                     class="btn-ghost btn-sm">
@@ -96,7 +96,7 @@
         </div>
     {% elif request.status == 'pending' and perspective == 'sent' or request.status == 'queued' and perspective == 'sent' %}
         <div class="card-footer">
-            <button hx-post="{% url 'cancel_request' pk=request.id %}"
+            <button hx-post="{% url 'characters:link_request_cancel' pk=request.id %}"
                     hx-target="#request-{{ request.id }}"
                     hx-swap="outerHTML"
                     class="btn-ghost btn-sm text-error">

@@ -57,26 +57,7 @@
                             </div>
 
                             {% for req in npc.pending_requests %}
-                                <div class="flex items-center justify-between py-2 border-t border-border">
-                                    <div>
-                                        <p class="text-sm">
-                                            <strong>@{{ req.requester.username }}</strong>
-                                            {% trans "wants to" %} <strong>{{ req.get_type_display|upper }}</strong>
-                                        </p>
-                                        {% if req.message %}
-                                            <p class="text-xs text-muted line-clamp-1 mt-0.5">
-                                                « {{ req.message|truncatewords:15 }} »
-                                            </p>
-                                        {% endif %}
-                                    </div>
-                                    <div class="flex items-center gap-2 flex-shrink-0">
-                                        {% if req.status == 'pending' %}
-                                            <span class="badge-info text-xs">{% trans "To process" %}</span>
-                                        {% else %}
-                                            <span class="badge bg-card-dark text-muted border border-border text-xs">{% blocktrans with num=forloop.counter %}In queue (#{{ num }}){% endblocktrans %}</span>
-                                        {% endif %}
-                                    </div>
-                                </div>
+                                {% include "components/link_request_card.html" with request=req perspective="received" queue_position=forloop.counter0 %}
                             {% endfor %}
                         </div>
                     {% endfor %}

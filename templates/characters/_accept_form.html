@@ -1,0 +1,30 @@
+{% load i18n %}
+<div id="request-{{ link_request.id }}" class="card card-body">
+    <p class="text-sm font-medium text-primary mb-3">
+        {% blocktrans with username=link_request.requester.username type=link_request.get_type_display|upper name=link_request.target_character.name %}
+            Accept @{{ username }}'s {{ type }} request for {{ name }}?
+        {% endblocktrans %}
+    </p>
+    <form hx-post="{% url 'characters:link_request_accept' pk=link_request.id %}"
+          hx-target="#request-{{ link_request.id }}"
+          hx-swap="outerHTML">
+        {% csrf_token %}
+        <textarea name="response_message"
+                  class="input w-full mb-3"
+                  rows="3"
+                  placeholder="{% trans 'Optional narrative response…' %}"></textarea>
+        <div class="flex gap-2">
+            <button type="submit" class="btn-primary btn-sm">
+                <span class="i-lucide-check text-sm"></span>
+                {% trans "Confirm" %}
+            </button>
+            <button type="button"
+                    hx-get="{% url 'characters:link_request_card_partial' pk=link_request.id %}"
+                    hx-target="#request-{{ link_request.id }}"
+                    hx-swap="outerHTML"
+                    class="btn-ghost btn-sm">
+                {% trans "Cancel" %}
+            </button>
+        </div>
+    </form>
+</div>

@@ -138,7 +138,7 @@ def link_requests_list(request: AuthenticatedRequest) -> HttpResponse:
 
 @login_required
 def link_request_accept(request: HttpRequest, pk: str) -> HttpResponse:
-    """Accept a link request. US-11."""
+    """Accept a link request. US-11, US-14."""
     lr = get_object_or_404(
         LinkRequest,
         pk=pk,
@@ -148,24 +148,27 @@ def link_request_accept(request: HttpRequest, pk: str) -> HttpResponse:
 
     if request.method == "POST":
         response_message = request.POST.get("response_message", "").strip()
-        service = LinkService()
-        service.accept_request(lr, response_message=response_message)
-        return render(
-            request,
-            "characters/link_request_accepted.html",
-            {"link_request": lr},
-        )
+        character_link = LinkService.accept_request(lr, response_message=response_message)
+        if getattr(request, "htmx", False):
+            return render(
+                request,
+                "characters/_request_resolved.html",
+                {
+                    "link_request": lr,
+                    "shared_sequence": character_link.shared_sequence,
+                },
+            )
+        return render(request, "characters/link_request_accepted.html", {"link_request": lr})
 
-    return render(
-        request,
-        "characters/link_request_accept_form.html",
-        {"link_request": lr},
-    )
+    if getattr(request, "htmx", False):
+        return render(request, "characters/_accept_form.html", {"link_request": lr})
+
+    return render(request, "characters/link_request_accept_form.html", {"link_request": lr})
 
 
 @login_required
 def link_request_reject(request: HttpRequest, pk: str) -> HttpResponse:
-    """Reject a link request. US-11."""
+    """Reject a link request. US-11, US-14."""
     lr = get_object_or_404(
         LinkRequest,
         pk=pk,
@@ -175,15 +178,12 @@ def link_request_reject(request: HttpRequest, pk: str) -> HttpResponse:
 
     if request.method == "POST":
         response_message = request.POST.get("response_message", "").strip()
-        service = LinkService()
-        service.reject_request(lr, response_message=response_message)
+        LinkService.reject_request(lr, response_message=response_message)
+        if getattr(request, "htmx", False):
+            return render(request, "characters/_request_resolved.html", {"link_request": lr})
         return redirect(reverse("characters:link_requests"))
 
-    return render(
-        request,
-        "characters/link_request_reject_form.html",
-        {"link_request": lr},
-    )
+    return render(request, "characters/link_request_reject_form.html", {"link_request": lr})
 
 
 @login_required
@@ -202,6 +202,17 @@ def link_request_cancel(request: HttpRequest, pk: str) -> HttpResponse:
         return redirect(reverse("characters:link_requests") + "?tab=sent")
 
     return redirect(reverse("characters:link_requests") + "?tab=sent")
+
+
+@login_required
+def link_request_card_partial(request: AuthenticatedRequest, pk: str) -> HttpResponse:
+    """Fragment carte d'une demande reçue (HTMX — cancel et rechargements partiels). US-14."""
+    lr = get_object_or_404(LinkRequest, pk=pk, target_character__creator=request.user)
+    return render(
+        request,
+        "characters/_link_request_card_fragment.html",
+        {"link_request": lr, "perspective": "received"},
+    )
 
 
 @login_required
