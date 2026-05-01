@@ -1,17 +1,26 @@
 """
 Game queryset services.
 
-Shared queryset builders for the games domain.
+Shared queryset builders and business logic for the games domain.
 """
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import AnonymousUser
+from django.db import transaction
 from django.db.models import Count, Q
 from django.db.models.query import QuerySet
+from django.utils import timezone
 
-from .models import Game
+from suddenly.characters.models import Character, CharacterAppearance
+
+from .models import Game, Report, ReportStatus
+
+if TYPE_CHECKING:
+    from suddenly.users.models import User
 
 
 def build_game_queryset(
@@ -52,3 +61,40 @@ def build_game_queryset(
         qs = qs.filter(tags__name=tag.strip())
 
     return qs
+
+
+@transaction.atomic
+def publish_report(report: Report, user: User) -> Report:
+    """
+    Publish a draft report.
+
+    Iterates cast entries, creates NPCs for new characters, records
+    CharacterAppearance for each resolved character, then marks the
+    report as published.
+
+    Returns the updated report instance.
+    """
+    for cast_entry in report.cast.select_related("character"):
+        character: Character | None = cast_entry.character
+
+        if cast_entry.is_new_character():
+            character = Character.objects.create(
+                name=cast_entry.new_character_name,
+                description=cast_entry.new_character_description,
+                status="npc",
+                creator=user,
+                origin_game=report.game,
+            )
+
+        if character is not None:
+            CharacterAppearance.objects.get_or_create(
+                character=character,
+                report=report,
+                defaults={"role": cast_entry.role},
+            )
+
+    report.status = ReportStatus.PUBLISHED
+    report.published_at = timezone.now()
+    report.save(update_fields=["status", "published_at", "updated_at"])
+
+    return report

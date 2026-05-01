@@ -8,14 +8,12 @@ from typing import Any
 
 from django.db import models
 from django.db.models import QuerySet
-from django.utils import timezone
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import BaseSerializer
 
-from suddenly.characters.models import Character, CharacterAppearance
 from suddenly.core.serializers import (
     CharacterSerializer,
     GameCreateSerializer,
@@ -25,6 +23,7 @@ from suddenly.core.serializers import (
     ReportSerializer,
 )
 from suddenly.games.models import Game, Report
+from suddenly.games.services import publish_report
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):  # type: ignore[misc]
@@ -136,30 +135,7 @@ class ReportViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
                 {"error": "Report is already published"}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Process cast entries
-        for cast_entry in report.cast.all():
-            character = cast_entry.character
-
-            # Create new NPC if needed
-            if cast_entry.is_new_character():
-                character = Character.objects.create(
-                    name=cast_entry.new_character_name,
-                    description=cast_entry.new_character_description,
-                    status="npc",
-                    creator=request.user,
-                    origin_game=report.game,
-                )
-
-            # Create appearance
-            if character:
-                CharacterAppearance.objects.get_or_create(
-                    character=character, report=report, defaults={"role": cast_entry.role}
-                )
-
-        # Publish
-        report.status = "published"
-        report.published_at = timezone.now()
-        report.save()
+        report = publish_report(report, request.user)
 
         # TODO: Send ActivityPub Create(Note) activity
 

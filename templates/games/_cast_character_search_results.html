@@ -1,0 +1,16 @@
+{% load i18n %}
+{% for char in characters %}
+<button type="button"
+        class="block w-full text-left px-2 py-1 text-sm hover:bg-surface rounded cursor-pointer"
+        data-slug="{{ char.slug|escapejs }}"
+        data-name="{{ char.name|escapejs }}"
+        @click="
+            document.getElementById('cast-char-slug').value = $el.dataset.slug;
+            document.getElementById('cast-char-name').value = $el.dataset.name;
+            document.getElementById('cast-search-results').innerHTML = '';
+        ">
+    {{ char.name }}
+</button>
+{% empty %}
+<p class="text-xs text-muted px-2">{% trans "No character found." %}</p>
+{% endfor %}
