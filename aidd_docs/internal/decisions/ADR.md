@@ -34,3 +34,4 @@
 | DEC-030 | EasyMDE comme éditeur Markdown dans les reports | Report editor | Accepted | 2026-04-29 |
 | DEC-031 | static/dist/ versionné dans git (déploiement sans Node) | Déploiement | Accepted | 2026-04-29 |
 | DEC-032 | Template unifié report_form.html pour create + edit | Report editor | Accepted | 2026-04-29 |
+| DEC-033 | Pattern HTMX inline actions : getattr + 3 templates | HTMX / Characters | Accepted | 2026-05-01 |
