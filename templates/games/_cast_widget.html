@@ -1,0 +1,55 @@
+{% load i18n %}
+<div class="card card-body mb-4">
+    <h3 class="text-sm font-semibold text-primary mb-3">{% trans "Cast" %}</h3>
+
+    <div id="cast-list">
+        {% for entry in report.cast.all %}
+            {% include "games/_cast_entry.html" with entry=entry report=report game=game %}
+        {% endfor %}
+    </div>
+
+    <div class="mt-4 border-t border-border pt-4">
+        <div x-data="{ mode: 'existing' }" class="space-y-3">
+            <div class="flex gap-3 text-sm">
+                <label class="flex items-center gap-1 cursor-pointer">
+                    <input type="radio" x-model="mode" value="existing"> {% trans "Existing character" %}
+                </label>
+                <label class="flex items-center gap-1 cursor-pointer">
+                    <input type="radio" x-model="mode" value="new"> {% trans "New NPC" %}
+                </label>
+            </div>
+
+            <form hx-post="{% url 'games:cast_add' game_pk=game.pk pk=report.pk %}"
+                  hx-target="#cast-list"
+                  hx-swap="beforeend"
+                  hx-on::after-request="this.reset()">
+                {% csrf_token %}
+                <div x-show="mode === 'existing'" class="space-y-2">
+                    <input type="text"
+                           id="cast-char-name"
+                           name="q"
+                           class="input w-full"
+                           placeholder="{% trans 'Search character name…' %}"
+                           hx-get="{% url 'games:cast_character_search' game_pk=game.pk %}"
+                           hx-target="#cast-search-results"
+                           hx-trigger="input changed delay:300ms"
+                           autocomplete="off">
+                    <input type="hidden" name="character_slug" id="cast-char-slug">
+                    <div id="cast-search-results" class="space-y-1"></div>
+                </div>
+                <div x-show="mode === 'new'" class="space-y-2">
+                    <input type="text" name="new_character_name" class="input w-full" placeholder="{% trans 'NPC name' %}">
+                    <textarea name="new_character_description" class="input w-full" rows="2" placeholder="{% trans 'Short description (optional)' %}"></textarea>
+                </div>
+                <div class="flex items-center gap-2 mt-2">
+                    <select name="role" class="input">
+                        {% for value, label in cast_roles %}
+                            <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn-primary btn-sm">{% trans "Add" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

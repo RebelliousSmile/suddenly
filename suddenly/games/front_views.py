@@ -9,9 +9,10 @@ from typing import TYPE_CHECKING
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_POST
 
 from suddenly.core.models import InstanceSettings
 from suddenly.core.types import AuthenticatedRequest
@@ -34,7 +35,7 @@ from .models import (
     ReportVisibility,
 )
 from .rapport_forms import RapportForm
-from .services import build_game_queryset
+from .services import build_game_queryset, publish_report
 
 
 @login_required
@@ -104,11 +105,7 @@ def report_compose(request: AuthenticatedRequest) -> HttpResponse:
         )
 
         if action == "publish":
-            from django.utils import timezone
-
-            report.status = ReportStatus.PUBLISHED
-            report.published_at = timezone.now()
-            report.save()
+            publish_report(report, request.user)
 
         return redirect(
             reverse(
@@ -356,15 +353,11 @@ def report_create(request: AuthenticatedRequest, game_pk: str) -> HttpResponse:
         )
 
         if action == "publish":
-            from django.utils import timezone
-
-            report.status = ReportStatus.PUBLISHED
-            report.published_at = timezone.now()
-            report.save()
+            publish_report(report, request.user)
 
         return redirect(
             reverse(
-                "games:report_detail",
+                "games:report_edit",
                 kwargs={"game_pk": game.pk, "pk": report.pk},
             )
         )
@@ -386,7 +379,7 @@ def report_create(request: AuthenticatedRequest, game_pk: str) -> HttpResponse:
 def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:
     """Edit an existing report (author only)."""
     report = get_object_or_404(
-        Report.objects.select_related("game"),
+        Report.objects.select_related("game").prefetch_related("cast__character"),
         pk=pk,
         game_id=game_pk,
         author=request.user,
@@ -423,12 +416,6 @@ def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRes
         except ValueError:
             report.session_date = None
 
-        if action == "publish" and report.status != ReportStatus.PUBLISHED:
-            from django.utils import timezone
-
-            report.status = ReportStatus.PUBLISHED
-            report.published_at = timezone.now()
-
         report.save(
             update_fields=[
                 "title",
@@ -436,11 +423,12 @@ def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRes
                 "content_warning",
                 "visibility",
                 "session_date",
-                "status",
-                "published_at",
                 "updated_at",
             ]
         )
+
+        if action == "publish" and report.status != ReportStatus.PUBLISHED:
+            publish_report(report, request.user)
 
         return redirect(
             reverse("games:report_detail", kwargs={"game_pk": report.game.pk, "pk": report.pk})
@@ -454,8 +442,100 @@ def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRes
             "report": report,
             "game": report.game,
             "visibilities": ReportVisibility.choices,
+            "cast_roles": CastRole.choices,
             "form_data": {},
         },
+    )
+
+
+@require_POST
+@login_required
+def cast_add(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:
+    """Add a character to the report cast (HTMX, US-13)."""
+    from suddenly.characters.models import Character
+
+    report = get_object_or_404(Report, pk=pk, game_id=game_pk, author=request.user)
+
+    if report.status == ReportStatus.PUBLISHED:
+        return HttpResponse("Cannot modify cast of a published report.", status=400)
+
+    character = None
+    character_slug = request.POST.get("character_slug", "").strip()
+    if character_slug:
+        character = get_object_or_404(Character, slug=character_slug, origin_game=report.game)
+    new_name = request.POST.get("new_character_name", "").strip()
+    new_desc = request.POST.get("new_character_description", "").strip()
+    role = request.POST.get("role", CastRole.MENTIONED)
+
+    if not character_slug and not new_name:
+        return HttpResponse("At least one of character or new NPC name is required.", status=400)
+
+    if role not in CastRole.values:
+        role = CastRole.MENTIONED
+
+    entry = ReportCast.objects.get_or_create(
+        report=report,
+        character=character,
+        new_character_name=new_name if not character else "",
+        defaults={"new_character_description": new_desc, "role": role},
+    )[0]
+    return render(
+        request,
+        "games/_cast_entry.html",
+        {"entry": entry, "report": report, "game": report.game},
+    )
+
+
+@require_POST
+@login_required
+def cast_remove(request: AuthenticatedRequest, game_pk: str, pk: str, cast_pk: str) -> HttpResponse:
+    """Remove a character from the report cast (HTMX, US-13)."""
+    report = get_object_or_404(Report, pk=pk, game_id=game_pk, author=request.user)
+    entry = get_object_or_404(ReportCast, pk=cast_pk, report=report)
+    entry.delete()
+    return HttpResponse("")
+
+
+@login_required
+def cast_mention_search(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:
+    """Return cast members matching a query for @mention autocomplete (US-13)."""
+    from django.http import JsonResponse
+
+    report = get_object_or_404(Report, pk=pk, game_id=game_pk, author=request.user)
+    q = request.GET.get("q", "").strip()
+    if len(q) < 2:
+        return JsonResponse([], safe=False)
+    results: list[dict[str, str]] = []
+    for entry in report.cast.select_related("character"):
+        if entry.character:
+            name: str = entry.character.name
+            slug: str = entry.character.slug
+        else:
+            name = entry.new_character_name
+            slug = ""
+        if q.lower() in name.lower():
+            results.append({"name": name, "slug": slug})
+    return JsonResponse(results, safe=False)
+
+
+@login_required
+def cast_character_search(request: AuthenticatedRequest, game_pk: str) -> HttpResponse:
+    """Search characters in a game for cast autocomplete (HTMX, US-13)."""
+    from suddenly.characters.models import Character
+
+    game = get_object_or_404(Game, pk=game_pk, owner=request.user)
+    q = request.GET.get("q", "").strip()
+    characters: list[object] = []
+    if len(q) >= 2:
+        characters = list(
+            Character.objects.filter(origin_game=game, name__icontains=q).values("slug", "name")[
+                :10
+            ]
+        )
+    return render(
+        request,
+        "games/_cast_character_search_results.html",
+        {"characters": characters},
     )
 
 

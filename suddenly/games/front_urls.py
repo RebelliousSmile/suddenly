@@ -54,4 +54,24 @@ urlpatterns = [
         front_views.rapport_add_remote_parent,
         name="rapport_add_remote_parent",
     ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/cast/add/",
+        front_views.cast_add,
+        name="cast_add",
+    ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/cast/<uuid:cast_pk>/remove/",
+        front_views.cast_remove,
+        name="cast_remove",
+    ),
+    path(
+        "<uuid:game_pk>/cast/search/",
+        front_views.cast_character_search,
+        name="cast_character_search",
+    ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/cast/mentions/",
+        front_views.cast_mention_search,
+        name="cast_mention_search",
+    ),
 ]

@@ -140,6 +140,7 @@ Alpine.data('markdownEditor', (initialValue = '') => ({
   dropdownStyle: { top: '0px', left: '0px' },
   _easyMde: null,
   _mentionStart: -1,
+  _castMentionUrl: null,
 
   init() {
     const textarea = this.$el.querySelector('textarea')
@@ -156,6 +157,8 @@ Alpine.data('markdownEditor', (initialValue = '') => ({
     const cm = this._easyMde.codemirror
     cm.on('change', () => this._onCmChange(cm))
     cm.on('keydown', (_cm, event) => this._onKeydown(event))
+
+    this._castMentionUrl = this.$el.dataset.castMentionUrl || null
   },
 
   _onCmChange(cm) {
@@ -185,13 +188,15 @@ Alpine.data('markdownEditor', (initialValue = '') => ({
   },
 
   async _search(query) {
+    if (!this._castMentionUrl) return
     if (query.length < 2) {
       this.suggestions = []
       this.showSuggestions = false
       return
     }
     try {
-      const response = await fetch(`/api/characters/search/?q=${encodeURIComponent(query)}`)
+      const mentionUrl = `${this._castMentionUrl}?q=${encodeURIComponent(query)}`
+      const response = await fetch(mentionUrl)
       if (!response.ok) return
       this.suggestions = await response.json()
       this.showSuggestions = this.suggestions.length > 0

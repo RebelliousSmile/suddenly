@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Suddenly 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-01 20:10+0200\n"
+"POT-Creation-Date: 2026-05-01 22:39+0200\n"
 "PO-Revision-Date: 2026-04-28 10:19+0200\n"
 "Last-Translator: Suddenly Team\n"
 "Language-Team: French\n"
@@ -130,16 +130,16 @@ msgstr "Publié"
 msgid "Federated shared fiction network"
 msgstr "Réseau fédéré de fiction partagée"
 
-#: .\suddenly\games\front_views.py:85 .\suddenly\games\front_views.py:333
-#: .\suddenly\games\front_views.py:407
+#: .\suddenly\games\front_views.py:86 .\suddenly\games\front_views.py:330
+#: .\suddenly\games\front_views.py:400
 msgid "Content is required."
 msgstr "Le contenu est obligatoire."
 
-#: .\suddenly\games\front_views.py:246 .\suddenly\games\front_views.py:480
+#: .\suddenly\games\front_views.py:243 .\suddenly\games\front_views.py:560
 msgid "Title is required."
 msgstr "Le titre est obligatoire."
 
-#: .\suddenly\games\front_views.py:863
+#: .\suddenly\games\front_views.py:943
 msgid "Please enter a valid URL."
 msgstr "Veuillez saisir une URL valide."
 
@@ -321,8 +321,8 @@ msgstr "Confirmer le blocage"
 #: .\templates\games\partials\rapport_reply_form.html:84
 #: .\templates\games\rapport_form.html:78
 #: .\templates\games\report_compose.html:126
-#: .\templates\games\report_form.html:186
-#: .\templates\games\report_form.html:188
+#: .\templates\games\report_form.html:159
+#: .\templates\games\report_form.html:161
 #: .\templates\gmh\instance_block.html:16
 #: .\templates\users\profile_edit.html:77
 msgid "Cancel"
@@ -542,9 +542,9 @@ msgstr "Contexte"
 #: .\templates\games\create.html:50 .\templates\games\game_form.html:49
 #: .\templates\games\game_form.html:94 .\templates\games\game_form.html:113
 #: .\templates\games\report_compose.html:87
-#: .\templates\games\report_form.html:56 .\templates\games\report_form.html:68
-#: .\templates\games\report_form.html:121 .\templates\onboarding\step1.html:20
-#: .\templates\onboarding\step1.html:30 .\templates\users\profile_edit.html:17
+#: .\templates\games\report_form.html:56 .\templates\games\report_form.html:94
+#: .\templates\onboarding\step1.html:20 .\templates\onboarding\step1.html:30
+#: .\templates\users\profile_edit.html:17
 #: .\templates\users\profile_edit.html:39
 #: .\templates\users\settings_preferences.html:36
 #: .\templates\users\settings_preferences.html:77
@@ -557,7 +557,7 @@ msgstr "Situation narrative..."
 
 #: .\templates\characters\_quote_form.html:32
 #: .\templates\games\report_compose.html:87
-#: .\templates\games\report_form.html:121
+#: .\templates\games\report_form.html:94
 msgid "Content warning"
 msgstr "Avertissement de contenu"
 
@@ -568,7 +568,7 @@ msgstr "ex. Contenu adulte"
 #: .\templates\characters\_quote_form.html:47
 #: .\templates\characters\character_form.html:98
 #: .\templates\characters\sequence_edit.html:83
-#: .\templates\games\game_form.html:129 .\templates\games\report_form.html:173
+#: .\templates\games\game_form.html:129 .\templates\games\report_form.html:146
 #: .\templates\gmh\instance_settings.html:68
 msgid "Save"
 msgstr "Enregistrer"
@@ -1329,8 +1329,8 @@ msgid "Markdown supported. Type <code class=\"bg-card px-1 rounded\">@</code> to
 msgstr "Markdown supporté. Tapez <code class=\"bg-card px-1 rounded\">@</code> pour mentionner un personnage."
 
 #: .\templates\components\report_editor.html:79
+#: .\templates\games\_cast_widget.html:3
 #: .\templates\games\report_detail.html:72
-#: .\templates\games\report_form.html:68
 msgid "Cast"
 msgstr "Distribution"
 
@@ -1339,19 +1339,18 @@ msgid "characters in this scene"
 msgstr "personnages dans cette scène"
 
 #: .\templates\components\report_editor.html:103
-#: .\templates\games\report_form.html:85
 msgid "Add a character..."
 msgstr "Ajouter un personnage..."
 
 #: .\templates\components\report_editor.html:132
 #: .\templates\games\report_compose.html:120
-#: .\templates\games\report_form.html:178
+#: .\templates\games\report_form.html:151
 msgid "Publish"
 msgstr "Publier"
 
 #: .\templates\components\report_editor.html:140
 #: .\templates\games\report_compose.html:124
-#: .\templates\games\report_form.html:182
+#: .\templates\games\report_form.html:155
 msgid "Save draft"
 msgstr "Enregistrer le brouillon"
 
@@ -1580,6 +1579,44 @@ msgstr "Fédivers"
 msgid "Available NPCs in your followed games"
 msgstr "PNJ disponibles dans vos parties suivies"
 
+#: .\templates\games\_cast_character_search_results.html:15
+msgid "No character found."
+msgstr "Aucun personnage trouvé."
+
+#: .\templates\games\_cast_entry.html:4
+msgid "new NPC"
+msgstr "nouveau PNJ"
+
+#: .\templates\games\_cast_entry.html:12
+msgid "Remove"
+msgstr "Retirer"
+
+#: .\templates\games\_cast_widget.html:15
+msgid "Existing character"
+msgstr "Personnage existant"
+
+#: .\templates\games\_cast_widget.html:18
+msgid "New NPC"
+msgstr "Nouveau PNJ"
+
+#: .\templates\games\_cast_widget.html:32
+msgid "Search character name…"
+msgstr "Rechercher un personnage…"
+
+#: .\templates\games\_cast_widget.html:41
+msgid "NPC name"
+msgstr "Nom du PNJ"
+
+#: .\templates\games\_cast_widget.html:42
+msgid "Short description (optional)"
+msgstr "Courte description (optionnelle)"
+
+#: .\templates\games\_cast_widget.html:50
+#: .\templates\games\partials\rapport_item.html:116
+#: .\templates\games\rapport_form.html:71
+msgid "Add"
+msgstr "Ajouter"
+
 #: .\templates\games\_list_results.html:34 .\templates\games\detail.html:44
 #: .\templates\users\profile.html:91
 msgid "Reports"
@@ -1702,7 +1739,7 @@ msgstr "Rechercher..."
 msgid "Date de début"
 msgstr "Date de début"
 
-#: .\templates\games\game_form.html:102 .\templates\games\report_form.html:133
+#: .\templates\games\game_form.html:102 .\templates\games\report_form.html:106
 msgid "optionnelle"
 msgstr "optionnelle"
 
@@ -1756,11 +1793,6 @@ msgstr "Supprimer cette entrée ?"
 msgid "+ Remote parent"
 msgstr "+ Parent distant"
 
-#: .\templates\games\partials\rapport_item.html:116
-#: .\templates\games\rapport_form.html:71
-msgid "Add"
-msgstr "Ajouter"
-
 #: .\templates\games\partials\rapport_reply_form.html:7
 msgid "In reply to:"
 msgstr "En réponse à :"
@@ -1773,7 +1805,7 @@ msgstr "Type"
 #: .\templates\games\partials\rapport_reply_form.html:45
 #: .\templates\games\rapport_form.html:34
 #: .\templates\games\report_compose.html:63
-#: .\templates\games\report_form.html:97
+#: .\templates\games\report_form.html:70
 msgid "Content"
 msgstr "Contenu"
 
@@ -1812,32 +1844,32 @@ msgid "Language"
 msgstr "Langue"
 
 #: .\templates\games\report_compose.html:65
-#: .\templates\games\report_form.html:99
+#: .\templates\games\report_form.html:72
 msgid "Tell your session... Type @ to mention a character."
 msgstr "Racontez votre session... Tapez @ pour mentionner un personnage."
 
 #: .\templates\games\report_compose.html:81
-#: .\templates\games\report_form.html:115
+#: .\templates\games\report_form.html:88
 msgid "Markdown supported. Type"
 msgstr "Markdown supporté. Tapez"
 
 #: .\templates\games\report_compose.html:81
-#: .\templates\games\report_form.html:115
+#: .\templates\games\report_form.html:88
 msgid "to mention."
 msgstr "pour mentionner."
 
 #: .\templates\games\report_compose.html:91
-#: .\templates\games\report_form.html:125
+#: .\templates\games\report_form.html:98
 msgid "e.g. Violence, dark themes"
 msgstr "ex. Violence, thèmes sombres"
 
 #: .\templates\games\report_compose.html:94
-#: .\templates\games\report_form.html:128
+#: .\templates\games\report_form.html:101
 msgid "If filled, content will be hidden behind a 'Show' button."
 msgstr "Si renseigné, le contenu sera masqué derrière un bouton « Afficher »."
 
 #: .\templates\games\report_compose.html:99
-#: .\templates\games\report_form.html:140
+#: .\templates\games\report_form.html:113
 msgid "Visibility"
 msgstr "Visibilité"
 
@@ -1898,7 +1930,7 @@ msgstr "Ajoutez un avertissement pour masquer le contenu sensible derrière un b
 msgid "Session title..."
 msgstr "Titre de la session..."
 
-#: .\templates\games\report_form.html:133
+#: .\templates\games\report_form.html:106
 msgid "Date de session"
 msgstr "Date de session"
 
@@ -2207,6 +2239,9 @@ msgstr "Image de fond par défaut des personnages"
 #: .\templates\users\settings_preferences.html:81
 msgid "Current background"
 msgstr "Fond actuel"
+
+#~ msgid "No characters added yet."
+#~ msgstr "Aucun personnage ajouté pour l'instant."
 
 #~ msgid "Documentation"
 #~ msgstr "Documentation"

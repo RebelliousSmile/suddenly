@@ -1,0 +1,14 @@
+{% load i18n %}
+<div id="cast-entry-{{ entry.pk }}" class="flex items-center justify-between gap-2 py-2 border-b border-border last:border-0">
+    <span class="text-sm font-medium text-primary">
+        {% if entry.character %}{{ entry.character.name }}{% else %}{{ entry.new_character_name }} <span class="text-xs text-muted">({% trans "new NPC" %})</span>{% endif %}
+    </span>
+    <span class="badge text-xs">{{ entry.get_role_display }}</span>
+    <button type="button"
+            hx-post="{% url 'games:cast_remove' game_pk=game.pk pk=report.pk cast_pk=entry.pk %}"
+            hx-target="#cast-entry-{{ entry.pk }}"
+            hx-swap="delete"
+            class="btn-ghost btn-sm text-xs">
+        {% trans "Remove" %}
+    </button>
+</div>
