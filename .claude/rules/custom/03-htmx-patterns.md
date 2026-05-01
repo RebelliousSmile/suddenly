@@ -23,6 +23,22 @@ Pour toute action HTMX qui modifie l'état d'un item dans une liste :
 - `hx-target="#item-{{ id }}"` + `hx-swap="outerHTML"` sur chaque déclencheur
 - Le bouton "Annuler" du formulaire inline appelle l'endpoint `card_partial` (GET) qui restitue la carte d'origine
 
+## Endpoints HTMX state-mutating
+
+- Toujours décorer avec `@require_POST` (avant `@login_required`) les vues qui mutent l'état : create, delete, update
+- Un GET ne doit jamais supprimer ou modifier des données — un `<img>` ou un prefetch navigateur peut déclencher le GET
+- Les vues HTMX front (`front_views.py`) retournent du HTML (partials), jamais du JSON — pour les typeahead aussi
+
+## Injection de valeurs dans un contexte JS
+
+- Ne jamais interpoler `{{ var }}` directement dans un attribut `onclick` ou une string JS — XSS garanti
+- Pattern correct : data attributes + handler Alpine/JS :
+  ```html
+  data-slug="{{ char.slug|escapejs }}" data-name="{{ char.name|escapejs }}"
+  @click="document.getElementById('field').value = $el.dataset.slug"
+  ```
+- Utiliser `|escapejs` sur toute valeur injectée dans un attribut `data-*` utilisé par JS
+
 ## URLs dans les templates
 
 - Toujours préfixer avec le namespace de l'app : `{% url 'characters:link_request_accept' pk=... %}`
