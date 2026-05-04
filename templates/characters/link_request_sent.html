@@ -9,8 +9,12 @@
         <span class="i-lucide-check-circle text-5xl text-muted mb-4 block"></span>
         <h1 class="text-2xl font-bold text-primary mb-2">{% trans "Request sent!" %}</h1>
         <p class="text-secondary mb-6">
-            {% if link_type == 'adopt' %}{% trans "Your Adoption request" %}{% elif link_type == 'fork' %}{% trans "Your Derivation request" %}{% else %}{% trans "Your Retcon request" %}{% endif %}
-            {% blocktrans with username=character.creator.username %}has been sent to @{{ username }}. You will be notified of their decision.{% endblocktrans %}
+            {% if queue_position %}
+                {% blocktrans with position=queue_position %}Your request is #{{ position }} in the queue. You will be notified when it becomes active.{% endblocktrans %}
+            {% else %}
+                {% if link_type == 'adopt' %}{% trans "Your Adoption request" %}{% elif link_type == 'fork' %}{% trans "Your Derivation request" %}{% else %}{% trans "Your Retcon request" %}{% endif %}
+                {% blocktrans with username=character.creator.username %}has been sent to @{{ username }}. You will be notified of their decision.{% endblocktrans %}
+            {% endif %}
         </p>
         <div class="flex items-center justify-center gap-3">
             <a href="{% url 'characters:detail' slug=character.slug %}" class="btn-primary">
