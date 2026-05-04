@@ -13,7 +13,14 @@ from django.http import HttpResponse
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
-from .models import Character, CharacterStatus, LinkRequest, LinkRequestStatus
+from .models import (
+    Character,
+    CharacterLink,
+    CharacterLinkStatus,
+    CharacterStatus,
+    LinkRequest,
+    LinkRequestStatus,
+)
 
 
 @login_required
@@ -76,6 +83,13 @@ def gm_dashboard(request: AuthenticatedRequest) -> HttpResponse:
         Character.objects.filter(creator=user)
         .exclude(status=CharacterStatus.NPC)
         .select_related("owner", "origin_game")
+        .prefetch_related(
+            Prefetch(
+                "links_as_target",
+                queryset=CharacterLink.objects.filter(status=CharacterLinkStatus.ACTIVE),
+                to_attr="active_links",
+            )
+        )
         .order_by("-updated_at")[:6]
     )
 

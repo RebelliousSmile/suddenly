@@ -16,7 +16,7 @@ from django.utils.translation import gettext_lazy as _
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
-from .models import Character, CharacterStatus
+from .models import Character, CharacterLink, CharacterLinkStatus, CharacterStatus
 from .services import build_character_queryset
 
 
@@ -97,6 +97,16 @@ def character_detail(request: HttpRequest, slug: str) -> HttpResponse:
             status__in=[LinkRequestStatus.PENDING, LinkRequestStatus.QUEUED],
         ).first()
         context["pending_request"] = pending
+
+        # Links for revoke UI (US-16)
+        context["target_link"] = (
+            CharacterLink.objects.filter(target=character, status=CharacterLinkStatus.ACTIVE)
+            .select_related("source")
+            .first()
+        )
+        context["source_link"] = CharacterLink.objects.filter(
+            source=character, status=CharacterLinkStatus.ACTIVE
+        ).first()
 
     return htmx_render(
         request,
