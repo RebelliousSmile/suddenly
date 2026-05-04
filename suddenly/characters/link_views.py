@@ -74,8 +74,7 @@ def link_request_form(request: AuthenticatedRequest, slug: str, link_type: str) 
             )
 
         try:
-            service = LinkService()
-            service.create_request(
+            link_request = LinkService.create_request(
                 requester=request.user,
                 target_character=character,
                 link_type=link_type,
@@ -94,10 +93,19 @@ def link_request_form(request: AuthenticatedRequest, slug: str, link_type: str) 
                 status=422,
             )
 
+        queue_position: int | None = None
+        if link_request.status == LinkRequestStatus.QUEUED:
+            queue_position = LinkService.get_queue_position(link_request)
+
         return render(
             request,
             "characters/link_request_sent.html",
-            {"character": character, "link_type": link_type},
+            {
+                "character": character,
+                "link_type": link_type,
+                "link_request": link_request,
+                "queue_position": queue_position,
+            },
         )
 
     return render(
@@ -118,11 +126,27 @@ def link_requests_list(request: AuthenticatedRequest) -> HttpResponse:
         .select_related("requester", "target_character")
         .order_by("-created_at")[:20]
     )
-    sent = (
+    sent = list(
         LinkRequest.objects.filter(requester=user)
         .select_related("target_character", "target_character__creator")
         .order_by("-created_at")[:20]
     )
+
+    queued_sent = [r for r in sent if r.status == LinkRequestStatus.QUEUED]
+    queue_positions: dict[str, int] = {}
+    if queued_sent:
+        target_ids = [r.target_character_id for r in queued_sent]
+        all_queued = list(
+            LinkRequest.objects.filter(
+                target_character_id__in=target_ids,
+                status=LinkRequestStatus.QUEUED,
+            ).order_by("target_character_id", "created_at")
+        )
+        positions_by_target: dict[object, int] = {}
+        for lr in all_queued:
+            tid = lr.target_character_id
+            positions_by_target[tid] = positions_by_target.get(tid, 0) + 1
+            queue_positions[str(lr.pk)] = positions_by_target[tid]
 
     return htmx_render(
         request,
@@ -132,6 +156,7 @@ def link_requests_list(request: AuthenticatedRequest) -> HttpResponse:
             "received": received,
             "sent": sent,
             "active_tab": tab,
+            "queue_positions": queue_positions,
         },
     )
 
@@ -208,10 +233,11 @@ def link_request_cancel(request: HttpRequest, pk: str) -> HttpResponse:
 def link_request_card_partial(request: AuthenticatedRequest, pk: str) -> HttpResponse:
     """Fragment carte d'une demande reçue (HTMX — cancel et rechargements partiels). US-14."""
     lr = get_object_or_404(LinkRequest, pk=pk, target_character__creator=request.user)
+    queue_position = LinkService.get_queue_position(lr)
     return render(
         request,
         "characters/_link_request_card_fragment.html",
-        {"link_request": lr, "perspective": "received"},
+        {"link_request": lr, "perspective": "received", "queue_position": queue_position},
     )
 
 

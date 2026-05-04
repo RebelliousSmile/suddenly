@@ -12,6 +12,19 @@ register = template.Library()
 
 
 @register.filter
+def get_item(dictionary: object, key: object) -> object:
+    """Return dictionary[key], or None if not found.
+
+    Example::
+
+        {{ queue_positions|get_item:req.pk }}
+    """
+    if isinstance(dictionary, dict):
+        return dictionary.get(str(key))
+    return None
+
+
+@register.filter
 def domain_from_url(value: object) -> str:
     """Extract the hostname (netloc) from a URL string.
 

@@ -1,3 +1,3 @@
 {# Fragment carte — endpoint link_request_card_partial (flux cancel GM, rechargements HTMX futurs).
    perspective passé par la vue ; "received" par défaut pour l'usage GM actuel. #}
-{% include "components/link_request_card.html" with request=link_request perspective=perspective %}
+{% include "components/link_request_card.html" with request=link_request perspective=perspective queue_position=queue_position %}

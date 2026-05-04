@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n utils %}
 
 {% block title %}{% trans "Link requests" %} — {{ SITE_NAME }}{% endblock %}
 
@@ -61,6 +61,7 @@
                             <div class="flex items-center justify-between mb-2">
                                 <span class="{% if req.status == 'pending' %}badge bg-crimson/10 text-crimson border border-crimson/30{% elif req.status == 'queued' %}badge bg-card-dark text-muted border border-border{% elif req.status == 'accepted' %}badge bg-card-dark text-secondary border border-border{% elif req.status == 'expired' %}badge bg-card-dark text-muted border border-border text-error{% else %}badge bg-card-dark text-muted border border-border{% endif %}">
                                     {{ req.get_status_display }}
+                                    {% if req.status == 'queued' %}{% with pos=queue_positions|get_item:req.pk %}{% if pos %}(#{{ pos }}){% endif %}{% endwith %}{% endif %}
                                 </span>
                                 <time class="text-xs text-muted">{{ req.created_at|timesince }}</time>
                             </div>

@@ -76,10 +76,10 @@ class TestLinkServiceValidation:
 
         assert "vos propres PJ" in str(exc.value)
 
-    def test_claim_blocked_by_pending_request(
+    def test_claim_queued_when_pending_request_exists(
         self, db: Any, user: User, other_user: User, character: Character, game: Game
     ) -> None:
-        """Cannot claim a character with a pending request."""
+        """A claim request is QUEUED when a PENDING request already exists."""
         pc = Character.objects.create(
             name="My PC",
             status=CharacterStatus.PC,
@@ -88,7 +88,6 @@ class TestLinkServiceValidation:
             origin_game=game,
         )
 
-        # Create pending request from someone else
         third_user = User.objects.create_user(
             username="third", email="third@test.com", password="test"
         )
@@ -97,12 +96,18 @@ class TestLinkServiceValidation:
             requester=third_user,
             target_character=character,
             message="I want it",
+            status=LinkRequestStatus.PENDING,
         )
 
-        with pytest.raises(ValidationError) as exc:
-            LinkService.validate_claim(other_user, character, pc)
+        request = LinkService.create_request(
+            requester=other_user,
+            target_character=character,
+            link_type=LinkType.CLAIM,
+            message="This was my character!",
+            proposed_character=pc,
+        )
 
-        assert "demande est déjà en cours" in str(exc.value)
+        assert request.status == LinkRequestStatus.QUEUED
 
     def test_adopt_requires_available_npc(
         self, db: Any, user: User, other_user: User, game: Game
@@ -117,10 +122,10 @@ class TestLinkServiceValidation:
 
         assert "n'est plus disponible" in str(exc.value)
 
-    def test_adopt_blocked_by_pending_request(
+    def test_adopt_queued_when_pending_request_exists(
         self, db: Any, user: User, other_user: User, character: Character, game: Game
     ) -> None:
-        """Cannot adopt a character with an existing pending request."""
+        """An adopt request is QUEUED when a PENDING request already exists."""
         third_user = User.objects.create_user(
             username="third", email="third@test.com", password="test"
         )
@@ -129,12 +134,17 @@ class TestLinkServiceValidation:
             requester=third_user,
             target_character=character,
             message="I want it first",
+            status=LinkRequestStatus.PENDING,
         )
 
-        with pytest.raises(ValidationError) as exc:
-            LinkService.validate_adopt(other_user, character)
+        request = LinkService.create_request(
+            requester=other_user,
+            target_character=character,
+            link_type=LinkType.ADOPT,
+            message="I want to adopt",
+        )
 
-        assert "demande est déjà en cours" in str(exc.value)
+        assert request.status == LinkRequestStatus.QUEUED
 
     def test_fork_always_valid(self, db: Any, user: User, other_user: User, game: Game) -> None:
         """Fork can target any character."""

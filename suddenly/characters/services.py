@@ -4,6 +4,7 @@ Character services — link workflows and queryset builders.
 
 from __future__ import annotations
 
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.core.exceptions import ValidationError
 from django.db import transaction
@@ -11,6 +12,7 @@ from django.db.models import Count
 from django.db.models.query import QuerySet
 from django.utils import timezone
 
+from suddenly.core.models import Notification, NotificationType
 from suddenly.users.models import User
 
 from .models import (
@@ -39,7 +41,6 @@ class LinkService:
         Rules:
         - Target must be an available NPC
         - Proposed character must be a PC owned by requester
-        - No pending requests on target
         """
         if target_character.status != CharacterStatus.NPC:
             raise ValidationError(
@@ -56,14 +57,6 @@ class LinkService:
         if proposed_character.owner != requester:
             raise ValidationError("Vous ne pouvez claim qu'avec un de vos propres PJ")
 
-        # Check for pending requests
-        pending = LinkRequest.objects.filter(
-            target_character=target_character, status=LinkRequestStatus.PENDING
-        ).exists()
-
-        if pending:
-            raise ValidationError(f"Une demande est déjà en cours pour {target_character.name}")
-
     @staticmethod
     def validate_adopt(requester: User, target_character: Character) -> None:
         """
@@ -71,17 +64,9 @@ class LinkService:
 
         Rules:
         - Target must be an available NPC
-        - No pending requests on target
         """
         if target_character.status != CharacterStatus.NPC:
             raise ValidationError(f"{target_character.name} n'est plus disponible")
-
-        pending = LinkRequest.objects.filter(
-            target_character=target_character, status=LinkRequestStatus.PENDING
-        ).exists()
-
-        if pending:
-            raise ValidationError(f"Une demande est déjà en cours pour {target_character.name}")
 
     @staticmethod
     def validate_fork(requester: User, target_character: Character) -> None:
@@ -97,6 +82,7 @@ class LinkService:
             raise ValidationError("Personnage cible introuvable")
 
     @classmethod
+    @transaction.atomic
     def create_request(
         cls,
         requester: User,
@@ -110,27 +96,33 @@ class LinkService:
 
         Returns the created LinkRequest.
         """
+        locked_char = Character.objects.select_for_update().get(pk=target_character.pk)
+
         # Validate based on type
         if link_type == LinkType.CLAIM:
-            cls.validate_claim(requester, target_character, proposed_character)
+            cls.validate_claim(requester, locked_char, proposed_character)
         elif link_type == LinkType.ADOPT:
-            cls.validate_adopt(requester, target_character)
+            cls.validate_adopt(requester, locked_char)
         elif link_type == LinkType.FORK:
-            cls.validate_fork(requester, target_character)
+            cls.validate_fork(requester, locked_char)
         else:
             raise ValidationError(f"Type de lien inconnu: {link_type}")
+
+        has_pending = LinkRequest.objects.filter(
+            target_character=locked_char, status=LinkRequestStatus.PENDING
+        ).exists()
+        status = LinkRequestStatus.QUEUED if has_pending else LinkRequestStatus.PENDING
 
         # Create the request
         request = LinkRequest.objects.create(
             type=link_type,
             requester=requester,
-            target_character=target_character,
+            target_character=locked_char,
             proposed_character=proposed_character,
             message=message,
-            status=LinkRequestStatus.PENDING,
+            status=status,
         )
 
-        # TODO: Send notification to target character's creator
         # TODO: Send ActivityPub Offer activity
 
         return request
@@ -208,10 +200,56 @@ class LinkService:
             content="",  # To be filled by players
         )
 
+        if request.type in [LinkType.CLAIM, LinkType.ADOPT]:
+            LinkRequest.objects.filter(
+                target_character=request.target_character,
+                status=LinkRequestStatus.QUEUED,
+            ).update(status=LinkRequestStatus.CANCELLED, resolved_at=timezone.now())
+
         # TODO: Send ActivityPub Accept activity
         # TODO: Notify both parties
 
         return link
+
+    @staticmethod
+    def get_queue_position(request: LinkRequest) -> int | None:
+        """
+        Return 1-indexed queue position for a QUEUED request, or None if not QUEUED.
+        """
+        if request.status != LinkRequestStatus.QUEUED:
+            return None
+        count = LinkRequest.objects.filter(
+            target_character=request.target_character,
+            status=LinkRequestStatus.QUEUED,
+            created_at__lt=request.created_at,
+        ).count()
+        return count + 1
+
+    @classmethod
+    def _promote_next_queued(cls, target_character: Character) -> None:
+        """
+        Promote the oldest QUEUED request on a character to PENDING and notify its requester.
+        """
+        next_queued = (
+            LinkRequest.objects.select_related("requester")
+            .filter(target_character=target_character, status=LinkRequestStatus.QUEUED)
+            .order_by("created_at")
+            .first()
+        )
+        if next_queued:
+            next_queued.status = LinkRequestStatus.PENDING
+            next_queued.save(update_fields=["status", "updated_at"])
+            Notification.objects.create(
+                recipient=target_character.creator,
+                type=NotificationType.LINK_REQUEST,
+                actor=next_queued.requester,
+                target_content_type=ContentType.objects.get_for_model(LinkRequest),
+                target_object_id=next_queued.pk,
+                message=(
+                    f"{next_queued.requester} a une nouvelle demande"
+                    f" en attente sur {target_character.name}"
+                ),
+            )
 
     @classmethod
     def reject_request(cls, request: LinkRequest, response_message: str = "") -> LinkRequest:
@@ -221,33 +259,32 @@ class LinkService:
         if request.status != LinkRequestStatus.PENDING:
             raise ValidationError("Cette demande n'est plus en attente")
 
+        target_character = Character.objects.select_related("creator").get(
+            pk=request.target_character_id
+        )
+
         request.status = LinkRequestStatus.REJECTED
         request.response_message = response_message
         request.resolved_at = timezone.now()
         request.save()
 
-        # Promote next QUEUED request to PENDING (US-15)
-        next_queued = (
-            LinkRequest.objects.filter(
-                target_character=request.target_character,
-                status=LinkRequestStatus.QUEUED,
-            )
-            .order_by("created_at")
-            .first()
-        )
-        if next_queued:
-            next_queued.status = LinkRequestStatus.PENDING
-            next_queued.save(update_fields=["status", "updated_at"])
+        cls._promote_next_queued(target_character)
 
         return request
 
     @classmethod
     def cancel_request(cls, request: LinkRequest) -> LinkRequest:
         """
-        Cancel a pending request (by requester).
+        Cancel a pending or queued request (by requester).
         """
-        if request.status != LinkRequestStatus.PENDING:
+        if request.status not in [LinkRequestStatus.PENDING, LinkRequestStatus.QUEUED]:
             raise ValidationError("Cette demande n'est plus en attente")
+
+        if request.status == LinkRequestStatus.PENDING:
+            target_character = Character.objects.select_related("creator").get(
+                pk=request.target_character_id
+            )
+            cls._promote_next_queued(target_character)
 
         request.status = LinkRequestStatus.CANCELLED
         request.resolved_at = timezone.now()
