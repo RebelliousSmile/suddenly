@@ -36,3 +36,5 @@
 | DEC-032 | Template unifié report_form.html pour create + edit | Report editor | Accepted | 2026-04-29 |
 | DEC-033 | Pattern HTMX inline actions : getattr + 3 templates | HTMX / Characters | Accepted | 2026-05-01 |
 | DEC-034 | publish_report() service partagé — tous chemins publication | Games | Accepted | 2026-05-01 |
+| DEC-035 | select_for_update() sur ligne parente comme ancre atomique | Liens | Accepted | 2026-05-04 |
+| DEC-036 | GenericForeignKey : champs sous-jacents dans .create() | Notifications | Accepted | 2026-05-04 |
