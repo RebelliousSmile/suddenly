@@ -38,3 +38,4 @@
 | DEC-034 | publish_report() service partagé — tous chemins publication | Games | Accepted | 2026-05-01 |
 | DEC-035 | select_for_update() sur ligne parente comme ancre atomique | Liens | Accepted | 2026-05-04 |
 | DEC-036 | GenericForeignKey : champs sous-jacents dans .create() | Notifications | Accepted | 2026-05-04 |
+| DEC-037 | link_request.requester comme référence fiable à l'acteur d'un lien | Liens | Accepted | 2026-05-04 |
