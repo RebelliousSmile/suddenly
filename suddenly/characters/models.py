@@ -284,6 +284,13 @@ class LinkType(models.TextChoices):
     FORK = "fork", _("Fork (derivation)")
 
 
+class CharacterLinkStatus(models.TextChoices):
+    """Status of an established character link."""
+
+    ACTIVE = "active", _("Active")
+    REVOKED = "revoked", _("Revoked")
+
+
 class LinkRequestStatus(models.TextChoices):
     """Status of a link request."""
 
@@ -370,8 +377,17 @@ class CharacterLink(BaseModel):
 
     description = models.TextField(blank=True, help_text="Nature of the link")
 
+    status = models.CharField(
+        max_length=20,
+        choices=CharacterLinkStatus.choices,
+        default=CharacterLinkStatus.ACTIVE,
+    )
+
     class Meta:
         ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["status"]),
+        ]
 
     def __str__(self) -> str:
         return f"{self.source.name} ←{self.get_type_display()}→ {self.target.name}"

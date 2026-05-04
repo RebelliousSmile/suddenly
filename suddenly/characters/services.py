@@ -18,11 +18,13 @@ from suddenly.users.models import User
 from .models import (
     Character,
     CharacterLink,
+    CharacterLinkStatus,
     CharacterStatus,
     LinkRequest,
     LinkRequestStatus,
     LinkType,
     SharedSequence,
+    SharedSequenceStatus,
 )
 
 
@@ -291,6 +293,46 @@ class LinkService:
         request.save()
 
         return request
+
+    @classmethod
+    @transaction.atomic
+    def revoke_link(cls, link: CharacterLink, reason: str, actor: User) -> None:
+        """
+        Revoke an established character link.
+
+        If the associated SharedSequence is published, the link is marked REVOKED
+        (the sequence remains visible). Otherwise the draft sequence and the link
+        itself are deleted.
+
+        In both cases the target character is reverted to NPC status and a
+        REVOCATION notification is sent to the other party.
+        """
+        ss = getattr(link, "shared_sequence", None)
+        if ss and ss.status == SharedSequenceStatus.PUBLISHED:
+            link.status = CharacterLinkStatus.REVOKED
+            link.save(update_fields=["status", "updated_at"])
+        else:
+            if ss:
+                ss.delete()
+            link.delete()
+
+        link.target.status = CharacterStatus.NPC
+        link.target.owner = None
+        link.target.save(update_fields=["status", "owner", "updated_at"])
+
+        recipient = (
+            link.link_request.requester
+            if link.link_request and actor == link.target.creator
+            else link.target.creator
+        )
+        Notification.objects.create(
+            recipient=recipient,
+            type=NotificationType.REVOCATION,
+            actor=actor,
+            target_content_type=ContentType.objects.get_for_model(Character),
+            target_object_id=link.target.pk,
+            message=f"{actor} a révoqué le lien sur {link.target.name}",
+        )
 
 
 def build_character_queryset(

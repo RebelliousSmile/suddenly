@@ -97,9 +97,17 @@
                                     {{ char.get_status_display }}
                                 </span>
                             </div>
-                            {% if char.owner %}
-                                <span class="text-xs text-muted">{% blocktrans with username=char.owner.username %}by @{{ username }}{% endblocktrans %}</span>
-                            {% endif %}
+                            <div class="flex items-center gap-3">
+                                {% if char.owner %}
+                                    <span class="text-xs text-muted">{% blocktrans with username=char.owner.username %}by @{{ username }}{% endblocktrans %}</span>
+                                {% endif %}
+                                {% if char.active_links %}
+                                    <a href="{% url 'characters:link_revoke' pk=char.active_links.0.pk %}"
+                                       class="btn-secondary btn-sm text-error border-error/40 hover:bg-error/10">
+                                        <span class="i-lucide-unlink"></span> {% trans "Révoquer" %}
+                                    </a>
+                                {% endif %}
+                            </div>
                         </div>
                     {% endfor %}
                 </div>

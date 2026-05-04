@@ -42,6 +42,19 @@
                     <a href="{% url 'characters:edit' slug=character.slug %}" class="btn-secondary btn-sm">
                         <span class="i-lucide-pencil"></span> {% trans "Edit" %}
                     </a>
+                    {% if target_link %}
+                        <a href="{% url 'characters:link_revoke' pk=target_link.pk %}" class="btn-secondary btn-sm text-error border-error/40 hover:bg-error/10">
+                            <span class="i-lucide-unlink"></span> {% trans "Révoquer le lien" %}
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if user == character.owner and source_link %}
+                <div class="flex gap-2">
+                    <a href="{% url 'characters:link_revoke' pk=source_link.pk %}" class="btn-secondary btn-sm text-error border-error/40 hover:bg-error/10">
+                        <span class="i-lucide-unlink"></span> {% trans "Renoncer au lien" %}
+                    </a>
                 </div>
             {% endif %}
 

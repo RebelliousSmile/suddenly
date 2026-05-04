@@ -242,12 +242,17 @@ def link_request_card_partial(request: AuthenticatedRequest, pk: str) -> HttpRes
 
 
 @login_required
-def link_revoke(request: HttpRequest, pk: str) -> HttpResponse:
+def link_revoke(request: AuthenticatedRequest, pk: str) -> HttpResponse:
     """Revoke an accepted link (US-16). Creator or adoptant can revoke."""
-    from .models import CharacterLink, CharacterStatus, SharedSequenceStatus
+    from .models import CharacterLink, SharedSequenceStatus
 
     link = get_object_or_404(
-        CharacterLink.objects.select_related("source", "target", "link_request", "shared_sequence"),
+        CharacterLink.objects.select_related(
+            "source",
+            "target",
+            "link_request__requester",
+            "shared_sequence",
+        ),
         pk=pk,
     )
 
@@ -262,22 +267,7 @@ def link_revoke(request: HttpRequest, pk: str) -> HttpResponse:
     if request.method == "POST":
         reason = request.POST.get("reason", "").strip()
 
-        # Check if SharedSequence is published
-        ss = getattr(link, "shared_sequence", None)
-        if ss and ss.status == SharedSequenceStatus.PUBLISHED:
-            # Mark as revoked (keep published sequence visible)
-            link.description = f"REVOKED: {reason}" if reason else "REVOKED"
-            link.save(update_fields=["description", "updated_at"])
-        else:
-            # Delete draft sequence if exists
-            if ss:
-                ss.delete()
-            link.delete()
-
-        # Revert character to NPC
-        link.target.status = CharacterStatus.NPC
-        link.target.owner = None
-        link.target.save(update_fields=["status", "owner", "updated_at"])
+        LinkService.revoke_link(link, reason, request.user)
 
         return render(
             request,
