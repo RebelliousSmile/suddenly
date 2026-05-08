@@ -109,3 +109,9 @@
 - Unknown incoming activities are silently ignored (never rejected with error)
 - Outgoing activity delivery is always async (never in request/response)
 - Rate limiting on outgoing sends to avoid spamming remote inboxes
+- Cross-instance link requests time out after **30 days** — value is fixed in code, not configurable yet
+
+## Domain Constants
+
+- `EPHEMERAL_QUOTE_TTL_HOURS = 24` — `EPHEMERAL` quote visibility lifetime, enforced by a scheduled cleanup task
+- `EPHEMERAL` quotes are never federated — the lifespan is too short to round-trip safely

@@ -11,7 +11,9 @@
   6. Générer les clés ActivityPub : `mkdir -p keys && openssl genrsa -out keys/private.pem 2048 && openssl rsa -in keys/private.pem -pubout -out keys/public.pem`
   7. Run via `gunicorn config.wsgi:application`
 
-**Note i18n** : les fichiers `.mo` sont versionnés dans git — pas besoin de `compilemessages` au déploiement. Si des `.po` ont été modifiés localement sans recompilation, relancer depuis une machine avec `gettext` ou via babel (voir DEC-023).
+**Note i18n** : les fichiers `.mo` sont versionnés dans git — pas besoin de `compilemessages` au déploiement. Si des `.po` ont été modifiés localement sans recompilation, relancer depuis une machine avec `gettext` ou via babel.
+
+**Note frontend** : `static/dist/` est versionné dans git — l'hébergeur principal (Alwaysdata) n'a ni Node ni pnpm. Toute modification du frontend implique `pnpm run build` puis commit de `static/dist/` avant le déploiement. Le `.gitignore` ne doit **pas** exclure `static/dist/`. Le script `scripts/deploy-alwaysdata.sh` ne contient pas d'étape build — c'est intentionnel.
 
 - **Database migration**: Django migrations (`python manage.py migrate`)
 

@@ -48,22 +48,22 @@ NAV: list[NavSection] = [
             {
                 "slug": "brief",
                 "label": "Brief",
-                "path": BASE / "aidd_docs/memory/PROJECT_BRIEF.md",
+                "path": BASE / "aidd_docs/memory/project_brief.md",
             },
             {
                 "slug": "architecture",
                 "label": "Architecture",
-                "path": BASE / "aidd_docs/memory/ARCHITECTURE.md",
+                "path": BASE / "aidd_docs/memory/architecture.md",
             },
             {
                 "slug": "codebase",
                 "label": "Codebase Map",
-                "path": BASE / "aidd_docs/memory/CODEBASE_MAP.md",
+                "path": BASE / "aidd_docs/memory/codebase_map.md",
             },
             {
                 "slug": "deployment",
                 "label": "Déploiement",
-                "path": BASE / "aidd_docs/memory/DEPLOYMENT.md",
+                "path": BASE / "aidd_docs/memory/deployment.md",
             },
         ],
     },
@@ -74,17 +74,17 @@ NAV: list[NavSection] = [
             {
                 "slug": "coding",
                 "label": "Coding Guidelines",
-                "path": BASE / "aidd_docs/memory/CODING_ASSERTIONS.md",
+                "path": BASE / "aidd_docs/memory/coding_assertions.md",
             },
             {
                 "slug": "testing",
                 "label": "Tests",
-                "path": BASE / "aidd_docs/memory/TESTING.md",
+                "path": BASE / "aidd_docs/memory/testing.md",
             },
             {
                 "slug": "vcs",
                 "label": "Git / VCS",
-                "path": BASE / "aidd_docs/memory/VCS.md",
+                "path": BASE / "aidd_docs/memory/vcs.md",
             },
         ],
     },
@@ -95,12 +95,12 @@ NAV: list[NavSection] = [
             {
                 "slug": "api",
                 "label": "API",
-                "path": BASE / "aidd_docs/memory/internal/API_DOCS.md",
+                "path": BASE / "aidd_docs/memory/internal/api_docs.md",
             },
             {
                 "slug": "database",
                 "label": "Base de données",
-                "path": BASE / "aidd_docs/memory/internal/DATABASE.md",
+                "path": BASE / "aidd_docs/memory/internal/database.md",
             },
             {
                 "slug": "bookwyrm",
