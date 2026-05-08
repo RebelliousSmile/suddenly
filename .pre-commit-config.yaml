@@ -15,13 +15,6 @@ repos:
         files: ^locale/fr/.*\.po$
         pass_filenames: false
 
-      - id: generate-knowledge
-        name: generate KNOWLEDGE.md from memory bank
-        entry: python scripts/generate_knowledge.py
-        language: system
-        files: ^aidd_docs/memory/
-        pass_filenames: false
-
       - id: mypy
         name: mypy
         entry: mypy
