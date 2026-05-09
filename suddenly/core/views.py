@@ -12,7 +12,11 @@ from typing import Any
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
-from suddenly.core.services import get_recent_public_reports
+from suddenly.core.services import (
+    get_distinct_tag_names,
+    get_instance_stats,
+    get_recent_public_reports,
+)
 
 
 def home(request: HttpRequest) -> HttpResponse:
@@ -37,17 +41,12 @@ def explorer(request: HttpRequest) -> HttpResponse:
             system=request.GET.get("system", ""),
             tag=request.GET.get("tag", ""),
         )
-        all_tags: list[str] = sorted(
-            Game.objects.filter(remote=False, tags__isnull=False)
-            .values_list("tags__name", flat=True)
-            .distinct()
-        )
         context.update(
             {
                 "games": games_qs[:24],
                 "system_filter": request.GET.get("system", ""),
                 "active_tag": request.GET.get("tag", ""),
-                "all_tags": all_tags,
+                "all_tags": get_distinct_tag_names(Game),
                 "query": request.GET.get("q", ""),
             }
         )
@@ -58,11 +57,6 @@ def explorer(request: HttpRequest) -> HttpResponse:
             system=request.GET.get("system", ""),
             tag=request.GET.get("tag", ""),
         )
-        all_tags = sorted(
-            Character.objects.filter(remote=False, tags__isnull=False)
-            .values_list("tags__name", flat=True)
-            .distinct()
-        )
         context.update(
             {
                 "characters": chars_qs[:24],
@@ -70,7 +64,7 @@ def explorer(request: HttpRequest) -> HttpResponse:
                 "status_filter": request.GET.get("status", ""),
                 "system_filter": request.GET.get("system", ""),
                 "active_tag": request.GET.get("tag", ""),
-                "all_tags": all_tags,
+                "all_tags": get_distinct_tag_names(Character),
                 "statuses": CharacterStatus.choices,
             }
         )
@@ -80,19 +74,7 @@ def explorer(request: HttpRequest) -> HttpResponse:
 
 def about(request: HttpRequest) -> HttpResponse:
     """Instance about page (US-31, wireframe 17)."""
-    from suddenly.activitypub.models import FederatedServer
-    from suddenly.characters.models import Character
-    from suddenly.games.models import Report
-    from suddenly.users.models import User
-
-    stats = {
-        "users": User.objects.filter(is_active=True, remote=False).count(),
-        "reports": Report.objects.filter(status="published").count(),
-        "characters": Character.objects.filter(remote=False).count(),
-        "instances": FederatedServer.objects.exclude(status="BLOCKED").count(),
-    }
-
-    return render(request, "core/about.html", {"stats": stats})
+    return render(request, "core/about.html", {"stats": get_instance_stats()})
 
 
 def htmx_render(
