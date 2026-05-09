@@ -6,7 +6,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from django.db import models, transaction
+from django.core.exceptions import ValidationError
+from django.db import models
 from django.db.models import QuerySet
 from django.utils import timezone
 from rest_framework import permissions, status, viewsets
@@ -24,8 +25,8 @@ from suddenly.characters.models import (
     LinkRequestStatus,
     LinkType,
     Quote,
-    SharedSequence,
 )
+from suddenly.characters.services import LinkService, build_character_queryset
 from suddenly.core.serializers import (
     CharacterDetailSerializer,
     CharacterLinkSerializer,
@@ -89,9 +90,7 @@ class CharacterViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
         if len(query) < 2:
             return Response([])
 
-        characters = Character.objects.filter(name__icontains=query, remote=False).select_related(
-            "origin_game"
-        )[:limit]
+        characters = build_character_queryset(q=query)[:limit]
 
         serializer = CharacterSearchSerializer(characters, many=True)
         return Response(serializer.data)
@@ -144,107 +143,44 @@ class CharacterViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
 
     @action(detail=True, methods=["post"])  # type: ignore[untyped-decorator]
     def claim(self, request: Request, pk: str | None = None, **kwargs: Any) -> Response:
-        """
-        Propose a Claim: "Your NPC was my PC all along."
-
-        Required: proposed_character (the existing PC)
-        Optional: message (explanation)
-        """
-        target = self.get_object()
-
-        if not target.is_available:
-            return Response(
-                {"error": "This character is not available for claim."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        proposed_id = request.data.get("proposed_character")
-        if not proposed_id:
-            return Response(
-                {"error": "A claim requires an existing PC to propose."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        try:
-            proposed = Character.objects.get(
-                id=proposed_id, owner=request.user, status=CharacterStatus.PC
-            )
-        except Character.DoesNotExist:
-            return Response(
-                {"error": "Invalid proposed character. Must be your own PC."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        link_request = LinkRequest.objects.create(
-            type=LinkType.CLAIM,
-            requester=request.user,
-            target_character=target,
-            proposed_character=proposed,
-            message=request.data.get("message", ""),
-            status=LinkRequestStatus.PENDING,
-        )
-
-        # TODO: Send ActivityPub Offer(Claim) activity
-
-        serializer = LinkRequestSerializer(link_request)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        """Propose a Claim: 'Your NPC was my PC all along.'"""
+        return self._create_link_request(request, LinkType.CLAIM)
 
     @action(detail=True, methods=["post"])  # type: ignore[untyped-decorator]
     def adopt(self, request: Request, pk: str | None = None, **kwargs: Any) -> Response:
-        """
-        Propose an Adoption: "I want to make this NPC my PC."
-
-        Optional: message (explanation)
-        """
-        target = self.get_object()
-
-        if not target.is_available:
-            return Response(
-                {"error": "This character is not available for adoption."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        link_request = LinkRequest.objects.create(
-            type=LinkType.ADOPT,
-            requester=request.user,
-            target_character=target,
-            message=request.data.get("message", ""),
-            status=LinkRequestStatus.PENDING,
-        )
-
-        # TODO: Send ActivityPub Offer(Adopt) activity
-
-        serializer = LinkRequestSerializer(link_request)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        """Propose an Adoption: 'I want to make this NPC my PC.'"""
+        return self._create_link_request(request, LinkType.ADOPT)
 
     @action(detail=True, methods=["post"])  # type: ignore[untyped-decorator]
     def fork(self, request: Request, pk: str | None = None, **kwargs: Any) -> Response:
-        """
-        Propose a Fork: "I want to create a character inspired by this NPC."
+        """Propose a Fork: 'I want to create a character inspired by this NPC.'"""
+        return self._create_link_request(request, LinkType.FORK)
 
-        Required: name (new character name)
-        Optional: description, relationship (how they're related)
-        """
+    def _create_link_request(self, request: Request, link_type: str) -> Response:
         target = self.get_object()
+        proposed: Character | None = None
+        if link_type == LinkType.CLAIM:
+            proposed_id = request.data.get("proposed_character")
+            if not proposed_id:
+                return Response(
+                    {"error": "A claim requires an existing PC to propose."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            proposed = Character.objects.filter(id=proposed_id).first()
 
-        if not target.is_available:
+        try:
+            link_request = LinkService.create_request(
+                requester=request.user,
+                target_character=target,
+                link_type=link_type,
+                message=request.data.get("message", ""),
+                proposed_character=proposed,
+            )
+        except ValidationError as exc:
             return Response(
-                {"error": "This character is not available for fork."},
+                {"error": exc.messages[0] if exc.messages else str(exc)},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
-        link_request = LinkRequest.objects.create(
-            type=LinkType.FORK,
-            requester=request.user,
-            target_character=target,
-            message=request.data.get("message", ""),
-            status=LinkRequestStatus.PENDING,
-        )
-
-        # Store fork details in message for now
-        # TODO: Add separate fields for fork character details
-
-        # TODO: Send ActivityPub Offer(Fork) activity
 
         serializer = LinkRequestSerializer(link_request)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -286,63 +222,18 @@ class LinkRequestViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        if link_request.status != LinkRequestStatus.PENDING:
+        try:
+            LinkService.accept_request(
+                request=link_request,
+                response_message=request.data.get("message", ""),
+            )
+        except ValidationError as exc:
             return Response(
-                {"error": "This request is no longer pending."}, status=status.HTTP_400_BAD_REQUEST
+                {"error": exc.messages[0] if exc.messages else str(exc)},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
-        with transaction.atomic():
-            # Update request status
-            link_request.status = LinkRequestStatus.ACCEPTED
-            link_request.resolved_at = timezone.now()
-            link_request.response_message = request.data.get("message", "")
-            link_request.save()
-
-            target = link_request.target_character
-
-            # Process based on type
-            source: Character
-            if link_request.type == LinkType.CLAIM:
-                # Claim: PC "was" the NPC all along
-                source = link_request.proposed_character
-                target.status = CharacterStatus.CLAIMED
-                target.save()
-
-            elif link_request.type == LinkType.ADOPT:
-                # Adopt: NPC becomes requester's PC
-                source = target  # Same character, new owner
-                target.status = CharacterStatus.ADOPTED
-                target.owner = link_request.requester
-                target.save()
-
-            elif link_request.type == LinkType.FORK:
-                # Fork: Create new character derived from NPC
-                source = Character.objects.create(
-                    name=request.data.get("fork_name", f"{target.name} (fork)"),
-                    description=request.data.get("fork_description", ""),
-                    status=CharacterStatus.PC,
-                    owner=link_request.requester,
-                    creator=link_request.requester,
-                    origin_game=target.origin_game,
-                    parent=target,
-                )
-                target.status = CharacterStatus.FORKED
-                target.save()
-
-            # Create the established link
-            character_link = CharacterLink.objects.create(
-                type=link_request.type,
-                source=source,
-                target=target,
-                link_request=link_request,
-                description=request.data.get("link_description", ""),
-            )
-
-            # Create empty shared sequence for collaboration
-            SharedSequence.objects.create(link=character_link, status="draft")
-
-            # TODO: Send ActivityPub Accept(Offer) activity
-
+        link_request.refresh_from_db()
         serializer = LinkRequestSerializer(link_request)
         return Response(serializer.data)
 
