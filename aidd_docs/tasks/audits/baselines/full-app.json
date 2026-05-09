@@ -1,0 +1,81 @@
+{
+  "captured_at": "2026-05-09",
+  "stack": "django-orm",
+  "scope": "full-app",
+  "method": "static-analysis",
+  "note": "Live profiling deferred — django-debug-toolbar not installed (F0 recommendation). Counters extracted from code reading; user must reproduce with debug-toolbar/silk for confirmation.",
+  "counters": {
+    "queries_per_request": {
+      "home": {
+        "value": "~6",
+        "source": "core/views.py:18 -> core/services.py:get_recent_public_reports (1 SELECT reports + select_related user/origin_game) + middleware/auth/InstanceSettings",
+        "notes": "select_related + prefetch_related correctly applied"
+      },
+      "explorer": {
+        "value": "~10-12",
+        "source": "core/views.py:23 — 2 paginated querysets (chars + games via build_*_queryset) + 2 distinct tag aggregations (lines 41-44, 61-65) + 1 game_systems aggregation",
+        "notes": "Distinct tag/system aggregations uncached, run on every page load"
+      },
+      "about": {
+        "value": "4",
+        "source": "core/views.py:81 — User/Report/Character/FederatedServer .count() each",
+        "notes": "Hardcoded 4 .count() per /about/ hit"
+      },
+      "admin_dashboard": {
+        "value": "5",
+        "source": "core/admin_views.py:30 — 5 .count() queries",
+        "notes": "Admin-only route, low traffic"
+      },
+      "user_profile": {
+        "value": "~5",
+        "source": "users/views.py:57 — followers_count + is_following + following_count + base profile",
+        "notes": "is_following uses .exists() OK"
+      },
+      "ap_inbox": {
+        "value": "~3",
+        "source": "activitypub/inbox.py:45 + verify_signature DB lookup + activity processing",
+        "notes": "Acceptable — federation hot path"
+      }
+    },
+    "payload_kb": {
+      "note": "Not captured (no live test). Recommend HAR export per route for follow-up audit."
+    },
+    "requests_per_action": {
+      "note": "HTMX partial swaps reduce roundtrips on report compose / link accept flows. Not measured."
+    },
+    "background_jobs": {
+      "broadcast_activity": {
+        "fanout": "1 deliver_activity Celery task per follower",
+        "shared_inbox": "NOT used — same domain receives N copies",
+        "source": "activitypub/tasks.py:235-276"
+      },
+      "refresh_remote_actors": {
+        "concurrency": "100 simultaneous fetch_remote_actor.delay calls every 24h",
+        "rate_limit": "no per-domain throttle",
+        "source": "activitypub/tasks.py:484-494"
+      }
+    },
+    "anti_patterns_count": {
+      "cache_page_decorator_uses": 0,
+      "cache_get_or_set_uses": 0,
+      "fragment_cache_uses": 0,
+      "assertNumQueries_tests": 0,
+      "icontains_search_no_index": 7,
+      "filter_exists_count_total": 32
+    }
+  },
+  "infrastructure": {
+    "cache_backend_dev": "none (default Django LocMem)",
+    "cache_backend_prod": "Redis if REDIS_URL else DatabaseCache",
+    "celery_mode": "EAGER if no Redis (sync fallback for small deploys)",
+    "db_conn_max_age": 60,
+    "db_connect_timeout": 10,
+    "static_storage": "CompressedStaticFilesStorage (NOT Manifest variant)"
+  },
+  "tooling_gaps": [
+    "django-debug-toolbar not installed",
+    "django-silk not installed",
+    "pg_stat_statements not enabled (no migration / setting reference)",
+    "no assertNumQueries in test suite"
+  ]
+}
