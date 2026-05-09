@@ -80,6 +80,22 @@ flowchart LR
 - **CI**: GitHub Actions — ruff check + mypy + pytest --cov, blocks merge on failure
 - **CI database**: PostgreSQL 16 service container for Django test DB
 
+## Account & Content Lifecycle
+
+### Account deletion (Mastodon model)
+
+- Adopted/claimed NPCs survive deletion — they stay with their new owner via existing `CharacterLink`
+- Unlinked NPCs created by the deleted user are removed alongside the account
+- The user's reports and games are deleted; published `SharedSequence` survives (co-created content)
+- A `Tombstone` AP activity is emitted to remote instances on deletion
+
+### Soft-delete for moderated content
+
+- All user-content models carry a `deleted_at` field — never hard-delete moderated content
+- Custom managers exclude soft-deleted rows from default querysets; admins can restore
+- Author is notified of the deletion with the reason
+- A `Delete` AP activity is sent to remote instances when federated content is removed
+
 ## Security Patterns
 
 ### HTTP Signatures

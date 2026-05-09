@@ -286,6 +286,42 @@ class TestLinkServiceAccept:
         assert link.source.owner == other_user
         assert link.source.status == CharacterStatus.PC
 
+    def test_fork_chain(
+        self, db: Any, user: User, other_user: User, character: Character, game: Game
+    ) -> None:
+        """Forking a fork creates a proper parent chain (NPC → PC1 → PC2)."""
+        # Step 1 : fork the NPC (character) by other_user
+        request1 = LinkRequest.objects.create(
+            type=LinkType.FORK,
+            requester=other_user,
+            target_character=character,
+            message="First fork!",
+        )
+        link1 = LinkService.accept_request(request1)
+
+        # link1.source is the newly created PC (parent = NPC)
+        pc1 = link1.source
+        assert pc1.parent == character
+        assert pc1.status == CharacterStatus.PC
+
+        # Step 2 : fork pc1 by a third user
+        third_user = User.objects.create_user(
+            username="third", email="third@test.com", password="x"
+        )
+        request2 = LinkRequest.objects.create(
+            type=LinkType.FORK,
+            requester=third_user,
+            target_character=pc1,
+            message="Second fork!",
+        )
+        link2 = LinkService.accept_request(request2)
+
+        # Assertions on the chain
+        assert link2.source.parent == pc1
+        assert link2.source.status == CharacterStatus.PC
+        assert link2.source.parent.parent == character
+        assert link2.source.owner == third_user
+
     def test_cannot_accept_non_pending(
         self, db: Any, other_user: User, character: Character
     ) -> None:

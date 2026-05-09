@@ -48,7 +48,17 @@ def link_choose_type(request: HttpRequest, slug: str) -> HttpResponse:
 @login_required
 def link_request_form(request: AuthenticatedRequest, slug: str, link_type: str) -> HttpResponse:
     """Step 2: Link request form for chosen type. US-10."""
-    character = get_object_or_404(Character, slug=slug, status=CharacterStatus.NPC)
+    if link_type == LinkType.FORK:
+        character = get_object_or_404(
+            Character, slug=slug, status__in=[CharacterStatus.NPC, CharacterStatus.PC]
+        )
+    else:
+        character = get_object_or_404(Character, slug=slug, status=CharacterStatus.NPC)
+
+    if character.status == CharacterStatus.PC and character.owner == request.user:
+        from django.http import HttpResponseForbidden
+
+        return HttpResponseForbidden()
 
     if link_type not in LinkType.values:
         from django.http import Http404

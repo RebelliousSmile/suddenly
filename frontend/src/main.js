@@ -384,17 +384,19 @@ Alpine.data('autosave', (saveUrl) => ({
 Alpine.data('presence', (sequenceId, currentUserId) => ({
   participants: [],
   interval: null,
+  heartbeatInterval: null,
 
   init() {
     this.poll()
     this.interval = setInterval(() => this.poll(), 15000)
     // Signal own presence
     this.heartbeat()
-    setInterval(() => this.heartbeat(), 10000)
+    this.heartbeatInterval = setInterval(() => this.heartbeat(), 10000)
   },
 
   destroy() {
     clearInterval(this.interval)
+    clearInterval(this.heartbeatInterval)
   },
 
   async poll() {

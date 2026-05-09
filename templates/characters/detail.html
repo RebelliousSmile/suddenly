@@ -68,6 +68,17 @@
                     </a>
                 {% endif %}
             {% endif %}
+
+            {% if character.status == 'pc' and request.user.is_authenticated and request.user != character.owner %}
+                {% if pending_request %}
+                    {% include "components/status_banner.html" with type="info" icon="clock" message=_("You have a pending fork request on this character.") %}
+                {% else %}
+                    <a href="{% url 'characters:link_request_form' slug=character.slug link_type='fork' %}" class="btn-primary">
+                        <span class="i-lucide-git-branch"></span>
+                        {% trans "Fork this character" %}
+                    </a>
+                {% endif %}
+            {% endif %}
         </div>
 
         <!-- Description -->
