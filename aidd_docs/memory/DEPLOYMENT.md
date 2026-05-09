@@ -15,6 +15,10 @@
 
 **Note frontend** : `static/dist/` est versionné dans git — l'hébergeur principal (Alwaysdata) n'a ni Node ni pnpm. Toute modification du frontend implique `pnpm run build` puis commit de `static/dist/` avant le déploiement. Le `.gitignore` ne doit **pas** exclure `static/dist/`. Le script `scripts/deploy-alwaysdata.sh` ne contient pas d'étape build — c'est intentionnel.
 
+**Static storage** : `STORAGES["staticfiles"]["BACKEND"]` doit rester `whitenoise.storage.CompressedManifestStaticFilesStorage`. Whitenoise hashe chaque fichier collecté et émet `Cache-Control: max-age=31536000, immutable` automatiquement. Un retour à `CompressedStaticFilesStorage` perd l'immutable et force la revalidation à chaque visite.
+
+**Fonts** : les fonts sont auto-hébergées dans `static/fonts/*.woff2` et exposées via `templates/components/_fonts.html` inclus avant `{% vite_css %}`. Ne jamais ajouter `fonts.googleapis.com` ni `fonts.gstatic.com` à `base.html` — le partial `_fonts.html` est la seule source de vérité.
+
 - **Database migration**: Django migrations (`python manage.py migrate`)
 
 ## Monitoring & Logging
