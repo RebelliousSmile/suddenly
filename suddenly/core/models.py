@@ -210,6 +210,86 @@ class UserMute(BaseModel):
         return f"{self.muter} mutes {self.muted}"
 
 
+class DonationPrompt(BaseModel):
+    """Tracks donation prompts sent to users based on usage.
+
+    Every N posts (configurable), a usage report is generated with
+    a donation suggestion. If the user donated this month, no prompt.
+    """
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="donation_prompts",
+    )
+    posts_at_prompt = models.IntegerField(
+        help_text="User's total post count when this prompt was generated",
+    )
+    donated = models.BooleanField(
+        default=False,
+        help_text="True if user donated in response to this prompt",
+    )
+    donated_at = models.DateTimeField(null=True, blank=True)
+    amount_suggested = models.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text="Suggested donation amount based on usage",
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"Donation prompt for {self.user} at {self.posts_at_prompt} posts"
+
+
+class UserUsageStats(BaseModel):
+    """Cached usage stats for donation prompt calculation.
+
+    Updated on each post. Used to determine when to show
+    the next donation prompt.
+    """
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="usage_stats",
+    )
+    total_posts = models.IntegerField(default=0)
+    total_quotes = models.IntegerField(default=0)
+    total_link_requests = models.IntegerField(default=0)
+    posts_since_last_prompt = models.IntegerField(default=0)
+    last_donation_date = models.DateField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "User usage stats"
+        verbose_name_plural = "User usage stats"
+
+    def __str__(self) -> str:
+        return f"Usage: {self.user} ({self.total_posts} posts)"
+
+    @property
+    def donated_this_month(self) -> bool:
+        """True if user made a donation in the current calendar month."""
+        if not self.last_donation_date:
+            return False
+        from django.utils import timezone
+
+        now = timezone.now().date()
+        return (
+            self.last_donation_date.year == now.year
+            and self.last_donation_date.month == now.month
+        )
+
+    def should_prompt(self, interval: int = 10) -> bool:
+        """True if enough posts since last prompt and no donation this month."""
+        if self.donated_this_month:
+            return False
+        return self.posts_since_last_prompt >= interval
+
+
 class InstanceSettings(models.Model):
     """
     Singleton model for instance-wide configuration.
@@ -226,6 +306,20 @@ class InstanceSettings(models.Model):
         default="fr",
     )
     registrations_open = models.BooleanField(default=True)
+
+    # Donation system
+    donation_enabled = models.BooleanField(
+        default=False,
+        help_text="Enable donation prompts based on usage",
+    )
+    donation_url = models.URLField(
+        blank=True,
+        help_text="URL to donation page (Ko-fi, Liberapay, etc.)",
+    )
+    donation_prompt_interval = models.IntegerField(
+        default=10,
+        help_text="Show donation prompt every N posts",
+    )
 
     class Meta:
         verbose_name = "Instance Settings"

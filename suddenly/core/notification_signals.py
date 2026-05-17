@@ -121,3 +121,47 @@ def notify_on_report_published(sender: type, instance: Any, created: bool, **kwa
             actor=instance.author,
             message=f"@{instance.author.username} a publié « {title} »",
         )
+
+    # Track usage for donation prompts
+    _track_usage_and_prompt(instance.author)
+
+
+def _track_usage_and_prompt(user: Any) -> None:
+    """Increment usage stats and create donation prompt if threshold reached."""
+    from suddenly.core.models import (
+        DonationPrompt,
+        InstanceSettings,
+        Notification,
+        NotificationType,
+        UserUsageStats,
+    )
+
+    settings_obj = InstanceSettings.get()
+    if not settings_obj.donation_enabled:
+        return
+
+    stats, _ = UserUsageStats.objects.get_or_create(user=user)
+    stats.total_posts += 1
+    stats.posts_since_last_prompt += 1
+    stats.save(update_fields=["total_posts", "posts_since_last_prompt", "updated_at"])
+
+    if stats.should_prompt(interval=settings_obj.donation_prompt_interval):
+        # Create donation prompt
+        DonationPrompt.objects.create(
+            user=user,
+            posts_at_prompt=stats.total_posts,
+        )
+        stats.posts_since_last_prompt = 0
+        stats.save(update_fields=["posts_since_last_prompt", "updated_at"])
+
+        # Notify user
+        url = settings_obj.donation_url or ""
+        Notification.objects.create(
+            recipient=user,
+            type=NotificationType.INVITATION,
+            message=(
+                f"Vous avez publié {stats.total_posts} comptes-rendus ! "
+                f"Suddenly est gratuit et libre. "
+                f"Si la plateforme vous est utile, pensez à soutenir l'instance."
+            ),
+        )
