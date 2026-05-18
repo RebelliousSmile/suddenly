@@ -281,3 +281,109 @@ class TestFollowIncoming:
         assert accept_activity.get("actor") == target_url, (
             "Accept actor must be the local user"
         )
+
+
+# ---------------------------------------------------------------------------
+# Flow: Follow outgoing (local → remote)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+class TestFollowOutgoing:
+    """Local user sends a Follow to a remote actor — verify deliver_activity contract."""
+
+    def test_follow_outgoing_reaches_remote_inbox(
+        self,
+        local_federation_user: Any,
+        mocker: Any,
+        settings: Any,
+    ) -> None:
+        """
+        RED: send_follow_activity must call deliver_activity.delay with:
+        - activity of type Follow, actor=local user's actor_url
+        - inbox_url = remote actor's inbox
+        - actor_key_id = local user's key id
+        - private_key_pem = local user's private key
+
+        Skips if FEDERATION_PEER_URL is not set (Mode A — no live peer needed).
+        """
+        peer_url = os.environ.get("FEDERATION_PEER_URL", "")
+        peer_actor = os.environ.get(
+            "FEDERATION_PEER_ACTOR",
+            f"{peer_url}/users/testbot" if peer_url else "https://test.suddenly.social/users/testbot",
+        )
+        remote_inbox = f"{peer_actor}/inbox"
+
+        from suddenly.activitypub.tasks import send_follow_activity
+
+        captured_delay_calls: list[dict[str, Any]] = []
+
+        def fake_delay(**kwargs: Any) -> None:
+            captured_delay_calls.append(kwargs)
+
+        mock_deliver = mocker.MagicMock()
+        mock_deliver.delay.side_effect = fake_delay
+        mocker.patch("suddenly.activitypub.tasks.deliver_activity", mock_deliver)
+
+        # Mock httpx to resolve remote actor inbox without network
+        remote_actor_data = {
+            "id": peer_actor,
+            "type": "Person",
+            "preferredUsername": "testbot",
+            "inbox": remote_inbox,
+            "outbox": f"{peer_actor}/outbox",
+            "publicKey": {
+                "id": f"{peer_actor}#main-key",
+                "owner": peer_actor,
+                "publicKeyPem": "fake-public-key-pem",
+            },
+        }
+        mock_http_response = MagicMock()
+        mock_http_response.json.return_value = remote_actor_data
+        mock_http_response.raise_for_status = MagicMock()
+        mock_http_response.status_code = 200
+
+        mock_client_instance = MagicMock()
+        mock_client_instance.__enter__ = MagicMock(return_value=mock_client_instance)
+        mock_client_instance.__exit__ = MagicMock(return_value=False)
+        mock_client_instance.get.return_value = mock_http_response
+        mocker.patch("httpx.Client", return_value=mock_client_instance)
+
+        # Execute: local user follows the remote actor
+        send_follow_activity(str(local_federation_user.pk), peer_actor)
+
+        # 1. deliver_activity.delay must have been called exactly once
+        assert len(captured_delay_calls) == 1, (
+            f"deliver_activity.delay must be called exactly once, got {len(captured_delay_calls)}"
+        )
+
+        call_kwargs = captured_delay_calls[0]
+
+        # 2. Delivered activity must be of type Follow
+        activity = call_kwargs.get("activity", {})
+        assert activity.get("type") == "Follow", (
+            f"Activity must be Follow, got {activity.get('type')}"
+        )
+
+        # 3. Actor must be the local user
+        assert activity.get("actor") == local_federation_user.actor_url, (
+            f"Follow actor must be {local_federation_user.actor_url}, got {activity.get('actor')}"
+        )
+
+        # 4. Object must be the remote actor
+        assert activity.get("object") == peer_actor, (
+            f"Follow object must be {peer_actor}, got {activity.get('object')}"
+        )
+
+        # 5. Inbox URL must be the remote actor's inbox
+        assert call_kwargs.get("inbox_url") == remote_inbox, (
+            f"inbox_url must be {remote_inbox}, got {call_kwargs.get('inbox_url')}"
+        )
+
+        # 6. Signing keys must be present and correct
+        assert call_kwargs.get("actor_key_id") == f"{local_federation_user.actor_url}#main-key", (
+            "actor_key_id must be the local user's key id"
+        )
+        assert call_kwargs.get("private_key_pem") == local_federation_user.private_key, (
+            "private_key_pem must be the local user's private key"
+        )

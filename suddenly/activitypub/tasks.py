@@ -386,6 +386,36 @@ def send_offer_activity(link_request_id: str) -> None:
 
 
 @shared_task  # type: ignore[untyped-decorator]
+def send_follow_activity(user_id: str, target_actor_url: str) -> None:
+    """Send a Follow activity from a local user to a remote actor.
+
+    Resolves the remote actor's inbox URL, builds a signed Follow activity,
+    and delivers it via ``deliver_activity``.
+    """
+    from suddenly.users.models import User
+
+    from .serializers import create_follow_activity
+
+    user = User.objects.filter(pk=user_id).first()
+    if not user or user.remote:
+        return
+
+    remote_user = get_or_create_remote_user(target_actor_url)
+    if not remote_user or not remote_user.inbox_url:
+        return
+
+    activity = create_follow_activity(user, target_actor_url)
+    key_id, private_key = get_actor_signing_keys(user)
+
+    deliver_activity.delay(
+        activity=activity,
+        inbox_url=remote_user.inbox_url,
+        actor_key_id=key_id,
+        private_key_pem=private_key,
+    )
+
+
+@shared_task  # type: ignore[untyped-decorator]
 def send_accept_activity(link_request_id: str) -> None:
     """Send Accept activity for an accepted link request."""
     from suddenly.characters.models import LinkRequest
