@@ -265,8 +265,7 @@ def broadcast_activity(activity: dict[str, Any], actor_id: str, actor_type: str)
     actor_models: dict[str, Any] = {"User": User, "Game": Game, "Character": Character}
     ActorModel = actor_models.get(actor_type)  # noqa: N806
     actor_obj = ActorModel.objects.filter(pk=actor_id).first() if ActorModel else None
-    key_id = f"{actor_obj.actor_url}#main-key" if actor_obj else None
-    private_key = getattr(actor_obj, "private_key", None)
+    key_id, private_key = get_actor_signing_keys(actor_obj) if actor_obj else (None, None)
 
     inboxes = {f.follower.inbox_url for f in followers if f.follower.inbox_url}
 
@@ -512,6 +511,18 @@ def fetch_remote_actor(actor_url: str) -> None:
 # =================================================================
 # Helpers
 # =================================================================
+
+
+def get_actor_signing_keys(actor: Any) -> tuple[str | None, str | None]:
+    """Return (actor_key_id, private_key_pem) for a local actor, or (None, None).
+
+    The returned key_id follows the convention ``<actor_url>#main-key``.
+    Returns (None, None) for remote actors or actors without a private key.
+    """
+    actor_url = getattr(actor, "actor_url", None)
+    private_key_pem: str | None = getattr(actor, "private_key", None) or None
+    actor_key_id: str | None = f"{actor_url}#main-key" if actor_url else None
+    return actor_key_id, private_key_pem
 
 
 def get_or_create_remote_user(actor_url: str | None) -> Any:
