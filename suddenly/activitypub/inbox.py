@@ -243,7 +243,7 @@ def handle_follow(activity: dict[str, Any], actor_type: str, actor_identifier: s
 
     # Send Accept activity
     from .activities import get_context
-    from .tasks import deliver_activity
+    from .tasks import deliver_activity, get_actor_signing_keys
 
     accept_activity: dict[str, Any] = {
         "@context": get_context(),
@@ -252,9 +252,13 @@ def handle_follow(activity: dict[str, Any], actor_type: str, actor_identifier: s
         "object": activity,
     }
 
+    actor_key_id, private_key_pem = get_actor_signing_keys(target)
+
     deliver_activity.delay(
         activity=accept_activity,
         inbox_url=follower.inbox_url,
+        actor_key_id=actor_key_id,
+        private_key_pem=private_key_pem,
     )
 
 
