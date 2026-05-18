@@ -622,3 +622,442 @@ class TestUnfollowOutgoing:
         assert not Follow.objects.filter(ap_id=follow_ap_id).exists(), (
             "Follow record must be deleted after send_undo_follow_activity"
         )
+
+
+# ---------------------------------------------------------------------------
+# Flow: Offer/Accept/Reject — LinkRequest cross-instance
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def local_character_with_remote_creator(db: Any, settings: Any) -> tuple[Any, Any]:
+    """A local NPC character whose creator is a remote user (Railway instance)."""
+    settings.DOMAIN = "local.suddenly.test"
+    settings.AP_BASE_URL = "https://local.suddenly.test"
+
+    from suddenly.characters.models import Character, CharacterStatus
+    from suddenly.games.models import Game
+    from suddenly.users.models import User
+
+    remote_creator = User.objects.create(
+        username="remote_creator@railway.suddenly.test",
+        remote=True,
+        ap_id="https://railway.suddenly.test/users/remote_creator",
+        inbox_url="https://railway.suddenly.test/users/remote_creator/inbox",
+    )
+
+    owner = User.objects.create(username="local_owner", remote=False)
+    game = Game.objects.create(title="Test Game", owner=owner)
+
+    character = Character.objects.create(
+        name="Luna",
+        status=CharacterStatus.NPC,
+        creator=remote_creator,
+        origin_game=game,
+        ap_id="https://local.suddenly.test/characters/luna",
+    )
+
+    return character, remote_creator
+
+
+@pytest.fixture
+def local_requester_with_key(db: Any, settings: Any) -> Any:
+    """A local user with a generated key pair, to be the requester in Offer flows."""
+    settings.DOMAIN = "local.suddenly.test"
+    settings.AP_BASE_URL = "https://local.suddenly.test"
+
+    from suddenly.activitypub.signatures import generate_key_pair
+
+    private_pem, public_pem = generate_key_pair()
+
+    return UserFactory(
+        username="local_requester",
+        display_name="Local Requester",
+        remote=False,
+        public_key=public_pem,
+        private_key=private_pem,
+    )
+
+
+@pytest.mark.django_db
+class TestOfferIncoming:
+    """Remote actor sends Offer(Relationship) — inbox must create a PENDING LinkRequest."""
+
+    def test_offer_incoming_creates_link_request(
+        self,
+        rf: RequestFactory,
+        local_character_with_remote_creator: tuple[Any, Any],
+        mocker: Any,
+        settings: Any,
+    ) -> None:
+        """
+        RED: inbox.handle_offer must create a LinkRequest with status PENDING
+        when receiving an Offer(Relationship{relationship: 'adopt'}) from a remote
+        actor targeting a local NPC.
+
+        Contract:
+        - Remote actor POSTs Offer to local character inbox
+        - Activity has object.type=='Relationship', object.relationship=='adopt'
+        - A LinkRequest must be created in DB with status PENDING
+        - requester must be the remote actor (get_or_create_remote_user)
+        - target_character must be the local NPC
+        """
+        from suddenly.activitypub.inbox import process_inbox
+        from suddenly.characters.models import LinkRequest, LinkRequestStatus, LinkType
+
+        character, remote_creator = local_character_with_remote_creator
+
+        remote_requester_url = "https://railway.suddenly.test/users/remote_requester"
+        remote_requester_inbox = f"{remote_requester_url}/inbox"
+
+        actor_data = {
+            "id": remote_requester_url,
+            "type": "Person",
+            "preferredUsername": "remote_requester",
+            "name": "Remote Requester",
+            "inbox": remote_requester_inbox,
+            "outbox": f"{remote_requester_url}/outbox",
+            "publicKey": {
+                "id": f"{remote_requester_url}#main-key",
+                "owner": remote_requester_url,
+                "publicKeyPem": "fake-public-key-pem",
+            },
+        }
+
+        mock_http_response = MagicMock()
+        mock_http_response.json.return_value = actor_data
+        mock_http_response.raise_for_status = MagicMock()
+        mock_http_response.status_code = 200
+
+        mock_client_instance = MagicMock()
+        mock_client_instance.__enter__ = MagicMock(return_value=mock_client_instance)
+        mock_client_instance.__exit__ = MagicMock(return_value=False)
+        mock_client_instance.get.return_value = mock_http_response
+        mocker.patch("httpx.Client", return_value=mock_client_instance)
+
+        mocker.patch(
+            "suddenly.activitypub.inbox.verify_signature",
+            return_value=(True, f"{remote_requester_url}#main-key"),
+        )
+        mocker.patch("suddenly.activitypub.inbox._check_rate_limit", return_value=False)
+
+        # Offer activity from Railway: remote actor wants to adopt the local NPC
+        offer_activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "Offer",
+            "id": f"{remote_requester_url}/activities/offer/adopt-luna",
+            "actor": remote_requester_url,
+            "object": {
+                "type": "Relationship",
+                "relationship": "adopt",
+                "object": character.ap_id,
+                "subject": remote_requester_url,
+            },
+            "summary": "I'd love to adopt Luna",
+        }
+
+        path = f"/characters/{character.pk}/inbox"
+        request = rf.post(
+            path,
+            data=json.dumps(offer_activity),
+            content_type="application/activity+json",
+            HTTP_HOST="local.suddenly.test",
+            HTTP_SIGNATURE=(
+                f'keyId="{remote_requester_url}#main-key",'
+                'headers="(request-target) host date",signature="dummy"'
+            ),
+        )
+
+        response = process_inbox(
+            request,
+            actor_type="character",
+            actor_identifier=str(character.pk),
+        )
+
+        assert response.status_code == 202, f"Expected 202, got {response.status_code}"
+
+        # A LinkRequest must have been created
+        lr = LinkRequest.objects.filter(
+            target_character=character,
+            type=LinkType.ADOPT,
+        ).first()
+
+        assert lr is not None, (
+            "A LinkRequest must be created in DB when an Offer(Relationship{adopt}) is received"
+        )
+        assert lr.status == LinkRequestStatus.PENDING, (
+            f"LinkRequest status must be PENDING, got {lr.status}"
+        )
+        assert lr.requester.ap_id == remote_requester_url, (
+            f"Requester ap_id must be {remote_requester_url}, got {lr.requester.ap_id}"
+        )
+        assert lr.message == "I'd love to adopt Luna", (
+            "LinkRequest message must match activity summary"
+        )
+
+
+@pytest.mark.django_db
+class TestAcceptIncoming:
+    """
+    Railway instance sends Accept(Offer) — inbox must update our LinkRequest to ACCEPTED
+    and the CharacterLink must be created.
+    """
+
+    def test_accept_incoming_updates_link_request(
+        self,
+        rf: RequestFactory,
+        local_character_with_remote_creator: tuple[Any, Any],
+        local_requester_with_key: Any,
+        mocker: Any,
+        settings: Any,
+    ) -> None:
+        """
+        RED: inbox.handle_accept must update LinkRequest.status to ACCEPTED when
+        receiving Accept(Offer) where the object is our original Offer URL
+        (format: https://local.suddenly.test/link-requests/{pk}).
+
+        Bug: current code looks for '/activities/offer/' in the offer_id,
+        but serialize_link_request generates '/link-requests/{pk}'.
+        Fix: extract UUID from '/link-requests/{pk}' pattern.
+
+        Contract:
+        - A PENDING LinkRequest exists locally
+        - Railway POSTs Accept whose object is the Offer URL
+        - LinkRequest.status must become ACCEPTED after processing
+        """
+        from suddenly.activitypub.inbox import process_inbox
+        from suddenly.characters.models import LinkRequest, LinkRequestStatus, LinkType
+
+        character, remote_creator = local_character_with_remote_creator
+        requester = local_requester_with_key
+
+        mocker.patch(
+            "suddenly.activitypub.inbox.verify_signature",
+            return_value=(True, f"{remote_creator.ap_id}#main-key"),
+        )
+        mocker.patch("suddenly.activitypub.inbox._check_rate_limit", return_value=False)
+        # Suppress signal-triggered task dispatches: link_request_post_save fires
+        # on LinkRequest.create (→ send_offer_activity) and on lr.save() with
+        # status=ACCEPTED (→ send_accept_activity → deliver_activity HTTP POST).
+        mocker.patch("suddenly.activitypub.signals._safe_delay")
+
+        # Create the PENDING LinkRequest as if we sent an Offer to Railway
+        lr = LinkRequest.objects.create(
+            type=LinkType.ADOPT,
+            requester=requester,
+            target_character=character,
+            message="Please accept my adoption request",
+            status=LinkRequestStatus.PENDING,
+        )
+
+        # The offer URL that our serializer would have generated
+        offer_url = f"https://local.suddenly.test/link-requests/{lr.pk}"
+
+        # Accept activity from Railway: they accept our Offer
+        accept_activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "Accept",
+            "id": f"{remote_creator.ap_id}/activities/accept/{lr.pk}",
+            "actor": remote_creator.ap_id,
+            "object": offer_url,
+            "summary": "Adoption accepted, welcome Luna!",
+        }
+
+        path = f"/users/{requester.username}/inbox"
+        request = rf.post(
+            path,
+            data=json.dumps(accept_activity),
+            content_type="application/activity+json",
+            HTTP_HOST="local.suddenly.test",
+            HTTP_SIGNATURE=(
+                f'keyId="{remote_creator.ap_id}#main-key",'
+                'headers="(request-target) host date",signature="dummy"'
+            ),
+        )
+
+        response = process_inbox(
+            request,
+            actor_type="user",
+            actor_identifier=requester.username,
+        )
+
+        assert response.status_code == 202, f"Expected 202, got {response.status_code}"
+
+        lr.refresh_from_db()
+        assert lr.status == LinkRequestStatus.ACCEPTED, (
+            f"LinkRequest status must be ACCEPTED after Accept activity, got {lr.status}. "
+            f"Bug: handle_accept looks for '/activities/offer/' in offer URL but "
+            f"serialize_link_request generates '/link-requests/{{pk}}'."
+        )
+        assert lr.response_message == "Adoption accepted, welcome Luna!", (
+            "response_message must be set from activity summary"
+        )
+
+
+@pytest.mark.django_db
+class TestRejectIncoming:
+    """
+    Railway instance sends Reject(Offer) — inbox must update our LinkRequest to REJECTED.
+    """
+
+    def test_reject_incoming_updates_link_request(
+        self,
+        rf: RequestFactory,
+        local_character_with_remote_creator: tuple[Any, Any],
+        local_requester_with_key: Any,
+        mocker: Any,
+        settings: Any,
+    ) -> None:
+        """
+        RED: inbox.handle_reject must update LinkRequest.status to REJECTED when
+        receiving Reject(Offer) where the object is our original Offer URL
+        (format: https://local.suddenly.test/link-requests/{pk}).
+
+        Same bug as handle_accept: URL pattern mismatch.
+        """
+        from suddenly.activitypub.inbox import process_inbox
+        from suddenly.characters.models import LinkRequest, LinkRequestStatus, LinkType
+
+        character, remote_creator = local_character_with_remote_creator
+        requester = local_requester_with_key
+
+        mocker.patch(
+            "suddenly.activitypub.inbox.verify_signature",
+            return_value=(True, f"{remote_creator.ap_id}#main-key"),
+        )
+        mocker.patch("suddenly.activitypub.inbox._check_rate_limit", return_value=False)
+        # Suppress signal-triggered task dispatches: link_request_post_save fires
+        # on LinkRequest.create (→ send_offer_activity) and on lr.save() with
+        # status=REJECTED (→ send_reject_activity → deliver_activity HTTP POST).
+        mocker.patch("suddenly.activitypub.signals._safe_delay")
+
+        lr = LinkRequest.objects.create(
+            type=LinkType.ADOPT,
+            requester=requester,
+            target_character=character,
+            message="Please accept my adoption request",
+            status=LinkRequestStatus.PENDING,
+        )
+
+        offer_url = f"https://local.suddenly.test/link-requests/{lr.pk}"
+
+        reject_activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "Reject",
+            "id": f"{remote_creator.ap_id}/activities/reject/{lr.pk}",
+            "actor": remote_creator.ap_id,
+            "object": offer_url,
+            "summary": "Not compatible with our game, sorry.",
+        }
+
+        path = f"/users/{requester.username}/inbox"
+        request = rf.post(
+            path,
+            data=json.dumps(reject_activity),
+            content_type="application/activity+json",
+            HTTP_HOST="local.suddenly.test",
+            HTTP_SIGNATURE=(
+                f'keyId="{remote_creator.ap_id}#main-key",'
+                'headers="(request-target) host date",signature="dummy"'
+            ),
+        )
+
+        response = process_inbox(
+            request,
+            actor_type="user",
+            actor_identifier=requester.username,
+        )
+
+        assert response.status_code == 202, f"Expected 202, got {response.status_code}"
+
+        lr.refresh_from_db()
+        assert lr.status == LinkRequestStatus.REJECTED, (
+            f"LinkRequest status must be REJECTED after Reject activity, got {lr.status}. "
+            f"Bug: handle_reject looks for '/activities/offer/' in offer URL but "
+            f"serialize_link_request generates '/link-requests/{{pk}}'."
+        )
+        assert lr.response_message == "Not compatible with our game, sorry.", (
+            "response_message must be set from activity summary"
+        )
+
+
+@pytest.mark.django_db
+class TestOfferOutgoing:
+    """Local user sends an Offer to a remote character's creator — deliver must be signed."""
+
+    def test_offer_outgoing_sends_to_remote_creator(
+        self,
+        local_character_with_remote_creator: tuple[Any, Any],
+        local_requester_with_key: Any,
+        mocker: Any,
+        settings: Any,
+    ) -> None:
+        """
+        RED: send_offer_activity must call deliver_activity.delay with:
+        - activity of type Offer
+        - inbox_url = remote creator's inbox_url
+        - actor_key_id = requester's key id
+        - private_key_pem = requester's private key
+
+        Bug: current send_offer_activity does not pass signing keys to
+        deliver_activity.delay — the Offer would be sent unsigned.
+        """
+        from suddenly.activitypub.tasks import send_offer_activity
+        from suddenly.characters.models import LinkRequest, LinkRequestStatus, LinkType
+
+        character, remote_creator = local_character_with_remote_creator
+        requester = local_requester_with_key
+
+        lr = LinkRequest.objects.create(
+            type=LinkType.ADOPT,
+            requester=requester,
+            target_character=character,
+            message="I want to adopt Luna",
+            status=LinkRequestStatus.PENDING,
+        )
+
+        captured_delay_calls: list[dict[str, Any]] = []
+
+        def fake_delay(**kwargs: Any) -> None:
+            captured_delay_calls.append(kwargs)
+
+        mock_deliver = mocker.MagicMock()
+        mock_deliver.delay.side_effect = fake_delay
+        mocker.patch("suddenly.activitypub.tasks.deliver_activity", mock_deliver)
+
+        send_offer_activity(str(lr.pk))
+
+        # 1. deliver_activity.delay must be called exactly once
+        assert len(captured_delay_calls) == 1, (
+            f"deliver_activity.delay must be called once, got {len(captured_delay_calls)}. "
+            f"Check that creator.remote is True and creator.inbox_url is set."
+        )
+
+        call_kwargs = captured_delay_calls[0]
+
+        # 2. Activity must be Offer
+        activity = call_kwargs.get("activity", {})
+        assert activity.get("type") == "Offer", (
+            f"Activity must be Offer, got {activity.get('type')}"
+        )
+
+        # 3. Delivery target must be remote creator's inbox
+        assert call_kwargs.get("inbox_url") == remote_creator.inbox_url, (
+            f"inbox_url must be {remote_creator.inbox_url}, got {call_kwargs.get('inbox_url')}"
+        )
+
+        # 4. Signing keys must be present and correct
+        assert "actor_key_id" in call_kwargs, (
+            "deliver_activity.delay must receive actor_key_id — Offer would be unsigned without it. "
+            "Bug: send_offer_activity calls deliver_activity.delay(activity, creator.inbox_url) "
+            "without passing actor_key_id or private_key_pem."
+        )
+        assert call_kwargs["actor_key_id"] == f"{requester.actor_url}#main-key", (
+            f"actor_key_id must be requester's key id, got {call_kwargs.get('actor_key_id')}"
+        )
+        assert "private_key_pem" in call_kwargs, (
+            "deliver_activity.delay must receive private_key_pem"
+        )
+        assert call_kwargs["private_key_pem"] == requester.private_key, (
+            "private_key_pem must be requester's private key"
+        )
