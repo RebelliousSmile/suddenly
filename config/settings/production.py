@@ -22,8 +22,8 @@ _railway_domain = os.environ.get("RAILWAY_PUBLIC_DOMAIN")
 if _railway_domain and _railway_domain not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(_railway_domain)
 
-# Allow internal healthcheck probes (Railway probes localhost:PORT internally)
-for _internal_host in ("127.0.0.1", "localhost"):
+# Allow Railway healthcheck probes (uses Host: healthcheck.railway.app)
+for _internal_host in ("healthcheck.railway.app", "127.0.0.1", "localhost"):
     if _internal_host not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(_internal_host)
 
