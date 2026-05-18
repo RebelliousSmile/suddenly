@@ -387,3 +387,238 @@ class TestFollowOutgoing:
         assert call_kwargs.get("private_key_pem") == local_federation_user.private_key, (
             "private_key_pem must be the local user's private key"
         )
+
+
+# ---------------------------------------------------------------------------
+# Flow: Unfollow — Undo(Follow)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+class TestUnfollowIncoming:
+    """Remote actor sends Undo(Follow) — inbox must remove the Follow from DB."""
+
+    def test_unfollow_incoming_removes_follow(
+        self,
+        rf: RequestFactory,
+        local_federation_user: Any,
+        mocker: Any,
+        settings: Any,
+    ) -> None:
+        """
+        RED: inbox.handle_undo must delete the Follow record when receiving
+        Undo{object: {type: Follow}} from a remote actor.
+
+        Contract:
+        - A Follow record exists in DB (remote=True, follower=remote_user)
+        - Inbox receives Undo(Follow) signed by remote actor
+        - Follow record must be deleted after processing
+        """
+        from django.contrib.contenttypes.models import ContentType
+
+        from suddenly.activitypub.inbox import process_inbox
+        from suddenly.characters.models import Follow
+        from suddenly.users.models import User
+
+        remote_private_pem, remote_public_pem = generate_key_pair()
+        remote_actor_url = "https://peer.suddenly.test/users/remote_bob"
+        remote_inbox_url = "https://peer.suddenly.test/users/remote_bob/inbox"
+
+        actor_data = {
+            "id": remote_actor_url,
+            "type": "Person",
+            "preferredUsername": "remote_bob",
+            "name": "Remote Bob",
+            "inbox": remote_inbox_url,
+            "outbox": "https://peer.suddenly.test/users/remote_bob/outbox",
+            "publicKey": {
+                "id": f"{remote_actor_url}#main-key",
+                "owner": remote_actor_url,
+                "publicKeyPem": remote_public_pem,
+            },
+        }
+
+        mock_http_response = MagicMock()
+        mock_http_response.json.return_value = actor_data
+        mock_http_response.raise_for_status = MagicMock()
+        mock_http_response.status_code = 200
+
+        mock_client_instance = MagicMock()
+        mock_client_instance.__enter__ = MagicMock(return_value=mock_client_instance)
+        mock_client_instance.__exit__ = MagicMock(return_value=False)
+        mock_client_instance.get.return_value = mock_http_response
+        mocker.patch("httpx.Client", return_value=mock_client_instance)
+
+        mocker.patch(
+            "suddenly.activitypub.inbox.verify_signature",
+            return_value=(True, f"{remote_actor_url}#main-key"),
+        )
+        mocker.patch("suddenly.activitypub.inbox._check_rate_limit", return_value=False)
+
+        # Create the remote user and the Follow record in DB first
+        remote_user = User.objects.create(
+            username="remote_bob",
+            remote=True,
+            ap_id=remote_actor_url,
+            inbox_url=remote_inbox_url,
+        )
+        content_type = ContentType.objects.get_for_model(User)
+        follow = Follow.objects.create(
+            follower=remote_user,
+            content_type=content_type,
+            object_id=local_federation_user.pk,
+            remote=True,
+            ap_id=f"{remote_actor_url}#follow-abc123",
+        )
+
+        assert Follow.objects.filter(pk=follow.pk).exists(), (
+            "Follow must exist before Undo"
+        )
+
+        undo_activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "Undo",
+            "id": f"{remote_actor_url}#undo-abc123",
+            "actor": remote_actor_url,
+            "object": {
+                "type": "Follow",
+                "id": f"{remote_actor_url}#follow-abc123",
+                "actor": remote_actor_url,
+                "object": local_federation_user.actor_url,
+            },
+        }
+
+        path = f"/users/{local_federation_user.username}/inbox"
+        request = rf.post(
+            path,
+            data=json.dumps(undo_activity),
+            content_type="application/activity+json",
+            HTTP_HOST="local.suddenly.test",
+            HTTP_SIGNATURE=f'keyId="{remote_actor_url}#main-key",headers="(request-target) host date",signature="dummy"',
+        )
+
+        response = process_inbox(
+            request,
+            actor_type="user",
+            actor_identifier=local_federation_user.username,
+        )
+
+        assert response.status_code == 202, (
+            f"Expected 202, got {response.status_code}"
+        )
+
+        assert not Follow.objects.filter(pk=follow.pk).exists(), (
+            "Follow record must be deleted after receiving Undo(Follow)"
+        )
+
+
+@pytest.mark.django_db
+class TestUnfollowOutgoing:
+    """Local user unfollows a remote actor — send_undo_follow_activity must deliver signed Undo(Follow)."""
+
+    def test_unfollow_outgoing_sends_undo(
+        self,
+        local_federation_user: Any,
+        mocker: Any,
+        settings: Any,
+    ) -> None:
+        """
+        RED: send_undo_follow_activity must call deliver_activity.delay with:
+        - activity of type Undo wrapping a Follow
+        - inbox_url = remote actor's inbox
+        - actor_key_id = local user's key id
+        - private_key_pem = local user's private key
+
+        Requires a Follow record in DB with ap_id set so the Undo can reference it.
+        """
+        from django.contrib.contenttypes.models import ContentType
+
+        from suddenly.activitypub.tasks import send_undo_follow_activity
+        from suddenly.characters.models import Follow
+        from suddenly.users.models import User
+
+        peer_actor = "https://test.suddenly.social/users/testbot"
+        remote_inbox = f"{peer_actor}/inbox"
+        follow_ap_id = f"{local_federation_user.actor_url}#follow-xyz789"
+
+        # Patch deliver_activity before Follow creation so the follow_post_save
+        # signal does not fire a real HTTP request during Follow.objects.create().
+        captured_delay_calls: list[dict[str, Any]] = []
+
+        def fake_delay(**kwargs: Any) -> None:
+            captured_delay_calls.append(kwargs)
+
+        mock_deliver = mocker.MagicMock()
+        mock_deliver.delay.side_effect = fake_delay
+        mocker.patch("suddenly.activitypub.tasks.deliver_activity", mock_deliver)
+        # Suppress all signal-triggered task dispatches (follow_post_save fires
+        # on Follow creation and would try to reach a real remote inbox).
+        mocker.patch("suddenly.activitypub.signals._safe_delay")
+
+        # Create the remote user
+        remote_user = User.objects.create(
+            username="testbot",
+            remote=True,
+            ap_id=peer_actor,
+            inbox_url=remote_inbox,
+        )
+
+        # Create the Follow record the local user wants to undo.
+        # The follow_post_save signal fires here — it will use the mock above.
+        content_type = ContentType.objects.get_for_model(User)
+        Follow.objects.create(
+            follower=local_federation_user,
+            content_type=content_type,
+            object_id=remote_user.pk,
+            remote=False,
+            ap_id=follow_ap_id,
+        )
+
+        # Reset captured calls: the signal may have called mock_deliver.delay once
+        # for the Follow creation itself. We only want to track the Undo delivery.
+        captured_delay_calls.clear()
+
+        send_undo_follow_activity(str(local_federation_user.pk), peer_actor)
+
+        # 1. deliver_activity.delay must be called exactly once
+        assert len(captured_delay_calls) == 1, (
+            f"deliver_activity.delay must be called once, got {len(captured_delay_calls)}"
+        )
+
+        call_kwargs = captured_delay_calls[0]
+
+        # 2. Activity must be Undo wrapping a Follow
+        activity = call_kwargs.get("activity", {})
+        assert activity.get("type") == "Undo", (
+            f"Activity type must be Undo, got {activity.get('type')}"
+        )
+        inner = activity.get("object", {})
+        assert inner.get("type") == "Follow", (
+            f"Undo object must be Follow, got {inner.get('type')}"
+        )
+        assert inner.get("id") == follow_ap_id, (
+            f"Undo object id must match Follow ap_id {follow_ap_id}, got {inner.get('id')}"
+        )
+
+        # 3. Actor must be the local user
+        assert activity.get("actor") == local_federation_user.actor_url, (
+            f"Undo actor must be {local_federation_user.actor_url}"
+        )
+
+        # 4. Delivery target must be remote inbox
+        assert call_kwargs.get("inbox_url") == remote_inbox, (
+            f"inbox_url must be {remote_inbox}, got {call_kwargs.get('inbox_url')}"
+        )
+
+        # 5. Signing keys must be present and correct
+        assert call_kwargs.get("actor_key_id") == f"{local_federation_user.actor_url}#main-key", (
+            "actor_key_id must be the local user's key id"
+        )
+        assert call_kwargs.get("private_key_pem") == local_federation_user.private_key, (
+            "private_key_pem must be the local user's private key"
+        )
+
+        # 6. Follow record must be deleted after sending Undo
+        assert not Follow.objects.filter(ap_id=follow_ap_id).exists(), (
+            "Follow record must be deleted after send_undo_follow_activity"
+        )

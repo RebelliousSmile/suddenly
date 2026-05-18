@@ -416,6 +416,52 @@ def send_follow_activity(user_id: str, target_actor_url: str) -> None:
 
 
 @shared_task  # type: ignore[untyped-decorator]
+def send_undo_follow_activity(user_id: str, target_actor_url: str) -> None:
+    """Send an Undo(Follow) activity from a local user to a remote actor.
+
+    Looks up the Follow record by follower+target to retrieve its ``ap_id``,
+    builds a signed Undo(Follow) activity, delivers it, then deletes the
+    local Follow record.
+    """
+    from django.contrib.contenttypes.models import ContentType
+
+    from suddenly.characters.models import Follow
+    from suddenly.users.models import User
+
+    from .serializers import create_undo_follow_activity
+
+    user = User.objects.filter(pk=user_id).first()
+    if not user or user.remote:
+        return
+
+    remote_user = User.objects.filter(ap_id=target_actor_url, remote=True).first()
+    if not remote_user or not remote_user.inbox_url:
+        return
+
+    content_type = ContentType.objects.get_for_model(User)
+    follow = Follow.objects.filter(
+        follower=user,
+        content_type=content_type,
+        object_id=remote_user.pk,
+    ).first()
+
+    if not follow or not follow.ap_id:
+        return
+
+    activity = create_undo_follow_activity(user, follow.ap_id, target_actor_url)
+    key_id, private_key = get_actor_signing_keys(user)
+
+    deliver_activity.delay(
+        activity=activity,
+        inbox_url=remote_user.inbox_url,
+        actor_key_id=key_id,
+        private_key_pem=private_key,
+    )
+
+    follow.delete()
+
+
+@shared_task  # type: ignore[untyped-decorator]
 def send_accept_activity(link_request_id: str) -> None:
     """Send Accept activity for an accepted link request."""
     from suddenly.characters.models import LinkRequest
