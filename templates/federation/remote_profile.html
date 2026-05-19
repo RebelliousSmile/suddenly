@@ -43,7 +43,7 @@
                 {% endif %}
 
                 {% if user.is_authenticated %}
-                    {% include "components/follow_button.html" with target_type="user" is_following=False %}
+                    {% include "components/remote_follow_button.html" with ap_id=ap_id is_following=is_following %}
                 {% endif %}
             </div>
 

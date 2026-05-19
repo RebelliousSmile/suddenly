@@ -1264,6 +1264,828 @@ class TestUpdateIncoming:
 # ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
+# View: remote_follow_toggle
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def local_user_with_key(db: Any, settings: Any) -> Any:
+    """Local user with a generated RSA key pair for federation."""
+    settings.DOMAIN = "local.suddenly.test"
+    settings.AP_BASE_URL = "https://local.suddenly.test"
+
+    private_pem, public_pem = generate_key_pair()
+
+    return UserFactory(
+        username="local_toggle_user",
+        display_name="Local Toggle User",
+        remote=False,
+        public_key=public_pem,
+        private_key=private_pem,
+    )
+
+
+@pytest.mark.django_db
+class TestRemoteFollowToggle:
+    """View remote_follow_toggle — Follow and Unfollow branches."""
+
+    # ------------------------------------------------------------------
+    # Follow (no existing Follow record)
+    # ------------------------------------------------------------------
+
+    def test_follow_creates_follow_record(
+        self,
+        local_user_with_key: Any,
+        settings: Any,
+    ) -> None:
+        """
+        POST with ap_id when no Follow exists must create a Follow with the
+        expected ap_id and enqueue send_follow_activity.delay.
+        """
+        from django.contrib.contenttypes.models import ContentType
+        from django.test import Client
+
+        from suddenly.characters.models import Follow
+        from suddenly.users.models import User as UserModel
+
+        remote_actor_url = "https://peer.suddenly.test/users/remote_charlie"
+        remote_user = UserModel.objects.create(
+            username="remote_charlie@peer.suddenly.test",
+            remote=True,
+            ap_id=remote_actor_url,
+            inbox_url=f"{remote_actor_url}/inbox",
+        )
+
+        client = Client()
+        client.force_login(local_user_with_key)
+
+        with (
+            patch(
+                "suddenly.activitypub.tasks.get_or_create_remote_user",
+                return_value=remote_user,
+            ),
+            patch("suddenly.activitypub.tasks.send_follow_activity") as mock_follow_task,
+            patch("suddenly.activitypub.signals._safe_delay"),
+        ):
+            mock_follow_task.delay = MagicMock()
+            response = client.post(
+                "/federation/remote/follow/",
+                {"ap_id": remote_actor_url},
+            )
+
+        assert response.status_code == 200
+
+        ct = ContentType.objects.get_for_model(UserModel)
+        follow = Follow.objects.filter(
+            follower=local_user_with_key,
+            content_type=ct,
+            object_id=remote_user.pk,
+        ).first()
+        assert follow is not None, "Follow record must be created"
+
+        expected_ap_id = (
+            f"https://{settings.DOMAIN}/users/{local_user_with_key.username}"
+            f"/follows/{remote_user.pk}"
+        )
+        assert follow.ap_id == expected_ap_id, (
+            f"Follow ap_id must be {expected_ap_id}, got {follow.ap_id}"
+        )
+
+    def test_follow_enqueues_send_follow_activity(
+        self,
+        local_user_with_key: Any,
+        settings: Any,
+    ) -> None:
+        """
+        POST follow must enqueue send_follow_activity.delay with
+        (user_id, ap_id, follow_ap_id).
+        """
+        from django.test import Client
+
+        from suddenly.users.models import User as UserModel
+
+        remote_actor_url = "https://peer.suddenly.test/users/remote_charlie"
+        remote_user = UserModel.objects.create(
+            username="remote_charlie2@peer.suddenly.test",
+            remote=True,
+            ap_id=remote_actor_url,
+            inbox_url=f"{remote_actor_url}/inbox",
+        )
+
+        client = Client()
+        client.force_login(local_user_with_key)
+
+        captured_delay_calls: list[tuple[Any, ...]] = []
+
+        def fake_delay(*args: Any, **kwargs: Any) -> None:
+            captured_delay_calls.append((args, kwargs))
+
+        with (
+            patch(
+                "suddenly.activitypub.tasks.get_or_create_remote_user",
+                return_value=remote_user,
+            ),
+            patch("suddenly.activitypub.tasks.send_follow_activity") as mock_task,
+            patch("suddenly.activitypub.signals._safe_delay"),
+        ):
+            mock_task.delay.side_effect = fake_delay
+            response = client.post(
+                "/federation/remote/follow/",
+                {"ap_id": remote_actor_url},
+            )
+
+        assert response.status_code == 200
+        assert len(captured_delay_calls) == 1, (
+            f"send_follow_activity.delay must be called once, got {len(captured_delay_calls)}"
+        )
+
+        args, kwargs = captured_delay_calls[0]
+        # Called as send_follow_activity.delay(user_id, ap_id, follow_ap_id)
+        all_args = list(args) + [kwargs.get(k) for k in ("user_id", "ap_id", "follow_ap_id") if k in kwargs]
+        positional = list(args)
+        assert positional[0] == str(local_user_with_key.pk), (
+            f"First arg must be user_id={local_user_with_key.pk}"
+        )
+        assert positional[1] == remote_actor_url, (
+            f"Second arg must be ap_id={remote_actor_url}"
+        )
+        expected_ap_id = (
+            f"https://{settings.DOMAIN}/users/{local_user_with_key.username}"
+            f"/follows/{remote_user.pk}"
+        )
+        assert positional[2] == expected_ap_id, (
+            f"Third arg must be follow_ap_id={expected_ap_id}"
+        )
+
+    def test_follow_returns_is_following_true(
+        self,
+        local_user_with_key: Any,
+        settings: Any,
+    ) -> None:
+        """
+        After a follow POST, the rendered template context must have
+        is_following=True and status code 200.
+        """
+        from django.test import Client
+
+        from suddenly.users.models import User as UserModel
+
+        remote_actor_url = "https://peer.suddenly.test/users/remote_delta"
+        remote_user = UserModel.objects.create(
+            username="remote_delta@peer.suddenly.test",
+            remote=True,
+            ap_id=remote_actor_url,
+            inbox_url=f"{remote_actor_url}/inbox",
+        )
+
+        client = Client()
+        client.force_login(local_user_with_key)
+
+        with (
+            patch(
+                "suddenly.activitypub.tasks.get_or_create_remote_user",
+                return_value=remote_user,
+            ),
+            patch("suddenly.activitypub.tasks.send_follow_activity") as mock_task,
+            patch("suddenly.activitypub.signals._safe_delay"),
+        ):
+            mock_task.delay = MagicMock()
+            response = client.post(
+                "/federation/remote/follow/",
+                {"ap_id": remote_actor_url},
+            )
+
+        assert response.status_code == 200
+        assert response.context["is_following"] is True, (
+            "Context is_following must be True after follow"
+        )
+
+    # ------------------------------------------------------------------
+    # Unfollow (existing Follow record present)
+    # ------------------------------------------------------------------
+
+    def test_unfollow_enqueues_send_undo_follow_activity(
+        self,
+        local_user_with_key: Any,
+        settings: Any,
+    ) -> None:
+        """
+        POST when a Follow already exists must enqueue
+        send_undo_follow_activity.delay(user_id, ap_id).
+        """
+        from django.contrib.contenttypes.models import ContentType
+        from django.test import Client
+
+        from suddenly.characters.models import Follow
+        from suddenly.users.models import User as UserModel
+
+        remote_actor_url = "https://peer.suddenly.test/users/remote_echo"
+        remote_user = UserModel.objects.create(
+            username="remote_echo@peer.suddenly.test",
+            remote=True,
+            ap_id=remote_actor_url,
+            inbox_url=f"{remote_actor_url}/inbox",
+        )
+
+        ct = ContentType.objects.get_for_model(UserModel)
+        # Suppress signals during Follow creation to avoid eager HTTP delivery
+        with patch("suddenly.activitypub.signals._safe_delay"):
+            existing_follow = Follow.objects.create(
+                follower=local_user_with_key,
+                content_type=ct,
+                object_id=remote_user.pk,
+                remote=False,
+                ap_id=f"https://{settings.DOMAIN}/users/{local_user_with_key.username}/follows/{remote_user.pk}",
+            )
+
+        client = Client()
+        client.force_login(local_user_with_key)
+
+        captured_delay_calls: list[tuple[Any, ...]] = []
+
+        def fake_delay(*args: Any, **kwargs: Any) -> None:
+            captured_delay_calls.append((args, kwargs))
+
+        with (
+            patch(
+                "suddenly.activitypub.tasks.get_or_create_remote_user",
+                return_value=remote_user,
+            ),
+            patch("suddenly.activitypub.tasks.send_undo_follow_activity") as mock_task,
+        ):
+            mock_task.delay.side_effect = fake_delay
+            response = client.post(
+                "/federation/remote/follow/",
+                {"ap_id": remote_actor_url},
+            )
+
+        assert response.status_code == 200
+        assert len(captured_delay_calls) == 1, (
+            f"send_undo_follow_activity.delay must be called once, got {len(captured_delay_calls)}"
+        )
+        args, kwargs = captured_delay_calls[0]
+        positional = list(args)
+        assert positional[0] == str(local_user_with_key.pk), (
+            "First arg must be user_id"
+        )
+        assert positional[1] == remote_actor_url, (
+            "Second arg must be ap_id"
+        )
+
+    def test_unfollow_does_not_delete_follow_locally(
+        self,
+        local_user_with_key: Any,
+        settings: Any,
+    ) -> None:
+        """
+        The view must NOT delete the Follow record — deletion is the task's job.
+        """
+        from django.contrib.contenttypes.models import ContentType
+        from django.test import Client
+
+        from suddenly.characters.models import Follow
+        from suddenly.users.models import User as UserModel
+
+        remote_actor_url = "https://peer.suddenly.test/users/remote_foxtrot"
+        remote_user = UserModel.objects.create(
+            username="remote_foxtrot@peer.suddenly.test",
+            remote=True,
+            ap_id=remote_actor_url,
+            inbox_url=f"{remote_actor_url}/inbox",
+        )
+
+        ct = ContentType.objects.get_for_model(UserModel)
+        # Suppress signals during Follow creation to avoid eager HTTP delivery
+        with patch("suddenly.activitypub.signals._safe_delay"):
+            existing_follow = Follow.objects.create(
+                follower=local_user_with_key,
+                content_type=ct,
+                object_id=remote_user.pk,
+                remote=False,
+                ap_id=f"https://{settings.DOMAIN}/users/{local_user_with_key.username}/follows/{remote_user.pk}",
+            )
+        follow_pk = existing_follow.pk
+
+        client = Client()
+        client.force_login(local_user_with_key)
+
+        with (
+            patch(
+                "suddenly.activitypub.tasks.get_or_create_remote_user",
+                return_value=remote_user,
+            ),
+            patch("suddenly.activitypub.tasks.send_undo_follow_activity") as mock_task,
+        ):
+            mock_task.delay = MagicMock()
+            response = client.post(
+                "/federation/remote/follow/",
+                {"ap_id": remote_actor_url},
+            )
+
+        assert response.status_code == 200
+        assert Follow.objects.filter(pk=follow_pk).exists(), (
+            "View must NOT delete the Follow record — deletion belongs to the Celery task"
+        )
+
+    def test_unfollow_returns_is_following_false(
+        self,
+        local_user_with_key: Any,
+        settings: Any,
+    ) -> None:
+        """
+        Unfollow POST must return 200 with is_following=False in context.
+        """
+        from django.contrib.contenttypes.models import ContentType
+        from django.test import Client
+
+        from suddenly.characters.models import Follow
+        from suddenly.users.models import User as UserModel
+
+        remote_actor_url = "https://peer.suddenly.test/users/remote_golf"
+        remote_user = UserModel.objects.create(
+            username="remote_golf@peer.suddenly.test",
+            remote=True,
+            ap_id=remote_actor_url,
+            inbox_url=f"{remote_actor_url}/inbox",
+        )
+
+        ct = ContentType.objects.get_for_model(UserModel)
+        # Suppress signals during Follow creation to avoid eager HTTP delivery
+        with patch("suddenly.activitypub.signals._safe_delay"):
+            Follow.objects.create(
+                follower=local_user_with_key,
+                content_type=ct,
+                object_id=remote_user.pk,
+                remote=False,
+                ap_id=f"https://{settings.DOMAIN}/users/{local_user_with_key.username}/follows/{remote_user.pk}",
+            )
+
+        client = Client()
+        client.force_login(local_user_with_key)
+
+        with (
+            patch(
+                "suddenly.activitypub.tasks.get_or_create_remote_user",
+                return_value=remote_user,
+            ),
+            patch("suddenly.activitypub.tasks.send_undo_follow_activity") as mock_task,
+        ):
+            mock_task.delay = MagicMock()
+            response = client.post(
+                "/federation/remote/follow/",
+                {"ap_id": remote_actor_url},
+            )
+
+        assert response.status_code == 200
+        assert response.context["is_following"] is False, (
+            "Context is_following must be False after unfollow"
+        )
+
+    # ------------------------------------------------------------------
+    # action= field mismatch — view decides by DB state, not POST field
+    # ------------------------------------------------------------------
+
+    def test_action_field_ignored_when_no_follow_exists(
+        self,
+        local_user_with_key: Any,
+        settings: Any,
+    ) -> None:
+        """
+        Even if action=unfollow is sent, when no Follow exists the view
+        must follow (not unfollow), because the decision is based on DB state.
+        """
+        from django.contrib.contenttypes.models import ContentType
+        from django.test import Client
+
+        from suddenly.characters.models import Follow
+        from suddenly.users.models import User as UserModel
+
+        remote_actor_url = "https://peer.suddenly.test/users/remote_hotel"
+        remote_user = UserModel.objects.create(
+            username="remote_hotel@peer.suddenly.test",
+            remote=True,
+            ap_id=remote_actor_url,
+            inbox_url=f"{remote_actor_url}/inbox",
+        )
+
+        client = Client()
+        client.force_login(local_user_with_key)
+
+        with (
+            patch(
+                "suddenly.activitypub.tasks.get_or_create_remote_user",
+                return_value=remote_user,
+            ),
+            patch("suddenly.activitypub.tasks.send_follow_activity") as mock_task,
+            patch("suddenly.activitypub.signals._safe_delay"),
+        ):
+            mock_task.delay = MagicMock()
+            response = client.post(
+                "/federation/remote/follow/",
+                {"ap_id": remote_actor_url, "action": "unfollow"},
+            )
+
+        assert response.status_code == 200
+        assert response.context["is_following"] is True, (
+            "View must follow (not unfollow) when no Follow exists, "
+            "regardless of action= field value"
+        )
+        ct = ContentType.objects.get_for_model(UserModel)
+        assert Follow.objects.filter(
+            follower=local_user_with_key,
+            content_type=ct,
+            object_id=remote_user.pk,
+        ).exists(), "Follow record must be created even when action=unfollow was sent"
+
+    # ------------------------------------------------------------------
+    # Error cases
+    # ------------------------------------------------------------------
+
+    def test_missing_ap_id_returns_400(
+        self,
+        local_user_with_key: Any,
+    ) -> None:
+        """POST without ap_id must return 400."""
+        from django.test import Client
+
+        client = Client()
+        client.force_login(local_user_with_key)
+
+        response = client.post("/federation/remote/follow/", {})
+
+        assert response.status_code == 400
+
+    def test_unresolvable_ap_id_returns_400(
+        self,
+        local_user_with_key: Any,
+    ) -> None:
+        """POST with an ap_id that get_or_create_remote_user cannot resolve must return 400."""
+        from django.test import Client
+
+        client = Client()
+        client.force_login(local_user_with_key)
+
+        with patch(
+            "suddenly.activitypub.tasks.get_or_create_remote_user",
+            return_value=None,
+        ):
+            response = client.post(
+                "/federation/remote/follow/",
+                {"ap_id": "https://unreachable.test/users/nobody"},
+            )
+
+        assert response.status_code == 400
+
+    def test_get_method_returns_405(
+        self,
+        local_user_with_key: Any,
+    ) -> None:
+        """GET requests must be rejected with 405 Method Not Allowed."""
+        from django.test import Client
+
+        client = Client()
+        client.force_login(local_user_with_key)
+
+        response = client.get("/federation/remote/follow/")
+
+        assert response.status_code == 405
+
+    def test_unauthenticated_redirects_to_login(self) -> None:
+        """Unauthenticated POST must redirect to the login page (302)."""
+        from django.test import Client
+
+        client = Client()
+        response = client.post(
+            "/federation/remote/follow/",
+            {"ap_id": "https://peer.suddenly.test/users/someone"},
+        )
+
+        assert response.status_code == 302
+        assert "/accounts/login/" in response["Location"] or "/login" in response["Location"], (
+            f"Redirect must point to login, got {response['Location']}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# View: remote_profile — is_following context
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+class TestRemoteProfileIsFollowing:
+    """remote_profile view must set is_following correctly in context.
+
+    The view calls htmx_render (imported at module level in federation_views).
+    We patch htmx_render to capture the context dict without actually rendering
+    templates — this avoids static file manifest issues in test settings.
+
+    The view's first DB query (redirect check) uses User.objects.filter(ap_id=…)
+    without remote=True.  The is_following check uses …filter(ap_id=…, remote=True).
+    We use a filter side_effect to return an empty queryset on the redirect check
+    while allowing the real queryset on the is_following check.
+    """
+
+    def _setup_view_mocks(
+        self,
+        mocker: Any,
+        ap_id: str,
+        captured_contexts: list[dict[str, Any]],
+    ) -> None:
+        """Patch _fetch_actor and htmx_render to capture context without rendering."""
+        mocker.patch(
+            "suddenly.activitypub.federation_views._fetch_actor",
+            return_value={
+                "id": ap_id,
+                "type": "Person",
+                "preferredUsername": "remote_person",
+                "name": "Remote Person",
+                "inbox": f"{ap_id}/inbox",
+                "summary": "",
+            },
+        )
+
+        from django.http import HttpResponse
+
+        def fake_htmx_render(
+            request: Any,
+            full_template: str,
+            partial_template: str,
+            context: dict[str, Any] | None = None,
+        ) -> HttpResponse:
+            captured_contexts.append(context or {})
+            return HttpResponse(status=200)
+
+        mocker.patch(
+            "suddenly.activitypub.federation_views.htmx_render",
+            side_effect=fake_htmx_render,
+        )
+
+    def test_authenticated_user_following_sees_is_following_true(
+        self,
+        local_user_with_key: Any,
+        settings: Any,
+        rf: RequestFactory,
+        mocker: Any,
+    ) -> None:
+        """
+        Authenticated user who already follows the remote actor must see
+        is_following=True in the remote_profile context.
+
+        We bypass the redirect branch by making the first filter() return None
+        (actor not yet locally known) via side_effect, while the second call
+        (with remote=True) returns the real remote_user so the Follow lookup works.
+        """
+        from django.contrib.contenttypes.models import ContentType
+
+        from suddenly.characters.models import Follow
+        from suddenly.users.models import User as UserModel
+
+        remote_actor_url = "https://peer.suddenly.test/users/remote_india"
+        remote_user = UserModel.objects.create(
+            username="remote_india@peer.suddenly.test",
+            remote=True,
+            ap_id=remote_actor_url,
+            inbox_url=f"{remote_actor_url}/inbox",
+        )
+
+        ct = ContentType.objects.get_for_model(UserModel)
+        # Suppress post_save signal during Follow creation
+        with patch("suddenly.activitypub.signals._safe_delay"):
+            Follow.objects.create(
+                follower=local_user_with_key,
+                content_type=ct,
+                object_id=remote_user.pk,
+                remote=False,
+                ap_id=f"https://{settings.DOMAIN}/users/{local_user_with_key.username}/follows/{remote_user.pk}",
+            )
+
+        captured_contexts: list[dict[str, Any]] = []
+        self._setup_view_mocks(mocker, remote_actor_url, captured_contexts)
+
+        # First filter(ap_id=…) → empty (no redirect); second filter(ap_id=…, remote=True) → real
+        real_filter = UserModel.objects.filter
+
+        def filter_side_effect(**kwargs: Any) -> Any:
+            if kwargs.get("remote") is True:
+                return real_filter(**kwargs)
+            return UserModel.objects.none()
+
+        mocker.patch(
+            "suddenly.users.models.User.objects.filter",
+            side_effect=filter_side_effect,
+        )
+
+        request = rf.get("/federation/remote/", {"ap_id": remote_actor_url})
+        request.user = local_user_with_key
+
+        from suddenly.activitypub.federation_views import remote_profile
+
+        response = remote_profile(request)
+
+        assert response.status_code == 200
+        assert len(captured_contexts) == 1, "htmx_render must be called once"
+        assert captured_contexts[0]["is_following"] is True, (
+            "is_following must be True when user has an existing Follow for this remote actor"
+        )
+
+    def test_authenticated_user_not_following_sees_is_following_false(
+        self,
+        local_user_with_key: Any,
+        rf: RequestFactory,
+        mocker: Any,
+    ) -> None:
+        """
+        Authenticated user who does not follow the remote actor must see
+        is_following=False.
+        """
+        from suddenly.users.models import User as UserModel
+
+        remote_actor_url = "https://peer.suddenly.test/users/remote_juliet"
+        UserModel.objects.create(
+            username="remote_juliet@peer.suddenly.test",
+            remote=True,
+            ap_id=remote_actor_url,
+            inbox_url=f"{remote_actor_url}/inbox",
+        )
+
+        captured_contexts: list[dict[str, Any]] = []
+        self._setup_view_mocks(mocker, remote_actor_url, captured_contexts)
+
+        real_filter = UserModel.objects.filter
+
+        def filter_side_effect(**kwargs: Any) -> Any:
+            if kwargs.get("remote") is True:
+                return real_filter(**kwargs)
+            return UserModel.objects.none()
+
+        mocker.patch(
+            "suddenly.users.models.User.objects.filter",
+            side_effect=filter_side_effect,
+        )
+
+        request = rf.get("/federation/remote/", {"ap_id": remote_actor_url})
+        request.user = local_user_with_key
+
+        from suddenly.activitypub.federation_views import remote_profile
+
+        response = remote_profile(request)
+
+        assert response.status_code == 200
+        assert len(captured_contexts) == 1, "htmx_render must be called once"
+        assert captured_contexts[0]["is_following"] is False, (
+            "is_following must be False when user has no Follow for this remote actor"
+        )
+
+    def test_unauthenticated_user_sees_is_following_false(
+        self,
+        rf: RequestFactory,
+        mocker: Any,
+    ) -> None:
+        """
+        Unauthenticated access to remote_profile must succeed (200) with
+        is_following=False — no exception or redirect.
+        """
+        from django.contrib.auth.models import AnonymousUser
+
+        from suddenly.users.models import User as UserModel
+
+        remote_actor_url = "https://peer.suddenly.test/users/remote_kilo"
+
+        captured_contexts: list[dict[str, Any]] = []
+        self._setup_view_mocks(mocker, remote_actor_url, captured_contexts)
+
+        mocker.patch(
+            "suddenly.users.models.User.objects.filter",
+            return_value=UserModel.objects.none(),
+        )
+
+        request = rf.get("/federation/remote/", {"ap_id": remote_actor_url})
+        request.user = AnonymousUser()
+
+        from suddenly.activitypub.federation_views import remote_profile
+
+        response = remote_profile(request)
+
+        assert response.status_code == 200
+        assert len(captured_contexts) == 1, "htmx_render must be called once"
+        assert captured_contexts[0]["is_following"] is False, (
+            "is_following must be False for unauthenticated users"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Serializer: create_follow_activity — activity_id parameter
+# ---------------------------------------------------------------------------
+
+
+class TestCreateFollowActivityId:
+    """create_follow_activity must honour the optional activity_id parameter."""
+
+    def test_with_activity_id_sets_id_field(self) -> None:
+        """When activity_id is provided, activity['id'] must equal activity_id."""
+        from suddenly.activitypub.serializers import create_follow_activity
+
+        actor = MagicMock()
+        actor.actor_url = "https://local.suddenly.test/users/alice"
+        target = "https://peer.suddenly.test/users/bob"
+        activity_id = "https://local.suddenly.test/users/alice/follows/42"
+
+        activity = create_follow_activity(actor, target, activity_id)
+
+        assert activity.get("id") == activity_id, (
+            f"activity['id'] must be {activity_id}, got {activity.get('id')}"
+        )
+
+    def test_without_activity_id_omits_id_field(self) -> None:
+        """When activity_id is None, 'id' must be absent from the activity."""
+        from suddenly.activitypub.serializers import create_follow_activity
+
+        actor = MagicMock()
+        actor.actor_url = "https://local.suddenly.test/users/alice"
+        target = "https://peer.suddenly.test/users/bob"
+
+        activity = create_follow_activity(actor, target, None)
+
+        assert "id" not in activity, (
+            f"'id' key must be absent when activity_id is None, got {activity.get('id')}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Flow: Follow outgoing — follow_ap_id propagates to delivered activity
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+class TestFollowOutgoingActivityId:
+    """send_follow_activity must propagate follow_ap_id into the delivered Follow activity."""
+
+    def test_follow_ap_id_appears_in_delivered_activity(
+        self,
+        local_federation_user: Any,
+        mocker: Any,
+    ) -> None:
+        """
+        When follow_ap_id is passed to send_follow_activity, the activity
+        delivered via deliver_activity.delay must contain 'id': follow_ap_id.
+        """
+        from suddenly.activitypub.tasks import send_follow_activity
+
+        peer_actor = "https://test.suddenly.social/users/testbot"
+        remote_inbox = f"{peer_actor}/inbox"
+        follow_ap_id = f"{local_federation_user.actor_url}/follows/99"
+
+        captured_delay_calls: list[dict[str, Any]] = []
+
+        def fake_delay(**kwargs: Any) -> None:
+            captured_delay_calls.append(kwargs)
+
+        mock_deliver = mocker.MagicMock()
+        mock_deliver.delay.side_effect = fake_delay
+        mocker.patch("suddenly.activitypub.tasks.deliver_activity", mock_deliver)
+
+        remote_actor_data = {
+            "id": peer_actor,
+            "type": "Person",
+            "preferredUsername": "testbot",
+            "inbox": remote_inbox,
+            "outbox": f"{peer_actor}/outbox",
+            "publicKey": {
+                "id": f"{peer_actor}#main-key",
+                "owner": peer_actor,
+                "publicKeyPem": "fake-public-key-pem",
+            },
+        }
+        mock_http_response = MagicMock()
+        mock_http_response.json.return_value = remote_actor_data
+        mock_http_response.raise_for_status = MagicMock()
+        mock_http_response.status_code = 200
+
+        mock_client_instance = MagicMock()
+        mock_client_instance.__enter__ = MagicMock(return_value=mock_client_instance)
+        mock_client_instance.__exit__ = MagicMock(return_value=False)
+        mock_client_instance.get.return_value = mock_http_response
+        mocker.patch("httpx.Client", return_value=mock_client_instance)
+
+        send_follow_activity(str(local_federation_user.pk), peer_actor, follow_ap_id)
+
+        assert len(captured_delay_calls) == 1, (
+            f"deliver_activity.delay must be called once, got {len(captured_delay_calls)}"
+        )
+
+        activity = captured_delay_calls[0].get("activity", {})
+        assert activity.get("id") == follow_ap_id, (
+            f"Delivered Follow activity must contain id={follow_ap_id}, "
+            f"got id={activity.get('id')}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Flow: Delete incoming (remote actor deletes a Character)
+# ---------------------------------------------------------------------------
+
+
 @pytest.mark.django_db
 class TestDeleteIncoming:
     """Remote actor sends Delete — inbox must remove the remote Character from DB."""

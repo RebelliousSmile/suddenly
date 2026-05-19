@@ -301,9 +301,14 @@ def create_delete_activity(actor: Any, obj_id: str) -> dict[str, Any]:
     return create_activity("Delete", actor, {"type": "Tombstone", "id": obj_id})
 
 
-def create_follow_activity(actor: Any, target: str) -> dict[str, Any]:
+def create_follow_activity(
+    actor: Any, target: str, activity_id: str | None = None
+) -> dict[str, Any]:
     """Create a Follow activity."""
-    return create_activity("Follow", actor, target)
+    activity = create_activity("Follow", actor, target)
+    if activity_id:
+        activity["id"] = activity_id
+    return activity
 
 
 def create_accept_activity(actor: Any, original_activity: dict[str, Any] | str) -> dict[str, Any]:

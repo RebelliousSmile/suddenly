@@ -392,7 +392,9 @@ def send_offer_activity(link_request_id: str) -> None:
 
 
 @shared_task  # type: ignore[untyped-decorator]
-def send_follow_activity(user_id: str, target_actor_url: str) -> None:
+def send_follow_activity(
+    user_id: str, target_actor_url: str, follow_ap_id: str | None = None
+) -> None:
     """Send a Follow activity from a local user to a remote actor.
 
     Resolves the remote actor's inbox URL, builds a signed Follow activity,
@@ -410,7 +412,7 @@ def send_follow_activity(user_id: str, target_actor_url: str) -> None:
     if not remote_user or not remote_user.inbox_url:
         return
 
-    activity = create_follow_activity(user, target_actor_url)
+    activity = create_follow_activity(user, target_actor_url, follow_ap_id)
     key_id, private_key = get_actor_signing_keys(user)
 
     deliver_activity.delay(
