@@ -265,8 +265,7 @@ def broadcast_activity(activity: dict[str, Any], actor_id: str, actor_type: str)
     actor_models: dict[str, Any] = {"User": User, "Game": Game, "Character": Character}
     ActorModel = actor_models.get(actor_type)  # noqa: N806
     actor_obj = ActorModel.objects.filter(pk=actor_id).first() if ActorModel else None
-    key_id = f"{actor_obj.actor_url}#main-key" if actor_obj else None
-    private_key = getattr(actor_obj, "private_key", None)
+    key_id, private_key = get_actor_signing_keys(actor_obj) if actor_obj else (None, None)
 
     inboxes = {f.follower.inbox_url for f in followers if f.follower.inbox_url}
 
@@ -383,7 +382,89 @@ def send_offer_activity(link_request_id: str) -> None:
     # Send to target character's creator
     creator = request.target_character.creator
     if creator and creator.remote and creator.inbox_url:
-        deliver_activity.delay(activity, creator.inbox_url)
+        key_id, private_key = get_actor_signing_keys(request.requester)
+        deliver_activity.delay(
+            activity,
+            creator.inbox_url,
+            actor_key_id=key_id,
+            private_key_pem=private_key,
+        )
+
+
+@shared_task  # type: ignore[untyped-decorator]
+def send_follow_activity(user_id: str, target_actor_url: str) -> None:
+    """Send a Follow activity from a local user to a remote actor.
+
+    Resolves the remote actor's inbox URL, builds a signed Follow activity,
+    and delivers it via ``deliver_activity``.
+    """
+    from suddenly.users.models import User
+
+    from .serializers import create_follow_activity
+
+    user = User.objects.filter(pk=user_id).first()
+    if not user or user.remote:
+        return
+
+    remote_user = get_or_create_remote_user(target_actor_url)
+    if not remote_user or not remote_user.inbox_url:
+        return
+
+    activity = create_follow_activity(user, target_actor_url)
+    key_id, private_key = get_actor_signing_keys(user)
+
+    deliver_activity.delay(
+        activity=activity,
+        inbox_url=remote_user.inbox_url,
+        actor_key_id=key_id,
+        private_key_pem=private_key,
+    )
+
+
+@shared_task  # type: ignore[untyped-decorator]
+def send_undo_follow_activity(user_id: str, target_actor_url: str) -> None:
+    """Send an Undo(Follow) activity from a local user to a remote actor.
+
+    Looks up the Follow record by follower+target to retrieve its ``ap_id``,
+    builds a signed Undo(Follow) activity, delivers it, then deletes the
+    local Follow record.
+    """
+    from django.contrib.contenttypes.models import ContentType
+
+    from suddenly.characters.models import Follow
+    from suddenly.users.models import User
+
+    from .serializers import create_undo_follow_activity
+
+    user = User.objects.filter(pk=user_id).first()
+    if not user or user.remote:
+        return
+
+    remote_user = User.objects.filter(ap_id=target_actor_url, remote=True).first()
+    if not remote_user or not remote_user.inbox_url:
+        return
+
+    content_type = ContentType.objects.get_for_model(User)
+    follow = Follow.objects.filter(
+        follower=user,
+        content_type=content_type,
+        object_id=remote_user.pk,
+    ).first()
+
+    if not follow or not follow.ap_id:
+        return
+
+    activity = create_undo_follow_activity(user, follow.ap_id, target_actor_url)
+    key_id, private_key = get_actor_signing_keys(user)
+
+    deliver_activity.delay(
+        activity=activity,
+        inbox_url=remote_user.inbox_url,
+        actor_key_id=key_id,
+        private_key_pem=private_key,
+    )
+
+    follow.delete()
 
 
 @shared_task  # type: ignore[untyped-decorator]
@@ -512,6 +593,18 @@ def fetch_remote_actor(actor_url: str) -> None:
 # =================================================================
 # Helpers
 # =================================================================
+
+
+def get_actor_signing_keys(actor: Any) -> tuple[str | None, str | None]:
+    """Return (actor_key_id, private_key_pem) for a local actor, or (None, None).
+
+    The returned key_id follows the convention ``<actor_url>#main-key``.
+    Returns (None, None) for remote actors or actors without a private key.
+    """
+    actor_url = getattr(actor, "actor_url", None)
+    private_key_pem: str | None = getattr(actor, "private_key", None) or None
+    actor_key_id: str | None = f"{actor_url}#main-key" if actor_url else None
+    return actor_key_id, private_key_pem
 
 
 def get_or_create_remote_user(actor_url: str | None) -> Any:

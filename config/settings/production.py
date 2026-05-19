@@ -17,10 +17,19 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 DOMAIN = os.environ["DOMAIN"]
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", DOMAIN).split(",")
 
-# Railway provides RAILWAY_PUBLIC_DOMAIN for the auto-generated hostname
+# Railway: custom domain or generated domain from env
 _railway_domain = os.environ.get("RAILWAY_PUBLIC_DOMAIN")
 if _railway_domain and _railway_domain not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(_railway_domain)
+
+# Railway internal routing uses *.up.railway.app even when a custom domain is set
+if ".up.railway.app" not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(".up.railway.app")
+
+# Allow Railway healthcheck probes (uses Host: healthcheck.railway.app)
+for _internal_host in ("healthcheck.railway.app", "127.0.0.1", "localhost"):
+    if _internal_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(_internal_host)
 
 # Production database (required)
 _db_url = urlparse(os.environ["DATABASE_URL"])

@@ -5,6 +5,9 @@
 - **Connection**: `DATABASE_URL` env var in production
 
 ```mermaid
+---
+title: Database Stack
+---
 flowchart LR
     subgraph "ORM"
         Django["Django ORM"]
@@ -26,6 +29,9 @@ flowchart LR
 - `Follow` is polymorphic (targets `User`, `Character`, or `Game`)
 
 ```mermaid
+---
+title: Suddenly ER Diagram
+---
 erDiagram
     User ||--o{ Game : owns
     User ||--o{ Report : authors
@@ -41,28 +47,38 @@ erDiagram
     LinkRequest ||--o| CharacterLink : "accepted into"
     CharacterLink ||--|| SharedSequence : creates
     FederatedServer }o--o{ User : "remote actors"
+    User ||--o{ Notification : receives
+    User ||--o{ ContentReport : reports
+    User ||--o| UserUsageStats : has
+    User ||--o{ DonationPrompt : receives
+    User ||--o{ UserBlock : makes
+    User ||--o{ UserMute : makes
+    Game ||--o| GameSystem : uses
+    Report ||--o{ Rapport : segments
+    Rapport ||--o{ RapportLink : parents
+    Rapport ||--o{ RapportMarker : markers
 ```
 
 ## Base Model
 
-Tous les modèles héritent de `BaseModel` (UUID PK, `created_at`, `updated_at`).
-Les modèles fédérables héritent de `ActivityPubMixin` (`ap_id`, `inbox`, `outbox`, `local`).
+- All models inherit `BaseModel` (UUID PK, `created_at`, `updated_at`)
+- Federable models inherit `ActivityPubMixin` (`ap_id`, `inbox`, `outbox`, `local`)
 
 ## Character Status
 
 ```
-NPC → CLAIMED  (rétcon : le PNJ était le PJ depuis le début)
-NPC → ADOPTED  (adoption : le PNJ devient le PJ du demandeur)
-NPC → FORKED   (dérivation : nouveau PJ lié, PNJ conservé)
+NPC → CLAIMED  (retcon: NPC was already the requester's PC from the start)
+NPC → ADOPTED  (adoption: NPC becomes requester's new PC)
+NPC → FORKED   (derivation: new PC linked to NPC, NPC preserved)
 ```
 
-## Champs clés par modèle
+## Key Fields by Model
 
-| Modèle | App | Type AP | Champs critiques |
-|--------|-----|---------|-----------------|
+| Model | App | AP Type | Critical Fields |
+|-------|-----|---------|----------------|
 | User | users | Person | `username`, `ap_id`, `inbox`, `outbox`, `local`, `public_key`, `preferred_languages` |
 | Game | games | Group | `title`, `owner`, `is_public`, `ap_id`, `local` |
-| Report | games | Article | `content` (Markdown), `game`, `author`, `status` (DRAFT/PUBLISHED), `language` |
+| Report | games | Article | `content` (Markdown), `game`, `author`, `status` (DRAFT/PUBLISHED), `language`, `content_warning` (CharField 500 optional), `visibility` (PUBLIC/UNLISTED/FOLLOWERS), `session_date` (DateField optional) |
 | Character | characters | Person | `name`, `status` (NPC/PC/CLAIMED/ADOPTED/FORKED), `owner`, `creator`, `origin_game`, `parent` |
 | Quote | characters | Note | `content`, `character`, `visibility` (EPHEMERAL/PRIVATE/PUBLIC), `language` |
 | CharacterAppearance | characters | — | `character`, `report`, `role` (MAIN/SUPPORTING/MENTIONED) |
@@ -72,31 +88,46 @@ NPC → FORKED   (dérivation : nouveau PJ lié, PNJ conservé)
 | SharedSequence | characters | — | `character_link`, `content` (Markdown), `initiator`, `acceptor`, `is_published` |
 | FederatedServer | activitypub | — | `server_name`, `application_type`, `status` (UNKNOWN/FEDERATED/BLOCKED) |
 | Follow | activitypub | — | `follower`, `target_type` (USER/CHARACTER/GAME), `target_id`, `status` |
+| Notification | core | — | `recipient` (User FK), `notification_type` (NotificationType), `target_content_type` + `target_object_id` (GenericFK), `read` (bool) |
+| NotificationPreference | core | — | `user` (OneToOne), preferences per notification type |
+| ContentReport | core | — | `reporter` (User FK), `target` (GenericFK via ContentType + UUID), `category` (ReportCategory), `comment`, `resolved`, `resolved_by` |
+| UserBlock | core | — | `blocker` + `blocked` (User FKs), unique_together |
+| UserMute | core | — | `muter` + `muted` (User FKs), unique_together |
+| DonationPrompt | core | — | `user` (FK), `posts_at_prompt`, `donated`, `donated_at`, `amount_suggested` |
+| UserUsageStats | core | — | `user` (OneToOne), `total_posts`, `total_quotes`, `total_link_requests`, `posts_since_last_prompt`, `last_donation_date` |
+| GameSystem | games | — | `name` (CharField) — game system taxonomy |
+| Rapport | games | — | `report` (FK to Report), `kind` (RapportKind: DESCRIPTION/ACTION/DISCUSSION/NARRATION), `content`, `actor` (Character FK nullable — required for DISCUSSION) |
+| RapportLink | games | — | `rapport` (FK), `parent_rapport` (FK nullable), `parent_iri` (URLField nullable) — exactly one of local/remote must be set |
+| RapportMarker | games | — | `rapport` (FK), `kind` (MarkerKind: START/END/CHARACTER_APPEARS/CHARACTER_LEAVES/ORACLE), `character` (FK nullable — required for CHARACTER_* kinds) |
 
-## Indexes critiques
+## Critical Indexes
 
-- `Character(status)` — lister les PNJ disponibles
-- `Character(local, status)` — PNJ locaux disponibles
-- `Report(game, status)` — CRs publiés d'une partie
-- `Quote(character, visibility)` — citations publiques
-- `LinkRequest(status, target_character)` — demandes en attente
+- `Character(status)` — list available NPCs
+- `Character(local, status)` — local available NPCs
+- `Report(game, status)` — published reports for a game
+- `Quote(character, visibility)` — public quotes
+- `LinkRequest(status, target_character)` — pending requests
 - `Follow(follower, target_type, target_id)` — unique
+- `Notification(recipient, read)` — unread count
+- `ContentReport(resolved)` — moderation queue
+- `Rapport(report, kind)` — filter segments by type
+- `RapportMarker(rapport, kind)` — filter markers
 
-## Contraintes importantes
+## Key Constraints
 
-- Un PNJ (`status=NPC`) ne peut pas avoir d'`owner`
-- Un Claim nécessite un `proposed_character`
-- Un `ReportCast` doit avoir soit `character` soit `new_character_name`
-- `CharacterLink` unique sur `(source, target, link_type)`
-- `CharacterLink` → `SharedSequence` obligatoire pour MVP
+- NPC (`status=NPC`) cannot have `owner`
+- Claim requires `proposed_character`
+- `ReportCast` must have either `character` or `new_character_name`
+- `CharacterLink` unique on `(source, target, link_type)`
+- `CharacterLink` → `SharedSequence` required for MVP
 
 ## Migrations
 
 Django migrations — `python manage.py migrate`
 
-- Apps avec migrations : `users`, `games`, `characters`, `activitypub`
-- Ordre : users → activitypub → games → characters
+- Apps with migrations: `users`, `games`, `characters`, `activitypub`, `core`
+- Order: users → activitypub → core → games → characters
 
 ## Seeding
 
-No seeding strategy defined yet.
+- No seeding strategy defined yet

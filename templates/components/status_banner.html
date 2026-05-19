@@ -1,17 +1,6 @@
 {#
-  Status Banner Component — contextual info bar on character/link pages
-
-  Usage:
-    {% include "components/status_banner.html" with type="info" icon="info" message="Votre demande est en attente." action_label="Voir" action_url=request_url dismiss=True %}
-    {% include "components/status_banner.html" with type="warning" icon="clock" message="En file d'attente (#2)" %}
-
-  Props:
-    type          — "info" | "warning" | "success" | "error"
-    icon          — Lucide icon name (without prefix)
-    message       — main text
-    action_label  — link text (optional)
-    action_url    — link href (optional)
-    dismiss       — show close button (optional, default False)
+  Status Banner Component
+  Props: type (info|warning|success|error), icon, message, action_label, action_url, dismiss
 #}
 
 <div class="flex items-center gap-3 px-4 py-3 rounded-card text-sm

@@ -52,6 +52,13 @@ dev = [
     "django-extensions>=3.2",
 ]
 
+[dependency-groups]
+dev = [
+    "factory-boy>=3.3.3",
+    "pytest-cov>=7.1.0",
+    "pytest-mock>=3.15.1",
+]
+
 [tool.ruff]
 line-length = 100
 target-version = "py312"
@@ -85,9 +92,10 @@ django_settings_module = "config.settings.development"
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings.development"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
-addopts = "-v --tb=short -m 'not e2e' --cov=suddenly --cov-fail-under=50 --cov-config=pyproject.toml"
+addopts = "-v --tb=short -m 'not e2e and not e2e_federation' --cov=suddenly --cov-fail-under=50 --cov-config=pyproject.toml"
 markers = [
     "e2e: End-to-end browser tests",
+    "e2e_federation: Cross-instance federation tests (requires FEDERATION_PEER_URL)",
 ]
 filterwarnings = [
     "ignore::DeprecationWarning",

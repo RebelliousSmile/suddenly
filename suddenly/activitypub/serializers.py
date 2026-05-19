@@ -316,6 +316,21 @@ def create_reject_activity(actor: Any, original_activity: dict[str, Any] | str) 
     return create_activity("Reject", actor, original_activity)
 
 
+def create_undo_follow_activity(actor: Any, follow_ap_id: str, target: str) -> dict[str, Any]:
+    """Create an Undo(Follow) activity.
+
+    Wraps the original Follow as an embedded object so the recipient can
+    identify which Follow relationship is being retracted.
+    """
+    inner_follow: dict[str, Any] = {
+        "type": "Follow",
+        "id": follow_ap_id,
+        "actor": actor.actor_url if hasattr(actor, "actor_url") else actor,
+        "object": target,
+    }
+    return create_activity("Undo", actor, inner_follow)
+
+
 def create_offer_activity(actor: Any, link_request: Any) -> dict[str, Any]:
     """Create an Offer activity for link requests."""
     return serialize_link_request(link_request)
