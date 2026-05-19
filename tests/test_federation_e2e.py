@@ -1008,6 +1008,22 @@ class TestOfferOutgoing:
         character, remote_creator = local_character_with_remote_creator
         requester = local_requester_with_key
 
+        # Mock deliver_activity BEFORE creating the LinkRequest to prevent the
+        # post_save signal from triggering a real HTTP delivery attempt.
+        captured_delay_calls: list[dict[str, Any]] = []
+
+        def fake_delay(*args: Any, **kwargs: Any) -> None:
+            # Normalise positional args to their named equivalents so assertions
+            # can use call_kwargs.get("activity") / call_kwargs.get("inbox_url").
+            param_names = ["activity", "inbox_url", "actor_key_id", "private_key_pem"]
+            normalised = dict(zip(param_names, args))
+            normalised.update(kwargs)
+            captured_delay_calls.append(normalised)
+
+        mock_deliver = mocker.MagicMock()
+        mock_deliver.delay.side_effect = fake_delay
+        mocker.patch("suddenly.activitypub.tasks.deliver_activity", mock_deliver)
+
         lr = LinkRequest.objects.create(
             type=LinkType.ADOPT,
             requester=requester,
@@ -1016,14 +1032,9 @@ class TestOfferOutgoing:
             status=LinkRequestStatus.PENDING,
         )
 
-        captured_delay_calls: list[dict[str, Any]] = []
-
-        def fake_delay(**kwargs: Any) -> None:
-            captured_delay_calls.append(kwargs)
-
-        mock_deliver = mocker.MagicMock()
-        mock_deliver.delay.side_effect = fake_delay
-        mocker.patch("suddenly.activitypub.tasks.deliver_activity", mock_deliver)
+        # Reset captured calls — signal may have fired deliver_activity.delay once
+        # already (via post_save). We only want to assert on the explicit call below.
+        captured_delay_calls.clear()
 
         send_offer_activity(str(lr.pk))
 
