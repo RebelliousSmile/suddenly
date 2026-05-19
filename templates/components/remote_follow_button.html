@@ -1,0 +1,40 @@
+{% comment %}
+  Remote Follow Button Component (HTMX toggle, ActivityPub)
+  Props:
+    ap_id        — remote actor URL
+    is_following — bool
+{% endcomment %}
+{% load i18n %}
+
+{% if user.is_authenticated %}
+    <div class="remote-follow-container">
+        {% if is_following %}
+            <form hx-post="{% url 'federation:remote_follow_toggle' %}"
+                  hx-target="closest .remote-follow-container"
+                  hx-swap="innerHTML">
+                {% csrf_token %}
+                <input type="hidden" name="ap_id" value="{{ ap_id }}">
+                <input type="hidden" name="action" value="unfollow">
+                <button type="submit"
+                        class="btn-secondary btn-sm group">
+                    <span class="i-lucide-check text-sm group-hover:hidden"></span>
+                    <span class="hidden group-hover:inline text-error">{% trans "Unfollow" %}</span>
+                    <span class="group-hover:hidden">{% trans "Following" %}</span>
+                </button>
+            </form>
+        {% else %}
+            <form hx-post="{% url 'federation:remote_follow_toggle' %}"
+                  hx-target="closest .remote-follow-container"
+                  hx-swap="innerHTML">
+                {% csrf_token %}
+                <input type="hidden" name="ap_id" value="{{ ap_id }}">
+                <input type="hidden" name="action" value="follow">
+                <button type="submit"
+                        class="btn-primary btn-sm">
+                    <span class="i-lucide-user-plus text-sm"></span>
+                    {% trans "Follow" %}
+                </button>
+            </form>
+        {% endif %}
+    </div>
+{% endif %}

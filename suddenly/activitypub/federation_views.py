@@ -10,9 +10,11 @@ import logging
 from typing import Any
 from urllib.parse import urlparse
 
+from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 
 from suddenly.core.views import htmx_render
+from suddenly.core.types import AuthenticatedRequest
 
 logger = logging.getLogger(__name__)
 
@@ -77,6 +79,22 @@ def remote_profile(request: HttpRequest) -> HttpResponse:
 
     domain = urlparse(ap_id).hostname or ""
 
+    is_following = False
+    if request.user.is_authenticated:
+        from django.contrib.contenttypes.models import ContentType
+
+        from suddenly.characters.models import Follow
+        from suddenly.users.models import User as UserModel
+
+        remote_user = UserModel.objects.filter(ap_id=ap_id, remote=True).first()
+        if remote_user:
+            ct = ContentType.objects.get_for_model(UserModel)
+            is_following = Follow.objects.filter(
+                follower=request.user,
+                content_type=ct,
+                object_id=remote_user.pk,
+            ).exists()
+
     return htmx_render(
         request,
         full_template="federation/remote_profile.html",
@@ -85,7 +103,72 @@ def remote_profile(request: HttpRequest) -> HttpResponse:
             "actor": actor_data,
             "domain": domain,
             "ap_id": ap_id,
+            "is_following": is_following,
         },
+    )
+
+
+@login_required
+def remote_follow_toggle(request: AuthenticatedRequest) -> HttpResponse:
+    """Toggle follow on a remote ActivityPub actor. HTMX POST."""
+    if request.method != "POST":
+        from django.http import HttpResponseNotAllowed
+
+        return HttpResponseNotAllowed(["POST"])
+
+    ap_id = request.POST.get("ap_id", "").strip()
+    if not ap_id:
+        from django.http import HttpResponseBadRequest
+
+        return HttpResponseBadRequest("Missing ap_id")
+
+    from django.conf import settings
+    from django.contrib.contenttypes.models import ContentType
+    from django.shortcuts import render
+
+    from suddenly.activitypub.tasks import (
+        get_or_create_remote_user,
+        send_follow_activity,
+        send_undo_follow_activity,
+    )
+    from suddenly.characters.models import Follow
+    from suddenly.users.models import User as UserModel
+
+    remote_user = get_or_create_remote_user(ap_id)
+    if not remote_user:
+        from django.http import HttpResponseBadRequest
+
+        return HttpResponseBadRequest("Could not resolve remote actor")
+
+    ct = ContentType.objects.get_for_model(UserModel)
+    existing = Follow.objects.filter(
+        follower=request.user,
+        content_type=ct,
+        object_id=remote_user.pk,
+    ).first()
+
+    if existing:
+        send_undo_follow_activity.delay(str(request.user.pk), ap_id)
+        is_following = False
+    else:
+        domain = settings.DOMAIN
+        follow_ap_id = (
+            f"https://{domain}/users/{request.user.username}/follows/{remote_user.pk}"
+        )
+        Follow.objects.create(
+            follower=request.user,
+            content_type=ct,
+            object_id=remote_user.pk,
+            remote=False,
+            ap_id=follow_ap_id,
+        )
+        send_follow_activity.delay(str(request.user.pk), ap_id, follow_ap_id)
+        is_following = True
+
+    return render(
+        request,
+        "components/remote_follow_button.html",
+        {"ap_id": ap_id, "is_following": is_following},
     )
 
 
