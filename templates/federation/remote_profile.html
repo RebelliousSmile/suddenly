@@ -17,7 +17,8 @@
                 <p class="text-muted">{{ error }}</p>
             </div>
         {% elif actor %}
-            {% include "components/status_banner.html" with type="info" icon="globe" message=_("This profile is hosted on ")|add:domain|add:_(". The displayed data is shared via ActivityPub.") %}
+            {% trans "This profile is hosted on " as banner_prefix %}{% trans ". The displayed data is shared via ActivityPub." as banner_suffix %}
+            {% include "components/status_banner.html" with type="info" icon="globe" message=banner_prefix|add:domain|add:banner_suffix %}
             <div class="mb-4"></div>
 
             <div class="card card-body">
