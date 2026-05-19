@@ -1,7 +1,7 @@
 <!-- migrated from docs – verify with /init -->
 # Coding Guidelines
 
-> Ces règles doivent être vérifiées après CHAQUE génération de code.
+> These rules must be verified after EVERY code generation.
 
 ## Requirements to complete a feature
 
@@ -33,13 +33,13 @@
 
 ### Naming
 
-| Élément | Convention | Exemple |
+| Element | Convention | Example |
 |---------|------------|---------|
-| Fichiers | snake_case | `character_service.py` |
+| Files | snake_case | `character_service.py` |
 | Classes | PascalCase | `LinkService` |
-| Fonctions | snake_case | `get_user_characters()` |
+| Functions | snake_case | `get_user_characters()` |
 | Constants | SCREAMING_SNAKE | `MAX_THEME_CARDS` |
-| Booléens | préfixe `is_`, `has_`, `can_` | `is_published`, `has_owner` |
+| Booleans | `is_`, `has_`, `can_` prefix | `is_published`, `has_owner` |
 
 ### Size limits
 

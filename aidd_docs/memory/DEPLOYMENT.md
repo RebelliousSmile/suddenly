@@ -4,20 +4,17 @@
 
 - **Steps**:
   1. Set required environment variables
-  2. `pip install --upgrade pip && pip install -e '.[federation]'` (pas `requirements.txt`, guillemets simples pour bash)
+  2. `pip install --upgrade pip && pip install -e '.[federation]'` (not `requirements.txt`; single quotes for bash)
   3. `python manage.py migrate`
-  4. `python manage.py createcachetable` (si pas de Redis)
+  4. `python manage.py createcachetable` (if no Redis)
   5. `python manage.py collectstatic --noinput`
-  6. Générer les clés ActivityPub : `mkdir -p keys && openssl genrsa -out keys/private.pem 2048 && openssl rsa -in keys/private.pem -pubout -out keys/public.pem`
-  7. Run via `gunicorn config.wsgi:application`
+  6. Generate ActivityPub keys: `mkdir -p keys && openssl genrsa -out keys/private.pem 2048 && openssl rsa -in keys/private.pem -pubout -out keys/public.pem`
+  7. Run via `gunicorn suddenly.wsgi:application`
 
-**Note i18n** : les fichiers `.mo` sont versionnés dans git — pas besoin de `compilemessages` au déploiement. Si des `.po` ont été modifiés localement sans recompilation, relancer depuis une machine avec `gettext` ou via babel.
-
-**Note frontend** : `static/dist/` est versionné dans git — l'hébergeur principal (Alwaysdata) n'a ni Node ni pnpm. Toute modification du frontend implique `pnpm run build` puis commit de `static/dist/` avant le déploiement. Le `.gitignore` ne doit **pas** exclure `static/dist/`. Le script `scripts/deploy-alwaysdata.sh` ne contient pas d'étape build — c'est intentionnel.
-
-**Static storage** : `STORAGES["staticfiles"]["BACKEND"]` doit rester `whitenoise.storage.CompressedManifestStaticFilesStorage`. Whitenoise hashe chaque fichier collecté et émet `Cache-Control: max-age=31536000, immutable` automatiquement. Un retour à `CompressedStaticFilesStorage` perd l'immutable et force la revalidation à chaque visite.
-
-**Fonts** : les fonts sont auto-hébergées dans `static/fonts/*.woff2` et exposées via `templates/components/_fonts.html` inclus avant `{% vite_css %}`. Ne jamais ajouter `fonts.googleapis.com` ni `fonts.gstatic.com` à `base.html` — le partial `_fonts.html` est la seule source de vérité.
+- **i18n note**: `.mo` files are versioned in git — no `compilemessages` needed at deploy; recompile from a machine with `gettext` if `.po` files changed locally without recompilation
+- **Frontend note**: `static/dist/` is versioned in git — Alwaysdata has no Node/pnpm; any frontend change requires `pnpm run build` + commit of `static/dist/` before deploy; `scripts/deploy-alwaysdata.sh` has no build step intentionally; `.gitignore` must NOT exclude `static/dist/`
+- **Static storage**: `STORAGES["staticfiles"]["BACKEND"]` must stay `whitenoise.storage.CompressedManifestStaticFilesStorage`; Whitenoise hashes each collected file and emits `Cache-Control: max-age=31536000, immutable`; reverting to `CompressedStaticFilesStorage` loses `immutable` and forces revalidation
+- **Fonts**: self-hosted in `static/fonts/*.woff2`; exposed via `templates/components/_fonts.html` included before `{% vite_css %}`; never add `fonts.googleapis.com` or `fonts.gstatic.com` to `base.html`
 
 - **Database migration**: Django migrations (`python manage.py migrate`)
 
@@ -109,6 +106,9 @@ python -c "from django.core.management.utils import get_random_secret_key; print
 ## Containerization
 
 ```mermaid
+---
+title: Containerization — docker-compose
+---
 flowchart LR
     subgraph "docker-compose"
         Web["web (Django + gunicorn)"]
@@ -126,25 +126,24 @@ flowchart LR
 
 ```
 Site → Python WSGI
-  Chemin de l'application : www/<app>/suddenly/wsgi.py   ← wsgi est dans suddenly/, pas config/
-  Répertoire de travail   : www/<app>/
-  Virtualenv              : www/<app>/venv               ← relatif au home, sans /home/user/
-  Version Python          : 3.12
-  Variables d'env         : format FOO=bar sans "export"
-  Chemins statiques       : /static/ staticfiles/        ← relatif au répertoire de travail
-                            /media/ media/
+  Application path  : www/<app>/suddenly/wsgi.py   ← wsgi is in suddenly/, not config/
+  Working directory : www/<app>/
+  Virtualenv        : www/<app>/venv               ← relative to home, without /home/user/
+  Python version    : 3.12
+  Env vars          : FOO=bar format, no "export"
+  Static paths      : /static/ staticfiles/        ← relative to working directory
+                      /media/ media/
 ```
 
-**Pièges connus :**
-- Les chemins statiques sont relatifs au répertoire de travail (pas au home) — ne pas mettre le chemin absolu
-- `DATABASE_URL` : encoder les caractères spéciaux du mot de passe avec `urllib.parse.quote_plus`
-- Les variables d'env du panel ne sont pas disponibles en SSH, les exporter manuellement pour `manage.py`
-- Pas de Redis sur Alwaysdata → DB cache + `CELERY_TASK_ALWAYS_EAGER=True` (automatique si `REDIS_URL` absent)
+- Static paths are relative to working directory, not home — do not use absolute path
+- `DATABASE_URL`: encode special chars in password with `urllib.parse.quote_plus`
+- Panel env vars not available in SSH — export manually for `manage.py`
+- No Redis on Alwaysdata → DB cache + `CELERY_TASK_ALWAYS_EAGER=True` (automatic if `REDIS_URL` absent)
 
-**Tâches planifiées** (variables d'env à renseigner dans chaque tâche) :
+**Scheduled tasks** (env vars must be set in each task):
 ```
 0 3 * * *  /home/<user>/www/<app>/venv/bin/python /home/<user>/www/<app>/manage.py clearsessions
 0 * * * *  /home/<user>/www/<app>/venv/bin/python /home/<user>/www/<app>/manage.py shell -c "from suddenly.activitypub.tasks import cleanup_expired_quotes; cleanup_expired_quotes()"
 ```
 
-- SSL : Let's Encrypt via interface Alwaysdata
+- SSL: Let's Encrypt via Alwaysdata interface

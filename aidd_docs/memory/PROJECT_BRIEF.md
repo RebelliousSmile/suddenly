@@ -3,49 +3,51 @@
 ## Executive Summary
 
 - **Project Name**: Suddenly
-- **Vision**: Un réseau fédéré où les PNJ des uns deviennent les PJ des autres
-- **Mission**: Plateforme ActivityPub de partage de comptes-rendus de parties de JDR, permettant aux personnages de traverser les campagnes via des mécaniques de claim/adopt/fork
+- **Vision**: Federated network where one player's NPCs become another's PCs
+- **Mission**: ActivityPub platform for sharing TTRPG session reports; characters travel across campaigns via claim/adopt/fork mechanics
 
 ### Full Description
 
-Suddenly est un réseau social fédéré (ActivityPub) pour joueurs de jeux de rôle. Les joueurs publient des comptes-rendus de parties mentionnant des personnages. Ces personnages (d'abord PNJ) peuvent être réclamés, adoptés ou dérivés par d'autres joueurs pour devenir leurs propres PJ.
-
-**"Suddenly"** = ce moment où l'inattendu surgit, quand un personnage apparaît soudainement dans une autre histoire.
+- Suddenly: federated social network (ActivityPub) for tabletop RPG players
+- Players publish session reports (Reports) mentioning characters
+- Characters (initially NPCs) can be claimed, adopted, or forked by other players to become their PCs
+- **"Suddenly"** = the moment of surprise when a character appears in another story
 
 ## Context
 
 ### Core Domain
 
-Plateforme fédérée TTRPG : chaque instance est autonome mais peut interopérer avec les autres via ActivityPub (compatible Mastodon). Les personnages constituent le lien entre les instances et les joueurs.
+- Federated TTRPG platform; each instance is autonomous, interoperates via ActivityPub (Mastodon-compatible)
+- Characters are the link between instances and players
 
 ### Ubiquitous Language
 
-| Term | Definition | Synonymes |
-| ---- | ---------- | --------- |
-| PJ | Personnage Joueur — appartient à un joueur | PC |
-| PNJ | Personnage Non-Joueur — créé dans un compte-rendu, disponible | NPC |
-| Partie / Jeu | Fiction en cours recevant des comptes-rendus | Game, Campaign |
-| Compte-rendu | Récit narratif d'une session de jeu (Markdown) | Report |
-| Citation | Citation mémorable d'un personnage (public/privée/éphémère) | Quote |
-| Claim | Rétcon : le PNJ était mon PJ depuis le début | — |
-| Adopt | Reprise : le PNJ devient mon nouveau PJ | — |
-| Fork | Dérivation : nouveau PJ inspiré du PNJ, lien de lignée | — |
-| Lien | Relation établie entre personnages après acceptation d'une demande | CharacterLink |
-| Demande de lien | Requête pending claim/adopt/fork | LinkRequest |
-| Séquence partagée | Contenu co-créé lors de l'établissement d'un lien | SharedSequence |
-| Apparition | Lien entre un personnage et un compte-rendu | CharacterAppearance |
-| Distribution | Cast planifié avant l'écriture d'un compte-rendu | ReportCast |
-| Instance | Serveur Suddenly fédéré | — |
+| Term | Definition | Synonym |
+| ---- | ---------- | ------- |
+| PJ | Player Character — owned by a player | PC |
+| PNJ | Non-Player Character — created in a report, available for adoption | NPC |
+| Partie / Jeu | Ongoing fiction receiving reports | Game, Campaign |
+| Compte-rendu | Narrative session log (Markdown) | Report |
+| Citation | Memorable character quote (public/private/ephemeral) | Quote |
+| Claim | Retcon: the NPC was always the requester's PC | — |
+| Adopt | Takeover: NPC becomes requester's new PC | — |
+| Fork | Derivation: new PC inspired by NPC, lineage link | — |
+| Lien | Relationship between characters after request accepted | CharacterLink |
+| Demande de lien | Pending claim/adopt/fork request | LinkRequest |
+| Séquence partagée | Co-created content created when a link is established | SharedSequence |
+| Apparition | Link between a character and a report | CharacterAppearance |
+| Distribution | Cast planned before writing a report | ReportCast |
+| Instance | Federated Suddenly server | — |
 
 ## Features & Use-cases
 
-- Créer et gérer des jeux (fictions en cours) avec leurs comptes-rendus
-- Mentionner des personnages dans les comptes-rendus (création automatique de PNJ)
-- Envoyer des demandes de claim/adopt/fork sur les PNJ disponibles
-- Accepter/refuser les demandes (rôle du créateur du PNJ)
-- Suivre des utilisateurs, jeux et personnages (local et fédéré)
-- Publier des citations mémorables de personnages (avec visibilité configurable)
-- Fédération via ActivityPub : WebFinger, NodeInfo, inbox/outbox
+- Create and manage games (ongoing fictions) with their reports
+- Mention characters in reports (auto-creates NPC)
+- Send claim/adopt/fork requests on available NPCs
+- Accept/reject requests (NPC creator's role)
+- Follow users, games, and characters (local and federated)
+- Publish memorable character quotes (configurable visibility)
+- Federation via ActivityPub: WebFinger, NodeInfo, inbox/outbox
 
 ## User Journey maps
 
@@ -53,59 +55,59 @@ Plateforme fédérée TTRPG : chaque instance est autonome mais peut interopére
 journey
     title Suddenly — Parcours principaux
     section Game Master
-        Crée un jeu: 5: GM
-        Rédige un compte-rendu: 5: GM
-        Mentionne des PNJ: 4: GM
-        Reçoit une demande de lien: 3: GM
-        Accepte ou refuse: 4: GM
+        Creates a game: 5: GM
+        Writes a report: 5: GM
+        Mentions NPCs: 4: GM
+        Receives link request: 3: GM
+        Accepts or rejects: 4: GM
     section Player
-        Découvre des PNJ dans les comptes-rendus: 4: Player
-        Envoie une demande adopt/claim/fork: 5: Player
-        Reçoit l'acceptation: 5: Player
-        Publie ses propres comptes-rendus: 5: Player
+        Discovers NPCs in reports: 4: Player
+        Sends adopt/claim/fork request: 5: Player
+        Receives acceptance: 5: Player
+        Publishes own reports: 5: Player
 ```
 
 ### Game Master
 
-- Auteur principal des comptes-rendus
-- Crée des PNJ via les mentions `@character` dans ses récits
-- Arbitre les demandes de claim/adopt/fork sur ses PNJ
+- Primary report author
+- Creates NPCs via `@character` mentions in narratives
+- Arbitrates claim/adopt/fork requests on their NPCs
 
-#### Créer une partie et publier un compte-rendu
+#### Create a game and publish a report
 
-Créer un jeu → Rédiger le compte-rendu avec mentions → Définir le cast (distribution) → Publier → Les PNJ sont disponibles pour adoption
+Create game → Write report with mentions → Define cast (ReportCast) → Publish → NPCs become available for adoption
 
 ### Player
 
-- Joue dans des campagnes, cherche des PNJ à adopter/forker
-- Peut avoir plusieurs PJ issus de PNJ de différents GMs
+- Plays in campaigns, seeks NPCs to adopt/fork
+- Can have multiple PCs from NPCs of different GMs
 
-#### Adopter un PNJ
+#### Adopt an NPC
 
-Parcourir les comptes-rendus → Trouver un PNJ → Envoyer demande adopt avec message → Attendre décision du GM → Si accepté : le PNJ devient son PJ
+Browse reports → Find NPC → Send adopt request with message → Wait for GM decision → If accepted: NPC becomes their PC
 
 ### Cross-instance (Bob on remote instance)
 
-- Suit des joueurs d'autres instances via fédération
-- Reçoit les CRs dans son feed via ActivityPub
-- Envoie une Adopt Request (ActivityPub Offer) depuis son instance
-- L'instance distante notifie Alice → Alice accepte (ActivityPub Accept)
-- Viktor devient PJ de Bob, lien visible sur les deux instances
+- Follows players from other instances via federation
+- Receives reports in feed via ActivityPub
+- Sends Adopt Request (ActivityPub Offer) from their instance
+- Remote instance notifies Alice → Alice accepts (ActivityPub Accept)
+- Viktor becomes Bob's PC, link visible on both instances
 
 ```mermaid
 journey
     title Bob (instance B) adopte un PNJ de Alice (instance A)
-    section Découverte
-      Bob suit Alice via fédération: 4: Bob
-      Bob reçoit les CRs d'Alice dans son feed: 4: Bob
-      Bob découvre le PNJ Viktor: 5: Bob
-    section Demande cross-instance
-      Bob envoie Adopt Request (ActivityPub Offer): 4: Bob
-      Instance A reçoit et notifie Alice: 4: Alice
-      Alice accepte (ActivityPub Accept): 5: Alice
-    section Résultat
-      Viktor devient PJ de Bob: 5: Bob
-      Lien visible sur les deux instances: 5: Alice, Bob
+    section Discovery
+      Bob follows Alice via federation: 4: Bob
+      Bob receives Alice's reports in feed: 4: Bob
+      Bob discovers NPC Viktor: 5: Bob
+    section Cross-instance Request
+      Bob sends Adopt Request (ActivityPub Offer): 4: Bob
+      Instance A receives and notifies Alice: 4: Alice
+      Alice accepts (ActivityPub Accept): 5: Alice
+    section Result
+      Viktor becomes Bob's PC: 5: Bob
+      Link visible on both instances: 5: Alice, Bob
 ```
 
 ## ActivityPub Overview
@@ -114,21 +116,21 @@ journey
 
 | Entity | AP Type | Description |
 |--------|---------|-------------|
-| User | Person | Compte joueur |
-| Character | Person | PJ ou PNJ |
-| Game | Group | Partie/campagne |
+| User | Person | Player account |
+| Character | Person | PC or NPC |
+| Game | Group | Campaign/game |
 
 ### Objects (created, shared)
 
 | Entity | AP Type | Description |
 |--------|---------|-------------|
-| Report | Article | Compte-rendu |
-| Quote | Note | Citation |
+| Report | Article | Session report |
+| Quote | Note | Character quote |
 
 ### Character Status Transitions
 
 ```
-NPC → CLAIMED  (rétcon : le PNJ était le PJ depuis le début)
-NPC → ADOPTED  (adoption : le PNJ devient le PJ du demandeur)
-NPC → FORKED   (dérivation : nouveau PJ lié, PNJ conservé)
+NPC → CLAIMED  (retcon: NPC was already the requester's PC from the start)
+NPC → ADOPTED  (adoption: NPC becomes requester's new PC)
+NPC → FORKED   (derivation: new PC linked to NPC, NPC preserved)
 ```

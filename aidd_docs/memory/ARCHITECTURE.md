@@ -7,6 +7,9 @@
 ```
 
 ```mermaid
+---
+title: Suddenly — Framework Stack
+---
 flowchart LR
     subgraph "Framework"
         Django["Django (SSR)"]
@@ -68,7 +71,7 @@ flowchart LR
 
 - HTMX + Alpine.js + UnoCSS (Vite build)
 - No SPA, SSR with Vite for asset bundling
-- Total bundle: ~32KB (HTMX 14KB + Alpine 8KB + UnoCSS ~10KB purged)
+- Total bundle: ~693KB uncompressed (~150KB JS gzipped); HTMX + Alpine + UnoCSS purged
 
 ## Tooling & Quality Gates
 
@@ -148,3 +151,59 @@ C4Context
 
 - Primary database (FTS, JSON fields)
 - DB cache fallback when Redis absent
+
+## Feed System
+
+- 3 feed types: personal (`/feed/`), instance (`/feed/instance/`), fediverse (`/feed/fediverse/`)
+- `recommend_report` action at `/feed/recommend/`
+
+## Notification System
+
+- `Notification` model in `core` app
+- Types: LINK_REQUEST, LINK_ACCEPTED, LINK_REJECTED, NEW_REPORT, RECOMMENDATION, MENTION, INVITATION, NEW_FOLLOWER, SHARED_SEQUENCE, REVOCATION
+- User preferences via `NotificationPreference` model
+- Badge count via HTMX polling or signal-triggered update
+
+## Onboarding Flow
+
+- 3-step wizard: `/welcome/`, `/welcome/discover/`, `/welcome/start/`
+
+## Admin Panel
+
+- Custom panel at `/gmh/`, redirects from `/admin-panel/`
+- Features: instance dashboard, instance block/unblock, user management, instance settings
+- Protected by `is_admin` user flag (not Django `is_staff`)
+
+## Moderation & Safety
+
+- `ContentReport` + `ReportCategory` models — content reporting (US-27)
+- `UserBlock` model — user block
+- `UserMute` model — user mute (US-33)
+
+## Donation Prompt System
+
+- `DonationPrompt` + `UserUsageStats` models in `core`
+- Triggered every N posts (configurable interval via instance settings)
+- Suppressed if user donated within current month
+
+## Signal-Based Cache Invalidation
+
+- Explorer service queries cached in `core/services.py`
+- Cache invalidated via Django signals in `core/cache_invalidation.py`
+- `dispatch_uid` pattern prevents duplicate handlers on dev autoreload and `--reuse-db`
+
+## Report Model Enhancements
+
+- `content_warning` field on `Report` (US-30)
+- `visibility` field: PUBLIC / UNLISTED / FOLLOWERS (US-29)
+- `session_date` field on `Report`
+
+## Games App
+
+- `GameSystem` model — game system taxonomy, FK in `Game`
+
+## Rapport System (Structured Report Content)
+
+- `Rapport` model — structured segment within a Report; types: DESCRIPTION / ACTION / DISCUSSION / NARRATION
+- `RapportLink` model — directed link between Rapport segments (local or remote IRI)
+- `RapportMarker` model — structural events: START / END / CHARACTER_APPEARS / CHARACTER_LEAVES / ORACLE
