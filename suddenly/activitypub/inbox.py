@@ -302,32 +302,133 @@ def handle_create(activity: dict[str, Any], actor_type: str, actor_identifier: s
     """
     Handle incoming Create activity.
 
-    Could be a remote report, quote, or character.
+    Supports Create(Character) — persists a remote Character to DB.
+    Other object types are logged and ignored for now.
     """
     obj = activity.get("object", {})
+    if not isinstance(obj, dict):
+        return
     obj_type = obj.get("type")
 
-    if obj_type == "Note":
-        # Could be a report or quote - store for display
-        # Implementation depends on how you want to handle remote content
-        logger.info(f"Received remote Note: {obj.get('id')}")
-
-    # For now, just log it
     logger.info(f"Received Create({obj_type}) from {activity.get('actor')}")
+
+    if obj_type == "Character":
+        _handle_create_character(activity, obj)
+
+
+def _handle_create_character(activity: dict[str, Any], obj: dict[str, Any]) -> None:
+    """Persist an incoming remote Character."""
+    from urllib.parse import urlparse
+
+    from suddenly.characters.models import Character, CharacterStatus
+    from suddenly.games.models import Game
+
+    actor_url = activity.get("actor", "")
+    ap_id = obj.get("id")
+    if not ap_id:
+        return
+
+    # Skip if already known
+    if Character.objects.filter(ap_id=ap_id).exists():
+        return
+
+    # Get or create the remote actor
+    result = get_or_create_remote_user(actor_url)
+    if result is None:
+        return
+    remote_user, _ = result
+
+    # Get or create a remote Game representing the origin instance
+    domain = urlparse(actor_url).netloc or "unknown"
+    origin_game, _ = Game.objects.get_or_create(
+        ap_id=f"https://{domain}",
+        defaults={
+            "title": f"Remote: {domain}",
+            "owner": remote_user,
+            "remote": True,
+        },
+    )
+
+    Character.objects.create(
+        name=obj.get("name", "Unknown"),
+        description=obj.get("summary", ""),
+        status=CharacterStatus.NPC,
+        creator=remote_user,
+        origin_game=origin_game,
+        remote=True,
+        ap_id=ap_id,
+    )
 
 
 def handle_update(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
     Handle Update activity.
+
+    Supports Update(Character) — updates name and description of a remote Character.
     """
-    logger.info(f"Received Update from {activity.get('actor')}")
+    obj = activity.get("object", {})
+    if not isinstance(obj, dict):
+        return
+    obj_type = obj.get("type")
+
+    logger.info(f"Received Update({obj_type}) from {activity.get('actor')}")
+
+    if obj_type == "Character":
+        _handle_update_character(obj)
+
+
+def _handle_update_character(obj: dict[str, Any]) -> None:
+    """Update fields on an existing remote Character."""
+    from suddenly.characters.models import Character
+
+    ap_id = obj.get("id")
+    if not ap_id:
+        return
+
+    updated: dict[str, Any] = {}
+    if "name" in obj:
+        updated["name"] = obj["name"]
+    if "summary" in obj:
+        updated["description"] = obj["summary"]
+
+    if updated:
+        Character.objects.filter(ap_id=ap_id, remote=True).update(**updated)
 
 
 def handle_delete(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
     Handle Delete activity.
+
+    Deletes the remote object identified by the activity's ``object`` field.
+    Supports Character and User (actor tombstone).
     """
+    obj = activity.get("object")
+
     logger.info(f"Received Delete from {activity.get('actor')}")
+
+    if isinstance(obj, str):
+        # object is a URL — determine the type by trying known models
+        _handle_delete_by_url(obj)
+    elif isinstance(obj, dict):
+        obj_type = obj.get("type")
+        obj_id = obj.get("id", "")
+        if obj_id:
+            _handle_delete_by_url(obj_id)
+
+
+def _handle_delete_by_url(ap_id: str) -> None:
+    """Delete any remote entity matching the given ap_id."""
+    from suddenly.characters.models import Character
+    from suddenly.users.models import User
+
+    deleted, _ = Character.objects.filter(ap_id=ap_id, remote=True).delete()
+    if deleted:
+        logger.info(f"Deleted remote Character {ap_id}")
+        return
+
+    deleted, _ = User.objects.filter(ap_id=ap_id, remote=True).delete()
+    if deleted:
+        logger.info(f"Deleted remote User {ap_id}")
 
 
 def handle_offer(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
@@ -452,12 +553,23 @@ def get_or_create_remote_user(
     actor_url: str,
 ) -> tuple[Any, bool] | None:
     """
-    Fetch and create/update a remote user from their actor URL.
+    Return a remote User by actor URL, fetching from the remote server if not
+    already in DB.
+
+    Returns (user, created) on success, None if the actor cannot be resolved.
+    The DB is checked first to avoid unnecessary HTTP requests during tests and
+    when the actor was already fetched during signature verification.
     """
     import httpx
 
     from suddenly.users.models import User
 
+    # Fast path: actor already known
+    existing = User.objects.filter(ap_id=actor_url, remote=True).first()
+    if existing:
+        return existing, False
+
+    # Slow path: fetch from remote
     try:
         with httpx.Client(timeout=10) as client:
             response = client.get(actor_url, headers={"Accept": "application/activity+json"})
