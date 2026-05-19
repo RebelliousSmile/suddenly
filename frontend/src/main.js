@@ -427,6 +427,35 @@ Alpine.data('presence', (sequenceId, currentUserId) => ({
   },
 }))
 
+// Thread group carousel
+Alpine.data('threadGroup', () => ({
+  currentScene: 0,
+  totalScenes: 0,
+  touchStartX: 0,
+
+  init() {
+    this.totalScenes = this.$el.querySelectorAll('[data-scene]').length
+  },
+
+  next() {
+    if (this.currentScene < this.totalScenes - 1) this.currentScene++
+  },
+
+  prev() {
+    if (this.currentScene > 0) this.currentScene--
+  },
+
+  onTouchStart(e) {
+    this.touchStartX = e.touches[0].clientX
+  },
+
+  onTouchEnd(e) {
+    const delta = e.changedTouches[0].clientX - this.touchStartX
+    if (delta > 50) this.prev()
+    else if (delta < -50) this.next()
+  },
+}))
+
 // =================================================================
 // Initialisation
 // =================================================================

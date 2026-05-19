@@ -1,0 +1,28 @@
+{% load i18n %}
+{% comment %}
+Context: rapport, report
+Kind colour mapping:
+  description → indigo
+  discussion  → emerald
+  action      → amber
+  narration   → violet
+{% endcomment %}
+<div class="rounded p-4 mb-3
+    {% if rapport.kind == 'description' %}bg-indigo-50 border-l-4 border-indigo-400
+    {% elif rapport.kind == 'discussion' %}bg-emerald-50 border-l-4 border-emerald-400
+    {% elif rapport.kind == 'action' %}bg-amber-50 border-l-4 border-amber-400
+    {% elif rapport.kind == 'narration' %}bg-violet-50 border-l-4 border-violet-400
+    {% endif %}">
+
+    <div class="flex items-center gap-2 mb-1 text-xs text-muted">
+        <span class="font-semibold">{{ rapport.get_kind_display }}</span>
+        {% if rapport.kind == 'discussion' and rapport.actor %}
+            <span>— {{ rapport.actor.name }}</span>
+        {% endif %}
+        {% if report.remote %}
+            <span class="i-lucide-globe ml-1" title="{% trans 'Remote' %}"></span>
+        {% endif %}
+    </div>
+
+    <p class="text-sm text-primary whitespace-pre-line">{{ rapport.content }}</p>
+</div>
