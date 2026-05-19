@@ -1,0 +1,47 @@
+{% load i18n %}
+<div x-data="threadGroup" @keydown.left.window="prev()" @keydown.right.window="next()" @touchstart="onTouchStart($event)" @touchend="onTouchEnd($event)">
+
+    {% for parent_rapport_id, rapports in scenes %}
+    <div data-scene x-show="currentScene === {{ forloop.counter0 }}" x-cloak>
+
+        <!-- Scene header -->
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-semibold text-muted uppercase tracking-wide">
+                {% if parent_rapport_id %}
+                    {% trans "Scene" %} {{ forloop.counter }}
+                {% else %}
+                    {% trans "Root" %}
+                {% endif %}
+            </h2>
+            <span class="text-xs text-muted">{{ rapports|length }} {% trans "rapports" %}</span>
+        </div>
+
+        {% for rapport in rapports %}
+            {% include "games/partials/thread_rapport_card.html" with rapport=rapport report=report %}
+        {% endfor %}
+
+    </div>
+    {% empty %}
+        <p class="text-muted text-sm">{% trans "No rapports yet." %}</p>
+    {% endfor %}
+
+    {% if scenes %}
+    <!-- Navigation -->
+    <div class="flex items-center justify-center gap-4 mt-6">
+        <button @click="prev()" class="hidden sm:flex px-3 py-1 rounded bg-surface text-sm">[&lt;]</button>
+
+        <div class="flex gap-1">
+            {% for _ in scenes %}
+            <button
+                @click="currentScene = {{ forloop.counter0 }}"
+                class="w-2 h-2 rounded-full transition-colors"
+                :class="currentScene === {{ forloop.counter0 }} ? 'bg-primary' : 'bg-muted'"
+            ></button>
+            {% endfor %}
+        </div>
+
+        <button @click="next()" class="hidden sm:flex px-3 py-1 rounded bg-surface text-sm">[&gt;]</button>
+    </div>
+    {% endif %}
+
+</div>

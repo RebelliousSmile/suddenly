@@ -5,10 +5,12 @@ HTMX-first views for games and reports (DA-1).
 from __future__ import annotations
 
 import datetime
+from collections import OrderedDict
 from typing import TYPE_CHECKING
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
+from django.core.paginator import Paginator
+from django.http import Http404, HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -287,8 +289,6 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
     # Only published reports visible (or own drafts)
     if report.status != ReportStatus.PUBLISHED:
         if not request.user.is_authenticated or request.user != report.author:
-            from django.http import Http404
-
             raise Http404
 
     cast = report.character_appearances.select_related("character").order_by("role")
@@ -305,6 +305,121 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
             "quotes": quotes,
         },
     )
+
+
+@login_required
+def report_thread(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:
+    """Thread reading view for a Report — Flux (paginated) or Grouped by parent (US-31)."""
+    report = get_object_or_404(
+        Report.objects.select_related("game", "author"),
+        pk=pk,
+        game_id=game_pk,
+    )
+
+    # Same visibility check as report_detail
+    if report.status != ReportStatus.PUBLISHED:
+        if not request.user.is_authenticated or request.user != report.author:
+            raise Http404
+
+    game = report.game
+    _mode_param = request.GET.get("mode")
+    mode: str = _mode_param if _mode_param in ("flux", "group") else "flux"
+
+    if getattr(request, "htmx", False):
+        if mode == "group":
+            rapports_qs = (
+                report.rapports.select_related("actor")
+                .prefetch_related("parent_links__parent_rapport")
+                .order_by("created_at")
+            )
+            groups: OrderedDict[object, list[Rapport]] = OrderedDict()
+            for rapport in rapports_qs:
+                all_links = rapport.parent_links.all()
+                first_link = all_links[0] if all_links.exists() else None
+                key = (
+                    first_link.parent_rapport_id
+                    if first_link and first_link.parent_rapport_id
+                    else None
+                )
+                groups.setdefault(key, []).append(rapport)
+            return render(
+                request,
+                "games/partials/thread_group_view.html",
+                {
+                    "report": report,
+                    "game": game,
+                    "mode": mode,
+                    "scenes": list(groups.items()),
+                },
+            )
+        else:
+            # mode == "flux"
+            rapports_qs = report.rapports.select_related("actor").order_by("created_at")
+            page_number = request.GET.get("page", 1)
+            paginator = Paginator(rapports_qs, 10)
+            page_obj = paginator.get_page(page_number)
+            return render(
+                request,
+                "games/partials/thread_flux_page.html",
+                {
+                    "report": report,
+                    "game": game,
+                    "mode": mode,
+                    "page_obj": page_obj,
+                    "has_next": page_obj.has_next(),
+                    "next_page": page_obj.next_page_number() if page_obj.has_next() else None,
+                },
+            )
+
+    # Full page render (non-HTMX)
+    if mode == "group":
+        rapports_qs = (
+            report.rapports.select_related("actor")
+            .prefetch_related("parent_links__parent_rapport")
+            .order_by("created_at")
+        )
+        groups = OrderedDict()
+        for rapport in rapports_qs:
+            all_links = rapport.parent_links.all()
+            first_link = all_links[0] if all_links.exists() else None
+            key = (
+                first_link.parent_rapport_id
+                if first_link and first_link.parent_rapport_id
+                else None
+            )
+            groups.setdefault(key, []).append(rapport)
+        return render(
+            request,
+            "games/thread.html",
+            {
+                "report": report,
+                "game": game,
+                "mode": mode,
+                "scenes": list(groups.items()),
+                "page_obj": None,
+                "has_next": False,
+                "next_page": None,
+            },
+        )
+    else:
+        # mode == "flux"
+        rapports_qs = report.rapports.select_related("actor").order_by("created_at")
+        page_number = request.GET.get("page", 1)
+        paginator = Paginator(rapports_qs, 10)
+        page_obj = paginator.get_page(page_number)
+        return render(
+            request,
+            "games/thread.html",
+            {
+                "report": report,
+                "game": game,
+                "mode": mode,
+                "page_obj": page_obj,
+                "has_next": page_obj.has_next(),
+                "next_page": page_obj.next_page_number() if page_obj.has_next() else None,
+                "scenes": [],
+            },
+        )
 
 
 @login_required
