@@ -383,6 +383,21 @@ def handle_offer(activity: dict[str, Any], actor_type: str, actor_identifier: st
     logger.info(f"Created LinkRequest: {link_type} for {target_character.name}")
 
 
+def _extract_link_request_id(offer_id: str) -> str | None:
+    """
+    Extract a LinkRequest PK from an Offer URL.
+
+    Supports two formats:
+    - .../link-requests/{pk}   (canonical format from serialize_link_request)
+    - .../activities/offer/{pk}  (legacy format)
+    """
+    offer_str = str(offer_id)
+    for segment in ("/link-requests/", "/activities/offer/"):
+        if segment in offer_str:
+            return offer_str.split(segment)[-1].rstrip("/") or None
+    return None
+
+
 def handle_accept(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
     Handle Accept activity (our offer was accepted).
@@ -394,10 +409,8 @@ def handle_accept(activity: dict[str, Any], actor_type: str, actor_identifier: s
     if not offer_id:
         return
 
-    # Extract our request ID from the offer URL
-    # Format: .../activities/offer/{uuid}
-    if "/activities/offer/" in str(offer_id):
-        request_id = offer_id.split("/activities/offer/")[-1]
+    request_id = _extract_link_request_id(str(offer_id))
+    if request_id:
         try:
             link_request = LinkRequest.objects.get(id=request_id)
             link_request.status = LinkRequestStatus.ACCEPTED
@@ -418,8 +431,8 @@ def handle_reject(activity: dict[str, Any], actor_type: str, actor_identifier: s
     if not offer_id:
         return
 
-    if "/activities/offer/" in str(offer_id):
-        request_id = offer_id.split("/activities/offer/")[-1]
+    request_id = _extract_link_request_id(str(offer_id))
+    if request_id:
         try:
             link_request = LinkRequest.objects.get(id=request_id)
             link_request.status = LinkRequestStatus.REJECTED

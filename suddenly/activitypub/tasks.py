@@ -382,7 +382,13 @@ def send_offer_activity(link_request_id: str) -> None:
     # Send to target character's creator
     creator = request.target_character.creator
     if creator and creator.remote and creator.inbox_url:
-        deliver_activity.delay(activity, creator.inbox_url)
+        key_id, private_key = get_actor_signing_keys(request.requester)
+        deliver_activity.delay(
+            activity,
+            creator.inbox_url,
+            actor_key_id=key_id,
+            private_key_pem=private_key,
+        )
 
 
 @shared_task  # type: ignore[untyped-decorator]
