@@ -1072,3 +1072,275 @@ class TestOfferOutgoing:
         assert call_kwargs["private_key_pem"] == requester.private_key, (
             "private_key_pem must be requester's private key"
         )
+
+
+# ---------------------------------------------------------------------------
+# Flow: Create incoming (remote actor publishes a Character)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+class TestCreateIncoming:
+    """Remote actor sends Create(Character) — inbox must create a local remote Character."""
+
+    def test_create_incoming_character_creates_db_record(
+        self,
+        rf: RequestFactory,
+        local_federation_user: Any,
+        mocker: Any,
+        settings: Any,
+    ) -> None:
+        """
+        RED: handle_create must persist a remote Character to the DB when it
+        receives Create(Character).
+
+        Current stub only logs — no Character is created.
+        """
+        from suddenly.characters.models import Character
+        from suddenly.activitypub.inbox import process_inbox
+
+        remote_actor_url = "https://peer.suddenly.test/users/remote_sender"
+        character_ap_id = "https://peer.suddenly.test/characters/aria"
+        private_pem, public_pem = generate_key_pair()
+
+        # Register remote user so signature verification can find the public key
+        remote_user = UserFactory(
+            username="remote_sender@peer.suddenly.test",
+            remote=True,
+            ap_id=remote_actor_url,
+            inbox_url=f"{remote_actor_url}/inbox",
+            public_key=public_pem,
+        )
+
+        activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "Create",
+            "id": f"{remote_actor_url}#create-aria",
+            "actor": remote_actor_url,
+            "object": {
+                "type": "Character",
+                "id": character_ap_id,
+                "name": "Aria",
+                "summary": "A mysterious bard",
+                "attributedTo": remote_actor_url,
+            },
+        }
+
+        path = f"/users/{local_federation_user.username}/inbox"
+        request = _make_signed_inbox_request(
+            rf, activity, remote_actor_url, private_pem, path
+        )
+
+        mocker.patch(
+            "suddenly.activitypub.inbox.verify_signature",
+            return_value=(True, ""),
+        )
+        mocker.patch(
+            "suddenly.activitypub.inbox._check_rate_limit",
+            return_value=False,
+        )
+
+        response = process_inbox(
+            request,
+            actor_type="user",
+            actor_identifier=local_federation_user.username,
+        )
+
+        assert response.status_code == 202, (
+            f"Expected 202, got {response.status_code}"
+        )
+
+        assert Character.objects.filter(ap_id=character_ap_id, remote=True).exists(), (
+            "handle_create must create a remote Character with remote=True and ap_id set. "
+            "Current stub only logs — no DB record is created."
+        )
+
+        character = Character.objects.get(ap_id=character_ap_id)
+        assert character.name == "Aria", (
+            f"Character name must be 'Aria', got '{character.name}'"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Flow: Update incoming (remote actor updates a Character)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+class TestUpdateIncoming:
+    """Remote actor sends Update(Character) — inbox must update the existing record."""
+
+    def test_update_incoming_character_updates_db_record(
+        self,
+        rf: RequestFactory,
+        local_federation_user: Any,
+        mocker: Any,
+        settings: Any,
+    ) -> None:
+        """
+        RED: handle_update must update a remote Character's fields when it
+        receives Update(Character).
+
+        Current stub only logs — no record is updated.
+        """
+        from suddenly.characters.models import Character, CharacterStatus
+        from suddenly.activitypub.inbox import process_inbox
+
+        remote_actor_url = "https://peer.suddenly.test/users/remote_sender"
+        character_ap_id = "https://peer.suddenly.test/characters/aria"
+        private_pem, public_pem = generate_key_pair()
+
+        remote_user = UserFactory(
+            username="remote_sender@peer.suddenly.test",
+            remote=True,
+            ap_id=remote_actor_url,
+            inbox_url=f"{remote_actor_url}/inbox",
+            public_key=public_pem,
+        )
+
+        # Pre-existing remote character in DB
+        from suddenly.games.models import Game
+
+        game = Game.objects.create(title="Remote Game", owner=remote_user, remote=True)
+        character = Character.objects.create(
+            name="Aria",
+            description="Old description",
+            status=CharacterStatus.NPC,
+            creator=remote_user,
+            origin_game=game,
+            remote=True,
+            ap_id=character_ap_id,
+        )
+
+        activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "Update",
+            "id": f"{remote_actor_url}#update-aria",
+            "actor": remote_actor_url,
+            "object": {
+                "type": "Character",
+                "id": character_ap_id,
+                "name": "Aria Updated",
+                "summary": "A legendary bard",
+            },
+        }
+
+        path = f"/users/{local_federation_user.username}/inbox"
+        request = _make_signed_inbox_request(
+            rf, activity, remote_actor_url, private_pem, path
+        )
+
+        mocker.patch(
+            "suddenly.activitypub.inbox.verify_signature",
+            return_value=(True, ""),
+        )
+        mocker.patch(
+            "suddenly.activitypub.inbox._check_rate_limit",
+            return_value=False,
+        )
+
+        response = process_inbox(
+            request,
+            actor_type="user",
+            actor_identifier=local_federation_user.username,
+        )
+
+        assert response.status_code == 202, (
+            f"Expected 202, got {response.status_code}"
+        )
+
+        character.refresh_from_db()
+        assert character.name == "Aria Updated", (
+            f"Character name must be 'Aria Updated' after Update, got '{character.name}'. "
+            "Current stub only logs — no record is updated."
+        )
+        assert character.description == "A legendary bard", (
+            f"Character description must be 'A legendary bard', got '{character.description}'"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Flow: Delete incoming (remote actor deletes a Character)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+class TestDeleteIncoming:
+    """Remote actor sends Delete — inbox must remove the remote Character from DB."""
+
+    def test_delete_incoming_character_removes_db_record(
+        self,
+        rf: RequestFactory,
+        local_federation_user: Any,
+        mocker: Any,
+        settings: Any,
+    ) -> None:
+        """
+        RED: handle_delete must delete the remote Character from DB when it
+        receives Delete{object: character_ap_id}.
+
+        Current stub only logs — no record is deleted.
+        """
+        from suddenly.characters.models import Character, CharacterStatus
+        from suddenly.activitypub.inbox import process_inbox
+
+        remote_actor_url = "https://peer.suddenly.test/users/remote_sender"
+        character_ap_id = "https://peer.suddenly.test/characters/aria"
+        private_pem, public_pem = generate_key_pair()
+
+        remote_user = UserFactory(
+            username="remote_sender@peer.suddenly.test",
+            remote=True,
+            ap_id=remote_actor_url,
+            inbox_url=f"{remote_actor_url}/inbox",
+            public_key=public_pem,
+        )
+
+        from suddenly.games.models import Game
+
+        game = Game.objects.create(title="Remote Game", owner=remote_user, remote=True)
+        character = Character.objects.create(
+            name="Aria",
+            status=CharacterStatus.NPC,
+            creator=remote_user,
+            origin_game=game,
+            remote=True,
+            ap_id=character_ap_id,
+        )
+
+        activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "Delete",
+            "id": f"{remote_actor_url}#delete-aria",
+            "actor": remote_actor_url,
+            "object": character_ap_id,
+        }
+
+        path = f"/users/{local_federation_user.username}/inbox"
+        request = _make_signed_inbox_request(
+            rf, activity, remote_actor_url, private_pem, path
+        )
+
+        mocker.patch(
+            "suddenly.activitypub.inbox.verify_signature",
+            return_value=(True, ""),
+        )
+        mocker.patch(
+            "suddenly.activitypub.inbox._check_rate_limit",
+            return_value=False,
+        )
+
+        response = process_inbox(
+            request,
+            actor_type="user",
+            actor_identifier=local_federation_user.username,
+        )
+
+        assert response.status_code == 202, (
+            f"Expected 202, got {response.status_code}"
+        )
+
+        assert not Character.objects.filter(ap_id=character_ap_id).exists(), (
+            "handle_delete must remove the remote Character from DB. "
+            "Current stub only logs — no record is deleted."
+        )
