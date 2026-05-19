@@ -1,7 +1,7 @@
-{#
+{% comment %}
   Status Banner Component
   Props: type (info|warning|success|error), icon, message, action_label, action_url, dismiss
-#}
+{% endcomment %}
 
 <div class="flex items-center gap-3 px-4 py-3 rounded-card text-sm
     {% if type == 'info' %}bg-info/10 text-info border border-info/30

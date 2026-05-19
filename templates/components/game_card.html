@@ -1,10 +1,10 @@
-{#
+{% comment %}
   Game Card Component
 
   Usage:
     {% include "components/game_card.html" with game=game %}
     {% include "components/game_card.html" with game=game compact=True %}
-#}
+{% endcomment %}
 {% load i18n %}
 
 <article class="card card-hover" id="game-{{ game.id }}">

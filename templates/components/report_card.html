@@ -1,10 +1,10 @@
-{#
+{% comment %}
   Report Card Component
 
   Usage:
     {% include "components/report_card.html" with report=report %}
     {% include "components/report_card.html" with report=report show_game=True %}
-#}
+{% endcomment %}
 {% load i18n %}
 
 <article class="card card-hover" id="report-{{ report.id }}">

@@ -1,4 +1,4 @@
-{#
+{% comment %}
   Follow Button Component (HTMX toggle)
 
   Usage:
@@ -8,7 +8,7 @@
     target       — object with .pk (User, Game, or Character)
     target_type  — "user" | "game" | "character"
     is_following — bool
-#}
+{% endcomment %}
 {% load i18n %}
 
 {% if user.is_authenticated and target.pk != user.pk %}

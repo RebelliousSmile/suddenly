@@ -1,4 +1,4 @@
-{#
+{% comment %}
   Notification Item Component
 
   Usage:
@@ -6,7 +6,7 @@
 
   Props:
     notification — Notification instance with .type, .message, .target_url, .is_read, .created_at
-#}
+{% endcomment %}
 
 <a href="{{ notification.target_url }}"
    hx-post="{% url 'mark_notification_read' pk=notification.id %}"

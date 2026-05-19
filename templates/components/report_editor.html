@@ -1,10 +1,10 @@
-{#
+{% comment %}
   Report Editor Component with @mention support
 
   Usage:
     {% include "components/report_editor.html" with game=game %}
     {% include "components/report_editor.html" with game=game report=report %}
-#}
+{% endcomment %}
 {% load i18n %}
 
 <div x-data="markdownEditor('{{ report.content|default:""|escapejs }}')"

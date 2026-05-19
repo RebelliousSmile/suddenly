@@ -1,9 +1,9 @@
-{#
+{% comment %}
   Quote Card Component
 
   Usage:
     {% include "components/quote_card.html" with quote=quote %}
-#}
+{% endcomment %}
 {% load i18n %}
 
 <article class="card card-hover" id="quote-{{ quote.id }}">
