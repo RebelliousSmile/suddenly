@@ -192,6 +192,7 @@ msgstr ""
 msgid "Oracle"
 msgstr ""
 
+
 #: .\suddenly\users\forms.py:46
 msgid "Use instance default"
 msgstr ""
@@ -1819,6 +1820,7 @@ msgstr ""
 #: .\templates\games\rapport_form.html:44
 msgid "Actor"
 msgstr ""
+
 
 #: .\templates\games\rapport_form.html:36
 msgid "Write the rapport entry..."

@@ -190,6 +190,7 @@ msgstr "Personnage quitte la scène"
 msgid "Oracle"
 msgstr "Oracle"
 
+
 #: .\suddenly\users\forms.py:46
 msgid "Use instance default"
 msgstr "Utiliser le défaut de l'instance"
@@ -1821,6 +1822,10 @@ msgstr "Personnage"
 #: .\templates\games\rapport_form.html:36
 msgid "Write the rapport entry..."
 msgstr "Rédigez l'entrée de rapport..."
+
+#: .\templates\games\rapport_form.html:71
+msgid "Add"
+msgstr "Ajouter"
 
 #: .\templates\games\report_compose.html:4
 #: .\templates\games\report_compose.html:12
