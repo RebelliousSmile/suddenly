@@ -1,4 +1,4 @@
-{#
+{% comment %}
   Feed Item Component — enriched report card for the timeline
 
   Usage:
@@ -6,7 +6,7 @@
 
   Props:
     report — Report instance with .author, .game, .title, .content, .published_at, .character_appearances
-#}
+{% endcomment %}
 {% load i18n %}
 
 <article class="card card-hover" id="feed-item-{{ report.id }}">

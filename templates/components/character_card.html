@@ -1,10 +1,10 @@
-{#
+{% comment %}
   Character Card Component
 
   Usage:
     {% include "components/character_card.html" with character=character %}
     {% include "components/character_card.html" with character=character show_actions=True %}
-#}
+{% endcomment %}
 {% load i18n %}
 
 <article class="card card-hover group" id="character-{{ character.id }}">

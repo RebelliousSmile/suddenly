@@ -1,4 +1,4 @@
-{#
+{% comment %}
   Presence Indicator Component — online/offline status for collaborative editing
 
   Usage:
@@ -6,7 +6,7 @@
 
   Props:
     participants — list of dicts: [{"user": User, "is_online": bool, "last_seen": datetime}]
-#}
+{% endcomment %}
 {% load i18n %}
 
 <div class="flex items-center gap-4">
