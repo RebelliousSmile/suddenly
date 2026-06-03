@@ -33,13 +33,13 @@ from suddenly.games.models import (
 # ---------------------------------------------------------------------------
 
 
-class _CastItemSerializer(serializers.Serializer):
+class _CastItemSerializer(serializers.Serializer):  # type: ignore[misc]
     character_name = serializers.CharField(max_length=100)
     character_description = serializers.CharField(allow_blank=True, default="")
     role = serializers.ChoiceField(choices=CastRole.choices, default=CastRole.MENTIONED)
 
 
-class _RapportItemSerializer(serializers.Serializer):
+class _RapportItemSerializer(serializers.Serializer):  # type: ignore[misc]
     kind = serializers.ChoiceField(
         choices=[
             RapportKind.DESCRIPTION,
@@ -51,7 +51,7 @@ class _RapportItemSerializer(serializers.Serializer):
     content = serializers.CharField()
 
 
-class _ReportPayloadSerializer(serializers.Serializer):
+class _ReportPayloadSerializer(serializers.Serializer):  # type: ignore[misc]
     title = serializers.CharField(max_length=200, allow_blank=True, default="")
     content = serializers.CharField(allow_blank=True, default="")
     content_warning = serializers.CharField(allow_blank=True, default="")
@@ -70,7 +70,7 @@ class _ReportPayloadSerializer(serializers.Serializer):
         return value
 
 
-class ReportIngestSerializer(serializers.Serializer):
+class ReportIngestSerializer(serializers.Serializer):  # type: ignore[misc]
     schema_version = serializers.CharField(default="1.0")
     game_id = serializers.UUIDField(
         help_text="UUID of the local Suddenly Game this report belongs to."
@@ -85,7 +85,7 @@ class ReportIngestSerializer(serializers.Serializer):
 # ---------------------------------------------------------------------------
 
 
-class IngestReportView(APIView):
+class IngestReportView(APIView):  # type: ignore[misc]
     """
     Receive a resolved compte rendu blob from choix-narratifs and publish it.
 
@@ -100,7 +100,7 @@ class IngestReportView(APIView):
         if not expected:
             return False
         provided = request.headers.get("X-Ingest-Token", "")
-        return provided == expected
+        return bool(provided == expected)
 
     def post(self, request: Request) -> Response:
         if not self._check_token(request):
