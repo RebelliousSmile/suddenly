@@ -4,7 +4,6 @@ ActivityPub views for federation discovery and actors.
 
 from __future__ import annotations
 
-import json
 import re
 from typing import Any
 
@@ -17,8 +16,7 @@ from django.http import (
     HttpResponseRedirect,
     JsonResponse,
 )
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET
 
 from suddenly.characters.models import Character
 from suddenly.core.version import get_available_languages, get_version
@@ -210,35 +208,6 @@ def user_actor(request: HttpRequest, username: str) -> HttpResponse:
     return activitypub_response(serialize_user(user))
 
 
-@csrf_exempt
-@require_POST
-def user_inbox(request: HttpRequest, username: str) -> HttpResponse:
-    """
-    User inbox endpoint for receiving activities.
-
-    POST /users/{username}/inbox
-    """
-    try:
-        user = User.objects.get(username=username, remote=False)
-    except User.DoesNotExist:
-        return HttpResponseNotFound("User not found")
-
-    # TODO: Verify HTTP signature
-    # TODO: Process incoming activity
-
-    try:
-        activity = json.loads(request.body)
-    except json.JSONDecodeError:
-        return HttpResponseBadRequest("Invalid JSON")
-
-    # Queue activity processing
-    from .tasks import process_incoming_activity
-
-    process_incoming_activity.delay(user.id, activity)
-
-    return JsonResponse({"status": "accepted"}, status=202)
-
-
 @require_GET
 def user_outbox(request: HttpRequest, username: str) -> HttpResponse:
     """
@@ -319,27 +288,6 @@ def game_actor(request: HttpRequest, game_id: str) -> HttpResponse:
     return activitypub_response(serialize_game(game))
 
 
-@csrf_exempt
-@require_POST
-def game_inbox(request: HttpRequest, game_id: str) -> HttpResponse:
-    """Game inbox endpoint."""
-    try:
-        game = Game.objects.get(id=game_id, remote=False)
-    except Game.DoesNotExist:
-        return HttpResponseNotFound("Game not found")
-
-    try:
-        activity = json.loads(request.body)
-    except json.JSONDecodeError:
-        return HttpResponseBadRequest("Invalid JSON")
-
-    from .tasks import process_incoming_activity
-
-    process_incoming_activity.delay(None, activity, game_id=str(game.id))
-
-    return JsonResponse({"status": "accepted"}, status=202)
-
-
 @require_GET
 def game_outbox(request: HttpRequest, game_id: str) -> HttpResponse:
     """Game outbox endpoint."""
@@ -382,27 +330,6 @@ def character_actor(request: HttpRequest, character_id: str) -> HttpResponse:
         return response
 
     return activitypub_response(serialize_character(character))
-
-
-@csrf_exempt
-@require_POST
-def character_inbox(request: HttpRequest, character_id: str) -> HttpResponse:
-    """Character inbox endpoint."""
-    try:
-        character = Character.objects.get(id=character_id, remote=False)
-    except Character.DoesNotExist:
-        return HttpResponseNotFound("Character not found")
-
-    try:
-        activity = json.loads(request.body)
-    except json.JSONDecodeError:
-        return HttpResponseBadRequest("Invalid JSON")
-
-    from .tasks import process_incoming_activity
-
-    process_incoming_activity.delay(None, activity, character_id=str(character.id))
-
-    return JsonResponse({"status": "accepted"}, status=202)
 
 
 @require_GET

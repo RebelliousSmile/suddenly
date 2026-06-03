@@ -293,7 +293,15 @@ class TestGameActorViews:
         )
         assert response.status_code == 202
 
-    def test_game_inbox_invalid_json(self, client: Client, game: Game) -> None:
+    def test_game_inbox_invalid_json(self, client: Client, game: Game, mocker: Any) -> None:
+        mocker.patch(
+            "suddenly.activitypub.inbox._check_rate_limit",
+            return_value=False,
+        )
+        mocker.patch(
+            "suddenly.activitypub.inbox.verify_signature",
+            return_value=(True, "https://remote.example/actor#main-key"),
+        )
         response = client.post(
             f"/games/{game.id}/inbox",
             data="not json",
@@ -388,7 +396,17 @@ class TestCharacterActorViews:
         )
         assert response.status_code == 202
 
-    def test_character_inbox_invalid_json(self, client: Client, character: Character) -> None:
+    def test_character_inbox_invalid_json(
+        self, client: Client, character: Character, mocker: Any
+    ) -> None:
+        mocker.patch(
+            "suddenly.activitypub.inbox._check_rate_limit",
+            return_value=False,
+        )
+        mocker.patch(
+            "suddenly.activitypub.inbox.verify_signature",
+            return_value=(True, "https://remote.example/actor#main-key"),
+        )
         response = client.post(
             f"/characters/{character.id}/inbox",
             data="not json",

@@ -52,7 +52,7 @@ def process_incoming_activity(
 
     except Exception as e:
         logger.exception(f"Error processing activity: {e}")
-        raise self.retry(exc=e, countdown=60 * (self.request.retries + 1))
+        raise self.retry(exc=e, countdown=2**self.request.retries * 60)
 
 
 class _ActivityHandler(Protocol):
@@ -183,7 +183,14 @@ def handle_offer(
 # =================================================================
 
 
-@shared_task(bind=True, max_retries=3)  # type: ignore[untyped-decorator]
+@shared_task(  # type: ignore[untyped-decorator]
+    bind=True,
+    max_retries=5,
+    acks_late=True,
+    reject_on_worker_lost=True,
+    soft_time_limit=120,
+    time_limit=150,
+)
 def deliver_activity(
     self: Any,
     activity: dict[str, Any],
@@ -225,11 +232,25 @@ def deliver_activity(
         with httpx.Client(timeout=30) as client:
             response = client.post(inbox_url, content=body, headers=headers)
 
+        if response.status_code == 410:
+            # Gone: actor/inbox permanently removed. Log and stop retrying.
+            # Proper unfederate (actor removal) is handled by a separate task.
+            logger.warning("AP delivery 410 Gone: %s", inbox_url)
+            return
+
+        if 400 <= response.status_code < 500:
+            # Permanent client error: retrying will not help.
+            logger.warning(
+                "AP permanent delivery failure %s -> %s", inbox_url, response.status_code
+            )
+            return
+
         if response.status_code >= 500:
-            raise self.retry(countdown=60 * (self.request.retries + 1))
+            # Transient server error: retry with exponential backoff.
+            raise self.retry(countdown=2**self.request.retries * 60)
 
     except httpx.RequestError as e:
-        raise self.retry(exc=e, countdown=60 * (self.request.retries + 1))
+        raise self.retry(exc=e, countdown=2**self.request.retries * 60)
 
 
 @shared_task  # type: ignore[untyped-decorator]
@@ -302,7 +323,13 @@ def send_accept_follow(target_id: str, target_type: str, follow_activity: dict[s
     actor_url = follow_activity.get("actor")
     remote_user = User.objects.filter(ap_id=actor_url).first()
     if remote_user and remote_user.inbox_url:
-        deliver_activity.delay(accept, remote_user.inbox_url)
+        key_id, private_key = get_actor_signing_keys(target)
+        deliver_activity.delay(
+            accept,
+            remote_user.inbox_url,
+            actor_key_id=key_id,
+            private_key_pem=private_key,
+        )
 
 
 @shared_task  # type: ignore[untyped-decorator]
@@ -491,7 +518,13 @@ def send_accept_activity(link_request_id: str) -> None:
 
     # Send to requester
     if request.requester.remote and request.requester.inbox_url:
-        deliver_activity.delay(accept, request.requester.inbox_url)
+        key_id, private_key = get_actor_signing_keys(creator)
+        deliver_activity.delay(
+            accept,
+            request.requester.inbox_url,
+            actor_key_id=key_id,
+            private_key_pem=private_key,
+        )
 
 
 @shared_task  # type: ignore[untyped-decorator]
@@ -516,7 +549,13 @@ def send_reject_activity(link_request_id: str) -> None:
 
     # Send to requester
     if request.requester.remote and request.requester.inbox_url:
-        deliver_activity.delay(reject, request.requester.inbox_url)
+        key_id, private_key = get_actor_signing_keys(creator)
+        deliver_activity.delay(
+            reject,
+            request.requester.inbox_url,
+            actor_key_id=key_id,
+            private_key_pem=private_key,
+        )
 
 
 # =================================================================
@@ -580,16 +619,11 @@ def refresh_remote_actors() -> None:
 @shared_task  # type: ignore[untyped-decorator]
 def fetch_remote_actor(actor_url: str) -> None:
     """Fetch and update a remote actor."""
-    import httpx
+    from ._http import fetch_ap_actor
 
-    try:
-        with httpx.Client(timeout=30) as client:
-            response = client.get(actor_url, headers={"Accept": "application/activity+json"})
-
-        if response.status_code == 200:
-            update_remote_user(actor_url, response.json())
-    except Exception as e:
-        logger.exception(f"Error fetching {actor_url}: {e}")
+    actor_data = fetch_ap_actor(actor_url, timeout=30)
+    if actor_data is not None:
+        update_remote_user(actor_url, actor_data)
 
 
 # =================================================================
@@ -611,9 +645,9 @@ def get_actor_signing_keys(actor: Any) -> tuple[str | None, str | None]:
 
 def get_or_create_remote_user(actor_url: str | None) -> Any:
     """Get or create a remote user."""
-    import httpx
-
     from suddenly.users.models import User
+
+    from ._http import fetch_ap_actor
 
     if not actor_url:
         return None
@@ -622,15 +656,11 @@ def get_or_create_remote_user(actor_url: str | None) -> Any:
     if user:
         return user
 
+    data = fetch_ap_actor(actor_url)
+    if data is None:
+        return None
+
     try:
-        with httpx.Client(timeout=30) as client:
-            response = client.get(actor_url, headers={"Accept": "application/activity+json"})
-
-        if response.status_code != 200:
-            return None
-
-        data = response.json()
-
         from urllib.parse import urlparse
 
         domain = urlparse(actor_url).netloc

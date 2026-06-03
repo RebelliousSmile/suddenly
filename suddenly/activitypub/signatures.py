@@ -19,6 +19,8 @@ from cryptography.hazmat.primitives.asymmetric import padding, rsa
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
 from django.conf import settings
 from django.http import HttpRequest
+from django.utils import timezone
+from django.utils.http import parse_http_date
 
 logger = logging.getLogger(__name__)
 
@@ -154,20 +156,11 @@ def _fetch_public_key(actor_url: str) -> str | None:
     Returns:
         The public key PEM string, or None on failure.
     """
-    import httpx
-
+    from ._http import fetch_ap_actor
     from .models import PublicKeyCache
 
-    try:
-        with httpx.Client(timeout=10.0) as client:
-            response = client.get(
-                actor_url,
-                headers={"Accept": "application/activity+json, application/ld+json"},
-            )
-            response.raise_for_status()
-            actor = response.json()
-    except Exception as e:
-        logger.warning("Failed to fetch actor %s: %s", actor_url, e)
+    actor = fetch_ap_actor(actor_url)
+    if actor is None:
         return None
 
     pem: str | None = actor.get("publicKey", {}).get("publicKeyPem")
@@ -255,6 +248,19 @@ def verify_signature(request: HttpRequest) -> tuple[bool, str | None]:
 
     if algorithm != "rsa-sha256":
         return False, f"Unsupported algorithm: {algorithm}"
+
+    # Date skew check (replay protection). Some AP implementations omit the
+    # Date header — skip the check when absent or unparseable rather than reject.
+    date_header = request.headers.get("Date")
+    if date_header:
+        try:
+            ts = parse_http_date(date_header)
+        except ValueError:
+            pass
+        else:
+            dt = datetime.fromtimestamp(ts, tz=UTC)
+            if abs((timezone.now() - dt).total_seconds()) > 30:
+                return False, "Date skew"
 
     # Verify Digest header matches actual body (prevents body tampering)
     digest_header = request.headers.get("Digest")

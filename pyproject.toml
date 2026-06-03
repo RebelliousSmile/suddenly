@@ -107,8 +107,6 @@ omit = [
     "suddenly/wsgi.py",
     "suddenly/settings.py",
     "suddenly/celery.py",
-    "suddenly/activitypub/inbox.py",
-    "suddenly/activitypub/tasks.py",
     "suddenly/activitypub/activities.py",
     "suddenly/characters/views.py",
     "suddenly/games/views.py",

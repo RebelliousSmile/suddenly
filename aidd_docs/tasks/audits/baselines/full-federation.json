@@ -1,0 +1,22 @@
+{
+  "scope": "full-federation",
+  "stack": "django-activitypub",
+  "date": "2026-05-29",
+  "note": "Baseline statique — mesure en DB non disponible sans accès shell prod. Commandes pour obtenir les valeurs réelles ci-dessous.",
+  "baseline_commands": {
+    "idempotency": "python manage.py shell -c \"from suddenly.activitypub.models import ProcessedActivity; print(ProcessedActivity.objects.count())\"",
+    "public_key_cache": "python manage.py shell -c \"from suddenly.activitypub.models import PublicKeyCache; print(PublicKeyCache.objects.count())\"",
+    "queue_depth": "redis-cli LLEN celery",
+    "delivery_success_rate": "grep 'ap:delivered' /var/log/suddenly/*.log | tail -1000 | awk '{print $NF}' | sort | uniq -c",
+    "federated_servers": "python manage.py shell -c \"from suddenly.activitypub.models import FederatedServer; print(FederatedServer.objects.count())\""
+  },
+  "static_observations": {
+    "signature_verification_active": false,
+    "idempotency_guard_active": false,
+    "rate_limiting_active": false,
+    "circuit_breaker_active": false,
+    "ssrf_guard_active": false,
+    "metrics_instrumentation": false,
+    "outbox_pagination_compliant": false
+  }
+}
