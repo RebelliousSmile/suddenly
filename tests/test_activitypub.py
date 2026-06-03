@@ -337,9 +337,9 @@ class TestHTTPSignatures:
         request = RequestFactory().post("/inbox")
         result = verify_signature(request)
 
-        assert isinstance(result, tuple), (
-            "verify_signature must return (bool, str), not a plain bool"
-        )
+        assert isinstance(
+            result, tuple
+        ), "verify_signature must return (bool, str), not a plain bool"
         is_valid, _ = result
         assert is_valid is False
 
@@ -454,7 +454,9 @@ class TestInbox:
             content_type="application/activity+json",
         )
 
-        assert response.status_code == 400
+        # Signature-first inbox: an unsigned request is rejected (403) before
+        # the body is ever parsed, so it never reaches JSON validation (400).
+        assert response.status_code == 403
 
     @pytest.mark.skip(reason="Inbox architecture changed")
     def test_inbox_accepts_valid_activity(self, client: Client, user: User, mocker: Any) -> None:
@@ -492,6 +494,7 @@ class TestPublicKeyCache:
         actor_url = "https://remote.social/users/alice"
 
         mock_response = mocker.MagicMock()
+        mock_response.status_code = 200
         mock_response.json.return_value = {
             "publicKey": {"publicKeyPem": public_pem},
         }
