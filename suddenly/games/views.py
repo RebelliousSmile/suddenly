@@ -22,7 +22,7 @@ from suddenly.core.serializers import (
     ReportCreateSerializer,
     ReportSerializer,
 )
-from suddenly.games.models import Game, Report
+from suddenly.games.models import Game, Report, ReportVisibility
 from suddenly.games.services import publish_report
 
 
@@ -99,14 +99,29 @@ class ReportViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
 
     def get_queryset(self) -> QuerySet[Report]:
         queryset = Report.objects.filter(remote=False)
+        params = self.request.query_params
 
         if self.request.user.is_authenticated:
-            # Include user's drafts
-            return queryset.filter(
+            queryset = queryset.filter(
                 models.Q(status="published") | models.Q(author=self.request.user)
-            ).select_related("author", "game")
+            )
+        else:
+            # Unauthenticated callers only see public published reports in listings.
+            # Detail access to unlisted/followers reports is handled by has_object_permission.
+            queryset = queryset.filter(status="published", visibility=ReportVisibility.PUBLIC)
 
-        return queryset.filter(status="published").select_related("author", "game")
+        # Optional query-param filters (all additive)
+        if visibility := params.get("visibility"):
+            if visibility in ReportVisibility.values:
+                queryset = queryset.filter(visibility=visibility)
+
+        if game_id := params.get("game"):
+            queryset = queryset.filter(game_id=game_id)
+
+        if language := params.get("language"):
+            queryset = queryset.filter(language=language)
+
+        return queryset.select_related("author", "game")
 
     def get_serializer_class(self) -> type[BaseSerializer[Any]]:
         if self.action == "create":
