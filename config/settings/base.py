@@ -255,6 +255,14 @@ AP_ACCEPTED_ACTIVITIES = [
 ]
 
 # =================================================================
+# INGESTION
+# =================================================================
+
+# Shared secret for the choix-narratifs → Suddenly ingest endpoint.
+# Set via environment variable; leave empty to disable the endpoint.
+INGEST_TOKEN = os.environ.get("INGEST_TOKEN", "")
+
+# =================================================================
 # MISC
 # =================================================================
 
