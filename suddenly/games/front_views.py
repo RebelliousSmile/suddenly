@@ -292,6 +292,9 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
             raise Http404
 
     cast = report.character_appearances.select_related("character").order_by("role")
+    # Fallback for ingested reports: CharacterAppearance not created via ingest endpoint,
+    # so fall back to ReportCast (new_character_name entries) when appearances are absent.
+    cast_fallback = report.cast.all() if not cast.exists() else None
     quotes = report.quotes.filter(visibility="public").order_by("-created_at")[:5]
 
     return htmx_render(
@@ -302,6 +305,7 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
             "report": report,
             "game": report.game,
             "cast": cast,
+            "cast_fallback": cast_fallback,
             "quotes": quotes,
         },
     )

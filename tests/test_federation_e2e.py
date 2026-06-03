@@ -84,13 +84,13 @@ def _make_signed_inbox_request(
     import base64
     import hashlib
     from datetime import UTC, datetime
+    from typing import cast
     from urllib.parse import urlparse
 
     from cryptography.hazmat.backends import default_backend
     from cryptography.hazmat.primitives import hashes, serialization
     from cryptography.hazmat.primitives.asymmetric import padding
     from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
-    from typing import cast
 
     key_id = f"{actor_url}#main-key"
     body = json.dumps(activity)
@@ -101,10 +101,7 @@ def _make_signed_inbox_request(
     digest = f"SHA-256={base64.b64encode(hashlib.sha256(body.encode()).digest()).decode()}"
 
     signing_string = (
-        f"(request-target): post {parsed.path}\n"
-        f"host: {host}\n"
-        f"date: {date_str}\n"
-        f"digest: {digest}"
+        f"(request-target): post {parsed.path}\nhost: {host}\ndate: {date_str}\ndigest: {digest}"
     )
 
     private_key = cast(
@@ -200,8 +197,8 @@ class TestFollowIncoming:
             captured_delay_calls.append(kwargs)
 
         mocker.patch("httpx.Client", return_value=mock_client_instance)
-        # deliver_activity is imported inside handle_follow via `from .tasks import deliver_activity`
-        # so we must patch the task object on the tasks module, not on inbox.
+        # deliver_activity is imported inside handle_follow via
+        # `from .tasks import deliver_activity` — patch the tasks module, not inbox.
         mock_deliver = mocker.MagicMock()
         mock_deliver.delay.side_effect = fake_delay
         mocker.patch("suddenly.activitypub.tasks.deliver_activity", mock_deliver)
@@ -222,7 +219,10 @@ class TestFollowIncoming:
             data=json.dumps(activity),
             content_type="application/activity+json",
             HTTP_HOST="local.suddenly.test",
-            HTTP_SIGNATURE=f'keyId="{remote_actor_url}#main-key",headers="(request-target) host date",signature="dummy"',
+            HTTP_SIGNATURE=(
+                f'keyId="{remote_actor_url}#main-key",'
+                'headers="(request-target) host date",signature="dummy"'
+            ),
         )
 
         response = process_inbox(
@@ -232,9 +232,7 @@ class TestFollowIncoming:
         )
 
         # 1. Inbox must return 202
-        assert response.status_code == 202, (
-            f"Expected 202, got {response.status_code}"
-        )
+        assert response.status_code == 202, f"Expected 202, got {response.status_code}"
 
         # 2. A Follow object must have been created in the DB
         remote_user = User.objects.filter(ap_id=remote_actor_url).first()
@@ -257,15 +255,12 @@ class TestFollowIncoming:
         assert "actor_key_id" in call_kwargs, (
             "deliver_activity.delay must receive actor_key_id — Accept would be unsigned without it"
         )
-        assert call_kwargs["actor_key_id"] is not None, (
-            "actor_key_id must not be None"
-        )
+        assert call_kwargs["actor_key_id"] is not None, "actor_key_id must not be None"
         assert "private_key_pem" in call_kwargs, (
-            "deliver_activity.delay must receive private_key_pem — Accept would be unsigned without it"
+            "deliver_activity.delay must receive private_key_pem"
+            " — Accept would be unsigned without it"
         )
-        assert call_kwargs["private_key_pem"] is not None, (
-            "private_key_pem must not be None"
-        )
+        assert call_kwargs["private_key_pem"] is not None, "private_key_pem must not be None"
 
         # 4. The Accept must target the remote actor's inbox
         assert call_kwargs.get("inbox_url") == remote_inbox_url, (
@@ -275,12 +270,8 @@ class TestFollowIncoming:
 
         # 5. The Accept activity must wrap the original Follow
         accept_activity = call_kwargs.get("activity", {})
-        assert accept_activity.get("type") == "Accept", (
-            "Delivered activity must be of type Accept"
-        )
-        assert accept_activity.get("actor") == target_url, (
-            "Accept actor must be the local user"
-        )
+        assert accept_activity.get("type") == "Accept", "Delivered activity must be of type Accept"
+        assert accept_activity.get("actor") == target_url, "Accept actor must be the local user"
 
 
 # ---------------------------------------------------------------------------
@@ -310,7 +301,9 @@ class TestFollowOutgoing:
         peer_url = os.environ.get("FEDERATION_PEER_URL", "")
         peer_actor = os.environ.get(
             "FEDERATION_PEER_ACTOR",
-            f"{peer_url}/users/testbot" if peer_url else "https://test.suddenly.social/users/testbot",
+            f"{peer_url}/users/testbot"
+            if peer_url
+            else "https://test.suddenly.social/users/testbot",
         )
         remote_inbox = f"{peer_actor}/inbox"
 
@@ -471,9 +464,7 @@ class TestUnfollowIncoming:
             ap_id=f"{remote_actor_url}#follow-abc123",
         )
 
-        assert Follow.objects.filter(pk=follow.pk).exists(), (
-            "Follow must exist before Undo"
-        )
+        assert Follow.objects.filter(pk=follow.pk).exists(), "Follow must exist before Undo"
 
         undo_activity = {
             "@context": "https://www.w3.org/ns/activitystreams",
@@ -494,7 +485,10 @@ class TestUnfollowIncoming:
             data=json.dumps(undo_activity),
             content_type="application/activity+json",
             HTTP_HOST="local.suddenly.test",
-            HTTP_SIGNATURE=f'keyId="{remote_actor_url}#main-key",headers="(request-target) host date",signature="dummy"',
+            HTTP_SIGNATURE=(
+                f'keyId="{remote_actor_url}#main-key",'
+                'headers="(request-target) host date",signature="dummy"'
+            ),
         )
 
         response = process_inbox(
@@ -503,9 +497,7 @@ class TestUnfollowIncoming:
             actor_identifier=local_federation_user.username,
         )
 
-        assert response.status_code == 202, (
-            f"Expected 202, got {response.status_code}"
-        )
+        assert response.status_code == 202, f"Expected 202, got {response.status_code}"
 
         assert not Follow.objects.filter(pk=follow.pk).exists(), (
             "Follow record must be deleted after receiving Undo(Follow)"
@@ -514,7 +506,10 @@ class TestUnfollowIncoming:
 
 @pytest.mark.django_db
 class TestUnfollowOutgoing:
-    """Local user unfollows a remote actor — send_undo_follow_activity must deliver signed Undo(Follow)."""
+    """Local user unfollows a remote actor.
+
+    send_undo_follow_activity must deliver a signed Undo(Follow).
+    """
 
     def test_unfollow_outgoing_sends_undo(
         self,
@@ -593,9 +588,7 @@ class TestUnfollowOutgoing:
             f"Activity type must be Undo, got {activity.get('type')}"
         )
         inner = activity.get("object", {})
-        assert inner.get("type") == "Follow", (
-            f"Undo object must be Follow, got {inner.get('type')}"
-        )
+        assert inner.get("type") == "Follow", f"Undo object must be Follow, got {inner.get('type')}"
         assert inner.get("id") == follow_ap_id, (
             f"Undo object id must match Follow ap_id {follow_ap_id}, got {inner.get('id')}"
         )
@@ -1059,9 +1052,10 @@ class TestOfferOutgoing:
 
         # 4. Signing keys must be present and correct
         assert "actor_key_id" in call_kwargs, (
-            "deliver_activity.delay must receive actor_key_id — Offer would be unsigned without it. "
-            "Bug: send_offer_activity calls deliver_activity.delay(activity, creator.inbox_url) "
-            "without passing actor_key_id or private_key_pem."
+            "deliver_activity.delay must receive actor_key_id"
+            " — Offer would be unsigned without it."
+            " Bug: send_offer_activity calls deliver_activity.delay(activity, creator.inbox_url)"
+            " without passing actor_key_id or private_key_pem."
         )
         assert call_kwargs["actor_key_id"] == f"{requester.actor_url}#main-key", (
             f"actor_key_id must be requester's key id, got {call_kwargs.get('actor_key_id')}"
@@ -1096,15 +1090,15 @@ class TestCreateIncoming:
 
         Current stub only logs — no Character is created.
         """
-        from suddenly.characters.models import Character
         from suddenly.activitypub.inbox import process_inbox
+        from suddenly.characters.models import Character
 
         remote_actor_url = "https://peer.suddenly.test/users/remote_sender"
         character_ap_id = "https://peer.suddenly.test/characters/aria"
         private_pem, public_pem = generate_key_pair()
 
         # Register remote user so signature verification can find the public key
-        remote_user = UserFactory(
+        UserFactory(
             username="remote_sender@peer.suddenly.test",
             remote=True,
             ap_id=remote_actor_url,
@@ -1127,9 +1121,7 @@ class TestCreateIncoming:
         }
 
         path = f"/users/{local_federation_user.username}/inbox"
-        request = _make_signed_inbox_request(
-            rf, activity, remote_actor_url, private_pem, path
-        )
+        request = _make_signed_inbox_request(rf, activity, remote_actor_url, private_pem, path)
 
         mocker.patch(
             "suddenly.activitypub.inbox.verify_signature",
@@ -1146,9 +1138,7 @@ class TestCreateIncoming:
             actor_identifier=local_federation_user.username,
         )
 
-        assert response.status_code == 202, (
-            f"Expected 202, got {response.status_code}"
-        )
+        assert response.status_code == 202, f"Expected 202, got {response.status_code}"
 
         assert Character.objects.filter(ap_id=character_ap_id, remote=True).exists(), (
             "handle_create must create a remote Character with remote=True and ap_id set. "
@@ -1156,9 +1146,7 @@ class TestCreateIncoming:
         )
 
         character = Character.objects.get(ap_id=character_ap_id)
-        assert character.name == "Aria", (
-            f"Character name must be 'Aria', got '{character.name}'"
-        )
+        assert character.name == "Aria", f"Character name must be 'Aria', got '{character.name}'"
 
 
 # ---------------------------------------------------------------------------
@@ -1183,8 +1171,8 @@ class TestUpdateIncoming:
 
         Current stub only logs — no record is updated.
         """
-        from suddenly.characters.models import Character, CharacterStatus
         from suddenly.activitypub.inbox import process_inbox
+        from suddenly.characters.models import Character, CharacterStatus
 
         remote_actor_url = "https://peer.suddenly.test/users/remote_sender"
         character_ap_id = "https://peer.suddenly.test/characters/aria"
@@ -1226,9 +1214,7 @@ class TestUpdateIncoming:
         }
 
         path = f"/users/{local_federation_user.username}/inbox"
-        request = _make_signed_inbox_request(
-            rf, activity, remote_actor_url, private_pem, path
-        )
+        request = _make_signed_inbox_request(rf, activity, remote_actor_url, private_pem, path)
 
         mocker.patch(
             "suddenly.activitypub.inbox.verify_signature",
@@ -1245,9 +1231,7 @@ class TestUpdateIncoming:
             actor_identifier=local_federation_user.username,
         )
 
-        assert response.status_code == 202, (
-            f"Expected 202, got {response.status_code}"
-        )
+        assert response.status_code == 202, f"Expected 202, got {response.status_code}"
 
         character.refresh_from_db()
         assert character.name == "Aria Updated", (
@@ -1402,21 +1386,17 @@ class TestRemoteFollowToggle:
 
         args, kwargs = captured_delay_calls[0]
         # Called as send_follow_activity.delay(user_id, ap_id, follow_ap_id)
-        all_args = list(args) + [kwargs.get(k) for k in ("user_id", "ap_id", "follow_ap_id") if k in kwargs]
+        list(args) + [kwargs.get(k) for k in ("user_id", "ap_id", "follow_ap_id") if k in kwargs]
         positional = list(args)
         assert positional[0] == str(local_user_with_key.pk), (
             f"First arg must be user_id={local_user_with_key.pk}"
         )
-        assert positional[1] == remote_actor_url, (
-            f"Second arg must be ap_id={remote_actor_url}"
-        )
+        assert positional[1] == remote_actor_url, f"Second arg must be ap_id={remote_actor_url}"
         expected_ap_id = (
             f"https://{settings.DOMAIN}/users/{local_user_with_key.username}"
             f"/follows/{remote_user.pk}"
         )
-        assert positional[2] == expected_ap_id, (
-            f"Third arg must be follow_ap_id={expected_ap_id}"
-        )
+        assert positional[2] == expected_ap_id, f"Third arg must be follow_ap_id={expected_ap_id}"
 
     def test_follow_returns_is_following_true(
         self,
@@ -1491,7 +1471,7 @@ class TestRemoteFollowToggle:
         ct = ContentType.objects.get_for_model(UserModel)
         # Suppress signals during Follow creation to avoid eager HTTP delivery
         with patch("suddenly.activitypub.signals._safe_delay"):
-            existing_follow = Follow.objects.create(
+            Follow.objects.create(
                 follower=local_user_with_key,
                 content_type=ct,
                 object_id=remote_user.pk,
@@ -1526,12 +1506,8 @@ class TestRemoteFollowToggle:
         )
         args, kwargs = captured_delay_calls[0]
         positional = list(args)
-        assert positional[0] == str(local_user_with_key.pk), (
-            "First arg must be user_id"
-        )
-        assert positional[1] == remote_actor_url, (
-            "Second arg must be ap_id"
-        )
+        assert positional[0] == str(local_user_with_key.pk), "First arg must be user_id"
+        assert positional[1] == remote_actor_url, "Second arg must be ap_id"
 
     def test_unfollow_does_not_delete_follow_locally(
         self,
@@ -2076,8 +2052,7 @@ class TestFollowOutgoingActivityId:
 
         activity = captured_delay_calls[0].get("activity", {})
         assert activity.get("id") == follow_ap_id, (
-            f"Delivered Follow activity must contain id={follow_ap_id}, "
-            f"got id={activity.get('id')}"
+            f"Delivered Follow activity must contain id={follow_ap_id}, got id={activity.get('id')}"
         )
 
 
@@ -2103,8 +2078,8 @@ class TestDeleteIncoming:
 
         Current stub only logs — no record is deleted.
         """
-        from suddenly.characters.models import Character, CharacterStatus
         from suddenly.activitypub.inbox import process_inbox
+        from suddenly.characters.models import Character, CharacterStatus
 
         remote_actor_url = "https://peer.suddenly.test/users/remote_sender"
         character_ap_id = "https://peer.suddenly.test/characters/aria"
@@ -2121,7 +2096,7 @@ class TestDeleteIncoming:
         from suddenly.games.models import Game
 
         game = Game.objects.create(title="Remote Game", owner=remote_user, remote=True)
-        character = Character.objects.create(
+        Character.objects.create(
             name="Aria",
             status=CharacterStatus.NPC,
             creator=remote_user,
@@ -2139,9 +2114,7 @@ class TestDeleteIncoming:
         }
 
         path = f"/users/{local_federation_user.username}/inbox"
-        request = _make_signed_inbox_request(
-            rf, activity, remote_actor_url, private_pem, path
-        )
+        request = _make_signed_inbox_request(rf, activity, remote_actor_url, private_pem, path)
 
         mocker.patch(
             "suddenly.activitypub.inbox.verify_signature",
@@ -2158,9 +2131,7 @@ class TestDeleteIncoming:
             actor_identifier=local_federation_user.username,
         )
 
-        assert response.status_code == 202, (
-            f"Expected 202, got {response.status_code}"
-        )
+        assert response.status_code == 202, f"Expected 202, got {response.status_code}"
 
         assert not Character.objects.filter(ap_id=character_ap_id).exists(), (
             "handle_delete must remove the remote Character from DB. "

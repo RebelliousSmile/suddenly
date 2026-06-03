@@ -8,6 +8,7 @@ Fediverse: Federated content from known instances
 
 from __future__ import annotations
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
@@ -15,7 +16,7 @@ from django.shortcuts import render
 
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
-from suddenly.games.models import Report, ReportStatus
+from suddenly.games.models import Report, ReportStatus, ReportVisibility
 
 
 @login_required
@@ -145,4 +146,49 @@ def recommend_report(request: HttpRequest) -> HttpResponse:
         request,
         "feed/_recommend_button.html",
         {"report": report, "recommended": True},
+    )
+
+
+def explore(request: HttpRequest) -> HttpResponse:
+    """Community explore page — public reports, filterable, no login required."""
+    language = request.GET.get("language", "")
+    tag = request.GET.get("tag", "")
+
+    qs = (
+        Report.objects.filter(
+            status=ReportStatus.PUBLISHED,
+            visibility=ReportVisibility.PUBLIC,
+            remote=False,
+        )
+        .select_related("game", "author")
+        .order_by("-published_at")
+    )
+
+    if language:
+        qs = qs.filter(language=language)
+    if tag:
+        qs = qs.filter(tags__name=tag)
+
+    all_tags: list[str] = sorted(
+        Report.objects.filter(
+            status=ReportStatus.PUBLISHED,
+            visibility=ReportVisibility.PUBLIC,
+            remote=False,
+            tags__isnull=False,
+        )
+        .values_list("tags__name", flat=True)
+        .distinct()
+    )
+
+    return htmx_render(
+        request,
+        full_template="explore/explore.html",
+        partial_template="explore/_results.html",
+        context={
+            "reports": qs[:30],
+            "active_language": language,
+            "active_tag": tag,
+            "all_tags": all_tags,
+            "languages": settings.LANGUAGES,
+        },
     )

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Explore" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-3xl">
+
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold text-primary">{% trans "Explore" %}</h1>
+        </div>
+
+        <!-- Language filter -->
+        <div class="flex flex-wrap gap-2 mb-4">
+            <input type="hidden" name="language" id="language-filter" value="{{ active_language }}">
+            <button type="button"
+                    class="{% if not active_language %}btn-primary btn-sm{% else %}btn-secondary btn-sm{% endif %}"
+                    hx-get="{% url 'feed:explore' %}"
+                    hx-target="#explore-results"
+                    hx-include="[name='tag']"
+                    hx-vals='{"language": ""}'
+                    @click="document.getElementById('language-filter').value = ''">
+                {% trans "All languages" %}
+            </button>
+            {% for code, label in languages %}
+                <button type="button"
+                        class="{% if active_language == code %}btn-primary btn-sm{% else %}btn-secondary btn-sm{% endif %}"
+                        hx-get="{% url 'feed:explore' %}"
+                        hx-target="#explore-results"
+                        hx-include="[name='tag']"
+                        hx-vals='{"language": "{{ code }}"}'
+                        @click="document.getElementById('language-filter').value = '{{ code }}'">
+                    {{ label }}
+                </button>
+            {% endfor %}
+        </div>
+
+        <!-- Tag filter -->
+        {% if all_tags %}
+            {% url 'feed:explore' as explore_url %}
+            {% include "components/tag_filter.html" with search_url=explore_url results_target="#explore-results" include_fields="[name='language']" all_tags=all_tags active_tag=active_tag %}
+        {% endif %}
+
+        <div id="explore-results" class="mt-6">
+            {% include "explore/_results.html" %}
+        </div>
+
+    </div>
+</section>
+{% endblock %}
