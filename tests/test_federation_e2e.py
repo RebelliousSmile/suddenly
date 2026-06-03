@@ -84,13 +84,13 @@ def _make_signed_inbox_request(
     import base64
     import hashlib
     from datetime import UTC, datetime
+    from typing import cast
     from urllib.parse import urlparse
 
     from cryptography.hazmat.backends import default_backend
     from cryptography.hazmat.primitives import hashes, serialization
     from cryptography.hazmat.primitives.asymmetric import padding
     from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
-    from typing import cast
 
     key_id = f"{actor_url}#main-key"
     body = json.dumps(activity)
@@ -200,8 +200,8 @@ class TestFollowIncoming:
             captured_delay_calls.append(kwargs)
 
         mocker.patch("httpx.Client", return_value=mock_client_instance)
-        # deliver_activity is imported inside handle_follow via `from .tasks import deliver_activity`
-        # so we must patch the task object on the tasks module, not on inbox.
+        # deliver_activity is imported inside handle_follow via
+        # `from .tasks import deliver_activity` — patch the tasks module, not inbox.
         mock_deliver = mocker.MagicMock()
         mock_deliver.delay.side_effect = fake_delay
         mocker.patch("suddenly.activitypub.tasks.deliver_activity", mock_deliver)
@@ -222,7 +222,10 @@ class TestFollowIncoming:
             data=json.dumps(activity),
             content_type="application/activity+json",
             HTTP_HOST="local.suddenly.test",
-            HTTP_SIGNATURE=f'keyId="{remote_actor_url}#main-key",headers="(request-target) host date",signature="dummy"',
+            HTTP_SIGNATURE=(
+                f'keyId="{remote_actor_url}#main-key",'
+                'headers="(request-target) host date",signature="dummy"'
+            ),
         )
 
         response = process_inbox(
@@ -261,7 +264,8 @@ class TestFollowIncoming:
             "actor_key_id must not be None"
         )
         assert "private_key_pem" in call_kwargs, (
-            "deliver_activity.delay must receive private_key_pem — Accept would be unsigned without it"
+            "deliver_activity.delay must receive private_key_pem"
+            " — Accept would be unsigned without it"
         )
         assert call_kwargs["private_key_pem"] is not None, (
             "private_key_pem must not be None"
@@ -494,7 +498,10 @@ class TestUnfollowIncoming:
             data=json.dumps(undo_activity),
             content_type="application/activity+json",
             HTTP_HOST="local.suddenly.test",
-            HTTP_SIGNATURE=f'keyId="{remote_actor_url}#main-key",headers="(request-target) host date",signature="dummy"',
+            HTTP_SIGNATURE=(
+                f'keyId="{remote_actor_url}#main-key",'
+                'headers="(request-target) host date",signature="dummy"'
+            ),
         )
 
         response = process_inbox(
@@ -514,7 +521,10 @@ class TestUnfollowIncoming:
 
 @pytest.mark.django_db
 class TestUnfollowOutgoing:
-    """Local user unfollows a remote actor — send_undo_follow_activity must deliver signed Undo(Follow)."""
+    """Local user unfollows a remote actor.
+
+    send_undo_follow_activity must deliver a signed Undo(Follow).
+    """
 
     def test_unfollow_outgoing_sends_undo(
         self,
@@ -1059,9 +1069,10 @@ class TestOfferOutgoing:
 
         # 4. Signing keys must be present and correct
         assert "actor_key_id" in call_kwargs, (
-            "deliver_activity.delay must receive actor_key_id — Offer would be unsigned without it. "
-            "Bug: send_offer_activity calls deliver_activity.delay(activity, creator.inbox_url) "
-            "without passing actor_key_id or private_key_pem."
+            "deliver_activity.delay must receive actor_key_id"
+            " — Offer would be unsigned without it."
+            " Bug: send_offer_activity calls deliver_activity.delay(activity, creator.inbox_url)"
+            " without passing actor_key_id or private_key_pem."
         )
         assert call_kwargs["actor_key_id"] == f"{requester.actor_url}#main-key", (
             f"actor_key_id must be requester's key id, got {call_kwargs.get('actor_key_id')}"
@@ -1096,15 +1107,15 @@ class TestCreateIncoming:
 
         Current stub only logs — no Character is created.
         """
-        from suddenly.characters.models import Character
         from suddenly.activitypub.inbox import process_inbox
+        from suddenly.characters.models import Character
 
         remote_actor_url = "https://peer.suddenly.test/users/remote_sender"
         character_ap_id = "https://peer.suddenly.test/characters/aria"
         private_pem, public_pem = generate_key_pair()
 
         # Register remote user so signature verification can find the public key
-        remote_user = UserFactory(
+        UserFactory(
             username="remote_sender@peer.suddenly.test",
             remote=True,
             ap_id=remote_actor_url,
@@ -1183,8 +1194,8 @@ class TestUpdateIncoming:
 
         Current stub only logs — no record is updated.
         """
-        from suddenly.characters.models import Character, CharacterStatus
         from suddenly.activitypub.inbox import process_inbox
+        from suddenly.characters.models import Character, CharacterStatus
 
         remote_actor_url = "https://peer.suddenly.test/users/remote_sender"
         character_ap_id = "https://peer.suddenly.test/characters/aria"
@@ -1402,7 +1413,7 @@ class TestRemoteFollowToggle:
 
         args, kwargs = captured_delay_calls[0]
         # Called as send_follow_activity.delay(user_id, ap_id, follow_ap_id)
-        all_args = list(args) + [kwargs.get(k) for k in ("user_id", "ap_id", "follow_ap_id") if k in kwargs]
+        list(args) + [kwargs.get(k) for k in ("user_id", "ap_id", "follow_ap_id") if k in kwargs]
         positional = list(args)
         assert positional[0] == str(local_user_with_key.pk), (
             f"First arg must be user_id={local_user_with_key.pk}"
@@ -1491,7 +1502,7 @@ class TestRemoteFollowToggle:
         ct = ContentType.objects.get_for_model(UserModel)
         # Suppress signals during Follow creation to avoid eager HTTP delivery
         with patch("suddenly.activitypub.signals._safe_delay"):
-            existing_follow = Follow.objects.create(
+            Follow.objects.create(
                 follower=local_user_with_key,
                 content_type=ct,
                 object_id=remote_user.pk,
@@ -2103,8 +2114,8 @@ class TestDeleteIncoming:
 
         Current stub only logs — no record is deleted.
         """
-        from suddenly.characters.models import Character, CharacterStatus
         from suddenly.activitypub.inbox import process_inbox
+        from suddenly.characters.models import Character, CharacterStatus
 
         remote_actor_url = "https://peer.suddenly.test/users/remote_sender"
         character_ap_id = "https://peer.suddenly.test/characters/aria"
@@ -2121,7 +2132,7 @@ class TestDeleteIncoming:
         from suddenly.games.models import Game
 
         game = Game.objects.create(title="Remote Game", owner=remote_user, remote=True)
-        character = Character.objects.create(
+        Character.objects.create(
             name="Aria",
             status=CharacterStatus.NPC,
             creator=remote_user,

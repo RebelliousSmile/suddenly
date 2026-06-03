@@ -410,7 +410,7 @@ def handle_delete(activity: dict[str, Any], actor_type: str, actor_identifier: s
         # object is a URL — determine the type by trying known models
         _handle_delete_by_url(obj)
     elif isinstance(obj, dict):
-        obj_type = obj.get("type")
+        obj.get("type")
         obj_id = obj.get("id", "")
         if obj_id:
             _handle_delete_by_url(obj_id)

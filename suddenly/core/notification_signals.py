@@ -155,7 +155,6 @@ def _track_usage_and_prompt(user: Any) -> None:
         stats.save(update_fields=["posts_since_last_prompt", "updated_at"])
 
         # Notify user
-        url = settings_obj.donation_url or ""
         Notification.objects.create(
             recipient=user,
             type=NotificationType.INVITATION,
