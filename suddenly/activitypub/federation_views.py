@@ -13,8 +13,8 @@ from urllib.parse import urlparse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 
-from suddenly.core.views import htmx_render
 from suddenly.core.types import AuthenticatedRequest
+from suddenly.core.views import htmx_render
 
 logger = logging.getLogger(__name__)
 
@@ -152,9 +152,7 @@ def remote_follow_toggle(request: AuthenticatedRequest) -> HttpResponse:
         is_following = False
     else:
         domain = settings.DOMAIN
-        follow_ap_id = (
-            f"https://{domain}/users/{request.user.username}/follows/{remote_user.pk}"
-        )
+        follow_ap_id = f"https://{domain}/users/{request.user.username}/follows/{remote_user.pk}"
         Follow.objects.create(
             follower=request.user,
             content_type=ct,
