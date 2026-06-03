@@ -13,8 +13,8 @@ from urllib.parse import urlparse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 
-from suddenly.core.views import htmx_render
 from suddenly.core.types import AuthenticatedRequest
+from suddenly.core.views import htmx_render
 
 logger = logging.getLogger(__name__)
 
