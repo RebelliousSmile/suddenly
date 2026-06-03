@@ -279,8 +279,7 @@ class UserUsageStats(BaseModel):
 
         now = timezone.now().date()
         return (
-            self.last_donation_date.year == now.year
-            and self.last_donation_date.month == now.month
+            self.last_donation_date.year == now.year and self.last_donation_date.month == now.month
         )
 
     def should_prompt(self, interval: int = 10) -> bool:

@@ -66,9 +66,7 @@ class _ReportPayloadSerializer(serializers.Serializer):
 
     def validate_resolved(self, value: bool) -> bool:
         if not value:
-            raise serializers.ValidationError(
-                "Report must be resolved before export (§5 guard)."
-            )
+            raise serializers.ValidationError("Report must be resolved before export (§5 guard).")
         return value
 
 
@@ -119,9 +117,7 @@ class IngestReportView(APIView):
         payload = data["report"]
 
         try:
-            game = Game.objects.select_related("owner").get(
-                id=data["game_id"], remote=False
-            )
+            game = Game.objects.select_related("owner").get(id=data["game_id"], remote=False)
         except Game.DoesNotExist:
             return Response(
                 {"detail": "Game not found or not local."},
