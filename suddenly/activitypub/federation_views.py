@@ -13,8 +13,8 @@ from urllib.parse import urlparse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 
-from suddenly.core.views import htmx_render
 from suddenly.core.types import AuthenticatedRequest
+from suddenly.core.views import htmx_render
 
 logger = logging.getLogger(__name__)
 
@@ -152,9 +152,7 @@ def remote_follow_toggle(request: AuthenticatedRequest) -> HttpResponse:
         is_following = False
     else:
         domain = settings.DOMAIN
-        follow_ap_id = (
-            f"https://{domain}/users/{request.user.username}/follows/{remote_user.pk}"
-        )
+        follow_ap_id = f"https://{domain}/users/{request.user.username}/follows/{remote_user.pk}"
         Follow.objects.create(
             follower=request.user,
             content_type=ct,
@@ -261,39 +259,6 @@ def _search_local(query: str) -> list[dict[str, str]]:
 
 def _fetch_actor(url: str) -> dict[str, Any] | None:
     """Fetch an ActivityPub actor JSON. Blocks private/loopback IPs (SSRF protection)."""
-    import socket
+    from ._http import fetch_ap_actor
 
-    import httpx
-
-    parsed = urlparse(url)
-    if parsed.scheme not in ("http", "https"):
-        return None
-
-    # Block private/loopback IPs
-    hostname = parsed.hostname
-    if hostname:
-        try:
-            resolved = socket.getaddrinfo(hostname, None)
-            for _, _, _, _, addr in resolved:
-                ip = addr[0]
-                import ipaddress
-
-                ip_obj = ipaddress.ip_address(ip)
-                if ip_obj.is_private or ip_obj.is_loopback or ip_obj.is_link_local:
-                    logger.warning("Blocked SSRF attempt to %s (%s)", url, ip)
-                    return None
-        except (socket.gaierror, ValueError):
-            pass  # DNS resolution failed or invalid IP — let httpx handle it
-
-    try:
-        with httpx.Client(timeout=10) as client:
-            resp = client.get(
-                url,
-                headers={"Accept": "application/activity+json, application/ld+json"},
-            )
-        if resp.status_code == 200:
-            return resp.json()  # type: ignore[no-any-return]
-    except Exception:
-        logger.warning("Failed to fetch actor %s", url, exc_info=True)
-
-    return None
+    return fetch_ap_actor(url)

@@ -9,7 +9,13 @@ import logging
 from typing import Any, Protocol
 from urllib.parse import urlparse
 
-from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
+from django.http import (
+    HttpRequest,
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseForbidden,
+    HttpResponseNotFound,
+)
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django_ratelimit.core import is_ratelimited
@@ -65,6 +71,8 @@ def user_inbox(request: HttpRequest, username: str) -> HttpResponse:
 
     POST /users/{username}/inbox
     """
+    if get_local_actor("user", username) is None:
+        return HttpResponseNotFound("User not found")
     return process_inbox(request, actor_type="user", actor_identifier=username)
 
 
@@ -76,6 +84,8 @@ def game_inbox(request: HttpRequest, game_id: str) -> HttpResponse:
 
     POST /games/{id}/inbox
     """
+    if get_local_actor("game", game_id) is None:
+        return HttpResponseNotFound("Game not found")
     return process_inbox(request, actor_type="game", actor_identifier=game_id)
 
 
@@ -87,6 +97,8 @@ def character_inbox(request: HttpRequest, character_id: str) -> HttpResponse:
 
     POST /characters/{id}/inbox
     """
+    if get_local_actor("character", character_id) is None:
+        return HttpResponseNotFound("Character not found")
     return process_inbox(request, actor_type="character", actor_identifier=character_id)
 
 
@@ -98,7 +110,9 @@ def process_inbox(request: HttpRequest, actor_type: str, actor_identifier: str) 
     if _check_rate_limit(request):
         domain = _get_request_domain(request)
         logger.warning("Rate limit exceeded for domain %s", domain)
-        return HttpResponseForbidden("Rate limit exceeded")
+        response = HttpResponse("Rate limit exceeded", status=429)
+        response["Retry-After"] = "60"
+        return response
 
     # Verify HTTP signature
     is_valid, reason = verify_signature(request)
@@ -410,7 +424,6 @@ def handle_delete(activity: dict[str, Any], actor_type: str, actor_identifier: s
         # object is a URL — determine the type by trying known models
         _handle_delete_by_url(obj)
     elif isinstance(obj, dict):
-        obj_type = obj.get("type")
         obj_id = obj.get("id", "")
         if obj_id:
             _handle_delete_by_url(obj_id)
@@ -560,9 +573,9 @@ def get_or_create_remote_user(
     The DB is checked first to avoid unnecessary HTTP requests during tests and
     when the actor was already fetched during signature verification.
     """
-    import httpx
-
     from suddenly.users.models import User
+
+    from ._http import fetch_ap_actor
 
     # Fast path: actor already known
     existing = User.objects.filter(ap_id=actor_url, remote=True).first()
@@ -570,13 +583,8 @@ def get_or_create_remote_user(
         return existing, False
 
     # Slow path: fetch from remote
-    try:
-        with httpx.Client(timeout=10) as client:
-            response = client.get(actor_url, headers={"Accept": "application/activity+json"})
-            response.raise_for_status()
-            actor_data: dict[str, Any] = response.json()
-    except Exception as e:
-        logger.error(f"Failed to fetch actor {actor_url}: {e}")
+    actor_data = fetch_ap_actor(actor_url)
+    if actor_data is None:
         return None
 
     username = actor_data.get("preferredUsername", actor_url.split("/")[-1])
