@@ -10,6 +10,8 @@ from typing import Any
 
 from django.conf import settings
 
+from suddenly.activitypub.url_utils import absolute_media_url, media_type_for_file
+
 # ActivityPub context
 AP_CONTEXT: list[str | dict[str, str]] = [
     "https://www.w3.org/ns/activitystreams",
@@ -50,8 +52,8 @@ def serialize_user(user: Any) -> dict[str, Any]:
     if user.avatar:
         data["icon"] = {
             "type": "Image",
-            "mediaType": "image/jpeg",
-            "url": f"https://{settings.DOMAIN}{user.avatar.url}",
+            "mediaType": media_type_for_file(user.avatar),
+            "url": absolute_media_url(user.avatar),
         }
 
     if user.public_key:
@@ -121,8 +123,8 @@ def serialize_character(character: Any) -> dict[str, Any]:
     if character.avatar:
         data["icon"] = {
             "type": "Image",
-            "mediaType": "image/jpeg",
-            "url": f"https://{settings.DOMAIN}{character.avatar.url}",
+            "mediaType": media_type_for_file(character.avatar),
+            "url": absolute_media_url(character.avatar),
         }
 
     if character.owner:
