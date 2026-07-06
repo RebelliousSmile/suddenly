@@ -6,6 +6,7 @@ Missing required variables raise KeyError at startup (fail fast).
 """
 
 import os
+from typing import Any
 from urllib.parse import urlparse
 
 from .base import *  # noqa: F401, F403
@@ -65,6 +66,34 @@ else:
         }
     }
     CELERY_TASK_ALWAYS_EAGER = True  # Run tasks synchronously without broker
+
+# Media storage — S3/Cloudflare R2, optional (falls back to local filesystem)
+#
+# STORAGES is imported via `from .base import *`, which binds a reference to the
+# SAME dict object as config.settings.base.STORAGES — never mutate it via item
+# assignment (STORAGES["default"] = ...), that would corrupt base.STORAGES for
+# every other settings module sharing the reference. Always rebind to a new dict.
+AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
+if AWS_STORAGE_BUCKET_NAME:
+    _s3_options: dict[str, Any] = {
+        "bucket_name": AWS_STORAGE_BUCKET_NAME,
+        "endpoint_url": os.environ.get("AWS_S3_ENDPOINT_URL"),
+        # "auto" is the Cloudflare R2 convention; real AWS S3 must set this explicitly.
+        "region_name": os.environ.get("AWS_S3_REGION_NAME", "auto"),
+        "access_key": os.environ["AWS_ACCESS_KEY_ID"],
+        "secret_key": os.environ["AWS_SECRET_ACCESS_KEY"],
+        # Public URLs must not expire — federation caches icon.url on remote instances.
+        "querystring_auth": False,
+        # Never silently overwrite a same-named file from a different user.
+        "file_overwrite": False,
+    }
+    STORAGES: dict[str, dict[str, Any]] = {  # type: ignore[no-redef]
+        **STORAGES,  # noqa: F405
+        "default": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": _s3_options,
+        },
+    }
 
 # ActivityPub base URL
 AP_BASE_URL = f"https://{DOMAIN}"

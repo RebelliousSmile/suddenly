@@ -12,6 +12,8 @@ from typing import Any
 from django.conf import settings
 from django.utils import timezone
 
+from suddenly.activitypub.url_utils import absolute_media_url, media_type_for_file
+
 
 def get_context() -> list[str]:
     """Return the standard ActivityPub context."""
@@ -58,7 +60,8 @@ def build_actor(user_or_game_or_character: Any) -> dict[str, Any]:
     if hasattr(obj, "avatar") and obj.avatar:
         actor["icon"] = {
             "type": "Image",
-            "url": f"https://{settings.DOMAIN}{obj.avatar.url}",
+            "mediaType": media_type_for_file(obj.avatar),
+            "url": absolute_media_url(obj.avatar),
         }
 
     # Public key for HTTP signatures
