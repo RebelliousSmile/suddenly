@@ -89,6 +89,13 @@ suddenly/
 | `EMAIL_USE_TLS` | `True` | SMTP TLS |
 | `DEFAULT_FROM_EMAIL` | None | Sender address |
 | `SENTRY_DSN` | None | Sentry error tracking DSN |
+| `AWS_STORAGE_BUCKET_NAME` | None | S3/R2 bucket name — absent = local filesystem media storage (no persistence across deploys on PaaS without a volume) |
+| `AWS_S3_ENDPOINT_URL` | None | S3-compatible endpoint (Cloudflare R2 URL) |
+| `AWS_S3_REGION_NAME` | `auto` | `auto` is R2-specific; real AWS S3 must set a real region |
+| `AWS_ACCESS_KEY_ID` | — | Required if `AWS_STORAGE_BUCKET_NAME` set |
+| `AWS_SECRET_ACCESS_KEY` | — | Required if `AWS_STORAGE_BUCKET_NAME` set |
+
+**Media storage (S3/R2)**: `config/settings/production.py` rebinds `STORAGES` to a new dict (`{**STORAGES, "default": {...}}`) rather than mutating `STORAGES["default"]` in place — `from .base import *` binds the same dict object, so item-assignment would corrupt `base.STORAGES` for every settings module sharing the reference. Bucket must be publicly readable (no `querystring_auth`) — remote federated instances cache `icon.url` and can't refresh signed URLs. Pre-existing local avatars are not auto-migrated on switching to S3/R2.
 
 ### Generate SECRET_KEY
 
