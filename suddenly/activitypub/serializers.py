@@ -12,18 +12,30 @@ from django.conf import settings
 
 from suddenly.activitypub.url_utils import absolute_media_url, media_type_for_file
 
-# ActivityPub context
+# ActivityPub context.
+#
+# Type strategy (SUD-F5): Characters serialize as a standard AP ``Person`` so
+# generic consumers can display them, with the ``suddenly:Character`` term
+# declared for Suddenly-aware peers to recognise the richer type. This dual
+# typing is intentional — a strict consumer sees a Person, never an unknown
+# type it might reject.
+#
+# ``sensitive`` is the Mastodon/AS2 Content-Warning flag emitted alongside
+# ``summary`` by serialize_report/serialize_quote; it must be declared here or
+# strict peers drop it. ``toot`` is declared for the Mastodon namespace.
 AP_CONTEXT: list[str | dict[str, str]] = [
     "https://www.w3.org/ns/activitystreams",
     "https://w3id.org/security/v1",
     {
         "suddenly": f"https://{settings.DOMAIN}/ns#",
+        "toot": "http://joinmastodon.org/ns#",
         "Character": "suddenly:Character",
         "Game": "suddenly:Game",
         "Quote": "suddenly:Quote",
         "status": "suddenly:status",
         "sheetUrl": "suddenly:sheetUrl",
         "gameSystem": "suddenly:gameSystem",
+        "sensitive": "https://www.w3.org/ns/activitystreams#sensitive",
     },
 ]
 

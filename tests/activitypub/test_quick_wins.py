@@ -41,9 +41,9 @@ class TestSsrfBlock:
 class TestDateSkewReject:
     """verify_signature must reject a stale Date header (replay protection)."""
 
-    def test_date_60s_in_past_rejected(self, rf: RequestFactory) -> None:
-        """A Date header 60s in the past returns (False, 'Date skew')."""
-        stale = datetime.now(UTC) - timedelta(seconds=60)
+    def test_stale_date_rejected(self, rf: RequestFactory) -> None:
+        """A Date header beyond the skew window returns (False, 'Date skew')."""
+        stale = datetime.now(UTC) - timedelta(seconds=600)
         date_str = stale.strftime("%a, %d %b %Y %H:%M:%S GMT")
 
         sig_header = (

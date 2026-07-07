@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import hmac
 import logging
 from datetime import UTC, datetime
 from urllib.parse import urlparse
@@ -249,30 +250,49 @@ def verify_signature(request: HttpRequest) -> tuple[bool, str | None]:
     if algorithm != "rsa-sha256":
         return False, f"Unsupported algorithm: {algorithm}"
 
-    # Date skew check (replay protection). Some AP implementations omit the
-    # Date header — skip the check when absent or unparseable rather than reject.
-    date_header = request.headers.get("Date")
-    if date_header:
-        try:
-            ts = parse_http_date(date_header)
-        except ValueError:
-            pass
-        else:
-            dt = datetime.fromtimestamp(ts, tz=UTC)
-            if abs((timezone.now() - dt).total_seconds()) > 30:
-                return False, "Date skew"
+    signed_headers = headers_str.split()
+    signed_set = {h.lower() for h in signed_headers}
 
-    # Verify Digest header matches actual body (prevents body tampering)
-    digest_header = request.headers.get("Digest")
-    if digest_header and request.body:
+    # Date skew check (replay protection). The Date header is mandatory and must
+    # be covered by the signature — an absent or unsigned Date leaves the request
+    # replayable indefinitely (SUD-F2). Reject rather than skip silently.
+    date_header = request.headers.get("Date")
+    if not date_header:
+        return False, "Missing Date header"
+    try:
+        ts = parse_http_date(date_header)
+    except ValueError:
+        return False, "Invalid Date header"
+    dt = datetime.fromtimestamp(ts, tz=UTC)
+    max_skew = getattr(settings, "AP_SIGNATURE_MAX_SKEW", 300)
+    if abs((timezone.now() - dt).total_seconds()) > max_skew:
+        return False, "Date skew"
+
+    # Enforce a minimum signed header set (SUD-F2). (request-target) and host
+    # bind the signature to this exact endpoint; date bounds replay. A peer that
+    # signs only a subset can otherwise redirect or replay the request.
+    required_signed = {"(request-target)", "host", "date"}
+    missing_signed = required_signed - signed_set
+    if missing_signed:
+        return False, f"Unsigned required headers: {', '.join(sorted(missing_signed))}"
+
+    # Any request carrying a body must authenticate it with a signed Digest that
+    # matches the body (SUD-F1). Without this, a peer can sign only benign
+    # headers and deliver arbitrary activity content under a legitimate key.
+    if request.body:
+        if "digest" not in signed_set:
+            return False, "Digest not covered by signature"
+        digest_header = request.headers.get("Digest")
+        if not digest_header:
+            return False, "Missing Digest header"
         expected_digest = "SHA-256=" + base64.b64encode(
             hashlib.sha256(request.body).digest()
         ).decode("utf-8")
-        if digest_header != expected_digest:
+        if not hmac.compare_digest(digest_header, expected_digest):
             return False, "Digest mismatch"
 
     actor_url = key_id.split("#")[0]
-    signing_string = _build_signing_string(request, headers_str.split())
+    signing_string = _build_signing_string(request, signed_headers)
 
     # Try cached key first
     cached = PublicKeyCache.objects.filter(actor_url=actor_url).first()
