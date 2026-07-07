@@ -1,0 +1,47 @@
+{# Partial: claim/adopt/fork promocard in the connected feed (SUD-P1).
+
+   Distinct visual register from a report card (crimson liseré + announcement
+   eyebrow) so the interleaved promo never reads as a report. Actions point to
+   the existing LinkRequest linkflow. Only available NPCs (status=npc) reach
+   this template, via feed_home's interleave.
+
+   Expects `character` — an available NPC.
+#}
+{% load i18n %}
+<article class="card border-l-2 border-crimson bg-crimson/5">
+    <div class="card-body">
+        <p class="text-xs font-semibold uppercase tracking-widest text-crimson mb-2">
+            <span class="i-lucide-megaphone text-xs"></span>
+            {% trans "Available to play" %}
+        </p>
+        <div class="flex items-center gap-3 mb-3">
+            {% if character.avatar %}
+                <img src="{{ character.avatar.url }}" alt="{{ character.name }}" class="avatar-md">
+            {% else %}
+                <span class="avatar-md avatar-placeholder">
+                    <span class="i-lucide-user text-sm"></span>
+                </span>
+            {% endif %}
+            <div class="min-w-0">
+                <a href="{% url 'characters:detail' slug=character.slug %}"
+                   class="font-semibold text-primary hover:text-crimson">
+                    {{ character.name }}
+                </a>
+                <p class="text-xs text-muted truncate">
+                    {% blocktrans with title=character.origin_game.title %}from {{ title }}{% endblocktrans %}
+                </p>
+            </div>
+        </div>
+        {% if character.description %}
+            <p class="text-sm text-secondary line-clamp-2 mb-3">{{ character.description }}</p>
+        {% endif %}
+        <div class="flex flex-wrap items-center gap-2">
+            <a href="{% url 'characters:link_request_form' slug=character.slug link_type='claim' %}"
+               class="btn-primary btn-sm">{% trans "Claim" %}</a>
+            <a href="{% url 'characters:link_request_form' slug=character.slug link_type='adopt' %}"
+               class="btn-secondary btn-sm">{% trans "Adopt" %}</a>
+            <a href="{% url 'characters:link_request_form' slug=character.slug link_type='fork' %}"
+               class="btn-ghost btn-sm">{% trans "Fork" %}</a>
+        </div>
+    </div>
+</article>

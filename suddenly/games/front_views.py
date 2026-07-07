@@ -10,9 +10,11 @@ from typing import TYPE_CHECKING
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db import models
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -180,7 +182,19 @@ def game_search(request: HttpRequest) -> HttpResponse:
 
 
 def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
-    """Game detail with reports and characters (US-02)."""
+    """Game profile / landing page — cast, meta, preview of reports (US-02).
+
+    Role split with ``story_detail`` (SUD-V5), so the two public doors to a game
+    are not redundant:
+
+    - ``game_detail`` (this view) is the *profile*: game metadata, cast, follow
+      button, and a bounded preview of the game's published reports. It answers
+      "what is this game and who plays in it?". It is the owner-facing and
+      discovery landing surface.
+    - ``story_detail`` is the *long read*: the end-to-end aggregation of only the
+      released reports (rapports + markers), the resolved account. It answers
+      "let me read this story from start to finish".
+    """
     from django.contrib.contenttypes.models import ContentType
     from django.db.models import Q
 
@@ -215,6 +229,119 @@ def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
             "is_owner": request.user == game.owner if request.user.is_authenticated else False,
             "is_following": is_following,
         },
+    )
+
+
+# ---------------------------------------------------------------------------
+# Stories — public reading surface for released content (SUD-V3).
+#
+# Stories is the *compte rendu* side of the wall: it only ever shows reports
+# that have crossed the temporal wall (released + published + public). The
+# liberation filter lives in the queryset — an unreleased report never enters
+# the context of these public views (structural wall, not a render-time mask).
+# ---------------------------------------------------------------------------
+
+
+def _released_reports(game: Game) -> models.QuerySet[Report]:
+    """Reports of a game that have crossed the wall, in reading order."""
+    return (
+        game.reports.filter(
+            released_at__isnull=False,
+            status=ReportStatus.PUBLISHED,
+            visibility=ReportVisibility.PUBLIC,
+        )
+        .select_related("author")
+        .prefetch_related(
+            "rapports__actor",
+            "rapports__markers__character",
+            "rapports__parent_links__parent_rapport",
+        )
+        .order_by(
+            models.F("session_date").asc(nulls_last=True),
+            "released_at",
+            "created_at",
+        )
+    )
+
+
+def stories_index(request: HttpRequest) -> HttpResponse:
+    """Public list of games that have at least one released story (SUD-V3).
+
+    No @login_required: Stories is readable by everyone. Only games with
+    released + published + public content are listed — the wall filter is in
+    the queryset, so private/in-progress reports never surface here.
+    """
+    games = (
+        Game.objects.filter(
+            reports__released_at__isnull=False,
+            reports__status=ReportStatus.PUBLISHED,
+            reports__visibility=ReportVisibility.PUBLIC,
+            remote=False,
+        )
+        .distinct()
+        .select_related("owner", "game_system_ref")
+        .order_by("-updated_at")
+    )
+
+    return htmx_render(
+        request,
+        full_template="stories/index.html",
+        partial_template="stories/_index_results.html",
+        context={"games": games[:30]},
+    )
+
+
+def story_detail(request: HttpRequest, pk: str) -> HttpResponse:
+    """Public end-to-end reading of a game's released reports (SUD-V3).
+
+    Aggregates *only* released reports (rapports + markers). A game with no
+    released content is not a public story → 404. Unreleased reports are
+    structurally absent from the context (filtered at the queryset).
+    """
+    game = get_object_or_404(
+        Game.objects.select_related("owner", "game_system_ref").filter(remote=False), pk=pk
+    )
+
+    reports = list(_released_reports(game))
+    if not reports:
+        raise Http404
+
+    return htmx_render(
+        request,
+        full_template="stories/detail.html",
+        partial_template="stories/detail.html",
+        context={"game": game, "reports": reports},
+    )
+
+
+@require_POST
+@login_required
+def report_release(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:
+    """Cross (or re-close) the temporal wall for one of the author's reports (SUD-V4).
+
+    Deliberate act that turns a game in progress into a resolved account.
+    Reversible while the report has not been federated (no ap_id); once
+    federated, release is irreversible — the wall protected discovery, it was
+    never a perpetual secret.
+    """
+    report = get_object_or_404(Report, pk=pk, game_id=game_pk, author=request.user)
+
+    # Only a published report can cross the wall — releasing a draft would put
+    # nothing in Stories (which also requires PUBLISHED).
+    if report.status != ReportStatus.PUBLISHED:
+        return HttpResponse(_("Only a published report can be released."), status=400)
+
+    if report.released_at is None:
+        report.released_at = timezone.now()
+        report.save(update_fields=["released_at", "updated_at"])
+    elif not report.ap_id:
+        # Not yet federated → re-closing the wall is allowed.
+        report.released_at = None
+        report.save(update_fields=["released_at", "updated_at"])
+    # else: federated + already released → irreversible, leave untouched.
+
+    return redirect(
+        reverse("games:report_detail", kwargs={"game_pk": report.game_id, "pk": report.pk})
     )
 
 
@@ -286,8 +413,11 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
         game_id=game_pk,
     )
 
-    # Only published reports visible (or own drafts)
-    if report.status != ReportStatus.PUBLISHED:
+    # Wall check (SUD-V2): a report must be BOTH published (federation axis)
+    # AND released (liberation axis) to be visible to the public. A report that
+    # is published but not yet released is still a game in progress behind the
+    # wall — only its author may read it.
+    if report.status != ReportStatus.PUBLISHED or not report.is_released:
         if not request.user.is_authenticated or request.user != report.author:
             raise Http404
 

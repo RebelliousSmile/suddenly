@@ -1,0 +1,54 @@
+{# Read-only rendering of a Rapport for the public Stories surface (SUD-V3).
+
+   Rendering decisions (maquette v2/v3 — text primes, attribution minimal,
+   differentiation by typographic register, not by badge):
+     - narration   → plain sober prose (the base)
+     - description → serif italic, indented, faint blue rule
+     - action      → crimson chevron "›", stronger weight
+     - discussion  → the only attributed speech (actor): discreet name above,
+                     reply in large serif between quotes, avatar.
+   Markers render as a frieze below the text.
+#}
+{% load i18n %}
+
+<div class="py-2">
+    {% if rapport.kind == 'discussion' %}
+        <div class="flex items-start gap-3">
+            {% if rapport.actor.avatar %}
+                <img src="{{ rapport.actor.avatar.url }}" alt="{{ rapport.actor.name }}"
+                     class="avatar-sm shrink-0 mt-1">
+            {% else %}
+                <div class="avatar-sm avatar-placeholder shrink-0 mt-1">
+                    <span class="i-lucide-user text-xs"></span>
+                </div>
+            {% endif %}
+            <div class="min-w-0">
+                {% if rapport.actor %}
+                    <p class="text-xs text-muted mb-0.5">{{ rapport.actor.name }}</p>
+                {% endif %}
+                <p class="font-serif text-lg text-primary">« {{ rapport.content }} »</p>
+            </div>
+        </div>
+
+    {% elif rapport.kind == 'description' %}
+        <p class="font-serif italic text-secondary pl-4 border-l-2 border-info/40">
+            {{ rapport.content|linebreaksbr }}
+        </p>
+
+    {% elif rapport.kind == 'action' %}
+        <p class="text-primary font-medium">
+            <span class="text-crimson mr-1">›</span>{{ rapport.content|linebreaksbr }}
+        </p>
+
+    {% else %}{# narration #}
+        <p class="text-primary">{{ rapport.content|linebreaksbr }}</p>
+    {% endif %}
+
+    {% if rapport.markers.all %}
+        <div class="flex flex-wrap gap-1.5 mt-2">
+            {% for marker in rapport.markers.all %}
+                {% include "games/partials/marker_badge.html" %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>

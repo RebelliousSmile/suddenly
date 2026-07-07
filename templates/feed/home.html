@@ -34,21 +34,9 @@
             </a>
         </div>
 
-        <!-- NPC highlights (subscriptions tab only) -->
-        {% if active_tab == 'subscriptions' and npcs %}
-            <div class="mb-6">
-                <h2 class="text-sm font-semibold text-warning mb-3">
-                    {% trans "Available NPCs in your followed games" %}
-                </h2>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {% for npc in npcs %}
-                        {% include "components/npc_highlight.html" with character=npc %}
-                    {% endfor %}
-                </div>
-            </div>
-        {% endif %}
-
-        <!-- Feed content (swapped by HTMX) -->
+        <!-- Feed content (swapped by HTMX).
+             Available NPCs are interleaved as claim/adopt/fork promocards
+             directly in the feed stream (SUD-P1), not shown as a separate block. -->
         <div id="feed-content">
             {% include "feed/_feed_items.html" %}
         </div>

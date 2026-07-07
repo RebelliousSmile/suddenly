@@ -1,0 +1,36 @@
+{# Partial: released-stories grid (SUD-V3). #}
+{% load i18n %}
+
+{% if games %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for game in games %}
+            <a href="{% url 'games:story_detail' pk=game.pk %}"
+               class="card card-hover block overflow-hidden">
+                {% if game.cover %}
+                    <img src="{{ game.cover.url }}" alt="{{ game.title }}"
+                         class="w-full h-32 object-cover">
+                {% endif %}
+                <div class="card-body">
+                    <h2 class="font-semibold text-primary mb-1">{{ game.title }}</h2>
+                    <p class="text-xs text-muted mb-2">
+                        {% blocktrans with username=game.owner.username %}by @{{ username }}{% endblocktrans %}
+                        {% if game.game_system_ref or game.game_system %}
+                            · {{ game.game_system_ref.name|default:game.game_system }}
+                        {% endif %}
+                    </p>
+                    {% if game.description %}
+                        <p class="text-sm text-secondary line-clamp-2">{{ game.description }}</p>
+                    {% endif %}
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-16">
+        <span class="i-lucide-book-open text-5xl text-muted mb-4 block"></span>
+        <h3 class="font-semibold text-primary mb-2">{% trans "No story yet" %}</h3>
+        <p class="text-sm text-muted">
+            {% trans "When authors release their reports, they appear here." %}
+        </p>
+    </div>
+{% endif %}
