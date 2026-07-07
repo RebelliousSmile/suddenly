@@ -17,12 +17,24 @@ logger = logging.getLogger(__name__)
 
 
 def _is_blocked_ip(ip: str) -> bool:
-    """Return True if an IP is private, loopback, or link-local (SSRF target)."""
+    """Return True if an IP is a non-routable SSRF target.
+
+    Blocks private/RFC1918, loopback, and link-local ranges, plus reserved,
+    multicast, and the unspecified address (0.0.0.0 / ::) — all of which can
+    reach internal or non-public destinations (SUD-F3).
+    """
     try:
         ip_obj = ipaddress.ip_address(ip)
     except ValueError:
         return True
-    return bool(ip_obj.is_private or ip_obj.is_loopback or ip_obj.is_link_local)
+    return bool(
+        ip_obj.is_private
+        or ip_obj.is_loopback
+        or ip_obj.is_link_local
+        or ip_obj.is_reserved
+        or ip_obj.is_multicast
+        or ip_obj.is_unspecified
+    )
 
 
 def fetch_ap_actor(url: str, *, timeout: int = 10) -> dict[str, Any] | None:
@@ -43,9 +55,15 @@ def fetch_ap_actor(url: str, *, timeout: int = 10) -> dict[str, Any] | None:
         The parsed actor dict on a 200 response, or None on any failure.
     """
     import httpx
+    from django.conf import settings
 
     parsed = urlparse(url)
-    if parsed.scheme not in ("http", "https"):
+    # https is mandatory in production; http is only tolerated where explicitly
+    # allowed (dev/test) via AP_ALLOW_INSECURE_HTTP. Plain http otherwise lets a
+    # peer downgrade the fetch and strip TLS auth of the actor document.
+    allow_http = getattr(settings, "AP_ALLOW_INSECURE_HTTP", False)
+    allowed_schemes = ("http", "https") if allow_http else ("https",)
+    if parsed.scheme not in allowed_schemes:
         return None
 
     hostname = parsed.hostname
@@ -81,7 +99,9 @@ def fetch_ap_actor(url: str, *, timeout: int = 10) -> dict[str, Any] | None:
         extensions["sni_hostname"] = hostname
 
     try:
-        with httpx.Client(timeout=timeout) as client:
+        # follow_redirects=False (explicit): a redirect would re-resolve to an
+        # unvalidated host and reopen the SSRF window we just closed.
+        with httpx.Client(timeout=timeout, follow_redirects=False) as client:
             resp = client.get(request_url, headers=headers, extensions=extensions)
         if resp.status_code == 200:
             return resp.json()  # type: ignore[no-any-return]

@@ -58,6 +58,9 @@ CELERY_TASK_EAGER_PROPAGATES = False
 # ActivityPub base URL
 AP_BASE_URL = f"http://{DOMAIN}"
 
+# Allow plain-http actor fetches in dev (local peers over http)
+AP_ALLOW_INSECURE_HTTP = True
+
 CSRF_TRUSTED_ORIGINS = [f"http://{DOMAIN}", "http://localhost:8000"]
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

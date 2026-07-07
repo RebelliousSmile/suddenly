@@ -247,7 +247,11 @@ def verify_signature(request: HttpRequest) -> tuple[bool, str | None]:
     if not key_id or not signature_b64:
         return False, "Invalid Signature header"
 
-    if algorithm != "rsa-sha256":
+    # Accept both rsa-sha256 and hs2019. With an RSA key, hs2019
+    # (draft-cavage v12 / RFC 9421) denotes the same RSA-PKCS1v15/SHA-256
+    # signature — it is Mastodon's default advertised algorithm — so we verify
+    # both identically below. Rejecting hs2019 would drop legitimate peers.
+    if algorithm not in ("rsa-sha256", "hs2019"):
         return False, f"Unsupported algorithm: {algorithm}"
 
     signed_headers = headers_str.split()

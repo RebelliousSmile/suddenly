@@ -260,6 +260,10 @@ AP_ACCEPTED_ACTIVITIES = [
 # Mastodon uses a comparable window (SUD-F2).
 AP_SIGNATURE_MAX_SKEW = int(os.environ.get("AP_SIGNATURE_MAX_SKEW", "300"))
 
+# Whether plain-http actor fetches are permitted. https is mandatory by default;
+# development overrides this to reach local http peers (SUD-F3).
+AP_ALLOW_INSECURE_HTTP = os.environ.get("AP_ALLOW_INSECURE_HTTP", "0") == "1"
+
 # =================================================================
 # INGESTION
 # =================================================================
