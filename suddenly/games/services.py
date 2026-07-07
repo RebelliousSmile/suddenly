@@ -36,7 +36,7 @@ def build_game_queryset(
 
     qs = (
         Game.objects.filter(public_filter)
-        .select_related("owner", "game_system_ref")
+        .select_related("owner")
         .annotate(
             report_count=Count("reports", distinct=True),
             char_npc=Count("characters", filter=Q(characters__status="npc"), distinct=True),
@@ -52,10 +52,7 @@ def build_game_queryset(
     )
 
     if system.strip():
-        qs = qs.filter(
-            Q(game_system_ref__name__icontains=system.strip())
-            | Q(game_system__icontains=system.strip())
-        )
+        qs = qs.filter(game_system__icontains=system.strip())
 
     if tag.strip():
         qs = qs.filter(tags__name=tag.strip())

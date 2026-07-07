@@ -32,10 +32,6 @@ def invalidate_explorer_tags_game(sender: Any, action: str | None = None, **kwar
     cache.delete(f"explorer_tags:{Game._meta.label_lower}")
 
 
-def invalidate_explorer_game_systems(sender: Any, **kwargs: Any) -> None:
-    cache.delete("explorer_game_systems")
-
-
 def invalidate_recent_public_reports(sender: Any, **kwargs: Any) -> None:
     from suddenly.core.services import RECENT_REPORTS_LIMITS
 

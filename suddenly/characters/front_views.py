@@ -25,7 +25,6 @@ def character_list(request: HttpRequest) -> HttpResponse:
     qs = build_character_queryset(
         q=request.GET.get("q", ""),
         status=request.GET.get("status", ""),
-        system=request.GET.get("system", ""),
         tag=request.GET.get("tag", ""),
     )
 
@@ -58,7 +57,6 @@ def character_list(request: HttpRequest) -> HttpResponse:
             "characters": qs[:24],
             "query": request.GET.get("q", ""),
             "status_filter": request.GET.get("status", ""),
-            "system_filter": request.GET.get("system", ""),
             "statuses": CharacterStatus.choices,
             "default_bg": default_bg,
             "active_tag": request.GET.get("tag", ""),
@@ -81,11 +79,22 @@ def character_detail(request: HttpRequest, slug: str) -> HttpResponse:
 
     quotes = character.quotes.filter(visibility="public").order_by("-created_at")[:10]
 
+    # Narrative meta-model (issues A/C): displayed, never evaluated.
+    trait_sets = character.trait_sets.prefetch_related("traits", "actions__traits")
+
+    # The sheet maintainer (creator or owner) may edit traits.
+    can_edit_traits = request.user.is_authenticated and (
+        request.user == character.creator
+        or (character.owner_id is not None and request.user == character.owner)
+    )
+
     # Follow state + pending request for current user
     context: dict[str, object] = {
         "character": character,
         "appearances": appearances,
         "quotes": quotes,
+        "trait_sets": trait_sets,
+        "can_edit_traits": can_edit_traits,
     }
 
     if request.user.is_authenticated:
@@ -121,7 +130,6 @@ def character_search(request: HttpRequest) -> HttpResponse:
     qs = build_character_queryset(
         q=request.GET.get("q", ""),
         status=request.GET.get("status", ""),
-        system=request.GET.get("system", ""),
         tag=request.GET.get("tag", ""),
     )
 

@@ -11,7 +11,6 @@ from django.core.cache import cache
 from suddenly.games.models import Report, ReportStatus
 
 EXPLORER_TAGS_TTL = 300
-EXPLORER_SYSTEMS_TTL = 300
 INSTANCE_STATS_TTL = 600
 RECENT_REPORTS_TTL = 60
 
@@ -51,23 +50,6 @@ def get_distinct_tag_names(model_cls: type[Any]) -> list[str]:
         .distinct()
     )
     cache.set(cache_key, names, EXPLORER_TAGS_TTL)
-    return names
-
-
-def get_distinct_game_systems() -> list[str]:
-    from suddenly.games.models import Game
-
-    cache_key = "explorer_game_systems"
-    cached = cache.get(cache_key)
-    if cached is not None:
-        return cast(list[str], cached)
-    names = sorted(
-        Game.objects.filter(remote=False)
-        .exclude(game_system="")
-        .values_list("game_system", flat=True)
-        .distinct()
-    )
-    cache.set(cache_key, names, EXPLORER_SYSTEMS_TTL)
     return names
 
 

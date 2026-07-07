@@ -21,7 +21,7 @@
 |  hx-trigger="keyup changed delay:300ms"                          |
 |  hx-target="#character-results"                                  |
 |                                                                  |
-|  Statut: [Tous v]  Systeme: [Tous          v]                   |
+|  Statut: [Tous v]  Tags: [Tous             v]                   |
 |                                                                  |
 +------------------------------------------------------------------+
 |  id="character-results"                                          |
