@@ -1,72 +1,25 @@
-{# Partial: feed items list (swapped by HTMX tab navigation) #}
+{# Partial: feed items list (swapped by HTMX tab navigation).
+
+   The connected (Abonnements) feed passes `feed_items` — an ordered blend of
+   reports and claim/adopt/fork promocards (SUD-P1). Other tabs pass a plain
+   `reports` list.
+#}
 {% load i18n %}
 
-{% if reports %}
+{% if feed_items %}
+    <div class="space-y-4">
+        {% for item in feed_items %}
+            {% if item.type == 'promo' %}
+                {% include "feed/_promo_card.html" with character=item.obj %}
+            {% else %}
+                {% include "feed/_report_card.html" with report=item.obj %}
+            {% endif %}
+        {% endfor %}
+    </div>
+{% elif reports %}
     <div class="space-y-4">
         {% for report in reports %}
-            <article class="card card-hover">
-                <div class="card-body">
-                    <!-- Header -->
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="avatar-md avatar-placeholder">
-                            <span class="i-lucide-user text-sm"></span>
-                        </span>
-                        <div class="flex-1 min-w-0">
-                            <span class="font-medium text-primary">
-                                @{{ report.author.username }}
-                            </span>
-                            <span class="text-muted text-sm mx-1">{% trans "in" %}</span>
-                            <a href="{% url 'games:detail' pk=report.game.pk %}"
-                               class="text-secondary hover:text-crimson text-sm">
-                                {{ report.game.title }}
-                            </a>
-                            {% if report.remote %}
-                                <span class="text-xs text-muted ml-1">
-                                    <span class="i-lucide-globe text-xs"></span>
-                                </span>
-                            {% endif %}
-                        </div>
-                        {% if report.published_at %}
-                            <time class="text-xs text-muted flex-shrink-0">
-                                {{ report.published_at|timesince }}
-                            </time>
-                        {% endif %}
-                    </div>
-
-                    <!-- Content Warning -->
-                    {% if report.content_warning %}
-                        <div class="flex items-center gap-2 text-sm text-warning mb-2">
-                            <span class="i-lucide-alert-triangle text-xs"></span>
-                            {{ report.content_warning }}
-                        </div>
-                    {% endif %}
-
-                    <!-- Title + preview -->
-                    <h3 class="font-semibold text-lg mb-1">
-                        <a href="{% url 'games:report_detail' game_pk=report.game.pk pk=report.pk %}"
-                           class="text-primary hover:text-crimson">
-                            {{ report.title|default:_("Untitled") }}
-                        </a>
-                    </h3>
-
-                    {% if not report.content_warning %}
-                        <p class="text-sm text-secondary line-clamp-3">
-                            {{ report.content|truncatewords:40 }}
-                        </p>
-                    {% endif %}
-                </div>
-
-                <!-- Actions -->
-                <div class="card-footer flex items-center gap-4 text-muted">
-                    <button class="btn-ghost btn-sm">
-                        <span class="i-lucide-heart text-sm"></span>
-                    </button>
-                    <button class="btn-ghost btn-sm">
-                        <span class="i-lucide-sparkles text-sm"></span>
-                        {% trans "Recommend" %}
-                    </button>
-                </div>
-            </article>
+            {% include "feed/_report_card.html" with report=report %}
         {% endfor %}
     </div>
 {% elif is_empty %}

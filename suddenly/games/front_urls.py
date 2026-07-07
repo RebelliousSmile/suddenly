@@ -10,6 +10,9 @@ urlpatterns = [
     path("", front_views.game_list, name="list"),
     path("search/", front_views.game_search, name="search"),
     path("compose/", front_views.report_compose, name="compose"),
+    # Stories — public reading surface for released content (SUD-V3)
+    path("stories/", front_views.stories_index, name="stories"),
+    path("stories/<uuid:pk>/", front_views.story_detail, name="story_detail"),
     path("new/", front_views.game_create, name="create"),
     path("bulk-delete/", front_views.game_delete_bulk, name="delete_bulk"),
     path("systems/search/", front_views.game_system_search, name="system_search"),
@@ -21,6 +24,11 @@ urlpatterns = [
         "<uuid:game_pk>/reports/<uuid:pk>/thread/",
         front_views.report_thread,
         name="report_thread",
+    ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/release/",
+        front_views.report_release,
+        name="report_release",
     ),
     path("<uuid:game_pk>/reports/new/", front_views.report_create, name="report_create"),
     path("<uuid:game_pk>/reports/<uuid:pk>/edit/", front_views.report_edit, name="report_edit"),

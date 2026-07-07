@@ -50,6 +50,9 @@
                     <a href="{% url 'core:explorer' %}" class="text-secondary hover:text-primary transition-colors">
                         {% trans "Explore" %}
                     </a>
+                    <a href="{% url 'games:stories' %}" class="text-secondary hover:text-primary transition-colors">
+                        {% trans "Stories" %}
+                    </a>
 
                     {% if user.is_authenticated %}
 
@@ -221,6 +224,7 @@
                 <a href="{% url 'core:home' %}" class="block py-2 text-secondary">{% trans "Home" %}</a>
                 <a href="{% url 'feed:home' %}" class="block py-2 text-secondary">{% trans "Play" %}</a>
                 <a href="{% url 'core:explorer' %}" class="block py-2 text-secondary">{% trans "Explore" %}</a>
+                <a href="{% url 'games:stories' %}" class="block py-2 text-secondary">{% trans "Stories" %}</a>
                 {% if not user.is_authenticated %}
                     <hr class="my-2 border-border">
                     <a href="{% url 'account_login' %}" class="block py-2 text-crimson">{% trans "Log in" %}</a>

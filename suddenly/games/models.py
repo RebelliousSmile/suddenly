@@ -148,6 +148,11 @@ class Report(BaseModel):
         help_text="Who can see this report (US-29)",
     )
     published_at = models.DateTimeField(blank=True, null=True)
+    # Liberation axis (the "wall"), orthogonal to status/visibility (SUD-V1).
+    # A report can be published (federable) without being released (wall still
+    # closed): `released_at` dates the moment a scene crosses the wall, turning
+    # a game in progress into a resolved account. Symmetric with published_at.
+    released_at = models.DateTimeField(blank=True, null=True)
     session_date = models.DateField(null=True, blank=True)
 
     # Tags (hashtags for discovery)
@@ -174,6 +179,16 @@ class Report(BaseModel):
     @property
     def is_published(self) -> bool:
         return self.status == ReportStatus.PUBLISHED
+
+    @property
+    def is_released(self) -> bool:
+        """True once the report has crossed the temporal wall (SUD-V1).
+
+        Mirror of ``is_published`` on the liberation axis: a released report is
+        a resolved account, readable by the public; an unreleased one is still
+        a game in progress, hidden behind the wall.
+        """
+        return self.released_at is not None
 
 
 class CastRole(models.TextChoices):
