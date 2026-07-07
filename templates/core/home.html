@@ -42,13 +42,41 @@
     </div>
 </section>
 
+<!-- Instance activity (Front #2) -->
+{% if stats %}
+<section class="container-app -mt-8 mb-4">
+    <div class="grid-stats">
+        <div class="card card-body text-center">
+            <span class="i-lucide-users text-2xl text-crimson mb-2 block"></span>
+            <p class="text-2xl font-bold text-primary">{{ stats.users|default:0 }}</p>
+            <p class="text-xs text-muted">{% trans "players" %}</p>
+        </div>
+        <div class="card card-body text-center">
+            <span class="i-lucide-book-open text-2xl text-crimson mb-2 block"></span>
+            <p class="text-2xl font-bold text-primary">{{ stats.reports|default:0 }}</p>
+            <p class="text-xs text-muted">{% trans "reports" %}</p>
+        </div>
+        <div class="card card-body text-center">
+            <span class="i-lucide-user text-2xl text-crimson mb-2 block"></span>
+            <p class="text-2xl font-bold text-primary">{{ stats.characters|default:0 }}</p>
+            <p class="text-xs text-muted">{% trans "characters" %}</p>
+        </div>
+        <div class="card card-body text-center">
+            <span class="i-lucide-globe text-2xl text-crimson mb-2 block"></span>
+            <p class="text-2xl font-bold text-primary">{{ stats.instances|default:0 }}</p>
+            <p class="text-xs text-muted">{% trans "federated instances" %}</p>
+        </div>
+    </div>
+</section>
+{% endif %}
+
 <!-- Features -->
 <section class="py-16 container-app">
     <h2 class="text-2xl font-bold text-center text-primary mb-12">
         {% trans "How does it work?" %}
     </h2>
 
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid-cards">
         <!-- Publish -->
         <article class="card card-body text-center">
             <div class="w-12 h-12 bg-crimson/10 rounded-full flex items-center justify-center mx-auto mb-4">

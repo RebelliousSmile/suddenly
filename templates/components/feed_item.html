@@ -72,27 +72,27 @@
 
     <!-- Footer actions -->
     <div class="card-footer flex items-center gap-4">
-        <button class="btn-ghost btn-sm text-muted">
+        <button class="btn-ghost tap-target text-muted">
             <span class="i-lucide-heart text-sm"></span>
         </button>
-        <button class="btn-ghost btn-sm text-muted">
+        <button class="btn-ghost tap-target text-muted">
             <span class="i-lucide-message-circle text-sm"></span>
         </button>
-        <button class="btn-ghost btn-sm text-muted">
+        <button class="btn-ghost tap-target text-muted">
             <span class="i-lucide-share text-sm"></span>
         </button>
 
         <!-- Context menu (report) -->
         <div class="ml-auto relative" x-data="dropdown">
-            <button @click="toggle()" class="btn-ghost btn-sm text-muted">
+            <button @click="toggle()" class="btn-ghost tap-target text-muted">
                 <span class="i-lucide-more-horizontal text-sm"></span>
             </button>
             <div x-show="open" @click.away="close()" x-cloak
                  class="dropdown-menu right-0 mt-1 w-40">
-                <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-secondary hover:bg-surface">
+                <a href="#" class="flex items-center gap-2 px-4 py-3 text-sm text-secondary hover:bg-surface">
                     <span class="i-lucide-link text-xs"></span> {% trans "Copy link" %}
                 </a>
-                <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-error hover:bg-error/10">
+                <a href="#" class="flex items-center gap-2 px-4 py-3 text-sm text-error hover:bg-error/10">
                     <span class="i-lucide-flag text-xs"></span> {% trans "Report" %}
                 </a>
             </div>

@@ -1,7 +1,10 @@
 {# Partial: feed items list (swapped by HTMX tab navigation) #}
 {% load i18n %}
 
-{% if reports %}
+{% if active_tab == 'subscriptions' %}
+    {# Friends tab (Front #9): read the new interventions of your own games #}
+    {% include "feed/_interventions.html" %}
+{% elif reports %}
     <div class="space-y-4">
         {% for report in reports %}
             <article class="card card-hover">

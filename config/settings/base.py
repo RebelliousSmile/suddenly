@@ -71,6 +71,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "suddenly.core.context_processors.site_settings",
+                "suddenly.core.context_processors.account_badges",
             ],
         },
     },

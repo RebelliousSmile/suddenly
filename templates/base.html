@@ -12,7 +12,7 @@
 </script>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
     <meta name="description" content="{{ SITE_DESCRIPTION }}">
 
@@ -30,7 +30,7 @@
 <body class="h-full font-sans antialiased">
 
     <!-- Header -->
-    <header class="bg-surface border-b border-border sticky top-0 z-sticky">
+    <header class="bg-surface border-b border-border sticky top-0 z-sticky pt-safe-t">
         <nav class="container-app">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
@@ -73,38 +73,8 @@
                                  x-transition
                                  @click.away="close"
                                  class="dropdown-menu right-0 mt-2 w-56">
-                                <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                    <span class="i-lucide-user mr-2"></span>{% trans "My profile" %}
-                                </a>
-                                <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                    <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Dashboard" %}
-                                </a>
-                                <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                    <span class="i-lucide-settings mr-2"></span>{% trans "Preferences" %}
-                                </a>
-                                {% if request.user.is_admin %}
-                                <a href="{% url 'gmh:dashboard' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                    <span class="i-lucide-shield mr-2"></span>{% trans "Admin" %}
-                                </a>
-                                {% endif %}
-                                <hr class="my-1 border-border">
-                                <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
-                                    <span><span class="i-lucide-inbox mr-2"></span>{% trans "Requests" %}</span>
-                                    {% if pending_requests_count %}<span class="badge-primary">{{ pending_requests_count }}</span>{% endif %}
-                                </a>
-                                <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
-                                    <span><span class="i-lucide-bell mr-2"></span>{% trans "Notifications" %}</span>
-                                    {% if unread_notifications_count %}<span class="badge-primary">{{ unread_notifications_count }}</span>{% endif %}
-                                </a>
-                                <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
-                                    <span><span class="i-lucide-gem mr-2"></span>{% trans "Stats & achievements" %}</span>
-                                    {% if new_stats_count %}<span class="badge-primary">{{ new_stats_count }}</span>{% endif %}
-                                </a>
-                                <hr class="my-1 border-border">
-                                <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-error hover:bg-error/10">
-                                    <span class="i-lucide-log-out mr-2"></span>{% trans "Log out" %}
-                                </a>
-                            </div>
+                            {% include "components/_user_menu_items.html" %}
+                        </div>
                         </div>
                     {% else %}
                         <a href="{% url 'account_login' %}" class="btn-ghost btn-sm">
@@ -168,37 +138,7 @@
                              x-transition
                              @click.away="close"
                              class="dropdown-menu right-0 mt-2 w-56">
-                            <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                <span class="i-lucide-user mr-2"></span>{% trans "My profile" %}
-                            </a>
-                            <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Dashboard" %}
-                            </a>
-                            <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                <span class="i-lucide-settings mr-2"></span>{% trans "Preferences" %}
-                            </a>
-                            {% if request.user.is_admin %}
-                            <a href="{% url 'gmh:dashboard' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
-                                <span class="i-lucide-shield mr-2"></span>{% trans "Admin" %}
-                            </a>
-                            {% endif %}
-                            <hr class="my-1 border-border">
-                            <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
-                                <span><span class="i-lucide-inbox mr-2"></span>{% trans "Requests" %}</span>
-                                {% if pending_requests_count %}<span class="badge-primary">{{ pending_requests_count }}</span>{% endif %}
-                            </a>
-                            <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
-                                <span><span class="i-lucide-bell mr-2"></span>{% trans "Notifications" %}</span>
-                                {% if unread_notifications_count %}<span class="badge-primary">{{ unread_notifications_count }}</span>{% endif %}
-                            </a>
-                            <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
-                                <span><span class="i-lucide-gem mr-2"></span>{% trans "Stats & achievements" %}</span>
-                                {% if new_stats_count %}<span class="badge-primary">{{ new_stats_count }}</span>{% endif %}
-                            </a>
-                            <hr class="my-1 border-border">
-                            <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-error hover:bg-error/10">
-                                <span class="i-lucide-log-out mr-2"></span>{% trans "Log out" %}
-                            </a>
+                            {% include "components/_user_menu_items.html" %}
                         </div>
                     </div>
                     {% endif %}
@@ -304,7 +244,7 @@
 
     <!-- Notifications container -->
     <div x-data="notifications"
-         class="fixed bottom-4 right-4 z-toast space-y-2">
+         class="fixed bottom-4 right-4 z-toast space-y-2 pb-safe pr-safe-r">
         <template x-for="item in items" :key="item.id">
             <div x-show="true"
                  x-transition:enter="transition ease-out duration-300"

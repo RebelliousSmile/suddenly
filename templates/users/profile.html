@@ -112,7 +112,7 @@
         <h2 class="text-heading text-xl mb-6">{% trans "Characters" %}</h2>
 
         {% if characters %}
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            <div class="grid-cards">
                 {% for character in characters %}
                     <div class="card card-body text-center">
                         <p class="font-medium text-sm">{{ character.name }}</p>

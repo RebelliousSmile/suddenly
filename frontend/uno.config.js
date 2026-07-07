@@ -59,9 +59,14 @@ const presetSuddenly = () => ({
       mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
     },
 
-    // Espacements custom
+    // Espacements custom — insets d'encoche (safe-area) sur les 4 côtés,
+    // pour les barres collantes et le contenu en bord d'écran (mobile #6/#7).
     spacing: {
       'safe': 'env(safe-area-inset-bottom)',
+      'safe-t': 'env(safe-area-inset-top)',
+      'safe-b': 'env(safe-area-inset-bottom)',
+      'safe-l': 'env(safe-area-inset-left)',
+      'safe-r': 'env(safe-area-inset-right)',
     },
 
     // Border radius
@@ -109,6 +114,14 @@ const presetSuddenly = () => ({
     // Layout
     'container-app': 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8',
 
+    // Grilles fluides (mobile-first) — se replient sur la largeur réelle du
+    // conteneur plutôt que sur des breakpoints d'écran fixes, ce qui évite le
+    // débordement horizontal des cartes sur petits écrans (< 360px).
+    // grid-stats : bandes de compteurs (peu d'items → auto-fit remplit la largeur)
+    // grid-cards : listes de cartes personnage (largeur de carte stable → auto-fill)
+    'grid-stats': 'grid gap-4 grid-cols-[repeat(auto-fit,minmax(140px,1fr))]',
+    'grid-cards': 'grid gap-3 grid-cols-[repeat(auto-fill,minmax(150px,1fr))]',
+
     // Boutons
     'btn-primary': 'inline-flex items-center justify-center gap-2 bg-crimson text-white px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:bg-crimson-hover hover:-translate-y-0.5 hover:shadow-btn focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed',
     'btn-secondary': 'inline-flex items-center justify-center gap-2 bg-transparent border border-border text-secondary px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:border-crimson hover:text-crimson hover:-translate-y-0.5 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed',
@@ -116,6 +129,11 @@ const presetSuddenly = () => ({
     'btn-danger': 'inline-flex items-center justify-center gap-2 bg-error text-white px-7 py-[13px] text-[15px] font-semibold rounded-[12px] transition-all duration-250 hover:bg-error/90 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed',
     'btn-sm': 'px-3 py-1.5 text-sm',
     'btn-lg': 'px-6 py-3 text-lg',
+    // Cible tactile ≥ 44px pour les boutons d'action compacts sur mobile (#6).
+    'tap-target': 'min-h-11 min-w-11 inline-flex items-center justify-center',
+    // Barre d'action de l'éditeur (#7) : collante en bas sur mobile (avec
+    // safe-area), redevient inline à partir de sm.
+    'editor-actions': 'flex items-center gap-3 sticky bottom-0 -mx-4 px-4 py-3 bg-surface border-t border-border pb-safe z-sticky sm:static sm:mx-0 sm:px-0 sm:py-0 sm:bg-transparent sm:border-0',
 
     // Cards
     'card': 'bg-card border border-border rounded-2xl p-6',

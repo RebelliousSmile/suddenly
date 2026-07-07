@@ -1,0 +1,27 @@
+{% load i18n %}
+{% comment %}
+Read-only reading rendering of a single Rapport (Front #8): the text is the
+body copy; the kind is a discreet register. DISCUSSION renders as attributed
+dialogue (it always carries a Character actor). Shared by the scene thread and
+the "Friends" feed of interventions (Front #9). No edit/reply controls here.
+{% endcomment %}
+{% if rapport.kind == 'discussion' %}
+    <div class="flex items-start gap-3">
+        <span class="avatar-placeholder avatar-sm shrink-0 mt-0.5">
+            <span class="i-lucide-user text-sm"></span>
+        </span>
+        <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-primary">
+                {% if rapport.actor %}{{ rapport.actor.name }}{% else %}{% trans "Unknown" %}{% endif %}
+            </p>
+            <p class="text-primary text-[15px] leading-relaxed whitespace-pre-line">{{ rapport.content }}</p>
+        </div>
+    </div>
+{% else %}
+    <div class="border-l-2 border-border pl-3">
+        <span class="block text-[10px] uppercase tracking-wider text-muted font-medium mb-0.5">
+            {{ rapport.get_kind_display }}
+        </span>
+        <p class="text-primary text-[15px] leading-relaxed whitespace-pre-line">{{ rapport.content }}</p>
+    </div>
+{% endif %}

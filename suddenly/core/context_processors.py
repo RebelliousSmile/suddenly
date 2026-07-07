@@ -34,3 +34,28 @@ def site_settings(request: object) -> dict[str, object]:
         "DOMAIN": getattr(settings, "DOMAIN", "localhost"),
         "APP_VERSION": get_version(),
     }
+
+
+def account_badges(request: object) -> dict[str, object]:
+    """Inject account-menu badge counts (Front #5).
+
+    The base template references ``pending_requests_count`` and
+    ``unread_notifications_count`` but nothing populated them. Compute them here
+    for authenticated users only (two cheap indexed counts); anonymous requests
+    get an empty dict so the badges simply don't render.
+    """
+    user = getattr(request, "user", None)
+    if user is None or not user.is_authenticated:
+        return {}
+
+    from suddenly.characters.models import LinkRequest, LinkRequestStatus
+    from suddenly.core.models import Notification
+
+    return {
+        "pending_requests_count": LinkRequest.objects.filter(
+            target_character__creator=user, status=LinkRequestStatus.PENDING
+        ).count(),
+        "unread_notifications_count": Notification.objects.filter(
+            recipient=user, is_read=False
+        ).count(),
+    }

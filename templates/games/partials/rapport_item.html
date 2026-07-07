@@ -26,28 +26,18 @@
                 {% endif %}
             {% endwith %}
 
-            <div class="flex items-center gap-2 mb-1">
-                <span class="badge bg-card-dark text-muted border border-border text-xs">
-                    {{ rapport.get_kind_display }}
-                </span>
-                {% if rapport.actor %}
-                    <span class="text-xs text-muted">
-                        <span class="i-lucide-user text-xs"></span>
-                        {{ rapport.actor.name }}
-                    </span>
-                {% endif %}
-            </div>
-            <p class="text-secondary text-sm">{{ rapport.content }}</p>
+            {# Reading hierarchy (Front #8) — shared read-only rendering #}
+            {% include "games/partials/rapport_read.html" %}
 
-            {% if rapport.markers.all %}
-                <div id="markers-{{ rapport.pk }}" class="flex flex-wrap gap-1.5 mt-2">
+            {# Scene markers rendered as a structural frieze rather than scattered badges #}
+            <div class="flex flex-wrap items-center gap-1.5 mt-3{% if not rapport.markers.all %} hidden{% endif %}">
+                <span class="i-lucide-flag text-xs text-muted shrink-0" title="{% trans 'Scene markers' %}"></span>
+                <span id="markers-{{ rapport.pk }}" class="flex flex-wrap gap-1.5">
                     {% for marker in rapport.markers.all %}
                         {% include "games/partials/marker_badge.html" %}
                     {% endfor %}
-                </div>
-            {% else %}
-                <div id="markers-{{ rapport.pk }}" class="flex flex-wrap gap-1.5 mt-2"></div>
-            {% endif %}
+                </span>
+            </div>
 
             <div id="marker-form-{{ rapport.pk }}" class="mt-2"></div>
 
