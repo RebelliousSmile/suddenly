@@ -18,7 +18,6 @@ class CoreConfig(AppConfig):
         from suddenly.activitypub.models import FederatedServer
         from suddenly.characters.models import Character
         from suddenly.core.cache_invalidation import (
-            invalidate_explorer_game_systems,
             invalidate_explorer_tags_character,
             invalidate_explorer_tags_game,
             invalidate_instance_stats,
@@ -36,11 +35,6 @@ class CoreConfig(AppConfig):
             invalidate_explorer_tags_game,
             sender=Game.tags.through,
             dispatch_uid="suddenly.cache.invalidate_explorer_tags_game",
-        )
-        post_save.connect(
-            invalidate_explorer_game_systems,
-            sender=Game,
-            dispatch_uid="suddenly.cache.invalidate_explorer_game_systems",
         )
         post_save.connect(
             invalidate_recent_public_reports,

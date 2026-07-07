@@ -8,10 +8,9 @@ from typing import TYPE_CHECKING
 
 from django.contrib import admin
 
-from .models import Game, GameSystem, Rapport, RapportLink, RapportMarker, Report, ReportCast
+from .models import Game, Rapport, RapportLink, RapportMarker, Report, ReportCast
 
 if TYPE_CHECKING:
-    _GameSystemBase = admin.ModelAdmin[GameSystem]
     _GameBase = admin.ModelAdmin[Game]
     _ReportBase = admin.ModelAdmin[Report]
     _ReportCastBase = admin.ModelAdmin[ReportCast]
@@ -21,7 +20,6 @@ if TYPE_CHECKING:
     _RapportMarkerInlineBase = admin.TabularInline[RapportMarker, Report]
     _RapportLinkInlineBase = admin.TabularInline[RapportLink, Rapport]
 else:
-    _GameSystemBase = admin.ModelAdmin
     _GameBase = admin.ModelAdmin
     _ReportBase = admin.ModelAdmin
     _ReportCastBase = admin.ModelAdmin
@@ -30,14 +28,6 @@ else:
     _RapportInlineBase = admin.TabularInline
     _RapportMarkerInlineBase = admin.TabularInline
     _RapportLinkInlineBase = admin.TabularInline
-
-
-@admin.register(GameSystem)
-class GameSystemAdmin(_GameSystemBase):
-    """Admin for GameSystem — game rule systems catalog."""
-
-    list_display = ["slug", "name", "git_url", "is_deprecated", "synced_at"]
-    search_fields = ["slug", "name"]
 
 
 @admin.register(Game)

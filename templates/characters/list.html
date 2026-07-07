@@ -57,13 +57,13 @@
                    hx-get="{% url 'characters:search' %}"
                    hx-trigger="keyup changed delay:300ms"
                    hx-target="#character-results"
-                   hx-include="[name='status'],[name='system'],[name='tag']">
+                   hx-include="[name='status'],[name='tag']">
             <div class="flex gap-3 flex-wrap">
                 <select name="status" class="form-input w-auto"
                         hx-get="{% url 'characters:search' %}"
                         hx-trigger="change"
                         hx-target="#character-results"
-                        hx-include="[name='q'],[name='system'],[name='tag']">
+                        hx-include="[name='q'],[name='tag']">
                     <option value="">{% trans "All statuses" %}</option>
                     {% for value, label in statuses %}
                         <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
@@ -71,17 +71,10 @@
                         </option>
                     {% endfor %}
                 </select>
-                <input type="text" name="system" value="{{ system_filter }}"
-                       placeholder="{% trans "Game system..." %}"
-                       class="form-input w-auto"
-                       hx-get="{% url 'characters:search' %}"
-                       hx-trigger="keyup changed delay:500ms"
-                       hx-target="#character-results"
-                       hx-include="[name='q'],[name='status'],[name='tag']">
             </div>
-            <!-- Tag filters -->
+            <!-- Tag filters (US-07: discovery by tags, not game system) -->
             {% url 'characters:search' as tag_search_url %}
-            {% include "components/tag_filter.html" with search_url=tag_search_url results_target="#character-results" include_fields="[name='q'],[name='status'],[name='system']" all_tags=all_tags active_tag=active_tag %}
+            {% include "components/tag_filter.html" with search_url=tag_search_url results_target="#character-results" include_fields="[name='q'],[name='status']" all_tags=all_tags active_tag=active_tag %}
         </div>
 
         <div id="character-results">

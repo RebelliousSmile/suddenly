@@ -15,7 +15,7 @@
                            class="h-4 w-4 shrink-0 rounded border-border accent-crimson">
                     <div class="min-w-0">
                         <p class="font-semibold text-primary truncate">{{ game.title }}</p>
-                        {% if game.game_system_ref or game.game_system %}<p class="text-xs text-muted">{{ game.game_system_ref.name|default:game.game_system }}</p>{% endif %}
+                        {% if game.game_system %}<p class="text-xs text-muted">{{ game.game_system }}</p>{% endif %}
                     </div>
                 </label>
                 {% endif %}
@@ -24,8 +24,8 @@
                    x-show="!selectMode"
                    class="p-4 sm:p-5 block hover:bg-card-dark/30 transition-colors">
                     <h3 class="font-semibold text-primary mb-1">{{ game.title }}</h3>
-                    {% if game.game_system_ref or game.game_system %}
-                        <p class="text-xs text-muted mb-2">{{ game.game_system_ref.name|default:game.game_system }}</p>
+                    {% if game.game_system %}
+                        <p class="text-xs text-muted mb-2">{{ game.game_system }}</p>
                     {% endif %}
                     {% if game.description %}
                         <p class="text-sm text-secondary line-clamp-2 mb-2">{{ game.description }}</p>

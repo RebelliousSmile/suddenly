@@ -338,10 +338,13 @@ class LinkService:
 def build_character_queryset(
     q: str = "",
     status: str = "",
-    system: str = "",
     tag: str = "",
 ) -> QuerySet[Character]:
-    """Build filtered character queryset from explicit params."""
+    """Build filtered character queryset from explicit params.
+
+    US-07: characters are discovered by name (FTS) and tags. There is no
+    game-system filter — Suddenly has no system catalogue.
+    """
     qs = (
         Character.objects.filter(remote=False)
         .select_related("creator", "owner", "origin_game")
@@ -354,9 +357,6 @@ def build_character_queryset(
 
     if status and status in CharacterStatus.values:
         qs = qs.filter(status=status)
-
-    if system.strip():
-        qs = qs.filter(origin_game__game_system__icontains=system.strip())
 
     if tag.strip():
         qs = qs.filter(tags__name=tag.strip())

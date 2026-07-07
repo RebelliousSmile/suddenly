@@ -29,7 +29,6 @@ from .marker_forms import RapportMarkerForm
 from .models import (
     CastRole,
     Game,
-    GameSystem,
     Rapport,
     RapportLink,
     RapportMarker,
@@ -204,9 +203,7 @@ def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
     if request.user.is_authenticated:
         visibility |= Q(owner=request.user)
 
-    game = get_object_or_404(
-        Game.objects.select_related("owner", "game_system_ref").filter(visibility), pk=pk
-    )
+    game = get_object_or_404(Game.objects.select_related("owner").filter(visibility), pk=pk)
 
     reports = game.reports.filter(status=ReportStatus.PUBLISHED).select_related("author")[:20]
     characters = game.characters.select_related("creator", "owner").order_by("-created_at")[:12]
@@ -353,14 +350,7 @@ def game_create(request: AuthenticatedRequest) -> HttpResponse:
         description = request.POST.get("description", "").strip()
         is_public = request.POST.get("is_public") == "on"
 
-        slug = request.POST.get("game_system_slug", "").strip()
-        custom = request.POST.get("game_system_custom", "").strip()
-        if slug:
-            system_ref = GameSystem.objects.filter(slug=slug, is_deprecated=False).first()
-            game_system_text = ""
-        else:
-            system_ref = None
-            game_system_text = custom
+        game_system_text = request.POST.get("game_system", "").strip()
 
         if not title:
             return htmx_render(
@@ -386,7 +376,6 @@ def game_create(request: AuthenticatedRequest) -> HttpResponse:
             title=title,
             description=description,
             game_system=game_system_text,
-            game_system_ref=system_ref,
             is_public=is_public,
             owner=request.user,
             cover=cover,
@@ -811,19 +800,9 @@ def game_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
                     "is_public_checked": is_public_checked,
                 },
             )
-        slug = request.POST.get("game_system_slug", "").strip()
-        custom = request.POST.get("game_system_custom", "").strip()
-        if slug:
-            system_ref = GameSystem.objects.filter(slug=slug, is_deprecated=False).first()
-            game_system_text = ""
-        else:
-            system_ref = None
-            game_system_text = custom
-
         game.title = title
         game.description = request.POST.get("description", "").strip()
-        game.game_system = game_system_text
-        game.game_system_ref = system_ref
+        game.game_system = request.POST.get("game_system", "").strip()
         game.is_public = is_public_checked
 
         started_at_raw = request.POST.get("started_at", "").strip()
@@ -846,7 +825,6 @@ def game_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
                 "title",
                 "description",
                 "game_system",
-                "game_system_ref",
                 "is_public",
                 "started_at",
                 "cover",
@@ -895,23 +873,6 @@ def game_delete_bulk(request: AuthenticatedRequest) -> HttpResponse:
             if not game.characters.filter(status__in=pc_statuses).exists():
                 game.delete()
     return redirect(reverse("games:list"))
-
-
-def game_system_search(request: HttpRequest) -> HttpResponse:
-    """HTMX partial: game system autocomplete results."""
-    from django.template.loader import render_to_string
-
-    q = request.GET.get("q_system", request.GET.get("q", "")).strip()
-    qs = GameSystem.objects.filter(is_deprecated=False).only("slug", "name")
-    if q:
-        qs = qs.filter(name__icontains=q)
-    results = list(qs.order_by("name")[:10])
-    html = render_to_string(
-        "games/_system_search_results.html",
-        {"results": results, "q": q},
-        request=request,
-    )
-    return HttpResponse(html)
 
 
 @login_required

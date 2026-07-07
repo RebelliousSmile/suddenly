@@ -702,18 +702,16 @@ class TestBuildCharacterQueryset:
         # A bogus status value must not filter anything out.
         assert build_character_queryset(status="not-a-status").count() == 1
 
-    def test_filters_by_system(self, db: Any, user: User) -> None:
-        g1 = Game.objects.create(title="G1", game_system="Cthulhu", owner=user)
-        g2 = Game.objects.create(title="G2", game_system="Fate", owner=user)
-        Character.objects.create(
-            name="C1", status=CharacterStatus.NPC, creator=user, origin_game=g1
-        )
-        Character.objects.create(
-            name="C2", status=CharacterStatus.NPC, creator=user, origin_game=g2
-        )
+    def test_no_system_filter_param(self, db: Any, user: User) -> None:
+        """US-07: character discovery is by name + tags, not game system.
 
-        result = build_character_queryset(system="cthulhu")
-        assert [c.name for c in result] == ["C1"]
+        The ``system`` filter was removed with the FoundryVTT catalogue —
+        build_character_queryset no longer accepts it.
+        """
+        import pytest
+
+        with pytest.raises(TypeError):
+            build_character_queryset(system="cthulhu")  # type: ignore[call-arg]
 
     def test_filters_by_tag(self, db: Any, user: User, game: Game) -> None:
         from suddenly.core.models import Tag

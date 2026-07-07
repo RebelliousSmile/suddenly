@@ -15,7 +15,6 @@ urlpatterns = [
     path("stories/<uuid:pk>/", front_views.story_detail, name="story_detail"),
     path("new/", front_views.game_create, name="create"),
     path("bulk-delete/", front_views.game_delete_bulk, name="delete_bulk"),
-    path("systems/search/", front_views.game_system_search, name="system_search"),
     path("<uuid:pk>/", front_views.game_detail, name="detail"),
     path("<uuid:pk>/edit/", front_views.game_edit, name="edit"),
     path("<uuid:pk>/delete/", front_views.game_delete, name="delete"),
