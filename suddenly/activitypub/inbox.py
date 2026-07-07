@@ -417,22 +417,37 @@ def handle_delete(activity: dict[str, Any], actor_type: str, actor_identifier: s
     Supports Character and User (actor tombstone).
     """
     obj = activity.get("object")
+    actor_url = activity.get("actor", "")
 
-    logger.info(f"Received Delete from {activity.get('actor')}")
+    logger.info(f"Received Delete from {actor_url}")
 
     if isinstance(obj, str):
         # object is a URL — determine the type by trying known models
-        _handle_delete_by_url(obj)
+        _handle_delete_by_url(obj, actor_url)
     elif isinstance(obj, dict):
         obj_id = obj.get("id", "")
         if obj_id:
-            _handle_delete_by_url(obj_id)
+            _handle_delete_by_url(obj_id, actor_url)
 
 
-def _handle_delete_by_url(ap_id: str) -> None:
-    """Delete any remote entity matching the given ap_id."""
+def _handle_delete_by_url(ap_id: str, actor_url: str) -> None:
+    """Delete a remote entity matching ap_id, only if it belongs to the signer.
+
+    The signature proves *who* sent the Delete and process_inbox already binds
+    the actor domain to the signing domain. Here we additionally require the
+    deleted object to live on the actor's own domain, so instance A cannot sign
+    a Delete for an object hosted by instance B (SUD-F6).
+    """
     from suddenly.characters.models import Character
     from suddenly.users.models import User
+
+    actor_domain = urlparse(actor_url).hostname
+    target_domain = urlparse(ap_id).hostname
+    if not actor_domain or not target_domain or actor_domain != target_domain:
+        logger.warning(
+            "Rejected cross-domain Delete: actor=%s target=%s", actor_url, ap_id
+        )
+        return
 
     deleted, _ = Character.objects.filter(ap_id=ap_id, remote=True).delete()
     if deleted:

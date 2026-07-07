@@ -254,6 +254,12 @@ AP_ACCEPTED_ACTIVITIES = [
     "Offer",
 ]
 
+# Maximum allowed clock skew (seconds) between an incoming request's signed
+# Date header and server time before the signature is rejected as a replay.
+# 30s is too aggressive for real-world clock drift across federated peers;
+# Mastodon uses a comparable window (SUD-F2).
+AP_SIGNATURE_MAX_SKEW = int(os.environ.get("AP_SIGNATURE_MAX_SKEW", "300"))
+
 # =================================================================
 # INGESTION
 # =================================================================

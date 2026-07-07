@@ -10,6 +10,8 @@ creates a published Report, and lets the AP signal broadcast it.
 
 from __future__ import annotations
 
+import hmac
+
 from django.conf import settings
 from rest_framework import serializers, status
 from rest_framework.permissions import AllowAny
@@ -100,7 +102,8 @@ class IngestReportView(APIView):  # type: ignore[misc]
         if not expected:
             return False
         provided = request.headers.get("X-Ingest-Token", "")
-        return bool(provided == expected)
+        # Constant-time compare to avoid leaking the shared secret via timing.
+        return hmac.compare_digest(provided, expected)
 
     def post(self, request: Request) -> Response:
         if not self._check_token(request):
