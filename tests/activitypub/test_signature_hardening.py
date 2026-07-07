@@ -41,6 +41,7 @@ def _sign(
     date_str: str | None,
     digest_value: str | None,
     include_digest_header: bool = True,
+    algorithm: str = "rsa-sha256",
 ) -> Any:
     """Build a POST request signed over exactly ``signed_headers``.
 
@@ -74,7 +75,7 @@ def _sign(
 
     sig_header = (
         f'keyId="{KEY_ID}",'
-        f'algorithm="rsa-sha256",'
+        f'algorithm="{algorithm}",'
         f'headers="{" ".join(signed_headers)}",'
         f'signature="{sig}"'
     )
@@ -201,3 +202,56 @@ class TestMinimumSignedHeaders:
         assert reason is not None
         assert "Unsigned required headers" in reason
         assert "(request-target)" in reason
+
+
+class TestAcceptedAlgorithms:
+    """Both rsa-sha256 and hs2019 map to RSA-PKCS1v15/SHA-256 and verify."""
+
+    def test_rsa_sha256_accepted(self, keys: tuple[str, str], mocker: Any) -> None:
+        private_pem, public_pem = keys
+        _mock_key(mocker, public_pem)
+        body = json.dumps({"type": "Follow"})
+        request = _sign(
+            private_pem,
+            body=body,
+            signed_headers=["(request-target)", "host", "date", "digest"],
+            date_str=None,
+            digest_value=_digest_of(body),
+            algorithm="rsa-sha256",
+        )
+        is_valid, result = verify_signature(request)
+        assert is_valid is True
+        assert result == KEY_ID
+
+    def test_hs2019_accepted(self, keys: tuple[str, str], mocker: Any) -> None:
+        """hs2019 over an RSA key is the same signature Mastodon advertises."""
+        private_pem, public_pem = keys
+        _mock_key(mocker, public_pem)
+        body = json.dumps({"type": "Follow"})
+        request = _sign(
+            private_pem,
+            body=body,
+            signed_headers=["(request-target)", "host", "date", "digest"],
+            date_str=None,
+            digest_value=_digest_of(body),
+            algorithm="hs2019",
+        )
+        is_valid, result = verify_signature(request)
+        assert is_valid is True
+        assert result == KEY_ID
+
+    def test_unknown_algorithm_rejected(self, keys: tuple[str, str], mocker: Any) -> None:
+        private_pem, public_pem = keys
+        _mock_key(mocker, public_pem)
+        body = json.dumps({"type": "Follow"})
+        request = _sign(
+            private_pem,
+            body=body,
+            signed_headers=["(request-target)", "host", "date", "digest"],
+            date_str=None,
+            digest_value=_digest_of(body),
+            algorithm="hmac-sha256",
+        )
+        is_valid, reason = verify_signature(request)
+        assert is_valid is False
+        assert reason == "Unsupported algorithm: hmac-sha256"
