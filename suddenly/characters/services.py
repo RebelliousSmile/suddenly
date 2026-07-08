@@ -335,6 +335,17 @@ class LinkService:
         )
 
 
+def build_owned_pc_queryset(user: User) -> QuerySet[Character]:
+    """A player's own player-characters — ``owner=user, status=pc``.
+
+    This is the actor vivier of the post composer when the writer acts as a
+    *player* (they may only make their own PCs speak). It is distinct from
+    :func:`build_character_queryset`, which never filters by ``owner``, and from
+    the GM-owned filter of ``report_compose`` (parties I own).
+    """
+    return Character.objects.filter(owner=user, status=CharacterStatus.PC)
+
+
 def build_character_queryset(
     q: str = "",
     status: str = "",

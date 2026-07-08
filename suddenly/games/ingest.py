@@ -24,6 +24,7 @@ from suddenly.games.models import (
     Game,
     Rapport,
     RapportKind,
+    RapportStatus,
     Report,
     ReportCast,
     ReportStatus,
@@ -153,6 +154,7 @@ class IngestReportView(APIView):  # type: ignore[misc]
                 report=report,
                 kind=rapport_item["kind"],
                 content=rapport_item["content"],
+                status=RapportStatus.PUBLISHED,
             )
 
         report_url = f"{settings.AP_BASE_URL}/reports/{report.id}"

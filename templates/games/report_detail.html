@@ -176,7 +176,7 @@
                 {% endif %}
             </div>
             <div id="rapports-list" class="space-y-2">
-                {% for rapport in report.rapports.all %}
+                {% for rapport in rapports %}
                     {% include "games/partials/rapport_item.html" %}
                 {% endfor %}
             </div>

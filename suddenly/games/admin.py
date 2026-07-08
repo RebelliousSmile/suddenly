@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 
 from django.contrib import admin
 
-from .models import Game, Rapport, RapportLink, RapportMarker, Report, ReportCast
+from .models import Game, Rapport, RapportLink, RapportMarker, RapportMedia, Report, ReportCast
 
 if TYPE_CHECKING:
     _GameBase = admin.ModelAdmin[Game]
@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     _RapportInlineBase = admin.TabularInline[Rapport, Report]
     _RapportMarkerInlineBase = admin.TabularInline[RapportMarker, Report]
     _RapportLinkInlineBase = admin.TabularInline[RapportLink, Rapport]
+    _RapportMediaInlineBase = admin.TabularInline[RapportMedia, Rapport]
 else:
     _GameBase = admin.ModelAdmin
     _ReportBase = admin.ModelAdmin
@@ -28,6 +29,7 @@ else:
     _RapportInlineBase = admin.TabularInline
     _RapportMarkerInlineBase = admin.TabularInline
     _RapportLinkInlineBase = admin.TabularInline
+    _RapportMediaInlineBase = admin.TabularInline
 
 
 @admin.register(Game)
@@ -47,7 +49,13 @@ class ReportCastInline(_ReportCastInlineBase):
 
 class RapportInline(_RapportInlineBase):
     model = Rapport
-    fields = ["kind", "actor", "content"]
+    fields = ["kind", "status", "actor", "content"]
+    extra = 0
+
+
+class RapportMediaInline(_RapportMediaInlineBase):
+    model = RapportMedia
+    fields = ["image", "alt_text", "order"]
     extra = 0
 
 
@@ -77,12 +85,12 @@ class ReportAdmin(_ReportBase):
 
 @admin.register(Rapport)
 class RapportAdmin(_RapportAdminBase):
-    list_display = ["__str__", "report", "kind", "created_at"]
-    list_filter = ["kind", "created_at"]
+    list_display = ["__str__", "report", "kind", "status", "created_at"]
+    list_filter = ["kind", "status", "created_at"]
     search_fields = ["content", "report__title"]
     raw_id_fields = ["report", "actor"]
     ordering = ["-created_at"]
-    inlines = [RapportLinkInline]
+    inlines = [RapportLinkInline, RapportMediaInline]
 
 
 @admin.register(ReportCast)
