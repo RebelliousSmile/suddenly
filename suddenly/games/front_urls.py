@@ -10,6 +10,27 @@ urlpatterns = [
     path("", front_views.game_list, name="list"),
     path("search/", front_views.game_search, name="search"),
     path("compose/", front_views.report_compose, name="compose"),
+    # Post composer (level Rapport) — distinct from report_compose (level Report).
+    path(
+        "<uuid:game_pk>/compose/post/",
+        front_views.scene_post_compose,
+        name="scene_post_compose",
+    ),
+    path(
+        "<uuid:game_pk>/scene/open/",
+        front_views.scene_open,
+        name="scene_open",
+    ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/post/",
+        front_views.scene_post_create,
+        name="scene_post_create",
+    ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/rapports/<uuid:rapport_pk>/media/add/",
+        front_views.rapport_media_add,
+        name="rapport_media_add",
+    ),
     # Stories — public reading surface for released content (SUD-V3)
     path("stories/", front_views.stories_index, name="stories"),
     path("stories/<uuid:pk>/", front_views.story_detail, name="story_detail"),

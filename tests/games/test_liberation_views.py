@@ -11,7 +11,14 @@ from django.test import Client
 from django.urls import reverse
 from django.utils import timezone
 
-from suddenly.games.models import Rapport, RapportKind, Report, ReportStatus, ReportVisibility
+from suddenly.games.models import (
+    Rapport,
+    RapportKind,
+    RapportStatus,
+    Report,
+    ReportStatus,
+    ReportVisibility,
+)
 from tests.factories import GameFactory, ReportFactory, UserFactory
 
 # ---------------------------------------------------------------------------
@@ -276,7 +283,12 @@ def test_story_detail_renders_rapports(client: Client) -> None:
     author = UserFactory()
     game = GameFactory(owner=author)
     report = _published(game, author, released=True)
-    Rapport.objects.create(report=report, kind=RapportKind.NARRATION, content="The wall falls.")
+    Rapport.objects.create(
+        report=report,
+        kind=RapportKind.NARRATION,
+        content="The wall falls.",
+        status=RapportStatus.PUBLISHED,
+    )
 
     response = client.get(reverse("games:story_detail", kwargs={"pk": str(game.pk)}))
     assert response.status_code == 200

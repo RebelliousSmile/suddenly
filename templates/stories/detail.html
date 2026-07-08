@@ -22,8 +22,8 @@
             <h1 class="text-2xl font-bold text-primary mb-2">{{ game.title }}</h1>
             <p class="text-sm text-muted">
                 {% blocktrans with username=game.owner.username %}by @{{ username }}{% endblocktrans %}
-                {% if game.game_system_ref or game.game_system %}
-                    · {{ game.game_system_ref.name|default:game.game_system }}
+                {% if game.game_system %}
+                    · {{ game.game_system }}
                 {% endif %}
             </p>
             {% if game.description %}

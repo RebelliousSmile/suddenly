@@ -229,10 +229,26 @@ class RapportKind(models.TextChoices):
     NARRATION = "narration", _("Narration")
 
 
+class RapportStatus(models.TextChoices):
+    """Publication status of a single Rapport (post), orthogonal to Report.status.
+
+    A Rapport can be kept as a private draft ("Enregistrer en brouillon") inside
+    a scene that is itself already published: the published thread ("fil") only
+    renders ``published`` rapports, while ``draft`` ones stay invisible until
+    their author decides to expose them.
+    """
+
+    DRAFT = "draft", _("Draft")
+    PUBLISHED = "published", _("Published")
+
+
 class Rapport(BaseModel):
     report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name="rapports")
     kind = models.CharField(max_length=20, choices=RapportKind.choices)
     content = models.TextField()
+    status = models.CharField(
+        max_length=20, choices=RapportStatus.choices, default=RapportStatus.DRAFT
+    )
     actor = models.ForeignKey(
         "characters.Character",
         null=True,
@@ -245,6 +261,7 @@ class Rapport(BaseModel):
         ordering = ["created_at"]
         indexes = [
             models.Index(fields=["report", "kind"]),
+            models.Index(fields=["report", "status"]),
         ]
 
     def clean(self) -> None:
@@ -255,6 +272,42 @@ class Rapport(BaseModel):
 
     def __str__(self) -> str:
         return f"{self.get_kind_display()} — {self.report}"
+
+
+class RapportMedia(BaseModel):
+    """
+    An image attached to a Rapport.
+
+    Media is only meaningful on a ``description`` rapport (the visual beat of a
+    scene). ``alt_text`` is required-friendly for accessibility and maps to the
+    ActivityPub ``Document.name`` on federation. A rapport may carry several
+    media, ordered by ``order``.
+    """
+
+    rapport = models.ForeignKey(Rapport, on_delete=models.CASCADE, related_name="media")
+    image = models.ImageField(upload_to="rapports/")
+    alt_text = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="Alternative text (a11y + ActivityPub Document.name)",
+    )
+    order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "created_at"]
+        indexes = [
+            models.Index(fields=["rapport", "order"]),
+        ]
+
+    def clean(self) -> None:
+        # Media only attaches to a description rapport (schema of the maquette).
+        if self.rapport_id is not None and self.rapport.kind != RapportKind.DESCRIPTION:
+            raise ValidationError(
+                {"rapport": "Media can only be attached to a description rapport."}
+            )
+
+    def __str__(self) -> str:
+        return f"Media #{self.order} — {self.rapport}"
 
 
 class RapportLink(BaseModel):
