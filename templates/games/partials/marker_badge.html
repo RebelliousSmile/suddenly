@@ -8,8 +8,8 @@
         <button hx-post="{% url 'games:marker_delete' marker.rapport.report.game.pk marker.rapport.report.pk marker.rapport.pk marker.pk %}"
                 hx-target="#marker-{{ marker.pk }}"
                 hx-swap="outerHTML"
-                class="ml-1 text-semantic-muted hover:text-semantic-danger transition-colors">
-            <span class="i-lucide-x text-xs"></span>
+                class="ml-1 text-semantic-muted hover:text-semantic-danger transition-colors" aria-label="{% trans 'Remove marker' %}">
+            <span class="i-lucide-x text-xs" aria-hidden="true"></span>
         </button>
     {% endif %}
 </span>

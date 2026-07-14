@@ -51,8 +51,8 @@
                             {{ title|default:"Modal" }}
                         </h3>
                         <button @click="hide" 
-                                class="text-semantic-muted hover:text-semantic-muted transition-colors">
-                            <span class="i-lucide-x text-xl"></span>
+                                class="text-semantic-muted hover:text-semantic-muted transition-colors" aria-label="{% trans 'Close' %}">
+                            <span class="i-lucide-x text-xl" aria-hidden="true"></span>
                         </button>
                     </div>
                 </div>

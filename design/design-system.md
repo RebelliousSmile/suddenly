@@ -1,5 +1,5 @@
 ---
-version: 1.1.0
+version: 1.2.0
 status: figé
 source: app/templates/wireframes/maquette-v3.html (16 pages, extraction CSS)
 derived_by: design:define → destructure → adjust
@@ -70,11 +70,29 @@ Inter pour de la narration.** La police est un signal de registre, pas une varia
 L'échelle mélange des pas fixes (12 → 28 px) et quatre pas **fluides** (`lede`, `h-sec`,
 `h-page`, `hero`) en `clamp(… cqi …)`, indissociables du contexte de conteneur (cf. § 3).
 
-### Icônes — Lucide, contour, jamais d'emoji
+### Icônes — trois jeux, trois rôles disjoints
 
-Jeu unique : **Lucide**, outline, `stroke-width: 2`, tailles 12 / 16 / 24 px. Aucun emoji comme
-iconographie, nulle part (`usage.rules[no-emoji-as-icon]`). Une icône seule portant une action
-est toujours labellisée.
+Le contrat prévoyait « un jeu unique ». C'était faux et inapplicable : on ne redessine pas le
+logo Mastodon en Lucide. La règle est donc une règle de **rôles**, pas de jeu unique
+(`usage.rules[icon-set-roles]`) :
+
+| Rôle | Jeu | Emploi | Interdit |
+|---|---|---|---|
+| `icon.sets.ui` | **Lucide** (152 icônes, 1520 usages) | **Toutes** les icônes d'interface, sans exception. Outline, `stroke-width: 2`, tailles 12/16/24 px | — |
+| `icon.sets.brand` | **simple-icons** (2 icônes) | Uniquement les logos de plateformes et protocoles tiers : Mastodon, ActivityPub | Jamais une icône d'UI |
+| `icon.sets.illustration` | **game-icons** (11 icônes, 31 usages) | Uniquement l'illustration décorative : états vides, évocation du registre JdR | Jamais un contrôle, jamais un statut |
+
+**Une icône `brand` ou `illustration` ne porte jamais une action** — ni bouton, ni lien, ni badge
+d'état. Ces deux jeux illustrent ; ils ne pilotent pas.
+
+Lucide reste bien le jeu **unique de l'interface** : l'intention initiale est préservée, elle est
+seulement énoncée correctement.
+
+**Aucun emoji** comme icône, puce, pastille d'état ou glyphe de bouton (`usage.rules[no-emoji-as-icon]`).
+
+**Nom accessible** (`usage.rules[icon-accessible-name]`) : une icône décorative porte
+`aria-hidden="true"` ; une icône signifiante — celle qui remplace un mot — porte un `aria-label`.
+Un bouton icon-only est toujours labellisé.
 
 ### Espace — pas de 2 px
 
@@ -194,14 +212,6 @@ changement perceptible de valeur. Non arbitré : la maquette fait foi, et person
 échouent AA de peu. Passent en texte large / élément d'UI (seuil 3:1). Assombrir le crimson
 d'action toucherait l'ancre de la palette : décision de marque, pas décision technique.
 
-**Trois jeux d'icônes, pas un.** Le contrat fige `icon.library: lucide` (jeu unique). Le code en
-charge trois via `presetIcons` : `lucide` (icônes d'UI), `simple-icons` (logos de marques tierces)
-et `game-icons` (illustrations d'états vides, registre JdR). Les deux derniers ne sont pas des
-icônes d'interface — ce sont un jeu de logos et un jeu d'illustrations — ce qui rend la
-divergence défendable. Mais le contrat ne le dit pas. Soit on amende `icon.*` pour nommer les
-trois rôles (UI / logo / illustration), soit on retire `game-icons` et `simple-icons`. En l'état,
-`enforce` signalera une infraction sur du code qui a probablement raison.
-
 **Bordure lavande.** `#d4cfe8` sur une palette entièrement chaude est le seul élément froid du
 système. Intentionnel, ou résidu d'une palette antérieure ?
 
@@ -213,6 +223,34 @@ section) est une piste ouverte, non arbitrée.
 ---
 
 ## 6. Provenance
+
+### v1.2.0 — 2026-07-14 — trois jeux d'icônes, trois rôles
+
+`icon.library: lucide` (jeu unique) était **inapplicable** : le code charge trois collections, et
+il a raison de le faire. Un logo Mastodon ne se redessine pas en Lucide ; une illustration d'état
+vide n'est pas une icône d'interface. La règle du jeu unique est remplacée par une règle de rôles
+disjoints — `icon.sets.{ui,brand,illustration}` — qui préserve l'intention (Lucide est le jeu
+**unique de l'UI**) sans interdire ce qui n'en est pas.
+
+- `usage.rules[icon-set-roles]` : rôles disjoints ; une icône `brand` ou `illustration` ne porte
+  jamais une action.
+- `usage.rules[icon-accessible-name]` : décorative → `aria-hidden` ; signifiante → `aria-label`.
+
+**Défauts d'accessibilité corrigés au passage** (mesurés au DOM, pas supposés) :
+
+- **15 boutons icon-only sans nom accessible** — un lecteur d'écran y annonçait « bouton », sans
+  plus : fermeture de modale, like, partage, réponse, édition, suppression, retrait de marqueur…
+  Chacun a reçu un `aria-label` traduit, propre à son intention, et son icône est passée en
+  `aria-hidden`.
+- **Le bouton hamburger** n'avait aucun nom : le menu mobile était inatteignable à l'aveugle.
+- **9 illustrations `game-icons`** passées en `aria-hidden` (décoratives par définition du rôle).
+- **3 logos de plateformes** (Mastodon, ActivityPub, BookWyrm) dotés de `role="img"` +
+  `aria-label` : ils remplacent un nom, ils doivent donc en porter un. BookWyrm n'existant pas
+  dans simple-icons, il est rendu par un glyphe `game-icons` en substitut de logo — seule
+  entorse tolérée, et documentée à l'endroit de l'usage.
+
+Reste ouvert : ~1500 icônes Lucide décoratives sans `aria-hidden`. Impact réel faible (un `<span>`
+vide n'est pas annoncé), mais c'est une dette de propreté à traiter en lot.
 
 ### v1.1.0 — 2026-07-14 — Fraunces adoptée
 

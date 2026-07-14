@@ -1,6 +1,6 @@
 {
   "$schema": "design/references/manifest-schema#",
-  "$version": "1.1.0",
+  "$version": "1.2.0",
   "mode": "utility-first",
   "usage": {
     "rawHexForbidden": true,
@@ -33,7 +33,17 @@
       },
       {
         "id": "no-emoji-as-icon",
-        "description": "Aucun emoji comme icône UI, puce, pastille d'état ou glyphe de bouton. Jeu unique : icon.library = lucide, style outline.",
+        "description": "Aucun emoji comme icône UI, puce, pastille d'état ou glyphe de bouton. Les emoji sont du contenu utilisateur, pas le langage visuel du système.",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "icon-set-roles",
+        "description": "Trois jeux d'icônes, trois rôles disjoints, jamais interchangeables. (1) icon.sets.ui = lucide : TOUTES les icônes d'interface, sans exception — c'est le jeu unique de l'UI. (2) icon.sets.brand = simple-icons : uniquement les logos de plateformes et protocoles tiers (Mastodon, ActivityPub) ; un logo de marque ne se redessine pas en lucide. (3) icon.sets.illustration = game-icons : uniquement l'illustration décorative (états vides, évocation du registre JdR) ; jamais un contrôle, jamais un statut. Une icône brand ou illustration ne porte JAMAIS une action : pas de bouton, pas de lien, pas de badge d'état.",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "icon-accessible-name",
+        "description": "Une icône décorative porte aria-hidden=\"true\". Une icône signifiante (qui remplace un mot : logo de plateforme, statut, action) porte un nom accessible — aria-label ou texte adjacent. Un bouton icon-only est toujours labellisé.",
         "enforcement": "pivot-only"
       },
       {

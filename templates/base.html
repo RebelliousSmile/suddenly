@@ -273,8 +273,9 @@
                     {% endif %}
                     <!-- Burger menu button -->
                     <button x-data @click="$dispatch('toggle-mobile-menu')"
+                            aria-label="{% trans 'Open menu' %}"
                             class="p-2 text-semantic-ink-secondary hover:text-semantic-ink bg-transparent border-0">
-                        <span class="i-lucide-menu text-xl"></span>
+                        <span class="i-lucide-menu text-xl" aria-hidden="true"></span>
                     </button>
                 </div>
             </div>
@@ -384,8 +385,8 @@
                  }"
                  class="p-4 rounded-lg shadow-lg border max-w-sm flex items-center gap-3">
                 <span x-text="item.message"></span>
-                <button @click="remove(item.id)" class="ml-auto opacity-60 hover:opacity-100">
-                    <span class="i-lucide-x"></span>
+                <button @click="remove(item.id)" class="ml-auto opacity-60 hover:opacity-100" aria-label="{% trans 'Close menu' %}">
+                    <span class="i-lucide-x" aria-hidden="true"></span>
                 </button>
             </div>
         </template>

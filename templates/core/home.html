@@ -52,7 +52,7 @@
         <!-- Publish -->
         <article class="card card-body text-center">
             <div class="w-12 h-12 bg-brand-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="i-game-icons-open-book text-2xl text-brand-primary"></span>
+                <span class="i-game-icons-open-book text-2xl text-brand-primary" aria-hidden="true"></span>
             </div>
             <h3 class="font-semibold text-semantic-ink mb-2">{% trans "Publish your games" %}</h3>
             <p class="text-sm text-semantic-ink-secondary">
@@ -63,7 +63,7 @@
         <!-- Claim -->
         <article class="card card-body text-center">
             <div class="w-12 h-12 bg-semantic-warning/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="i-game-icons-manacles text-2xl text-semantic-warning"></span>
+                <span class="i-game-icons-manacles text-2xl text-semantic-warning" aria-hidden="true"></span>
             </div>
             <h3 class="font-semibold text-semantic-ink mb-2">{% trans "Claim" %}</h3>
             <p class="text-sm text-semantic-muted italic mb-2">
@@ -77,7 +77,7 @@
         <!-- Adopt -->
         <article class="card card-body text-center">
             <div class="w-12 h-12 bg-semantic-card rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="i-game-icons-hand text-2xl text-semantic-ink-secondary"></span>
+                <span class="i-game-icons-hand text-2xl text-semantic-ink-secondary" aria-hidden="true"></span>
             </div>
             <h3 class="font-semibold text-semantic-ink mb-2">{% trans "Adopt" %}</h3>
             <p class="text-sm text-semantic-muted italic mb-2">
@@ -91,7 +91,7 @@
         <!-- Fork -->
         <article class="card card-body text-center">
             <div class="w-12 h-12 bg-semantic-info/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="i-game-icons-divergence text-2xl text-semantic-info"></span>
+                <span class="i-game-icons-divergence text-2xl text-semantic-info" aria-hidden="true"></span>
             </div>
             <h3 class="font-semibold text-semantic-ink mb-2">{% trans "Fork" %}</h3>
             <p class="text-sm text-semantic-muted italic mb-2">
@@ -155,7 +155,7 @@
         </div>
         {% else %}
         <div class="text-center py-12 text-semantic-muted">
-            <span class="i-game-icons-scroll-quill text-4xl block mx-auto mb-4 opacity-40"></span>
+            <span class="i-game-icons-scroll-quill text-4xl block mx-auto mb-4 opacity-40" aria-hidden="true"></span>
             <p>{% trans "No activity yet. Be the first to publish a report!" %}</p>
         </div>
         {% endif %}
@@ -194,10 +194,16 @@
         <p class="text-semantic-ink-secondary mb-6">
             {% blocktrans %}{{ SITE_NAME }} uses <strong>ActivityPub</strong> to connect to other instances and the rest of the Fediverse. Follow players from Mastodon, BookWyrm or any compatible platform.{% endblocktrans %}
         </p>
+        {# Logos de plateformes fédérées : icônes SIGNIFIANTES (elles remplacent un nom),
+           donc role="img" + aria-label. BookWyrm n'existe pas dans simple-icons — d'où
+           l'usage d'un glyphe game-icons en substitut de logo. #}
         <div class="flex flex-wrap justify-center gap-4 text-semantic-muted">
-            <span class="i-simple-icons-mastodon text-2xl hover:text-brand-accent transition-colors"></span>
-            <span class="i-simple-icons-activitypub text-2xl hover:text-semantic-warning transition-colors"></span>
-            <span class="i-game-icons-open-book text-2xl hover:text-domain-available-text transition-colors"></span>
+            <span class="i-simple-icons-mastodon text-2xl hover:text-brand-accent transition-colors"
+                  role="img" aria-label="Mastodon"></span>
+            <span class="i-simple-icons-activitypub text-2xl hover:text-semantic-warning transition-colors"
+                  role="img" aria-label="ActivityPub"></span>
+            <span class="i-game-icons-open-book text-2xl hover:text-domain-available-text transition-colors"
+                  role="img" aria-label="BookWyrm"></span>
         </div>
     </div>
 </section>

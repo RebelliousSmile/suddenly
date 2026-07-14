@@ -72,20 +72,20 @@
 
     <!-- Footer actions -->
     <div class="card-footer flex items-center gap-4">
-        <button class="btn-ghost btn-sm text-semantic-muted">
-            <span class="i-lucide-heart text-sm"></span>
+        <button class="btn-ghost btn-sm text-semantic-muted" aria-label="{% trans 'Like' %}">
+            <span class="i-lucide-heart text-sm" aria-hidden="true"></span>
         </button>
-        <button class="btn-ghost btn-sm text-semantic-muted">
-            <span class="i-lucide-message-circle text-sm"></span>
+        <button class="btn-ghost btn-sm text-semantic-muted" aria-label="{% trans 'Reply' %}">
+            <span class="i-lucide-message-circle text-sm" aria-hidden="true"></span>
         </button>
-        <button class="btn-ghost btn-sm text-semantic-muted">
-            <span class="i-lucide-share text-sm"></span>
+        <button class="btn-ghost btn-sm text-semantic-muted" aria-label="{% trans 'Share' %}">
+            <span class="i-lucide-share text-sm" aria-hidden="true"></span>
         </button>
 
         <!-- Context menu (report) -->
         <div class="ml-auto relative" x-data="dropdown">
-            <button @click="toggle()" class="btn-ghost btn-sm text-semantic-muted">
-                <span class="i-lucide-more-horizontal text-sm"></span>
+            <button @click="toggle()" class="btn-ghost btn-sm text-semantic-muted" aria-label="{% trans 'More actions' %}">
+                <span class="i-lucide-more-horizontal text-sm" aria-hidden="true"></span>
             </button>
             <div x-show="open" @click.away="close()" x-cloak
                  class="dropdown-menu right-0 mt-1 w-40">

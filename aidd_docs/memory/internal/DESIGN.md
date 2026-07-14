@@ -59,14 +59,16 @@ scope: frontend
 - The serif is reserved for fiction (narrative, descriptions, dialogue); the chrome uses Inter. **Italic serif marks narrative description — never plain emphasis** (`usage.rules[display-font-is-fiction]`)
 - `SOFT` and `WONK` axes of Fraunces are available but unused
 
-## Icons — three sets, three roles
+## Icons — three sets, three DISJOINT roles (`usage.rules[icon-set-roles]`)
 
-- `i-lucide-*` — **all UI icons**. Single set, outline, stroke 2. This is the closed vocabulary
-- `i-simple-icons-*` — third-party brand logos only (not UI)
-- `i-game-icons-*` — decorative illustration for empty states only (not UI)
+- `i-lucide-*` — **every UI icon, no exception**. Outline, stroke 2. This IS the single UI set
+- `i-simple-icons-*` — third-party platform/protocol logos ONLY (Mastodon, ActivityPub). A brand logo cannot be redrawn in lucide
+- `i-game-icons-*` — decorative illustration ONLY (empty states, RPG register)
+- **A `brand` or `illustration` icon NEVER carries an action** — no button, no link, no status badge. They illustrate; they do not drive
+- BookWyrm has no simple-icons glyph → rendered with a `game-icons` book as a logo stand-in. Only tolerated exception, documented at the usage site
 - **Never an emoji** as icon, bullet, status dot or button glyph
-- Decorative icon → `aria-hidden="true"`; meaningful icon → accessible label; icon-only button always labelled
-- Contract states `icon.library: lucide` (single) — the simple-icons/game-icons split is a documented divergence, not a licence to mix UI sets
+- Decorative icon → `aria-hidden="true"`; meaningful icon (replaces a word) → `aria-label`; icon-only button ALWAYS labelled (`usage.rules[icon-accessible-name]`)
+- Known debt: ~1500 decorative lucide icons still lack `aria-hidden` (low impact — an empty `<span>` is not announced)
 
 ## Accessibility — frozen rules
 

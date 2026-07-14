@@ -109,8 +109,8 @@
                         }
                     "
                     type="button"
-                    class="btn-secondary">
-                <span class="i-lucide-plus"></span>
+                    class="btn-secondary" aria-label="{% trans 'Add' %}">
+                <span class="i-lucide-plus" aria-hidden="true"></span>
             </button>
         </div>
 
@@ -143,8 +143,8 @@
         {% if report %}
             <button type="button"
                     @click="if(confirm('{% trans "Delete this draft?" %}')) $refs.deleteForm.submit()"
-                    class="btn-ghost text-semantic-danger ml-auto">
-                <span class="i-lucide-trash"></span>
+                    class="btn-ghost text-semantic-danger ml-auto" aria-label="{% trans 'Delete' %}">
+                <span class="i-lucide-trash" aria-hidden="true"></span>
             </button>
         {% endif %}
     </div>

@@ -1,3 +1,4 @@
+{% load i18n %}
 {% comment %}
   Status Banner Component
   Props: type (info|warning|success|error), icon, message, action_label, action_url, dismiss
@@ -22,8 +23,8 @@
     {% endif %}
 
     {% if dismiss %}
-        <button @click="show = false" class="flex-shrink-0 opacity-60 hover:opacity-100">
-            <span class="i-lucide-x text-sm"></span>
+        <button @click="show = false" class="flex-shrink-0 opacity-60 hover:opacity-100" aria-label="{% trans 'Dismiss' %}">
+            <span class="i-lucide-x text-sm" aria-hidden="true"></span>
         </button>
     {% endif %}
 </div>

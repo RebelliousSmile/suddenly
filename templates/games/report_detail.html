@@ -211,8 +211,8 @@
                                     hx-confirm="{% trans "Supprimer cette citation ?" %}"
                                     hx-target="closest div.flex"
                                     hx-swap="outerHTML"
-                                    class="btn-ghost btn-sm text-semantic-danger shrink-0">
-                                <span class="i-lucide-trash-2 text-xs"></span>
+                                    class="btn-ghost btn-sm text-semantic-danger shrink-0" aria-label="{% trans 'Delete' %}">
+                                <span class="i-lucide-trash-2 text-xs" aria-hidden="true"></span>
                             </button>
                         </div>
                     {% endfor %}
