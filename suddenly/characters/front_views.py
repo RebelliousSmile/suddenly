@@ -44,9 +44,11 @@ def character_list(request: HttpRequest) -> HttpResponse:
 
     # Collect all unique tags from local characters for the filter bar
     all_tags: list[str] = sorted(
-        Character.objects.filter(remote=False, tags__isnull=False)
-        .values_list("tags__name", flat=True)
-        .distinct()
+        set(
+            Character.objects.filter(remote=False, tags__isnull=False).values_list(
+                "tags__name", flat=True
+            )
+        )
     )
 
     return htmx_render(
