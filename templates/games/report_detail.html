@@ -121,13 +121,12 @@
                 <h2 class="text-heading mb-3">{% trans "Cast" %}</h2>
                 <div class="flex flex-wrap gap-2">
                     {% for app in cast %}
-                        <a href="{% url 'characters:detail' slug=app.character.slug %}"
-                           class="inline-flex items-center gap-1 px-3 py-1 rounded-badge text-sm
+                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-badge text-sm
                                   {% if app.character.status == 'npc' %}bg-success/15 text-success
                                   {% else %}bg-info/15 text-info{% endif %}">
-                            {{ app.character.name }}
+                            {% include "characters/_char_link.html" with character=app.character %}
                             <span class="text-xs opacity-60">{{ app.get_role_display }}</span>
-                        </a>
+                        </span>
                     {% endfor %}
                 </div>
             </div>

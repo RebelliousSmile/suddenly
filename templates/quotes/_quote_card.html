@@ -24,16 +24,17 @@
     {% endif %}
 
     <footer class="mt-3 flex flex-wrap items-center gap-2 text-sm">
-        <a href="{% url 'characters:detail' slug=quote.character.slug %}"
-           class="inline-flex items-center gap-2 link-muted">
-            {% if quote.character.avatar %}
-                <img src="{{ quote.character.avatar.url }}" alt=""
-                     class="w-6 h-6 rounded-full object-cover">
-            {% else %}
-                <span class="i-lucide-user w-6 h-6 flex items-center justify-center rounded-full bg-card-dark text-muted"></span>
-            {% endif %}
-            <span class="text-secondary">{{ quote.character.name }}</span>
-        </a>
+        <span class="inline-flex items-center gap-2">
+            <a href="{% url 'characters:detail' slug=quote.character.slug %}" aria-hidden="true" tabindex="-1">
+                {% if quote.character.avatar %}
+                    <img src="{{ quote.character.avatar.url }}" alt=""
+                         class="w-6 h-6 rounded-full object-cover">
+                {% else %}
+                    <span class="i-lucide-user w-6 h-6 flex items-center justify-center rounded-full bg-card-dark text-muted"></span>
+                {% endif %}
+            </a>
+            {% include "characters/_char_link.html" with character=quote.character %}
+        </span>
 
         {% if not quote.character.owner_id %}
             <span class="badge bg-success/15 text-success border border-success/30">
