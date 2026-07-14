@@ -7,7 +7,7 @@
 <!-- Profile Header -->
 <section class="bg-gradient-to-b from-semantic-surface to-semantic-background py-12">
     <div class="container-app">
-        <div class="flex flex-col sm:flex-row items-start gap-8">
+        <div class="flex flex-col @sm:flex-row items-start gap-8">
             <!-- Avatar -->
             <div>
                 {% if profile_user.avatar %}
@@ -23,7 +23,7 @@
 
             <!-- Profile Info -->
             <div class="flex-1">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+                <div class="flex flex-col @sm:flex-row items-start @sm:items-center justify-between gap-4 mb-4">
                     <div>
                         <h1 class="text-3xl font-bold text-semantic-ink">
                             {{ profile_user.get_display_name }}
@@ -79,7 +79,15 @@
 <!-- Recent Games -->
 <section class="py-8">
     <div class="container-app">
-        <h2 class="text-heading text-xl mb-6">{% trans "Recent games" %}</h2>
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-heading text-xl">{% trans "Recent games" %}</h2>
+            {% if user == profile_user %}
+                <a href="{% url 'games:create' %}" class="btn-primary btn-sm">
+                    <span class="i-lucide-plus"></span>
+                    {% trans "New game" %}
+                </a>
+            {% endif %}
+        </div>
 
         {% if games %}
             <div class="space-y-3">
@@ -112,11 +120,25 @@
         <h2 class="text-heading text-xl mb-6">{% trans "Characters" %}</h2>
 
         {% if characters %}
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            <div class="grid grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 gap-3">
                 {% for character in characters %}
                     <div class="card card-body text-center">
-                        <p class="font-medium text-sm">{{ character.name }}</p>
+                        <a href="{% url 'characters:detail' slug=character.slug %}" class="font-medium text-sm text-semantic-ink hover:text-brand-primary">{{ character.name }}</a>
                         <p class="text-xs text-semantic-muted">{{ character.get_status_display }}</p>
+                        {% if user == profile_user %}
+                            <div class="mt-2 flex items-center justify-center gap-1">
+                                <a href="{% url 'characters:edit' slug=character.slug %}" class="btn-ghost btn-sm" title="{% trans "Edit" %}">
+                                    <span class="i-lucide-edit-2"></span>
+                                </a>
+                                <form method="post" action="{% url 'characters:delete' slug=character.slug %}"
+                                      onsubmit="return confirm(&#39;{% trans "Delete this character? This cannot be undone." %}&#39;)">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-ghost btn-sm text-semantic-danger" title="{% trans "Delete" %}">
+                                        <span class="i-lucide-trash-2"></span>
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>

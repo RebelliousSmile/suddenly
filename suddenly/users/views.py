@@ -32,10 +32,20 @@ class ProfileView(DetailView):  # type: ignore[type-arg]
         profile_user = self.object
 
         # Games and characters
+        from suddenly.games.models import Report
         from suddenly.games.services import build_game_queryset
 
         context["games"] = build_game_queryset(self.request.user).filter(owner=profile_user)[:10]
-        context["characters"] = profile_user.created_characters.order_by("-created_at")[:12]
+        context["characters"] = profile_user.created_characters.select_related(
+            "origin_game"
+        ).order_by("-created_at")[:12]
+        # Released, public reports authored by this user — the "Comptes rendus" tab.
+        context["reports"] = (
+            Report.objects.filter(author=profile_user)
+            .released()
+            .select_related("game")
+            .order_by("-released_at")[:10]
+        )
 
         # Follow stats — single query with conditional aggregation
         follow_stats = _get_follow_stats(profile_user, self.request.user)

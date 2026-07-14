@@ -36,11 +36,11 @@
                 <!-- Logo -->
                 <a href="/" class="flex items-center gap-2 text-xl font-semibold text-semantic-ink hover:text-brand-primary transition-colors">
                     <img src="{% static 'img/suddenly-logo.svg' %}" alt="{{ SITE_NAME }}" width="28" height="34" class="inline-block">
-                    <span class="hidden sm:inline">{{ SITE_NAME }}</span>
+                    <span class="hidden @sm:inline">{{ SITE_NAME }}</span>
                 </a>
 
                 <!-- Navigation desktop -->
-                <div class="hidden md:flex items-center gap-6">
+                <div class="hidden @md:flex items-center gap-6">
                     <a href="{% url 'core:home' %}" class="text-semantic-ink-secondary hover:text-semantic-ink transition-colors">
                         {% trans "Home" %}
                     </a>
@@ -79,14 +79,14 @@
                                 <a href="{% url 'characters:gm_dashboard' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                     <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Dashboard" %}
                                 </a>
-                                <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
-                                    <span class="i-lucide-settings mr-2"></span>{% trans "Preferences" %}
-                                </a>
                                 {% if request.user.is_admin %}
                                 <a href="{% url 'gmh:dashboard' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                     <span class="i-lucide-shield mr-2"></span>{% trans "Admin" %}
                                 </a>
                                 {% endif %}
+                                <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
+                                    <span class="i-lucide-settings mr-2"></span>{% trans "Preferences" %}
+                                </a>
                                 <hr class="my-1 border-semantic-border">
                                 <a href="{% url 'characters:link_requests' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
                                     <span><span class="i-lucide-inbox mr-2"></span>{% trans "Requests" %}</span>
@@ -181,7 +181,7 @@
                 </div>
 
                 <!-- Mobile controls -->
-                <div class="md:hidden flex items-center gap-2">
+                <div class="@md:hidden flex items-center gap-2">
                     {% if user.is_authenticated %}
                     <!-- Avatar button (mobile) -->
                     <div x-data="dropdown" class="relative">
@@ -208,14 +208,14 @@
                             <a href="{% url 'characters:gm_dashboard' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                 <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Dashboard" %}
                             </a>
-                            <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
-                                <span class="i-lucide-settings mr-2"></span>{% trans "Preferences" %}
-                            </a>
                             {% if request.user.is_admin %}
                             <a href="{% url 'gmh:dashboard' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                 <span class="i-lucide-shield mr-2"></span>{% trans "Admin" %}
                             </a>
                             {% endif %}
+                            <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
+                                <span class="i-lucide-settings mr-2"></span>{% trans "Preferences" %}
+                            </a>
                             <hr class="my-1 border-semantic-border">
                             <a href="{% url 'characters:link_requests' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
                                 <span><span class="i-lucide-inbox mr-2"></span>{% trans "Requests" %}</span>
@@ -290,7 +290,7 @@
              @toggle-mobile-menu.window="open = !open"
              x-show="open"
              x-transition
-             class="md:hidden border-t border-semantic-border bg-semantic-surface">
+             class="@md:hidden border-t border-semantic-border bg-semantic-surface">
             <div class="container-app py-4 space-y-2">
                 <a href="{% url 'core:home' %}" class="block py-2 text-semantic-ink-secondary">{% trans "Home" %}</a>
                 <a href="{% url 'games:stories' %}" class="block py-2 text-semantic-ink-secondary">{% trans "Stories" %}</a>
@@ -343,7 +343,7 @@
     <!-- Footer -->
     <footer class="bg-semantic-surface border-t border-semantic-border mt-16">
         <div class="container-app py-8">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex flex-col @md:flex-row items-center justify-between gap-6">
                 <!-- Logo + baseline -->
                 <div class="flex items-center gap-2 shrink-0">
                     <img src="{% static 'img/suddenly-logo.svg' %}" alt="{{ SITE_NAME }}" width="20" height="24" class="inline-block">

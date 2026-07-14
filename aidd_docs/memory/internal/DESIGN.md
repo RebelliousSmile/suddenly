@@ -77,11 +77,15 @@ scope: frontend
 - `prefers-reduced-motion: reduce` zeroes all durations — carried by `adapters/tokens.css`, not by each component
 - Known failures, unresolved at freeze: `semantic.muted` 3.2:1 · crimson-on-light text 4.2:1 · white-on-crimson 4.4:1
 
-## Layout
+## Layout — container queries, NOT media queries
 
 - Django SSR + HTMX partials. No SPA
-- Contract target: `@container (app)` at 480/640/768 — NOT `@media`. Fluid `cqi` type steps only resolve inside a named container. Code still uses media queries (unresolved)
-- `container-app` — `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8`
+- The `app` container is declared on `<body>` (`container-type: inline-size`) in `base.css`
+- **Write `@sm:` / `@md:` / `@lg:` — never `sm:` / `md:` / `lg:`**. The bare form is a media query and bypasses the contract
+- **`theme.containers` values MUST be full conditions**: `'(min-width: 640px)'`, never `'640px'`. UnoCSS interpolates them verbatim — `'640px'` yields `@container 640px{…}`, an INVALID at-rule the browser drops silently. Build stays green, no warning, and every grid collapses to one column. Only a DOM measurement catches it
+- **A container measures available width, scrollbar excluded**: at a 768px viewport, `<body>` is ~752px on desktop, so `@md:` does NOT fire where `@media` did. Accepted consequence: a desktop window 768–784px wide shows the mobile layout. No effect on real mobile/tablet (overlay scrollbars)
+- UnoCSS 0.62 marks the container-query variant **experimental** — not covered by semver. Verify by measurement after any upgrade
+- `container-app` — `max-w-7xl mx-auto px-4 @sm:px-6 @lg:px-8`
 - `spacing.safe` = `env(safe-area-inset-bottom)` — mobile action bar. Not a token; keep it
 
 ## Spacing — do not remap UnoCSS `spacing`

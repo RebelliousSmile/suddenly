@@ -2,14 +2,14 @@
 {% load i18n %}
 
 {% if games %}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-4">
         {% for game in games %}
             <div class="bg-semantic-card border border-semantic-border rounded-2xl overflow-hidden hover:shadow-card-hover transition-shadow"
                  id="game-{{ game.pk }}">
 
                 {% if user.is_authenticated %}
                 <label x-show="selectMode" x-cloak
-                       class="flex items-center gap-3 p-4 sm:p-5 cursor-pointer hover:bg-semantic-card-sunken/30">
+                       class="flex items-center gap-3 p-4 @sm:p-5 cursor-pointer hover:bg-semantic-card-sunken/30">
                     <input type="checkbox" name="pks" value="{{ game.pk }}"
                            form="bulk-delete-games-form"
                            class="h-4 w-4 shrink-0 rounded border-semantic-border accent-brand-primary">
@@ -22,7 +22,7 @@
 
                 <a href="{% url 'games:detail' pk=game.pk %}"
                    x-show="!selectMode"
-                   class="p-4 sm:p-5 block hover:bg-semantic-card-sunken/30 transition-colors">
+                   class="p-4 @sm:p-5 block hover:bg-semantic-card-sunken/30 transition-colors">
                     <h3 class="font-semibold text-semantic-ink mb-1">{{ game.title }}</h3>
                     {% if game.game_system %}
                         <p class="text-xs text-semantic-muted mb-2">{{ game.game_system }}</p>
@@ -66,7 +66,7 @@
                 </a>
 
                 {% if user == game.owner %}
-                <div class="border-t border-semantic-border px-4 sm:px-5 py-3 flex gap-2"
+                <div class="border-t border-semantic-border px-4 @sm:px-5 py-3 flex gap-2"
                      x-show="!selectMode">
                     <a href="{% url 'games:edit' pk=game.pk %}"
                        class="btn-secondary btn-sm flex-1 justify-center">

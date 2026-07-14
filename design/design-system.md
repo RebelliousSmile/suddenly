@@ -1,5 +1,5 @@
 ---
-version: 1.2.0
+version: 1.3.0
 status: figé
 source: app/templates/wireframes/maquette-v3.html (16 pages, extraction CSS)
 derived_by: design:define → destructure → adjust
@@ -165,11 +165,30 @@ d'attente n'est pas optionnel.
 ## 3. Layout et responsive — conteneurs, pas fenêtre
 
 **La mise en page réagit à la largeur de son conteneur (`@container app`), pas à celle de la
-fenêtre.** Trois seuils : 480, 640, 768 px. Les tailles fluides sont en `cqi` — hors contexte de
-conteneur, `clamp(… cqi …)` ne se résout pas correctement.
+fenêtre.** Le conteneur `app` est déclaré sur `<body>` (`container-type: inline-size`), et les
+variantes s'écrivent `@sm:` / `@md:` / `@lg:` — jamais `sm:` / `md:` / `lg:`.
 
-Tout composant réutilisable doit donc être posé **dans** un conteneur nommé. Un composant testé
-isolément à 375px et le même composant dans une colonne de 375px doivent rendre pareil.
+Tout composant réutilisable est donc posé **dans** un conteneur nommé. Un composant testé
+isolément à 375px et le même composant dans une colonne de 375px rendent pareil.
+
+### Deux pièges, tous deux vérifiés en production
+
+**1. Les seuils sont des conditions, pas des largeurs.** Dans `theme.containers`, la valeur doit
+être `'(min-width: 640px)'` et **jamais** `'640px'`. UnoCSS interpole la valeur telle quelle :
+avec `'640px'` il produit `@container 640px{…}`, une at-rule **invalide** que le navigateur
+ignore en silence. Le build reste vert, aucun avertissement — et tout le responsive s'effondre à
+une seule colonne. C'est arrivé lors de la migration ; seule une mesure du DOM l'a révélé.
+
+**2. Un conteneur mesure la largeur disponible, scrollbar déduite.** À un viewport de 768px, le
+`<body>` ne fait que ~752px sur un navigateur à barre de défilement classique. `@md:` (768px) ne
+se déclenche donc pas, là où `@media` se déclenchait. **Conséquence assumée** : sur desktop, une
+fenêtre large de 768 à 784px affiche la mise en page mobile plutôt que tablette. Aucun effet sur
+mobile et tablette réels, où les barres de défilement sont en superposition. C'est le
+comportement correct d'une container query — pas un défaut à compenser par un décalage de 16px,
+qui serait une valeur magique dépendante de la plateforme.
+
+Le variant container query d'UnoCSS (0.62) est marqué **expérimental** : il n'est pas couvert par
+le semver. Une montée de version doit être vérifiée par la mesure, pas par le build.
 
 Largeurs maximales : 80rem (coque), 64rem (vues intermédiaires), 48rem (lecture), 42rem (texte
 suivi).

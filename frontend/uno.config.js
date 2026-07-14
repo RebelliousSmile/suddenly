@@ -57,7 +57,7 @@ const presetSuddenly = () => ({
   // Shortcuts — classes réutilisables
   shortcuts: {
     // Layout
-    'container-app': 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8',
+    'container-app': 'max-w-7xl mx-auto px-4 @sm:px-6 @lg:px-8',
 
     // Focus — figé par le contrat (focus.*) : 2px, offset 2px, indigo.
     // Indigo et non crimson : 4,5:1 contre 4,2:1, et pour ne pas confondre
@@ -75,13 +75,13 @@ const presetSuddenly = () => ({
     // Cards
     'card': 'bg-semantic-card border border-semantic-border rounded-xl p-6',
     'card-hover': 'card hover:shadow-card-hover hover:border-brand-primary/30 hover:-translate-y-0.5 transition-all cursor-pointer',
-    'card-body': 'p-4 sm:p-6',
-    'card-header': 'px-4 py-3 sm:px-6 border-b border-semantic-border',
-    'card-footer': 'px-4 py-3 sm:px-6 border-t border-semantic-border rounded-b-xl',
+    'card-body': 'p-4 @sm:p-6',
+    'card-header': 'px-4 py-3 @sm:px-6 border-b border-semantic-border',
+    'card-footer': 'px-4 py-3 @sm:px-6 border-t border-semantic-border rounded-b-xl',
 
     // Formulaires
     'input-base': 'appearance-none bg-semantic-surface border border-solid border-semantic-border rounded-lg text-semantic-ink placeholder-semantic-muted focus:border-brand-primary outline-none',
-    'form-input': 'appearance-none block w-full min-w-0 rounded-lg border border-solid border-semantic-border px-3 py-2.5 focus:border-brand-primary sm:text-sm bg-semantic-surface text-semantic-ink outline-none',
+    'form-input': 'appearance-none block w-full min-w-0 rounded-lg border border-solid border-semantic-border px-3 py-2.5 focus:border-brand-primary @sm:text-sm bg-semantic-surface text-semantic-ink outline-none',
     'form-input-error': 'form-input bg-semantic-danger/10 border-semantic-danger focus:border-semantic-danger',
     'form-label': 'block text-sm font-medium text-semantic-ink-secondary mb-1',
     'form-help': 'mt-1 text-sm text-semantic-muted',

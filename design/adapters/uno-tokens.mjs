@@ -158,10 +158,23 @@ export const theme = {
     lg: '1024px',
     xl: '1280px',
   },
+  // Seuils de CONTENEUR — volontairement identiques aux breakpoints media.
+  // Le conteneur `app` est posé sur <body> : à la racine, sa largeur inline EST
+  // celle du viewport, donc la migration @media -> @container est neutre au
+  // niveau page, et devient utile dès qu'un composant est placé dans une colonne
+  // plus étroite que la fenêtre (une carte dans une grille à 4 colonnes).
+  //
+  // ATTENTION — la valeur doit être la CONDITION COMPLÈTE, pas la largeur seule.
+  // UnoCSS l'interpole telle quelle : `@container ${valeur}`. Avec '640px' il
+  // produit `@container 640px{…}`, une at-rule INVALIDE que le navigateur ignore
+  // en silence — tout le responsive tombe alors à une seule colonne, sans erreur
+  // de build. Avec '(min-width: 640px)' il produit une règle valide.
   containers: {
-    xs: '480px',
-    sm: '640px',
-    md: '768px',
+    xs: '(min-width: 480px)',
+    sm: '(min-width: 640px)',
+    md: '(min-width: 768px)',
+    lg: '(min-width: 1024px)',
+    xl: '(min-width: 1280px)',
   },
   zIndex: {
     sticky: '40',

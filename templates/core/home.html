@@ -5,9 +5,9 @@
 
 {% block content %}
 <!-- Hero -->
-<section class="bg-gradient-to-b from-semantic-surface to-semantic-background py-16 sm:py-24">
+<section class="bg-gradient-to-b from-semantic-surface to-semantic-background py-16 @sm:py-24">
     <div class="container-app text-center">
-        <h1 class="text-4xl sm:text-5xl font-bold text-semantic-ink mb-4">
+        <h1 class="text-4xl @sm:text-5xl font-bold text-semantic-ink mb-4">
             {% trans "Welcome to" %} <span class="text-brand-primary">{{ SITE_NAME }}</span>
         </h1>
         <p class="text-xl text-semantic-ink-secondary mb-6 max-w-2xl mx-auto">
@@ -18,7 +18,7 @@
         </p>
 
         {% if not user.is_authenticated %}
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <div class="flex flex-col @sm:flex-row gap-4 justify-center">
                 <a href="{% url 'account_signup' %}" class="btn-primary btn-lg">
                     <span class="i-lucide-sparkles"></span>
                     {% trans "Join the network" %}
@@ -28,7 +28,7 @@
                 </a>
             </div>
         {% else %}
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <div class="flex flex-col @sm:flex-row gap-4 justify-center">
                 <a href="#" class="btn-primary btn-lg">
                     <span class="i-lucide-plus"></span>
                     {% trans "New game" %}
@@ -48,7 +48,7 @@
         {% trans "How does it work?" %}
     </h2>
 
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid @sm:grid-cols-2 @lg:grid-cols-4 gap-6">
         <!-- Publish -->
         <article class="card card-body text-center">
             <div class="w-12 h-12 bg-brand-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -118,7 +118,7 @@
         </div>
 
         {% if recent_reports %}
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid @md:grid-cols-2 @lg:grid-cols-3 gap-6">
             {% for report in recent_reports %}
             <article class="card card-hover">
                 <div class="card-body">

@@ -178,7 +178,7 @@
                     <textarea name="content" rows="2" required
                               placeholder="{% trans "La réplique, telle quelle" %}"
                               class="form-input w-full"></textarea>
-                    <div class="grid gap-2 sm:grid-cols-2">
+                    <div class="grid gap-2 @sm:grid-cols-2">
                         <select name="character" required class="form-input">
                             <option value="">{% trans "— Qui parle —" %}</option>
                             {% for c in quote_characters %}

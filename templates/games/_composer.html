@@ -73,7 +73,7 @@
         {% csrf_token %}
 
         {% if not frozen %}
-            <div class="grid gap-3 sm:grid-cols-2 mb-4">
+            <div class="grid gap-3 @sm:grid-cols-2 mb-4">
                 <div>
                     <label class="form-label" for="composer-personnage">{% trans "Personnage" %}</label>
                     <select id="composer-personnage" name="character" class="form-input w-full" x-model="personnage">

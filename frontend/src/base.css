@@ -12,6 +12,17 @@
 body {
   background: var(--color-semantic-background);
   color: var(--color-semantic-ink);
+
+  /* Conteneur racine `app` — la responsivite passe par @container, pas @media
+     (usage.rules[container-not-viewport]). A la racine, la largeur inline du
+     conteneur est celle du viewport : le rendu de page est donc inchange.
+     Le gain apparait pour un composant place dans une colonne plus etroite que
+     la fenetre — il se replie alors sur SA largeur, pas sur celle de l'ecran.
+
+     `container-type: inline-size` n'applique le containment que sur l'axe
+     inline : la hauteur reste dictee par le contenu. */
+  container-type: inline-size;
+  container-name: app;
 }
 
 /* Fond de page en mode sombre — décoration, pas un token :

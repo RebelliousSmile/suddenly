@@ -28,7 +28,7 @@
     {% if scenes %}
     <!-- Navigation -->
     <div class="flex items-center justify-center gap-4 mt-6">
-        <button @click="prev()" class="hidden sm:flex px-3 py-1 rounded bg-semantic-surface text-sm">[&lt;]</button>
+        <button @click="prev()" class="hidden @sm:flex px-3 py-1 rounded bg-semantic-surface text-sm">[&lt;]</button>
 
         <div class="flex gap-1">
             {% for _ in scenes %}
@@ -40,7 +40,7 @@
             {% endfor %}
         </div>
 
-        <button @click="next()" class="hidden sm:flex px-3 py-1 rounded bg-semantic-surface text-sm">[&gt;]</button>
+        <button @click="next()" class="hidden @sm:flex px-3 py-1 rounded bg-semantic-surface text-sm">[&gt;]</button>
     </div>
     {% endif %}
 

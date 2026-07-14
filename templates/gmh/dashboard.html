@@ -6,7 +6,7 @@
 {% block gmh_content %}
 <h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "Administration" %}</h1>
 
-<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+<div class="grid grid-cols-2 @sm:grid-cols-4 gap-4 mb-8">
     <div class="card card-body text-center">
         <p class="text-2xl font-bold text-semantic-ink">{{ stats.users|default:0 }}</p>
         <p class="text-xs text-semantic-muted">{% trans "players" %}</p>
@@ -25,7 +25,7 @@
     </div>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="grid grid-cols-1 @sm:grid-cols-2 gap-4">
     <a href="{% url 'gmh:instances' %}" class="card card-hover card-body block">
         <span class="i-lucide-globe text-2xl text-brand-primary mb-2 block"></span>
         <h3 class="font-semibold">{% trans "Federated instances" %}</h3>

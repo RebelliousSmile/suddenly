@@ -10,7 +10,7 @@
         <h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "Dashboard" %}</h1>
 
         <!-- Stats -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div class="grid grid-cols-2 @sm:grid-cols-4 gap-4 mb-8">
             <div class="card card-body text-center">
                 <p class="text-2xl font-bold text-semantic-ink">{{ total_npcs|default:0 }}</p>
                 <p class="text-xs text-semantic-muted">{% trans "NPCs created" %}</p>
@@ -69,7 +69,7 @@
         {% if npcs_available %}
             <div class="mb-8">
                 <h2 class="text-heading text-lg mb-4">{% trans "Available NPCs" %}</h2>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                <div class="grid grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 gap-3">
                     {% for npc in npcs_available %}
                         <a href="{% url 'characters:detail' slug=npc.slug %}"
                            class="card card-body text-center hover:shadow-card-hover transition-shadow">

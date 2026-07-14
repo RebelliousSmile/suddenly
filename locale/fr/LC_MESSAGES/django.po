@@ -1128,6 +1128,10 @@ msgstr "Tout sélectionner"
 msgid "Delete selected characters?"
 msgstr "Supprimer les personnages sélectionnés ?"
 
+#: .\templates\users\profile.html
+msgid "Delete this character? This cannot be undone."
+msgstr "Supprimer ce personnage ? Action irréversible."
+
 #: .\templates\characters\list.html:40 .\templates\games\list.html:37
 msgid "Delete selection"
 msgstr "Supprimer la sélection"
