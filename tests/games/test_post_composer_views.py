@@ -116,6 +116,71 @@ def test_scene_post_htmx_appends_inline(client: Client) -> None:
 
 
 @pytest.mark.django_db
+def test_scene_post_local_reply_creates_link(client: Client) -> None:
+    """A discussion can reply to another post of the scene (RapportLink local)."""
+    from suddenly.characters.models import CharacterStatus
+    from suddenly.games.models import GameCast, RapportLink
+
+    gm = UserFactory()
+    game = GameFactory(owner=gm)
+    report = ReportFactory(game=game, author=gm)
+    target = Rapport.objects.create(
+        report=report, kind=RapportKind.NARRATION, content="A door creaks.", order=0
+    )
+    npc = CharacterFactory(status=CharacterStatus.NPC, origin_game=game)
+    GameCast.objects.create(game=game, character=npc, added_by=gm)
+
+    client.force_login(gm)
+    url = reverse("games:scene_post_create", kwargs={"game_pk": game.pk, "pk": report.pk})
+    resp = client.post(
+        url,
+        {
+            "mode": "add",
+            "kind": RapportKind.DISCUSSION,
+            "content": "Who's there?",
+            "actor": npc.slug,
+            "reply_local": str(target.pk),
+        },
+        HTTP_HX_REQUEST="true",
+    )
+    assert resp.status_code == 200
+    new = Rapport.objects.exclude(pk=target.pk).get(report=report)
+    link = RapportLink.objects.get(rapport=new)
+    assert link.parent_rapport_id == target.pk
+    assert link.parent_iri is None
+
+
+@pytest.mark.django_db
+def test_scene_post_iri_reply_creates_link(client: Client) -> None:
+    from suddenly.characters.models import CharacterStatus
+    from suddenly.games.models import GameCast, RapportLink
+
+    gm = UserFactory()
+    game = GameFactory(owner=gm)
+    report = ReportFactory(game=game, author=gm)
+    npc = CharacterFactory(status=CharacterStatus.NPC, origin_game=game)
+    GameCast.objects.create(game=game, character=npc, added_by=gm)
+
+    client.force_login(gm)
+    url = reverse("games:scene_post_create", kwargs={"game_pk": game.pk, "pk": report.pk})
+    resp = client.post(
+        url,
+        {
+            "mode": "add",
+            "kind": RapportKind.DISCUSSION,
+            "content": "I answer the fediverse.",
+            "actor": npc.slug,
+            "reply_iri": "https://dice.town/report/42#r7",
+        },
+        HTTP_HX_REQUEST="true",
+    )
+    assert resp.status_code == 200
+    link = RapportLink.objects.get(rapport__report=report)
+    assert link.parent_iri == "https://dice.town/report/42#r7"
+    assert link.parent_rapport_id is None
+
+
+@pytest.mark.django_db
 def test_scene_edit_shows_fil_and_composer(client: Client) -> None:
     """The scene-edit page shows the composer next to the fil of posts."""
     user = UserFactory()

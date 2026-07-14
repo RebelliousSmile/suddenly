@@ -1350,6 +1350,13 @@ def scene_post_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> H
     status = RapportStatus.DRAFT if mode == "draft" else RapportStatus.PUBLISHED
 
     actor = _resolve_actor(request)
+
+    # Optional reply target (discussion): a Rapport of this scene, or a fed. IRI.
+    reply_parent = None
+    reply_local = request.POST.get("reply_local", "").strip()
+    if reply_local:
+        reply_parent = get_object_or_404(Rapport, pk=reply_local, report=report)
+
     try:
         rapport = create_scene_post(
             report=report,
@@ -1357,6 +1364,8 @@ def scene_post_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> H
             content=request.POST.get("content", "").strip(),
             actor=actor,
             status=status,
+            reply_parent=reply_parent,
+            reply_iri=request.POST.get("reply_iri", ""),
         )
     except ValidationError as exc:
         return HttpResponse("; ".join(exc.messages), status=422)
@@ -1458,6 +1467,14 @@ def _composer_context(
 
     own_pcs = Character.objects.filter(owner=user, status=CharacterStatus.PC).order_by("name")
 
+    # Reply targets (discussion) — the scene's own posts. Only in frozen mode:
+    # from the feed there is no scene yet to reply within.
+    reply_targets = (
+        report.rapports.select_related("actor").order_by("order", "created_at")
+        if report is not None
+        else Rapport.objects.none()
+    )
+
     # Rule 2a: nothing leaves without a personnage AND a partie — drafts too.
     # In frozen mode both are inherited from the scene, so sending is allowed.
     can_send = frozen or (game is not None and character is not None)
@@ -1471,6 +1488,7 @@ def _composer_context(
         "actors": actors,
         "cast_npcs": cast_npcs,
         "own_pcs": own_pcs,
+        "reply_targets": reply_targets,
         "selected_character": character,
         "selected_actor": selected_actor,
         "selected_actor_label": selected_actor_label,

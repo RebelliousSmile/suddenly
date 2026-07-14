@@ -24,6 +24,7 @@ from .models import (
     GameCast,
     Rapport,
     RapportKind,
+    RapportLink,
     RapportStatus,
     Report,
     ReportCast,
@@ -181,6 +182,7 @@ def validate_actor_for_role(user: User, game: Game, actor: Character | None) -> 
         raise ValidationError({"actor": "This actor is not one you may make speak in this game."})
 
 
+@transaction.atomic
 def create_scene_post(
     *,
     report: Report,
@@ -188,13 +190,19 @@ def create_scene_post(
     content: str,
     actor: Character | None = None,
     status: str = RapportStatus.PUBLISHED,
+    reply_parent: Rapport | None = None,
+    reply_iri: str = "",
 ) -> Rapport:
     """Create one Rapport inside an existing scene (``report``).
 
     The caller is responsible for the frozen context (``report`` and its author
     come from the server, never the payload). ``actor`` is revalidated against
     the writer's role vivier; ``Rapport.clean`` enforces the actor⟺discussion
-    rule. Returns the saved Rapport.
+    rule.
+
+    ``reply_parent`` / ``reply_iri`` — an optional reply target (a Rapport of the
+    same scene, or a federated IRI). At most one is used (local wins); it becomes
+    a ``RapportLink``. Returns the saved Rapport.
     """
     validate_actor_for_role(report.author, report.game, actor)
     rapport = Rapport(
@@ -210,6 +218,16 @@ def create_scene_post(
     # Voicing a character in a game brings them into its cast (rule 2d).
     if actor is not None:
         add_to_cast(report.game, actor, report.author)
+
+    reply_iri = (reply_iri or "").strip()
+    if reply_parent is not None or reply_iri:
+        link = RapportLink(
+            rapport=rapport,
+            parent_rapport=reply_parent,
+            parent_iri=(reply_iri or None) if reply_parent is None else None,
+        )
+        link.full_clean(exclude=["rapport"])
+        link.save()
     return rapport
 
 
