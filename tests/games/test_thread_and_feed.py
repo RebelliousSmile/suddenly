@@ -1,6 +1,6 @@
 """
 Rendering tests for the scene thread reading view (Front #8) and the Friends
-feed of interventions grouped by scene (Front #9).
+feed shell (Front #9).
 """
 
 from __future__ import annotations
@@ -8,12 +8,11 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
-from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.test import Client
 from django.urls import reverse
 
-from suddenly.characters.models import Character, CharacterStatus, Follow
+from suddenly.characters.models import Character, CharacterStatus
 from suddenly.games.models import Game, Rapport, RapportKind, Report, ReportStatus
 from suddenly.users.models import User
 
@@ -74,21 +73,6 @@ class TestSceneThreadReading:
 
 
 class TestFriendsFeedInterventions:
-    def test_amis_feed_shows_interventions_of_followed_game(
-        self, db: Any, client: Client, user: User, other_user: User, game: Game
-    ) -> None:
-        # `game` is owned by `user`; another player follows it and reads the feed.
-        report = _scene_with_rapports(user, game)
-        game_ct = ContentType.objects.get_for_model(Game)
-        Follow.objects.create(follower=other_user, content_type=game_ct, object_id=game.id)
-
-        client.force_login(other_user)
-        body = client.get("/").content.decode()
-
-        # Interventions are read inline, with a link to the full scene.
-        assert "The vault door creaks open." in body
-        assert reverse("games:report_thread", kwargs={"game_pk": game.pk, "pk": report.pk}) in body
-
     def test_amis_feed_renders_for_user_without_follows(
         self, db: Any, client: Client, user: User
     ) -> None:
