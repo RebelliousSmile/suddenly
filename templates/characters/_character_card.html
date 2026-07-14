@@ -1,0 +1,63 @@
+{% load i18n %}
+{% comment %}
+  Character hover-card content (prompt maquette §10 "Tooltip PNJ").
+  Lazy-loaded over HTMX into the popover of a character link. Context: character.
+{% endcomment %}
+<div class="p-4 border-b border-border">
+    <div class="flex items-start gap-3">
+        {% if character.avatar %}
+            <img src="{{ character.avatar.url }}" alt=""
+                 class="w-11 h-11 rounded-full object-cover shrink-0 border border-border">
+        {% else %}
+            <span class="w-11 h-11 rounded-full shrink-0 flex items-center justify-center bg-card-dark border border-border text-muted">
+                <span class="i-lucide-user"></span>
+            </span>
+        {% endif %}
+        <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-semibold text-primary text-sm">{{ character.name }}</span>
+                <span class="{% if character.status == 'npc' %}badge-available{% else %}badge-{{ character.status }}{% endif %} inline-flex items-center gap-1">
+                    {% if character.is_available %}
+                        <span class="i-lucide-circle-dot text-xs"></span>
+                    {% elif character.status == 'adopted' %}
+                        <span class="i-lucide-user-check text-xs"></span>
+                    {% endif %}
+                    {{ character.get_status_display }}
+                </span>
+            </div>
+            {% if character.remote and character.ap_id %}
+                <div class="flex items-center gap-1 text-xs text-muted mt-0.5">
+                    <span class="i-lucide-globe text-xs"></span>
+                    <span class="truncate">{{ character.ap_id|urlize }}</span>
+                </div>
+            {% endif %}
+            <p class="text-xs text-muted mt-1">
+                {% blocktrans with game=character.origin_game.title %}né dans {{ game }}{% endblocktrans %}
+            </p>
+        </div>
+    </div>
+    {% if character.description %}
+        <p class="text-xs text-secondary mt-3 line-clamp-2">{{ character.description }}</p>
+    {% endif %}
+</div>
+
+<div class="p-3 flex items-center gap-2">
+    {% if character.is_available %}
+        <a href="{% url 'characters:link_request_form' slug=character.slug link_type='claim' %}"
+           class="inline-flex items-center gap-1 bg-info/10 text-info border border-info/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-info/20">
+            <span class="i-lucide-link text-xs"></span>{% trans "Claim" %}
+        </a>
+        <a href="{% url 'characters:link_request_form' slug=character.slug link_type='adopt' %}"
+           class="inline-flex items-center gap-1 bg-success/10 text-success border border-success/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-success/20">
+            <span class="i-lucide-user-check text-xs"></span>{% trans "Adopt" %}
+        </a>
+        <a href="{% url 'characters:link_request_form' slug=character.slug link_type='fork' %}"
+           class="inline-flex items-center gap-1 bg-violet/10 text-violet border border-violet/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-violet/20">
+            <span class="i-lucide-git-fork text-xs"></span>{% trans "Fork" %}
+        </a>
+    {% endif %}
+    <a href="{% url 'characters:detail' slug=character.slug %}"
+       class="ml-auto text-xs link-muted inline-flex items-center gap-1">
+        {% trans "Fiche" %}<span class="i-lucide-arrow-right text-xs"></span>
+    </a>
+</div>

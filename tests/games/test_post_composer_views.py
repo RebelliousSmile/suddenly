@@ -90,6 +90,152 @@ def test_scene_post_add_continue_returns_composer(client: Client) -> None:
 
 
 @pytest.mark.django_db
+def test_scene_post_htmx_appends_inline(client: Client) -> None:
+    """Mastodon-style: an HTMX post returns a fresh composer AND the new post
+    (OOB) to append to the fil — no redirect."""
+    user = UserFactory()
+    game = GameFactory(owner=user)
+    report = ReportFactory(game=game, author=user)
+
+    client.force_login(user)
+    url = reverse("games:scene_post_create", kwargs={"game_pk": game.pk, "pk": report.pk})
+    resp = client.post(
+        url,
+        {"mode": "add", "kind": RapportKind.NARRATION, "content": "INLINE-BEAT"},
+        HTTP_HX_REQUEST="true",
+    )
+
+    assert resp.status_code == 200
+    # Fresh composer for the same scene …
+    assert b'id="composer"' in resp.content
+    # … plus the new post, OOB-appended to the fil.
+    assert b"INLINE-BEAT" in resp.content
+    assert b'hx-swap-oob="beforeend:#rapports-list"' in resp.content
+    # …and a client event so the overlay closes reliably.
+    assert resp["HX-Trigger"] == "composer-posted"
+
+
+@pytest.mark.django_db
+def test_scene_post_local_reply_creates_link(client: Client) -> None:
+    """A discussion can reply to another post of the scene (RapportLink local)."""
+    from suddenly.characters.models import CharacterStatus
+    from suddenly.games.models import GameCast, RapportLink
+
+    gm = UserFactory()
+    game = GameFactory(owner=gm)
+    report = ReportFactory(game=game, author=gm)
+    target = Rapport.objects.create(
+        report=report, kind=RapportKind.NARRATION, content="A door creaks.", order=0
+    )
+    npc = CharacterFactory(status=CharacterStatus.NPC, origin_game=game)
+    GameCast.objects.create(game=game, character=npc, added_by=gm)
+
+    client.force_login(gm)
+    url = reverse("games:scene_post_create", kwargs={"game_pk": game.pk, "pk": report.pk})
+    resp = client.post(
+        url,
+        {
+            "mode": "add",
+            "kind": RapportKind.DISCUSSION,
+            "content": "Who's there?",
+            "actor": npc.slug,
+            "reply_local": str(target.pk),
+        },
+        HTTP_HX_REQUEST="true",
+    )
+    assert resp.status_code == 200
+    new = Rapport.objects.exclude(pk=target.pk).get(report=report)
+    link = RapportLink.objects.get(rapport=new)
+    assert link.parent_rapport_id == target.pk
+    assert link.parent_iri is None
+
+
+@pytest.mark.django_db
+def test_scene_post_iri_reply_creates_link(client: Client) -> None:
+    from suddenly.characters.models import CharacterStatus
+    from suddenly.games.models import GameCast, RapportLink
+
+    gm = UserFactory()
+    game = GameFactory(owner=gm)
+    report = ReportFactory(game=game, author=gm)
+    npc = CharacterFactory(status=CharacterStatus.NPC, origin_game=game)
+    GameCast.objects.create(game=game, character=npc, added_by=gm)
+
+    client.force_login(gm)
+    url = reverse("games:scene_post_create", kwargs={"game_pk": game.pk, "pk": report.pk})
+    resp = client.post(
+        url,
+        {
+            "mode": "add",
+            "kind": RapportKind.DISCUSSION,
+            "content": "I answer the fediverse.",
+            "actor": npc.slug,
+            "reply_iri": "https://dice.town/report/42#r7",
+        },
+        HTTP_HX_REQUEST="true",
+    )
+    assert resp.status_code == 200
+    link = RapportLink.objects.get(rapport__report=report)
+    assert link.parent_iri == "https://dice.town/report/42#r7"
+    assert link.parent_rapport_id is None
+
+
+@pytest.mark.django_db
+def test_scene_post_description_with_media(client: Client) -> None:
+    """A description posted from the composer carries its image + alt + tone."""
+    from django.core.files.uploadedfile import SimpleUploadedFile
+
+    user = UserFactory()
+    game = GameFactory(owner=user)
+    report = ReportFactory(game=game, author=user)
+
+    client.force_login(user)
+    url = reverse("games:scene_post_create", kwargs={"game_pk": game.pk, "pk": report.pk})
+    image = SimpleUploadedFile("s.png", _png_bytes(), content_type="image/png")
+    resp = client.post(
+        url,
+        {
+            "mode": "add",
+            "kind": RapportKind.DESCRIPTION,
+            "content": "A dim hall.",
+            "image": image,
+            "media_alt": "a dim hall",
+            "media_tone": "feutrée",
+        },
+        HTTP_HX_REQUEST="true",
+    )
+    assert resp.status_code == 200
+    rapport = Rapport.objects.get(report=report)
+    assert rapport.media.alt == "a dim hall"
+    assert rapport.media.tone == "feutrée"
+
+
+@pytest.mark.django_db
+def test_scene_edit_shows_fil_and_composer(client: Client) -> None:
+    """The scene-edit page shows the composer next to the fil of posts."""
+    user = UserFactory()
+    game = GameFactory(owner=user)
+    report = ReportFactory(game=game, author=user)
+    Rapport.objects.create(
+        report=report,
+        kind=RapportKind.NARRATION,
+        content="EXISTING-BEAT",
+        status=RapportStatus.PUBLISHED,
+    )
+
+    client.force_login(user)
+    resp = client.get(reverse("games:report_edit", kwargs={"game_pk": game.pk, "pk": report.pk}))
+
+    assert resp.status_code == 200
+    # The composer lives inside the full-screen overlay, opened from a trigger…
+    assert b"composerOpen" in resp.content
+    assert b'id="composer"' in resp.content
+    # …next to the fil of existing posts.
+    assert b'id="rapports-list"' in resp.content
+    assert b"EXISTING-BEAT" in resp.content
+
+
+@pytest.mark.django_db
 def test_scene_post_non_author_forbidden(client: Client) -> None:
     author = UserFactory()
     intruder = UserFactory()

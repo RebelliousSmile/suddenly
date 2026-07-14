@@ -66,6 +66,17 @@
             </article>
         {% endfor %}
 
+        {% if quotes %}
+            <section class="mt-12">
+                <h2 class="text-xl font-bold text-primary mb-4">{% trans "Citations retenues" %}</h2>
+                <div class="space-y-4">
+                    {% for quote in quotes %}
+                        {% include "quotes/_quote_card.html" with hide_source=True %}
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
     </div>
 </section>
 {% endblock %}

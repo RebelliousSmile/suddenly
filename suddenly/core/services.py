@@ -4,11 +4,14 @@ Core service layer — shared business queries used by views.
 
 from __future__ import annotations
 
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from django.core.cache import cache
 
 from suddenly.games.models import Report, ReportStatus
+
+if TYPE_CHECKING:
+    from suddenly.characters.models import Quote
 
 EXPLORER_TAGS_TTL = 300
 INSTANCE_STATS_TTL = 600
@@ -37,6 +40,17 @@ def get_recent_public_reports(limit: int = 3) -> list[Report]:
     )
     cache.set(cache_key, reports, RECENT_REPORTS_TTL)
     return reports
+
+
+def get_instance_quotes(limit: int = 3) -> list[Quote]:
+    """Promotable citations for the anonymous vitrine ("Ce qu'on y dit").
+
+    Starts from ``Quote.objects.promotable()`` — the double lock — so nothing
+    behind the wall or kept private ever reaches the front page.
+    """
+    from suddenly.characters.models import Quote
+
+    return list(Quote.objects.promotable().order_by("-created_at")[:limit])
 
 
 def get_distinct_tag_names(model_cls: type[Any]) -> list[str]:

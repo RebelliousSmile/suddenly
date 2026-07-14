@@ -86,6 +86,22 @@ class ReportVisibility(models.TextChoices):
     FOLLOWERS = "followers", _("Followers only")
 
 
+class ReportQuerySet(models.QuerySet["Report"]):
+    """Querysets for Report. The liberation ("wall") filter lives here and
+    nowhere else (SUD-V1): a report crosses the wall when ``released_at`` is set,
+    and only a released + published + public report is a public story."""
+
+    def released(self) -> "ReportQuerySet":
+        """Reports that have crossed the temporal wall — the single released
+        filter of the codebase. If liberation ever moves to the Game level, only
+        this method changes."""
+        return self.filter(
+            released_at__isnull=False,
+            status=ReportStatus.PUBLISHED,
+            visibility=ReportVisibility.PUBLIC,
+        )
+
+
 class Report(BaseModel):
     """
     A Report is a narrative account added to a Game.
@@ -132,8 +148,10 @@ class Report(BaseModel):
     # A report can be published (federable) without being released (wall still
     # closed): `released_at` dates the moment a scene crosses the wall, turning
     # a game in progress into a resolved account. Symmetric with published_at.
-    released_at = models.DateTimeField(blank=True, null=True)
+    released_at = models.DateTimeField(blank=True, null=True, db_index=True)
     session_date = models.DateField(null=True, blank=True)
+
+    objects = ReportQuerySet.as_manager()
 
     # Tags (hashtags for discovery)
     tags = models.ManyToManyField("core.Tag", blank=True, related_name="reports")
@@ -264,6 +282,9 @@ class RapportKind(models.TextChoices):
     ACTION = "action", _("Action")
     DISCUSSION = "discussion", _("Discussion")
     NARRATION = "narration", _("Narration")
+    # The scene's compte rendu, written when the scene is closed. Full Rapport;
+    # its content crosses the wall to the Hub. Not an actor's line → no actor.
+    CLOSURE = "closure", _("Closure")
 
 
 class RapportStatus(models.TextChoices):
@@ -293,12 +314,16 @@ class Rapport(BaseModel):
         on_delete=models.SET_NULL,
         related_name="rapport_appearances",
     )
+    # Explicit sequence position within the scene. New posts append (0 keeps the
+    # created_at order); the scene-edit reorder arrows renumber to 0..n.
+    order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ["created_at"]
+        ordering = ["order", "created_at"]
         indexes = [
             models.Index(fields=["report", "kind"]),
             models.Index(fields=["report", "status"]),
+            models.Index(fields=["report", "order"]),
         ]
 
     def clean(self) -> None:
@@ -307,8 +332,9 @@ class Rapport(BaseModel):
         #   description → optional (empty = "Voix du MJ", or a character)
         #   action      → required (someone acts)
         #   discussion  → required (a spoken line is embodied)
-        if self.kind == RapportKind.NARRATION and self.actor is not None:
-            raise ValidationError({"actor": "Narration is the narrative voice; it takes no actor."})
+        #   closure     → never an actor (the scene's compte rendu, GM voice)
+        if self.kind in (RapportKind.NARRATION, RapportKind.CLOSURE) and self.actor is not None:
+            raise ValidationError({"actor": "This kind is the narrative voice; it takes no actor."})
         if self.kind in (RapportKind.ACTION, RapportKind.DISCUSSION) and self.actor is None:
             raise ValidationError({"actor": f"An actor is required for a {self.kind}."})
 
