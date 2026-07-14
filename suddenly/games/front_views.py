@@ -1365,7 +1365,11 @@ def scene_post_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> H
         # Inline: fresh composer (#composer) + OOB-append the new post to the fil.
         ctx = _composer_context(request.user, report=report)
         ctx["new_rapport"] = rapport
-        return render(request, "games/_composer_after_post.html", ctx)
+        response = render(request, "games/_composer_after_post.html", ctx)
+        # Canonical htmx client event → the overlay (if any) closes on it. More
+        # robust than sniffing the swap target on an outerHTML swap.
+        response["HX-Trigger"] = "composer-posted"
+        return response
 
     return redirect(
         reverse("games:report_edit", kwargs={"game_pk": report.game.pk, "pk": report.pk})

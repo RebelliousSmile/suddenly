@@ -8,7 +8,7 @@
 {% endcomment %}
 <div x-data="{ composerOpen: false }"
      @keydown.escape.window="composerOpen = false"
-     x-on:htmx:after-swap.window="if ($event.detail.target && $event.detail.target.id === 'composer') composerOpen = false">
+     @composer-posted.window="composerOpen = false">
 
     <button type="button" @click="composerOpen = true" class="btn-secondary btn-sm">
         <span class="i-lucide-plus text-xs"></span>

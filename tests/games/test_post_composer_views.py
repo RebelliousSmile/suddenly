@@ -111,6 +111,8 @@ def test_scene_post_htmx_appends_inline(client: Client) -> None:
     # … plus the new post, OOB-appended to the fil.
     assert b"INLINE-BEAT" in resp.content
     assert b'hx-swap-oob="beforeend:#rapports-list"' in resp.content
+    # …and a client event so the overlay closes reliably.
+    assert resp["HX-Trigger"] == "composer-posted"
 
 
 @pytest.mark.django_db
