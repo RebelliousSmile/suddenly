@@ -24,6 +24,8 @@ from .models import (
     GameCast,
     Rapport,
     RapportKind,
+    RapportLink,
+    RapportMedia,
     RapportStatus,
     Report,
     ReportCast,
@@ -115,8 +117,10 @@ def available_kinds(user: User, game: Game) -> list[tuple[str, Any]]:
 
     ``narration`` **disappears** from the list for a non-GM — it is not greyed
     out, it is absent (composer rule 2c): narration *is* the GM's voice.
+    ``closure`` is never here: the scene's compte rendu is written through the
+    close flow, not composed as an ordinary post.
     """
-    choices = list(RapportKind.choices)
+    choices = [c for c in RapportKind.choices if c[0] != RapportKind.CLOSURE]
     if not is_game_master(user, game):
         choices = [c for c in choices if c[0] != RapportKind.NARRATION]
     return choices
@@ -125,6 +129,14 @@ def available_kinds(user: User, game: Game) -> list[tuple[str, Any]]:
 def build_game_cast(game: Game) -> QuerySet[Character]:
     """The characters declared available in ``game`` (its ``GameCast``)."""
     return Character.objects.filter(castings__game=game).order_by("name")
+
+
+def next_rapport_order(report: Report) -> int:
+    """The order a new Rapport should take to append at the end of the scene."""
+    from django.db.models import Max
+
+    current = report.rapports.aggregate(m=Max("order"))["m"]
+    return 0 if current is None else current + 1
 
 
 def add_to_cast(game: Game, character: Character, user: User | None = None) -> GameCast:
@@ -171,6 +183,7 @@ def validate_actor_for_role(user: User, game: Game, actor: Character | None) -> 
         raise ValidationError({"actor": "This actor is not one you may make speak in this game."})
 
 
+@transaction.atomic
 def create_scene_post(
     *,
     report: Report,
@@ -178,13 +191,22 @@ def create_scene_post(
     content: str,
     actor: Character | None = None,
     status: str = RapportStatus.PUBLISHED,
+    reply_parent: Rapport | None = None,
+    reply_iri: str = "",
+    image: object | None = None,
+    media_alt: str = "",
+    media_tone: str = "",
 ) -> Rapport:
     """Create one Rapport inside an existing scene (``report``).
 
     The caller is responsible for the frozen context (``report`` and its author
     come from the server, never the payload). ``actor`` is revalidated against
     the writer's role vivier; ``Rapport.clean`` enforces the actor⟺discussion
-    rule. Returns the saved Rapport.
+    rule.
+
+    ``reply_parent`` / ``reply_iri`` — an optional reply target (a Rapport of the
+    same scene, or a federated IRI). At most one is used (local wins); it becomes
+    a ``RapportLink``. Returns the saved Rapport.
     """
     validate_actor_for_role(report.author, report.game, actor)
     rapport = Rapport(
@@ -193,12 +215,34 @@ def create_scene_post(
         content=content,
         actor=actor,
         status=status,
+        order=next_rapport_order(report),
     )
     rapport.full_clean(exclude=["report"])
     rapport.save()
     # Voicing a character in a game brings them into its cast (rule 2d).
     if actor is not None:
         add_to_cast(report.game, actor, report.author)
+
+    reply_iri = (reply_iri or "").strip()
+    if reply_parent is not None or reply_iri:
+        link = RapportLink(
+            rapport=rapport,
+            parent_rapport=reply_parent,
+            parent_iri=(reply_iri or None) if reply_parent is None else None,
+        )
+        link.full_clean(exclude=["rapport"])
+        link.save()
+
+    # One image = one mood, description only (RapportMedia.clean enforces kind).
+    if image is not None and kind == RapportKind.DESCRIPTION:
+        media = RapportMedia(
+            rapport=rapport,
+            image=image,
+            alt=(media_alt or "").strip(),
+            tone=(media_tone or "").strip(),
+        )
+        media.full_clean()
+        media.save()
     return rapport
 
 
@@ -307,3 +351,80 @@ def publish_report(report: Report, user: User) -> Report:
     report.save(update_fields=["status", "published_at", "updated_at"])
 
     return report
+
+
+# ---------------------------------------------------------------------------
+# Scene lifecycle — draft → closed → released (SUD-V, scene-edit dock).
+#
+#   draft    : status=draft — the scene is in play, editable.
+#   closed   : status=published, released_at=None — the compte rendu is ready,
+#              behind the wall, nothing shared yet.
+#   released : released_at set — the resolved account is public.
+# ---------------------------------------------------------------------------
+
+
+@transaction.atomic
+def close_scene(
+    *, report: Report, user: User, closure_content: str = "", release: bool = False
+) -> Report:
+    """Close a scene: optionally write its closure Rapport, publish it, and
+    (optionally) cross the wall in one gesture.
+
+    ``closure_content`` — when given, a ``closure`` Rapport (the scene's compte
+    rendu) is appended, published. Publishing materialises the cast appearances
+    (via :func:`publish_report`). ``release=True`` also sets ``released_at``.
+    """
+    if closure_content.strip():
+        Rapport.objects.create(
+            report=report,
+            kind=RapportKind.CLOSURE,
+            content=closure_content.strip(),
+            status=RapportStatus.PUBLISHED,
+            order=next_rapport_order(report),
+        )
+
+    if report.status != ReportStatus.PUBLISHED:
+        publish_report(report, user)
+
+    if release and report.released_at is None:
+        report.released_at = timezone.now()
+        report.save(update_fields=["released_at", "updated_at"])
+
+    return report
+
+
+def reopen_scene(*, report: Report) -> Report:
+    """Reopen a closed scene back to draft (unshare + unpublish).
+
+    Only allowed while the report is not both released *and* federated — once a
+    released report has an ``ap_id``, the wall crossing is irreversible (mirrors
+    ``report_release``); reopening such a report raises ``ValidationError``.
+    """
+    if report.released_at is not None and report.ap_id:
+        raise ValidationError("A federated, released scene cannot be reopened.")
+    report.status = ReportStatus.DRAFT
+    report.released_at = None
+    report.save(update_fields=["status", "released_at", "updated_at"])
+    return report
+
+
+@transaction.atomic
+def move_rapport(*, report: Report, rapport: Rapport, direction: str) -> None:
+    """Move a Rapport one step up/down in the scene sequence.
+
+    Renumbers the whole scene to a dense 0..n ``order`` after the swap, so the
+    sequence stays well-defined however posts were originally appended.
+    """
+    ordered = list(report.rapports.all())  # Meta ordering = [order, created_at]
+    ids = [r.pk for r in ordered]
+    if rapport.pk not in ids:
+        return
+    idx = ids.index(rapport.pk)
+    swap = idx - 1 if direction == "up" else idx + 1
+    if swap < 0 or swap >= len(ordered):
+        return  # already at the edge — nothing to do
+    ordered[idx], ordered[swap] = ordered[swap], ordered[idx]
+    for position, item in enumerate(ordered):
+        if item.order != position:
+            item.order = position
+            item.save(update_fields=["order", "updated_at"])

@@ -1,0 +1,51 @@
+{% load i18n %}
+{% comment %}
+  Collapsible cast box of a scene (maquette): the characters brought in or who
+  have spoken/acted. Collapsed by default with an avatar peek + count; expands to
+  rows. Each name reuses the character hover-card. Context: scene_cast (queryset).
+{% endcomment %}
+{% if scene_cast %}
+<div class="card mb-4" x-data="{ open: false }">
+    <button type="button" @click="open = !open"
+            class="w-full flex items-center gap-2 px-4 py-3 text-left min-h-[44px]"
+            :aria-expanded="open">
+        <span class="i-lucide-chevron-right text-muted transition-transform"
+              :class="open && 'rotate-90'"></span>
+        <span class="text-sm font-semibold text-primary">{% trans "Personnages" %}</span>
+        <span class="badge bg-card-dark text-muted border border-border text-xs">{{ scene_cast|length }}</span>
+
+        {# Aperçu (replié) : quelques avatars empilés #}
+        <span class="ml-auto flex items-center" x-show="!open">
+            {% for c in scene_cast|slice:":5" %}
+                <span class="w-6 h-6 -ml-1.5 first:ml-0 rounded-full border-2 border-card overflow-hidden inline-flex items-center justify-center text-xs
+                             {% if c.status == 'npc' %}bg-warning/20 text-warning{% else %}bg-brand/20 text-brand{% endif %}">
+                    {% if c.avatar %}<img src="{{ c.avatar.url }}" alt="" class="w-full h-full object-cover">{% else %}{{ c.name|first }}{% endif %}
+                </span>
+            {% endfor %}
+            {% if scene_cast|length > 5 %}
+                <span class="text-xs text-muted ml-1.5">+{{ scene_cast|length|add:"-5" }}</span>
+            {% endif %}
+        </span>
+    </button>
+
+    <div x-show="open" x-cloak class="px-2 pb-2">
+        {% for c in scene_cast %}
+            <div class="flex items-center gap-3 px-2 py-2 rounded-btn hover:bg-card-dark min-h-[44px]">
+                <span class="w-8 h-8 rounded-full border-2 overflow-hidden inline-flex items-center justify-center text-sm shrink-0
+                             {% if c.status == 'npc' %}border-warning/60 bg-warning/10 text-warning{% else %}border-brand/60 bg-brand/10 text-brand{% endif %}">
+                    {% if c.avatar %}<img src="{{ c.avatar.url }}" alt="" class="w-full h-full object-cover">{% else %}{{ c.name|first }}{% endif %}
+                </span>
+                <span class="flex flex-col min-w-0">
+                    <span class="text-sm font-medium text-primary">
+                        {% include "characters/_char_link.html" with character=c %}
+                    </span>
+                    <span class="text-xs text-muted">
+                        {% if c.status == 'npc' %}{% trans "PNJ" %}{% else %}{% trans "PJ" %}{% endif %}
+                        · {% blocktrans with game=c.origin_game.title %}né dans {{ game }}{% endblocktrans %}
+                    </span>
+                </span>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}

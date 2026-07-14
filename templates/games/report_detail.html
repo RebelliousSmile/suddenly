@@ -121,13 +121,12 @@
                 <h2 class="text-heading mb-3">{% trans "Cast" %}</h2>
                 <div class="flex flex-wrap gap-2">
                     {% for app in cast %}
-                        <a href="{% url 'characters:detail' slug=app.character.slug %}"
-                           class="inline-flex items-center gap-1 px-3 py-1 rounded-badge text-sm
+                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-badge text-sm
                                   {% if app.character.status == 'npc' %}bg-success/15 text-success
                                   {% else %}bg-info/15 text-info{% endif %}">
-                            {{ app.character.name }}
+                            {% include "characters/_char_link.html" with character=app.character %}
                             <span class="text-xs opacity-60">{{ app.get_role_display }}</span>
-                        </a>
+                        </span>
                     {% endfor %}
                 </div>
             </div>
@@ -146,18 +145,78 @@
             </div>
         {% endif %}
 
-        <!-- Quotes from this report -->
+        <!-- Citations retenues (public, double lock) -->
         {% if quotes %}
-            <div class="card card-body mb-6">
-                <h2 class="text-heading mb-3">{% trans "Quotes from this session" %}</h2>
-                {% for quote in quotes %}
-                    <blockquote class="border-l-4 border-crimson/40 pl-4 mb-4">
-                        <p class="text-primary italic font-serif text-lg">"{{ quote.content }}"</p>
-                        <footer class="text-xs text-muted mt-1">
-                            — {{ quote.character.name }}
-                        </footer>
-                    </blockquote>
-                {% endfor %}
+            <div class="mb-6">
+                <h2 class="text-heading mb-3">{% trans "Citations retenues" %}</h2>
+                <div class="space-y-4">
+                    {% for quote in quotes %}
+                        {% include "quotes/_quote_card.html" %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- §5: author marks/manages the report's citations -->
+        {% if is_author %}
+            <div class="card card-body mb-6" x-data="{ addQuote: false }">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-heading">{% trans "Marquer une citation" %}</h2>
+                    <button type="button" @click="addQuote = !addQuote" class="btn-secondary btn-sm">
+                        <span class="i-lucide-quote text-xs"></span>
+                        {% trans "Nouvelle citation" %}
+                    </button>
+                </div>
+
+                <form x-show="addQuote" x-cloak
+                      hx-post="{% url 'games:quote_create' game.pk report.pk %}"
+                      hx-target="#report-quote-list"
+                      hx-swap="afterbegin"
+                      hx-on::after-request="if(event.detail.successful){this.reset(); addQuote=false}"
+                      class="space-y-2 mb-4">
+                    {% csrf_token %}
+                    <textarea name="content" rows="2" required
+                              placeholder="{% trans "La réplique, telle quelle" %}"
+                              class="form-input w-full"></textarea>
+                    <div class="grid gap-2 sm:grid-cols-2">
+                        <select name="character" required class="form-input">
+                            <option value="">{% trans "— Qui parle —" %}</option>
+                            {% for c in quote_characters %}
+                                <option value="{{ c.slug }}">{{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <select name="visibility" class="form-input">
+                            <option value="public">{% trans "Publique" %}</option>
+                            <option value="private">{% trans "Privée" %}</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary btn-sm">{% trans "Enregistrer la citation" %}</button>
+                </form>
+
+                <div id="report-quote-list" class="space-y-2">
+                    {% for quote in manage_quotes %}
+                        <div class="flex items-start justify-between gap-2 border-l-4 border-border pl-3">
+                            <div>
+                                <p class="text-secondary text-sm">« {{ quote.content }} »</p>
+                                <p class="text-xs text-muted">
+                                    {{ quote.character.name }} ·
+                                    {% if quote.visibility == 'public' %}{% trans "publique" %}
+                                    {% elif quote.visibility == 'private' %}{% trans "privée" %}
+                                    {% else %}{% trans "éphémère" %}{% endif %}
+                                    {% if not report.is_released %}· <span class="text-warning">{% trans "en attente du mur" %}</span>{% endif %}
+                                </p>
+                            </div>
+                            <button type="button"
+                                    hx-post="{% url 'games:quote_delete' game.pk report.pk quote.pk %}"
+                                    hx-confirm="{% trans "Supprimer cette citation ?" %}"
+                                    hx-target="closest div.flex"
+                                    hx-swap="outerHTML"
+                                    class="btn-ghost btn-sm text-error shrink-0">
+                                <span class="i-lucide-trash-2 text-xs"></span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         {% endif %}
 

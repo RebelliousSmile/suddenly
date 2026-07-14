@@ -12,4 +12,5 @@ urlpatterns = [
     path("", views.home, name="home"),
     path("about/", views.about, name="about"),
     path("explorer/", views.explorer, name="explorer"),
+    path("citations/", views.quotes, name="quotes"),
 ]

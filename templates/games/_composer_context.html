@@ -105,6 +105,42 @@
     {# Actor slug submitted with the form (empty = Voix du MJ). Always present so
        narration posts an empty actor; the outer x-effect clears it for narration. #}
     <input type="hidden" name="actor" :value="actorForbidden ? '' : actor">
+
+    {# Réponse — n'a de sens que sur une réplique, et seulement dans une scène. #}
+    {% if report %}
+        <div class="mb-4" x-show="kind === 'discussion'" x-cloak x-data="{ scope: 'none' }">
+            <span class="form-label">{% trans "En réponse à" %}</span>
+            <div class="flex flex-wrap gap-2 mb-2">
+                <button type="button" @click="scope = 'none'"
+                        class="min-h-[36px] px-3 rounded-badge border text-sm"
+                        :class="scope === 'none' ? 'border-crimson bg-crimson/10 text-primary' : 'border-border text-secondary'">
+                    {% trans "Aucune" %}
+                </button>
+                <button type="button" @click="scope = 'local'"
+                        class="min-h-[36px] px-3 rounded-badge border text-sm"
+                        :class="scope === 'local' ? 'border-crimson bg-crimson/10 text-primary' : 'border-border text-secondary'">
+                    {% trans "Dans la scène" %}
+                </button>
+                <button type="button" @click="scope = 'iri'"
+                        class="min-h-[36px] px-3 rounded-badge border text-sm"
+                        :class="scope === 'iri' ? 'border-crimson bg-crimson/10 text-primary' : 'border-border text-secondary'">
+                    {% trans "Fédéré (IRI)" %}
+                </button>
+            </div>
+            {# Disabled fields are not submitted, so only the active mode is sent. #}
+            <select name="reply_local" class="form-input w-full" x-show="scope === 'local'"
+                    :disabled="scope !== 'local'">
+                {% for t in reply_targets %}
+                    <option value="{{ t.pk }}">{{ t.get_kind_display }}{% if t.actor %} · {{ t.actor.name }}{% endif %} — {{ t.content|truncatechars:40 }}</option>
+                {% empty %}
+                    <option value="" disabled>{% trans "Aucun post dans la scène" %}</option>
+                {% endfor %}
+            </select>
+            <input type="text" name="reply_iri" class="form-input w-full" x-show="scope === 'iri'"
+                   :disabled="scope !== 'iri'"
+                   placeholder="https://dice.town/report/42#r7">
+        </div>
+    {% endif %}
 {% else %}
     <p class="mb-4 text-sm text-muted">{% trans "Choisissez une partie pour continuer." %}</p>
 {% endif %}

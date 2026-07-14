@@ -38,6 +38,21 @@ urlpatterns = [
         front_views.rapport_media_remove,
         name="rapport_media_remove",
     ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/rapports/<uuid:rapport_pk>/move/",
+        front_views.rapport_move,
+        name="rapport_move",
+    ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/quotes/add/",
+        front_views.quote_create,
+        name="quote_create",
+    ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/quotes/<uuid:quote_pk>/delete/",
+        front_views.quote_delete,
+        name="quote_delete",
+    ),
     # Stories — public reading surface for released content (SUD-V3)
     path("stories/", front_views.stories_index, name="stories"),
     path("stories/<uuid:pk>/", front_views.story_detail, name="story_detail"),
@@ -56,6 +71,16 @@ urlpatterns = [
         "<uuid:game_pk>/reports/<uuid:pk>/release/",
         front_views.report_release,
         name="report_release",
+    ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/close/",
+        front_views.scene_close,
+        name="scene_close",
+    ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/reopen/",
+        front_views.scene_reopen,
+        name="scene_reopen",
     ),
     path("<uuid:game_pk>/reports/new/", front_views.report_create, name="report_create"),
     path("<uuid:game_pk>/reports/<uuid:pk>/edit/", front_views.report_edit, name="report_edit"),

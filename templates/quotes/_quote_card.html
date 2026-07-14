@@ -1,0 +1,67 @@
+{% load i18n %}
+{% comment %}
+  THE single citation card (prompt §4), reused by the four public surfaces:
+  vitrine, /citations, story page, character page. Never re-render a quote
+  elsewhere — include this.
+
+  Context:
+    quote        — a promotable Quote (already passed the double lock).
+    hide_source  — optional; hide the "→ story d'origine" link (e.g. on that
+                   very story page).
+{% endcomment %}
+<blockquote id="quote-{{ quote.id }}"
+            class="card card-body border-l-4 border-crimson/40">
+    {% if quote.content_warning %}
+        <p class="text-sm text-warning mb-1">
+            <span class="i-lucide-alert-triangle text-xs"></span>
+            {{ quote.content_warning }}
+        </p>
+    {% endif %}
+
+    <p class="text-primary italic font-serif text-lg">« {{ quote.content }} »</p>
+    {% if quote.context %}
+        <p class="text-sm text-muted mt-1">{{ quote.context }}</p>
+    {% endif %}
+
+    <footer class="mt-3 flex flex-wrap items-center gap-2 text-sm">
+        <span class="inline-flex items-center gap-2">
+            <a href="{% url 'characters:detail' slug=quote.character.slug %}" aria-hidden="true" tabindex="-1">
+                {% if quote.character.avatar %}
+                    <img src="{{ quote.character.avatar.url }}" alt=""
+                         class="w-6 h-6 rounded-full object-cover">
+                {% else %}
+                    <span class="i-lucide-user w-6 h-6 flex items-center justify-center rounded-full bg-card-dark text-muted"></span>
+                {% endif %}
+            </a>
+            {% include "characters/_char_link.html" with character=quote.character %}
+        </span>
+
+        {% if not quote.character.owner_id %}
+            <span class="badge bg-success/15 text-success border border-success/30">
+                {% trans "PNJ disponible" %}
+            </span>
+        {% endif %}
+        {% if quote.character.remote %}
+            <span class="badge bg-info/15 text-info border border-info/30">
+                <span class="i-lucide-globe text-xs"></span> {% trans "Distant" %}
+            </span>
+        {% endif %}
+
+        {% if not hide_source and quote.report and quote.report.game_id %}
+            <a href="{% url 'games:story_detail' pk=quote.report.game_id %}"
+               class="ml-auto link-muted inline-flex items-center gap-1">
+                {% trans "→ la story d'origine" %}
+            </a>
+        {% endif %}
+    </footer>
+
+    {% if not quote.character.owner_id %}
+        <div class="mt-3">
+            <a href="{% url 'characters:detail' slug=quote.character.slug %}"
+               class="btn-secondary btn-sm">
+                <span class="i-lucide-link text-xs"></span>
+                {% trans "Proposer un lien" %}
+            </a>
+        </div>
+    {% endif %}
+</blockquote>

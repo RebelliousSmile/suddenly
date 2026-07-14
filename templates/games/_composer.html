@@ -21,16 +21,41 @@
         kind: '{% if kinds %}{{ kinds.0.0 }}{% endif %}',
         actor: '{% if is_gm %}{{ selected_actor }}{% else %}{{ own_pcs.first.slug|default:'' }}{% endif %}',
         actorLabel: '{{ selected_actor_label|escapejs }}',
+        body: '',
+        availableKinds: [{% for value, label in kinds %}'{{ value }}'{% if not forloop.last %},{% endif %}{% endfor %}],
         get actorForbidden() { return this.kind === 'narration'; },
         get needsActor() { return this.kind === 'action' || this.kind === 'discussion'; },
         get canSend() {
             if (!this.kind) return false;
+            if (!this.body.trim()) return false;
             if (!this.frozen && (!this.game || !this.personnage)) return false;
             if (this.needsActor && !this.actor) return false;
             return true;
+        },
+        setKind(k) { if (this.availableKinds.includes(k)) this.kind = k; },
+        /* Slash-commands (/narr /desc /act /rep) and « → réplique (maquette). */
+        onInput() {
+            const map = {narr:'narration', desc:'description', descr:'description',
+                         act:'action', action:'action', rep:'discussion', dial:'discussion'};
+            const m = this.body.match(/^\/(\w+)\s/);
+            if (m && map[m[1].toLowerCase()] && this.availableKinds.includes(map[m[1].toLowerCase()])) {
+                this.body = this.body.slice(m[0].length);
+                this.kind = map[m[1].toLowerCase()];
+                return;
+            }
+            const t = this.body.trimStart();
+            const q = t.charAt(0);
+            if ((q === '«' || q === String.fromCharCode(34)) && this.kind !== 'discussion') this.setKind('discussion');
+        },
+        /* Cmd/Ctrl+1..4 pick a kind, in the available order. */
+        onKeydown(e) {
+            if (!(e.metaKey || e.ctrlKey)) return;
+            const i = ['1','2','3','4'].indexOf(e.key);
+            if (i >= 0 && this.availableKinds[i]) { e.preventDefault(); this.kind = this.availableKinds[i]; }
         }
      }"
-     x-effect="if (actorForbidden) { actor = ''; actorLabel = ''; }">
+     x-effect="if (actorForbidden) { actor = ''; actorLabel = ''; }"
+     @keydown.window="onKeydown($event)">
 
     {# ── Header ──────────────────────────────────────────────────── #}
     {% if frozen %}
@@ -86,37 +111,75 @@
         </div>
 
         {# ── Contenu (persistent across recompute swaps) ───────────── #}
+        {# kmark: a kind-tinted rail; the textarea takes the kind's typographic
+           voice (maquette). Char count on the right. #}
         <div class="mt-4">
-            <label class="form-label" for="composer-content">{% trans "Contenu" %}</label>
-            <textarea id="composer-content" name="content" rows="4" class="form-input w-full"
-                      placeholder="{% trans "Écrivez le rapport…" %}"></textarea>
-        </div>
-
-        {# ── Média : description uniquement (rule 2e) ──────────────── #}
-        <div class="mt-3" x-show="kind === 'description'" x-cloak>
-            <div class="rounded-badge border border-dashed border-border p-3 text-xs text-muted flex items-center gap-2">
-                <span class="i-lucide-image text-sm"></span>
-                {% trans "Une image (une seule) pourra être attachée à la description une fois le rapport créé." %}
+            <div class="flex items-center justify-between mb-1">
+                <label class="form-label mb-0" for="composer-content">{% trans "Contenu" %}</label>
+                <span class="text-xs text-muted tabular-nums" x-text="body.length"></span>
+            </div>
+            <div class="flex items-stretch gap-2">
+                <span class="w-1 rounded shrink-0"
+                      :class="{ 'bg-info/50': kind==='description', 'bg-crimson/60': kind==='action', 'bg-violet/50': kind==='discussion', 'bg-transparent': kind==='narration' }"></span>
+                <textarea id="composer-content" name="content" rows="4"
+                          class="form-input w-full"
+                          x-model="body" @input="onInput()"
+                          :class="{ 'italic font-serif text-secondary': kind==='description', 'font-medium': kind==='action', 'font-serif text-lg': kind==='discussion' }"
+                          placeholder="{% trans "Écrivez le rapport…  (/desc, /act, /rep · « pour une réplique)" %}"></textarea>
             </div>
         </div>
 
-        {# ── Envoi (split-button) — rien ne part sans partie ni perso (2a) ── #}
-        <div class="mt-4 flex flex-wrap items-center gap-2">
-            <button type="submit" name="mode" value="add" class="btn-primary" :disabled="!canSend">
-                {% trans "Publier" %}
-            </button>
-            <button type="button" class="btn-secondary" :disabled="!canSend"
-                    hx-post="{% if frozen %}{% url 'games:scene_post_create' report.game.pk report.pk %}{% else %}{% url 'games:composer' %}{% endif %}"
-                    hx-include="closest form"
-                    hx-vals='{"mode": "add_continue"}'
-                    hx-target="#composer"
-                    hx-swap="outerHTML">
-                {% trans "Publier et continuer" %}
-            </button>
-            <button type="submit" name="mode" value="draft" class="btn-ghost" :disabled="!canSend">
-                {% trans "Enregistrer en brouillon" %}
-            </button>
+        {# ── Média : description uniquement, une seule image (rule 2e) ── #}
+        {# Only in a scene (frozen): the feed's open_new_scene path doesn't carry
+           media. Disabled unless description, so no stale media leaks. #}
+        {% if frozen %}
+        <div class="mt-3 space-y-2" x-show="kind === 'description'" x-cloak>
+            <label class="rounded-badge border border-dashed border-border p-3 text-xs text-muted flex items-center gap-2 cursor-pointer">
+                <span class="i-lucide-image text-sm"></span>
+                {% trans "Une image (une seule) — l'ambiance de la description." %}
+                <input type="file" name="image" accept="image/*" class="sr-only"
+                       :disabled="kind !== 'description'">
+            </label>
+            <input type="text" name="media_alt" maxlength="280"
+                   placeholder="{% trans "Ce que montre l'image (alt)" %}"
+                   class="form-input w-full text-sm" :disabled="kind !== 'description'">
+            <input type="text" name="media_tone" maxlength="80"
+                   placeholder="{% trans "Tonalité : lourde, feutrée…" %}"
+                   class="form-input w-full text-sm" :disabled="kind !== 'description'">
         </div>
+        {% endif %}
+
+        {# ── Envoi — rien ne part sans partie ni perso (2a) ──────────── #}
+        {% if frozen %}
+            {# Scene edit: post inline next to the fil (Mastodon). The new post is
+               appended to #rapports-list and the composer resets — no reload. #}
+            <div class="mt-4 flex flex-wrap items-center gap-2">
+                <button type="button" class="btn-primary" :disabled="!canSend"
+                        hx-post="{% url 'games:scene_post_create' report.game.pk report.pk %}"
+                        hx-include="closest form" hx-vals='{"mode": "add"}'
+                        hx-encoding="multipart/form-data"
+                        hx-target="#composer" hx-swap="outerHTML">
+                    {% trans "Publier" %}
+                </button>
+                <button type="button" class="btn-ghost" :disabled="!canSend"
+                        hx-post="{% url 'games:scene_post_create' report.game.pk report.pk %}"
+                        hx-include="closest form" hx-vals='{"mode": "draft"}'
+                        hx-encoding="multipart/form-data"
+                        hx-target="#composer" hx-swap="outerHTML">
+                    {% trans "Enregistrer en brouillon" %}
+                </button>
+            </div>
+        {% else %}
+            {# Feed: adding a post opens the scene edit (server redirect). #}
+            <div class="mt-4 flex flex-wrap items-center gap-2">
+                <button type="submit" name="mode" value="add" class="btn-primary" :disabled="!canSend">
+                    {% trans "Publier" %}
+                </button>
+                <button type="submit" name="mode" value="draft" class="btn-ghost" :disabled="!canSend">
+                    {% trans "Enregistrer en brouillon" %}
+                </button>
+            </div>
+        {% endif %}
         <div class="mt-2 text-xs text-warning" x-show="!canSend" x-cloak>
             <span x-show="!frozen && (!game || !personnage)">
                 {% trans "Rien ne part sans un personnage ET une partie — brouillon compris." %}
