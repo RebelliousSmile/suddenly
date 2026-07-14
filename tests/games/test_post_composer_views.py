@@ -130,7 +130,10 @@ def test_scene_edit_shows_fil_and_composer(client: Client) -> None:
     resp = client.get(reverse("games:report_edit", kwargs={"game_pk": game.pk, "pk": report.pk}))
 
     assert resp.status_code == 200
+    # The composer lives inside the full-screen overlay, opened from a trigger…
+    assert b"composerOpen" in resp.content
     assert b'id="composer"' in resp.content
+    # …next to the fil of existing posts.
     assert b'id="rapports-list"' in resp.content
     assert b"EXISTING-BEAT" in resp.content
 

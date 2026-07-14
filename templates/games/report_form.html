@@ -164,15 +164,16 @@
         </form>
 
         {% if report %}
-            {# Le fil de la scène — Mastodon-style: the composer sits at the top of
-               the post list. Posting appends to #rapports-list in place, no reload
-               (the same _composer.html as the feed, frozen to this scene). #}
+            {# Le fil de la scène. "Ajouter un post" opens the full-screen composer
+               overlay (maquette); posting appends to #rapports-list in place and
+               closes the overlay — no reload. Same _composer.html, frozen. #}
             <div class="mt-8">
-                <h2 class="text-heading mb-3">{% trans "Le fil de la scène" %}</h2>
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-heading">{% trans "Le fil de la scène" %}</h2>
+                    {% include "games/_composer_overlay.html" %}
+                </div>
 
-                {% include "games/_composer.html" %}
-
-                <div id="rapports-list" class="mt-4 space-y-2">
+                <div id="rapports-list" class="space-y-2">
                     {% for rapport in rapports %}
                         {% include "games/partials/rapport_item.html" %}
                     {% endfor %}
