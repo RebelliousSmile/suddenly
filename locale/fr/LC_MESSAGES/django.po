@@ -2264,6 +2264,22 @@ msgstr "Quand les auteurs libèrent leurs comptes-rendus et rendent leurs citati
 msgid "A quote appears here only if its report has been released and its author made it public. Nothing still in play surfaces."
 msgstr "Une citation n'apparaît ici que si son compte rendu a été libéré et que son auteur l'a rendue publique. Rien de ce qui se joue encore ne remonte."
 
+#: .	emplates\stories\detail.html:20
+#, python-format
+msgid "%(counter)s report · readable by all"
+msgid_plural "%(counter)s reports · readable by all"
+msgstr[0] "%(counter)s compte rendu · lisible par tous"
+msgstr[1] "%(counter)s comptes rendus · lisible par tous"
+
+#: .	emplates\stories\detail.html:29
+#, python-format
+msgid "Report %(n)s"
+msgstr "Compte rendu %(n)s"
+
+#: .	emplates\stories\detail.html:63
+msgid "All stories"
+msgstr "Toutes les stories"
+
 #~ msgid "No characters added yet."
 #~ msgstr "Aucun personnage ajouté pour l'instant."
 
