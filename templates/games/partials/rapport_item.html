@@ -121,6 +121,23 @@
 
         </div>
         <div class="flex items-center gap-1 shrink-0">
+            {% if request.user == rapport.report.author and not rapport.report.is_released %}
+                {# Reorder arrows — sequence editing, frozen once the scene is shared. #}
+                <span class="flex flex-col">
+                    <button hx-post="{% url 'games:rapport_move' rapport.report.game.pk rapport.report.pk rapport.pk %}"
+                            hx-vals='{"direction": "up"}'
+                            hx-target="#rapports-list" hx-swap="innerHTML"
+                            class="btn-ghost text-muted leading-none px-1" title="{% trans "Monter" %}">
+                        <span class="i-lucide-chevron-up text-xs"></span>
+                    </button>
+                    <button hx-post="{% url 'games:rapport_move' rapport.report.game.pk rapport.report.pk rapport.pk %}"
+                            hx-vals='{"direction": "down"}'
+                            hx-target="#rapports-list" hx-swap="innerHTML"
+                            class="btn-ghost text-muted leading-none px-1" title="{% trans "Descendre" %}">
+                        <span class="i-lucide-chevron-down text-xs"></span>
+                    </button>
+                </span>
+            {% endif %}
             {% if request.user.is_authenticated %}
                 <button hx-get="{% url 'games:rapport_reply' rapport.report.game.pk rapport.report.pk rapport.pk %}"
                         hx-target="#reply-form-slot-{{ rapport.pk }}"

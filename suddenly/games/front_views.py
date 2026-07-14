@@ -55,6 +55,7 @@ from .services import (
     create_npc_in_cast,
     create_scene_post,
     is_game_master,
+    move_rapport,
     open_new_scene,
     publish_report,
     reopen_scene,
@@ -767,10 +768,16 @@ def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRes
 
     # The fil of the scene, shown beside the composer (Mastodon-style). The
     # author sees drafts too; they are hidden from the public thread elsewhere.
-    rapports = (
-        report.rapports.select_related("actor")
-        .prefetch_related("parent_links__parent_rapport", "markers__character", "media")
-        .order_by("created_at")
+    rapports = _scene_rapports(report)
+
+    # The scene cast (collapsible box): characters brought in by ReportCast plus
+    # anyone who has actually spoken/acted (rapport actors).
+    from suddenly.characters.models import Character
+
+    cast_ids = set(report.cast.filter(character__isnull=False).values_list("character", flat=True))
+    cast_ids |= set(report.rapports.filter(actor__isnull=False).values_list("actor", flat=True))
+    scene_cast = (
+        Character.objects.filter(pk__in=cast_ids).select_related("origin_game").order_by("name")
     )
 
     return htmx_render(
@@ -784,6 +791,7 @@ def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRes
             "cast_roles": CastRole.choices,
             "form_data": {},
             "rapports": rapports,
+            "scene_cast": scene_cast,
             # The unified post composer (same _composer.html as the feed), frozen
             # to this scene: game/personnage/language inherited, not editable.
             **_composer_context(request.user, report=report),
@@ -1645,6 +1653,41 @@ def rapport_media_remove(
     if getattr(request, "htmx", False):
         return render(request, "games/partials/rapport_item.html", {"rapport": rapport})
     return HttpResponse(status=204)
+
+
+def _scene_rapports(report: Report) -> models.QuerySet[Rapport]:
+    """The scene's Rapports, prefetched for the fil, in sequence order."""
+    return report.rapports.select_related("actor").prefetch_related(
+        "parent_links__parent_rapport", "markers__character", "media"
+    )
+
+
+@require_POST
+@login_required
+def rapport_move(
+    request: AuthenticatedRequest, game_pk: str, pk: str, rapport_pk: str
+) -> HttpResponse:
+    """Reorder a Rapport up/down in the scene (author only, while not released).
+
+    Returns the re-rendered fil (#rapports-list) so the swap shows at once. The
+    sequence is frozen once the scene has crossed the wall.
+    """
+    rapport = _get_authored_rapport(request, game_pk, pk, rapport_pk)
+    if rapport.report.author != request.user:
+        return HttpResponseForbidden()
+    if rapport.report.is_released:
+        return HttpResponse("The sequence is frozen once the scene is shared.", status=400)
+
+    direction = request.POST.get("direction", "up")
+    if direction not in ("up", "down"):
+        direction = "up"
+    move_rapport(report=rapport.report, rapport=rapport, direction=direction)
+
+    return render(
+        request,
+        "games/partials/_rapports_list.html",
+        {"rapports": _scene_rapports(rapport.report)},
+    )
 
 
 # ---------------------------------------------------------------------------

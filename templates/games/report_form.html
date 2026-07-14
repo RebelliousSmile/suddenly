@@ -164,8 +164,13 @@
         </form>
 
         {% if report %}
+            {# Casting escamotable de la scène (maquette). #}
+            <div class="mt-8">
+                {% include "games/_cast_box.html" %}
+            </div>
+
             {# Dock d'état de la scène — draft → closed → released (maquette). #}
-            <div class="card card-body mt-8 mb-4" x-data="{ closeForm: false }">
+            <div class="card card-body mb-4" x-data="{ closeForm: false }">
                 <div class="flex items-center justify-between gap-3 flex-wrap">
                     <div class="flex items-center gap-2 min-w-0">
                         {% if not report.is_published %}
@@ -246,9 +251,7 @@
                 </div>
 
                 <div id="rapports-list" class="space-y-2">
-                    {% for rapport in rapports %}
-                        {% include "games/partials/rapport_item.html" %}
-                    {% endfor %}
+                    {% include "games/partials/_rapports_list.html" %}
                 </div>
             </div>
         {% endif %}

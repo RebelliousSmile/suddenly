@@ -314,12 +314,16 @@ class Rapport(BaseModel):
         on_delete=models.SET_NULL,
         related_name="rapport_appearances",
     )
+    # Explicit sequence position within the scene. New posts append (0 keeps the
+    # created_at order); the scene-edit reorder arrows renumber to 0..n.
+    order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ["created_at"]
+        ordering = ["order", "created_at"]
         indexes = [
             models.Index(fields=["report", "kind"]),
             models.Index(fields=["report", "status"]),
+            models.Index(fields=["report", "order"]),
         ]
 
     def clean(self) -> None:

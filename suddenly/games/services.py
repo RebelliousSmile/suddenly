@@ -129,6 +129,14 @@ def build_game_cast(game: Game) -> QuerySet[Character]:
     return Character.objects.filter(castings__game=game).order_by("name")
 
 
+def next_rapport_order(report: Report) -> int:
+    """The order a new Rapport should take to append at the end of the scene."""
+    from django.db.models import Max
+
+    current = report.rapports.aggregate(m=Max("order"))["m"]
+    return 0 if current is None else current + 1
+
+
 def add_to_cast(game: Game, character: Character, user: User | None = None) -> GameCast:
     """Idempotently record that ``character`` is available in ``game``.
 
@@ -195,6 +203,7 @@ def create_scene_post(
         content=content,
         actor=actor,
         status=status,
+        order=next_rapport_order(report),
     )
     rapport.full_clean(exclude=["report"])
     rapport.save()
@@ -338,6 +347,7 @@ def close_scene(
             kind=RapportKind.CLOSURE,
             content=closure_content.strip(),
             status=RapportStatus.PUBLISHED,
+            order=next_rapport_order(report),
         )
 
     if report.status != ReportStatus.PUBLISHED:
@@ -363,3 +373,25 @@ def reopen_scene(*, report: Report) -> Report:
     report.released_at = None
     report.save(update_fields=["status", "released_at", "updated_at"])
     return report
+
+
+@transaction.atomic
+def move_rapport(*, report: Report, rapport: Rapport, direction: str) -> None:
+    """Move a Rapport one step up/down in the scene sequence.
+
+    Renumbers the whole scene to a dense 0..n ``order`` after the swap, so the
+    sequence stays well-defined however posts were originally appended.
+    """
+    ordered = list(report.rapports.all())  # Meta ordering = [order, created_at]
+    ids = [r.pk for r in ordered]
+    if rapport.pk not in ids:
+        return
+    idx = ids.index(rapport.pk)
+    swap = idx - 1 if direction == "up" else idx + 1
+    if swap < 0 or swap >= len(ordered):
+        return  # already at the edge — nothing to do
+    ordered[idx], ordered[swap] = ordered[swap], ordered[idx]
+    for position, item in enumerate(ordered):
+        if item.order != position:
+            item.order = position
+            item.save(update_fields=["order", "updated_at"])

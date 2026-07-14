@@ -39,6 +39,11 @@ urlpatterns = [
         name="rapport_media_remove",
     ),
     path(
+        "<uuid:game_pk>/reports/<uuid:pk>/rapports/<uuid:rapport_pk>/move/",
+        front_views.rapport_move,
+        name="rapport_move",
+    ),
+    path(
         "<uuid:game_pk>/reports/<uuid:pk>/quotes/add/",
         front_views.quote_create,
         name="quote_create",
