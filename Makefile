@@ -1,5 +1,6 @@
 .PHONY: check fix lint typecheck test i18n-check frontend docs-serve docs-build install-hooks
 .PHONY: docker-up docker-down docker-test docker-check docker-shell docker-migrate docker-build docker-logs
+.PHONY: docker-seed docker-seed-flush
 
 # ─── Local ────────────────────────────────────────────────────────
 
@@ -67,3 +68,9 @@ docker-logs:
 
 docker-createsuperuser:
 	$(COMPOSE_DEV) exec web python manage.py createsuperuser
+
+docker-seed:
+	$(COMPOSE_DEV) exec web python manage.py seed_demo
+
+docker-seed-flush:
+	$(COMPOSE_DEV) exec web python manage.py seed_demo --flush

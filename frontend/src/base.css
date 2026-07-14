@@ -95,6 +95,16 @@ body {
 
 a { text-decoration: none; }
 
+/* Boutons — mini-reset : aucun reset CSS complet n'est importé (cf. box-sizing plus
+   haut), donc les <button> gardent sinon la bordure et le fond natifs du navigateur.
+   Les styles réels viennent des classes utilitaires posées dans les templates. */
+button {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+}
+
 [x-cloak] { display: none !important; }
 
 /* Number input — spin buttons */

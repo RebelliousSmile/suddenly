@@ -1823,10 +1823,6 @@ msgstr "Personnage"
 msgid "Write the rapport entry..."
 msgstr "Rédigez l'entrée de rapport..."
 
-#: .\templates\games\rapport_form.html:71
-msgid "Add"
-msgstr "Ajouter"
-
 #: .\templates\games\report_compose.html:4
 #: .\templates\games\report_compose.html:12
 #: .\templates\games\report_compose.html:15
@@ -2244,6 +2240,29 @@ msgstr "Image de fond par défaut des personnages"
 #: .\templates\users\settings_preferences.html:81
 msgid "Current background"
 msgstr "Fond actuel"
+
+#: .\templates\base.html:53 .\templates\base.html:224
+#: .\templates\stories\detail.html:12 .\templates\stories\index.html:4
+#: .\templates\stories\index.html:11
+msgid "Stories"
+msgstr "Histoires complètes"
+
+#: .\templates\citations\_index_results.html:18
+#, python-format
+msgid "added by @%(username)s"
+msgstr "ajoutée par @%(username)s"
+
+#: .\templates\citations\_index_results.html:26
+msgid "No released quote yet"
+msgstr "Aucune citation libérée pour l'instant."
+
+#: .\templates\citations\_index_results.html:28
+msgid "When authors release reports and make their quotes public, they appear here."
+msgstr "Quand les auteurs libèrent leurs comptes-rendus et rendent leurs citations publiques, elles apparaissent ici."
+
+#: .\templates\citations\index.html:13
+msgid "A quote appears here only if its report has been released and its author made it public. Nothing still in play surfaces."
+msgstr "Une citation n'apparaît ici que si son compte rendu a été libéré et que son auteur l'a rendue publique. Rien de ce qui se joue encore ne remonte."
 
 #~ msgid "No characters added yet."
 #~ msgstr "Aucun personnage ajouté pour l'instant."

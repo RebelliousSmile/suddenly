@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Quotes" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app">
+
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-primary mb-1">{% trans "Quotes" %}</h1>
+            <p class="text-sm text-muted max-w-2xl">
+                {% trans "A quote appears here only if its report has been released and its author made it public. Nothing still in play surfaces." %}
+            </p>
+        </div>
+
+        <div id="citations-results">
+            {% include "citations/_index_results.html" %}
+        </div>
+
+    </div>
+</section>
+{% endblock %}

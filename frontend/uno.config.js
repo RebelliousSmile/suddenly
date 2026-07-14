@@ -165,7 +165,7 @@ const presetSuddenly = () => ({
     'avatar-placeholder': 'avatar flex items-center justify-center bg-surface text-secondary',
 
     // Dropdown menu
-    'dropdown-menu': 'absolute bg-surface border border-border rounded-[12px] shadow-lg py-1 z-dropdown',
+    'dropdown-menu': 'absolute bg-surface border border-border rounded-[12px] shadow-xl ring-1 ring-black/10 py-1 z-dropdown',
 
     // Links
     'link': 'text-crimson hover:text-crimson-hover hover:underline',

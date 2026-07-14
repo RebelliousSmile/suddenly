@@ -44,14 +44,11 @@
                     <a href="{% url 'core:home' %}" class="text-secondary hover:text-primary transition-colors">
                         {% trans "Home" %}
                     </a>
-                    <a href="{% url 'feed:home' %}" class="text-secondary hover:text-primary transition-colors">
-                        {% trans "Play" %}
-                    </a>
-                    <a href="{% url 'core:explorer' %}" class="text-secondary hover:text-primary transition-colors">
-                        {% trans "Explore" %}
-                    </a>
                     <a href="{% url 'games:stories' %}" class="text-secondary hover:text-primary transition-colors">
                         {% trans "Stories" %}
+                    </a>
+                    <a href="{% url 'games:quotes_wall' %}" class="text-secondary hover:text-primary transition-colors">
+                        {% trans "Quotes" %}
                     </a>
 
                     {% if user.is_authenticated %}
@@ -109,43 +106,73 @@
                                 </a>
                             </div>
                         </div>
+                        <!-- Theme toggle switch (authenticated: stays in header) -->
+                        <button @click="toggle()"
+                                class="relative flex items-center h-7 w-14 rounded-full border border-border bg-card px-0.5 cursor-pointer transition-colors duration-300"
+                                :class="isDark ? 'border-crimson/50' : 'border-amber-300/60'"
+                                :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+                            <span class="i-lucide-moon absolute left-1.5 text-sm text-crimson pointer-events-none"></span>
+                            <span class="i-lucide-sun absolute right-1.5 text-sm text-amber-400 pointer-events-none"></span>
+                            <span class="w-5 h-5 rounded-full shadow-sm transition-all duration-300 flex-shrink-0 pointer-events-none"
+                                  :class="isDark ? 'translate-x-0 bg-crimson' : 'translate-x-8 bg-amber-400'">
+                            </span>
+                        </button>
                     {% else %}
-                        <a href="{% url 'account_login' %}" class="btn-ghost btn-sm">
-                            {% trans "Log in" %}
-                        </a>
-                        <a href="{% url 'account_signup' %}" class="btn-primary btn-sm">
-                            {% trans "Sign up" %}
-                        </a>
-                    {% endif %}
+                        <!-- Auth dropdown (anonymous): login, signup, theme, language.
+                             x-data="{ open: false }" (no `toggle` method) so the theme
+                             toggle's `toggle()`/`isDark` resolve to the <html> `theme` scope. -->
+                        <div x-data="{ open: false }" class="relative">
+                            <button @click="open = !open"
+                                    class="relative flex items-center rounded-full bg-transparent border-0 outline-none focus:outline-none"
+                                    :aria-label="'{% trans "Log in" %}'">
+                                <span class="avatar-sm avatar-placeholder">
+                                    <span class="i-lucide-user text-sm"></span>
+                                </span>
+                            </button>
 
-                    <!-- Theme toggle switch -->
-                    <button @click="toggle()"
-                            class="relative flex items-center h-7 w-14 rounded-full border border-border bg-card px-0.5 cursor-pointer transition-colors duration-300"
-                            :class="isDark ? 'border-crimson/50' : 'border-amber-300/60'"
-                            :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
-                        <span class="i-lucide-moon absolute left-1.5 text-sm text-crimson pointer-events-none"></span>
-                        <span class="i-lucide-sun absolute right-1.5 text-sm text-amber-400 pointer-events-none"></span>
-                        <span class="w-5 h-5 rounded-full shadow-sm transition-all duration-300 flex-shrink-0 pointer-events-none"
-                              :class="isDark ? 'translate-x-0 bg-crimson' : 'translate-x-8 bg-amber-400'">
-                        </span>
-                    </button>
-
-                    <!-- Language switcher (anonymous; authenticated users use profile) -->
-                    {% if not user.is_authenticated %}
-                        {% get_current_language as CURRENT_LANGUAGE %}
-                        {% get_available_languages as AVAILABLE_LANGUAGES %}
-                        <form method="post" action="{% url 'set_language' %}" class="inline-flex items-center gap-1">
-                            {% csrf_token %}
-                            <input type="hidden" name="next" value="{{ request.path }}">
-                            <select name="language"
-                                    onchange="this.form.submit()"
-                                    class="bg-card border-border text-secondary text-xs rounded px-1 py-0.5">
+                            <div x-show="open"
+                                 x-transition
+                                 @click.away="open = false"
+                                 class="dropdown-menu right-0 mt-2 w-56">
+                                <a href="{% url 'account_login' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                                    <span class="i-lucide-log-in mr-2"></span>{% trans "Log in" %}
+                                </a>
+                                <a href="{% url 'account_signup' %}" class="block px-4 py-2 text-sm text-crimson font-medium hover:bg-card">
+                                    <span class="i-lucide-user-plus mr-2"></span>{% trans "Sign up" %}
+                                </a>
+                                <hr class="my-1 border-border">
+                                <!-- Theme toggle row -->
+                                <button @click="toggle()" type="button"
+                                        class="w-full flex items-center justify-between px-4 py-2 text-sm text-secondary hover:bg-card outline-none focus:outline-none"
+                                        :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+                                    <span class="flex items-center">
+                                        <span class="mr-2" :class="isDark ? 'i-lucide-sun' : 'i-lucide-moon'"></span>
+                                        <span x-text="isDark ? '{% trans "Light mode" %}' : '{% trans "Dark mode" %}'"></span>
+                                    </span>
+                                    <span class="relative flex items-center h-6 w-11 rounded-full border bg-card px-0.5 flex-shrink-0 transition-colors duration-300"
+                                          :class="isDark ? 'border-crimson/50' : 'border-amber-300/60'">
+                                        <span class="w-4 h-4 rounded-full shadow-sm transition-all duration-300 flex-shrink-0 pointer-events-none"
+                                              :class="isDark ? 'translate-x-0 bg-crimson' : 'translate-x-5 bg-amber-400'"></span>
+                                    </span>
+                                </button>
+                                <hr class="my-1 border-border">
+                                <!-- Language links (one submit per language) -->
+                                {% get_current_language as CURRENT_LANGUAGE %}
+                                {% get_available_languages as AVAILABLE_LANGUAGES %}
                                 {% for lang_code, lang_name in AVAILABLE_LANGUAGES %}
-                                    <option value="{{ lang_code }}" {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %}>{{ lang_name }}</option>
+                                    <form method="post" action="{% url 'set_language' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="next" value="{{ request.path }}">
+                                        <input type="hidden" name="language" value="{{ lang_code }}">
+                                        <button type="submit"
+                                                class="w-full text-left px-4 py-2 text-sm hover:bg-card flex items-center outline-none focus:outline-none {% if lang_code == CURRENT_LANGUAGE %}text-crimson font-medium{% else %}text-secondary{% endif %}">
+                                            <span class="i-lucide-globe mr-2"></span>{{ lang_name }}
+                                            {% if lang_code == CURRENT_LANGUAGE %}<span class="i-lucide-check ml-auto"></span>{% endif %}
+                                        </button>
+                                    </form>
                                 {% endfor %}
-                            </select>
-                            <noscript><button type="submit" class="text-xs text-secondary">OK</button></noscript>
-                        </form>
+                            </div>
+                        </div>
                     {% endif %}
                 </div>
 
@@ -204,6 +231,45 @@
                             </a>
                         </div>
                     </div>
+                    {% else %}
+                    <!-- Avatar button (mobile, anonymous): account menu — mirrors the
+                         authenticated pattern (avatar = account, burger = nav). -->
+                    <div x-data="dropdown" class="relative">
+                        <button @click="toggle"
+                                class="relative flex items-center rounded-full bg-transparent border-0 outline-none focus:outline-none p-1"
+                                :aria-label="'{% trans "Log in" %}'">
+                            <span class="avatar-sm avatar-placeholder">
+                                <span class="i-lucide-user text-sm"></span>
+                            </span>
+                        </button>
+                        <div x-show="open"
+                             x-transition
+                             @click.away="close"
+                             class="dropdown-menu right-0 mt-2 w-56">
+                            <a href="{% url 'account_login' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                                <span class="i-lucide-log-in mr-2"></span>{% trans "Log in" %}
+                            </a>
+                            <a href="{% url 'account_signup' %}" class="block px-4 py-2 text-sm text-crimson font-medium hover:bg-card">
+                                <span class="i-lucide-user-plus mr-2"></span>{% trans "Sign up" %}
+                            </a>
+                            <hr class="my-1 border-border">
+                            <!-- Language links (one submit per language) -->
+                            {% get_current_language as CURRENT_LANGUAGE %}
+                            {% get_available_languages as AVAILABLE_LANGUAGES %}
+                            {% for lang_code, lang_name in AVAILABLE_LANGUAGES %}
+                                <form method="post" action="{% url 'set_language' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <input type="hidden" name="language" value="{{ lang_code }}">
+                                    <button type="submit"
+                                            class="w-full text-left px-4 py-2 text-sm hover:bg-card flex items-center outline-none focus:outline-none {% if lang_code == CURRENT_LANGUAGE %}text-crimson font-medium{% else %}text-secondary{% endif %}">
+                                        <span class="i-lucide-globe mr-2"></span>{{ lang_name }}
+                                        {% if lang_code == CURRENT_LANGUAGE %}<span class="i-lucide-check ml-auto"></span>{% endif %}
+                                    </button>
+                                </form>
+                            {% endfor %}
+                        </div>
+                    </div>
                     {% endif %}
                     <!-- Burger menu button -->
                     <button x-data @click="$dispatch('toggle-mobile-menu')"
@@ -222,14 +288,8 @@
              class="md:hidden border-t border-border bg-surface">
             <div class="container-app py-4 space-y-2">
                 <a href="{% url 'core:home' %}" class="block py-2 text-secondary">{% trans "Home" %}</a>
-                <a href="{% url 'feed:home' %}" class="block py-2 text-secondary">{% trans "Play" %}</a>
-                <a href="{% url 'core:explorer' %}" class="block py-2 text-secondary">{% trans "Explore" %}</a>
                 <a href="{% url 'games:stories' %}" class="block py-2 text-secondary">{% trans "Stories" %}</a>
-                {% if not user.is_authenticated %}
-                    <hr class="my-2 border-border">
-                    <a href="{% url 'account_login' %}" class="block py-2 text-crimson">{% trans "Log in" %}</a>
-                    <a href="{% url 'account_signup' %}" class="block py-2 text-crimson font-medium">{% trans "Sign up" %}</a>
-                {% endif %}
+                <a href="{% url 'games:quotes_wall' %}" class="block py-2 text-secondary">{% trans "Quotes" %}</a>
                 <hr class="my-2 border-border">
                 <!-- Theme toggle mobile -->
                 <button @click="toggle()"
