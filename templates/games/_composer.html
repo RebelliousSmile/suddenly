@@ -21,16 +21,41 @@
         kind: '{% if kinds %}{{ kinds.0.0 }}{% endif %}',
         actor: '{% if is_gm %}{{ selected_actor }}{% else %}{{ own_pcs.first.slug|default:'' }}{% endif %}',
         actorLabel: '{{ selected_actor_label|escapejs }}',
+        body: '',
+        availableKinds: [{% for value, label in kinds %}'{{ value }}'{% if not forloop.last %},{% endif %}{% endfor %}],
         get actorForbidden() { return this.kind === 'narration'; },
         get needsActor() { return this.kind === 'action' || this.kind === 'discussion'; },
         get canSend() {
             if (!this.kind) return false;
+            if (!this.body.trim()) return false;
             if (!this.frozen && (!this.game || !this.personnage)) return false;
             if (this.needsActor && !this.actor) return false;
             return true;
+        },
+        setKind(k) { if (this.availableKinds.includes(k)) this.kind = k; },
+        /* Slash-commands (/narr /desc /act /rep) and « → réplique (maquette). */
+        onInput() {
+            const map = {narr:'narration', desc:'description', descr:'description',
+                         act:'action', action:'action', rep:'discussion', dial:'discussion'};
+            const m = this.body.match(/^\/(\w+)\s/);
+            if (m && map[m[1].toLowerCase()] && this.availableKinds.includes(map[m[1].toLowerCase()])) {
+                this.body = this.body.slice(m[0].length);
+                this.kind = map[m[1].toLowerCase()];
+                return;
+            }
+            const t = this.body.trimStart();
+            const q = t.charAt(0);
+            if ((q === '«' || q === String.fromCharCode(34)) && this.kind !== 'discussion') this.setKind('discussion');
+        },
+        /* Cmd/Ctrl+1..4 pick a kind, in the available order. */
+        onKeydown(e) {
+            if (!(e.metaKey || e.ctrlKey)) return;
+            const i = ['1','2','3','4'].indexOf(e.key);
+            if (i >= 0 && this.availableKinds[i]) { e.preventDefault(); this.kind = this.availableKinds[i]; }
         }
      }"
-     x-effect="if (actorForbidden) { actor = ''; actorLabel = ''; }">
+     x-effect="if (actorForbidden) { actor = ''; actorLabel = ''; }"
+     @keydown.window="onKeydown($event)">
 
     {# ── Header ──────────────────────────────────────────────────── #}
     {% if frozen %}
@@ -86,10 +111,22 @@
         </div>
 
         {# ── Contenu (persistent across recompute swaps) ───────────── #}
+        {# kmark: a kind-tinted rail; the textarea takes the kind's typographic
+           voice (maquette). Char count on the right. #}
         <div class="mt-4">
-            <label class="form-label" for="composer-content">{% trans "Contenu" %}</label>
-            <textarea id="composer-content" name="content" rows="4" class="form-input w-full"
-                      placeholder="{% trans "Écrivez le rapport…" %}"></textarea>
+            <div class="flex items-center justify-between mb-1">
+                <label class="form-label mb-0" for="composer-content">{% trans "Contenu" %}</label>
+                <span class="text-xs text-muted tabular-nums" x-text="body.length"></span>
+            </div>
+            <div class="flex items-stretch gap-2">
+                <span class="w-1 rounded shrink-0"
+                      :class="{ 'bg-info/50': kind==='description', 'bg-crimson/60': kind==='action', 'bg-violet/50': kind==='discussion', 'bg-transparent': kind==='narration' }"></span>
+                <textarea id="composer-content" name="content" rows="4"
+                          class="form-input w-full"
+                          x-model="body" @input="onInput()"
+                          :class="{ 'italic font-serif text-secondary': kind==='description', 'font-medium': kind==='action', 'font-serif text-lg': kind==='discussion' }"
+                          placeholder="{% trans "Écrivez le rapport…  (/desc, /act, /rep · « pour une réplique)" %}"></textarea>
+            </div>
         </div>
 
         {# ── Média : description uniquement, une seule image (rule 2e) ── #}
