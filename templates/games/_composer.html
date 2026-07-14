@@ -111,8 +111,8 @@
         </div>
 
         {# ── Contenu (persistent across recompute swaps) ───────────── #}
-        {# kmark: a kind-tinted rail; the textarea takes the kind's typographic
-           voice (maquette). Char count on the right. #}
+        {% comment %} kmark: a kind-tinted rail; the textarea takes the kind's typographic
+           voice (maquette). Char count on the right. {% endcomment %}
         <div class="mt-4">
             <div class="flex items-center justify-between mb-1">
                 <label class="form-label mb-0" for="composer-content">{% trans "Contenu" %}</label>
@@ -130,8 +130,8 @@
         </div>
 
         {# ── Média : description uniquement, une seule image (rule 2e) ── #}
-        {# Only in a scene (frozen): the feed's open_new_scene path doesn't carry
-           media. Disabled unless description, so no stale media leaks. #}
+        {% comment %} Only in a scene (frozen): the feed's open_new_scene path doesn't carry
+           media. Disabled unless description, so no stale media leaks. {% endcomment %}
         {% if frozen %}
         <div class="mt-3 space-y-2" x-show="kind === 'description'" x-cloak>
             <label class="rounded-badge border border-dashed border-border p-3 text-xs text-muted flex items-center gap-2 cursor-pointer">
@@ -151,8 +151,8 @@
 
         {# ── Envoi — rien ne part sans partie ni perso (2a) ──────────── #}
         {% if frozen %}
-            {# Scene edit: post inline next to the fil (Mastodon). The new post is
-               appended to #rapports-list and the composer resets — no reload. #}
+            {% comment %} Scene edit: post inline next to the fil (Mastodon). The new post is
+               appended to #rapports-list and the composer resets — no reload. {% endcomment %}
             <div class="mt-4 flex flex-wrap items-center gap-2">
                 <button type="button" class="btn-primary" :disabled="!canSend"
                         hx-post="{% url 'games:scene_post_create' report.game.pk report.pk %}"

@@ -1,9 +1,9 @@
-{# Partial: feed items list (swapped by HTMX tab navigation).
+{% comment %} Partial: feed items list (swapped by HTMX tab navigation).
 
    The connected (Abonnements) feed passes `feed_items` — an ordered blend of
    reports and claim/adopt/fork promocards (SUD-P1). Other tabs pass a plain
    `reports` list.
-#}
+{% endcomment %}
 {% load i18n %}
 
 {% if feed_items %}

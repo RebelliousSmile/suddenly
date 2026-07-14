@@ -1,14 +1,15 @@
-{# Read-only rendering of a Rapport for the public Stories surface (SUD-V3).
+{% comment %}
+Read-only rendering of a Rapport for the public Stories surface (SUD-V3).
 
-   Rendering decisions (maquette v2/v3 — text primes, attribution minimal,
-   differentiation by typographic register, not by badge):
-     - narration   → plain sober prose (the base)
-     - description → serif italic, indented, faint blue rule
-     - action      → crimson chevron "›", stronger weight
-     - discussion  → the only attributed speech (actor): discreet name above,
-                     reply in large serif between quotes, avatar.
-   Markers render as a frieze below the text.
-#}
+Rendering decisions (maquette v2/v3 — text primes, attribution minimal,
+differentiation by typographic register, not by badge):
+  - narration   → plain sober prose (the base)
+  - description → serif italic, indented, faint blue rule
+  - action      → crimson chevron "›", stronger weight
+  - discussion  → the only attributed speech (actor): discreet name above,
+                  reply in large serif between quotes, avatar.
+Markers render as a frieze below the text.
+{% endcomment %}
 {% load i18n %}
 
 <div class="py-2">

@@ -102,8 +102,8 @@
         {% trans "Narration — la voix du récit. Pas d'acteur." %}
     </p>
 
-    {# Actor slug submitted with the form (empty = Voix du MJ). Always present so
-       narration posts an empty actor; the outer x-effect clears it for narration. #}
+    {% comment %} Actor slug submitted with the form (empty = Voix du MJ). Always present so
+       narration posts an empty actor; the outer x-effect clears it for narration. {% endcomment %}
     <input type="hidden" name="actor" :value="actorForbidden ? '' : actor">
 
     {# Réponse — n'a de sens que sur une réplique, et seulement dans une scène. #}

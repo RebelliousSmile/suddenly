@@ -241,9 +241,9 @@
                 {% endif %}
             </div>
 
-            {# Le fil de la scène. "Ajouter un post" opens the full-screen composer
+            {% comment %} Le fil de la scène. "Ajouter un post" opens the full-screen composer
                overlay (maquette); posting appends to #rapports-list in place and
-               closes the overlay — no reload. Same _composer.html, frozen. #}
+               closes the overlay — no reload. Same _composer.html, frozen. {% endcomment %}
             <div class="mt-4">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-heading">{% trans "Le fil de la scène" %}</h2>
