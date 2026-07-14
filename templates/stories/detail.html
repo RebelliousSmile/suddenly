@@ -8,50 +8,60 @@
     <div class="container-app max-w-3xl">
 
         <!-- Breadcrumb -->
-        <p class="text-sm text-muted mb-3">
+        <p class="text-sm text-semantic-muted mb-3">
             <a href="{% url 'games:stories' %}" class="link-muted">{% trans "Stories" %}</a>
             › {{ game.title }}
         </p>
 
-        <!-- Title + one-line summary (maquette pageStory: no cover here — the
-             story is the long read, the cover lives on the game profile). -->
-        <h1 class="text-2xl font-bold text-primary mb-1.5">{{ game.title }}</h1>
-        <p class="text-sm text-muted mb-8">
+        <!-- Title + one-line summary (no cover here — the story is the long read). -->
+        <h1 class="text-2xl font-bold text-semantic-ink mb-1.5">{{ game.title }}</h1>
+        <p class="text-sm text-semantic-muted mb-10">
             {% blocktrans count counter=reports|length %}{{ counter }} report · readable by all{% plural %}{{ counter }} reports · readable by all{% endblocktrans %}
         </p>
 
-        <!-- Released reports, end to end -->
+        <!-- Released reports, end to end — one continuous read per scene. -->
         {% for report in reports %}
-            <div class="{% if not forloop.first %}mt-8 pt-7 border-t border-border{% endif %}">
-                <p class="text-[11px] font-semibold tracking-wider uppercase text-muted mb-3.5">
-                    {% blocktrans with n=forloop.counter %}Report {{ n }}{% endblocktrans %}{% if report.title %}
-                        · {{ report.title }}{% endif %}{% if report.session_date %}
-                        · {{ report.session_date|date:"d/m/Y" }}{% elif report.released_at %}
-                        · {{ report.released_at|date:"d/m/Y" }}{% endif %}
-                </p>
+            <article class="{% if not forloop.first %}mt-12 pt-10 border-t border-semantic-border{% endif %}">
+                <header class="mb-5 pb-2 border-b border-semantic-border/60">
+                    <p class="text-[11px] font-semibold tracking-wider uppercase text-semantic-muted">
+                        {% blocktrans with n=forloop.counter %}Report {{ n }}{% endblocktrans %}{% if report.title %} · {{ report.title }}{% endif %}{% if report.session_date %} · {{ report.session_date|date:"d/m/Y" }}{% elif report.released_at %} · {{ report.released_at|date:"d/m/Y" }}{% endif %}
+                    </p>
+                </header>
 
                 {% if report.content_warning %}
-                    <div class="flex items-center gap-2 text-sm text-warning mb-3">
+                    <div class="flex items-center gap-2 text-sm text-semantic-warning mb-4">
                         <span class="i-lucide-alert-triangle text-xs"></span>
                         {{ report.content_warning }}
                     </div>
                 {% endif %}
 
                 {% if report.content %}
-                    <div class="prose-report mb-4">{{ report.content|linebreaksbr }}</div>
+                    <p class="font-serif text-[18px] leading-loose text-semantic-ink my-4">{{ report.content|linebreaksbr }}</p>
                 {% endif %}
 
-                <div class="space-y-1">
-                    {% for rapport in report.rapports.all %}
-                        {% include "stories/_rapport.html" %}
-                    {% endfor %}
-                </div>
-            </div>
+                {% for rapport in report.rapports.all %}
+                    {% include "stories/_rapport.html" %}
+                {% endfor %}
+
+                {% comment %} Scene markers — pulled out of the reading flow, gathered as
+                discreet tags at the end of the scene. {% endcomment %}
+                {% with scene_markers=report.rapports.all %}
+                    <div class="mt-6 flex flex-wrap gap-x-4 gap-y-1">
+                        {% for rapport in scene_markers %}
+                            {% for marker in rapport.markers.all %}
+                                <span class="text-[10px] uppercase tracking-wider text-semantic-muted">
+                                    {{ marker.get_kind_display }}{% if marker.character %} · {{ marker.character.name }}{% endif %}
+                                </span>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                {% endwith %}
+            </article>
         {% endfor %}
 
         {% if quotes %}
-            <div class="mt-8 pt-6 border-t border-border">
-                <h2 class="text-xl font-bold text-primary mb-4">{% trans "Citations retenues" %}</h2>
+            <div class="mt-12 pt-8 border-t border-semantic-border">
+                <h2 class="text-xl font-bold text-semantic-ink mb-4">{% trans "Citations retenues" %}</h2>
                 <div class="space-y-4">
                     {% for quote in quotes %}
                         {% include "quotes/_quote_card.html" with hide_source=True %}
