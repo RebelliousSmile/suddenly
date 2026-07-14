@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Suddenly — maquette mobile-first (v3, moteur de rendu unifié)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     TOKENS — repris de suddenly/frontend/src/base.css + uno.config.js
+     ============================================================ */
+  :root {
+    --c-bg: #faf9f6; --c-surface: #f0ede8; --c-card: #ffffff; --c-card-dark: #f5f2ec;
+    --c-border: #d4cfe8; --c-primary: #1a1a2e; --c-secondary: #555555; --c-muted: #8c8c8c;
+    --shadow-card: 0 2px 16px rgba(0,0,0,0.07); --shadow-card-hover: 0 4px 24px rgba(0,0,0,0.12);
+    --crimson: 224 53 88; --crimson-hover: 200 42 74; --violet: 124 58 237; --neon: 0 230 118;
+    --brand: 99 102 241; --success: 21 128 61; --warning: 180 83 9; --error: 153 27 27; --info: 3 105 161;
+    --tool-ink: #1a1a2e; --tool-ink-deep: #12121f;
+    --r-card: 0.75rem; --r-btn: 0.5rem;
+    --tap: 44px;  /* cible tactile minimale */
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-display: 'Fraunces', Georgia, serif;
+  }
+  [data-theme="dark"] {
+    --c-bg: #0b0705; --c-surface: #170d08; --c-card: #25150e; --c-card-dark: #1d0f09;
+    --c-border: #3d2215; --c-primary: #f0f0f0; --c-secondary: #a0a0a0; --c-muted: #a0a0a0;
+    --shadow-card: 0 0 24px rgba(224,53,88,0.12), 0 2px 8px rgba(0,0,0,0.4);
+    --shadow-card-hover: 0 0 36px rgba(224,53,88,0.22), 0 4px 16px rgba(0,0,0,0.5);
+    --success: 74 222 128; --warning: 251 191 36; --error: 252 165 165; --info: 125 211 252;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { font-family: var(--font-body); background: var(--c-bg); color: var(--c-primary);
+    overflow: hidden; display: flex; flex-direction: column; -webkit-font-smoothing: antialiased; }
+
+  /* ============================================================
+     BARRE DE PREVIEW — chrome de l'outil. Mobile-first : passe en
+     colonne, cibles tactiles, wrappe sans déborder.
+     ============================================================ */
+  .preview-bar {
+    flex: 0 0 auto; z-index: 9999; display: flex; align-items: center; gap: 8px 12px;
+    flex-wrap: wrap; padding: 8px 12px;
+    padding-top: max(8px, env(safe-area-inset-top));
+    background: var(--tool-ink-deep); color: #fff; border-bottom: 2px solid rgb(var(--crimson));
+  }
+  .preview-bar__brand { font-size: 17px; font-weight: 600; display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+  .preview-bar__brand-dot { width: 9px; height: 11px; background: rgb(var(--crimson)); clip-path: polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%); }
+  .preview-bar__brand small { font-size: 11px; font-weight: 400; color: rgba(255,255,255,.5); letter-spacing: .04em; text-transform: uppercase; }
+  .preview-bar__controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 1 1 auto; justify-content: flex-end; min-width: 0; }
+
+  .page-select {
+    background: rgba(255,255,255,.08); color: #fff; border: 1px solid rgba(255,255,255,.15);
+    padding: 0 34px 0 14px; height: var(--tap); font: 500 13px var(--font-body); border-radius: 8px; cursor: pointer;
+    appearance: none; -webkit-appearance: none; flex: 1 1 100%; min-width: 0; order: 5;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat; background-position: right 12px center;
+  }
+  .page-select option { background: var(--tool-ink-deep); }
+  .page-select optgroup { background: var(--tool-ink); font-style: normal; font-weight: 700; }
+
+  .seg { display: flex; gap: 3px; padding: 3px; background: rgba(255,255,255,.08); border-radius: 8px; flex: 0 0 auto; }
+  .seg button {
+    background: transparent; border: none; color: rgba(255,255,255,.7);
+    min-height: 38px; padding: 0 12px; font: 500 13px var(--font-body); border-radius: 6px; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; transition: all .2s; white-space: nowrap;
+  }
+  .seg button svg { width: 16px; height: 16px; flex: 0 0 auto; }
+  .seg button:hover { color: #fff; }
+  .seg button.active { background: rgb(var(--crimson)); color: #fff; }
+  .seg--auth button.active { background: rgba(255,255,255,.2); color: #fff; }
+
+  .theme-btn {
+    background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); color: #fff;
+    width: 40px; height: 40px; border-radius: 8px; cursor: pointer; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .theme-btn svg { width: 16px; height: 16px; }
+
+  /* Au-delà de 560px de barre, le select reprend sa place en ligne et les labels device s'affichent */
+  @media (min-width: 560px) {
+    .preview-bar { padding: 8px 20px; }
+    .page-select { flex: 1 1 240px; max-width: 360px; order: 0; }
+    .seg .lbl { display: inline; }
+  }
+  @media (max-width: 559px) { .seg .lbl { display: none; } .preview-bar__brand small { display: none; } }
+
+  /* ============================================================
+     STAGE + FRAME
+     Le device-switch reste un CONFORT de preview (cadre visuel).
+     Il n'est plus la source du responsive : le contenu se replie sur
+     la largeur réelle du conteneur via @container (voir plus bas).
+     ============================================================ */
+  .preview-stage { flex: 1 1 auto; min-height: 0; overflow-y: auto; background: var(--c-bg); -webkit-overflow-scrolling: touch; }
+  .preview-frame {
+    width: 100%; max-width: 100%; margin: 0 auto; position: relative; overflow-x: hidden;
+    background: var(--c-bg); transition: max-width .4s cubic-bezier(.22,1,.36,1); min-height: 100%;
+    container-type: inline-size; container-name: app;   /* ← clé du mobile-first fluide */
+  }
+  .preview-frame.tablet { max-width: 834px; border: 10px solid var(--tool-ink-deep); border-radius: 22px; box-shadow: 0 30px 80px rgba(0,0,0,.25); margin: 20px auto; overflow: hidden; min-height: 0; }
+  .preview-frame.mobile { max-width: 390px; border: 8px solid var(--tool-ink-deep); border-radius: 30px; box-shadow: 0 30px 80px rgba(0,0,0,.3); margin: 24px auto; overflow: hidden; min-height: 0; }
+  #page-container { display: block; width: 100%; }
+
+  /* ============================================================
+     APP SHELL — mobile-first. Header compact par défaut, s'étoffe
+     quand le CONTENEUR dépasse 768px (parité avec md: du vrai front).
+     ============================================================ */
+  .app { color: var(--c-primary); line-height: 1.55; }
+  .app a { color: inherit; text-decoration: none; }
+  .container-app { width: 100%; max-width: 80rem; margin: 0 auto; padding: 0 16px; }
+
+  .app-header { background: var(--c-surface); border-bottom: 1px solid var(--c-border); position: sticky; top: 0; z-index: 50; }
+  .app-header__inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; }
+  .brand-lockup { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 19px; color: var(--c-primary); flex: 0 0 auto; }
+  .brand-lockup__mark { width: 22px; height: 26px; flex: 0 0 auto; }
+
+  /* nav desktop — cachée par défaut (mobile-first), montrée en conteneur large */
+  .app-nav { display: none; align-items: center; gap: 22px; }
+  .app-nav a.navlink { color: var(--c-secondary); font-size: 14px; font-weight: 500; transition: color .15s; min-height: var(--tap); display: inline-flex; align-items: center; }
+  .app-nav a.navlink:hover, .app-nav a.navlink.is-active { color: var(--c-primary); }
+  .app-nav a.navlink.is-active { color: rgb(var(--crimson)); }
+
+  /* contrôles mobile — avatar + burger, visibles par défaut */
+  .mobile-controls { display: flex; align-items: center; gap: 4px; }
+  .icon-btn { width: var(--tap); height: var(--tap); display: inline-flex; align-items: center; justify-content: center; background: none; border: none; cursor: pointer; color: var(--c-primary); border-radius: 10px; }
+  .icon-btn:hover { background: var(--c-card); }
+  .icon-btn svg { width: 24px; height: 24px; }
+
+  @container app (min-width: 768px) {
+    .app-nav { display: flex; }
+    .mobile-controls { display: none; }
+    .app-header__inner { height: 64px; }
+    .container-app { padding: 0 24px; }
+  }
+
+  /* avatars */
+  .avatar-sm,.avatar-md,.avatar-xl { border-radius: 999px; background: var(--c-surface); display: inline-flex; align-items: center; justify-content: center; color: var(--c-secondary); overflow: hidden; flex: 0 0 auto; }
+  .avatar-sm { width: 34px; height: 34px; } .avatar-md { width: 44px; height: 44px; } .avatar-xl { width: 64px; height: 64px; font-size: 24px; }
+  .avatar--npc { border: 1.5px solid rgb(var(--warning) / .55); color: rgb(var(--warning)); }
+  .avatar--remote { border: 1.5px dashed rgb(var(--violet) / .6); color: rgb(var(--violet)); }
+  .avatar--gone { border: 1.5px dotted var(--c-border); opacity: .6; }
+  .avatar-badge { position: relative; }
+  .avatar-badge::after { content:""; position:absolute; bottom:0; right:0; width:11px; height:11px; border-radius:999px; background: rgb(var(--crimson)); border:2px solid var(--c-surface); }
+
+  /* buttons — cible tactile garantie */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 15px; font-family: var(--font-body); padding: 0 22px; min-height: var(--tap); border-radius: var(--r-btn); border: none; cursor: pointer; transition: all .2s; text-align: center; }
+  .btn-sm { min-height: 38px; padding: 0 14px; font-size: 14px; }
+  .btn-block { width: 100%; }
+  .btn-primary { background: rgb(var(--crimson)); color: #fff; }
+  .btn-primary:hover { background: rgb(var(--crimson-hover)); }
+  .btn-secondary { background: transparent; border: 1px solid var(--c-border); color: var(--c-secondary); }
+  .btn-secondary:hover { border-color: rgb(var(--crimson)); color: rgb(var(--crimson)); }
+  .btn-ghost { background: transparent; color: var(--c-secondary); min-height: var(--tap); padding: 0 12px; }
+  .btn-ghost:hover { color: var(--c-primary); }
+
+  /* cards */
+  .card { background: var(--c-card); border: 1px solid var(--c-border); border-radius: var(--r-card); box-shadow: var(--shadow-card); }
+  .card-hover { transition: all .2s; cursor: pointer; }
+  .card-hover:active { transform: scale(.99); }
+  .card-hover:hover { box-shadow: var(--shadow-card-hover); border-color: rgb(var(--crimson) / .3); }
+  .card-body { padding: 16px; }
+  @container app (min-width: 640px) { .card-body { padding: 20px; } }
+  .card-footer { padding: 8px 12px; border-top: 1px solid var(--c-border); display: flex; align-items: center; gap: 6px; }
+
+  /* badges */
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; border: 1px solid transparent; white-space: nowrap; }
+  .badge-available, .badge-npc { background: rgb(var(--neon) / .1); color: rgb(var(--neon)); border-color: rgb(var(--neon) / .3); }
+  .badge-claimed  { background: rgb(var(--info) / .1); color: rgb(var(--info)); border-color: rgb(var(--info) / .3); }
+  .badge-adopted  { background: rgb(var(--success) / .1); color: rgb(var(--success)); border-color: rgb(var(--success) / .3); }
+  .badge-forked   { background: rgb(var(--violet) / .1); color: rgb(var(--violet)); border-color: rgb(var(--violet) / .3); }
+  .badge-pc       { background: rgb(var(--brand) / .1); color: rgb(var(--brand)); border-color: rgb(var(--brand) / .3); }
+  .badge-info     { background: rgb(var(--info) / .1); color: rgb(var(--info)); border-color: rgb(var(--info) / .3); }
+  .badge-primary  { background: rgb(var(--crimson) / .1); color: rgb(var(--crimson)); border-color: rgb(var(--crimson) / .3); }
+  .badge-pending  { background: var(--c-surface); color: var(--c-muted); border-color: var(--c-border); }
+
+  /* typography */
+  .h-page { font-family: var(--font-display); font-size: clamp(24px, 6cqi, 30px); font-weight: 600; color: var(--c-primary); line-height: 1.15; }
+  .h-sec { font-family: var(--font-display); font-size: clamp(18px, 4.5cqi, 22px); font-weight: 600; color: var(--c-primary); }
+  .text-muted { color: var(--c-muted); } .text-secondary { color: var(--c-secondary); }
+  .text-crimson { color: rgb(var(--crimson)); } .text-warning { color: rgb(var(--warning)); }
+  .text-sm { font-size: 14px; } .text-xs { font-size: 12px; } .text-lg { font-size: 17px; }
+  .font-semibold { font-weight: 600; } .font-medium { font-weight: 500; } .font-bold { font-weight: 700; }
+  .lede { color: var(--c-secondary); max-width: 42rem; font-size: clamp(15px, 3.6cqi, 18px); }
+
+  /* layout utilities */
+  .content { padding: 24px 0; }
+  @container app (min-width: 768px) { .content { padding: 32px 0; } }
+  .content--narrow .container-app { max-width: 48rem; }
+  .content--mid .container-app { max-width: 64rem; }
+  .stack > * + * { margin-top: 12px; }
+  .row { display: flex; align-items: center; gap: 12px; }
+  .between { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .wrap-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .icon { width: 16px; height: 16px; display: inline-block; vertical-align: -2px; flex: 0 0 auto; }
+
+  /* GRILLES FLUIDES — auto-fit/minmax : se replient sur la largeur réelle,
+     jamais de colonne fixe qui déborde. C'est le cœur du fix responsive. */
+  .grid-cards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .grid-stats { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+  .grid-feature { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+  /* editor */
+  .editor-area { border: 1px solid var(--c-border); border-radius: var(--r-card); background: var(--c-card); }
+  .editor-toolbar { display: flex; gap: 4px; padding: 8px; border-bottom: 1px solid var(--c-border); flex-wrap: wrap; }
+  .editor-tool { width: 38px; height: 38px; border-radius: 6px; border: none; background: transparent; color: var(--c-secondary); cursor: pointer; font-weight: 600; }
+  .editor-tool:hover { background: var(--c-surface); }
+  .editor-input { padding: 16px; min-height: 160px; color: var(--c-secondary); font-size: 15px; line-height: 1.7; }
+  .mention { color: rgb(var(--brand)); font-weight: 500; background: rgb(var(--brand) / .08); padding: 0 4px; border-radius: 4px; }
+  .mention.npc { color: rgb(var(--warning)); background: rgb(var(--warning) / .1); }
+  /* distribution d'une Story : une ligne de noms, fiche au survol/tap */
+  .castline { font-size: 13.5px; line-height: 2; color: var(--c-secondary); margin-bottom: 14px; }
+  .castname { font-weight: 500; font-size: 13.5px; }
+  .castsep { color: var(--c-muted); margin: 0 7px; }
+  .cast-pill__n { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px;
+    padding: 0 5px; margin-left: 2px; border-radius: 999px; background: var(--c-card-dark, var(--c-card));
+    border: 1px solid var(--c-border); font-size: 10px; font-weight: 600; color: var(--c-muted); }
+  .cast-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; min-height: 38px; border-radius: 999px; background: var(--c-surface); border: 1px solid var(--c-border); font-size: 13px; cursor: pointer; }
+
+  .stat-card { text-align: center; }
+  .stat-num { font-family: var(--font-display); font-size: 28px; font-weight: 600; line-height: 1; }
+  .muted-box { border: 1px dashed var(--c-border); border-radius: var(--r-card); padding: 24px; text-align: center; color: var(--c-muted); }
+
+  /* usermenu + dropdown (connecté) */
+  .usermenu { position: relative; }
+  .usermenu__trigger { background: none; border: none; cursor: pointer; padding: 4px; display: inline-flex; min-height: var(--tap); min-width: var(--tap); align-items: center; justify-content: center; }
+  .dropdown-menu { display: none; position: absolute; right: 0; top: calc(100% + 8px); width: min(240px, 78vw);
+    background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 12px; box-shadow: var(--shadow-card-hover); padding: 6px; z-index: 60; }
+  .dropdown-menu.is-open { display: block; }
+  .dropdown-menu a { display: flex; align-items: center; gap: 10px; padding: 0 12px; min-height: var(--tap); border-radius: 8px; font-size: 14px; color: var(--c-secondary); cursor: pointer; }
+  .dropdown-menu a:hover { background: var(--c-card); color: var(--c-primary); }
+  .dropdown-menu a.dd-badge { justify-content: space-between; }
+  .dropdown-menu a.dd-badge > .badge { margin-left: auto; }
+  .dropdown-menu a.dd-danger { color: rgb(var(--error)); }
+  .dropdown-sep { height: 1px; background: var(--c-border); margin: 6px 4px; }
+  .lang-select { color: var(--c-secondary); font-size: 13px; border: 1px solid var(--c-border); border-radius: 6px; padding: 0 10px; min-height: 38px; display: inline-flex; align-items: center; cursor: pointer; }
+
+  /* drawer mobile (plein écran sous le header) */
+  .nav-drawer { display: none; border-top: 1px solid var(--c-border); background: var(--c-surface); padding: 8px 16px 16px; }
+  .nav-drawer.is-open { display: block; }
+  .nav-drawer a { display: flex; align-items: center; min-height: var(--tap); color: var(--c-secondary); font-weight: 500; font-size: 16px; border-bottom: 1px solid rgb(212 207 232 / .35); }
+  .nav-drawer a:last-child { border-bottom: none; }
+  .nav-drawer a.is-active { color: rgb(var(--crimson)); font-weight: 600; }
+  .nav-drawer a.text-crimson { color: rgb(var(--crimson)); }
+  .nav-drawer a.dd-danger { color: rgb(var(--error)); }
+  @container app (min-width: 768px) { .nav-drawer { display: none !important; } }
+
+  /* tabs (feed) — scroll horizontal propre sur mobile */
+  .tabs { display: flex; border-bottom: 1px solid var(--c-border); margin-bottom: 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { padding: 0 14px; min-height: var(--tap); display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: var(--c-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; white-space: nowrap; flex: 0 0 auto; }
+  .tab:hover { color: var(--c-secondary); }
+  .tab.is-active { color: rgb(var(--crimson)); border-bottom-color: rgb(var(--crimson)); }
+
+  /* ---- Fil Amis : lecture de scène ---- */
+  .stack--lg > * + * { margin-top: 20px; }
+  .scene__crumb { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--c-secondary); flex-wrap: wrap; }
+  .scene__crumb a:hover { color: rgb(var(--crimson)); }
+  .scene__title { font-weight: 600; color: var(--c-primary); }
+  .scene__meta { margin: 4px 0 14px; }
+  .scene__body > * + * { margin-top: 14px; }
+
+  /* ============================================================
+     MOTEUR DE RENDU UNIFIÉ — un Rapport typé rendu à l'identique
+     dans le fil (extrait) et sur la page scène (lecture longue).
+     La cohérence est ICI : mêmes registres, seule la taille et la
+     présence des tooltips / replyTo / markers changent par contexte.
+     kind ∈ {narration, description, action, discussion}
+     ============================================================ */
+  .rap { padding: 7px 0; }
+  .rap--reply { margin-left: 18px; padding-left: 14px; border-left: 2px solid var(--c-border); }
+  .rap__replyto { font-size: 12px; color: var(--c-muted); margin-bottom: 4px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .rap__replyto b { color: var(--c-secondary); font-weight: 500; }
+  .rap__replyto svg { width: 12px; height: 12px; }
+  .rap__replyto .iri { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: rgb(var(--violet)); }
+
+  /* registres — identiques fil / scène */
+  .rap--narration .rap__text { font-size: 16px; line-height: 1.7; color: var(--c-primary); }
+  .rap--description .rap__text {
+    font-family: var(--font-display); font-style: italic; font-weight: 400;
+    font-size: 16px; line-height: 1.7; color: var(--c-secondary);
+    padding-left: 14px; border-left: 2px solid rgb(var(--info) / .35);
+  }
+  .rap--action .rap__text {
+    font-size: 15.5px; line-height: 1.6; color: var(--c-primary); font-weight: 500;
+    position: relative; padding-left: 22px;
+  }
+  .rap--action .rap__text::before {
+    content: "\203A"; position: absolute; left: 4px; top: -2px;
+    color: rgb(var(--crimson)); font-weight: 700; font-size: 22px;
+  }
+  .rap--discussion { padding-top: 12px; }
+  .rap__who { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .rap--discussion .rap__text { font-family: var(--font-display); font-size: 18px; line-height: 1.5; color: var(--c-primary); font-weight: 400; }
+  .rap__speaker { font-weight: 600; font-size: 14px; color: var(--c-primary); }
+  .rap__speaker .npc { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--c-muted); font-weight: 400; margin-left: 4px; }
+
+  /* réplique citée (Quote) : liseré crimson + pastille */
+  .rap--quoted .rap__text { border-left-color: rgb(var(--crimson) / .55); }
+  .rap--quoted.rap--discussion .rap__text { padding-left: 12px; border-left: 2px solid rgb(var(--crimson) / .55); }
+  .rap__qmark { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .05em; color: rgb(var(--crimson));
+    background: rgb(var(--crimson) / .09); border: 1px solid rgb(var(--crimson) / .25);
+    padding: 1px 7px; border-radius: 999px; }
+  .rap__qmark svg { width: 11px; height: 11px; }
+
+  /* page scène : lecture longue, registres agrandis */
+  .scene__read > * + * { margin-top: 14px; }
+  .scene__read .rap--narration .rap__text { font-size: 17px; line-height: 1.8; }
+  .scene__read .rap--description .rap__text { font-size: 17px; line-height: 1.8; }
+  .scene__read .rap--action .rap__text { font-size: 16.5px; }
+  .scene__read .rap--discussion .rap__text { font-size: 20px; }
+
+  /* tooltip fiche — SCÈNE UNIQUEMENT (jamais dans le fil : trop dense) */
+  .defname { font-weight: 600; color: var(--c-primary); border-bottom: 1px dotted var(--c-muted);
+    cursor: help; position: relative; display: inline-flex; align-items: center; gap: 5px; }
+  .defname:hover { border-bottom-color: rgb(var(--crimson)); color: rgb(var(--crimson)); }
+  .defname .tag-npc { font-weight: 400; color: var(--c-muted); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; border: none; }
+  .def { position: absolute; z-index: 80; width: min(300px, 82vw);
+    left: var(--def-x, 0); top: calc(100% + 8px);
+    background: var(--c-card); border: 1px solid var(--c-border); border-radius: var(--r-card);
+    box-shadow: var(--shadow-card-hover); padding: 14px; opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .16s, transform .16s, visibility .16s; text-align: left; cursor: default; white-space: normal; }
+  .defname:hover > .def, .def.is-open { opacity: 1; visibility: visible; transform: translateY(0); }
+  .def__head { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+  .def__hgroup { min-width: 0; flex: 1; }
+  .def__name { font-family: var(--font-display); font-size: 17px; font-weight: 600; line-height: 1.2; color: var(--c-primary); }
+  .def__desc { font-size: 12.5px; line-height: 1.5; color: var(--c-secondary); margin-bottom: 12px; }
+  .def__rows { display: flex; flex-direction: column; gap: 7px; margin-bottom: 12px; }
+  .def__row { display: flex; align-items: baseline; gap: 8px; font-size: 12px; }
+  .def__k { flex: 0 0 88px; color: var(--c-muted); text-transform: uppercase; letter-spacing: .04em; font-size: 10px; font-weight: 600; }
+  .def__v { color: var(--c-primary); font-weight: 500; min-width: 0; }
+  .def__v .you { color: rgb(var(--crimson)); font-weight: 600; }
+  .def__v.iri { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: rgb(var(--violet)); word-break: break-all; font-weight: 400; }
+  .def__sheet { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 600; color: rgb(var(--crimson)); text-decoration: none; cursor: pointer; }
+  .def__sheet svg { width: 13px; height: 13px; }
+  .def__foot { border-top: 1px solid var(--c-border); padding-top: 10px; }
+  .def__note { font-size: 11.5px; color: var(--c-muted); font-style: italic; }
+  .badge-role { background: var(--c-surface); color: var(--c-secondary); border-color: var(--c-border); }
+  .badge-remote { background: rgb(var(--violet) / .1); color: rgb(var(--violet)); border-color: rgb(var(--violet) / .3); }
+
+  /* markers de structure — SCÈNE : typés ; FIL : pliés en "…" */
+  .scene__marker { display: flex; align-items: center; gap: 8px; justify-content: center; color: var(--c-muted); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin: 18px 0; }
+  .scene__marker::before, .scene__marker::after { content:""; flex:1; height:1px; background: var(--c-border); }
+  .scene__marker svg { width: 13px; height: 13px; }
+  .scene__marker--enter { color: #0a8f4d; }
+  .scene__marker--oracle { color: rgb(var(--violet)); }
+  .rap__fold { font-size: 12px; color: var(--c-muted); letter-spacing: .1em; padding: 2px 0 6px; }
+
+  /* Story : suite de comptes rendus d'une même partie, séparés visuellement */
+  .story__report + .story__report { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--c-border); }
+  /* citations — surface publique de promotion */
+  .quote-card { position: relative; padding: 20px 20px 16px; border-left: 3px solid rgb(var(--crimson) / .55); }
+  .quote-card__text { font-family: var(--font-display); font-style: italic; font-size: 18px; line-height: 1.55; color: var(--c-primary); }
+  .quote-card__meta { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; font-size: 12px; color: var(--c-muted); }
+  .quote-card__src { font-size: 11px; color: var(--c-muted); margin-top: 4px; }
+  .quote-card__src em { font-style: normal; color: var(--c-secondary); }
+  .quote-wall { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
+  .story__reportmeta { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--c-muted); margin-bottom: 14px; }
+
+  /* intercalaire de découverte — registre "pub" distinct des cartes de scène :
+     fond légèrement teinté, liseré crimson à gauche, eyebrow qui l'annonce. */
+  .promo { border: 1px solid rgb(var(--crimson) / .22); background:
+    linear-gradient(180deg, rgb(var(--crimson) / .05), transparent 60%), var(--c-card);
+    border-left: 3px solid rgb(var(--crimson) / .5); cursor: pointer; transition: box-shadow .2s; }
+  .promo:hover { box-shadow: var(--shadow-card-hover); }
+  .promo__eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+    color: rgb(var(--crimson)); display: inline-flex; align-items: center; gap: 5px; }
+  .promo__eyebrow svg { width: 13px; height: 13px; }
+  .promo__hook { font-size: 13.5px; line-height: 1.5; color: var(--c-primary); font-weight: 500;
+    background: var(--c-surface); border-radius: var(--r-btn); padding: 9px 12px; margin-bottom: 12px; }
+  .promo__acts { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  /* sticky action bar (compose) — pouce, safe-area */
+  .actionbar { position: sticky; bottom: 0; background: var(--c-surface); border-top: 1px solid var(--c-border); padding: 10px 16px; padding-bottom: max(10px, env(safe-area-inset-bottom)); display: flex; gap: 10px; z-index: 40; }
+  .actionbar .btn { flex: 1; }
+  @container app (min-width: 768px) { .actionbar { position: static; background: none; border: none; padding: 0; justify-content: flex-end; } .actionbar .btn { flex: 0 0 auto; } }
+
+  /* footer */
+  .app-footer { border-top: 1px solid var(--c-border); background: var(--c-surface); padding: 28px 0; padding-bottom: max(28px, env(safe-area-inset-bottom)); margin-top: 36px; color: var(--c-muted); font-size: 13px; }
+  .app-footer .between { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .app-footer a { color: var(--c-secondary); cursor: pointer; }
+  @container app (min-width: 640px) { .app-footer .between { flex-direction: row; align-items: center; justify-content: space-between; } }
+
+  /* hero */
+  .hero { padding: 40px 0 32px; }
+  @container app (min-width: 768px) { .hero { padding: 56px 0 44px; } }
+  .hero__title { font-family: var(--font-display); font-size: clamp(32px, 9cqi, 50px); line-height: 1.06; font-weight: 600; letter-spacing: -0.02em; max-width: 16ch; }
+  .hero__title em { font-style: italic; color: rgb(var(--crimson)); }
+  .hero-cta { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+  .hero-cta .btn { width: 100%; }
+  @container app (min-width: 480px) { .hero-cta { flex-direction: row; } .hero-cta .btn { width: auto; } }
+</style>
+</head>
+<body data-theme="light">
+  <div class="preview-bar">
+    <div class="preview-bar__brand">
+      <span class="preview-bar__brand-dot"></span>
+      Suddenly <small>maquette v2 · mobile-first</small>
+    </div>
+    <div class="preview-bar__controls">
+      <select class="page-select" id="page-select">
+        <optgroup label="— Pages publiques —">
+          <option value="accueil">Accueil · vitrine (anon) / fil (connecté)</option>
+          <option value="stories">Stories · liste des histoires libérées</option>
+          <option value="story">Story · lecture publique d'une partie</option>
+          <option value="citations">Citations · mur public (promo instance)</option>
+          <option value="game">Partie · profil public + comptes rendus</option>
+          <option value="report">Compte rendu publié</option>
+          <option value="character">Personnage · fiche PJ/PNJ</option>
+          <option value="profile">Profil joueur public</option>
+          <option value="search">Recherche fédérée</option>
+        </optgroup>
+        <optgroup label="— Pages connectées —">
+          <option value="scene">Scène · lecture réservée (peut contenir du jeu)</option>
+          <option value="dashboard">Tableau de bord PNJ · demandes de lien</option>
+          <option value="compose">Éditeur de compte rendu · cast + mentions</option>
+          <option value="linkflow">Flux Claim / Adopt / Fork</option>
+          <option value="sequence">Éditeur de séquence partagée</option>
+          <option value="notifications">Notifications</option>
+          <option value="onboarding">Onboarding</option>
+        </optgroup>
+      </select>
+      <div class="seg" role="group" aria-label="Device">
+        <button class="active" data-viewport="desktop" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span class="lbl">Desktop</span></button>
+        <button data-viewport="tablet" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg><span class="lbl">Tablette</span></button>
+        <button data-viewport="mobile" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg><span class="lbl">Mobile</span></button>
+      </div>
+      <div class="seg seg--auth" role="group" aria-label="Session">
+        <button data-auth="anon" type="button">Anon.</button>
+        <button class="active" data-auth="user" type="button">Connecté</button>
+      </div>
+      <button class="theme-btn" id="theme-btn" type="button" title="Thème clair / sombre">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="preview-stage">
+    <div class="preview-frame" id="preview-frame">
+      <div id="page-container" class="app"></div>
+    </div>
+  </div>
+
+  <script>
+  const I = {
+    home:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>',
+    users:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    globe:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></svg>',
+    user:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1"/></svg>',
+    sparkles:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></svg>',
+    bell:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>',
+    heart:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.5-1.5 3-3.3 3-5.5A4.5 4.5 0 0 0 12 5 4.5 4.5 0 0 0 2 8.5c0 2.2 1.5 4 3 5.5l7 7z"/></svg>',
+    comment:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+    share:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5 8.6 10.5"/></svg>',
+    search:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
+    link:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1.5-1.5"/></svg>',
+    check:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>',
+    x:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+    quote:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3-1 5-4 5-8V5H4v8h4M13 21c3-1 5-4 5-8V5h-4v8h4"/></svg>',
+    plus:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+    dice:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>',
+    dashboard:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>',
+    settings:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-2.82 1.17V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15H4.5a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 6 9.4l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 12 3.5V3.4a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 18 6l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 12z"/></svg>',
+    inbox:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>',
+    gem:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M11 3 8 9l4 12 4-12-3-6M2 9h20"/></svg>',
+    logout:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg>',
+    menu:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>',
+    enter:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5M15 12H3"/></svg>',
+    reply:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 17l-5-5 5-5"/><path d="M4 12h11a4 4 0 0 1 4 4v3"/></svg>',
+    ext:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></svg>',
+    oracle:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></svg>',
+  };
+  // Vrai logo Suddenly (static/img/suddenly-logo.svg) : trait penché type plume + 3 points.
+  const LOGO = '<svg class="brand-lockup__mark" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg"><polygon points="44,25 56,25 40,85 28,85" fill="#e03558"/><circle cx="30" cy="100" r="7" fill="#e03558"/><circle cx="50" cy="100" r="7" fill="#7c3aed"/><circle cx="70" cy="100" r="7" fill="#00e676"/></svg>';
+
+  function avatar(size, letter) {
+    const cls = size === 'xl' ? 'avatar-xl' : size === 'md' ? 'avatar-md' : 'avatar-sm';
+    return `<span class="${cls}">${letter ? `<span style="font-weight:600">${letter}</span>` : I.user}</span>`;
+  }
+
+  function shell(active, inner) {
+    const authed = window.currentAuth === 'user';
+    // NAVIGATION DU SITE — identique connecté ou non. C'est le seul contenu du burger.
+    // Le compte n'y entre jamais : il vit dans le usermenu (avatar). Un menu, un rôle.
+    const nav = [['Accueil','accueil'], ['Stories','stories'], ['Citations','citations']];
+    const links = nav.map(([label,page]) =>
+      `<a class="navlink ${active===page?'is-active':''}" onclick="setPage('${page}')">${label}</a>`
+    ).join('');
+
+    const dropdown = `
+      <div class="usermenu">
+        <button class="usermenu__trigger" onclick="toggleUserMenu(event)" aria-label="Menu du compte">
+          <span class="avatar-badge">${avatar('sm','M')}</span>
+        </button>
+        <div class="dropdown-menu">
+          <a onclick="setPage('profile')">${I.user} Mon profil</a>
+          <a onclick="setPage('dashboard')">${I.dashboard} Tableau de bord</a>
+          <a onclick="alert('Préférences (maquette)')">${I.settings} Préférences</a>
+          <div class="dropdown-sep"></div>
+          <a onclick="setPage('dashboard')" class="dd-badge">${I.inbox} Demandes <span class="badge badge-primary">2</span></a>
+          <a onclick="setPage('notifications')" class="dd-badge">${I.bell} Notifications <span class="badge badge-primary">3</span></a>
+          <a onclick="alert('Stats (maquette)')" class="dd-badge">${I.gem} Stats <span class="badge badge-primary">1</span></a>
+          <div class="dropdown-sep"></div>
+          <a onclick="setAuth('anon')" class="dd-danger">${I.logout} Déconnexion</a>
+        </div>
+      </div>`;
+
+    const rightAnon = `
+      <button class="btn btn-secondary btn-sm" onclick="setAuth('user')">Se connecter</button>
+      <button class="btn btn-primary btn-sm" onclick="setAuth('user')">S'inscrire</button>
+      <span class="lang-select">FR ▾</span>`;
+
+    // CONTRÔLES MOBILE — le usermenu (compte) et le burger (navigation) sont deux
+    // objets distincts, côte à côte. Anonyme : pas de usermenu, un bouton Se connecter.
+    // Le drawer ne connaît PAS la session : son contenu est le même dans les deux états.
+    const mobileControls = `
+      <div class="mobile-controls">
+        ${authed ? `
+        <div class="usermenu">
+          <button class="usermenu__trigger" onclick="toggleUserMenu(event)" aria-label="Compte" aria-haspopup="menu" aria-expanded="false"><span class="avatar-badge">${avatar('sm','M')}</span></button>
+          <div class="dropdown-menu">
+            <a onclick="setPage('profile')">${I.user} Mon profil</a>
+            <a onclick="setPage('dashboard')">${I.dashboard} Tableau de bord</a>
+            <a onclick="alert('Préférences (maquette)')">${I.settings} Préférences</a>
+            <div class="dropdown-sep"></div>
+            <a onclick="setPage('dashboard')" class="dd-badge">${I.inbox} Demandes <span class="badge badge-primary">2</span></a>
+            <a onclick="setPage('notifications')" class="dd-badge">${I.bell} Notifications <span class="badge badge-primary">3</span></a>
+            <div class="dropdown-sep"></div>
+            <a onclick="setAuth('anon')" class="dd-danger">${I.logout} Déconnexion</a>
+          </div>
+        </div>`
+        : `<button class="btn btn-primary btn-sm" onclick="setAuth('user')">Se connecter</button>`}
+        <button class="icon-btn" id="burger-btn" onclick="toggleDrawer(event)" aria-label="Navigation" aria-controls="nav-drawer" aria-expanded="false">${I.menu}</button>
+      </div>`;
+
+    // Le drawer = la nav du site, rien d'autre. Aucune branche `authed` ici : c'est le point.
+    const drawerItems = nav.map(([label,page]) =>
+      `<a class="${active===page?'is-active':''}" onclick="setPage('${page}')">${label}</a>`).join('');
+
+    return `
+      <header class="app-header">
+        <div class="container-app app-header__inner">
+          <a class="brand-lockup" onclick="setPage('accueil')" style="cursor:pointer">${LOGO}<span>Suddenly</span></a>
+          <nav class="app-nav">${links}${authed ? dropdown : rightAnon}</nav>
+          ${mobileControls}
+        </div>
+        <div class="nav-drawer" id="nav-drawer">${drawerItems}</div>
+      </header>
+      ${inner}
+      <footer class="app-footer">
+        <div class="container-app between">
+          <div class="row" style="gap:8px">${LOGO}
+            <div><p class="font-semibold text-sm" style="color:var(--c-primary)">Suddenly</p>
+            <p class="text-xs text-muted">Réseau fédéré de fiction partagée</p></div>
+          </div>
+          <div class="text-xs" style="line-height:1.9">
+            <p class="text-muted"><span class="font-medium text-secondary">suddenly.social :</span>
+              <a onclick="setPage('accueil')" style="margin:0 6px">À propos</a>·
+              <a onclick="setPage('citations')" style="margin:0 6px">Citations</a>·
+              <a style="margin:0 6px">Annuaire</a>·<a style="margin-left:6px">Confidentialité</a></p>
+            <p class="text-muted"><span class="font-medium text-secondary">Suddenly :</span>
+              <a href="https://github.com/RebelliousSmile/suddenly" style="margin:0 6px">Code source</a>·
+              <span style="margin-left:6px">v0.1.0 · AGPL v3</span></p>
+          </div>
+        </div>
+      </footer>`;
+  }
+
+  /* ===================== PAGES PUBLIQUES ===================== */
+
+  /* ===================== ACCUEIL — bascule Mastodon-like =====================
+     Anonyme  → vitrine : hero + comment ça marche + stats d'instance + activité + fédération.
+     Connecté → fil des publications, filtres Amis / Bourgade / Monde.
+     Une seule route '/', comme core:home côté Django. ======================= */
+
+  // Stats d'instance — miroir de get_instance_stats() (users/reports/characters/instances).
+  const INSTANCE_STATS = [['users','Joueurs','142'],['reports','Comptes rendus','1 208'],['characters','Personnages','537'],['instances','Instances liées','23']];
+
+  function vitrine() {
+    return `
+      <section class="hero"><div class="container-app" style="text-align:center">
+        <h1 class="hero__title" style="margin:0 auto;text-align:center">Bienvenue sur <em>Suddenly</em></h1>
+        <p class="lede" style="margin:16px auto 0;text-align:center">Réseau fédéré de fiction partagée. Publiez vos comptes rendus ; les PNJ mentionnés peuvent être <strong class="text-secondary">réclamés</strong>, <strong class="text-secondary">adoptés</strong> ou <strong class="text-secondary">dérivés</strong> par d'autres joueurs.</p>
+        <div class="hero-cta" style="justify-content:center">
+          <button class="btn btn-primary" onclick="setAuth('user')">${I.sparkles} Rejoindre le réseau</button>
+          <button class="btn btn-secondary" onclick="setAuth('user')">Se connecter</button>
+        </div>
+      </div></section>
+
+      <section class="content" style="padding-top:0"><div class="container-app">
+        <div class="grid-stats" style="--min:150px">
+          ${INSTANCE_STATS.map(([k,label,val])=>`<div class="card card-body stat-card"><p class="stat-num">${val}</p><p class="text-xs text-muted" style="margin-top:6px">${label}</p></div>`).join('')}
+        </div>
+      </div></section>
+
+      <section class="content"><div class="container-app">
+        <h2 class="h-sec" style="text-align:center;margin-bottom:24px">Comment ça marche ?</h2>
+        <div class="grid-feature">
+          ${[['link','Claim','« Ton PNJ, c\'était mon PJ depuis le début. » Un rétcon négocié.'],
+             ['sparkles','Adopt','« Ton PNJ m\'intéresse : j\'en fais mon PJ. » L\'historique est conservé.'],
+             ['users','Fork','« J\'en crée un PJ inspiré, mais distinct. » Deux personnages, un lien.']]
+            .map(([ic,t,d])=>`<div class="card card-body" style="text-align:center"><div class="text-crimson" style="display:flex;justify-content:center;margin-bottom:10px">${I[ic]}</div><h3 class="h-sec" style="font-size:18px;margin-bottom:6px">${t}</h3><p class="text-secondary text-sm">${d}</p></div>`).join('')}
+        </div>
+      </div></section>
+
+      <section class="content" style="background:var(--c-card)"><div class="container-app">
+        <div class="between" style="margin-bottom:20px"><h2 class="h-sec">Stories à lire</h2><a class="text-crimson text-sm" style="cursor:pointer" onclick="setPage('stories')">Toutes les stories →</a></div>
+        <p class="text-secondary text-sm" style="margin-bottom:20px">Des histoires terminées et libérées, lisibles sans compte. Chacune rassemble tous les comptes rendus d'une partie.</p>
+        <div class="grid-feature">${storiesIndex().map(function(st){
+          const openArg = st.game.replace(/'/g,"\\'");
+          return `<div class="card card-body card-hover" onclick="openStory('${openArg}')"><h3 class="h-sec" style="font-size:18px;margin-bottom:6px">${esc(st.game)}</h3><p class="text-xs text-muted">${st.reports.length} compte${st.reports.length>1?'s':''} rendu${st.reports.length>1?'s':''}${st.remote?' · '+I.globe+' '+esc(st.instance||'fédéré'):''}</p></div>`;
+        }).join('')}</div>
+      </div></section>
+
+      <section class="content"><div class="container-app">
+        <div class="between" style="margin-bottom:8px">
+          <h2 class="h-sec">${I.quote} Ce qu'on y dit</h2>
+          <a class="text-crimson text-sm" style="cursor:pointer" onclick="setPage('citations')">Le mur des citations →</a>
+        </div>
+        <p class="text-secondary text-sm" style="margin-bottom:20px">Des répliques retenues par leurs auteurs, tirées d'histoires libérées. C'est la voix de l'instance — et souvent celle d'un PNJ que personne n'a encore réclamé.</p>
+        <div class="quote-wall">${quotesIndex().slice(0,3).map(function(q){ return quoteCard(q); }).join('')}</div>
+      </div></section>
+
+      <section class="content"><div class="container-app">
+        <div class="card card-body" style="max-width:48rem;margin:0 auto;text-align:center">
+          <div class="text-crimson" style="display:flex;justify-content:center;margin-bottom:12px">${I.globe}</div>
+          <h2 class="h-sec" style="margin-bottom:10px">Fédéré avec le Fediverse</h2>
+          <p class="text-secondary text-sm">Suddenly parle <strong>ActivityPub</strong> : suivez des joueurs depuis Mastodon, BookWyrm ou toute plateforme compatible.</p>
+        </div>
+      </div></section>`;
+  }
+
+  function fil() {
+    const tab = window.feedTab || 'amis';
+    const mine = SCENES.map((s,i)=>({s,i})).filter(x=>x.s.mine);
+    const others = SCENES.map((s,i)=>({s,i})).filter(x=>!x.s.mine);
+    let body;
+    if (tab === 'amis') {
+      const cards = mine.map(x=>sceneCard(x.s,x.i));
+      body = cards.length
+        ? `<p class="text-sm text-muted" style="margin-bottom:16px">Les nouvelles interventions écrites pour vos histoires.</p>
+           <div class="stack stack--lg">${interleavePromos(cards, FEED_PROMO_EVERY).join('')}</div>`
+        : `<div class="muted-box">Rien de neuf dans vos parties pour l'instant.</div>`;
+    } else {
+      const label = tab === 'bourgade' ? 'de votre instance' : 'du Fediverse';
+      const set = tab === 'monde' ? others.concat(mine) : others; // maquette : jeux de démo
+      body = `<p class="text-xs text-muted" style="margin-bottom:14px">${tab==='monde'?I.globe+' ':''}Fictions ${label} — à explorer, repérez un PNJ disponible.</p>
+              <div class="stack">${set.map(x=>discoveryCard(x.s,x.i)).join('')}</div>`;
+    }
+    return `
+      <section class="content content--narrow"><div class="container-app">
+        <h1 class="h-page" style="margin-bottom:18px">Accueil</h1>
+        <div class="tabs">
+          <span class="tab ${tab==='amis'?'is-active':''}" onclick="setFeedTab('amis')">${I.users} Amis</span>
+          <span class="tab ${tab==='bourgade'?'is-active':''}" onclick="setFeedTab('bourgade')">${I.home} Bourgade</span>
+          <span class="tab ${tab==='monde'?'is-active':''}" onclick="setFeedTab('monde')">${I.globe} Monde</span>
+        </div>
+        ${body}
+      </div></section>`;
+  }
+
+  function pageAccueil() {
+    return shell('accueil', window.currentAuth === 'user' ? fil() : vitrine());
+  }
+
+  // Page de scène = lecture complète d'un Report : fil d'Ariane, toutes les interventions
+  // dans l'ordre, markers de structure (début/fin, entrées/sorties, oracle).
+  function pageScene() {
+    const sc = SCENES[window.sceneIdx || 0];
+    // cast unique, résolu depuis le registre, dans l'ordre d'apparition
+    const seen = new Set(), cast = [];
+    rapportsOf(sc).forEach(function(r){
+      if (!r.actor || seen.has(r.actor)) return; seen.add(r.actor);
+      const a = resolve(r.actor);
+      const tag = a.kind==='remote'?'fédéré':(a.status&&a.status!=='pc')?'PNJ':'';
+      cast.push('<span class="cast-pill">'+avatarFor(a,'sm')+' '+esc(a.name)+(tag?' <span class="text-xs text-muted">'+tag+'</span>':'')+'</span>');
+    });
+    // seq déjà bornée par des markers bookend ; on rend tel quel
+    return shell('accueil', `
+      <section class="content content--narrow"><div class="container-app">
+        <p class="scene__crumb" style="margin-bottom:12px">
+          <a onclick="setPage('game')" style="cursor:pointer">${sc.game}</a>
+          <span class="text-muted">›</span> <span class="scene__title">${sc.scene}</span>
+        </p>
+        <h1 class="h-page" style="margin-bottom:6px">${sc.scene}</h1>
+        <p class="text-sm text-muted" style="margin-bottom:4px">${sc.mine?'Votre partie':'Partie de '+(sc.instance||'la bourgade')} · ${sc.ago}${sc.remote?' · '+I.globe+' '+sc.instance:''}</p>
+        ${cast.length?`<div class="wrap-chips" style="margin-bottom:20px">${cast.join('')}</div>`:''}
+
+        <div class="scene__read">${sc.seq.map(function(it){ return it.type==='marker' ? marker(it,'scene') : renderRap(it,'scene'); }).join('')}</div>
+
+        <div class="card card-body" style="margin-top:24px;background:var(--c-card-dark)">
+          <p class="text-sm text-muted">${sc.mine?'C\'est votre histoire — poursuivez-la.':'Un PNJ vous intrigue ? Proposez un lien à son auteur.'}</p>
+          <div class="hero-cta" style="margin-top:12px">
+            ${sc.mine
+              ? `<button class="btn btn-primary btn-sm" onclick="setPage('compose')">${I.plus} Écrire la suite</button>`
+              : `<button class="btn btn-primary btn-sm" onclick="setPage('linkflow')">${I.link} Réclamer / Adopter / Dériver</button>`}
+            <button class="btn btn-secondary btn-sm" onclick="setPage('accueil')">← Retour au fil</button>
+          </div>
+        </div>
+      </div></section>`);
+  }
+
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // avatar d'un personnage résolu (registre partagé) — réutilise les classes v2
+  function avatarFor(a, size){
+    const base = size==='lg' ? 'avatar-md' : size==='md' ? 'avatar-md' : 'avatar-sm';
+    const mod = a.kind==='remote' ? ' avatar--remote' : a.kind==='gone' ? ' avatar--gone'
+              : (a.status && a.status!=='pc') ? ' avatar--npc' : '';
+    const inner = a.avImg ? '<img src="'+esc(a.avImg)+'" alt="">'
+                : '<span style="font-weight:600">'+esc(a.av || a.name[0])+'</span>';
+    return '<span class="'+base+mod+'">'+inner+'</span>';
+  }
+
+  // fiche tooltip — SCÈNE uniquement
+  function defCard(a, sceneRole){
+    if (a.kind === 'remote'){
+      return '<span class="def"><div class="def__head">'+avatarFor(a,'lg')
+        +'<div class="def__hgroup"><div class="def__name">'+esc(a.name)+'</div>'
+        +'<span class="badge badge-remote">'+I.globe+' Fédéré</span></div></div>'
+        +'<div class="def__rows"><div class="def__row"><span class="def__k">Source</span><span class="def__v iri">'+esc(a.iri)+'</span></div>'
+        +(sceneRole?'<div class="def__row"><span class="def__k">Dans la scène</span><span class="def__v"><span class="badge badge-role">'+ROLE_LABEL[sceneRole]+'</span></span></div>':'')
+        +'</div><div class="def__foot"><span class="def__note">Acteur distant — fiche non résolue sur cette instance.</span></div></span>';
+    }
+    if (a.kind === 'gone'){
+      return '<span class="def"><div class="def__head">'+avatarFor(a,'lg')
+        +'<div class="def__hgroup"><div class="def__name">'+esc(a.name)+'</div></div></div>'
+        +'<div class="def__foot"><span class="def__note">Ce personnage a été supprimé ; la réplique demeure.</span></div></span>';
+    }
+    const owner = a.owner
+        ? '<span class="def__v">'+(a.owner===ME?'<span class="you">vous</span>':esc(a.owner))+'</span>'
+        : '<span class="def__v" style="color:var(--c-muted);font-weight:400">— disponible</span>';
+    const creatorYou = a.creator===ME ? '<span class="you">vous</span>' : esc(a.creator||'—');
+    const rows = [];
+    if (a.creator || a.owner!==undefined){
+      rows.push('<div class="def__row"><span class="def__k">Créateur</span><span class="def__v">'+creatorYou+'</span></div>');
+      rows.push('<div class="def__row"><span class="def__k">Joueur (v.)</span>'+owner+'</div>');
+    }
+    if (a.status) rows.push('<div class="def__row"><span class="def__k">Dans la partie</span><span class="def__v"><span class="badge badge-'+a.status+'">'+STATUS_LABEL[a.status]+'</span></span></div>');
+    if (sceneRole) rows.push('<div class="def__row"><span class="def__k">Dans la scène</span><span class="def__v"><span class="badge badge-role">'+ROLE_LABEL[sceneRole]+'</span></span></div>');
+    return '<span class="def"><div class="def__head">'+avatarFor(a,'lg')
+      +'<div class="def__hgroup"><div class="def__name">'+esc(a.name)+'</div></div></div>'
+      +(a.desc?'<p class="def__desc">'+esc(a.desc)+'</p>':'')
+      +'<div class="def__rows">'+rows.join('')+'</div>'
+      +(a.status?'<div class="def__foot"><a class="def__sheet" onclick="setPage(\'character\')">'+I.ext+' Voir la fiche</a></div>':'')
+      +'</span>';
+  }
+
+  // nom d'acteur : avec tooltip en scène, brut dans le fil
+  function speakerName(a, sceneRole, tag, ctx){
+    const tagHtml = tag ? '<span class="npc">'+tag+'</span>' : '';
+    if (ctx === 'scene'){
+      const t = tag ? '<span class="tag-npc">'+tag+'</span>' : '';
+      return '<span class="defname" tabindex="0" onclick="toggleDef(event)">'+esc(a.name)+t+defCard(a, sceneRole)+'</span>';
+    }
+    return '<span class="rap__speaker">'+esc(a.name)+tagHtml+'</span>';
+  }
+
+  function replyLine(replyTo, ctx){
+    if (!replyTo || ctx !== 'scene') return '';   // le fil ne montre pas les fils de réponse
+    if (replyTo.local){
+      const p = resolve(replyTo.local);
+      return '<p class="rap__replyto">'+I.reply+' en réponse à '+speakerName(p, null, '', 'scene')+'</p>';
+    }
+    return '<p class="rap__replyto">'+I.reply+' en réponse à <span class="iri">'+esc(replyTo.iri)+'</span> '+I.globe+'</p>';
+  }
+
+  // MOTEUR UNIFIÉ — un Rapport typé. ctx ∈ {feed, scene}.
+  // feed : nom brut, pas de tooltip / replyTo / pastille ; registres identiques.
+  function renderRap(r, ctx){
+    if (r.kind !== 'discussion'){
+      return '<div class="rap rap--'+r.kind+'"><p class="rap__text">'+esc(r.content)+'</p></div>';
+    }
+    const a = resolve(r.actor);
+    const tag = a.kind==='remote' ? 'fédéré' : (a.status && a.status!=='pc') ? 'PNJ' : '';
+    const replyCls = (ctx==='scene' && r.replyTo) ? ' rap--reply' : '';
+    const quotedCls = r.quoted ? ' rap--quoted' : '';
+    const qmark = (ctx==='scene' && r.quoted)
+      ? '<span class="rap__qmark">'+I.quote+' Citation</span>' : '';
+    return '<div class="rap rap--discussion'+replyCls+quotedCls+'">'
+      +replyLine(r.replyTo, ctx)
+      +'<div class="rap__who">'+avatarFor(a,'sm')+speakerName(a, r.sceneRole, tag, ctx)+qmark+'</div>'
+      +'<p class="rap__text">'+esc(r.content)+'</p></div>';
+  }
+
+  // marker de structure — typé en scène, plié en "…" dans le fil
+  function marker(m, ctx){
+    if (ctx !== 'scene'){
+      return '<div class="rap__fold">···</div>';
+    }
+    const ic = m.icon ? I[m.icon] : '';
+    const vcls = m.variant==='enter' ? ' scene__marker--enter' : m.variant==='oracle' ? ' scene__marker--oracle' : '';
+    return '<div class="scene__marker'+vcls+'">'+ic+esc(m.label)+'</div>';
+  }
+
+  // fiche : reposition tooltip pour rester dans le viewport
+  function placeDef(name){
+    const card = name.querySelector('.def'); if (!card) return;
+    name.style.setProperty('--def-x','0px');
+    const nameRect = name.getBoundingClientRect();
+    const w = card.offsetWidth, margin = 8, vw = document.documentElement.clientWidth;
+    let x = 0; const overflowRight = (nameRect.left + w + margin) - vw;
+    if (overflowRight > 0) x = -overflowRight;
+    if (nameRect.left + x < margin) x = margin - nameRect.left;
+    name.style.setProperty('--def-x', x+'px');
+  }
+  function toggleDef(e){
+    e.stopPropagation();
+    const name = e.currentTarget, card = name.querySelector('.def');
+    const open = card.classList.contains('is-open');
+    document.querySelectorAll('.def.is-open').forEach(function(d){ d.classList.remove('is-open'); });
+    if (!open){ placeDef(name); card.classList.add('is-open'); }
+  }
+  window.toggleDef = toggleDef;
+
+  // Amis : bloc de lecture. Fil d'Ariane partie › scène, les interventions en toutes
+  // lettres, un lien vers la page de scène complète. Peu de badges.
+  function sceneCard(sc, idx) {
+    // extrait = les FEED_EXCERPT DERNIERS rapports (le fil montre le plus récent).
+    // markers pliés en "…". "N de plus" invite à ouvrir la scène.
+    const raps = rapportsOf(sc);
+    const total = raps.length;
+    const shown = raps.slice(-FEED_EXCERPT);
+    const hidden = total - shown.length;
+    const body = (hidden > 0 ? '<div class="rap__fold">···</div>' : '')
+               + shown.map(function(r){ return renderRap(r, 'feed'); }).join('');
+    const more = hidden > 0
+      ? `<span class="text-xs text-muted">${hidden} rapport${hidden>1?'s':''} plus tôt</span>`
+      : `<span class="text-xs text-muted">${total} rapport${total>1?'s':''}</span>`;
+    return `
+      <article class="card scene">
+        <div class="card-body">
+          <div class="scene__crumb">
+            <a onclick="setPage('game')" style="cursor:pointer">${sc.game}</a>
+            <span class="text-muted">›</span>
+            <a onclick="openScene(${idx})" style="cursor:pointer" class="scene__title">${sc.scene}</a>
+            <time class="text-xs text-muted" style="margin-left:auto">${sc.ago}</time>
+          </div>
+          <p class="scene__meta text-xs text-muted">${more}${sc.remote?` · ${I.globe} ${sc.instance}`:''}</p>
+          <div class="scene__body">${body}</div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-ghost btn-sm" style="color:rgb(var(--crimson))" onclick="openScene(${idx})">Lire la scène complète →</button>
+          <div style="margin-left:auto" class="row" style="gap:2px">
+            <button class="btn btn-ghost btn-sm text-muted">${I.heart}</button>
+            <button class="btn btn-ghost btn-sm text-muted">${I.comment}</button>
+          </div>
+        </div>
+      </article>`;
+  }
+
+  /* ============================================================
+     INTERCALAIRE DE DÉCOUVERTE — modèle Vinted. Tous les FEED_PROMO_EVERY
+     extraits (défaut 6), une carte "pub" pour un personnage circulant.
+     But pédagogique : le joueur invité par un MJ découvre que les
+     personnages se réclament / adoptent / dérivent entre parties.
+     Les gestes sont CONDITIONNÉS au statut — c'est l'idée juste à
+     transmettre : un perso libre se prend, un perso pris se dérive.
+     Sûr vis-à-vis du mur : un perso circulable est résolu (Phase 6).
+     ============================================================ */
+  const DISCOVER = ['ferrant','suie','ourse'];  // clés registre du pool
+  let FEED_PROMO_EVERY = (window.userPrefs && window.userPrefs.feedPromoEvery) || 6;
+
+  function promoCard(key){
+    const a = resolve(key);
+    const free = !a.owner;                       // libre → claim/adopt ; pris → fork seul
+    const ownerTxt = a.owner===ME ? 'vous' : esc(a.owner||'');
+    // accroche pédagogique adaptée au statut
+    const hook = free
+      ? `Ce PNJ n'appartient à personne. Faites-en le vôtre.`
+      : `Ce personnage appartient déjà à ${ownerTxt} — mais vous pouvez en tirer votre propre version.`;
+    // gestes : claim + adopt seulement si libre ; fork toujours
+    const acts = [];
+    if (free){
+      acts.push(`<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();setPage('linkflow')">${I.link} Réclamer</button>`);
+      acts.push(`<button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();setPage('linkflow')">Adopter</button>`);
+    }
+    acts.push(`<button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();setPage('linkflow')">Dériver</button>`);
+    return `
+      <article class="card promo" onclick="setPage('character')">
+        <div class="card-body">
+          <p class="promo__eyebrow">${I.sparkles} Un personnage à faire circuler</p>
+          <div class="row" style="gap:12px;margin:8px 0 10px">
+            ${avatarFor(a,'md')}
+            <div style="min-width:0">
+              <p class="font-semibold">${esc(a.name)}</p>
+              <p class="text-xs text-muted">${a.game?esc(a.game)+' · ':''}créé par ${a.creator===ME?'vous':esc(a.creator||'—')}</p>
+            </div>
+            <span class="badge ${free?'badge-available':'badge-forked'}" style="margin-left:auto;flex:0 0 auto">${free?'Disponible':'Déjà dérivé'}</span>
+          </div>
+          ${a.desc?`<p class="text-secondary text-sm" style="margin-bottom:10px">${esc(a.desc)}</p>`:''}
+          <p class="promo__hook">${hook}</p>
+          <div class="promo__acts">${acts.join('')}</div>
+        </div>
+      </article>`;
+  }
+
+  // interfoliage : insère une promo tous les `every` extraits ; AU MOINS une
+  // si le fil compte moins de `every` cartes (le novice doit voir le concept
+  // même sur un fil court). Cartes promo tirées en rotation du pool DISCOVER.
+  function interleavePromos(cards, every){
+    if (!DISCOVER.length) return cards;
+    const out = [];
+    let pi = 0;
+    for (let i = 0; i < cards.length; i++){
+      out.push(cards[i]);
+      if ((i + 1) % every === 0){
+        out.push(promoCard(DISCOVER[pi % DISCOVER.length])); pi++;
+      }
+    }
+    // fil court : aucune promo insérée par la règle du modulo → en garantir une
+    if (pi === 0 && cards.length > 0){
+      out.push(promoCard(DISCOVER[0]));
+    }
+    return out;
+  }
+
+  // Bourgade / Monde : découverte. Compact, l'accent sur QUI parle et quel PNJ est
+  // dispo à réclamer — c'est là que les badges de statut sont utiles.
+  function discoveryCard(sc, idx) {
+    const raps = rapportsOf(sc);
+    // PNJ disponibles (owner null) résolus depuis le registre
+    const seen = new Set(), npcs = [];
+    raps.forEach(function(r){
+      if (!r.actor || seen.has(r.actor)) return; seen.add(r.actor);
+      const a = resolve(r.actor);
+      if (a.kind==='local' && a.status==='npc' && !a.owner) npcs.push(esc(a.name));
+    });
+    const first = raps[0] ? raps[0].content : '';
+    return `
+      <article class="card card-hover" onclick="openScene(${idx})">
+        <div class="card-body">
+          <div class="between" style="margin-bottom:6px">
+            <span class="text-sm"><span class="font-medium">${sc.game}</span> <span class="text-muted">› ${sc.scene}</span></span>
+            <time class="text-xs text-muted" style="flex:0 0 auto">${sc.ago}${sc.remote?' · '+sc.instance:''}</time>
+          </div>
+          <p class="text-secondary text-sm" style="margin-bottom:8px">${first.length>120?esc(first.slice(0,120))+'…':esc(first)}</p>
+          ${npcs.length?`<div class="wrap-chips">${npcs.map(n=>`<span class="badge badge-available">${n} ${I.sparkles}</span>`).join('')}</div>`:''}
+        </div>
+      </article>`;
+  }
+
+  /* ============================================================
+     MODÈLE PARTAGÉ — fidèle au dépôt suddenly/. Une seule source pour
+     le fil (extrait) ET la page scène. Character résolu par registre ;
+     un Rapport ne porte qu'une CLÉ d'acteur, jamais un nom inline.
+       Report  → { game, scene, ago, mine, seq[] }
+       seq[]   → Rapport typé  OU  marker de structure
+       Rapport → { kind, content, actor?, sceneRole?, replyTo?, quoted? }
+       kind ∈ {narration, description, action, discussion}
+       discussion EXIGE actor ; les 3 autres n'en ont pas.
+     ============================================================ */
+  const ME = '@mara';
+
+  const CHARS = {
+    selene:{ name:'Selène', av:'S', kind:'local', status:'pc',
+             desc:"Enquêtrice obstinée, revenue à Valombre pour une dette qu'elle croyait éteinte.",
+             creator:'@mara', owner:'@mara' },
+    bourg:{ name:'Le Bourgmestre', av:'B', kind:'local', status:'npc',
+            desc:"Homme trop calme d'une ville trop silencieuse. Il n'a rien commis — il attendait.",
+            creator:'@mara', owner:null },
+    voix:{ name:'La Voix sous le pont', av:'V', kind:'local', status:'npc',
+           desc:"On ne l'a jamais vue. On a seulement entendu ce qu'elle voulait qu'on répète.",
+           creator:'@mara', owner:null },
+    oracle:{ name:"L'Oracle borgne", av:'O', kind:'local', status:'npc',
+             desc:"Ne ment jamais. Choisit seulement ce qu'il tait.",
+             creator:'@mara', owner:null },
+    // pool de découverte (autres parties)
+    ferrant:{ name:'Doyen Ferrant', av:'F', kind:'local', status:'npc',
+              desc:"Gardien du registre de Valombre. Sait quels noms ont été rayés, et par qui.",
+              creator:'@lune', owner:null, game:'Les Cendres de Valombre' },
+    suie:{ name:"L'Enfant de suie", av:'E', kind:'local', status:'npc',
+           desc:"Apparaît après chaque incendie, jamais brûlée. On ne sait pas ce qu'elle cherche.",
+           creator:'@lune', owner:null, game:'Les Cendres de Valombre' },
+    ourse:{ name:'Vieille Ourse', av:'U', kind:'local', status:'forked',
+            desc:"Contrebandière des cols. Déjà dérivée une fois — sa version d'origine court ailleurs.",
+            creator:'@kader', owner:'@remote@dice.town', game:'Ptolémée en ruines' },
+  };
+  const REMOTE = { 'iri:ghost':{ name:'Ghost', iri:'https://dice.town/character/ghost', kind:'remote' } };
+
+  function resolve(key){
+    if (!key) return { kind:'gone', name:'Personnage supprimé', av:'?' };
+    if (REMOTE[key]) return REMOTE[key];
+    return CHARS[key] || { kind:'gone', name:'Personnage supprimé', av:'?' };
+  }
+
+  const STATUS_LABEL = { npc:'PNJ', pc:'PJ', claimed:'Réclamé', adopted:'Adopté', forked:'Dérivé' };
+  const ROLE_LABEL = { main:'Principal', supporting:'Second rôle', mentioned:'Mentionné' };
+
+  // combien de rapports montre un extrait de fil (préférence utilisateur, défaut 5)
+  let FEED_EXCERPT = (window.userPrefs && window.userPrefs.feedExcerpt) || 5;
+
+  /* Chaque scène = un Report. seq mêle rapports typés et markers ; mine:true = Amis.
+     released:true  → le compte rendu a franchi le mur temporel (libéré, Phase 6).
+                      Seules ces scènes alimentent Stories et le mur des citations.
+     quoted:{vis}   → réplique retenue. vis:'public' = fédérable/promouvable ;
+                      vis:'private' = liseré de scène uniquement, jamais en vitrine.
+     DEUX VERROUS INDÉPENDANTS : released (mur temporel) ET vis (choix éditorial). */
+  const SCENES = [
+    { game:'Les Cendres de Valombre', mine:true, released:true, scene:'La confession du bourgmestre', ago:'2 h',
+      seq:[
+        {type:'marker', variant:'bookend', icon:'dice', label:'Début de scène'},
+        {kind:'narration', content:"La salle du conseil sentait la cire froide et le secret gardé trop longtemps. Personne ne s'assit."},
+        {kind:'description', content:"Des chandelles à demi consumées, une longue table nue, et au fond, une porte qu'aucun d'eux n'avait jamais vue ouverte."},
+        {type:'marker', variant:'enter', icon:'enter', label:'Le Bourgmestre entre'},
+        {kind:'discussion', actor:'bourg', sceneRole:'main', quoted:{vis:'public'}, content:"« Vous croyez que je me cache. Mais c'est vous qu'on gardait au chaud. »"},
+        {kind:'action', content:"Selène pose la lettre sur la table, face visible. Le sceau brisé ne laisse plus de doute."},
+        {kind:'discussion', actor:'selene', sceneRole:'main', content:"« Alors dites-le. Devant tout le monde. »"},
+        {type:'marker', variant:'oracle', icon:'oracle', label:"Oracle · l'inattendu surgit"},
+        {kind:'narration', content:"Avant qu'il ne réponde, la porte du fond s'ouvrit d'elle-même. Personne ne l'avait touchée."},
+        {kind:'discussion', actor:'voix', sceneRole:'supporting', replyTo:{local:'bourg'}, quoted:{vis:'public'}, content:"« Il ne peut pas. La promesse était à moi. »"},
+        {type:'marker', variant:'bookend', label:'Fin de scène'},
+      ]},
+    { game:'Ptolémée en ruines', mine:true, released:true, scene:'Trois portes, une seule vraie', ago:'5 h',
+      seq:[
+        {type:'marker', variant:'bookend', icon:'dice', label:'Début de scène'},
+        {kind:'description', content:"Trois portes de bronze vert-de-gris, chacune gravée d'un œil. Deux clignent. La troisième pleure."},
+        {kind:'discussion', actor:'oracle', sceneRole:'main', quoted:{vis:'public'}, content:"« Je n'ai jamais menti. J'ai seulement choisi ce que je taisais. »"},
+        {kind:'discussion', actor:'selene', sceneRole:'supporting', quoted:{vis:'private'}, content:"« Je prends celle qui pleure. Les menteuses clignent. »"},
+      ]},
+    { game:'Neon Sabbath', mine:false, remote:true, instance:'dice.town', released:true, scene:'Le fantôme du réseau', ago:'1 j',
+      seq:[
+        {kind:'narration', content:"Le signal remonte d'une instance qu'on croyait morte. Quelqu'un a rallumé un vieux nom."},
+        {kind:'discussion', actor:'iri:ghost', sceneRole:'mentioned', replyTo:{iri:'https://dice.town/report/42#r7'}, quoted:{vis:'public'}, content:"« J'ai entendu ce nom sur une autre rive. Il n'était pas mort. »"},
+      ]},
+    // NON LIBÉRÉE — jeu en cours. Sa réplique est marquée quoted:public et pourtant
+    // n'apparaît NI dans Stories NI sur le mur : le verrou released est le mur temporel.
+    { game:'Les Cendres de Valombre', mine:true, released:false, scene:'La porte du fond', ago:'20 min',
+      seq:[
+        {type:'marker', variant:'bookend', icon:'dice', label:'Début de scène'},
+        {kind:'narration', content:"Derrière la porte, l'escalier descend plus bas que la ville."},
+        {kind:'discussion', actor:'voix', sceneRole:'main', quoted:{vis:'public'}, content:"« Tu croyais chercher un homme. Tu cherchais une dette. »"},
+      ]},
+  ];
+
+  // rapports seuls (sans markers), pour l'extrait de fil
+  function rapportsOf(sc){ return sc.seq.filter(function(x){ return x.type!=='marker'; }); }
+
+  /* GAMES — registre des parties. Le Report porte le récit ; le Game porte la
+     campagne : système, pitch, autrice. Une Story affiche le Game, pas une
+     concaténation devinée depuis ses reports. */
+  const GAMES = {
+    'Les Cendres de Valombre': { system:'Monsterhearts 2', author:'@mara',
+      desc:"Une petite ville de montagne où chaque adulte cache un pacte. Selène est revenue pour une dette qu'elle croyait éteinte — la ville, elle, n'a rien oublié." },
+    'Ptolémée en ruines': { system:'Ironsworn', author:'@mara',
+      desc:"Sous la bibliothèque engloutie, trois portes et un oracle qui ne ment jamais mais ne dit pas tout. Exploration solo, oracle au centre." },
+    'Neon Sabbath': { system:'Blades in the Dark', author:'@vex@dice.town',
+      desc:"Un vieux nom se rallume sur une instance qu'on croyait morte. Chronique cyber-occulte, fédérée depuis dice.town." },
+  };
+  function gameOf(name){ return GAMES[name] || { system:'', author:'', desc:'' }; }
+
+  /* Personnages les plus actifs d'une Story : classés par nombre d'interventions
+     sur l'ensemble des reports LIBÉRÉS de la partie. Plafonné à 10 — au-delà,
+     ce n'est plus une distribution, c'est un annuaire. */
+  const STORY_CAST_MAX = 10;
+  function castByActivity(reports, max){
+    const tally = {};
+    reports.forEach(function(rp){
+      rapportsOf(rp.s).forEach(function(r){
+        if (!r.actor) return;
+        tally[r.actor] = (tally[r.actor] || 0) + 1;
+      });
+    });
+    return Object.keys(tally)
+      .map(function(k){ return { key:k, a:resolve(k), n:tally[k] }; })
+      .sort(function(x, y){ return y.n - x.n || x.a.name.localeCompare(y.a.name); })
+      .slice(0, max || STORY_CAST_MAX);
+  }
+
+  /* ============================================================
+     LIBÉRATION — le mur temporel, rendu explicite dans la maquette.
+     releasedScenes() est le SEUL point d'entrée des surfaces publiques
+     (Stories, mur des citations, vitrine). Le fil connecté, lui, voit
+     tout : c'est le côté jeu du mur.
+     Si SUD-V1 tranche la libération au niveau Game, ce filtre remonte
+     d'un étage (st.released) sans toucher aux surfaces.
+     ============================================================ */
+  function releasedScenes(){
+    return SCENES.map(function(s,i){ return {s:s, i:i}; }).filter(function(x){ return x.s.released === true; });
+  }
+
+  /* CITATIONS — dérivées, jamais saisies deux fois. Double verrou :
+       released === true         (le compte rendu a franchi le mur)
+       quoted.vis === 'public'   (l'auteur expose cette réplique)
+     Une seule des deux conditions ne suffit pas. */
+  function quotesIndex(){
+    const out = [];
+    releasedScenes().forEach(function(x){
+      rapportsOf(x.s).forEach(function(r){
+        if (r.kind !== 'discussion' || !r.quoted) return;
+        if (!r.quoted.vis || r.quoted.vis !== 'public') return;
+        const a = resolve(r.actor);
+        out.push({ text:r.content, actorKey:r.actor, actor:a, game:x.s.game, scene:x.s.scene,
+                   remote:!!x.s.remote, instance:x.s.instance });
+      });
+    });
+    return out;
+  }
+
+  // carte citation — l'accroche publique. Un PNJ libre y devient une invitation.
+  function quoteCard(q, opts){
+    opts = opts || {};
+    const a = q.actor;
+    const free = a.kind !== 'remote' && a.status && a.status !== 'pc' && !a.owner;
+    const tag = a.kind==='remote' ? '<span class="badge badge-remote">'+I.globe+' '+esc(q.instance||'fédéré')+'</span>'
+              : free ? '<span class="badge badge-available">PNJ disponible '+I.sparkles+'</span>' : '';
+    const openArg = q.game.replace(/'/g,"\\'");
+    const src = opts.hideSource ? '' :
+      '<p class="quote-card__src">dans <em>'+esc(q.game)+'</em> · '+esc(q.scene)+'</p>';
+    const cta = opts.cta && free
+      ? '<button class="btn btn-secondary btn-sm" style="margin-top:12px" onclick="event.stopPropagation();setPage(\'linkflow\')">'+I.link+' Proposer un lien</button>' : '';
+    return '<article class="card card-body quote-card card-hover" onclick="openStory(\''+openArg+'\')">'
+      + '<p class="quote-card__text">'+esc(q.text)+'</p>'
+      + '<div class="quote-card__meta">'+avatarFor(a,'sm')+'<span class="text-secondary font-medium">'+esc(a.name)+'</span>'+tag+'</div>'
+      + src + cta
+      + '</article>';
+  }
+
+  /* ============================================================
+     STORIES — surface PUBLIQUE. Une Story = une partie (un `game`),
+     agrégat de tous ses reports lus bout à bout. Ne contient que du
+     compte rendu résolu/libéré (Phase 6). Le filtrage "released" est
+     réputé fait côté serveur : la maquette liste ce qui lui parvient.
+       pageStories : la liste des parties.
+       pageStory   : lecture publique de tous les reports d'une partie,
+                     via le moteur résolu renderRap(r,'scene').
+     Distincte de pageScene (lecture d'une scène de partie, réservée).
+     ============================================================ */
+
+  // regroupe SCENES (=reports) par game (=partie/Story), sans nouvelle donnée
+  function storiesIndex(){
+    const by = {};
+    releasedScenes().map(function(x){ return x.s; }).forEach(function(s, i){
+      (by[s.game] = by[s.game] || { game:s.game, remote:s.remote, instance:s.instance, mine:s.mine, reports:[] })
+        .reports.push({ s:s, i:i });
+    });
+    return Object.values(by);
+  }
+
+  function pageStories() {
+    const stories = storiesIndex();
+    const cards = stories.map(function(st){
+      const nReports = st.reports.length;
+      const g = gameOf(st.game);
+      // distribution classée par activité, plafonnée à 10
+      const cast = castByActivity(st.reports, STORY_CAST_MAX);
+      // distribution = des NOMS, pas des vignettes. La fiche (tooltip) porte le reste :
+      // avatar, statut, propriétaire, description. Même mécanisme qu'en scène (defname/defCard).
+      const chips = cast.map(function(c){
+        return '<span class="defname castname" tabindex="0" onclick="toggleDef(event)">'
+             + esc(c.a.name) + defCard(c.a, null) + '</span>';
+      }).join('<span class="castsep">·</span>');
+      const openArg = st.game.replace(/'/g,"\\'");
+      return `
+        <article class="card card-hover" onclick="openStory('${openArg}')">
+          <div class="card-body">
+            <div class="between" style="margin-bottom:8px">
+              <h3 class="h-sec" style="font-size:19px">${esc(st.game)}</h3>
+              ${st.remote?`<span class="badge badge-remote" style="flex:0 0 auto">${I.globe} ${esc(st.instance||'fédéré')}</span>`:''}
+            </div>
+            <div class="wrap-chips" style="margin-bottom:10px">
+              ${g.system?`<span class="badge badge-info">${esc(g.system)}</span>`:''}
+              ${g.author?`<span class="text-xs text-muted">par ${esc(g.author)}</span>`:''}
+            </div>
+            ${g.desc?`<p class="text-secondary text-sm" style="margin-bottom:12px">${esc(g.desc)}</p>`:''}
+            <p class="text-xs text-muted" style="margin-bottom:8px">${nReports} compte${nReports>1?'s':''} rendu${nReports>1?'s':''} · ${cast.length} personnage${cast.length>1?'s':''} · lisible par tous</p>
+            ${chips?`<p class="castline">${chips}</p>`:''}
+            <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openStory('${openArg}')">
+              Lire l'histoire →
+            </button>
+          </div>
+        </article>`;
+    }).join('');
+    return shell('stories', `
+      <section class="content content--mid"><div class="container-app">
+        <h1 class="h-page">Stories</h1>
+        <p class="lede" style="margin:8px 0 22px">Les histoires terminées et libérées, lisibles par tous. Chaque story rassemble tous les comptes rendus d'une partie.</p>
+        <div class="stack stack--lg">${cards}</div>
+      </div></section>`);
+  }
+
+  function pageStory() {
+    const st = storiesIndex().find(function(x){ return x.game === window.storyGame; }) || storiesIndex()[0];
+    // tous les reports de la partie, chacun un bloc titré + ses rapports résolus
+    const body = st.reports.map(function(rp, idx){
+      const sc = rp.s;
+      const inner = sc.seq.map(function(it){ return it.type==='marker' ? marker(it,'scene') : renderRap(it,'scene'); }).join('');
+      return `
+        <div class="story__report">
+          <p class="story__reportmeta">Compte rendu ${idx+1} · ${esc(sc.scene)} · ${sc.ago}</p>
+          <div class="scene__read">${inner}</div>
+        </div>`;
+    }).join('');
+    return shell('stories', `
+      <section class="content content--narrow"><div class="container-app">
+        <p class="scene__crumb" style="margin-bottom:12px">
+          <a onclick="setPage('stories')" style="cursor:pointer">Stories</a>
+          <span class="text-muted">›</span> <span class="scene__title">${esc(st.game)}</span>
+        </p>
+        <h1 class="h-page" style="margin-bottom:6px">${esc(st.game)}</h1>
+        <p class="text-sm text-muted" style="margin-bottom:22px">${st.reports.length} compte${st.reports.length>1?'s':''} rendu${st.reports.length>1?'s':''}${st.remote?' · '+I.globe+' '+esc(st.instance||'fédéré'):''} · lisible par tous</p>
+        ${body}
+        ${(function(){
+          const qs = quotesIndex().filter(function(q){ return q.game === st.game; });
+          if (!qs.length) return '';
+          return `<div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--c-border)">
+            <h2 class="h-sec" style="margin-bottom:14px">${I.quote} Citations retenues</h2>
+            <div class="stack">${qs.map(function(q){ return quoteCard(q, {hideSource:true, cta:true}); }).join('')}</div>
+          </div>`;
+        })()}
+        <div class="hero-cta" style="margin-top:24px">
+          <button class="btn btn-secondary btn-sm" onclick="setPage('stories')">← Toutes les stories</button>
+        </div>
+      </div></section>`);
+  }
+
+  /* MUR DES CITATIONS — page publique, sans compte. Surface de promotion :
+     ce qui se dit sur l'instance, attribué, cliquable vers la story d'origine.
+     N'affiche que des citations doublement déverrouillées (released + public). */
+  function pageCitations() {
+    const qs = quotesIndex();
+    return shell('citations', `
+      <section class="content content--mid"><div class="container-app">
+        <h1 class="h-page">${I.quote} Citations</h1>
+        <p class="lede" style="margin:8px 0 6px">Les répliques retenues des histoires libérées. Lisibles sans compte, fédérables.</p>
+        <p class="text-xs text-muted" style="margin-bottom:22px">Une citation n'apparaît ici que si son compte rendu a été libéré <em>et</em> que son auteur l'a rendue publique. Rien de ce qui se joue encore ne remonte.</p>
+        ${qs.length
+          ? `<div class="quote-wall">${qs.map(function(q){ return quoteCard(q, {cta:true}); }).join('')}</div>`
+          : `<div class="muted-box">Aucune citation libérée pour l'instant.</div>`}
+        <div class="hero-cta" style="margin-top:26px">
+          <button class="btn btn-primary" onclick="setAuth('user')">${I.sparkles} Rejoindre le réseau</button>
+          <button class="btn btn-secondary" onclick="setPage('stories')">Lire les stories</button>
+        </div>
+      </div></section>`);
+  }
+
+  function pageGame() {
+    return shell('game', `
+      <section class="content content--mid"><div class="container-app">
+        <div style="margin-bottom:24px">
+          <div class="wrap-chips" style="margin-bottom:10px"><span class="badge badge-info">Monsterhearts 2</span><span class="badge badge-pc">Solo</span></div>
+          <h1 class="h-page">Les Cendres de Valombre</h1>
+          <p class="text-muted text-sm" style="margin-top:6px">par @mara · depuis le 12/03/2026</p>
+          <p class="text-secondary" style="margin-top:12px">Une petite ville de montagne où chaque adulte cache un pacte. Chronique en cours, publiée au rythme des sessions.</p>
+          <div class="hero-cta" style="margin-top:16px"><button class="btn btn-primary btn-sm">S'abonner</button><button class="btn btn-secondary btn-sm">${I.globe} Suivre depuis Mastodon</button></div>
+        </div>
+        <h2 class="h-sec" style="margin-bottom:14px">Comptes rendus (7)</h2>
+        <div class="stack" style="margin-bottom:32px">${SCENES.filter(s=>s.game==='Les Cendres de Valombre').map((s)=>discoveryCard(s,SCENES.indexOf(s))).join('')}</div>
+        <h2 class="h-sec" style="margin-bottom:14px">Personnages (9)</h2>
+        <div class="grid-cards">
+          ${[['Selène','PJ','pc'],['Le Bourgmestre','Dispo','available'],['La Voix sous le pont','Dispo','available'],['Doyen Ferrant','Réclamé','claimed'],['Amère','Adopté','adopted'],['L\'Enfant de suie','Dispo','available'],['Vieille Ourse','Dérivé','forked'],['Selka','PJ','pc']]
+            .map(([n,label,st])=>`<a class="card card-body card-hover" onclick="setPage('character')" style="text-align:center">${avatar('md',n[0])}<p class="font-medium text-sm" style="margin-top:8px">${n}</p><span class="badge badge-${st}" style="margin-top:6px">${label}</span></a>`).join('')}
+        </div>
+      </div></section>`);
+  }
+
+  function pageReport() {
+    return shell('report', `
+      <section class="content content--narrow"><div class="container-app">
+        <p class="text-sm text-muted" style="margin-bottom:8px"><a onclick="setPage('game')" style="cursor:pointer">Les Cendres de Valombre</a> · Session du 04/06/2026</p>
+        <h1 class="h-page" style="margin-bottom:12px">La confession du bourgmestre</h1>
+        <div class="between" style="margin-bottom:20px;flex-wrap:wrap">
+          <div class="row">${avatar('md','M')}<div><span class="font-medium">Mara Vionnet</span><br><span class="text-xs text-muted">@mara · il y a 2 h</span></div></div>
+          <div class="row"><button class="btn btn-ghost btn-sm text-muted">${I.heart} 12</button><button class="btn btn-ghost btn-sm text-muted">${I.comment} 3</button><button class="btn btn-ghost btn-sm text-muted">${I.share}</button></div>
+        </div>
+        <div class="text-secondary" style="line-height:1.8;font-size:16px">
+          <p style="margin-bottom:16px">Nous avions traqué <span class="mention npc">@Le Bourgmestre</span> pendant trois nuits, persuadés qu'il fuyait un crime. La vérité était plus laide : il n'avait rien commis. Il <em>attendait</em>.</p>
+          <p style="margin-bottom:16px"><span class="mention">@Selène</span> comprit la première, quand la <span class="mention npc">@La Voix sous le pont</span> répéta mot pour mot une promesse vieille de vingt ans.</p>
+          <p>« Vous croyez que je me cache, dit-il. Mais c'est vous qu'on gardait au chaud. »</p>
+        </div>
+        <div class="card" style="margin-top:24px;background:var(--c-card-dark)"><div class="card-body">
+          <div class="row" style="color:var(--c-muted);margin-bottom:8px">${I.quote}<span class="text-xs font-semibold" style="text-transform:uppercase;letter-spacing:.06em">Citation retenue</span></div>
+          <p style="font-family:var(--font-display);font-style:italic;font-size:18px">« C'est vous qu'on gardait au chaud. »</p>
+          <p class="text-xs text-muted" style="margin-top:6px">— Le Bourgmestre · <span class="badge badge-available">PNJ disponible ${I.sparkles}</span></p>
+        </div></div>
+        <div class="card" style="margin-top:16px;border-color:rgb(var(--crimson) / .3)"><div class="card-body">
+          <p class="font-semibold">Un PNJ vous intrigue ?</p><p class="text-sm text-muted" style="margin:4px 0 12px">Le Bourgmestre est disponible. Proposez un lien à son autrice.</p>
+          <button class="btn btn-primary btn-block" onclick="setPage('linkflow')">${I.link} Réclamer / Adopter / Dériver</button>
+        </div></div>
+      </div></section>`);
+  }
+
+  function pageCharacter() {
+    return shell('character', `
+      <section class="content content--narrow"><div class="container-app">
+        <div class="row" style="align-items:flex-start;gap:16px;margin-bottom:24px">
+          ${avatar('xl','B')}
+          <div style="flex:1;min-width:0">
+            <div class="wrap-chips" style="margin-bottom:8px"><span class="badge badge-available">PNJ disponible ${I.sparkles}</span></div>
+            <h1 class="h-page">Le Bourgmestre</h1>
+            <p class="text-muted text-sm" style="margin-top:4px">Créé dans <a onclick="setPage('game')" style="cursor:pointer">Les Cendres de Valombre</a> · @mara</p>
+          </div>
+        </div>
+        <p class="text-secondary" style="margin-bottom:16px">Homme trop calme d'une ville trop silencieuse. Il n'a rien commis — il attendait qu'on vienne le chercher.</p>
+        <div class="hero-cta" style="margin-bottom:28px"><button class="btn btn-primary" onclick="setPage('linkflow')">${I.link} Proposer un lien</button><button class="btn btn-secondary">Suivre</button></div>
+        <h2 class="h-sec" style="margin-bottom:12px">Apparitions</h2>
+        <div class="stack" style="margin-bottom:28px">
+          ${[['La confession du bourgmestre','Rôle principal','2 h'],['Le marché sous le pont','Second rôle','6 j'],['Première neige','Mention','3 sem']].map(([t,role,ago])=>`<a class="card card-body card-hover between" onclick="setPage('report')"><div><p class="font-medium text-sm">${t}</p><p class="text-xs text-muted">${role}</p></div><span class="text-xs text-muted">${ago}</span></a>`).join('')}
+        </div>
+        <h2 class="h-sec" style="margin-bottom:12px">${I.quote} Citations</h2>
+        ${(function(){
+          const qs = quotesIndex().filter(function(q){ return q.actorKey === 'bourg'; });
+          return qs.length
+            ? `<div class="stack">${qs.map(function(q){ return quoteCard(q); }).join('')}</div>`
+            : `<div class="muted-box">Aucune citation libérée pour ce personnage.</div>`;
+        })()}
+      </div></section>`);
+  }
+
+  function pageProfile() {
+    return shell('profile', `
+      <section style="background:linear-gradient(to bottom,var(--c-surface),var(--c-bg));padding:32px 0"><div class="container-app">
+        <div class="row" style="align-items:flex-start;gap:16px;flex-wrap:wrap">
+          ${avatar('xl','M')}
+          <div style="flex:1;min-width:200px">
+            <h1 class="h-page">Mara Vionnet</h1><p class="text-muted">@mara</p>
+            <p class="text-secondary" style="margin-top:12px">Rôliste solo. Je documente Valombre une session à la fois. Mes PNJ sont à vous — venez les chercher.</p>
+            <div class="wrap-chips" style="margin-top:14px;gap:16px">
+              <span class="text-sm"><strong>142</strong> <span class="text-muted">abonnés</span></span>
+              <span class="text-sm"><strong>87</strong> <span class="text-muted">abonnements</span></span>
+            </div>
+            <p class="text-xs text-muted" style="margin-top:8px">${I.globe} @mara@suddenly.social</p>
+            <button class="btn btn-primary btn-sm" style="margin-top:14px">Suivre</button>
+          </div>
+        </div>
+      </div></section>
+      <section class="content content--mid"><div class="container-app">
+        <div class="tabs"><span class="tab is-active">Parties</span><span class="tab">Personnages</span><span class="tab">Comptes rendus</span></div>
+        <div class="grid-feature">
+          ${[['Les Cendres de Valombre','Monsterhearts 2','7 comptes rendus'],['Ptolémée en ruines','Wretched & Alone','3 comptes rendus'],['Sans titre','Brouillon','—']].map(([t,sys,meta])=>`<a class="card card-body card-hover" onclick="setPage('game')"><p class="font-semibold">${t}</p><p class="text-xs text-muted" style="margin:4px 0 8px">${sys}</p><span class="badge badge-info">${meta}</span></a>`).join('')}
+        </div>
+      </div></section>`);
+  }
+
+  function pageSearch() {
+    return shell('search', `
+      <section class="content content--narrow"><div class="container-app">
+        <h1 class="h-page" style="margin-bottom:8px">Recherche fédérée</h1>
+        <p class="lede" style="margin-bottom:18px">Trouvez un profil, une partie ou un personnage sur cette instance ou n'importe où sur le Fediverse.</p>
+        <div class="editor-area" style="display:flex;align-items:center;padding:0 14px;margin-bottom:8px">
+          <span class="text-muted">${I.search}</span>
+          <input style="border:none;outline:none;background:transparent;padding:14px 10px;flex:1;color:var(--c-primary);font-size:15px;min-width:0" placeholder="@pseudo@instance.social…" value="@ghost@dice.town">
+        </div>
+        <button class="btn btn-primary btn-block" style="margin-bottom:8px">Chercher</button>
+        <p class="text-xs text-muted" style="margin-bottom:24px">Astuce : collez une adresse complète pour récupérer un acteur distant.</p>
+        <div class="stack">
+          ${[['G','Ghost','Personnage · @ghost@dice.town'],['N','Neon Sabbath','Partie · @neonsabbath@dice.town']].map(([l,n,m])=>`
+            <div class="card card-body"><div class="between" style="flex-wrap:wrap;gap:10px"><div class="row">${avatar('md',l)}<div><p class="font-medium">${n}</p><p class="text-xs text-muted">${m}</p></div></div><button class="btn btn-secondary btn-sm">${I.globe} Suivre</button></div></div>`).join('')}
+        </div>
+      </div></section>`);
+  }
+
+  /* ===================== PAGES CONNECTÉES ===================== */
+
+  function linkRequestCard(req) {
+    const tb = {claim:'badge-claimed',adopt:'badge-adopted',fork:'badge-forked'}[req.type];
+    const tl = {claim:'Claim',adopt:'Adopt',fork:'Fork'}[req.type];
+    return `
+      <div class="card card-body" style="background:var(--c-card-dark)">
+        <div class="row" style="margin-bottom:8px;flex-wrap:wrap">${avatar('sm',req.fromLetter)}<div style="flex:1;min-width:0"><span class="font-medium text-sm">${req.from}</span> <span class="badge ${tb}">${tl}</span></div></div>
+        <p class="text-sm text-secondary" style="margin-bottom:12px">${req.message}</p>
+        <div class="hero-cta" style="margin:0"><button class="btn btn-primary btn-sm">${I.check} Accepter</button><button class="btn btn-secondary btn-sm">${I.x} Refuser</button></div>
+      </div>`;
+  }
+
+  function pageDashboard() {
+    const reqs = [
+      {type:'claim', from:'Kader B.', fromLetter:'K', message:'« Doyen Ferrant, c\'était mon PJ Selka avant l\'incendie. » — il pouvait être là.'},
+      {type:'adopt', from:'@remote@dice.town', fromLetter:'R', message:'J\'aimerais reprendre L\'Enfant de suie comme PJ à partir de ma prochaine session.'},
+    ];
+    return shell('dashboard', `
+      <section class="content content--mid"><div class="container-app">
+        <h1 class="h-page" style="margin-bottom:18px">Tableau de bord</h1>
+        <div class="grid-stats" style="margin-bottom:28px">
+          <div class="card card-body stat-card"><p class="stat-num">12</p><p class="text-xs text-muted" style="margin-top:6px">PNJ créés</p></div>
+          <div class="card card-body stat-card"><p class="stat-num text-warning">3</p><p class="text-xs text-muted" style="margin-top:6px">demandes en attente</p></div>
+          <div class="card card-body stat-card"><p class="stat-num">5</p><p class="text-xs text-muted" style="margin-top:6px">personnages liés</p></div>
+          <div class="card card-body stat-card" style="display:flex;align-items:center;justify-content:center"><button class="btn btn-primary btn-sm btn-block" onclick="setPage('stories')">Parcourir les stories</button></div>
+        </div>
+        <h2 class="h-sec" style="margin-bottom:14px">${I.bell} PNJ avec demandes en attente</h2>
+        <div class="card card-body" style="margin-bottom:28px">
+          <div class="between" style="margin-bottom:14px;flex-wrap:wrap">
+            <div class="row" style="min-width:0">${avatar('md','F')}<div style="min-width:0"><a class="font-semibold" onclick="setPage('character')" style="cursor:pointer">Doyen Ferrant</a><p class="text-xs text-muted">Les Cendres de Valombre · 4 apparitions</p></div></div>
+            <span class="badge badge-info">2 demandes</span>
+          </div>
+          <div class="stack">${reqs.map(linkRequestCard).join('')}</div>
+        </div>
+        <h2 class="h-sec" style="margin-bottom:14px">PNJ disponibles (sans demande)</h2>
+        <div class="grid-cards">
+          ${['Le Bourgmestre','La Voix sous le pont','L\'Enfant de suie','Vieille Ourse'].map(n=>`<a class="card card-body card-hover" onclick="setPage('character')" style="text-align:center">${avatar('md',n[0])}<p class="text-sm font-medium" style="margin-top:6px">${n}</p><span class="badge badge-available" style="margin-top:6px">Dispo</span></a>`).join('')}
+        </div>
+      </div></section>`);
+  }
+
+  function pageCompose() {
+    return shell('compose', `
+      <section class="content content--mid"><div class="container-app">
+        <h1 class="h-page" style="margin-bottom:18px">Nouveau compte rendu</h1>
+        <div class="card card-body" style="margin-bottom:16px"><label class="text-xs font-semibold text-muted" style="text-transform:uppercase;letter-spacing:.06em">Partie</label><p class="font-medium" style="margin-top:4px">Les Cendres de Valombre</p></div>
+        <div style="margin-bottom:16px">
+          <label class="text-sm font-semibold" style="display:block;margin-bottom:8px">Distribution (cast)</label>
+          <p class="text-xs text-muted" style="margin-bottom:10px">Définissez qui apparaît avant de rédiger. Les mentions <span class="mention">@perso</span> seront proposées dans le texte.</p>
+          <div class="wrap-chips">
+            <span class="cast-pill">${avatar('sm','S')} Selène <span class="badge badge-pc">PJ</span></span>
+            <span class="cast-pill">${avatar('sm','B')} Le Bourgmestre <span class="badge badge-available">PNJ</span></span>
+            <span class="cast-pill" style="color:rgb(var(--crimson))">${I.plus} Ajouter</span>
+          </div>
+        </div>
+        <input class="editor-area" style="width:100%;padding:14px 16px;font-family:var(--font-display);font-size:20px;font-weight:600;margin-bottom:12px;color:var(--c-primary)" placeholder="Titre…" value="La confession du bourgmestre">
+        <div class="editor-area">
+          <div class="editor-toolbar">${['B','I','H','“','—'].map(t=>`<button class="editor-tool">${t}</button>`).join('')}<span style="width:1px;background:var(--c-border);margin:0 4px"></span><button class="editor-tool" style="color:rgb(var(--brand))">@</button></div>
+          <div class="editor-input">Nous avions traqué <span class="mention npc">@Le Bourgmestre</span> pendant trois nuits. <span class="mention">@Selène</span> comprit la première…<span style="color:var(--c-muted)">|</span></div>
+        </div>
+        <p class="text-xs text-muted" style="margin-top:10px">${I.sparkles} À la publication, les PNJ mentionnés deviennent réclamables.</p>
+      </div></section>
+      <div class="actionbar"><button class="btn btn-secondary" onclick="alert('Brouillon (maquette)')">Brouillon</button><button class="btn btn-primary" onclick="alert('Publié (maquette)')">Publier</button></div>`);
+  }
+
+  function pageLinkflow() {
+    const step = window.linkStep || 'choose';
+    if (step === 'choose') {
+      return shell('linkflow', `
+        <section class="content content--narrow"><div class="container-app">
+          <p class="text-sm text-muted" style="margin-bottom:6px">Personnage cible</p>
+          <div class="row" style="margin-bottom:20px">${avatar('md','B')}<div><p class="font-semibold">Le Bourgmestre</p><p class="text-xs text-muted">PNJ de Valombre · @mara</p></div></div>
+          <h1 class="h-page" style="margin-bottom:8px">Quel lien proposez-vous ?</h1>
+          <p class="lede" style="margin-bottom:20px">Trois façons de relier ce PNJ à votre fiction. Chaque proposition part chez son autrice.</p>
+          <div class="stack">
+            ${[['claim','Claim — rétcon','badge-claimed','« C\'était mon PJ depuis le début. » Le PNJ est remplacé par votre PJ ; la scène est rejouée. Exige une cohérence narrative.'],
+               ['adopt','Adopt — reprise','badge-adopted','« J\'en fais mon PJ à partir de maintenant. » L\'historique du PNJ est conservé ; vous en prenez le contrôle.'],
+               ['fork','Fork — dérivation','badge-forked','« J\'en crée un PJ inspiré, mais distinct. » Les deux personnages coexistent.']]
+              .map(([t,title,badge,desc])=>`<button class="card card-body card-hover" style="text-align:left;width:100%;border:1px solid var(--c-border)" onclick="setLinkStep('form')"><div class="between" style="margin-bottom:6px"><span class="badge ${badge}">${title}</span>${I.link}</div><p class="text-sm text-secondary">${desc}</p></button>`).join('')}
+          </div>
+        </div></section>`);
+    }
+    return shell('linkflow', `
+      <section class="content content--narrow"><div class="container-app">
+        <button class="btn btn-ghost btn-sm text-muted" style="margin-bottom:12px" onclick="setLinkStep('choose')">← Changer de type</button>
+        <h1 class="h-page" style="margin-bottom:6px">Proposer un Claim</h1>
+        <p class="text-sm text-muted" style="margin-bottom:20px">sur <strong>Le Bourgmestre</strong> · à @mara</p>
+        <label class="text-sm font-semibold" style="display:block;margin-bottom:8px">Votre PJ concerné</label>
+        <div class="wrap-chips" style="margin-bottom:16px">${['Selka','Amère','+ nouveau PJ'].map((n,i)=>`<span class="cast-pill" style="${i===0?'border-color:rgb(var(--crimson));color:rgb(var(--crimson))':''}">${n}</span>`).join('')}</div>
+        <label class="text-sm font-semibold" style="display:block;margin-bottom:8px">Message à l'autrice</label>
+        <textarea class="editor-area" style="width:100%;padding:14px;min-height:120px;font-family:var(--font-body);font-size:15px;color:var(--c-secondary);resize:vertical;margin-bottom:16px">Selka a grandi à Valombre et a disparu avant l'incendie. Et si le Bourgmestre l'avait reconnue ?</textarea>
+        <div class="card card-body" style="border-color:rgb(var(--warning) / .3);background:rgb(var(--warning) / .06);margin-bottom:20px"><p class="text-sm">${I.sparkles} <strong>Si accepté :</strong> une séquence de jeu partagée s'ouvre pour sceller le lien.</p></div>
+        <div class="hero-cta"><button class="btn btn-primary" onclick="setPage('dashboard')">Envoyer la proposition</button><button class="btn btn-secondary" onclick="setLinkStep('choose')">Annuler</button></div>
+      </div></section>`);
+  }
+
+  function pageSequence() {
+    return shell('sequence', `
+      <section class="content content--mid"><div class="container-app">
+        <div class="wrap-chips" style="margin-bottom:8px"><span class="badge badge-claimed">Claim accepté</span><span class="badge badge-info">Séquence partagée</span></div>
+        <h1 class="h-page" style="margin-bottom:6px">Sceller le lien : Selka × Le Bourgmestre</h1>
+        <p class="text-sm text-muted" style="margin-bottom:20px">Éditeur asynchrone à quatre mains · @kader et @mara</p>
+        <div class="grid-feature" style="align-items:start">
+          <div class="editor-area"><div class="editor-toolbar between"><span class="text-xs font-semibold text-muted" style="padding:4px 8px">VOTRE VERSION</span><span class="badge badge-pending">Brouillon</span></div><div class="editor-input">Elle le reconnut à sa manière de ne pas la regarder. « Vous saviez », dit Selka…<span style="color:var(--c-muted)">|</span></div></div>
+          <div class="editor-area" style="opacity:.85"><div class="editor-toolbar between"><span class="text-xs font-semibold text-muted" style="padding:4px 8px">@mara</span><span class="badge badge-adopted">${I.check} Validé</span></div><div class="editor-input" style="color:var(--c-muted)">« Je t'ai gardée au chaud aussi longtemps que j'ai pu. »</div></div>
+        </div>
+        <div class="card card-body" style="margin-top:16px"><p class="text-sm text-muted" style="margin-bottom:12px">Quand les deux parties valident, la séquence rejoint l'historique des deux personnages.</p><div class="hero-cta" style="margin:0"><button class="btn btn-secondary btn-sm">Proposer la publication</button><button class="btn btn-primary btn-sm">${I.check} Valider ma version</button></div></div>
+      </div></section>`);
+  }
+
+  function pageNotifications() {
+    const notifs = [
+      ['link','Kader B. propose un Claim sur Doyen Ferrant','20 min',true],
+      ['check','@mara a accepté votre Adopt de L\'Enfant de suie','2 h',true],
+      ['sparkles','Votre PNJ Le Bourgmestre a été suivi par @remote@dice.town','5 h',true],
+      ['heart','Selène a aimé « Trois portes, une seule vraie »','1 j',false],
+      ['comment','Nouveau compte rendu dans Ptolémée en ruines','2 j',false],
+    ];
+    return shell('notifications', `
+      <section class="content content--narrow"><div class="container-app">
+        <div class="between" style="margin-bottom:18px"><h1 class="h-page">Notifications</h1><button class="btn btn-ghost btn-sm text-muted">Tout lu</button></div>
+        <div class="card">
+          ${notifs.map(([ic,text,ago,unread],i)=>`<div class="card-body row" style="${i<notifs.length-1?'border-bottom:1px solid var(--c-border)':''};${unread?'background:rgb(var(--crimson) / .04)':''}"><span class="avatar-md" style="background:rgb(var(--crimson) / .1);color:rgb(var(--crimson))">${I[ic]}</span><div style="flex:1;min-width:0"><p class="text-sm">${text}</p><p class="text-xs text-muted">il y a ${ago}</p></div>${unread?'<span style="width:8px;height:8px;border-radius:999px;background:rgb(var(--crimson));flex:0 0 auto"></span>':''}</div>`).join('')}
+        </div>
+      </div></section>`);
+  }
+
+  function pageOnboarding() {
+    return shell('onboarding', `
+      <section class="content content--narrow"><div class="container-app" style="max-width:34rem;text-align:center;padding-top:16px">
+        <div class="row" style="justify-content:center;gap:8px;margin-bottom:28px">${[1,2,3].map(n=>`<span style="width:${n===1?'28px':'8px'};height:8px;border-radius:999px;background:${n===1?'rgb(var(--crimson))':'var(--c-border)'}"></span>`).join('')}</div>
+        <div class="text-crimson" style="display:flex;justify-content:center;margin-bottom:16px">${I.dice}</div>
+        <h1 class="h-page" style="margin-bottom:12px">Bienvenue sur Suddenly</h1>
+        <p class="lede" style="margin:0 auto 24px">Un réseau où vos parties solo alimentent une fiction partagée. Commençons par votre première partie.</p>
+        <div class="stack" style="text-align:left;margin-bottom:24px">
+          ${[['Créez une partie','Un titre, un système. C\'est votre fiction continue.'],['Publiez un compte rendu','Mentionnez vos personnages ; les PNJ deviennent réclamables.'],['Laissez le réseau tisser','D\'autres joueurs adoptent vos PNJ, vous adoptez les leurs.']].map(([t,d],i)=>`<div class="card card-body row" style="gap:14px"><span class="avatar-md" style="background:rgb(var(--brand) / .12);color:rgb(var(--brand));font-weight:700">${i+1}</span><div><p class="font-semibold text-sm">${t}</p><p class="text-xs text-muted">${d}</p></div></div>`).join('')}
+        </div>
+        <button class="btn btn-primary btn-block" onclick="setPage('compose')">Créer ma première partie</button>
+        <button class="btn btn-ghost text-muted btn-block" style="margin-top:8px" onclick="setPage('accueil')">Explorer d'abord</button>
+      </div></section>`);
+  }
+
+  /* ===================== ROUTING + DEVICE ===================== */
+  const pages = { accueil:pageAccueil, scene:pageScene, stories:pageStories, story:pageStory, citations:pageCitations, game:pageGame, report:pageReport,
+    character:pageCharacter, profile:pageProfile, search:pageSearch,
+    dashboard:pageDashboard, compose:pageCompose, linkflow:pageLinkflow, sequence:pageSequence,
+    notifications:pageNotifications, onboarding:pageOnboarding };
+  // 'accueil' n'est PAS authed-only : il bascule vitrine/fil selon la session.
+  // 'scene' (lecture d'une scène de partie) est RÉSERVÉE : peut contenir du jeu.
+  // 'stories'/'story' restent PUBLIQUES : compte rendu résolu/libéré uniquement.
+  const AUTHED_ONLY = new Set(['scene','dashboard','compose','linkflow','sequence','notifications','onboarding']);
+
+  let currentPage = 'accueil', currentViewport = 'desktop';
+  window.currentAuth = 'user'; window.feedTab = 'amis'; window.linkStep = 'choose'; window.sceneIdx = 0; window.storyGame = null;
+
+  const container = document.getElementById('page-container');
+  const frame = document.getElementById('preview-frame');
+  const select = document.getElementById('page-select');
+
+  function render() {
+    container.innerHTML = (pages[currentPage] || (()=>'<div class="muted-box">Introuvable</div>'))();
+    const s = document.querySelector('.preview-stage'); if (s) s.scrollTop = 0;
+  }
+  /* ============================================================
+     CALQUES DE MENU — drawer (navigation) et dropdown (compte) sont
+     deux calques CONCURRENTS : ouvrir l'un ferme l'autre. Aucun des
+     deux ne connaît le contenu de l'autre ; ils ne partagent que la
+     règle d'exclusion, portée par closeMenus().
+     ============================================================ */
+  function closeMenus(except) {
+    if (except !== 'drawer') {
+      const d = document.getElementById('nav-drawer');
+      if (d) d.classList.remove('is-open');
+      const b = document.getElementById('burger-btn');
+      if (b) b.setAttribute('aria-expanded', 'false');
+    }
+    if (except !== 'dropdown') {
+      document.querySelectorAll('.dropdown-menu.is-open').forEach(x => x.classList.remove('is-open'));
+      document.querySelectorAll('.usermenu__trigger').forEach(t => t.setAttribute('aria-expanded', 'false'));
+    }
+  }
+
+  function toggleDrawer(e) {
+    if (e) e.stopPropagation();
+    const d = document.getElementById('nav-drawer');
+    if (!d) return;
+    const willOpen = !d.classList.contains('is-open');
+    closeMenus('drawer');                       // ferme le compte
+    d.classList.toggle('is-open', willOpen);
+    const b = document.getElementById('burger-btn');
+    if (b) b.setAttribute('aria-expanded', String(willOpen));
+  }
+
+  // Cible le dropdown FRÈRE du bouton cliqué (deux usermenus coexistent : desktop + mobile,
+  // un seul visible selon la largeur du conteneur). Pas d'id partagé → pas de collision.
+  function toggleUserMenu(e) {
+    if (e) e.stopPropagation();
+    const trigger = e && e.currentTarget;
+    const menu = trigger && trigger.closest('.usermenu');
+    const dd = menu && menu.querySelector('.dropdown-menu');
+    const willOpen = !!dd && !dd.classList.contains('is-open');
+    closeMenus('dropdown');                     // ferme la navigation
+    document.querySelectorAll('.dropdown-menu.is-open').forEach(x => x.classList.remove('is-open'));
+    document.querySelectorAll('.usermenu__trigger').forEach(t => t.setAttribute('aria-expanded', 'false'));
+    if (dd && willOpen) {
+      dd.classList.add('is-open');
+      if (trigger) trigger.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  // clic hors menus, ou touche Échap → tout se ferme
+  document.addEventListener('click', () => closeMenus(null));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenus(null); });
+
+  function setPage(page) {
+    closeMenus(null);
+    currentPage = page;
+    if (AUTHED_ONLY.has(page) && window.currentAuth !== 'user') { window.currentAuth = 'user'; syncAuth(); }
+    if (select && select.value !== page) select.value = page;
+    try { history.replaceState(null,'','#'+encodeURIComponent(page)); } catch(e){}
+    render();
+  }
+  function setViewport(vp) {
+    currentViewport = vp; frame.classList.remove('tablet','mobile');
+    if (vp !== 'desktop') frame.classList.add(vp);
+    document.querySelectorAll('.seg [data-viewport]').forEach(b => b.classList.toggle('active', b.dataset.viewport === vp));
+  }
+  function setAuth(a) { window.currentAuth = a; syncAuth(); render(); }
+  function syncAuth() { document.querySelectorAll('.seg [data-auth]').forEach(b => b.classList.toggle('active', b.dataset.auth === window.currentAuth)); }
+  function setFeedTab(t) { window.feedTab = t; render(); }
+  function openScene(idx) { window.sceneIdx = idx; currentPage = 'scene'; if (select) select.value = 'scene'; try{history.replaceState(null,'','#scene')}catch(e){} render(); }
+  function openStory(game) { window.storyGame = game; currentPage = 'story'; if (select) select.value = 'story'; try{history.replaceState(null,'','#story')}catch(e){} render(); }
+  function setLinkStep(s) { window.linkStep = s; render(); }
+  function toggleTheme() { document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark'; }
+
+  window.setPage=setPage; window.setViewport=setViewport; window.setAuth=setAuth;
+  window.setFeedTab=setFeedTab; window.setLinkStep=setLinkStep; window.openScene=openScene; window.openStory=openStory;
+  window.toggleDrawer=toggleDrawer; window.toggleUserMenu=toggleUserMenu;
+
+  select.addEventListener('change', e => setPage(e.target.value));
+  document.querySelectorAll('.seg [data-viewport]').forEach(b => b.addEventListener('click', () => setViewport(b.dataset.viewport)));
+  document.querySelectorAll('.seg [data-auth]').forEach(b => b.addEventListener('click', () => setAuth(b.dataset.auth)));
+  document.getElementById('theme-btn').addEventListener('click', toggleTheme);
+
+  // fiches (tooltips) : fermer au clic hors-fiche ; positionner au survol desktop
+  document.addEventListener('click', function(){
+    document.querySelectorAll('.def.is-open').forEach(function(d){ d.classList.remove('is-open'); });
+  });
+  container.addEventListener('mouseover', function(e){
+    const name = e.target.closest && e.target.closest('.defname');
+    if (name) placeDef(name);
+  });
+
+  (function init() {
+    const hash = decodeURIComponent((location.hash||'').slice(1));
+    if (hash && pages[hash]) { currentPage = hash; select.value = hash; }
+    setViewport('desktop'); syncAuth(); render();
+  })();
+  </script>
+</body>
+</html>
