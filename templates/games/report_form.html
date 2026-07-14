@@ -164,11 +164,19 @@
         </form>
 
         {% if report %}
-            {# The unified post composer, frozen to this scene (same _composer.html
-               as the feed). Adds Rapports into the fil without leaving the page. #}
+            {# Le fil de la scène — Mastodon-style: the composer sits at the top of
+               the post list. Posting appends to #rapports-list in place, no reload
+               (the same _composer.html as the feed, frozen to this scene). #}
             <div class="mt-8">
-                <h2 class="text-heading mb-3">{% trans "Ajouter un rapport" %}</h2>
+                <h2 class="text-heading mb-3">{% trans "Le fil de la scène" %}</h2>
+
                 {% include "games/_composer.html" %}
+
+                <div id="rapports-list" class="mt-4 space-y-2">
+                    {% for rapport in rapports %}
+                        {% include "games/partials/rapport_item.html" %}
+                    {% endfor %}
+                </div>
             </div>
         {% endif %}
     </div>

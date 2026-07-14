@@ -1,0 +1,9 @@
+{% comment %}
+  Response after an inline post from the scene-edit composer (Mastodon-style).
+  Main swap: a fresh composer replaces #composer. Out-of-band: the freshly
+  created Rapport is appended to the fil (#rapports-list) without a reload.
+{% endcomment %}
+{% include "games/_composer.html" %}
+<div hx-swap-oob="beforeend:#rapports-list">
+    {% include "games/partials/rapport_item.html" with rapport=new_rapport %}
+</div>

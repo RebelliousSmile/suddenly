@@ -727,6 +727,14 @@ def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRes
             reverse("games:report_detail", kwargs={"game_pk": report.game.pk, "pk": report.pk})
         )
 
+    # The fil of the scene, shown beside the composer (Mastodon-style). The
+    # author sees drafts too; they are hidden from the public thread elsewhere.
+    rapports = (
+        report.rapports.select_related("actor")
+        .prefetch_related("parent_links__parent_rapport", "markers__character", "media")
+        .order_by("created_at")
+    )
+
     return htmx_render(
         request,
         full_template="games/report_form.html",
@@ -737,6 +745,7 @@ def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRes
             "visibilities": ReportVisibility.choices,
             "cast_roles": CastRole.choices,
             "form_data": {},
+            "rapports": rapports,
             # The unified post composer (same _composer.html as the feed), frozen
             # to this scene: game/personnage/language inherited, not editable.
             **_composer_context(request.user, report=report),
@@ -1273,10 +1282,11 @@ def _resolve_actor(request: AuthenticatedRequest) -> Character | None:
 def scene_post_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:
     """Create one Rapport (post) inside an existing scene.
 
-    Modes (menu of the split-button):
-      - ``add``          → publish into the fil, redirect to scene edit.
-      - ``add_continue`` → publish into the fil, return an empty composer.
-      - ``draft``        → keep as a private draft (decision #1, option A).
+    Modes (menu of the split-button): ``add`` / ``add_continue`` publish into the
+    fil, ``draft`` keeps a private draft (decision #1, option A). All three, on
+    HTMX, post inline (Mastodon-style): the new Rapport is appended to the fil
+    (OOB) and a fresh composer replaces the old one — no page reload. Non-HTMX
+    callers fall back to a redirect to the scene edit.
 
     The target Report and its author come from the server: only the report's
     author may add to it, and the actor is revalidated against the writer's
@@ -1295,7 +1305,7 @@ def scene_post_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> H
 
     actor = _resolve_actor(request)
     try:
-        create_scene_post(
+        rapport = create_scene_post(
             report=report,
             kind=request.POST.get("kind", ""),
             content=request.POST.get("content", "").strip(),
@@ -1305,14 +1315,11 @@ def scene_post_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> H
     except ValidationError as exc:
         return HttpResponse("; ".join(exc.messages), status=422)
 
-    if mode == "add_continue":
-        # A fresh, empty composer for the same scene — the same _composer.html,
-        # frozen to this report. Swapped in place (#composer), no redirect.
-        return render(
-            request,
-            "games/_composer.html",
-            _composer_context(request.user, report=report),
-        )
+    if getattr(request, "htmx", False):
+        # Inline: fresh composer (#composer) + OOB-append the new post to the fil.
+        ctx = _composer_context(request.user, report=report)
+        ctx["new_rapport"] = rapport
+        return render(request, "games/_composer_after_post.html", ctx)
 
     return redirect(
         reverse("games:report_edit", kwargs={"game_pk": report.game.pk, "pk": report.pk})

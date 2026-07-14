@@ -90,6 +90,52 @@ def test_scene_post_add_continue_returns_composer(client: Client) -> None:
 
 
 @pytest.mark.django_db
+def test_scene_post_htmx_appends_inline(client: Client) -> None:
+    """Mastodon-style: an HTMX post returns a fresh composer AND the new post
+    (OOB) to append to the fil — no redirect."""
+    user = UserFactory()
+    game = GameFactory(owner=user)
+    report = ReportFactory(game=game, author=user)
+
+    client.force_login(user)
+    url = reverse("games:scene_post_create", kwargs={"game_pk": game.pk, "pk": report.pk})
+    resp = client.post(
+        url,
+        {"mode": "add", "kind": RapportKind.NARRATION, "content": "INLINE-BEAT"},
+        HTTP_HX_REQUEST="true",
+    )
+
+    assert resp.status_code == 200
+    # Fresh composer for the same scene …
+    assert b'id="composer"' in resp.content
+    # … plus the new post, OOB-appended to the fil.
+    assert b"INLINE-BEAT" in resp.content
+    assert b'hx-swap-oob="beforeend:#rapports-list"' in resp.content
+
+
+@pytest.mark.django_db
+def test_scene_edit_shows_fil_and_composer(client: Client) -> None:
+    """The scene-edit page shows the composer next to the fil of posts."""
+    user = UserFactory()
+    game = GameFactory(owner=user)
+    report = ReportFactory(game=game, author=user)
+    Rapport.objects.create(
+        report=report,
+        kind=RapportKind.NARRATION,
+        content="EXISTING-BEAT",
+        status=RapportStatus.PUBLISHED,
+    )
+
+    client.force_login(user)
+    resp = client.get(reverse("games:report_edit", kwargs={"game_pk": game.pk, "pk": report.pk}))
+
+    assert resp.status_code == 200
+    assert b'id="composer"' in resp.content
+    assert b'id="rapports-list"' in resp.content
+    assert b"EXISTING-BEAT" in resp.content
+
+
+@pytest.mark.django_db
 def test_scene_post_non_author_forbidden(client: Client) -> None:
     author = UserFactory()
     intruder = UserFactory()

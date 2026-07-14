@@ -100,23 +100,35 @@
             </div>
         </div>
 
-        {# ── Envoi (split-button) — rien ne part sans partie ni perso (2a) ── #}
-        <div class="mt-4 flex flex-wrap items-center gap-2">
-            <button type="submit" name="mode" value="add" class="btn-primary" :disabled="!canSend">
-                {% trans "Publier" %}
-            </button>
-            <button type="button" class="btn-secondary" :disabled="!canSend"
-                    hx-post="{% if frozen %}{% url 'games:scene_post_create' report.game.pk report.pk %}{% else %}{% url 'games:composer' %}{% endif %}"
-                    hx-include="closest form"
-                    hx-vals='{"mode": "add_continue"}'
-                    hx-target="#composer"
-                    hx-swap="outerHTML">
-                {% trans "Publier et continuer" %}
-            </button>
-            <button type="submit" name="mode" value="draft" class="btn-ghost" :disabled="!canSend">
-                {% trans "Enregistrer en brouillon" %}
-            </button>
-        </div>
+        {# ── Envoi — rien ne part sans partie ni perso (2a) ──────────── #}
+        {% if frozen %}
+            {# Scene edit: post inline next to the fil (Mastodon). The new post is
+               appended to #rapports-list and the composer resets — no reload. #}
+            <div class="mt-4 flex flex-wrap items-center gap-2">
+                <button type="button" class="btn-primary" :disabled="!canSend"
+                        hx-post="{% url 'games:scene_post_create' report.game.pk report.pk %}"
+                        hx-include="closest form" hx-vals='{"mode": "add"}'
+                        hx-target="#composer" hx-swap="outerHTML">
+                    {% trans "Publier" %}
+                </button>
+                <button type="button" class="btn-ghost" :disabled="!canSend"
+                        hx-post="{% url 'games:scene_post_create' report.game.pk report.pk %}"
+                        hx-include="closest form" hx-vals='{"mode": "draft"}'
+                        hx-target="#composer" hx-swap="outerHTML">
+                    {% trans "Enregistrer en brouillon" %}
+                </button>
+            </div>
+        {% else %}
+            {# Feed: adding a post opens the scene edit (server redirect). #}
+            <div class="mt-4 flex flex-wrap items-center gap-2">
+                <button type="submit" name="mode" value="add" class="btn-primary" :disabled="!canSend">
+                    {% trans "Publier" %}
+                </button>
+                <button type="submit" name="mode" value="draft" class="btn-ghost" :disabled="!canSend">
+                    {% trans "Enregistrer en brouillon" %}
+                </button>
+            </div>
+        {% endif %}
         <div class="mt-2 text-xs text-warning" x-show="!canSend" x-cloak>
             <span x-show="!frozen && (!game || !personnage)">
                 {% trans "Rien ne part sans un personnage ET une partie — brouillon compris." %}
