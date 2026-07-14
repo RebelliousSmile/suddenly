@@ -76,7 +76,7 @@
                                 <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                     <span class="i-lucide-user mr-2"></span>{% trans "My profile" %}
                                 </a>
-                                <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
+                                <a href="{% url 'characters:gm_dashboard' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                     <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Dashboard" %}
                                 </a>
                                 <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
@@ -88,11 +88,11 @@
                                 </a>
                                 {% endif %}
                                 <hr class="my-1 border-semantic-border">
-                                <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
+                                <a href="{% url 'characters:link_requests' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
                                     <span><span class="i-lucide-inbox mr-2"></span>{% trans "Requests" %}</span>
                                     {% if pending_requests_count %}<span class="badge-primary">{{ pending_requests_count }}</span>{% endif %}
                                 </a>
-                                <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
+                                <a href="{% url 'feed:notifications' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
                                     <span><span class="i-lucide-bell mr-2"></span>{% trans "Notifications" %}</span>
                                     {% if unread_notifications_count %}<span class="badge-primary">{{ unread_notifications_count }}</span>{% endif %}
                                 </a>
@@ -110,7 +110,9 @@
                         <button @click="toggle()"
                                 class="relative flex items-center h-7 w-14 rounded-full border border-semantic-border bg-semantic-card px-0.5 cursor-pointer transition-colors duration-300"
                                 :class="isDark ? 'border-brand-primary/50' : 'border-ui-sun-soft/60'"
-                                :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+                                data-label-light="{% trans 'Switch to light mode' %}"
+                                data-label-dark="{% trans 'Switch to dark mode' %}"
+                                :aria-label="isDark ? $el.dataset.labelLight : $el.dataset.labelDark">
                             <span class="i-lucide-moon absolute left-1.5 text-sm text-brand-primary pointer-events-none"></span>
                             <span class="i-lucide-sun absolute right-1.5 text-sm text-ui-sun pointer-events-none"></span>
                             <span class="w-5 h-5 rounded-full shadow-sm transition-all duration-300 flex-shrink-0 pointer-events-none"
@@ -124,7 +126,7 @@
                         <div x-data="{ open: false }" class="relative">
                             <button @click="open = !open"
                                     class="relative flex items-center rounded-full bg-transparent border-0 outline-none focus:outline-none"
-                                    :aria-label="'{% trans "Log in" %}'">
+                                    aria-label="{% trans 'Log in' %}">
                                 <span class="avatar-sm avatar-placeholder">
                                     <span class="i-lucide-user text-sm"></span>
                                 </span>
@@ -144,7 +146,9 @@
                                 <!-- Theme toggle row -->
                                 <button @click="toggle()" type="button"
                                         class="w-full flex items-center justify-between px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card outline-none focus:outline-none"
-                                        :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+                                        data-label-light="{% trans 'Switch to light mode' %}"
+                                data-label-dark="{% trans 'Switch to dark mode' %}"
+                                :aria-label="isDark ? $el.dataset.labelLight : $el.dataset.labelDark">
                                     <span class="flex items-center">
                                         <span class="mr-2" :class="isDark ? 'i-lucide-sun' : 'i-lucide-moon'"></span>
                                         <span x-text="isDark ? '{% trans "Light mode" %}' : '{% trans "Dark mode" %}'"></span>
@@ -201,7 +205,7 @@
                             <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                 <span class="i-lucide-user mr-2"></span>{% trans "My profile" %}
                             </a>
-                            <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
+                            <a href="{% url 'characters:gm_dashboard' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                 <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Dashboard" %}
                             </a>
                             <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
@@ -213,11 +217,11 @@
                             </a>
                             {% endif %}
                             <hr class="my-1 border-semantic-border">
-                            <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
+                            <a href="{% url 'characters:link_requests' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
                                 <span><span class="i-lucide-inbox mr-2"></span>{% trans "Requests" %}</span>
                                 {% if pending_requests_count %}<span class="badge-primary">{{ pending_requests_count }}</span>{% endif %}
                             </a>
-                            <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
+                            <a href="{% url 'feed:notifications' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
                                 <span><span class="i-lucide-bell mr-2"></span>{% trans "Notifications" %}</span>
                                 {% if unread_notifications_count %}<span class="badge-primary">{{ unread_notifications_count }}</span>{% endif %}
                             </a>
@@ -237,7 +241,7 @@
                     <div x-data="dropdown" class="relative">
                         <button @click="toggle"
                                 class="relative flex items-center rounded-full bg-transparent border-0 outline-none focus:outline-none p-1"
-                                :aria-label="'{% trans "Log in" %}'">
+                                aria-label="{% trans 'Log in' %}">
                             <span class="avatar-sm avatar-placeholder">
                                 <span class="i-lucide-user text-sm"></span>
                             </span>
@@ -295,7 +299,9 @@
                 <!-- Theme toggle mobile -->
                 <button @click="toggle()"
                         class="flex items-center gap-3 py-2 text-semantic-ink-secondary w-full"
-                        :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+                        data-label-light="{% trans 'Switch to light mode' %}"
+                                data-label-dark="{% trans 'Switch to dark mode' %}"
+                                :aria-label="isDark ? $el.dataset.labelLight : $el.dataset.labelDark">
                     <span class="relative flex items-center h-7 w-14 rounded-full border bg-semantic-card px-0.5 flex-shrink-0 transition-colors duration-300"
                           :class="isDark ? 'border-brand-primary/50' : 'border-ui-sun-soft/60'">
                         <span class="i-lucide-moon absolute left-1.5 text-sm text-brand-primary pointer-events-none"></span>
@@ -385,7 +391,7 @@
                  }"
                  class="p-4 rounded-lg shadow-lg border max-w-sm flex items-center gap-3">
                 <span x-text="item.message"></span>
-                <button @click="remove(item.id)" class="ml-auto opacity-60 hover:opacity-100" aria-label="{% trans 'Close menu' %}">
+                <button @click="remove(item.id)" class="ml-auto opacity-60 hover:opacity-100" aria-label="{% trans 'Dismiss notification' %}">
                     <span class="i-lucide-x" aria-hidden="true"></span>
                 </button>
             </div>

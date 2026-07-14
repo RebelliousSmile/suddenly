@@ -1,29 +1,30 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Déconnexion — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Log out" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-12">
     <div class="container-app max-w-md">
         <h1 class="text-3xl font-bold text-semantic-ink mb-8 text-center">
-            Déconnexion
+            {% trans "Log out" %}
         </h1>
 
         <div class="card card-body text-center">
             <p class="text-semantic-ink-secondary mb-6">
-                Êtes-vous sûr de vouloir vous déconnecter ?
+                {% trans "Are you sure you want to log out?" %}
             </p>
 
             <form method="post" action="{% url 'account_logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="btn-primary">
-                    Se déconnecter
+                    {% trans "Log out" %}
                 </button>
             </form>
 
             <p class="mt-4">
                 <a href="{% url 'core:home' %}" class="link text-sm">
-                    Retour à l'accueil
+                    {% trans "Back to home" %}
                 </a>
             </p>
         </div>

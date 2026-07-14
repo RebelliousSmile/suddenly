@@ -440,6 +440,10 @@ msgstr "Stats & succès"
 msgid "Log out"
 msgstr "Déconnexion"
 
+#: .\templates\account\logout.html:16
+msgid "Are you sure you want to log out?"
+msgstr "Êtes-vous sûr de vouloir vous déconnecter ?"
+
 #: .\templates\base.html:118 .\templates\base.html:231
 msgid "Sign up"
 msgstr "Inscription"
@@ -2295,3 +2299,47 @@ msgstr "Toutes les stories"
 
 #~ msgid "e.g. Session 12 — The Broken Oracle"
 #~ msgstr "ex. Session 12 — L'Oracle brisé"
+
+#: templates/
+msgid "Open menu"
+msgstr "Ouvrir le menu"
+
+#: templates/
+msgid "Close menu"
+msgstr "Fermer le menu"
+
+#: templates/
+msgid "Close"
+msgstr "Fermer"
+
+#: templates/
+msgid "Like"
+msgstr "J'aime"
+
+#: templates/
+msgid "Share"
+msgstr "Partager"
+
+#: templates/
+msgid "More actions"
+msgstr "Plus d'actions"
+
+#: templates/
+msgid "Dismiss"
+msgstr "Masquer"
+
+#: templates/
+msgid "Remove marker"
+msgstr "Retirer le marqueur"
+
+#: templates/base.html
+msgid "Switch to light mode"
+msgstr "Passer en mode clair"
+
+#: templates/base.html
+msgid "Switch to dark mode"
+msgstr "Passer en mode sombre"
+
+#: templates/base.html
+msgid "Dismiss notification"
+msgstr "Masquer la notification"
