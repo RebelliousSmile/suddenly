@@ -260,11 +260,7 @@ def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
 def _released_reports(game: Game) -> models.QuerySet[Report]:
     """Reports of a game that have crossed the wall, in reading order."""
     return (
-        game.reports.filter(
-            released_at__isnull=False,
-            status=ReportStatus.PUBLISHED,
-            visibility=ReportVisibility.PUBLIC,
-        )
+        game.reports.released()
         .select_related("author")
         .prefetch_related(
             # Public reading surface: only published rapports cross into a story.
@@ -292,13 +288,10 @@ def stories_index(request: HttpRequest) -> HttpResponse:
     released + published + public content are listed — the wall filter is in
     the queryset, so private/in-progress reports never surface here.
     """
+    # Games with at least one released report — the wall filter stays centralized
+    # in Report.objects.released() (SUD-V1); this view never re-expresses it.
     games = (
-        Game.objects.filter(
-            reports__released_at__isnull=False,
-            reports__status=ReportStatus.PUBLISHED,
-            reports__visibility=ReportVisibility.PUBLIC,
-            remote=False,
-        )
+        Game.objects.filter(reports__in=Report.objects.released(), remote=False)
         .distinct()
         .select_related("owner")
         .order_by("-updated_at")
@@ -325,11 +318,15 @@ def story_detail(request: HttpRequest, pk: str) -> HttpResponse:
     if not reports:
         raise Http404
 
+    from suddenly.characters.models import Quote
+
+    quotes = Quote.objects.promotable().filter(report__game=game).order_by("-created_at")
+
     return htmx_render(
         request,
         full_template="stories/detail.html",
         partial_template="stories/detail.html",
-        context={"game": game, "reports": reports},
+        context={"game": game, "reports": reports, "quotes": quotes},
     )
 
 
@@ -432,16 +429,31 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
         if not request.user.is_authenticated or request.user != report.author:
             raise Http404
 
+    from suddenly.characters.models import Character, Quote
+
     cast = report.character_appearances.select_related("character").order_by("role")
     # Fallback for ingested reports: CharacterAppearance not created via ingest endpoint,
     # so fall back to ReportCast (new_character_name entries) when appearances are absent.
     cast_fallback = report.cast.all() if not cast.exists() else None
-    quotes = report.quotes.filter(visibility="public").order_by("-created_at")[:5]
+
+    # Public "Citations retenues": the double lock, never re-expressed here.
+    quotes = Quote.objects.promotable().filter(report=report).order_by("-created_at")[:5]
 
     # Draft rapports are private to their author: the author manages them here
     # (edit/publish), but the public thread of a released report shows only
     # published rapports (per-rapport wall, decision #1 option A).
     is_author = request.user.is_authenticated and request.user == report.author
+
+    # §5: the author marks a réplique as citation. They manage every quote of
+    # this report (regardless of the wall), and pick a speaker among its cast.
+    manage_quotes = None
+    quote_characters = None
+    if is_author:
+        manage_quotes = report.quotes.select_related("character").order_by("-created_at")
+        quote_characters = Character.objects.filter(
+            models.Q(appearances__report=report) | models.Q(cast_entries__report=report)
+        ).distinct()
+
     rapports = report.rapports.select_related("actor").prefetch_related(
         "parent_links__parent_rapport", "markers__character"
     )
@@ -458,6 +470,9 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
             "cast": cast,
             "cast_fallback": cast_fallback,
             "quotes": quotes,
+            "is_author": is_author,
+            "manage_quotes": manage_quotes,
+            "quote_characters": quote_characters,
             "rapports": rapports,
         },
     )
@@ -1584,4 +1599,66 @@ def rapport_media_remove(
     RapportMedia.objects.filter(rapport=rapport).delete()
     if getattr(request, "htmx", False):
         return render(request, "games/partials/rapport_item.html", {"rapport": rapport})
+    return HttpResponse(status=204)
+
+
+# ---------------------------------------------------------------------------
+# Quotes (citations) — the author marks a réplique on a Report they own (§5).
+#
+# A Quote may be created on a Report not yet released — it simply waits for the
+# temporal wall to open before it can be promoted (QuoteQuerySet.promotable).
+# Ephemeral visibility is a character-page gesture; here only public/private are
+# offered, so the expires_at ⟺ EPHEMERAL constraint is never tripped.
+# ---------------------------------------------------------------------------
+
+_QUOTE_VISIBILITIES = frozenset({"public", "private"})
+
+
+@require_POST
+@login_required
+def quote_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:
+    """Create a citation on a Report the caller authored. HTMX, returns a card."""
+    from suddenly.characters.models import Character, Quote, QuoteVisibility
+
+    report = get_object_or_404(Report.objects.select_related("game"), pk=pk, game__pk=game_pk)
+    if report.author != request.user:
+        return HttpResponseForbidden()
+
+    content = request.POST.get("content", "").strip()
+    if len(content) < 2:
+        return HttpResponse("La citation doit faire au moins 2 caractères.", status=422)
+
+    character = get_object_or_404(Character, slug=request.POST.get("character", "").strip())
+    visibility = request.POST.get("visibility", QuoteVisibility.PUBLIC)
+    if visibility not in _QUOTE_VISIBILITIES:
+        visibility = QuoteVisibility.PUBLIC
+
+    quote = Quote.objects.create(
+        report=report,
+        character=character,
+        author=request.user,
+        content=content,
+        context=request.POST.get("context", "").strip(),
+        visibility=visibility,
+    )
+    return render(request, "quotes/_quote_card.html", {"quote": quote})
+
+
+@require_POST
+@login_required
+def quote_delete(
+    request: AuthenticatedRequest, game_pk: str, pk: str, quote_pk: str
+) -> HttpResponse:
+    """Hard-delete a citation of a Report the caller authored (§5)."""
+    from suddenly.characters.models import Quote
+
+    quote = get_object_or_404(
+        Quote.objects.select_related("report"),
+        pk=quote_pk,
+        report__pk=pk,
+        report__game__pk=game_pk,
+    )
+    if quote.report is None or quote.report.author != request.user:
+        return HttpResponseForbidden()
+    quote.delete()
     return HttpResponse(status=204)

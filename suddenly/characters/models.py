@@ -12,6 +12,7 @@ from collections.abc import Iterable
 from django.conf import settings
 from django.db import models
 from django.db.models.base import ModelBase
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from suddenly.core.models import BaseModel
@@ -171,10 +172,32 @@ class QuoteVisibility(models.TextChoices):
     PUBLIC = "public", _("Public")
 
 
+class QuoteQuerySet(models.QuerySet["Quote"]):
+    """Querysets for Quote. The single place the two liberation locks meet."""
+
+    def promotable(self) -> QuoteQuerySet:
+        """Citations remontables sur les surfaces publiques.
+
+        Double verrou, orthogonal (SUD-V1): ``report`` libéré (mur temporel) ET
+        ``quote`` publique et non expirée (choix éditorial). Toute surface
+        publique part d'ici — aucune vue, aucun template ne refiltre la
+        libération. Si le mur remonte au niveau Game, seule cette méthode change
+        (``report__game__released_at__isnull=False``).
+        """
+        return (
+            self.filter(visibility=QuoteVisibility.PUBLIC)
+            .filter(report__released_at__isnull=False)
+            .exclude(expires_at__lte=timezone.now())
+            .select_related("character", "report", "report__game")
+        )
+
+
 class Quote(BaseModel):
     """
     A memorable quote from a character, BookWyrm-style.
     """
+
+    objects = QuoteQuerySet.as_manager()
 
     # Content
     content = models.TextField(help_text="The quote itself")
@@ -225,6 +248,20 @@ class Quote(BaseModel):
         indexes = [
             models.Index(fields=["character", "visibility"]),
             models.Index(fields=["visibility", "expires_at"]),
+        ]
+        constraints = [
+            # expires_at is set iff the quote is ephemeral (and only then).
+            # `check=` is the Django 5.0 arg name (django-stubs tracks 5.1's `condition`).
+            models.CheckConstraint(  # type: ignore[call-arg]
+                name="quote_expires_iff_ephemeral",
+                check=(
+                    models.Q(visibility=QuoteVisibility.EPHEMERAL, expires_at__isnull=False)
+                    | (
+                        ~models.Q(visibility=QuoteVisibility.EPHEMERAL)
+                        & models.Q(expires_at__isnull=True)
+                    )
+                ),
+            ),
         ]
 
     def __str__(self) -> str:

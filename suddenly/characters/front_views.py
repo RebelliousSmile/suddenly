@@ -77,7 +77,11 @@ def character_detail(request: HttpRequest, slug: str) -> HttpResponse:
         "report", "report__game", "report__author"
     ).order_by("-report__published_at")[:20]
 
-    quotes = character.quotes.filter(visibility="public").order_by("-created_at")[:10]
+    # §4.4: the character's citations, behind the double lock (released report +
+    # public quote). The wall filter is never re-expressed here.
+    from .models import Quote
+
+    quotes = Quote.objects.promotable().filter(character=character).order_by("-created_at")[:10]
 
     # Narrative meta-model (issues A/C): displayed, never evaluated.
     trait_sets = character.trait_sets.prefetch_related("traits", "actions__traits")

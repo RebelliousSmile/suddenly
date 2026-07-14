@@ -162,6 +162,26 @@
     </div>
 </section>
 
+<!-- Ce qu'on y dit — promotable citations for anonymous visitors (§4.1) -->
+{% if not user.is_authenticated and instance_quotes %}
+<section class="py-16 container-app">
+    <div class="max-w-2xl mx-auto">
+        <div class="flex items-center justify-between mb-8">
+            <h2 class="text-2xl font-bold text-primary">{% trans "Ce qu'on y dit" %}</h2>
+            <a href="{% url 'core:quotes' %}" class="link flex items-center gap-1">
+                {% trans "Le mur des citations" %}
+                <span class="i-lucide-arrow-right text-sm"></span>
+            </a>
+        </div>
+        <div class="space-y-4">
+            {% for quote in instance_quotes %}
+                {% include "quotes/_quote_card.html" %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
 <!-- Federation -->
 <section class="py-16 container-app">
     <div class="card card-body max-w-3xl mx-auto text-center">

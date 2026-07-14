@@ -86,6 +86,22 @@ class ReportVisibility(models.TextChoices):
     FOLLOWERS = "followers", _("Followers only")
 
 
+class ReportQuerySet(models.QuerySet["Report"]):
+    """Querysets for Report. The liberation ("wall") filter lives here and
+    nowhere else (SUD-V1): a report crosses the wall when ``released_at`` is set,
+    and only a released + published + public report is a public story."""
+
+    def released(self) -> "ReportQuerySet":
+        """Reports that have crossed the temporal wall — the single released
+        filter of the codebase. If liberation ever moves to the Game level, only
+        this method changes."""
+        return self.filter(
+            released_at__isnull=False,
+            status=ReportStatus.PUBLISHED,
+            visibility=ReportVisibility.PUBLIC,
+        )
+
+
 class Report(BaseModel):
     """
     A Report is a narrative account added to a Game.
@@ -132,8 +148,10 @@ class Report(BaseModel):
     # A report can be published (federable) without being released (wall still
     # closed): `released_at` dates the moment a scene crosses the wall, turning
     # a game in progress into a resolved account. Symmetric with published_at.
-    released_at = models.DateTimeField(blank=True, null=True)
+    released_at = models.DateTimeField(blank=True, null=True, db_index=True)
     session_date = models.DateField(null=True, blank=True)
+
+    objects = ReportQuerySet.as_manager()
 
     # Tags (hashtags for discovery)
     tags = models.ManyToManyField("core.Tag", blank=True, related_name="reports")

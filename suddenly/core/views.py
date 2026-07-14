@@ -9,19 +9,48 @@ from __future__ import annotations
 
 from typing import Any
 
+from django.core.paginator import Paginator
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
 from suddenly.core.services import (
     get_distinct_tag_names,
+    get_instance_quotes,
     get_instance_stats,
     get_recent_public_reports,
 )
 
 
 def home(request: HttpRequest) -> HttpResponse:
-    """Home page."""
-    return render(request, "core/home.html", {"recent_reports": get_recent_public_reports()})
+    """Home page — public vitrine.
+
+    "Ce qu'on y dit": a few promotable citations for anonymous visitors, taken
+    from the single double-locked queryset.
+    """
+    return render(
+        request,
+        "core/home.html",
+        {
+            "recent_reports": get_recent_public_reports(),
+            "instance_quotes": get_instance_quotes(3),
+        },
+    )
+
+
+def quotes(request: HttpRequest) -> HttpResponse:
+    """Public wall of citations (/citations) — no authentication (prompt §4.2).
+
+    Every card is promotable: released report AND public, non-expired quote. The
+    view never re-expresses the wall — it starts from ``promotable()``.
+    """
+    from suddenly.characters.models import Quote
+
+    page_obj = Paginator(Quote.objects.promotable(), 24).get_page(request.GET.get("page"))
+    return render(
+        request,
+        "core/quotes.html",
+        {"page_obj": page_obj, "quotes": page_obj.object_list},
+    )
 
 
 def explorer(request: HttpRequest) -> HttpResponse:
