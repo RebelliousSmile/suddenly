@@ -251,8 +251,7 @@ class Quote(BaseModel):
         ]
         constraints = [
             # expires_at is set iff the quote is ephemeral (and only then).
-            # `check=` is the Django 5.0 arg name (django-stubs tracks 5.1's `condition`).
-            models.CheckConstraint(  # type: ignore[call-arg]
+            models.CheckConstraint(
                 name="quote_expires_iff_ephemeral",
                 check=(
                     models.Q(visibility=QuoteVisibility.EPHEMERAL, expires_at__isnull=False)
