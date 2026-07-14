@@ -51,11 +51,13 @@ from .services import (
     build_actor_pool,
     build_game_cast,
     build_game_queryset,
+    close_scene,
     create_npc_in_cast,
     create_scene_post,
     is_game_master,
     open_new_scene,
     publish_report,
+    reopen_scene,
 )
 
 
@@ -358,6 +360,42 @@ def report_release(request: AuthenticatedRequest, game_pk: str, pk: str) -> Http
 
     return redirect(
         reverse("games:report_detail", kwargs={"game_pk": report.game_id, "pk": report.pk})
+    )
+
+
+@require_POST
+@login_required
+def scene_close(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:
+    """Close a scene from the scene-edit dock (draft → closed, or → released).
+
+    Optionally writes the closure Rapport (the compte rendu) from ``closure``.
+    ``mode=release`` closes *and* crosses the wall; anything else just closes.
+    """
+    report = get_object_or_404(Report, pk=pk, game_id=game_pk, author=request.user)
+    close_scene(
+        report=report,
+        user=request.user,
+        closure_content=request.POST.get("closure", ""),
+        release=request.POST.get("mode") == "release",
+    )
+    return redirect(
+        reverse("games:report_edit", kwargs={"game_pk": report.game_id, "pk": report.pk})
+    )
+
+
+@require_POST
+@login_required
+def scene_reopen(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:
+    """Reopen a closed scene back to draft (scene-edit dock)."""
+    from django.core.exceptions import ValidationError
+
+    report = get_object_or_404(Report, pk=pk, game_id=game_pk, author=request.user)
+    try:
+        reopen_scene(report=report)
+    except ValidationError as exc:
+        return HttpResponse("; ".join(exc.messages), status=400)
+    return redirect(
+        reverse("games:report_edit", kwargs={"game_pk": report.game_id, "pk": report.pk})
     )
 
 

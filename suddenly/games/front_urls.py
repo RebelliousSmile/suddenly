@@ -67,6 +67,16 @@ urlpatterns = [
         front_views.report_release,
         name="report_release",
     ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/close/",
+        front_views.scene_close,
+        name="scene_close",
+    ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/reopen/",
+        front_views.scene_reopen,
+        name="scene_reopen",
+    ),
     path("<uuid:game_pk>/reports/new/", front_views.report_create, name="report_create"),
     path("<uuid:game_pk>/reports/<uuid:pk>/edit/", front_views.report_edit, name="report_edit"),
     path(

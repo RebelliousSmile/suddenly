@@ -27,8 +27,8 @@
             {% endwith %}
 
             <div class="flex items-center gap-2 mb-1">
-                <span class="badge bg-card-dark text-muted border border-border text-xs">
-                    {{ rapport.get_kind_display }}
+                <span class="badge text-xs {% if rapport.kind == 'closure' %}bg-info/15 text-info border border-info/30{% else %}bg-card-dark text-muted border border-border{% endif %}">
+                    {% if rapport.kind == 'closure' %}<span class="i-lucide-check-check text-xs"></span> {% trans "Compte rendu" %}{% else %}{{ rapport.get_kind_display }}{% endif %}
                 </span>
                 {% if rapport.actor %}
                     <span class="text-xs text-muted">
@@ -37,7 +37,13 @@
                     </span>
                 {% endif %}
             </div>
-            <p class="text-secondary text-sm">{{ rapport.content }}</p>
+            {% if rapport.kind == 'closure' %}
+                <div class="rounded-card border border-info/30 bg-info/5 p-3">
+                    <p class="text-primary text-sm font-serif">{{ rapport.content }}</p>
+                </div>
+            {% else %}
+                <p class="text-secondary text-sm">{{ rapport.content }}</p>
+            {% endif %}
 
             {# Média — description uniquement, une seule image (rule 2e). #}
             {% if rapport.kind == 'description' %}

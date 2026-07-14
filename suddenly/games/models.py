@@ -282,6 +282,9 @@ class RapportKind(models.TextChoices):
     ACTION = "action", _("Action")
     DISCUSSION = "discussion", _("Discussion")
     NARRATION = "narration", _("Narration")
+    # The scene's compte rendu, written when the scene is closed. Full Rapport;
+    # its content crosses the wall to the Hub. Not an actor's line → no actor.
+    CLOSURE = "closure", _("Closure")
 
 
 class RapportStatus(models.TextChoices):
@@ -325,8 +328,9 @@ class Rapport(BaseModel):
         #   description → optional (empty = "Voix du MJ", or a character)
         #   action      → required (someone acts)
         #   discussion  → required (a spoken line is embodied)
-        if self.kind == RapportKind.NARRATION and self.actor is not None:
-            raise ValidationError({"actor": "Narration is the narrative voice; it takes no actor."})
+        #   closure     → never an actor (the scene's compte rendu, GM voice)
+        if self.kind in (RapportKind.NARRATION, RapportKind.CLOSURE) and self.actor is not None:
+            raise ValidationError({"actor": "This kind is the narrative voice; it takes no actor."})
         if self.kind in (RapportKind.ACTION, RapportKind.DISCUSSION) and self.actor is None:
             raise ValidationError({"actor": f"An actor is required for a {self.kind}."})
 

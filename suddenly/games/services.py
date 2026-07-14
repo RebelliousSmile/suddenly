@@ -115,8 +115,10 @@ def available_kinds(user: User, game: Game) -> list[tuple[str, Any]]:
 
     ``narration`` **disappears** from the list for a non-GM — it is not greyed
     out, it is absent (composer rule 2c): narration *is* the GM's voice.
+    ``closure`` is never here: the scene's compte rendu is written through the
+    close flow, not composed as an ordinary post.
     """
-    choices = list(RapportKind.choices)
+    choices = [c for c in RapportKind.choices if c[0] != RapportKind.CLOSURE]
     if not is_game_master(user, game):
         choices = [c for c in choices if c[0] != RapportKind.NARRATION]
     return choices
@@ -306,4 +308,58 @@ def publish_report(report: Report, user: User) -> Report:
     report.published_at = timezone.now()
     report.save(update_fields=["status", "published_at", "updated_at"])
 
+    return report
+
+
+# ---------------------------------------------------------------------------
+# Scene lifecycle — draft → closed → released (SUD-V, scene-edit dock).
+#
+#   draft    : status=draft — the scene is in play, editable.
+#   closed   : status=published, released_at=None — the compte rendu is ready,
+#              behind the wall, nothing shared yet.
+#   released : released_at set — the resolved account is public.
+# ---------------------------------------------------------------------------
+
+
+@transaction.atomic
+def close_scene(
+    *, report: Report, user: User, closure_content: str = "", release: bool = False
+) -> Report:
+    """Close a scene: optionally write its closure Rapport, publish it, and
+    (optionally) cross the wall in one gesture.
+
+    ``closure_content`` — when given, a ``closure`` Rapport (the scene's compte
+    rendu) is appended, published. Publishing materialises the cast appearances
+    (via :func:`publish_report`). ``release=True`` also sets ``released_at``.
+    """
+    if closure_content.strip():
+        Rapport.objects.create(
+            report=report,
+            kind=RapportKind.CLOSURE,
+            content=closure_content.strip(),
+            status=RapportStatus.PUBLISHED,
+        )
+
+    if report.status != ReportStatus.PUBLISHED:
+        publish_report(report, user)
+
+    if release and report.released_at is None:
+        report.released_at = timezone.now()
+        report.save(update_fields=["released_at", "updated_at"])
+
+    return report
+
+
+def reopen_scene(*, report: Report) -> Report:
+    """Reopen a closed scene back to draft (unshare + unpublish).
+
+    Only allowed while the report is not both released *and* federated — once a
+    released report has an ``ap_id``, the wall crossing is irreversible (mirrors
+    ``report_release``); reopening such a report raises ``ValidationError``.
+    """
+    if report.released_at is not None and report.ap_id:
+        raise ValidationError("A federated, released scene cannot be reopened.")
+    report.status = ReportStatus.DRAFT
+    report.released_at = None
+    report.save(update_fields=["status", "released_at", "updated_at"])
     return report
