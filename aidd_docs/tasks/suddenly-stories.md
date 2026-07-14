@@ -30,15 +30,24 @@ Scenario: Inscription réussie
 ### US-02: "Créer ma campagne"
 
 **As a** joueur solo
-**I want** créer une fiche de partie (titre, système de jeu, description)
+**I want** créer une fiche de partie (titre, description, système de jeu optionnel en texte libre, tags)
 **So that** mes comptes-rendus soient regroupés sous une campagne identifiable
+
+> Suddenly n'a pas de catalogue de systèmes. « Système de jeu » est un simple libellé
+> texte libre (optionnel) ; la découverte se fait par tags. Le méta-modèle narratif
+> (traits/actions) vit côté personnage, pas côté partie.
 
 ```gherkin
 Scenario: Création de partie
   Given je suis connecté
-  When je crée une partie avec titre et système de jeu
+  When je crée une partie avec un titre (et, si je veux, un libellé de système libre et des tags)
   Then la partie apparaît dans mon profil avec son historique
   And la partie est publique et peut être suivie
+
+Scenario: Système de jeu optionnel
+  Given je crée une partie sans renseigner de système
+  Then la partie est créée sans erreur
+  And aucun catalogue n'est requis
 ```
 
 ### US-03: "Reconstituer une campagne passée"
@@ -108,15 +117,24 @@ Scenario: Consultation de fiche
 ### US-07: "Rechercher des personnages"
 
 **As a** joueur solo
-**I want** rechercher des personnages par nom ou système de jeu
+**I want** rechercher des personnages par nom ou par tags
 **So that** je retrouve un personnage ou découvre des PNJ intéressants
 
+> La recherche par « système de jeu » est remplacée par une recherche par tags :
+> Suddenly n'a plus de catalogue de systèmes. Le nom (recherche plein-texte) et les
+> tags sont les axes de découverte.
+
 ```gherkin
-Scenario: Recherche
+Scenario: Recherche par nom
   Given j'utilise la barre de recherche
-  When je tape un nom ou système de jeu
+  When je tape un nom
   Then les personnages correspondants s'affichent avec statut et partie d'origine
   And les PNJ disponibles sont identifiés visuellement
+
+Scenario: Filtrage par tag
+  Given j'utilise la barre de filtres
+  When je sélectionne un tag
+  Then seuls les personnages portant ce tag s'affichent
 ```
 
 ---

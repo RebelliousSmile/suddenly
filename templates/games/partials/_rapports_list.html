@@ -1,0 +1,5 @@
+{% comment %}The fil of a scene — the inner content of #rapports-list. Reused by
+report_form, report_detail and the reorder endpoint response.{% endcomment %}
+{% for rapport in rapports %}
+    {% include "games/partials/rapport_item.html" %}
+{% endfor %}

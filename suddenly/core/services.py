@@ -4,14 +4,16 @@ Core service layer — shared business queries used by views.
 
 from __future__ import annotations
 
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from django.core.cache import cache
 
 from suddenly.games.models import Report, ReportStatus
 
+if TYPE_CHECKING:
+    from suddenly.characters.models import Quote
+
 EXPLORER_TAGS_TTL = 300
-EXPLORER_SYSTEMS_TTL = 300
 INSTANCE_STATS_TTL = 600
 RECENT_REPORTS_TTL = 60
 
@@ -40,6 +42,17 @@ def get_recent_public_reports(limit: int = 3) -> list[Report]:
     return reports
 
 
+def get_instance_quotes(limit: int = 3) -> list[Quote]:
+    """Promotable citations for the anonymous vitrine ("Ce qu'on y dit").
+
+    Starts from ``Quote.objects.promotable()`` — the double lock — so nothing
+    behind the wall or kept private ever reaches the front page.
+    """
+    from suddenly.characters.models import Quote
+
+    return list(Quote.objects.promotable().order_by("-created_at")[:limit])
+
+
 def get_distinct_tag_names(model_cls: type[Any]) -> list[str]:
     cache_key = f"explorer_tags:{model_cls._meta.label_lower}"
     cached = cache.get(cache_key)
@@ -51,23 +64,6 @@ def get_distinct_tag_names(model_cls: type[Any]) -> list[str]:
         .distinct()
     )
     cache.set(cache_key, names, EXPLORER_TAGS_TTL)
-    return names
-
-
-def get_distinct_game_systems() -> list[str]:
-    from suddenly.games.models import Game
-
-    cache_key = "explorer_game_systems"
-    cached = cache.get(cache_key)
-    if cached is not None:
-        return cast(list[str], cached)
-    names = sorted(
-        Game.objects.filter(remote=False)
-        .exclude(game_system="")
-        .values_list("game_system", flat=True)
-        .distinct()
-    )
-    cache.set(cache_key, names, EXPLORER_SYSTEMS_TTL)
     return names
 
 

@@ -25,7 +25,6 @@ def character_list(request: HttpRequest) -> HttpResponse:
     qs = build_character_queryset(
         q=request.GET.get("q", ""),
         status=request.GET.get("status", ""),
-        system=request.GET.get("system", ""),
         tag=request.GET.get("tag", ""),
     )
 
@@ -58,7 +57,6 @@ def character_list(request: HttpRequest) -> HttpResponse:
             "characters": qs[:24],
             "query": request.GET.get("q", ""),
             "status_filter": request.GET.get("status", ""),
-            "system_filter": request.GET.get("system", ""),
             "statuses": CharacterStatus.choices,
             "default_bg": default_bg,
             "active_tag": request.GET.get("tag", ""),
@@ -66,6 +64,20 @@ def character_list(request: HttpRequest) -> HttpResponse:
             "first_character": first_character,
         },
     )
+
+
+def character_card(request: HttpRequest, slug: str) -> HttpResponse:
+    """The hover-card of a character (tooltip content), lazy-loaded over HTMX.
+
+    Public — character pages are public. Rendered inside the popover of a
+    character link on first hover; kept small (identity, status, one-line pitch,
+    and the claim/adopt/fork affordances when the character is available).
+    """
+    character = get_object_or_404(
+        Character.objects.select_related("origin_game", "owner"),
+        slug=slug,
+    )
+    return render(request, "characters/_character_card.html", {"character": character})
 
 
 def character_detail(request: HttpRequest, slug: str) -> HttpResponse:
@@ -79,13 +91,28 @@ def character_detail(request: HttpRequest, slug: str) -> HttpResponse:
         "report", "report__game", "report__author"
     ).order_by("-report__published_at")[:20]
 
-    quotes = character.quotes.filter(visibility="public").order_by("-created_at")[:10]
+    # §4.4: the character's citations, behind the double lock (released report +
+    # public quote). The wall filter is never re-expressed here.
+    from .models import Quote
+
+    quotes = Quote.objects.promotable().filter(character=character).order_by("-created_at")[:10]
+
+    # Narrative meta-model (issues A/C): displayed, never evaluated.
+    trait_sets = character.trait_sets.prefetch_related("traits", "actions__traits")
+
+    # The sheet maintainer (creator or owner) may edit traits.
+    can_edit_traits = request.user.is_authenticated and (
+        request.user == character.creator
+        or (character.owner_id is not None and request.user == character.owner)
+    )
 
     # Follow state + pending request for current user
     context: dict[str, object] = {
         "character": character,
         "appearances": appearances,
         "quotes": quotes,
+        "trait_sets": trait_sets,
+        "can_edit_traits": can_edit_traits,
     }
 
     if request.user.is_authenticated:
@@ -121,7 +148,6 @@ def character_search(request: HttpRequest) -> HttpResponse:
     qs = build_character_queryset(
         q=request.GET.get("q", ""),
         status=request.GET.get("status", ""),
-        system=request.GET.get("system", ""),
         tag=request.GET.get("tag", ""),
     )
 

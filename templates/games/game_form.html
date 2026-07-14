@@ -25,68 +25,15 @@
                        required class="form-input">
             </div>
 
-            {% if game and game.game_system_ref %}{% with sn=game.game_system_ref.name|escapejs ss=game.game_system_ref.slug|escapejs %}
-            <div x-data="{ open: false, isCustom: false, systemName: '{{ sn }}', systemSlug: '{{ ss }}',
-                           selectSystem(n,s){ this.systemName=n; this.systemSlug=s; this.open=false; },
-                           selectCustom(){ this.isCustom=true; this.systemSlug='__custom__'; this.systemName=''; this.open=false; },
-                           clearCustom(){ this.isCustom=false; this.systemName=''; this.systemSlug=''; } }"
-                 class="relative" @click.away="open = false">
-            {% endwith %}{% elif game and game.game_system %}{% with sn=game.game_system|escapejs %}
-            <div x-data="{ open: false, isCustom: true, systemName: '{{ sn }}', systemSlug: '__custom__',
-                           selectSystem(n,s){ this.systemName=n; this.systemSlug=s; this.isCustom=false; this.open=false; },
-                           selectCustom(){ this.isCustom=true; this.systemSlug='__custom__'; this.systemName=''; this.open=false; },
-                           clearCustom(){ this.isCustom=false; this.systemName=''; this.systemSlug=''; } }"
-                 class="relative" @click.away="open = false">
-            {% endwith %}{% else %}
-            <div x-data="{ open: false, isCustom: false, systemName: '', systemSlug: '',
-                           selectSystem(n,s){ this.systemName=n; this.systemSlug=s; this.open=false; },
-                           selectCustom(){ this.isCustom=true; this.systemSlug='__custom__'; this.systemName=''; this.open=false; },
-                           clearCustom(){ this.isCustom=false; this.systemName=''; this.systemSlug=''; } }"
-                 class="relative" @click.away="open = false">
-            {% endif %}
-
-                <label class="form-label">
+            <div>
+                <label for="game_system" class="form-label">
                     {% trans "Game system" %} <span class="text-muted">({% trans "optional" %})</span>
                 </label>
-
-                {# Mode personnalisé : input texte libre #}
-                <div x-show="isCustom" class="flex gap-2">
-                    <input type="text" x-model="systemName" autocomplete="off"
-                           placeholder="{% trans "Custom system name..." %}"
-                           class="form-input flex-1">
-                    <button type="button" @click="clearCustom()"
-                            class="btn-ghost btn-sm shrink-0" title="{% trans "Back to catalog" %}">
-                        <span class="i-lucide-x"></span>
-                    </button>
-                </div>
-
-                {# Mode catalogue : déclencheur #}
-                <button type="button" x-show="!isCustom"
-                        @click="open = true; $nextTick(() => { $refs.systemSearch.focus(); htmx.ajax('GET', '{% url 'games:system_search' %}', {target: '#system-dropdown-list'}) })"
-                        class="form-input text-left w-full flex items-center justify-between gap-2 cursor-pointer">
-                    <span x-show="systemName" x-text="systemName" class="text-primary truncate"></span>
-                    <span x-show="!systemName" class="text-muted">{% trans "Choose a system..." %}</span>
-                    <span class="i-lucide-chevron-down text-muted shrink-0"></span>
-                </button>
-
-                {# Dropdown #}
-                <div x-show="open" x-cloak
-                     class="absolute z-dropdown w-full mt-1 bg-card border border-border rounded-xl shadow-card overflow-hidden">
-                    <div class="flex items-center gap-2 px-3 border-b border-border">
-                        <span class="i-lucide-search text-sm text-muted shrink-0"></span>
-                        <input type="text" name="q_system" x-ref="systemSearch" autocomplete="off"
-                               placeholder="{% trans "Search..." %}"
-                               class="w-full py-2.5 bg-transparent text-sm text-primary placeholder:text-muted outline-none"
-                               hx-get="{% url 'games:system_search' %}"
-                               hx-trigger="input changed delay:300ms"
-                               hx-target="#system-dropdown-list"
-                               @click.stop>
-                    </div>
-                    <div id="system-dropdown-list" class="max-h-56 overflow-y-auto"></div>
-                </div>
-
-                <input type="hidden" name="game_system_slug" :value="isCustom ? '' : systemSlug">
-                <input type="hidden" name="game_system_custom" :value="isCustom ? systemName : ''">
+                <input type="text" id="game_system" name="game_system"
+                       value="{% if form_data.game_system %}{{ form_data.game_system }}{% elif game %}{{ game.game_system }}{% endif %}"
+                       placeholder="{% trans "e.g. Mist Engine, FATE, PbtA…" %}"
+                       class="form-input">
+                <p class="form-help">{% trans "Free-form label — no catalogue." %}</p>
             </div>
 
             <div>

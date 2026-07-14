@@ -9,11 +9,13 @@ from __future__ import annotations
 
 from typing import Any, cast
 
+from django.core.paginator import Paginator
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
 from suddenly.core.services import (
     get_distinct_tag_names,
+    get_instance_quotes,
     get_instance_stats,
     get_recent_public_reports,
 )
@@ -27,7 +29,9 @@ def home(request: HttpRequest) -> HttpResponse:
     Mastodon-like behaviour (Front #1): a single canonical ``/`` URL with two
     renders depending on the session. Authenticated users get their feed
     (delegated to ``feed_home``, keeping ``/`` as the displayed URL); anonymous
-    visitors get the marketing vitrine enriched with instance stats (Front #2).
+    visitors get the marketing vitrine enriched with instance stats (Front #2)
+    and a few promotable citations ("ce qu'on y dit") from the double-locked
+    queryset.
     """
     if request.user.is_authenticated:
         from suddenly.core.feed_views import feed_home
@@ -40,7 +44,24 @@ def home(request: HttpRequest) -> HttpResponse:
         {
             "recent_reports": get_recent_public_reports(),
             "stats": get_instance_stats(),
+            "instance_quotes": get_instance_quotes(3),
         },
+    )
+
+
+def quotes(request: HttpRequest) -> HttpResponse:
+    """Public wall of citations (/citations) — no authentication (prompt §4.2).
+
+    Every card is promotable: released report AND public, non-expired quote. The
+    view never re-expresses the wall — it starts from ``promotable()``.
+    """
+    from suddenly.characters.models import Quote
+
+    page_obj = Paginator(Quote.objects.promotable(), 24).get_page(request.GET.get("page"))
+    return render(
+        request,
+        "core/quotes.html",
+        {"page_obj": page_obj, "quotes": page_obj.object_list},
     )
 
 
@@ -74,7 +95,6 @@ def explorer(request: HttpRequest) -> HttpResponse:
         chars_qs = build_character_queryset(
             q=request.GET.get("q", ""),
             status=request.GET.get("status", ""),
-            system=request.GET.get("system", ""),
             tag=request.GET.get("tag", ""),
         )
         context.update(
@@ -82,7 +102,6 @@ def explorer(request: HttpRequest) -> HttpResponse:
                 "characters": chars_qs[:24],
                 "query": request.GET.get("q", ""),
                 "status_filter": request.GET.get("status", ""),
-                "system_filter": request.GET.get("system", ""),
                 "active_tag": request.GET.get("tag", ""),
                 "all_tags": get_distinct_tag_names(Character),
                 "statuses": CharacterStatus.choices,

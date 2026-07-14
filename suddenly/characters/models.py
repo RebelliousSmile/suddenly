@@ -12,6 +12,7 @@ from collections.abc import Iterable
 from django.conf import settings
 from django.db import models
 from django.db.models.base import ModelBase
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from suddenly.core.models import BaseModel
@@ -171,10 +172,32 @@ class QuoteVisibility(models.TextChoices):
     PUBLIC = "public", _("Public")
 
 
+class QuoteQuerySet(models.QuerySet["Quote"]):
+    """Querysets for Quote. The single place the two liberation locks meet."""
+
+    def promotable(self) -> QuoteQuerySet:
+        """Citations remontables sur les surfaces publiques.
+
+        Double verrou, orthogonal (SUD-V1): ``report`` libéré (mur temporel) ET
+        ``quote`` publique et non expirée (choix éditorial). Toute surface
+        publique part d'ici — aucune vue, aucun template ne refiltre la
+        libération. Si le mur remonte au niveau Game, seule cette méthode change
+        (``report__game__released_at__isnull=False``).
+        """
+        return (
+            self.filter(visibility=QuoteVisibility.PUBLIC)
+            .filter(report__released_at__isnull=False)
+            .exclude(expires_at__lte=timezone.now())
+            .select_related("character", "report", "report__game")
+        )
+
+
 class Quote(BaseModel):
     """
     A memorable quote from a character, BookWyrm-style.
     """
+
+    objects = QuoteQuerySet.as_manager()
 
     # Content
     content = models.TextField(help_text="The quote itself")
@@ -225,6 +248,20 @@ class Quote(BaseModel):
         indexes = [
             models.Index(fields=["character", "visibility"]),
             models.Index(fields=["visibility", "expires_at"]),
+        ]
+        constraints = [
+            # expires_at is set iff the quote is ephemeral (and only then).
+            # `check=` is the Django 5.0 arg name (django-stubs tracks 5.1's `condition`).
+            models.CheckConstraint(  # type: ignore[call-arg]
+                name="quote_expires_iff_ephemeral",
+                check=(
+                    models.Q(visibility=QuoteVisibility.EPHEMERAL, expires_at__isnull=False)
+                    | (
+                        ~models.Q(visibility=QuoteVisibility.EPHEMERAL)
+                        & models.Q(expires_at__isnull=True)
+                    )
+                ),
+            ),
         ]
 
     def __str__(self) -> str:
@@ -445,6 +482,101 @@ class SharedSequence(BaseModel):
 
     def __str__(self) -> str:
         return self.title or f"Sequence for {self.link}"
+
+
+class TraitSet(BaseModel):
+    """
+    A named bundle of traits attached to a Character.
+
+    Editorial meta-model (no game catalogue): a GM transposes a narrative
+    sheet (PbtA playbook, FATE aspects, Mist tags) as free-form traits and
+    actions. Nothing here is ever evaluated — Suddenly displays, it does not
+    resolve. The game function stays on the CN side.
+    """
+
+    character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name="trait_sets")
+    label = models.CharField(
+        max_length=100,
+        default="Traits",
+        help_text="Free-form label (e.g. Traits, Aspects, Thèmes)",
+    )
+    order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "created_at"]
+        indexes = [models.Index(fields=["character"])]
+
+    def __str__(self) -> str:
+        return f"{self.label} — {self.character.name}"
+
+
+class Trait(BaseModel):
+    """
+    A single trait within a TraitSet.
+
+    ``value`` is nullable (valueless Mist tags) and unbounded in the database:
+    the −5/+5 selector lives in the UI only. Never add a Min/MaxValueValidator,
+    and never a parsable "formula"/"expression"/"rule" field — that absence is
+    what guarantees no evaluator can be bolted on without rewriting the model.
+    """
+
+    trait_set = models.ForeignKey(TraitSet, on_delete=models.CASCADE, related_name="traits")
+    name = models.CharField(
+        max_length=200,
+        help_text="Free-form trait name (e.g. Casse-cou, Sworn to the crown)",
+    )
+    value = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text="Display value on the sheet. Nullable for valueless tags. Never evaluated.",
+    )
+    note = models.TextField(blank=True, help_text="Optional fiction attached to the trait")
+    order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "name"]
+        indexes = [models.Index(fields=["trait_set"])]
+
+    def __str__(self) -> str:
+        return self.name if self.value is None else f"{self.name} ({self.value:+d})"
+
+
+class Action(BaseModel):
+    """
+    An action drawing on one or more traits.
+
+    ``condition`` and ``outcome`` are displayed text, never parsed. There is
+    deliberately no executable rule anywhere: Suddenly is a consultation /
+    sharing membrane, not a play surface.
+    """
+
+    trait_set = models.ForeignKey(TraitSet, on_delete=models.CASCADE, related_name="actions")
+    name = models.CharField(
+        max_length=200,
+        help_text="Free-form action name (e.g. Foncer dans le tas, Convaincre)",
+    )
+    traits = models.ManyToManyField(
+        Trait,
+        blank=True,
+        related_name="actions",
+        help_text="One or more traits this action draws on",
+    )
+    condition = models.TextField(
+        blank=True,
+        help_text="When this action applies — displayed text, never evaluated",
+    )
+    outcome = models.TextField(
+        blank=True,
+        help_text="What the action produces — displayed text, never evaluated",
+    )
+    order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "name"]
+        indexes = [models.Index(fields=["trait_set"])]
+
+    def __str__(self) -> str:
+        return f"{self.name} → {self.trait_set.label}"
 
 
 class Follow(BaseModel):

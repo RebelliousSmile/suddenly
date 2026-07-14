@@ -1,0 +1,18 @@
+{% load i18n %}
+<form hx-post="{% url 'characters:trait_set_create' slug=character.slug %}"
+      hx-target="#trait-sets" hx-swap="beforeend"
+      class="flex flex-wrap items-end gap-2 mb-6"
+      @submit="$nextTick(() => $el.reset())">
+    <div>
+        <label for="new-set-label" class="form-label">{% trans "New set" %}</label>
+        <input type="text" id="new-set-label" name="label" required maxlength="100"
+               value="{% if set_form.label.value %}{{ set_form.label.value }}{% endif %}"
+               placeholder="{% trans 'e.g. Traits, Aspects, Thèmes' %}" class="form-input">
+    </div>
+    <button type="submit" class="btn-primary btn-sm">
+        <span class="i-lucide-plus"></span> {% trans "Add set" %}
+    </button>
+    {% if set_form.errors %}
+        <p class="w-full text-sm text-error">{% trans "Please provide a label." %}</p>
+    {% endif %}
+</form>

@@ -60,15 +60,6 @@ def test_game_tag_change_invalidates_explorer_tags() -> None:
 
 
 @pytest.mark.django_db
-def test_game_save_invalidates_game_systems() -> None:
-    cache.set("explorer_game_systems", ["Sentinel System"], 600)
-
-    GameFactory()  # type: ignore[no-untyped-call]
-
-    assert cache.get("explorer_game_systems") is None
-
-
-@pytest.mark.django_db
 def test_report_save_invalidates_recent_public_reports() -> None:
     keys = [f"recent_public_reports:{n}" for n in RECENT_REPORTS_LIMITS]
     for key in keys:

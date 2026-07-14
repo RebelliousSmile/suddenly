@@ -8,6 +8,8 @@ Fediverse: Federated content from known instances
 
 from __future__ import annotations
 
+from typing import Any
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -16,7 +18,41 @@ from django.shortcuts import render
 
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
-from suddenly.games.models import Report, ReportStatus, ReportVisibility
+from suddenly.games.models import Report, ReportStatus
+
+
+def interleave_promos(reports: list[Any], npcs: list[Any], every: int) -> list[dict[str, Any]]:
+    """Blend reports and claimable-NPC promocards into one ordered feed (SUD-P1).
+
+    Produces a single ordered list of ``{"type": "report"|"promo", "obj": ...}``
+    items rather than two disjoint blocks. A promocard is inserted after every
+    ``every`` reports, consuming NPCs in order until they run out.
+
+    Wireframe guarantee: if the feed is non-empty but shorter than ``every``
+    (so no promo would otherwise be inserted), one promo is still appended at
+    the end — as long as an NPC is available.
+    """
+    items: list[dict[str, Any]] = []
+    if every < 1:
+        every = 1
+    npc_iter = iter(npcs)
+    promos_inserted = 0
+
+    for index, report in enumerate(reports, start=1):
+        items.append({"type": "report", "obj": report})
+        if index % every == 0:
+            npc = next(npc_iter, None)
+            if npc is not None:
+                items.append({"type": "promo", "obj": npc})
+                promos_inserted += 1
+
+    # Guarantee at least one promo on a non-empty, short feed.
+    if reports and promos_inserted == 0:
+        npc = next(npc_iter, None)
+        if npc is not None:
+            items.append({"type": "promo", "obj": npc})
+
+    return items
 
 
 @login_required
@@ -61,7 +97,7 @@ def feed_home(request: AuthenticatedRequest) -> HttpResponse:
         .order_by("-published_at")[:20]
     )
 
-    # Available NPCs in followed games
+    # Available NPCs in followed games — promocard pool for interleaving.
     npcs = (
         Character.objects.filter(
             status="npc",
@@ -72,11 +108,16 @@ def feed_home(request: AuthenticatedRequest) -> HttpResponse:
         .order_by("-created_at")[:6]
     )
 
+    # Blend reports and claim/adopt/fork promocards into one ordered feed (SUD-P1).
+    promo_every = getattr(settings, "FEED_PROMO_EVERY", 6)
+    feed_items = interleave_promos(list(reports), list(npcs), promo_every)
+
     return htmx_render(
         request,
         full_template="feed/home.html",
         partial_template="feed/_feed_items.html",
         context={
+            "feed_items": feed_items,
             "reports": reports,
             "npcs": npcs,
             "active_tab": "subscriptions",
@@ -159,45 +200,13 @@ def recommend_report(request: HttpRequest) -> HttpResponse:
 
 
 def explore(request: HttpRequest) -> HttpResponse:
-    """Community explore page — public reports, filterable, no login required."""
-    language = request.GET.get("language", "")
-    tag = request.GET.get("tag", "")
+    """Deprecated Explorer surface — redirects to Stories (SUD-V5).
 
-    qs = (
-        Report.objects.filter(
-            status=ReportStatus.PUBLISHED,
-            visibility=ReportVisibility.PUBLIC,
-            remote=False,
-        )
-        .select_related("game", "author")
-        .order_by("-published_at")
-    )
+    The v3 wireframe drops Explorer (a flat firehose of published reports,
+    wall-blind) in favour of Stories, which only surfaces content that has
+    crossed the liberation wall. This view is kept as a permanent redirect so
+    existing links do not 404.
+    """
+    from django.shortcuts import redirect
 
-    if language:
-        qs = qs.filter(language=language)
-    if tag:
-        qs = qs.filter(tags__name=tag)
-
-    all_tags: list[str] = sorted(
-        Report.objects.filter(
-            status=ReportStatus.PUBLISHED,
-            visibility=ReportVisibility.PUBLIC,
-            remote=False,
-            tags__isnull=False,
-        )
-        .values_list("tags__name", flat=True)
-        .distinct()
-    )
-
-    return htmx_render(
-        request,
-        full_template="explore/explore.html",
-        partial_template="explore/_results.html",
-        context={
-            "reports": qs[:30],
-            "active_language": language,
-            "active_tag": tag,
-            "all_tags": all_tags,
-            "languages": settings.LANGUAGES,
-        },
-    )
+    return redirect("games:stories", permanent=True)
