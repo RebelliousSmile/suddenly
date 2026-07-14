@@ -56,8 +56,6 @@ urlpatterns = [
     # Stories — public reading surface for released content (SUD-V3)
     path("stories/", front_views.stories_index, name="stories"),
     path("stories/<uuid:pk>/", front_views.story_detail, name="story_detail"),
-    # Citations — public quote wall, instance promotion surface (SUD-V3)
-    path("citations/", front_views.quotes_wall, name="quotes_wall"),
     path("new/", front_views.game_create, name="create"),
     path("bulk-delete/", front_views.game_delete_bulk, name="delete_bulk"),
     path("<uuid:pk>/", front_views.game_detail, name="detail"),

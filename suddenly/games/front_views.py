@@ -333,37 +333,6 @@ def story_detail(request: HttpRequest, pk: str) -> HttpResponse:
     )
 
 
-def quotes_wall(request: HttpRequest) -> HttpResponse:
-    """Public wall of quotes — instance promotion surface (SUD-V3, maquette v3).
-
-    No @login_required: readable by everyone. A quote only surfaces here when
-    it is *doubly unlocked* — public visibility AND its source report has
-    crossed the wall (released + published + public). Anything still in play
-    never leaks. Mirrors the wall filter used by ``stories_index``.
-    """
-    from suddenly.characters.models import Quote, QuoteVisibility
-
-    quotes = (
-        Quote.objects.filter(
-            visibility=QuoteVisibility.PUBLIC,
-            remote=False,
-            character__remote=False,
-            report__released_at__isnull=False,
-            report__status=ReportStatus.PUBLISHED,
-            report__visibility=ReportVisibility.PUBLIC,
-        )
-        .select_related("character", "author", "report", "report__game")
-        .order_by("-created_at")
-    )
-
-    return htmx_render(
-        request,
-        full_template="citations/index.html",
-        partial_template="citations/_index_results.html",
-        context={"quotes": quotes[:60]},
-    )
-
-
 @require_POST
 @login_required
 def report_release(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:

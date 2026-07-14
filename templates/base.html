@@ -47,7 +47,7 @@
                     <a href="{% url 'games:stories' %}" class="text-secondary hover:text-primary transition-colors">
                         {% trans "Stories" %}
                     </a>
-                    <a href="{% url 'games:quotes_wall' %}" class="text-secondary hover:text-primary transition-colors">
+                    <a href="{% url 'core:quotes' %}" class="text-secondary hover:text-primary transition-colors">
                         {% trans "Quotes" %}
                     </a>
 
@@ -289,7 +289,7 @@
             <div class="container-app py-4 space-y-2">
                 <a href="{% url 'core:home' %}" class="block py-2 text-secondary">{% trans "Home" %}</a>
                 <a href="{% url 'games:stories' %}" class="block py-2 text-secondary">{% trans "Stories" %}</a>
-                <a href="{% url 'games:quotes_wall' %}" class="block py-2 text-secondary">{% trans "Quotes" %}</a>
+                <a href="{% url 'core:quotes' %}" class="block py-2 text-secondary">{% trans "Quotes" %}</a>
                 <hr class="my-2 border-border">
                 <!-- Theme toggle mobile -->
                 <button @click="toggle()"
