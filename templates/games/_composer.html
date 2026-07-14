@@ -92,13 +92,25 @@
                       placeholder="{% trans "Écrivez le rapport…" %}"></textarea>
         </div>
 
-        {# ── Média : description uniquement (rule 2e) ──────────────── #}
-        <div class="mt-3" x-show="kind === 'description'" x-cloak>
-            <div class="rounded-badge border border-dashed border-border p-3 text-xs text-muted flex items-center gap-2">
+        {# ── Média : description uniquement, une seule image (rule 2e) ── #}
+        {# Only in a scene (frozen): the feed's open_new_scene path doesn't carry
+           media. Disabled unless description, so no stale media leaks. #}
+        {% if frozen %}
+        <div class="mt-3 space-y-2" x-show="kind === 'description'" x-cloak>
+            <label class="rounded-badge border border-dashed border-border p-3 text-xs text-muted flex items-center gap-2 cursor-pointer">
                 <span class="i-lucide-image text-sm"></span>
-                {% trans "Une image (une seule) pourra être attachée à la description une fois le rapport créé." %}
-            </div>
+                {% trans "Une image (une seule) — l'ambiance de la description." %}
+                <input type="file" name="image" accept="image/*" class="sr-only"
+                       :disabled="kind !== 'description'">
+            </label>
+            <input type="text" name="media_alt" maxlength="280"
+                   placeholder="{% trans "Ce que montre l'image (alt)" %}"
+                   class="form-input w-full text-sm" :disabled="kind !== 'description'">
+            <input type="text" name="media_tone" maxlength="80"
+                   placeholder="{% trans "Tonalité : lourde, feutrée…" %}"
+                   class="form-input w-full text-sm" :disabled="kind !== 'description'">
         </div>
+        {% endif %}
 
         {# ── Envoi — rien ne part sans partie ni perso (2a) ──────────── #}
         {% if frozen %}
@@ -108,12 +120,14 @@
                 <button type="button" class="btn-primary" :disabled="!canSend"
                         hx-post="{% url 'games:scene_post_create' report.game.pk report.pk %}"
                         hx-include="closest form" hx-vals='{"mode": "add"}'
+                        hx-encoding="multipart/form-data"
                         hx-target="#composer" hx-swap="outerHTML">
                     {% trans "Publier" %}
                 </button>
                 <button type="button" class="btn-ghost" :disabled="!canSend"
                         hx-post="{% url 'games:scene_post_create' report.game.pk report.pk %}"
                         hx-include="closest form" hx-vals='{"mode": "draft"}'
+                        hx-encoding="multipart/form-data"
                         hx-target="#composer" hx-swap="outerHTML">
                     {% trans "Enregistrer en brouillon" %}
                 </button>

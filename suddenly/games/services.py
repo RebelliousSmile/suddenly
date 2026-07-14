@@ -25,6 +25,7 @@ from .models import (
     Rapport,
     RapportKind,
     RapportLink,
+    RapportMedia,
     RapportStatus,
     Report,
     ReportCast,
@@ -192,6 +193,9 @@ def create_scene_post(
     status: str = RapportStatus.PUBLISHED,
     reply_parent: Rapport | None = None,
     reply_iri: str = "",
+    image: object | None = None,
+    media_alt: str = "",
+    media_tone: str = "",
 ) -> Rapport:
     """Create one Rapport inside an existing scene (``report``).
 
@@ -228,6 +232,17 @@ def create_scene_post(
         )
         link.full_clean(exclude=["rapport"])
         link.save()
+
+    # One image = one mood, description only (RapportMedia.clean enforces kind).
+    if image is not None and kind == RapportKind.DESCRIPTION:
+        media = RapportMedia(
+            rapport=rapport,
+            image=image,
+            alt=(media_alt or "").strip(),
+            tone=(media_tone or "").strip(),
+        )
+        media.full_clean()
+        media.save()
     return rapport
 
 

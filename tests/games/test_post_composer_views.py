@@ -181,6 +181,36 @@ def test_scene_post_iri_reply_creates_link(client: Client) -> None:
 
 
 @pytest.mark.django_db
+def test_scene_post_description_with_media(client: Client) -> None:
+    """A description posted from the composer carries its image + alt + tone."""
+    from django.core.files.uploadedfile import SimpleUploadedFile
+
+    user = UserFactory()
+    game = GameFactory(owner=user)
+    report = ReportFactory(game=game, author=user)
+
+    client.force_login(user)
+    url = reverse("games:scene_post_create", kwargs={"game_pk": game.pk, "pk": report.pk})
+    image = SimpleUploadedFile("s.png", _png_bytes(), content_type="image/png")
+    resp = client.post(
+        url,
+        {
+            "mode": "add",
+            "kind": RapportKind.DESCRIPTION,
+            "content": "A dim hall.",
+            "image": image,
+            "media_alt": "a dim hall",
+            "media_tone": "feutrée",
+        },
+        HTTP_HX_REQUEST="true",
+    )
+    assert resp.status_code == 200
+    rapport = Rapport.objects.get(report=report)
+    assert rapport.media.alt == "a dim hall"
+    assert rapport.media.tone == "feutrée"
+
+
+@pytest.mark.django_db
 def test_scene_edit_shows_fil_and_composer(client: Client) -> None:
     """The scene-edit page shows the composer next to the fil of posts."""
     user = UserFactory()
