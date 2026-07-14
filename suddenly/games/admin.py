@@ -8,10 +8,20 @@ from typing import TYPE_CHECKING
 
 from django.contrib import admin
 
-from .models import Game, Rapport, RapportLink, RapportMarker, RapportMedia, Report, ReportCast
+from .models import (
+    Game,
+    GameCast,
+    Rapport,
+    RapportLink,
+    RapportMarker,
+    RapportMedia,
+    Report,
+    ReportCast,
+)
 
 if TYPE_CHECKING:
     _GameBase = admin.ModelAdmin[Game]
+    _GameCastBase = admin.ModelAdmin[GameCast]
     _ReportBase = admin.ModelAdmin[Report]
     _ReportCastBase = admin.ModelAdmin[ReportCast]
     _RapportAdminBase = admin.ModelAdmin[Rapport]
@@ -22,6 +32,7 @@ if TYPE_CHECKING:
     _RapportMediaInlineBase = admin.TabularInline[RapportMedia, Rapport]
 else:
     _GameBase = admin.ModelAdmin
+    _GameCastBase = admin.ModelAdmin
     _ReportBase = admin.ModelAdmin
     _ReportCastBase = admin.ModelAdmin
     _RapportAdminBase = admin.ModelAdmin
@@ -55,7 +66,7 @@ class RapportInline(_RapportInlineBase):
 
 class RapportMediaInline(_RapportMediaInlineBase):
     model = RapportMedia
-    fields = ["image", "alt_text", "order"]
+    fields = ["image", "alt", "tone"]
     extra = 0
 
 
@@ -91,6 +102,15 @@ class RapportAdmin(_RapportAdminBase):
     raw_id_fields = ["report", "actor"]
     ordering = ["-created_at"]
     inlines = [RapportLinkInline, RapportMediaInline]
+
+
+@admin.register(GameCast)
+class GameCastAdmin(_GameCastBase):
+    list_display = ["game", "character", "added_by", "created_at"]
+    list_filter = ["created_at"]
+    search_fields = ["game__title", "character__name"]
+    raw_id_fields = ["game", "character", "added_by"]
+    ordering = ["-created_at"]
 
 
 @admin.register(ReportCast)

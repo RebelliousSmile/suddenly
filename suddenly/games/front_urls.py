@@ -10,11 +10,13 @@ urlpatterns = [
     path("", front_views.game_list, name="list"),
     path("search/", front_views.game_search, name="search"),
     path("compose/", front_views.report_compose, name="compose"),
-    # Post composer (level Rapport) — distinct from report_compose (level Report).
+    # Unified post composer (level Rapport) — the single _composer.html surface,
+    # opened from the feed with two selectors (personnage, partie).
+    path("compose/post/", front_views.composer, name="composer"),
     path(
-        "<uuid:game_pk>/compose/post/",
-        front_views.scene_post_compose,
-        name="scene_post_compose",
+        "<uuid:game_pk>/cast/npc/",
+        front_views.cast_npc_create,
+        name="cast_npc_create",
     ),
     path(
         "<uuid:game_pk>/scene/open/",
@@ -30,6 +32,11 @@ urlpatterns = [
         "<uuid:game_pk>/reports/<uuid:pk>/rapports/<uuid:rapport_pk>/media/add/",
         front_views.rapport_media_add,
         name="rapport_media_add",
+    ),
+    path(
+        "<uuid:game_pk>/reports/<uuid:pk>/rapports/<uuid:rapport_pk>/media/remove/",
+        front_views.rapport_media_remove,
+        name="rapport_media_remove",
     ),
     # Stories — public reading surface for released content (SUD-V3)
     path("stories/", front_views.stories_index, name="stories"),

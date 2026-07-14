@@ -16,6 +16,7 @@ from suddenly.characters.models import (
 from suddenly.characters.services import build_owned_pc_queryset
 from suddenly.games.models import (
     CastRole,
+    GameCast,
     Rapport,
     RapportKind,
     RapportStatus,
@@ -24,7 +25,9 @@ from suddenly.games.models import (
     ReportStatus,
 )
 from suddenly.games.services import (
+    available_kinds,
     build_actor_pool,
+    create_npc_in_cast,
     create_scene_post,
     is_game_master,
     open_new_scene,
@@ -93,20 +96,22 @@ def test_actor_pool_player_only_own_pcs() -> None:
 
 
 @pytest.mark.django_db
-def test_actor_pool_gm_own_pcs_and_owned_npcs() -> None:
+def test_actor_pool_gm_own_pcs_and_cast_npcs() -> None:
+    """A GM voices their own PCs ∪ the NPCs in the game's cast (GameCast)."""
     gm = UserFactory()
     game = GameFactory(owner=gm)
     other_game = GameFactory(owner=UserFactory())
 
     gm_pc = CharacterFactory(owner=gm, status=CharacterStatus.PC, origin_game=other_game)
-    owned_npc = CharacterFactory(status=CharacterStatus.NPC, origin_game=game)
-    # Excluded: an NPC of a game the GM does not own.
-    CharacterFactory(status=CharacterStatus.NPC, origin_game=other_game)
+    cast_npc = CharacterFactory(status=CharacterStatus.NPC, origin_game=game)
+    GameCast.objects.create(game=game, character=cast_npc, added_by=gm)
+    # Excluded: an NPC that exists but is NOT in this game's cast.
+    CharacterFactory(status=CharacterStatus.NPC, origin_game=game)
     # Excluded: a PC belonging to another player.
     CharacterFactory(owner=UserFactory(), status=CharacterStatus.PC, origin_game=game)
 
     pks = set(build_actor_pool(gm, game).values_list("pk", flat=True))
-    assert pks == {gm_pc.pk, owned_npc.pk}
+    assert pks == {gm_pc.pk, cast_npc.pk}
 
 
 # ---------------------------------------------------------------------------
@@ -135,11 +140,12 @@ def test_validate_actor_player_rejects_foreign_npc() -> None:
 
 
 @pytest.mark.django_db
-def test_validate_actor_gm_accepts_owned_npc() -> None:
+def test_validate_actor_gm_accepts_cast_npc() -> None:
     gm = UserFactory()
     game = GameFactory(owner=gm)
     npc = CharacterFactory(status=CharacterStatus.NPC, origin_game=game)
-    # Must not raise.
+    GameCast.objects.create(game=game, character=npc, added_by=gm)
+    # Must not raise — the NPC is in the game's cast.
     validate_actor_for_role(gm, game, npc)
 
 
@@ -165,13 +171,54 @@ def test_create_scene_post_draft() -> None:
     game = GameFactory(owner=user)
     report = ReportFactory(game=game, author=user)
 
+    # description accepts an empty actor (optional) — good for a status-only test.
     rapport = create_scene_post(
         report=report,
-        kind=RapportKind.ACTION,
-        content="Held back.",
+        kind=RapportKind.DESCRIPTION,
+        content="A dim room.",
         status=RapportStatus.DRAFT,
     )
     assert rapport.status == RapportStatus.DRAFT
+
+
+@pytest.mark.django_db
+def test_create_scene_post_action_requires_actor() -> None:
+    """Rule 2c: an action needs someone who acts."""
+    user = UserFactory()
+    game = GameFactory(owner=user)
+    report = ReportFactory(game=game, author=user)
+
+    with pytest.raises(ValidationError):
+        create_scene_post(report=report, kind=RapportKind.ACTION, content="Runs.")
+    assert not Rapport.objects.filter(report=report).exists()
+
+
+@pytest.mark.django_db
+def test_create_scene_post_narration_rejects_actor() -> None:
+    """Rule 2c: narration is the narrative voice; it takes no actor."""
+    gm = UserFactory()
+    game = GameFactory(owner=gm)
+    report = ReportFactory(game=game, author=gm)
+    pc = CharacterFactory(owner=gm, status=CharacterStatus.PC, origin_game=game)
+
+    with pytest.raises(ValidationError):
+        create_scene_post(report=report, kind=RapportKind.NARRATION, content="Dawn.", actor=pc)
+
+
+@pytest.mark.django_db
+def test_create_scene_post_action_as_actor_enters_cast() -> None:
+    """A GM acting as a cast NPC succeeds, and voicing brings the actor into cast."""
+    gm = UserFactory()
+    game = GameFactory(owner=gm)
+    report = ReportFactory(game=game, author=gm)
+    npc = CharacterFactory(status=CharacterStatus.NPC, origin_game=game)
+    GameCast.objects.create(game=game, character=npc, added_by=gm)
+
+    rapport = create_scene_post(
+        report=report, kind=RapportKind.ACTION, content="Draws steel.", actor=npc
+    )
+    assert rapport.actor_id == npc.pk
+    assert GameCast.objects.filter(game=game, character=npc).exists()
 
 
 @pytest.mark.django_db
@@ -260,3 +307,69 @@ def test_open_new_scene_rejects_character_outside_pool() -> None:
     with pytest.raises(ValidationError):
         open_new_scene(user=player, character=npc, kind=RapportKind.NARRATION, content="Nope.")
     assert Report.objects.count() == reports_before
+
+
+@pytest.mark.django_db
+def test_open_new_scene_any_game_enters_cast() -> None:
+    """A PC may open a scene in a game it does not originate from (rule 2b),
+    and doing so enters it into that game's cast."""
+    player = UserFactory()
+    origin = GameFactory(owner=UserFactory())
+    other_game = GameFactory(owner=UserFactory())
+    pc = CharacterFactory(owner=player, status=CharacterStatus.PC, origin_game=origin)
+
+    report, _rapport = open_new_scene(
+        user=player,
+        game=other_game,
+        character=pc,
+        kind=RapportKind.NARRATION,
+        content="Elsewhere.",
+    )
+    assert report.game_id == other_game.pk
+    assert GameCast.objects.filter(game=other_game, character=pc).exists()
+
+
+# ---------------------------------------------------------------------------
+# available_kinds — narration is GM-only (rule 2c)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+def test_available_kinds_gm_includes_narration() -> None:
+    gm = UserFactory()
+    game = GameFactory(owner=gm)
+    values = [v for v, _ in available_kinds(gm, game)]
+    assert RapportKind.NARRATION in values
+
+
+@pytest.mark.django_db
+def test_available_kinds_player_excludes_narration() -> None:
+    player = UserFactory()
+    game = GameFactory(owner=UserFactory())
+    values = [v for v, _ in available_kinds(player, game)]
+    assert RapportKind.NARRATION not in values
+    # The others remain available.
+    assert RapportKind.ACTION in values
+    assert RapportKind.DISCUSSION in values
+    assert RapportKind.DESCRIPTION in values
+
+
+# ---------------------------------------------------------------------------
+# create_npc_in_cast — "+ Nouveau PNJ" (rule 2d)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+def test_create_npc_in_cast_creates_character_and_cast() -> None:
+    gm = UserFactory()
+    game = GameFactory(owner=gm)
+
+    npc = create_npc_in_cast(user=gm, game=game, name="La Gardienne")
+
+    assert npc.status == CharacterStatus.NPC
+    assert npc.origin_game_id == game.pk
+    assert npc.creator_id == gm.pk
+    entry = GameCast.objects.get(game=game, character=npc)
+    assert entry.added_by_id == gm.pk
+    # The fresh NPC is immediately incarnable by the GM.
+    assert build_actor_pool(gm, game).filter(pk=npc.pk).exists()
