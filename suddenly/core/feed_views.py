@@ -21,9 +21,7 @@ from suddenly.core.views import htmx_render
 from suddenly.games.models import Report, ReportStatus
 
 
-def interleave_promos(
-    reports: list[Any], npcs: list[Any], every: int
-) -> list[dict[str, Any]]:
+def interleave_promos(reports: list[Any], npcs: list[Any], every: int) -> list[dict[str, Any]]:
     """Blend reports and claimable-NPC promocards into one ordered feed (SUD-P1).
 
     Produces a single ordered list of ``{"type": "report"|"promo", "obj": ...}``

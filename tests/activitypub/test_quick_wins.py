@@ -60,9 +60,7 @@ class TestSsrfBlock:
         assert result is None
         mock_client.assert_not_called()
 
-    def test_plain_http_rejected_when_insecure_disabled(
-        self, mocker: Any, settings: Any
-    ) -> None:
+    def test_plain_http_rejected_when_insecure_disabled(self, mocker: Any, settings: Any) -> None:
         """Outside dev (AP_ALLOW_INSECURE_HTTP off), http:// is refused up front."""
         settings.AP_ALLOW_INSECURE_HTTP = False
         mock_client = mocker.patch("httpx.Client")

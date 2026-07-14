@@ -88,9 +88,7 @@ def _sign(
     if digest_value is not None and include_digest_header:
         meta["HTTP_DIGEST"] = digest_value
 
-    return RequestFactory().post(
-        PATH, data=body, content_type="application/activity+json", **meta
-    )
+    return RequestFactory().post(PATH, data=body, content_type="application/activity+json", **meta)
 
 
 def _digest_of(body: str) -> str:
@@ -127,9 +125,7 @@ class TestDigestRequired:
         assert is_valid is True
         assert result == KEY_ID
 
-    def test_body_without_signed_digest_rejected(
-        self, keys: tuple[str, str], mocker: Any
-    ) -> None:
+    def test_body_without_signed_digest_rejected(self, keys: tuple[str, str], mocker: Any) -> None:
         """A validly-signed request that omits digest from the signed set fails."""
         private_pem, public_pem = keys
         _mock_key(mocker, public_pem)
@@ -184,9 +180,7 @@ class TestMinimumSignedHeaders:
         assert is_valid is False
         assert reason == "Missing Date header"
 
-    def test_request_target_not_signed_rejected(
-        self, keys: tuple[str, str], mocker: Any
-    ) -> None:
+    def test_request_target_not_signed_rejected(self, keys: tuple[str, str], mocker: Any) -> None:
         private_pem, public_pem = keys
         _mock_key(mocker, public_pem)
         body = json.dumps({"type": "Follow"})

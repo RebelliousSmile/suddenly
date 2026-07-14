@@ -30,8 +30,14 @@ def test_interleave_inserts_every_n() -> None:
     items = interleave_promos(reports, npcs, every=3)
     # r r r promo r r r promo
     assert _types(items) == [
-        "report", "report", "report", "promo",
-        "report", "report", "report", "promo",
+        "report",
+        "report",
+        "report",
+        "promo",
+        "report",
+        "report",
+        "report",
+        "promo",
     ]
 
 
