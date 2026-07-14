@@ -12,20 +12,89 @@ from django.conf import settings
 
 from suddenly.activitypub.url_utils import absolute_media_url, media_type_for_file
 
-# ActivityPub context
+# ActivityPub context.
+#
+# Type strategy (SUD-F5): Characters serialize as a standard AP ``Person`` so
+# generic consumers can display them, with the ``suddenly:Character`` term
+# declared for Suddenly-aware peers to recognise the richer type. This dual
+# typing is intentional — a strict consumer sees a Person, never an unknown
+# type it might reject.
+#
+# ``sensitive`` is the Mastodon/AS2 Content-Warning flag emitted alongside
+# ``summary`` by serialize_report/serialize_quote; it must be declared here or
+# strict peers drop it. ``toot`` is declared for the Mastodon namespace.
 AP_CONTEXT: list[str | dict[str, str]] = [
     "https://www.w3.org/ns/activitystreams",
     "https://w3id.org/security/v1",
     {
         "suddenly": f"https://{settings.DOMAIN}/ns#",
+        "toot": "http://joinmastodon.org/ns#",
         "Character": "suddenly:Character",
         "Game": "suddenly:Game",
         "Quote": "suddenly:Quote",
         "status": "suddenly:status",
         "sheetUrl": "suddenly:sheetUrl",
+        # ``gameSystem`` stays a free-form display label (issue D decision: no
+        # catalogue). It travels as a Suddenly extension; strict peers ignore it.
         "gameSystem": "suddenly:gameSystem",
+        # Narrative meta-model extension (issue F). These terms carry the *shape*
+        # of a shared sheet (named traits + value + text actions), NOT shared
+        # value semantics — Suddenly never evaluates, in local or federation.
+        # A server ignoring this vocabulary drops the block without breaking; the
+        # AP body (content/summary) stays readable without the traits.
+        "traitSet": "suddenly:traitSet",
+        "traits": "suddenly:traits",
+        "actions": "suddenly:actions",
+        "label": "suddenly:label",
+        "value": "suddenly:value",
+        "note": "suddenly:note",
+        "condition": "suddenly:condition",
+        "outcome": "suddenly:outcome",
+        "sensitive": "https://www.w3.org/ns/activitystreams#sensitive",
     },
 ]
+
+
+def serialize_trait_sets(character: Any) -> list[dict[str, Any]]:
+    """Serialize a Character's trait sets as a displayable AP extension.
+
+    Frontier: this is *display data*, never interpreted. Values are emitted
+    as-is; no normalization. Returns [] when the character has no trait sets,
+    so serialize_character omits the key entirely.
+    """
+    result: list[dict[str, Any]] = []
+    trait_sets = character.trait_sets.prefetch_related("traits", "actions__traits")
+    for ts in trait_sets:
+        traits: list[dict[str, Any]] = []
+        for trait in ts.traits.all():
+            entry: dict[str, Any] = {"type": "suddenly:Trait", "name": trait.name}
+            if trait.value is not None:
+                entry["value"] = trait.value
+            if trait.note:
+                entry["note"] = trait.note
+            traits.append(entry)
+
+        actions: list[dict[str, Any]] = []
+        for action in ts.actions.all():
+            action_entry: dict[str, Any] = {"type": "suddenly:Action", "name": action.name}
+            linked = [t.name for t in action.traits.all()]
+            if linked:
+                action_entry["traits"] = linked
+            if action.condition:
+                action_entry["condition"] = action.condition
+            if action.outcome:
+                action_entry["outcome"] = action.outcome
+            actions.append(action_entry)
+
+        result.append(
+            {
+                "type": "suddenly:TraitSet",
+                "label": ts.label,
+                "traits": traits,
+                "actions": actions,
+            }
+        )
+    return result
 
 
 def serialize_user(user: Any) -> dict[str, Any]:
@@ -135,6 +204,12 @@ def serialize_character(character: Any) -> dict[str, Any]:
 
     if character.sheet_url:
         data["sheetUrl"] = character.sheet_url
+
+    # Narrative meta-model (issue F) — displayable extension, ignored by peers
+    # that don't know the suddenly: vocabulary.
+    trait_sets = serialize_trait_sets(character)
+    if trait_sets:
+        data["traitSet"] = trait_sets
 
     if character.parent:
         data["derivedFrom"] = character.parent.actor_url

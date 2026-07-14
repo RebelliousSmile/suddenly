@@ -89,6 +89,36 @@
             </div>
         {% endif %}
 
+        <!-- Traits (narrative meta-model — displayed, never evaluated) -->
+        {% if trait_sets or can_edit_traits %}
+            <div class="mb-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-heading">{% trans "Traits" %}</h2>
+                    {% if can_edit_traits %}
+                        <a href="{% url 'characters:traits_editor' slug=character.slug %}" class="btn-secondary btn-sm">
+                            <span class="i-lucide-pencil"></span> {% trans "Edit traits" %}
+                        </a>
+                    {% endif %}
+                </div>
+                {% for set in trait_sets %}
+                    {% include "characters/partials/trait_set.html" with set=set character=character editable=False %}
+                {% empty %}
+                    <p class="text-sm text-muted card card-body">{% trans "No traits recorded yet." %}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- External sheet (fallback for non-transposable systems) -->
+        {% if character.sheet_url %}
+            <div class="card card-body mb-6">
+                <h2 class="text-heading mb-2">{% trans "Technical sheet: external link" %}</h2>
+                <a href="{{ character.sheet_url }}" target="_blank" rel="noopener noreferrer"
+                   class="link inline-flex items-center gap-1 break-all">
+                    <span class="i-lucide-external-link text-sm"></span>{{ character.sheet_url }}
+                </a>
+            </div>
+        {% endif %}
+
         <!-- Appearances -->
         <div class="card card-body mb-6">
             <h2 class="text-heading mb-3">

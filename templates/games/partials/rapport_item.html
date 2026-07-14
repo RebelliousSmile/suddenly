@@ -39,6 +39,62 @@
             </div>
             <p class="text-secondary text-sm">{{ rapport.content }}</p>
 
+            {# Média — description uniquement, une seule image (rule 2e). #}
+            {% if rapport.kind == 'description' %}
+                <div class="mt-2" x-data="{ mediaForm: false }">
+                    {% with media=rapport.media %}
+                        {% if media %}
+                            <figure class="rounded-badge overflow-hidden border border-border">
+                                <img src="{{ media.image.url }}" alt="{{ media.alt }}"
+                                     class="w-full max-h-80 object-cover">
+                                {% if media.alt or media.tone %}
+                                    <figcaption class="px-3 py-2 text-xs text-muted">
+                                        {{ media.alt }}{% if media.tone %} · <em>{{ media.tone }}</em>{% endif %}
+                                    </figcaption>
+                                {% endif %}
+                            </figure>
+                        {% endif %}
+                        {% if request.user == rapport.report.author %}
+                            <div class="mt-2 flex items-center gap-2">
+                                <button type="button" @click="mediaForm = !mediaForm"
+                                        class="btn-ghost btn-sm text-muted text-xs">
+                                    <span class="i-lucide-image text-xs"></span>
+                                    {% if media %}{% trans "Remplacer l'image" %}{% else %}{% trans "Ajouter une image" %}{% endif %}
+                                </button>
+                                {% if media %}
+                                    <button type="button"
+                                            hx-post="{% url 'games:rapport_media_remove' rapport.report.game.pk rapport.report.pk rapport.pk %}"
+                                            hx-target="#rapport-{{ rapport.pk }}"
+                                            hx-swap="outerHTML"
+                                            hx-confirm="{% trans "Retirer l'image ?" %}"
+                                            class="btn-ghost btn-sm text-error text-xs">
+                                        <span class="i-lucide-trash-2 text-xs"></span>
+                                        {% trans "Retirer" %}
+                                    </button>
+                                {% endif %}
+                            </div>
+                            <form x-show="mediaForm" x-cloak
+                                  hx-post="{% url 'games:rapport_media_add' rapport.report.game.pk rapport.report.pk rapport.pk %}"
+                                  hx-target="#rapport-{{ rapport.pk }}"
+                                  hx-swap="outerHTML"
+                                  hx-encoding="multipart/form-data"
+                                  class="mt-2 space-y-2">
+                                {% csrf_token %}
+                                <input type="file" name="image" accept="image/*" required
+                                       class="form-input w-full text-sm">
+                                <input type="text" name="alt" maxlength="280"
+                                       placeholder="{% trans "Ce que montre l'image (alt)" %}"
+                                       class="form-input w-full text-sm">
+                                <input type="text" name="tone" maxlength="80"
+                                       placeholder="{% trans "Ambiance : lourde, feutrée…" %}"
+                                       class="form-input w-full text-sm">
+                                <button type="submit" class="btn-primary btn-sm">{% trans "Enregistrer l'image" %}</button>
+                            </form>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            {% endif %}
+
             {% if rapport.markers.all %}
                 <div id="markers-{{ rapport.pk }}" class="flex flex-wrap gap-1.5 mt-2">
                     {% for marker in rapport.markers.all %}

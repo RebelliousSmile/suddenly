@@ -363,7 +363,7 @@ def _handle_create_character(activity: dict[str, Any], obj: dict[str, Any]) -> N
         },
     )
 
-    Character.objects.create(
+    character = Character.objects.create(
         name=obj.get("name", "Unknown"),
         description=obj.get("summary", ""),
         status=CharacterStatus.NPC,
@@ -372,6 +372,83 @@ def _handle_create_character(activity: dict[str, Any], obj: dict[str, Any]) -> N
         remote=True,
         ap_id=ap_id,
     )
+
+    # Narrative meta-model extension (issue F) — tolerant: absent block is fine.
+    _ingest_trait_sets(character, obj)
+
+
+def _ingest_trait_sets(character: Any, obj: dict[str, Any]) -> None:
+    """Ingest the ``traitSet`` AP extension onto a remote Character.
+
+    Tolerant by design: a remote sheet with traits is displayed; one without
+    traits stays valid (no-op); malformed entries are skipped. A third-party
+    server that never emits this vocabulary is simply ignored here. Nothing is
+    evaluated — traits are stored for display only.
+
+    Idempotent for updates: existing trait sets are replaced wholesale.
+    """
+    from suddenly.characters.models import Action, Trait, TraitSet
+
+    raw = obj.get("traitSet")
+    if raw is None:
+        raw = obj.get("suddenly:traitSet")  # tolerate expanded term
+    if not isinstance(raw, list):
+        return
+
+    character.trait_sets.all().delete()
+
+    for set_order, ts in enumerate(raw):
+        if not isinstance(ts, dict):
+            continue
+        label = str(ts.get("label") or "Traits")[:100]
+        trait_set = TraitSet.objects.create(character=character, label=label, order=set_order)
+
+        name_to_trait: dict[str, Any] = {}
+        raw_traits = ts.get("traits")
+        if isinstance(raw_traits, list):
+            for trait_order, item in enumerate(raw_traits):
+                if not isinstance(item, dict):
+                    continue
+                name = str(item.get("name") or "").strip()[:200]
+                if not name:
+                    continue
+                value = item.get("value")
+                # Only accept genuine integers; anything else → valueless tag.
+                if isinstance(value, bool) or not isinstance(value, int):
+                    value = None
+                trait = Trait.objects.create(
+                    trait_set=trait_set,
+                    name=name,
+                    value=value,
+                    note=str(item.get("note") or ""),
+                    order=trait_order,
+                )
+                name_to_trait[name] = trait
+
+        raw_actions = ts.get("actions")
+        if isinstance(raw_actions, list):
+            for action_order, item in enumerate(raw_actions):
+                if not isinstance(item, dict):
+                    continue
+                name = str(item.get("name") or "").strip()[:200]
+                if not name:
+                    continue
+                action = Action.objects.create(
+                    trait_set=trait_set,
+                    name=name,
+                    condition=str(item.get("condition") or ""),
+                    outcome=str(item.get("outcome") or ""),
+                    order=action_order,
+                )
+                linked_names = item.get("traits")
+                if isinstance(linked_names, list):
+                    linked = [
+                        name_to_trait[n]
+                        for n in linked_names
+                        if isinstance(n, str) and n in name_to_trait
+                    ]
+                    if linked:
+                        action.traits.set(linked)
 
 
 def handle_update(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
@@ -408,6 +485,12 @@ def _handle_update_character(obj: dict[str, Any]) -> None:
     if updated:
         Character.objects.filter(ap_id=ap_id, remote=True).update(**updated)
 
+    # Refresh the traitSet extension if present (issue F). Absent → left as-is.
+    if "traitSet" in obj or "suddenly:traitSet" in obj:
+        character = Character.objects.filter(ap_id=ap_id, remote=True).first()
+        if character is not None:
+            _ingest_trait_sets(character, obj)
+
 
 def handle_delete(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
@@ -417,22 +500,35 @@ def handle_delete(activity: dict[str, Any], actor_type: str, actor_identifier: s
     Supports Character and User (actor tombstone).
     """
     obj = activity.get("object")
+    actor_url = activity.get("actor", "")
 
-    logger.info(f"Received Delete from {activity.get('actor')}")
+    logger.info(f"Received Delete from {actor_url}")
 
     if isinstance(obj, str):
         # object is a URL — determine the type by trying known models
-        _handle_delete_by_url(obj)
+        _handle_delete_by_url(obj, actor_url)
     elif isinstance(obj, dict):
         obj_id = obj.get("id", "")
         if obj_id:
-            _handle_delete_by_url(obj_id)
+            _handle_delete_by_url(obj_id, actor_url)
 
 
-def _handle_delete_by_url(ap_id: str) -> None:
-    """Delete any remote entity matching the given ap_id."""
+def _handle_delete_by_url(ap_id: str, actor_url: str) -> None:
+    """Delete a remote entity matching ap_id, only if it belongs to the signer.
+
+    The signature proves *who* sent the Delete and process_inbox already binds
+    the actor domain to the signing domain. Here we additionally require the
+    deleted object to live on the actor's own domain, so instance A cannot sign
+    a Delete for an object hosted by instance B (SUD-F6).
+    """
     from suddenly.characters.models import Character
     from suddenly.users.models import User
+
+    actor_domain = urlparse(actor_url).hostname
+    target_domain = urlparse(ap_id).hostname
+    if not actor_domain or not target_domain or actor_domain != target_domain:
+        logger.warning("Rejected cross-domain Delete: actor=%s target=%s", actor_url, ap_id)
+        return
 
     deleted, _ = Character.objects.filter(ap_id=ap_id, remote=True).delete()
     if deleted:

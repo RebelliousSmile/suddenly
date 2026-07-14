@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 from django.contrib import admin
 
 from .models import (
+    Action,
     Character,
     CharacterAppearance,
     CharacterLink,
@@ -16,6 +17,8 @@ from .models import (
     LinkRequest,
     Quote,
     SharedSequence,
+    Trait,
+    TraitSet,
 )
 
 if TYPE_CHECKING:
@@ -26,6 +29,10 @@ if TYPE_CHECKING:
     _CharacterLinkBase = admin.ModelAdmin[CharacterLink]
     _SharedSequenceBase = admin.ModelAdmin[SharedSequence]
     _FollowBase = admin.ModelAdmin[Follow]
+    _TraitSetBase = admin.ModelAdmin[TraitSet]
+    _TraitInlineBase = admin.TabularInline[Trait, TraitSet]
+    _ActionInlineBase = admin.TabularInline[Action, TraitSet]
+    _TraitSetInlineBase = admin.TabularInline[TraitSet, Character]
 else:
     _CharacterBase = admin.ModelAdmin
     _QuoteBase = admin.ModelAdmin
@@ -34,6 +41,40 @@ else:
     _CharacterLinkBase = admin.ModelAdmin
     _SharedSequenceBase = admin.ModelAdmin
     _FollowBase = admin.ModelAdmin
+    _TraitSetBase = admin.ModelAdmin
+    _TraitInlineBase = admin.TabularInline
+    _ActionInlineBase = admin.TabularInline
+    _TraitSetInlineBase = admin.TabularInline
+
+
+class TraitInline(_TraitInlineBase):
+    model = Trait
+    fields = ["name", "value", "note", "order"]
+    extra = 0
+
+
+class ActionInline(_ActionInlineBase):
+    model = Action
+    fields = ["name", "traits", "condition", "outcome", "order"]
+    filter_horizontal = ["traits"]
+    extra = 0
+
+
+class TraitSetInline(_TraitSetInlineBase):
+    model = TraitSet
+    fields = ["label", "order"]
+    extra = 0
+    show_change_link = True
+
+
+@admin.register(TraitSet)
+class TraitSetAdmin(_TraitSetBase):
+    """Narrative meta-model: a trait set with its traits and actions inline."""
+
+    list_display = ["label", "character", "order", "created_at"]
+    search_fields = ["label", "character__name"]
+    raw_id_fields = ["character"]
+    inlines = [TraitInline, ActionInline]
 
 
 @admin.register(Character)
@@ -52,6 +93,7 @@ class CharacterAdmin(_CharacterBase):
     search_fields = ["name", "description", "owner__username", "creator__username"]
     raw_id_fields = ["owner", "creator", "origin_game", "parent"]
     ordering = ["-created_at"]
+    inlines = [TraitSetInline]
 
 
 @admin.register(Quote)

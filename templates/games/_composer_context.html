@@ -1,0 +1,111 @@
+{% load i18n %}
+{% comment %}
+  Role-scoped, recomputed region of the composer: the kind list and the actor
+  chip/sheet. Returned on its own when the game changes (rule 2b) or after
+  "+ Nouveau PNJ" (rule 2d). It binds to the #composer Alpine scope, so it only
+  ever *reads/writes* `kind`, `actor`, `actorLabel` — never redefines them.
+
+  Sync Alpine state to what the server just recomputed:
+    - keep `kind` only if it is still available, else fall back to the first;
+    - adopt a freshly created/selected actor when the server sends one.
+{% endcomment %}
+<div x-init="
+  kind = [{% for value, label in kinds %}'{{ value }}'{% if not forloop.last %},{% endif %}{% endfor %}].includes(kind) ? kind : '{% if kinds %}{{ kinds.0.0 }}{% endif %}';
+  {% if selected_actor %}actor = '{{ selected_actor }}'; actorLabel = '{{ selected_actor_label|escapejs }}';{% endif %}
+">
+{% if game %}
+    {# ── Nature (kind) ─────────────────────────────────────────────── #}
+    <fieldset class="mb-4">
+        <legend class="form-label">{% trans "Nature" %}</legend>
+        <div class="flex flex-wrap gap-2">
+            {% for value, label in kinds %}
+                <label class="inline-flex items-center gap-2 min-h-[44px] px-3 rounded-badge border border-border cursor-pointer"
+                       :class="kind === '{{ value }}' ? 'border-crimson bg-crimson/10 text-primary' : 'text-secondary'">
+                    <input type="radio" name="kind" value="{{ value }}" x-model="kind" class="sr-only">
+                    <span class="text-sm">{{ label }}</span>
+                </label>
+            {% endfor %}
+        </div>
+    </fieldset>
+
+    {# ── Acteur (posture) — narration takes none ──────────────────── #}
+    <div class="mb-4" x-show="!actorForbidden" x-cloak>
+        <span class="form-label">{% trans "Acteur" %}</span>
+        {% if is_gm %}
+            {# MJ: the chip is a sheet — Voix du MJ / vos PJ / PNJ du casting / + Nouveau PNJ #}
+            <div class="relative" x-data="{ sheet: false }">
+                <button type="button" @click="sheet = !sheet"
+                        class="inline-flex items-center gap-2 min-h-[44px] px-3 rounded-badge border border-border text-sm">
+                    <span class="i-lucide-drama text-xs"></span>
+                    <span x-text="actorLabel || '{% trans "Voix du MJ" %}'"></span>
+                    <span class="i-lucide-chevron-down text-xs opacity-60"></span>
+                </button>
+                <div x-show="sheet" @click.outside="sheet = false" x-cloak
+                     class="absolute z-dropdown mt-1 w-72 card card-body p-1 space-y-0.5">
+                    <button type="button" x-show="!needsActor"
+                            @click="actor = ''; actorLabel = ''; sheet = false"
+                            class="block w-full text-left px-3 py-2 min-h-[44px] rounded hover:bg-card-dark text-sm">
+                        {% trans "Voix du MJ" %}
+                    </button>
+                    {% if own_pcs %}
+                        <p class="px-3 pt-2 pb-1 text-xs text-muted uppercase tracking-wide">{% trans "Votre personnage" %}</p>
+                        {% for pc in own_pcs %}
+                            <button type="button"
+                                    @click="actor = '{{ pc.slug }}'; actorLabel = '{{ pc.name|escapejs }}'; sheet = false"
+                                    class="block w-full text-left px-3 py-2 min-h-[44px] rounded hover:bg-card-dark text-sm">
+                                {{ pc.name }}
+                            </button>
+                        {% endfor %}
+                    {% endif %}
+                    {% if cast_npcs %}
+                        <p class="px-3 pt-2 pb-1 text-xs text-muted uppercase tracking-wide">{% trans "PNJ de la partie" %}</p>
+                        {% for npc in cast_npcs %}
+                            <button type="button"
+                                    @click="actor = '{{ npc.slug }}'; actorLabel = '{{ npc.name|escapejs }}'; sheet = false"
+                                    class="block w-full text-left px-3 py-2 min-h-[44px] rounded hover:bg-card-dark text-sm">
+                                {{ npc.name }}
+                            </button>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="border-t border-border pt-1" x-data="{ open: false }">
+                        <button type="button" @click="open = !open"
+                                class="block w-full text-left px-3 py-2 min-h-[44px] rounded hover:bg-card-dark text-sm text-crimson">
+                            {% trans "+ Nouveau PNJ" %}
+                        </button>
+                        <div x-show="open" x-cloak class="p-2 space-y-2">
+                            <input type="text" id="composer-new-npc-name" name="name"
+                                   placeholder="{% trans "Nom du PNJ" %}"
+                                   class="form-input w-full text-sm">
+                            <button type="button"
+                                    hx-post="{% url 'games:cast_npc_create' game.pk %}"
+                                    hx-include="#composer-new-npc-name"
+                                    hx-target="#composer-context"
+                                    hx-swap="innerHTML"
+                                    {% if report %}hx-vals='{"report": "{{ report.pk }}"}'{% endif %}
+                                    class="btn-primary btn-sm w-full">
+                                {% trans "Créer et incarner" %}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            {# Joueur: the chip is locked to their character — cadenas, non-cliquable #}
+            <div class="inline-flex items-center gap-2 min-h-[44px] px-3 rounded-badge border border-border bg-card-dark text-sm"
+                 title="{% trans "Vous publiez sous votre personnage." %}">
+                <span class="i-lucide-lock text-xs text-muted"></span>
+                <span>{{ own_pcs.first.name|default:_("Votre personnage") }}</span>
+            </div>
+        {% endif %}
+    </div>
+    <p class="mb-4 text-xs text-muted" x-show="actorForbidden" x-cloak>
+        {% trans "Narration — la voix du récit. Pas d'acteur." %}
+    </p>
+
+    {# Actor slug submitted with the form (empty = Voix du MJ). Always present so
+       narration posts an empty actor; the outer x-effect clears it for narration. #}
+    <input type="hidden" name="actor" :value="actorForbidden ? '' : actor">
+{% else %}
+    <p class="mb-4 text-sm text-muted">{% trans "Choisissez une partie pour continuer." %}</p>
+{% endif %}
+</div>

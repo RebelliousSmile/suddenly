@@ -1,0 +1,129 @@
+{% load i18n %}
+{% comment %}
+  THE composer. One partial, two contexts (rule §2, "UN SEUL partial"):
+
+    {% include "games/_composer.html" with report=report %}   → frozen scene
+    {% include "games/_composer.html" %}                       → from the feed
+
+  `report` given  → the header is a frozen breadcrumb; game, personnage and
+                    language are inherited from the scene, not editable.
+  `report` absent → the header is two selectors, PERSONNAGE then PARTIE (§2b).
+
+  All role-scoped bits (kinds, actor sheet) live in _composer_context.html and
+  are recomputed server-side when the game changes or a PNJ is created.
+{% endcomment %}
+<div id="composer" class="card card-body"
+     x-data="{
+        frozen: {{ frozen|yesno:'true,false' }},
+        isGm: {{ is_gm|yesno:'true,false' }},
+        game: '{{ game.pk|default:'' }}',
+        personnage: '{{ selected_character.slug|default:'' }}',
+        kind: '{% if kinds %}{{ kinds.0.0 }}{% endif %}',
+        actor: '{% if is_gm %}{{ selected_actor }}{% else %}{{ own_pcs.first.slug|default:'' }}{% endif %}',
+        actorLabel: '{{ selected_actor_label|escapejs }}',
+        get actorForbidden() { return this.kind === 'narration'; },
+        get needsActor() { return this.kind === 'action' || this.kind === 'discussion'; },
+        get canSend() {
+            if (!this.kind) return false;
+            if (!this.frozen && (!this.game || !this.personnage)) return false;
+            if (this.needsActor && !this.actor) return false;
+            return true;
+        }
+     }"
+     x-effect="if (actorForbidden) { actor = ''; actorLabel = ''; }">
+
+    {# ── Header ──────────────────────────────────────────────────── #}
+    {% if frozen %}
+        <p class="text-sm text-muted mb-4">
+            {% blocktrans with title=report.game.title %}dans <strong class="text-secondary">{{ title }}</strong>{% endblocktrans %}
+            {% if selected_character %}· {{ selected_character.name }}{% endif %}
+            · {% if is_gm %}{% trans "MJ" %}{% else %}{% trans "Joueur" %}{% endif %}
+            {% if report.language %}· <span class="uppercase">{{ report.language }}</span>{% endif %}
+        </p>
+    {% endif %}
+
+    <form method="post"
+          enctype="multipart/form-data"
+          action="{% if frozen %}{% url 'games:scene_post_create' report.game.pk report.pk %}{% else %}{% url 'games:composer' %}{% endif %}">
+        {% csrf_token %}
+
+        {% if not frozen %}
+            <div class="grid gap-3 sm:grid-cols-2 mb-4">
+                <div>
+                    <label class="form-label" for="composer-personnage">{% trans "Personnage" %}</label>
+                    <select id="composer-personnage" name="character" class="form-input w-full" x-model="personnage">
+                        <option value="">{% trans "— Choisir un personnage —" %}</option>
+                        {% for c in personnages %}
+                            <option value="{{ c.slug }}">{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label" for="composer-game">{% trans "Partie" %}</label>
+                    <select id="composer-game" name="game" class="form-input w-full"
+                            x-model="game"
+                            hx-get="{% url 'games:composer' %}"
+                            hx-trigger="change"
+                            hx-target="#composer-context"
+                            hx-swap="innerHTML"
+                            hx-include="#composer-personnage"
+                            hx-vals='{"region": "context"}'>
+                        <option value="">{% trans "— Choisir une partie —" %}</option>
+                        {% for g in games %}
+                            <option value="{{ g.pk }}">{{ g.title }}</option>
+                        {% endfor %}
+                    </select>
+                    <p class="mt-1 text-xs text-muted">
+                        {% trans "N'importe quelle partie — la liste n'est pas filtrée par le personnage." %}
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+
+        {# ── Recomputed region: kinds + actor (rule 2b/2c/2d) ──────── #}
+        <div id="composer-context">
+            {% include "games/_composer_context.html" %}
+        </div>
+
+        {# ── Contenu (persistent across recompute swaps) ───────────── #}
+        <div class="mt-4">
+            <label class="form-label" for="composer-content">{% trans "Contenu" %}</label>
+            <textarea id="composer-content" name="content" rows="4" class="form-input w-full"
+                      placeholder="{% trans "Écrivez le rapport…" %}"></textarea>
+        </div>
+
+        {# ── Média : description uniquement (rule 2e) ──────────────── #}
+        <div class="mt-3" x-show="kind === 'description'" x-cloak>
+            <div class="rounded-badge border border-dashed border-border p-3 text-xs text-muted flex items-center gap-2">
+                <span class="i-lucide-image text-sm"></span>
+                {% trans "Une image (une seule) pourra être attachée à la description une fois le rapport créé." %}
+            </div>
+        </div>
+
+        {# ── Envoi (split-button) — rien ne part sans partie ni perso (2a) ── #}
+        <div class="mt-4 flex flex-wrap items-center gap-2">
+            <button type="submit" name="mode" value="add" class="btn-primary" :disabled="!canSend">
+                {% trans "Publier" %}
+            </button>
+            <button type="button" class="btn-secondary" :disabled="!canSend"
+                    hx-post="{% if frozen %}{% url 'games:scene_post_create' report.game.pk report.pk %}{% else %}{% url 'games:composer' %}{% endif %}"
+                    hx-include="closest form"
+                    hx-vals='{"mode": "add_continue"}'
+                    hx-target="#composer"
+                    hx-swap="outerHTML">
+                {% trans "Publier et continuer" %}
+            </button>
+            <button type="submit" name="mode" value="draft" class="btn-ghost" :disabled="!canSend">
+                {% trans "Enregistrer en brouillon" %}
+            </button>
+        </div>
+        <div class="mt-2 text-xs text-warning" x-show="!canSend" x-cloak>
+            <span x-show="!frozen && (!game || !personnage)">
+                {% trans "Rien ne part sans un personnage ET une partie — brouillon compris." %}
+            </span>
+            <span x-show="(frozen || (game && personnage)) && needsActor && !actor">
+                {% trans "Cette nature requiert un acteur." %}
+            </span>
+        </div>
+    </form>
+</div>

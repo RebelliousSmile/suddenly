@@ -54,7 +54,6 @@ def explorer(request: HttpRequest) -> HttpResponse:
         chars_qs = build_character_queryset(
             q=request.GET.get("q", ""),
             status=request.GET.get("status", ""),
-            system=request.GET.get("system", ""),
             tag=request.GET.get("tag", ""),
         )
         context.update(
@@ -62,7 +61,6 @@ def explorer(request: HttpRequest) -> HttpResponse:
                 "characters": chars_qs[:24],
                 "query": request.GET.get("q", ""),
                 "status_filter": request.GET.get("status", ""),
-                "system_filter": request.GET.get("system", ""),
                 "active_tag": request.GET.get("tag", ""),
                 "all_tags": get_distinct_tag_names(Character),
                 "statuses": CharacterStatus.choices,

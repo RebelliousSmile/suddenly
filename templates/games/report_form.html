@@ -162,6 +162,15 @@
                 {% endif %}
             </div>
         </form>
+
+        {% if report %}
+            {# The unified post composer, frozen to this scene (same _composer.html
+               as the feed). Adds Rapports into the fil without leaving the page. #}
+            <div class="mt-8">
+                <h2 class="text-heading mb-3">{% trans "Ajouter un rapport" %}</h2>
+                {% include "games/_composer.html" %}
+            </div>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

@@ -254,6 +254,16 @@ AP_ACCEPTED_ACTIVITIES = [
     "Offer",
 ]
 
+# Maximum allowed clock skew (seconds) between an incoming request's signed
+# Date header and server time before the signature is rejected as a replay.
+# 30s is too aggressive for real-world clock drift across federated peers;
+# Mastodon uses a comparable window (SUD-F2).
+AP_SIGNATURE_MAX_SKEW = int(os.environ.get("AP_SIGNATURE_MAX_SKEW", "300"))
+
+# Whether plain-http actor fetches are permitted. https is mandatory by default;
+# development overrides this to reach local http peers (SUD-F3).
+AP_ALLOW_INSECURE_HTTP = os.environ.get("AP_ALLOW_INSECURE_HTTP", "0") == "1"
+
 # =================================================================
 # INGESTION
 # =================================================================
@@ -261,6 +271,15 @@ AP_ACCEPTED_ACTIVITIES = [
 # Shared secret for the choix-narratifs → Suddenly ingest endpoint.
 # Set via environment variable; leave empty to disable the endpoint.
 INGEST_TOKEN = os.environ.get("INGEST_TOKEN", "")
+
+# =================================================================
+# FEED
+# =================================================================
+
+# Interleave a claim/adopt/fork promocard every N reports in the connected
+# (Abonnements) feed (SUD-P1). Matches the v3 wireframe default of 6. On a feed
+# shorter than this, at least one promo is still guaranteed.
+FEED_PROMO_EVERY = int(os.environ.get("FEED_PROMO_EVERY", "6"))
 
 # =================================================================
 # MISC

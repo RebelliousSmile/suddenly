@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ game.title }} — {% trans "Story" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-3xl">
+
+        <!-- Breadcrumb -->
+        <p class="text-sm text-muted mb-4">
+            <a href="{% url 'games:stories' %}" class="link-muted">{% trans "Stories" %}</a>
+            › {{ game.title }}
+        </p>
+
+        <!-- Header -->
+        <div class="mb-8">
+            {% if game.cover %}
+                <img src="{{ game.cover.url }}" alt="{{ game.title }}"
+                     class="w-full h-48 object-cover rounded-2xl mb-4">
+            {% endif %}
+            <h1 class="text-2xl font-bold text-primary mb-2">{{ game.title }}</h1>
+            <p class="text-sm text-muted">
+                {% blocktrans with username=game.owner.username %}by @{{ username }}{% endblocktrans %}
+                {% if game.game_system %}
+                    · {{ game.game_system }}
+                {% endif %}
+            </p>
+            {% if game.description %}
+                <p class="text-secondary mt-3">{{ game.description }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Released reports, end to end -->
+        {% for report in reports %}
+            <article class="mb-10">
+                <header class="mb-3 pb-2 border-b border-border">
+                    <h2 class="text-xl font-semibold text-primary">
+                        {{ report.title|default:_("Untitled") }}
+                    </h2>
+                    <p class="text-xs text-muted mt-1">
+                        {% if report.session_date %}
+                            {% trans "Session" %} {{ report.session_date|date:"d/m/Y" }}
+                        {% elif report.released_at %}
+                            {{ report.released_at|date:"d/m/Y" }}
+                        {% endif %}
+                    </p>
+                </header>
+
+                {% if report.content_warning %}
+                    <div class="flex items-center gap-2 text-sm text-warning mb-3">
+                        <span class="i-lucide-alert-triangle text-xs"></span>
+                        {{ report.content_warning }}
+                    </div>
+                {% endif %}
+
+                {% if report.content %}
+                    <div class="prose-report mb-4">{{ report.content|linebreaksbr }}</div>
+                {% endif %}
+
+                <div class="divide-y divide-border/60">
+                    {% for rapport in report.rapports.all %}
+                        {% include "stories/_rapport.html" %}
+                    {% endfor %}
+                </div>
+            </article>
+        {% endfor %}
+
+    </div>
+</section>
+{% endblock %}

@@ -8,11 +8,20 @@ from typing import TYPE_CHECKING
 
 from django.contrib import admin
 
-from .models import Game, GameSystem, Rapport, RapportLink, RapportMarker, Report, ReportCast
+from .models import (
+    Game,
+    GameCast,
+    Rapport,
+    RapportLink,
+    RapportMarker,
+    RapportMedia,
+    Report,
+    ReportCast,
+)
 
 if TYPE_CHECKING:
-    _GameSystemBase = admin.ModelAdmin[GameSystem]
     _GameBase = admin.ModelAdmin[Game]
+    _GameCastBase = admin.ModelAdmin[GameCast]
     _ReportBase = admin.ModelAdmin[Report]
     _ReportCastBase = admin.ModelAdmin[ReportCast]
     _RapportAdminBase = admin.ModelAdmin[Rapport]
@@ -20,9 +29,10 @@ if TYPE_CHECKING:
     _RapportInlineBase = admin.TabularInline[Rapport, Report]
     _RapportMarkerInlineBase = admin.TabularInline[RapportMarker, Report]
     _RapportLinkInlineBase = admin.TabularInline[RapportLink, Rapport]
+    _RapportMediaInlineBase = admin.TabularInline[RapportMedia, Rapport]
 else:
-    _GameSystemBase = admin.ModelAdmin
     _GameBase = admin.ModelAdmin
+    _GameCastBase = admin.ModelAdmin
     _ReportBase = admin.ModelAdmin
     _ReportCastBase = admin.ModelAdmin
     _RapportAdminBase = admin.ModelAdmin
@@ -30,14 +40,7 @@ else:
     _RapportInlineBase = admin.TabularInline
     _RapportMarkerInlineBase = admin.TabularInline
     _RapportLinkInlineBase = admin.TabularInline
-
-
-@admin.register(GameSystem)
-class GameSystemAdmin(_GameSystemBase):
-    """Admin for GameSystem — game rule systems catalog."""
-
-    list_display = ["slug", "name", "git_url", "is_deprecated", "synced_at"]
-    search_fields = ["slug", "name"]
+    _RapportMediaInlineBase = admin.TabularInline
 
 
 @admin.register(Game)
@@ -57,7 +60,13 @@ class ReportCastInline(_ReportCastInlineBase):
 
 class RapportInline(_RapportInlineBase):
     model = Rapport
-    fields = ["kind", "actor", "content"]
+    fields = ["kind", "status", "actor", "content"]
+    extra = 0
+
+
+class RapportMediaInline(_RapportMediaInlineBase):
+    model = RapportMedia
+    fields = ["image", "alt", "tone"]
     extra = 0
 
 
@@ -87,12 +96,21 @@ class ReportAdmin(_ReportBase):
 
 @admin.register(Rapport)
 class RapportAdmin(_RapportAdminBase):
-    list_display = ["__str__", "report", "kind", "created_at"]
-    list_filter = ["kind", "created_at"]
+    list_display = ["__str__", "report", "kind", "status", "created_at"]
+    list_filter = ["kind", "status", "created_at"]
     search_fields = ["content", "report__title"]
     raw_id_fields = ["report", "actor"]
     ordering = ["-created_at"]
-    inlines = [RapportLinkInline]
+    inlines = [RapportLinkInline, RapportMediaInline]
+
+
+@admin.register(GameCast)
+class GameCastAdmin(_GameCastBase):
+    list_display = ["game", "character", "added_by", "created_at"]
+    list_filter = ["created_at"]
+    search_fields = ["game__title", "character__name"]
+    raw_id_fields = ["game", "character", "added_by"]
+    ordering = ["-created_at"]
 
 
 @admin.register(ReportCast)

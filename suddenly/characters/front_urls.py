@@ -6,7 +6,14 @@ These serve HTML pages. The DRF API URLs remain in api_urls.py.
 
 from django.urls import path
 
-from . import follow_views, front_views, gm_views, link_views, sequence_views
+from . import (
+    follow_views,
+    front_views,
+    gm_views,
+    link_views,
+    sequence_views,
+    trait_views,
+)
 
 app_name = "characters"
 
@@ -61,6 +68,38 @@ urlpatterns = [
     path("<slug:slug>/edit/", front_views.character_edit, name="edit"),
     path("<slug:slug>/delete/", front_views.character_delete, name="delete"),
     path("<slug:slug>/quotes/add/", front_views.quote_add, name="quote_add"),
+    # Narrative meta-model editor (issue B) — traits & actions
+    path("<slug:slug>/traits/", trait_views.traits_editor, name="traits_editor"),
+    path(
+        "<slug:slug>/traits/sets/add/",
+        trait_views.trait_set_create,
+        name="trait_set_create",
+    ),
+    path(
+        "<slug:slug>/traits/sets/<uuid:set_pk>/delete/",
+        trait_views.trait_set_delete,
+        name="trait_set_delete",
+    ),
+    path(
+        "<slug:slug>/traits/sets/<uuid:set_pk>/traits/add/",
+        trait_views.trait_create,
+        name="trait_create",
+    ),
+    path(
+        "<slug:slug>/traits/traits/<uuid:trait_pk>/delete/",
+        trait_views.trait_delete,
+        name="trait_delete",
+    ),
+    path(
+        "<slug:slug>/traits/sets/<uuid:set_pk>/actions/add/",
+        trait_views.action_create,
+        name="action_create",
+    ),
+    path(
+        "<slug:slug>/traits/actions/<uuid:action_pk>/delete/",
+        trait_views.action_delete,
+        name="action_delete",
+    ),
     path("<slug:slug>/link/", link_views.link_choose_type, name="link_choose"),
     path(
         "<slug:slug>/link/<str:link_type>/",

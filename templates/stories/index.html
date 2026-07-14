@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Stories" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app">
+
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-primary mb-1">{% trans "Stories" %}</h1>
+            <p class="text-sm text-muted max-w-2xl">
+                {% trans "Resolved accounts that have crossed the wall — readable by everyone, end to end." %}
+            </p>
+        </div>
+
+        <div id="stories-results">
+            {% include "stories/_index_results.html" %}
+        </div>
+
+    </div>
+</section>
+{% endblock %}

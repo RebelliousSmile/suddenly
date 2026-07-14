@@ -37,13 +37,48 @@ class TestSsrfBlock:
         assert result is None
         mock_client.assert_not_called()
 
+    @pytest.mark.parametrize(
+        "ip",
+        [
+            "240.0.0.1",  # reserved (240.0.0.0/4)
+            "224.0.0.1",  # multicast
+            "0.0.0.0",  # unspecified
+            "10.0.0.5",  # RFC1918 private
+            "169.254.1.1",  # link-local
+        ],
+    )
+    def test_reserved_multicast_unspecified_blocked(self, mocker: Any, ip: str) -> None:
+        """Reserved, multicast, unspecified and private IPs are blocked pre-network."""
+        mocker.patch(
+            "suddenly.activitypub._http.socket.getaddrinfo",
+            return_value=[(2, 1, 6, "", (ip, 443))],
+        )
+        mock_client = mocker.patch("httpx.Client")
+
+        result = fetch_ap_actor("https://evil.example/actor")
+
+        assert result is None
+        mock_client.assert_not_called()
+
+    def test_plain_http_rejected_when_insecure_disabled(
+        self, mocker: Any, settings: Any
+    ) -> None:
+        """Outside dev (AP_ALLOW_INSECURE_HTTP off), http:// is refused up front."""
+        settings.AP_ALLOW_INSECURE_HTTP = False
+        mock_client = mocker.patch("httpx.Client")
+
+        result = fetch_ap_actor("http://remote.example/actor")
+
+        assert result is None
+        mock_client.assert_not_called()
+
 
 class TestDateSkewReject:
     """verify_signature must reject a stale Date header (replay protection)."""
 
-    def test_date_60s_in_past_rejected(self, rf: RequestFactory) -> None:
-        """A Date header 60s in the past returns (False, 'Date skew')."""
-        stale = datetime.now(UTC) - timedelta(seconds=60)
+    def test_stale_date_rejected(self, rf: RequestFactory) -> None:
+        """A Date header beyond the skew window returns (False, 'Date skew')."""
+        stale = datetime.now(UTC) - timedelta(seconds=600)
         date_str = stale.strftime("%a, %d %b %Y %H:%M:%S GMT")
 
         sig_header = (

@@ -86,7 +86,7 @@
                 {% for game in games %}
                     <a href="{% url 'games:detail' pk=game.pk %}" class="card card-body block hover:bg-card-dark/30 transition-colors">
                         <h3 class="font-semibold text-primary">{{ game.title }}</h3>
-                        {% if game.game_system_ref or game.game_system %}<p class="text-sm text-muted">{{ game.game_system_ref.name|default:game.game_system }}</p>{% endif %}
+                        {% if game.game_system %}<p class="text-sm text-muted">{{ game.game_system }}</p>{% endif %}
                         <div class="flex gap-3 text-xs text-muted mt-1">
                             <span class="flex items-center gap-1" title="{% trans "Reports" %}">
                                 <span class="i-lucide-scroll-text"></span>

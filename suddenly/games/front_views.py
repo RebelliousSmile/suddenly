@@ -10,9 +10,16 @@ from typing import TYPE_CHECKING
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.http import Http404, HttpRequest, HttpResponse, HttpResponseForbidden
+from django.db import models
+from django.http import (
+    Http404,
+    HttpRequest,
+    HttpResponse,
+    HttpResponseForbidden,
+)
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -21,23 +28,35 @@ from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
 if TYPE_CHECKING:
+    from suddenly.characters.models import Character
     from suddenly.users.models import User
 
 from .marker_forms import RapportMarkerForm
 from .models import (
     CastRole,
     Game,
-    GameSystem,
     Rapport,
     RapportLink,
     RapportMarker,
+    RapportMedia,
+    RapportStatus,
     Report,
     ReportCast,
     ReportStatus,
     ReportVisibility,
 )
 from .rapport_forms import RapportForm
-from .services import build_game_queryset, publish_report
+from .services import (
+    available_kinds,
+    build_actor_pool,
+    build_game_cast,
+    build_game_queryset,
+    create_npc_in_cast,
+    create_scene_post,
+    is_game_master,
+    open_new_scene,
+    publish_report,
+)
 
 
 @login_required
@@ -180,7 +199,19 @@ def game_search(request: HttpRequest) -> HttpResponse:
 
 
 def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
-    """Game detail with reports and characters (US-02)."""
+    """Game profile / landing page — cast, meta, preview of reports (US-02).
+
+    Role split with ``story_detail`` (SUD-V5), so the two public doors to a game
+    are not redundant:
+
+    - ``game_detail`` (this view) is the *profile*: game metadata, cast, follow
+      button, and a bounded preview of the game's published reports. It answers
+      "what is this game and who plays in it?". It is the owner-facing and
+      discovery landing surface.
+    - ``story_detail`` is the *long read*: the end-to-end aggregation of only the
+      released reports (rapports + markers), the resolved account. It answers
+      "let me read this story from start to finish".
+    """
     from django.contrib.contenttypes.models import ContentType
     from django.db.models import Q
 
@@ -190,9 +221,7 @@ def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
     if request.user.is_authenticated:
         visibility |= Q(owner=request.user)
 
-    game = get_object_or_404(
-        Game.objects.select_related("owner", "game_system_ref").filter(visibility), pk=pk
-    )
+    game = get_object_or_404(Game.objects.select_related("owner").filter(visibility), pk=pk)
 
     reports = game.reports.filter(status=ReportStatus.PUBLISHED).select_related("author")[:20]
     characters = game.characters.select_related("creator", "owner").order_by("-created_at")[:12]
@@ -218,6 +247,123 @@ def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
     )
 
 
+# ---------------------------------------------------------------------------
+# Stories — public reading surface for released content (SUD-V3).
+#
+# Stories is the *compte rendu* side of the wall: it only ever shows reports
+# that have crossed the temporal wall (released + published + public). The
+# liberation filter lives in the queryset — an unreleased report never enters
+# the context of these public views (structural wall, not a render-time mask).
+# ---------------------------------------------------------------------------
+
+
+def _released_reports(game: Game) -> models.QuerySet[Report]:
+    """Reports of a game that have crossed the wall, in reading order."""
+    return (
+        game.reports.filter(
+            released_at__isnull=False,
+            status=ReportStatus.PUBLISHED,
+            visibility=ReportVisibility.PUBLIC,
+        )
+        .select_related("author")
+        .prefetch_related(
+            # Public reading surface: only published rapports cross into a story.
+            models.Prefetch(
+                "rapports",
+                queryset=Rapport.objects.filter(status=RapportStatus.PUBLISHED).select_related(
+                    "actor"
+                ),
+            ),
+            "rapports__markers__character",
+            "rapports__parent_links__parent_rapport",
+        )
+        .order_by(
+            models.F("session_date").asc(nulls_last=True),
+            "released_at",
+            "created_at",
+        )
+    )
+
+
+def stories_index(request: HttpRequest) -> HttpResponse:
+    """Public list of games that have at least one released story (SUD-V3).
+
+    No @login_required: Stories is readable by everyone. Only games with
+    released + published + public content are listed — the wall filter is in
+    the queryset, so private/in-progress reports never surface here.
+    """
+    games = (
+        Game.objects.filter(
+            reports__released_at__isnull=False,
+            reports__status=ReportStatus.PUBLISHED,
+            reports__visibility=ReportVisibility.PUBLIC,
+            remote=False,
+        )
+        .distinct()
+        .select_related("owner")
+        .order_by("-updated_at")
+    )
+
+    return htmx_render(
+        request,
+        full_template="stories/index.html",
+        partial_template="stories/_index_results.html",
+        context={"games": games[:30]},
+    )
+
+
+def story_detail(request: HttpRequest, pk: str) -> HttpResponse:
+    """Public end-to-end reading of a game's released reports (SUD-V3).
+
+    Aggregates *only* released reports (rapports + markers). A game with no
+    released content is not a public story → 404. Unreleased reports are
+    structurally absent from the context (filtered at the queryset).
+    """
+    game = get_object_or_404(Game.objects.select_related("owner").filter(remote=False), pk=pk)
+
+    reports = list(_released_reports(game))
+    if not reports:
+        raise Http404
+
+    return htmx_render(
+        request,
+        full_template="stories/detail.html",
+        partial_template="stories/detail.html",
+        context={"game": game, "reports": reports},
+    )
+
+
+@require_POST
+@login_required
+def report_release(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:
+    """Cross (or re-close) the temporal wall for one of the author's reports (SUD-V4).
+
+    Deliberate act that turns a game in progress into a resolved account.
+    Reversible while the report has not been federated (no ap_id); once
+    federated, release is irreversible — the wall protected discovery, it was
+    never a perpetual secret.
+    """
+    report = get_object_or_404(Report, pk=pk, game_id=game_pk, author=request.user)
+
+    # Only a published report can cross the wall — releasing a draft would put
+    # nothing in Stories (which also requires PUBLISHED).
+    if report.status != ReportStatus.PUBLISHED:
+        return HttpResponse(_("Only a published report can be released."), status=400)
+
+    if report.released_at is None:
+        report.released_at = timezone.now()
+        report.save(update_fields=["released_at", "updated_at"])
+    elif not report.ap_id:
+        # Not yet federated → re-closing the wall is allowed.
+        report.released_at = None
+        report.save(update_fields=["released_at", "updated_at"])
+    # else: federated + already released → irreversible, leave untouched.
+
+    return redirect(
+        reverse("games:report_detail", kwargs={"game_pk": report.game_id, "pk": report.pk})
+    )
+
+
 @login_required
 def game_create(request: AuthenticatedRequest) -> HttpResponse:
     """Create a new game (US-02)."""
@@ -226,14 +372,7 @@ def game_create(request: AuthenticatedRequest) -> HttpResponse:
         description = request.POST.get("description", "").strip()
         is_public = request.POST.get("is_public") == "on"
 
-        slug = request.POST.get("game_system_slug", "").strip()
-        custom = request.POST.get("game_system_custom", "").strip()
-        if slug:
-            system_ref = GameSystem.objects.filter(slug=slug, is_deprecated=False).first()
-            game_system_text = ""
-        else:
-            system_ref = None
-            game_system_text = custom
+        game_system_text = request.POST.get("game_system", "").strip()
 
         if not title:
             return htmx_render(
@@ -259,7 +398,6 @@ def game_create(request: AuthenticatedRequest) -> HttpResponse:
             title=title,
             description=description,
             game_system=game_system_text,
-            game_system_ref=system_ref,
             is_public=is_public,
             owner=request.user,
             cover=cover,
@@ -286,8 +424,11 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
         game_id=game_pk,
     )
 
-    # Only published reports visible (or own drafts)
-    if report.status != ReportStatus.PUBLISHED:
+    # Wall check (SUD-V2): a report must be BOTH published (federation axis)
+    # AND released (liberation axis) to be visible to the public. A report that
+    # is published but not yet released is still a game in progress behind the
+    # wall — only its author may read it.
+    if report.status != ReportStatus.PUBLISHED or not report.is_released:
         if not request.user.is_authenticated or request.user != report.author:
             raise Http404
 
@@ -296,6 +437,16 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
     # so fall back to ReportCast (new_character_name entries) when appearances are absent.
     cast_fallback = report.cast.all() if not cast.exists() else None
     quotes = report.quotes.filter(visibility="public").order_by("-created_at")[:5]
+
+    # Draft rapports are private to their author: the author manages them here
+    # (edit/publish), but the public thread of a released report shows only
+    # published rapports (per-rapport wall, decision #1 option A).
+    is_author = request.user.is_authenticated and request.user == report.author
+    rapports = report.rapports.select_related("actor").prefetch_related(
+        "parent_links__parent_rapport", "markers__character"
+    )
+    if not is_author:
+        rapports = rapports.filter(status=RapportStatus.PUBLISHED)
 
     return htmx_render(
         request,
@@ -307,6 +458,7 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
             "cast": cast,
             "cast_fallback": cast_fallback,
             "quotes": quotes,
+            "rapports": rapports,
         },
     )
 
@@ -329,10 +481,17 @@ def report_thread(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpR
     _mode_param = request.GET.get("mode")
     mode: str = _mode_param if _mode_param in ("flux", "group") else "flux"
 
+    # The fil renders only published rapports; the author keeps seeing their own
+    # drafts (they manage/publish them from here).
+    is_author = request.user.is_authenticated and request.user == report.author
+    rapport_base = (
+        report.rapports if is_author else report.rapports.filter(status=RapportStatus.PUBLISHED)
+    )
+
     if getattr(request, "htmx", False):
         if mode == "group":
             rapports_qs = (
-                report.rapports.select_related("actor")
+                rapport_base.select_related("actor")
                 .prefetch_related("parent_links__parent_rapport")
                 .order_by("created_at")
             )
@@ -358,7 +517,7 @@ def report_thread(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpR
             )
         else:
             # mode == "flux"
-            rapports_qs = report.rapports.select_related("actor").order_by("created_at")
+            rapports_qs = rapport_base.select_related("actor").order_by("created_at")
             page_number = request.GET.get("page", 1)
             paginator = Paginator(rapports_qs, 10)
             page_obj = paginator.get_page(page_number)
@@ -378,7 +537,7 @@ def report_thread(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpR
     # Full page render (non-HTMX)
     if mode == "group":
         rapports_qs = (
-            report.rapports.select_related("actor")
+            rapport_base.select_related("actor")
             .prefetch_related("parent_links__parent_rapport")
             .order_by("created_at")
         )
@@ -407,7 +566,7 @@ def report_thread(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpR
         )
     else:
         # mode == "flux"
-        rapports_qs = report.rapports.select_related("actor").order_by("created_at")
+        rapports_qs = rapport_base.select_related("actor").order_by("created_at")
         page_number = request.GET.get("page", 1)
         paginator = Paginator(rapports_qs, 10)
         page_obj = paginator.get_page(page_number)
@@ -563,6 +722,9 @@ def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRes
             "visibilities": ReportVisibility.choices,
             "cast_roles": CastRole.choices,
             "form_data": {},
+            # The unified post composer (same _composer.html as the feed), frozen
+            # to this scene: game/personnage/language inherited, not editable.
+            **_composer_context(request.user, report=report),
         },
     )
 
@@ -681,19 +843,9 @@ def game_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
                     "is_public_checked": is_public_checked,
                 },
             )
-        slug = request.POST.get("game_system_slug", "").strip()
-        custom = request.POST.get("game_system_custom", "").strip()
-        if slug:
-            system_ref = GameSystem.objects.filter(slug=slug, is_deprecated=False).first()
-            game_system_text = ""
-        else:
-            system_ref = None
-            game_system_text = custom
-
         game.title = title
         game.description = request.POST.get("description", "").strip()
-        game.game_system = game_system_text
-        game.game_system_ref = system_ref
+        game.game_system = request.POST.get("game_system", "").strip()
         game.is_public = is_public_checked
 
         started_at_raw = request.POST.get("started_at", "").strip()
@@ -716,7 +868,6 @@ def game_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
                 "title",
                 "description",
                 "game_system",
-                "game_system_ref",
                 "is_public",
                 "started_at",
                 "cover",
@@ -767,23 +918,6 @@ def game_delete_bulk(request: AuthenticatedRequest) -> HttpResponse:
     return redirect(reverse("games:list"))
 
 
-def game_system_search(request: HttpRequest) -> HttpResponse:
-    """HTMX partial: game system autocomplete results."""
-    from django.template.loader import render_to_string
-
-    q = request.GET.get("q_system", request.GET.get("q", "")).strip()
-    qs = GameSystem.objects.filter(is_deprecated=False).only("slug", "name")
-    if q:
-        qs = qs.filter(name__icontains=q)
-    results = list(qs.order_by("name")[:10])
-    html = render_to_string(
-        "games/_system_search_results.html",
-        {"results": results, "q": q},
-        request=request,
-    )
-    return HttpResponse(html)
-
-
 @login_required
 def rapport_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:
     from django.shortcuts import render as _render
@@ -798,6 +932,8 @@ def rapport_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> Http
         if form.is_valid():
             rapport = form.save(commit=False)
             rapport.report = report
+            # In-scene add gesture: goes straight into the fil.
+            rapport.status = RapportStatus.PUBLISHED
             rapport.save()
             html = render_to_string(
                 "games/partials/rapport_item.html", {"rapport": rapport}, request=request
@@ -974,6 +1110,8 @@ def rapport_reply(
         if form.is_valid():
             child_rapport = form.save(commit=False)
             child_rapport.report = rapport.report
+            # A reply is a public thread gesture: it appears in the fil.
+            child_rapport.status = RapportStatus.PUBLISHED
             child_rapport.full_clean()
             child_rapport.save()
 
@@ -1085,3 +1223,365 @@ def rapport_add_remote_parent(
         request=request,
     )
     return HttpResponse(html)
+
+
+# ---------------------------------------------------------------------------
+# Post composer (Rapport) — the "création de post" screen (level Rapport).
+#
+# Distinct from report_compose (which writes a whole Report/scene): this writes
+# a single Rapport into a scene, or opens a new scene around a PC. The context
+# (pc, game, role) is frozen server side — the client never chooses the target
+# Report, the author, or the role. See games/services.py for the gestures.
+# ---------------------------------------------------------------------------
+
+# Split-button send modes of the composer.
+_POST_MODES = frozenset({"add", "add_continue", "draft"})
+
+
+def _resolve_actor(request: AuthenticatedRequest) -> Character | None:
+    """Resolve the submitted ``actor`` (character slug) or ``None``.
+
+    Returns the Character or None; ownership/role is revalidated by the service
+    layer, not here (a slug that resolves to a character outside the vivier is
+    rejected at creation time).
+    """
+    from suddenly.characters.models import Character
+
+    slug = request.POST.get("actor", "").strip()
+    if not slug:
+        return None
+    return get_object_or_404(Character, slug=slug)
+
+
+@require_POST
+@login_required
+def scene_post_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:
+    """Create one Rapport (post) inside an existing scene.
+
+    Modes (menu of the split-button):
+      - ``add``          → publish into the fil, redirect to scene edit.
+      - ``add_continue`` → publish into the fil, return an empty composer.
+      - ``draft``        → keep as a private draft (decision #1, option A).
+
+    The target Report and its author come from the server: only the report's
+    author may add to it, and the actor is revalidated against the writer's
+    role vivier.
+    """
+    from django.core.exceptions import ValidationError
+
+    report = get_object_or_404(Report.objects.select_related("game"), pk=pk, game__pk=game_pk)
+    if report.author != request.user:
+        return HttpResponseForbidden()
+
+    mode = request.POST.get("mode", "add")
+    if mode not in _POST_MODES:
+        mode = "add"
+    status = RapportStatus.DRAFT if mode == "draft" else RapportStatus.PUBLISHED
+
+    actor = _resolve_actor(request)
+    try:
+        create_scene_post(
+            report=report,
+            kind=request.POST.get("kind", ""),
+            content=request.POST.get("content", "").strip(),
+            actor=actor,
+            status=status,
+        )
+    except ValidationError as exc:
+        return HttpResponse("; ".join(exc.messages), status=422)
+
+    if mode == "add_continue":
+        # A fresh, empty composer for the same scene — the same _composer.html,
+        # frozen to this report. Swapped in place (#composer), no redirect.
+        return render(
+            request,
+            "games/_composer.html",
+            _composer_context(request.user, report=report),
+        )
+
+    return redirect(
+        reverse("games:report_edit", kwargs={"game_pk": report.game.pk, "pk": report.pk})
+    )
+
+
+@require_POST
+@login_required
+def scene_open(request: AuthenticatedRequest, game_pk: str) -> HttpResponse:
+    """Open a new scene around a character in the game named in the URL.
+
+    Creates, in one transaction, Report(draft, wall closed) + first Rapport +
+    ReportCast(character, role=MAIN) + GameCast(game, character). The
+    CharacterAppearance is NOT created eagerly — it is born from the cast at
+    publication (publish_report), keeping the temporal wall coherent.
+
+    The game is the one in the URL; the character may be **any** the writer may
+    voice there — a character "peut intervenir dans n'importe quelle partie"
+    (rule 2b), so it need not originate from this game. The actor is revalidated
+    against the role vivier by the service layer.
+    """
+    from django.core.exceptions import ValidationError
+
+    from suddenly.characters.models import Character
+
+    game = get_object_or_404(Game, pk=game_pk)
+
+    character_slug = request.POST.get("character", "").strip()
+    character = get_object_or_404(Character, slug=character_slug)
+
+    actor = _resolve_actor(request)
+    mode = request.POST.get("mode", "add")
+    status = RapportStatus.DRAFT if mode == "draft" else RapportStatus.PUBLISHED
+    try:
+        report, _rapport = open_new_scene(
+            user=request.user,
+            game=game,
+            character=character,
+            kind=request.POST.get("kind", ""),
+            content=request.POST.get("content", "").strip(),
+            actor=actor,
+            status=status,
+        )
+    except ValidationError as exc:
+        return HttpResponse("; ".join(exc.messages), status=422)
+
+    return redirect(
+        reverse("games:report_edit", kwargs={"game_pk": report.game.pk, "pk": report.pk})
+    )
+
+
+def _composer_context(
+    user: User,
+    *,
+    report: Report | None = None,
+    game: Game | None = None,
+    character: Character | None = None,
+    selected_actor: str = "",
+    selected_actor_label: str = "",
+) -> dict[str, object]:
+    """Build the single source of truth the ``_composer.html`` partial consumes.
+
+    Frozen mode (``report`` given): game, personnage and language are inherited
+    from the scene — the header is a breadcrumb. Free mode (``report`` absent):
+    the header is two selectors and the caller supplies ``games``/``personnages``.
+
+    Either way the role-scoped, non-negotiable pieces are computed here:
+    ``is_gm`` (deduced), ``kinds`` (narration only for a GM) and the actor pool.
+    """
+    from suddenly.characters.models import Character, CharacterStatus
+
+    frozen = report is not None
+    if frozen and report is not None:
+        game = report.game
+
+    if game is not None:
+        is_gm = is_game_master(user, game)
+        kinds = available_kinds(user, game)
+        actors = build_actor_pool(user, game).select_related("origin_game").order_by("name")
+        cast_npcs = build_game_cast(game).filter(status=CharacterStatus.NPC)
+    else:
+        is_gm = False
+        kinds = []
+        actors = Character.objects.none()
+        cast_npcs = Character.objects.none()
+
+    own_pcs = Character.objects.filter(owner=user, status=CharacterStatus.PC).order_by("name")
+
+    # Rule 2a: nothing leaves without a personnage AND a partie — drafts too.
+    # In frozen mode both are inherited from the scene, so sending is allowed.
+    can_send = frozen or (game is not None and character is not None)
+
+    return {
+        "report": report,
+        "frozen": frozen,
+        "game": game,
+        "is_gm": is_gm,
+        "kinds": kinds,
+        "actors": actors,
+        "cast_npcs": cast_npcs,
+        "own_pcs": own_pcs,
+        "selected_character": character,
+        "selected_actor": selected_actor,
+        "selected_actor_label": selected_actor_label,
+        "can_send": can_send,
+    }
+
+
+@login_required
+def composer(request: AuthenticatedRequest) -> HttpResponse:
+    """The unified post composer, opened from the feed (no frozen scene).
+
+    Two selectors: PERSONNAGE then PARTIE (rule 2b). The game list is **not**
+    filtered by the chosen personnage. Choosing a game recomputes role, cast and
+    available kinds (rule 2c) — an HTMX GET with ``?region=context`` returns just
+    that recomputed region.
+
+    POST opens the scene via :func:`open_new_scene`; it is refused (422, explicit
+    message) when either personnage or partie is missing — brouillon compris
+    (rule 2a).
+    """
+    from django.core.exceptions import ValidationError
+
+    from suddenly.characters.models import Character
+
+    src = request.POST if request.method == "POST" else request.GET
+
+    game = None
+    game_pk = src.get("game", "").strip()
+    if game_pk:
+        game = get_object_or_404(Game, pk=game_pk)
+
+    character = None
+    character_slug = src.get("character", "").strip()
+    if character_slug:
+        character = get_object_or_404(Character, slug=character_slug)
+
+    if request.method == "POST":
+        if game is None or character is None:
+            return HttpResponse(
+                "Choisissez un personnage et une partie avant d'envoyer (brouillon compris).",
+                status=422,
+            )
+        mode = request.POST.get("mode", "add")
+        if mode not in _POST_MODES:
+            mode = "add"
+        status = RapportStatus.DRAFT if mode == "draft" else RapportStatus.PUBLISHED
+        actor = _resolve_actor(request)
+        try:
+            report, _rapport = open_new_scene(
+                user=request.user,
+                game=game,
+                character=character,
+                kind=request.POST.get("kind", ""),
+                content=request.POST.get("content", "").strip(),
+                actor=actor,
+                status=status,
+            )
+        except ValidationError as exc:
+            return HttpResponse("; ".join(exc.messages), status=422)
+        return redirect(
+            reverse("games:report_edit", kwargs={"game_pk": report.game.pk, "pk": report.pk})
+        )
+
+    ctx = _composer_context(request.user, game=game, character=character)
+    ctx["games"] = build_game_queryset(request.user)
+    ctx["personnages"] = (
+        Character.objects.filter(models.Q(owner=request.user) | models.Q(creator=request.user))
+        .select_related("origin_game")
+        .order_by("name")
+        .distinct()
+    )
+
+    if getattr(request, "htmx", False) and request.GET.get("region") == "context":
+        return render(request, "games/_composer_context.html", ctx)
+
+    return htmx_render(
+        request,
+        full_template="games/composer.html",
+        partial_template="games/_composer.html",
+        context=ctx,
+    )
+
+
+@require_POST
+@login_required
+def cast_npc_create(request: AuthenticatedRequest, game_pk: str) -> HttpResponse:
+    """ "+ Nouveau PNJ": create the Character **and** its GameCast entry (GM only).
+
+    Returns the recomputed composer context region, with the fresh NPC now in the
+    actor pool and pre-selected (rule 2d).
+    """
+    game = get_object_or_404(Game, pk=game_pk)
+    if not is_game_master(request.user, game):
+        return HttpResponseForbidden()
+
+    name = request.POST.get("name", "").strip()
+    if not name:
+        return HttpResponse("Un nom de PNJ est requis.", status=400)
+
+    npc = create_npc_in_cast(
+        user=request.user,
+        game=game,
+        name=name,
+        description=request.POST.get("description", "").strip(),
+    )
+
+    report = None
+    report_pk = request.POST.get("report", "").strip()
+    if report_pk:
+        report = get_object_or_404(
+            Report.objects.select_related("game"),
+            pk=report_pk,
+            game=game,
+            author=request.user,
+        )
+
+    ctx = _composer_context(
+        request.user,
+        report=report,
+        game=game,
+        selected_actor=npc.slug,
+        selected_actor_label=npc.name,
+    )
+    return render(request, "games/_composer_context.html", ctx)
+
+
+def _get_authored_rapport(
+    request: AuthenticatedRequest, game_pk: str, pk: str, rapport_pk: str
+) -> Rapport:
+    """Fetch a rapport whose scene the caller authored, or raise 404."""
+    return get_object_or_404(
+        Rapport.objects.select_related("report__game", "report__author"),
+        pk=rapport_pk,
+        report__pk=pk,
+        report__game__pk=game_pk,
+    )
+
+
+@require_POST
+@login_required
+def rapport_media_add(
+    request: AuthenticatedRequest, game_pk: str, pk: str, rapport_pk: str
+) -> HttpResponse:
+    """Set the single image of a ``description`` rapport (author only).
+
+    One media per description (the OneToOne makes a second one impossible), so
+    this endpoint *sets or replaces* rather than appends. Media on a non-
+    description kind is refused (422) by ``RapportMedia.clean``.
+    """
+    from django.core.exceptions import ValidationError
+
+    rapport = _get_authored_rapport(request, game_pk, pk, rapport_pk)
+    if rapport.report.author != request.user:
+        return HttpResponseForbidden()
+
+    image = request.FILES.get("image")
+    if not image:
+        return HttpResponse("An image is required.", status=400)
+
+    media = getattr(rapport, "media", None) or RapportMedia(rapport=rapport)
+    media.image = image
+    media.alt = request.POST.get("alt", "").strip()
+    media.tone = request.POST.get("tone", "").strip()
+    try:
+        media.full_clean()
+    except ValidationError as exc:
+        return HttpResponse("; ".join(exc.messages), status=422)
+    media.save()
+    if getattr(request, "htmx", False):
+        return render(request, "games/partials/rapport_item.html", {"rapport": rapport})
+    return HttpResponse(status=201)
+
+
+@require_POST
+@login_required
+def rapport_media_remove(
+    request: AuthenticatedRequest, game_pk: str, pk: str, rapport_pk: str
+) -> HttpResponse:
+    """Remove the image of a rapport (author only). Idempotent."""
+    rapport = _get_authored_rapport(request, game_pk, pk, rapport_pk)
+    if rapport.report.author != request.user:
+        return HttpResponseForbidden()
+    RapportMedia.objects.filter(rapport=rapport).delete()
+    if getattr(request, "htmx", False):
+        return render(request, "games/partials/rapport_item.html", {"rapport": rapport})
+    return HttpResponse(status=204)

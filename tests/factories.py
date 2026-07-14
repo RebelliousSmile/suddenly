@@ -12,7 +12,7 @@ import factory
 from django.contrib.auth import get_user_model
 
 from suddenly.characters.models import Character
-from suddenly.games.models import Game, Rapport, RapportKind, Report
+from suddenly.games.models import Game, Rapport, RapportKind, RapportStatus, Report
 
 User = get_user_model()
 
@@ -77,3 +77,4 @@ class RapportFactory(factory.django.DjangoModelFactory):
     report = factory.SubFactory(ReportFactory)
     kind = RapportKind.DESCRIPTION
     content = factory.Sequence(lambda n: f"Rapport content {n}")
+    status = RapportStatus.PUBLISHED

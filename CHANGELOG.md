@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Personnages** — Méta-modèle narratif interne : lots de traits (`TraitSet`), traits nommés
+  à valeur affichée et nullable (`Trait`), actions en texte (`Action`). Transpose une fiche
+  narrative (PbtA, FATE, Mist) sans catalogue. Rien n'est jamais évalué : Suddenly affiche.
+- **Personnages** — Éditeur inline traits/actions (HTMX + Alpine) réservé au mainteneur de la
+  fiche, avec sélecteur de valeur −5/+5, valeur libre ou sans valeur (borne UI, pas de validation).
+- **Personnages** — Section « Traits » et bloc « Fiche technique : lien externe » (`sheet_url`)
+  sur la fiche publique ; inlines admin pour `TraitSet` (traits + actions).
+
+### Removed
+- **Parties** — Sous-système FoundryVTT retiré : modèle `GameSystem`, FK `Game.game_system_ref`,
+  tâche de synchronisation `sync_foundry_systems`, commande de gestion associée, picker catalogue
+  et recherche inline. `Game.game_system` reste un champ texte libre (aucun catalogue).
+- **Explorer** — Facette « systèmes distincts » (`get_distinct_game_systems`) et son invalidation
+  de cache retirées.
+
 ## [0.2.0] - 2026-07-06
 
 ### Added
@@ -42,8 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Personnages** — Grille de cartes portrait 2:3, filtrage par tags, préférence de fond par défaut
 - **Personnages** — Upload d'avatar, bouton édition sur la page détail
 - **Parties** — Upload d'illustration de couverture, affichage sur la page détail
-- **Parties** — Catalogue GameSystem avec dropdown HTMX et recherche inline (mode catalogue + personnalisé)
-- **Parties** — Synchronisation Foundry VTT via tâche planifiée
+- **Parties** — Champ « système de jeu » en texte libre
 - **UI** — Composant `form_switch` (toggle réutilisable pour les champs booléens)
 - **UI** — Composant `form_image_upload` (dropzone réutilisable avec prévisualisation et suppression)
 - **UI** — Icônes thématiques via `game-icons` pour les états vides

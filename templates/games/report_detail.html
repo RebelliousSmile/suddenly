@@ -46,8 +46,51 @@
                         {% if report.visibility == 'followers' %}{% trans "Followers" %}{% endif %}
                     </span>
                 {% endif %}
+                {% if report.is_released %}
+                    <span class="badge bg-success/15 text-success border border-success/30">
+                        <span class="i-lucide-book-open text-xs"></span>
+                        {% trans "Released" %}
+                    </span>
+                {% endif %}
             </div>
         </div>
+
+        <!-- Liberation control (SUD-V4): cross the wall (author only, published) -->
+        {% if request.user == report.author and report.is_published %}
+            <div class="card card-body mb-6 flex items-center justify-between gap-3">
+                <div class="text-sm">
+                    {% if report.is_released %}
+                        <p class="text-primary font-medium">{% trans "This report is released." %}</p>
+                        <p class="text-xs text-muted">
+                            {% trans "It is readable by everyone in Stories." %}
+                        </p>
+                    {% else %}
+                        <p class="text-primary font-medium">{% trans "Behind the wall" %}</p>
+                        <p class="text-xs text-muted">
+                            {% trans "Release to let everyone read this scene as a resolved account." %}
+                        </p>
+                    {% endif %}
+                </div>
+                {% if report.is_released and report.ap_id %}
+                    <span class="text-xs text-muted">{% trans "Federated — release is final." %}</span>
+                {% else %}
+                    <form method="post" action="{% url 'games:report_release' game_pk=game.pk pk=report.pk %}">
+                        {% csrf_token %}
+                        {% if report.is_released %}
+                            <button type="submit" class="btn-secondary btn-sm">
+                                <span class="i-lucide-lock text-xs"></span>
+                                {% trans "Re-close the wall" %}
+                            </button>
+                        {% else %}
+                            <button type="submit" class="btn-primary btn-sm">
+                                <span class="i-lucide-book-open text-xs"></span>
+                                {% trans "Release" %}
+                            </button>
+                        {% endif %}
+                    </form>
+                {% endif %}
+            </div>
+        {% endif %}
 
         <!-- Content Warning -->
         {% if report.content_warning %}
@@ -133,7 +176,7 @@
                 {% endif %}
             </div>
             <div id="rapports-list" class="space-y-2">
-                {% for rapport in report.rapports.all %}
+                {% for rapport in rapports %}
                     {% include "games/partials/rapport_item.html" %}
                 {% endfor %}
             </div>
