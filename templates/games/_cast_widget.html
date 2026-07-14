@@ -1,6 +1,6 @@
 {% load i18n %}
 <div class="card card-body mb-4">
-    <h3 class="text-sm font-semibold text-primary mb-3">{% trans "Cast" %}</h3>
+    <h3 class="text-sm font-semibold text-semantic-ink mb-3">{% trans "Cast" %}</h3>
 
     <div id="cast-list">
         {% for entry in report.cast.all %}
@@ -8,7 +8,7 @@
         {% endfor %}
     </div>
 
-    <div class="mt-4 border-t border-border pt-4">
+    <div class="mt-4 border-t border-semantic-border pt-4">
         <div x-data="{ mode: 'existing' }" class="space-y-3">
             <div class="flex gap-3 text-sm">
                 <label class="flex items-center gap-1 cursor-pointer">

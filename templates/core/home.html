@@ -5,16 +5,16 @@
 
 {% block content %}
 <!-- Hero -->
-<section class="bg-gradient-to-b from-surface to-background py-16 sm:py-24">
+<section class="bg-gradient-to-b from-semantic-surface to-semantic-background py-16 sm:py-24">
     <div class="container-app text-center">
-        <h1 class="text-4xl sm:text-5xl font-bold text-primary mb-4">
-            {% trans "Welcome to" %} <span class="text-crimson">{{ SITE_NAME }}</span>
+        <h1 class="text-4xl sm:text-5xl font-bold text-semantic-ink mb-4">
+            {% trans "Welcome to" %} <span class="text-brand-primary">{{ SITE_NAME }}</span>
         </h1>
-        <p class="text-xl text-secondary mb-6 max-w-2xl mx-auto">
+        <p class="text-xl text-semantic-ink-secondary mb-6 max-w-2xl mx-auto">
             {{ SITE_DESCRIPTION }}
         </p>
-        <p class="text-muted mb-8 max-w-xl mx-auto">
-            {% blocktrans %}Publish your game reports. The NPCs you mention can be <strong class="text-secondary">claimed</strong>, <strong class="text-secondary">adopted</strong> or <strong class="text-secondary">forked</strong> by other players.{% endblocktrans %}
+        <p class="text-semantic-muted mb-8 max-w-xl mx-auto">
+            {% blocktrans %}Publish your game reports. The NPCs you mention can be <strong class="text-semantic-ink-secondary">claimed</strong>, <strong class="text-semantic-ink-secondary">adopted</strong> or <strong class="text-semantic-ink-secondary">forked</strong> by other players.{% endblocktrans %}
         </p>
 
         {% if not user.is_authenticated %}
@@ -44,60 +44,60 @@
 
 <!-- Features -->
 <section class="py-16 container-app">
-    <h2 class="text-2xl font-bold text-center text-primary mb-12">
+    <h2 class="text-2xl font-bold text-center text-semantic-ink mb-12">
         {% trans "How does it work?" %}
     </h2>
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Publish -->
         <article class="card card-body text-center">
-            <div class="w-12 h-12 bg-crimson/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="i-game-icons-open-book text-2xl text-crimson"></span>
+            <div class="w-12 h-12 bg-brand-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="i-game-icons-open-book text-2xl text-brand-primary"></span>
             </div>
-            <h3 class="font-semibold text-primary mb-2">{% trans "Publish your games" %}</h3>
-            <p class="text-sm text-secondary">
+            <h3 class="font-semibold text-semantic-ink mb-2">{% trans "Publish your games" %}</h3>
+            <p class="text-sm text-semantic-ink-secondary">
                 {% trans "Create reports of your RPG sessions. Mention your NPCs to make them discoverable." %}
             </p>
         </article>
 
         <!-- Claim -->
         <article class="card card-body text-center">
-            <div class="w-12 h-12 bg-warning/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="i-game-icons-manacles text-2xl text-warning"></span>
+            <div class="w-12 h-12 bg-semantic-warning/15 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="i-game-icons-manacles text-2xl text-semantic-warning"></span>
             </div>
-            <h3 class="font-semibold text-primary mb-2">{% trans "Claim" %}</h3>
-            <p class="text-sm text-muted italic mb-2">
+            <h3 class="font-semibold text-semantic-ink mb-2">{% trans "Claim" %}</h3>
+            <p class="text-sm text-semantic-muted italic mb-2">
                 "{% trans "Your NPC was my PC all along." %}"
             </p>
-            <p class="text-sm text-secondary">
+            <p class="text-sm text-semantic-ink-secondary">
                 {% trans "Reveal that your character was already there — a narrative retcon." %}
             </p>
         </article>
 
         <!-- Adopt -->
         <article class="card card-body text-center">
-            <div class="w-12 h-12 bg-card rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="i-game-icons-hand text-2xl text-secondary"></span>
+            <div class="w-12 h-12 bg-semantic-card rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="i-game-icons-hand text-2xl text-semantic-ink-secondary"></span>
             </div>
-            <h3 class="font-semibold text-primary mb-2">{% trans "Adopt" %}</h3>
-            <p class="text-sm text-muted italic mb-2">
+            <h3 class="font-semibold text-semantic-ink mb-2">{% trans "Adopt" %}</h3>
+            <p class="text-sm text-semantic-muted italic mb-2">
                 "{% trans "Your NPC interests me, I'll make them my PC." %}"
             </p>
-            <p class="text-sm text-secondary">
+            <p class="text-sm text-semantic-ink-secondary">
                 {% trans "Take an abandoned NPC and give them a new life." %}
             </p>
         </article>
 
         <!-- Fork -->
         <article class="card card-body text-center">
-            <div class="w-12 h-12 bg-info/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="i-game-icons-divergence text-2xl text-info"></span>
+            <div class="w-12 h-12 bg-semantic-info/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="i-game-icons-divergence text-2xl text-semantic-info"></span>
             </div>
-            <h3 class="font-semibold text-primary mb-2">{% trans "Fork" %}</h3>
-            <p class="text-sm text-muted italic mb-2">
+            <h3 class="font-semibold text-semantic-ink mb-2">{% trans "Fork" %}</h3>
+            <p class="text-sm text-semantic-muted italic mb-2">
                 "{% trans "I create a PC derived from your NPC." %}"
             </p>
-            <p class="text-sm text-secondary">
+            <p class="text-sm text-semantic-ink-secondary">
                 {% trans "Create a derived character — cousin, lookalike, former associate." %}
             </p>
         </article>
@@ -105,10 +105,10 @@
 </section>
 
 <!-- Recent activity -->
-<section class="py-16 bg-card">
+<section class="py-16 bg-semantic-card">
     <div class="container-app">
         <div class="flex items-center justify-between mb-8">
-            <h2 class="text-2xl font-bold text-primary">
+            <h2 class="text-2xl font-bold text-semantic-ink">
                 {% trans "Recent activity" %}
             </h2>
             <a href="{% url 'feed:instance' %}" class="link flex items-center gap-1">
@@ -131,16 +131,16 @@
                             </span>
                         {% endif %}
                         <div>
-                            <p class="font-medium text-primary">{{ report.author.get_display_name }}</p>
-                            <p class="text-sm text-muted">{{ report.published_at|timesince }}</p>
+                            <p class="font-medium text-semantic-ink">{{ report.author.get_display_name }}</p>
+                            <p class="text-sm text-semantic-muted">{{ report.published_at|timesince }}</p>
                         </div>
                     </div>
-                    <h3 class="font-semibold text-primary mb-2">
+                    <h3 class="font-semibold text-semantic-ink mb-2">
                         {{ report.title }}
                     </h3>
-                    <p class="text-sm text-secondary line-clamp-2">{{ report.content|truncatewords:20 }}</p>
+                    <p class="text-sm text-semantic-ink-secondary line-clamp-2">{{ report.content|truncatewords:20 }}</p>
                 </div>
-                <div class="card-footer flex items-center gap-4 text-sm text-muted">
+                <div class="card-footer flex items-center gap-4 text-sm text-semantic-muted">
                     <span class="flex items-center gap-1">
                         <span class="i-lucide-users text-xs"></span>
                         {% blocktrans count counter=report.cast.count %}{{ counter }} character{% plural %}{{ counter }} characters{% endblocktrans %}
@@ -154,7 +154,7 @@
             {% endfor %}
         </div>
         {% else %}
-        <div class="text-center py-12 text-muted">
+        <div class="text-center py-12 text-semantic-muted">
             <span class="i-game-icons-scroll-quill text-4xl block mx-auto mb-4 opacity-40"></span>
             <p>{% trans "No activity yet. Be the first to publish a report!" %}</p>
         </div>
@@ -167,7 +167,7 @@
 <section class="py-16 container-app">
     <div class="max-w-2xl mx-auto">
         <div class="flex items-center justify-between mb-8">
-            <h2 class="text-2xl font-bold text-primary">{% trans "Ce qu'on y dit" %}</h2>
+            <h2 class="text-2xl font-bold text-semantic-ink">{% trans "Ce qu'on y dit" %}</h2>
             <a href="{% url 'core:quotes' %}" class="link flex items-center gap-1">
                 {% trans "Le mur des citations" %}
                 <span class="i-lucide-arrow-right text-sm"></span>
@@ -185,19 +185,19 @@
 <!-- Federation -->
 <section class="py-16 container-app">
     <div class="card card-body max-w-3xl mx-auto text-center">
-        <div class="w-16 h-16 bg-crimson/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span class="i-lucide-globe text-3xl text-crimson"></span>
+        <div class="w-16 h-16 bg-brand-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="i-lucide-globe text-3xl text-brand-primary"></span>
         </div>
-        <h2 class="text-2xl font-bold text-primary mb-4">
+        <h2 class="text-2xl font-bold text-semantic-ink mb-4">
             {% trans "Federated with the Fediverse" %}
         </h2>
-        <p class="text-secondary mb-6">
+        <p class="text-semantic-ink-secondary mb-6">
             {% blocktrans %}{{ SITE_NAME }} uses <strong>ActivityPub</strong> to connect to other instances and the rest of the Fediverse. Follow players from Mastodon, BookWyrm or any compatible platform.{% endblocktrans %}
         </p>
-        <div class="flex flex-wrap justify-center gap-4 text-muted">
-            <span class="i-simple-icons-mastodon text-2xl hover:text-violet transition-colors"></span>
-            <span class="i-simple-icons-activitypub text-2xl hover:text-warning transition-colors"></span>
-            <span class="i-game-icons-open-book text-2xl hover:text-neon transition-colors"></span>
+        <div class="flex flex-wrap justify-center gap-4 text-semantic-muted">
+            <span class="i-simple-icons-mastodon text-2xl hover:text-brand-accent transition-colors"></span>
+            <span class="i-simple-icons-activitypub text-2xl hover:text-semantic-warning transition-colors"></span>
+            <span class="i-game-icons-open-book text-2xl hover:text-domain-available-text transition-colors"></span>
         </div>
     </div>
 </section>

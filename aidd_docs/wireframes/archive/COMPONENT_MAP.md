@@ -1,3 +1,16 @@
+> **OBSOLÈTE — ne pas utiliser comme référence.**
+>
+> Ce document décrit la palette **Indigo/Emerald** et les wireframes v1, abandonnés depuis deux refontes
+> (passage à la palette crimson, puis au mode sombre sépia). Il est conservé pour son historique, pas
+> pour son contenu.
+>
+> Référence actuelle : le contrat de design — `design/design-system.md`, `design/tokens.json`,
+> `design/components.json`. Maquette en vigueur : `templates/wireframes/maquette-v3.html`.
+>
+> Archivé le 2026-07-14.
+
+---
+
 # Mapping composants — wireframes
 
 Chaque element de wireframe est mappe a un composant Django template

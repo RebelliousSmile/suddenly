@@ -24,9 +24,9 @@
     </div>
 {% elif is_empty %}
     <div class="text-center py-16">
-        <span class="i-lucide-home text-5xl text-muted mb-4 block"></span>
-        <h3 class="font-semibold text-primary mb-2">{% trans "Your feed is empty" %}</h3>
-        <p class="text-sm text-muted mb-4">
+        <span class="i-lucide-home text-5xl text-semantic-muted mb-4 block"></span>
+        <h3 class="font-semibold text-semantic-ink mb-2">{% trans "Your feed is empty" %}</h3>
+        <p class="text-sm text-semantic-muted mb-4">
             {% trans "Follow players or games to see their publications here." %}
         </p>
         <div class="flex items-center justify-center gap-3">
@@ -36,7 +36,7 @@
     </div>
 {% else %}
     <div class="text-center py-12">
-        <span class="i-lucide-inbox text-4xl text-muted mb-4 block"></span>
-        <p class="text-muted">{% trans "No recent content." %}</p>
+        <span class="i-lucide-inbox text-4xl text-semantic-muted mb-4 block"></span>
+        <p class="text-semantic-muted">{% trans "No recent content." %}</p>
     </div>
 {% endif %}

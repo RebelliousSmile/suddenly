@@ -11,7 +11,7 @@
             <span class="i-lucide-arrow-left text-xs"></span> {% blocktrans with name=character.name %}Back to {{ name }}{% endblocktrans %}
         </a>
 
-        <h1 class="text-2xl font-bold text-primary mb-2">
+        <h1 class="text-2xl font-bold text-semantic-ink mb-2">
             {% blocktrans with name=character.name %}Link {{ name }} to your story{% endblocktrans %}
         </h1>
 
@@ -25,23 +25,23 @@
             <div class="mb-4"></div>
         {% endif %}
 
-        <p class="text-secondary mb-6">{% trans "How do you want to integrate this character?" %}</p>
+        <p class="text-semantic-ink-secondary mb-6">{% trans "How do you want to integrate this character?" %}</p>
 
         <div class="space-y-4">
             <!-- Adoption -->
             <a href="{% url 'characters:link_request_form' slug=character.slug link_type='adopt' %}"
                class="card card-hover card-body block">
                 <div class="flex items-start gap-4">
-                    <span class="w-10 h-10 rounded-full bg-card text-secondary flex items-center justify-center flex-shrink-0">
+                    <span class="w-10 h-10 rounded-full bg-semantic-card text-semantic-ink-secondary flex items-center justify-center flex-shrink-0">
                         <span class="i-lucide-heart text-lg"></span>
                     </span>
                     <div>
-                        <h3 class="font-semibold text-primary mb-1">{% trans "Adoption" %}</h3>
-                        <p class="text-sm text-secondary">
+                        <h3 class="font-semibold text-semantic-ink mb-1">{% trans "Adoption" %}</h3>
+                        <p class="text-sm text-semantic-ink-secondary">
                             {% blocktrans with name=character.name %}{{ name }} becomes <strong>your PC</strong>. They leave their old story to join yours. The creator will need to accept.{% endblocktrans %}
                         </p>
                     </div>
-                    <span class="i-lucide-arrow-right text-muted mt-1 flex-shrink-0"></span>
+                    <span class="i-lucide-arrow-right text-semantic-muted mt-1 flex-shrink-0"></span>
                 </div>
             </a>
 
@@ -49,35 +49,35 @@
             <a href="{% url 'characters:link_request_form' slug=character.slug link_type='fork' %}"
                class="card card-hover card-body block">
                 <div class="flex items-start gap-4">
-                    <span class="w-10 h-10 rounded-full bg-info/20 text-info flex items-center justify-center flex-shrink-0">
+                    <span class="w-10 h-10 rounded-full bg-semantic-info/20 text-semantic-info flex items-center justify-center flex-shrink-0">
                         <span class="i-lucide-git-branch text-lg"></span>
                     </span>
                     <div>
-                        <h3 class="font-semibold text-primary mb-1">{% trans "Derivation" %}</h3>
-                        <p class="text-sm text-secondary">
+                        <h3 class="font-semibold text-semantic-ink mb-1">{% trans "Derivation" %}</h3>
+                        <p class="text-sm text-semantic-ink-secondary">
                             {% blocktrans with name=character.name %}You create a <strong>new PC</strong> inspired by {{ name }}. {{ name }} remains available for other players. Your two characters will be linked by a lineage.{% endblocktrans %}
                         </p>
                     </div>
-                    <span class="i-lucide-arrow-right text-muted mt-1 flex-shrink-0"></span>
+                    <span class="i-lucide-arrow-right text-semantic-muted mt-1 flex-shrink-0"></span>
                 </div>
             </a>
 
             <!-- Retcon (de-emphasized) -->
             <a href="{% url 'characters:link_request_form' slug=character.slug link_type='claim' %}"
-               class="card card-body block border-border hover:border-border transition-colors">
+               class="card card-body block border-semantic-border hover:border-semantic-border transition-colors">
                 <div class="flex items-start gap-4">
-                    <span class="w-10 h-10 rounded-full bg-card text-muted flex items-center justify-center flex-shrink-0">
+                    <span class="w-10 h-10 rounded-full bg-semantic-card text-semantic-muted flex items-center justify-center flex-shrink-0">
                         <span class="i-lucide-git-merge text-lg"></span>
                     </span>
                     <div>
-                        <h3 class="font-medium text-secondary mb-1">
-                            {% trans "Retcon" %} <span class="text-xs text-muted ml-1">({% trans "advanced" %})</span>
+                        <h3 class="font-medium text-semantic-ink-secondary mb-1">
+                            {% trans "Retcon" %} <span class="text-xs text-semantic-muted ml-1">({% trans "advanced" %})</span>
                         </h3>
-                        <p class="text-sm text-muted">
+                        <p class="text-sm text-semantic-muted">
                             {% blocktrans with name=character.name %}Retroactive rewrite: {{ name }} was actually your PC from the beginning. Their story is reinterpreted.{% endblocktrans %}
                         </p>
                     </div>
-                    <span class="i-lucide-arrow-right text-muted mt-1 flex-shrink-0"></span>
+                    <span class="i-lucide-arrow-right text-semantic-muted mt-1 flex-shrink-0"></span>
                 </div>
             </a>
         </div>

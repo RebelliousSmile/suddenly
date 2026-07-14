@@ -384,7 +384,7 @@ Quand le PNJ est distant, le flow guide ajoute un indicateur a l'etape 1 :
 |  Sequence Partagee                                               |
 |  Viktor (PNJ) --> Adoption --> @bob                             |
 |                                                                  |
-|  Statut : (amber) Brouillon                                     |
+|  Statut : (warning) Brouillon                                   |
 |  @presence_indicator(participants=...)                            |
 |                                                                  |
 +------------------------------------------------------------------+

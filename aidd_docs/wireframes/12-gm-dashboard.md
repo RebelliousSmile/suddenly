@@ -4,6 +4,12 @@
 
 Page dediee au GM pour voir tous ses PNJ et les demandes en cours.
 
+> **Legende des pastilles.** Les schemas ci-dessous nomment les pastilles par leur **role**, pas
+> par leur teinte : `(pending)` = demande en attente (`color.semantic.warning`), `(claimed)` =
+> Retcon accepte (`color.domain.claimed`), `(adopted)` = PNJ adopte (`color.domain.adopted`),
+> `(forked)` = personnage derive (`color.domain.forked`). Une pastille ne suffit jamais seule :
+> elle accompagne toujours un libelle (`usage.rules[state-colour-icon]`).
+
 ```
 +------------------------------------------------------------------+
 |                         HEADER                                   |
@@ -15,7 +21,7 @@ Page dediee au GM pour voir tous ses PNJ et les demandes en cours.
 |                                                                  |
 +------------------------------------------------------------------+
 |                                                                  |
-|  PNJ avec demandes en attente (2)              (amber) Priorite |
+|  PNJ avec demandes en attente (2)            (pending) Priorite |
 |                                                                  |
 |  +------------------------------------------------------------+  |
 |  | +------+  Viktor                                           |  |
@@ -58,7 +64,7 @@ Page dediee au GM pour voir tous ses PNJ et les demandes en cours.
 |  |   Lien : Retcon  ·  Sequence : "Le retour du prodigue"     |  |
 |  |   Sequence publiee le 20 fev 2026                           |  |
 |  +------------------------------------------------------------+  |
-|  | Lyra  (indigo) Adoptee par @bob                             |  |
+|  | Lyra  (adopted) Adoptee par @bob                            |  |
 |  |   Lien : Adoption · Sequence : "La rencontre au carrefour" |  |
 |  |   Sequence en brouillon                  [Voir sequence ->] |  |
 |  +------------------------------------------------------------+  |
@@ -102,9 +108,9 @@ Vue optionnelle accessible depuis le profil ou le header (si le user a des parti
 |                                                                  |
 |  Activite recente sur mes PNJ                                    |
 |                                                                  |
-|  (amber) @bob demande l'Adoption de Viktor          il y a 2h  |
-|  (emerald) @frank a accepte le Retcon de Kael        il y a 1j  |
-|  (violet) @dave a derive Shadow Viktor de Viktor     il y a 3j  |
+|  (pending) @bob demande l'Adoption de Viktor        il y a 2h  |
+|  (claimed) @frank a accepte le Retcon de Kael        il y a 1j  |
+|  (forked) @dave a derive Shadow Viktor de Viktor     il y a 3j  |
 |                                                                  |
 +------------------------------------------------------------------+
 ```
@@ -121,7 +127,7 @@ les demandes directement depuis la fiche du PNJ.
 |  Demandes en attente (2)                                         |
 |                                                                  |
 |  +------------------------------------------------------------+  |
-|  | (amber) ADOPT — @bob                           il y a 2h   |  |
+|  | (pending) ADOPT — @bob                         il y a 2h   |  |
 |  |                                                             |  |
 |  | "J'aimerais reprendre Viktor dans ma campagne              |  |
 |  |  Ironsworn..."                                              |  |

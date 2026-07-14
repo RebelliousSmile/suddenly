@@ -15,31 +15,31 @@
 <!-- ================================================================ -->
 <section class="mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-bell w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 1 — Centre de notifications /notifications/ (US-20)</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-bell w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 1 — Centre de notifications /notifications/ (US-20)</span>
     </div>
 
     <!-- Badge header preview -->
-    <div class="bg-surface border-b border-border py-3 px-4">
-        <p class="text-xs font-semibold text-muted uppercase tracking-wide mb-2">Badge cloche dans le header (HTMX polling 30s ou SSE)</p>
+    <div class="bg-semantic-surface border-b border-semantic-border py-3 px-4">
+        <p class="text-xs font-semibold text-semantic-muted uppercase tracking-wide mb-2">Badge cloche dans le header (HTMX polling 30s ou SSE)</p>
         <div class="flex items-center gap-4">
             <!-- Simulated header bell icon with badge -->
             <div class="relative inline-flex items-center">
-                <span class="i-lucide-bell w-6 h-6 inline-block text-primary"></span>
-                <span class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-crimson text-white text-[10px] font-bold px-1">3</span>
+                <span class="i-lucide-bell w-6 h-6 inline-block text-semantic-ink"></span>
+                <span class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-brand-primary text-white text-[10px] font-bold px-1">3</span>
             </div>
-            <span class="text-xs text-muted">← nombre de notifications non lues</span>
+            <span class="text-xs text-semantic-muted">← nombre de notifications non lues</span>
         </div>
     </div>
 
     <!-- Page header -->
-    <div class="border-b border-border bg-surface py-6">
+    <div class="border-b border-semantic-border bg-semantic-surface py-6">
         <div class="container-app px-4">
             <div class="flex items-center justify-between gap-4 flex-wrap mb-4">
-                <h1 class="text-2xl font-bold text-primary flex items-center gap-3">
+                <h1 class="text-2xl font-bold text-semantic-ink flex items-center gap-3">
                     Notifications
-                    <span class="flex items-center justify-center min-w-[24px] h-[24px] rounded-full bg-crimson text-white text-xs font-bold px-1.5">3</span>
+                    <span class="flex items-center justify-center min-w-[24px] h-[24px] rounded-full bg-brand-primary text-white text-xs font-bold px-1.5">3</span>
                 </h1>
                 <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5">
                     <span class="i-lucide-check-check w-4 h-4 inline-block"></span>
@@ -48,7 +48,7 @@
             </div>
             <!-- Filter -->
             <div class="flex items-center gap-2">
-                <label class="text-sm text-muted">Filtre :</label>
+                <label class="text-sm text-semantic-muted">Filtre :</label>
                 <select class="form-input py-1.5 text-sm">
                     <option>Toutes</option>
                     <option>Non lues</option>
@@ -65,7 +65,7 @@
         <div class="flex flex-col gap-3 max-w-2xl">
 
             <!-- Notification 1 — Demande de lien (NON LU) — amber/merge -->
-            <div class="card border-l-4 border-l-amber-400 border border-border rounded-xl hover:shadow-sm transition-shadow bg-amber-50/40 dark:bg-amber-950/10">
+            <div class="card border-l-4 border-l-amber-400 border border-semantic-border rounded-xl hover:shadow-sm transition-shadow bg-amber-50/40 dark:bg-amber-950/10">
                 <div class="card-body">
                     <div class="flex items-start gap-3">
                         <!-- Icon -->
@@ -77,11 +77,11 @@
                             <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
                                 <div class="flex items-center gap-2">
                                     <span class="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wide">Demande de lien</span>
-                                    <span class="inline-block w-2 h-2 rounded-full bg-crimson shrink-0" title="Non lu"></span>
+                                    <span class="inline-block w-2 h-2 rounded-full bg-brand-primary shrink-0" title="Non lu"></span>
                                 </div>
-                                <span class="text-xs text-muted shrink-0">il y a 2h</span>
+                                <span class="text-xs text-semantic-muted shrink-0">il y a 2h</span>
                             </div>
-                            <p class="text-sm text-primary mb-2">
+                            <p class="text-sm text-semantic-ink mb-2">
                                 <a href="#" class="link font-medium">@bob</a> veut adopter votre PNJ <a href="#" class="link font-medium">Viktor</a>
                             </p>
                             <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-amber-700 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-200">
@@ -94,24 +94,24 @@
             </div>
 
             <!-- Notification 2 — Demande acceptée (NON LU) — emerald/check -->
-            <div class="card border-l-4 border-l-emerald-500 border border-border rounded-xl hover:shadow-sm transition-shadow bg-success/5/40 dark:bg-emerald-950/10">
+            <div class="card border-l-4 border-l-emerald-500 border border-semantic-border rounded-xl hover:shadow-sm transition-shadow bg-semantic-success/5/40 dark:bg-emerald-950/10">
                 <div class="card-body">
                     <div class="flex items-start gap-3">
-                        <div class="shrink-0 w-9 h-9 rounded-full bg-success/10 dark:bg-emerald-900/30 flex items-center justify-center mt-0.5">
-                            <span class="i-lucide-check w-4.5 h-4.5 inline-block text-success dark:text-success"></span>
+                        <div class="shrink-0 w-9 h-9 rounded-full bg-semantic-success/10 dark:bg-emerald-900/30 flex items-center justify-center mt-0.5">
+                            <span class="i-lucide-check w-4.5 h-4.5 inline-block text-semantic-success dark:text-semantic-success"></span>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-xs font-semibold text-success dark:text-success uppercase tracking-wide">Demande acceptée</span>
-                                    <span class="inline-block w-2 h-2 rounded-full bg-crimson shrink-0" title="Non lu"></span>
+                                    <span class="text-xs font-semibold text-semantic-success dark:text-semantic-success uppercase tracking-wide">Demande acceptée</span>
+                                    <span class="inline-block w-2 h-2 rounded-full bg-brand-primary shrink-0" title="Non lu"></span>
                                 </div>
-                                <span class="text-xs text-muted shrink-0">il y a 1j</span>
+                                <span class="text-xs text-semantic-muted shrink-0">il y a 1j</span>
                             </div>
-                            <p class="text-sm text-primary mb-2">
+                            <p class="text-sm text-semantic-ink mb-2">
                                 <a href="#" class="link font-medium">@dave</a> a accepté votre demande d'Adoption sur <a href="#" class="link font-medium">Fenris</a>
                             </p>
-                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-success dark:text-success hover:text-success dark:hover:text-emerald-200">
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-semantic-success dark:text-semantic-success hover:text-semantic-success dark:hover:text-emerald-200">
                                 Voir la Séquence Partagée
                                 <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
                             </a>
@@ -121,24 +121,24 @@
             </div>
 
             <!-- Notification 3 — Recommandation (NON LU) — accent/sparkles -->
-            <div class="card border-l-4 border-l-violet-500 border border-border rounded-xl hover:shadow-sm transition-shadow bg-violet-50/40 dark:bg-violet-950/10">
+            <div class="card border-l-4 border-l-violet-500 border border-semantic-border rounded-xl hover:shadow-sm transition-shadow bg-violet-50/40 dark:bg-violet-950/10">
                 <div class="card-body">
                     <div class="flex items-start gap-3">
                         <div class="shrink-0 w-9 h-9 rounded-full bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center mt-0.5">
-                            <span class="i-lucide-sparkles w-4.5 h-4.5 inline-block text-violet dark:text-violet"></span>
+                            <span class="i-lucide-sparkles w-4.5 h-4.5 inline-block text-brand-accent dark:text-brand-accent"></span>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-xs font-semibold text-violet dark:text-violet uppercase tracking-wide">Recommandation</span>
-                                    <span class="inline-block w-2 h-2 rounded-full bg-crimson shrink-0" title="Non lu"></span>
+                                    <span class="text-xs font-semibold text-brand-accent dark:text-brand-accent uppercase tracking-wide">Recommandation</span>
+                                    <span class="inline-block w-2 h-2 rounded-full bg-brand-primary shrink-0" title="Non lu"></span>
                                 </div>
-                                <span class="text-xs text-muted shrink-0">il y a 1j</span>
+                                <span class="text-xs text-semantic-muted shrink-0">il y a 1j</span>
                             </div>
-                            <p class="text-sm text-primary mb-2">
+                            <p class="text-sm text-semantic-ink mb-2">
                                 <a href="#" class="link font-medium">@elena</a> a recommandé votre CR <a href="#" class="link font-medium">« L'Oracle brisé »</a>
                             </p>
-                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-violet dark:text-violet hover:text-violet dark:hover:text-violet-200">
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-brand-accent dark:text-brand-accent hover:text-brand-accent dark:hover:text-violet-200">
                                 Voir le CR
                                 <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
                             </a>
@@ -148,21 +148,21 @@
             </div>
 
             <!-- Notification 4 — Nouveau CR (LU) — indigo/book-open -->
-            <div class="card border border-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
+            <div class="card border border-semantic-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
                 <div class="card-body">
                     <div class="flex items-start gap-3">
-                        <div class="shrink-0 w-9 h-9 rounded-full bg-crimson/10 dark:bg-indigo-900/20 flex items-center justify-center mt-0.5">
-                            <span class="i-lucide-book-open w-4.5 h-4.5 inline-block text-crimson dark:text-crimson"></span>
+                        <div class="shrink-0 w-9 h-9 rounded-full bg-brand-primary/10 dark:bg-indigo-900/20 flex items-center justify-center mt-0.5">
+                            <span class="i-lucide-book-open w-4.5 h-4.5 inline-block text-brand-primary dark:text-brand-primary"></span>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
-                                <span class="text-xs font-semibold text-crimson dark:text-crimson uppercase tracking-wide">Nouveau CR</span>
-                                <span class="text-xs text-muted shrink-0">il y a 2j</span>
+                                <span class="text-xs font-semibold text-brand-primary dark:text-brand-primary uppercase tracking-wide">Nouveau CR</span>
+                                <span class="text-xs text-semantic-muted shrink-0">il y a 2j</span>
                             </div>
-                            <p class="text-sm text-primary mb-2">
+                            <p class="text-sm text-semantic-ink mb-2">
                                 <a href="#" class="link font-medium">@alice</a> a publié <a href="#" class="link font-medium">« L'Oracle brisé »</a> dans <a href="#" class="link-muted">City of Mist</a>
                             </p>
-                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-muted hover:text-primary">
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-semantic-muted hover:text-semantic-ink">
                                 Lire le CR
                                 <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
                             </a>
@@ -172,7 +172,7 @@
             </div>
 
             <!-- Notification 5 — Mention (LU) — blue/at-sign -->
-            <div class="card border border-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
+            <div class="card border border-semantic-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
                 <div class="card-body">
                     <div class="flex items-start gap-3">
                         <div class="shrink-0 w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center mt-0.5">
@@ -181,12 +181,12 @@
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
                                 <span class="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">Mention</span>
-                                <span class="text-xs text-muted shrink-0">il y a 2j</span>
+                                <span class="text-xs text-semantic-muted shrink-0">il y a 2j</span>
                             </div>
-                            <p class="text-sm text-primary mb-2">
+                            <p class="text-sm text-semantic-ink mb-2">
                                 <a href="#" class="link font-medium">@charlie</a> vous a mentionné dans <a href="#" class="link font-medium">« La tour de l'exilé »</a>
                             </p>
-                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-muted hover:text-primary">
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-semantic-muted hover:text-semantic-ink">
                                 Voir la mention
                                 <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
                             </a>
@@ -196,21 +196,21 @@
             </div>
 
             <!-- Notification 6 — Nouveau follower (LU) — blue/user-plus -->
-            <div class="card border border-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
+            <div class="card border border-semantic-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
                 <div class="card-body">
                     <div class="flex items-start gap-3">
-                        <div class="shrink-0 w-9 h-9 rounded-full bg-info/10 dark:bg-info/10/20 flex items-center justify-center mt-0.5">
-                            <span class="i-lucide-user-plus w-4.5 h-4.5 inline-block text-info dark:text-info"></span>
+                        <div class="shrink-0 w-9 h-9 rounded-full bg-semantic-info/10 dark:bg-semantic-info/10/20 flex items-center justify-center mt-0.5">
+                            <span class="i-lucide-user-plus w-4.5 h-4.5 inline-block text-semantic-info dark:text-semantic-info"></span>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
-                                <span class="text-xs font-semibold text-info dark:text-info uppercase tracking-wide">Nouveau follower</span>
-                                <span class="text-xs text-muted shrink-0">il y a 3j</span>
+                                <span class="text-xs font-semibold text-semantic-info dark:text-semantic-info uppercase tracking-wide">Nouveau follower</span>
+                                <span class="text-xs text-semantic-muted shrink-0">il y a 3j</span>
                             </div>
-                            <p class="text-sm text-primary mb-2">
+                            <p class="text-sm text-semantic-ink mb-2">
                                 <a href="#" class="link font-medium">@charlie</a> vous suit maintenant
                             </p>
-                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-muted hover:text-primary">
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-semantic-muted hover:text-semantic-ink">
                                 Voir le profil
                                 <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
                             </a>
@@ -220,21 +220,21 @@
             </div>
 
             <!-- Notification 7 — Invitation (LU) — primary/send -->
-            <div class="card border border-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
+            <div class="card border border-semantic-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
                 <div class="card-body">
                     <div class="flex items-start gap-3">
-                        <div class="shrink-0 w-9 h-9 rounded-full bg-crimson/10 flex items-center justify-center mt-0.5">
-                            <span class="i-lucide-send w-4.5 h-4.5 inline-block text-crimson"></span>
+                        <div class="shrink-0 w-9 h-9 rounded-full bg-brand-primary/10 flex items-center justify-center mt-0.5">
+                            <span class="i-lucide-send w-4.5 h-4.5 inline-block text-brand-primary"></span>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
-                                <span class="text-xs font-semibold text-crimson uppercase tracking-wide">Invitation</span>
-                                <span class="text-xs text-muted shrink-0">il y a 3j</span>
+                                <span class="text-xs font-semibold text-brand-primary uppercase tracking-wide">Invitation</span>
+                                <span class="text-xs text-semantic-muted shrink-0">il y a 3j</span>
                             </div>
-                            <p class="text-sm text-primary mb-2">
+                            <p class="text-sm text-semantic-ink mb-2">
                                 <a href="#" class="link font-medium">@alice</a> vous invite à découvrir le PNJ <a href="#" class="link font-medium">Fenris le Loup-garou</a>
                             </p>
-                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-muted hover:text-primary">
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-semantic-muted hover:text-semantic-ink">
                                 Voir le PNJ
                                 <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
                             </a>
@@ -244,21 +244,21 @@
             </div>
 
             <!-- Notification 8 — Séquence Partagée (LU) — violet/edit -->
-            <div class="card border border-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
+            <div class="card border border-semantic-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
                 <div class="card-body">
                     <div class="flex items-start gap-3">
                         <div class="shrink-0 w-9 h-9 rounded-full bg-violet-100 dark:bg-violet-900/20 flex items-center justify-center mt-0.5">
-                            <span class="i-lucide-edit w-4.5 h-4.5 inline-block text-violet dark:text-violet"></span>
+                            <span class="i-lucide-edit w-4.5 h-4.5 inline-block text-brand-accent dark:text-brand-accent"></span>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
-                                <span class="text-xs font-semibold text-violet dark:text-violet uppercase tracking-wide">Séquence Partagée</span>
-                                <span class="text-xs text-muted shrink-0">il y a 4j</span>
+                                <span class="text-xs font-semibold text-brand-accent dark:text-brand-accent uppercase tracking-wide">Séquence Partagée</span>
+                                <span class="text-xs text-semantic-muted shrink-0">il y a 4j</span>
                             </div>
-                            <p class="text-sm text-primary mb-2">
+                            <p class="text-sm text-semantic-ink mb-2">
                                 <a href="#" class="link font-medium">@alice</a> propose de publier <a href="#" class="link font-medium">« La rencontre au carrefour »</a>
                             </p>
-                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-muted hover:text-primary">
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-semantic-muted hover:text-semantic-ink">
                                 Voir la séquence
                                 <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
                             </a>
@@ -268,7 +268,7 @@
             </div>
 
             <!-- Notification 9 — Révocation (LU) — red/alert-triangle -->
-            <div class="card border border-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
+            <div class="card border border-semantic-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
                 <div class="card-body">
                     <div class="flex items-start gap-3">
                         <div class="shrink-0 w-9 h-9 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center mt-0.5">
@@ -277,12 +277,12 @@
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
                                 <span class="text-xs font-semibold text-red-600 dark:text-red-400 uppercase tracking-wide">Révocation</span>
-                                <span class="text-xs text-muted shrink-0">il y a 5j</span>
+                                <span class="text-xs text-semantic-muted shrink-0">il y a 5j</span>
                             </div>
-                            <p class="text-sm text-primary mb-2">
+                            <p class="text-sm text-semantic-ink mb-2">
                                 <a href="#" class="link font-medium">@dave</a> a révoqué le lien d'Adoption sur <a href="#" class="link font-medium">Morwenn</a>
                             </p>
-                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-muted hover:text-primary">
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-semantic-muted hover:text-semantic-ink">
                                 Voir les détails
                                 <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
                             </a>
@@ -292,7 +292,7 @@
             </div>
 
             <!-- Notification 10 — Demande refusée (LU) — red/x -->
-            <div class="card border border-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
+            <div class="card border border-semantic-border rounded-xl hover:shadow-sm transition-shadow opacity-75">
                 <div class="card-body">
                     <div class="flex items-start gap-3">
                         <div class="shrink-0 w-9 h-9 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center mt-0.5">
@@ -301,12 +301,12 @@
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between gap-3 flex-wrap mb-1">
                                 <span class="text-xs font-semibold text-red-600 dark:text-red-400 uppercase tracking-wide">Demande refusée</span>
-                                <span class="text-xs text-muted shrink-0">il y a 6j</span>
+                                <span class="text-xs text-semantic-muted shrink-0">il y a 6j</span>
                             </div>
-                            <p class="text-sm text-primary mb-2">
+                            <p class="text-sm text-semantic-ink mb-2">
                                 <a href="#" class="link font-medium">@elena</a> a refusé votre demande de Dérivation sur <a href="#" class="link font-medium">Kael le Berserker</a>
                             </p>
-                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-muted hover:text-primary">
+                            <a href="#" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit pl-0 text-semantic-muted hover:text-semantic-ink">
                                 Voir la demande
                                 <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
                             </a>
@@ -330,76 +330,76 @@
     </div>
 
     <!-- ---- Tableau récapitulatif des types de notifications ---- -->
-    <div class="bg-surface border-t border-border py-4">
+    <div class="bg-semantic-surface border-t border-semantic-border py-4">
         <div class="container-app px-4">
-            <p class="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Récapitulatif — Types de notifications</p>
+            <p class="text-xs font-semibold text-semantic-muted uppercase tracking-wide mb-3">Récapitulatif — Types de notifications</p>
             <div class="overflow-x-auto">
                 <table class="w-full text-sm border-collapse max-w-2xl">
                     <thead>
-                        <tr class="border-b border-border">
-                            <th class="text-left py-2 pr-4 text-xs font-semibold text-muted uppercase tracking-wide">Type</th>
-                            <th class="text-left py-2 pr-4 text-xs font-semibold text-muted uppercase tracking-wide">Icône</th>
-                            <th class="text-left py-2 pr-4 text-xs font-semibold text-muted uppercase tracking-wide">Couleur</th>
-                            <th class="text-left py-2 text-xs font-semibold text-muted uppercase tracking-wide">Déclencheur</th>
+                        <tr class="border-b border-semantic-border">
+                            <th class="text-left py-2 pr-4 text-xs font-semibold text-semantic-muted uppercase tracking-wide">Type</th>
+                            <th class="text-left py-2 pr-4 text-xs font-semibold text-semantic-muted uppercase tracking-wide">Icône</th>
+                            <th class="text-left py-2 pr-4 text-xs font-semibold text-semantic-muted uppercase tracking-wide">Couleur</th>
+                            <th class="text-left py-2 text-xs font-semibold text-semantic-muted uppercase tracking-wide">Déclencheur</th>
                         </tr>
                     </thead>
-                    <tbody class="text-secondary">
-                        <tr class="border-b border-border/50">
-                            <td class="py-2 pr-4 font-medium text-primary">Demande de lien</td>
+                    <tbody class="text-semantic-ink-secondary">
+                        <tr class="border-b border-semantic-border/50">
+                            <td class="py-2 pr-4 font-medium text-semantic-ink">Demande de lien</td>
                             <td class="py-2 pr-4"><span class="i-lucide-git-merge w-4 h-4 inline-block text-amber-500"></span></td>
                             <td class="py-2 pr-4"><span class="badge bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 text-xs">amber</span></td>
                             <td class="py-2">LinkRequest créée sur mon PNJ</td>
                         </tr>
-                        <tr class="border-b border-border/50">
-                            <td class="py-2 pr-4 font-medium text-primary">Réponse (acceptée)</td>
-                            <td class="py-2 pr-4"><span class="i-lucide-check w-4 h-4 inline-block text-success"></span></td>
-                            <td class="py-2 pr-4"><span class="badge bg-success/10 text-success dark:bg-emerald-900/40 dark:text-success text-xs">emerald</span></td>
+                        <tr class="border-b border-semantic-border/50">
+                            <td class="py-2 pr-4 font-medium text-semantic-ink">Réponse (acceptée)</td>
+                            <td class="py-2 pr-4"><span class="i-lucide-check w-4 h-4 inline-block text-semantic-success"></span></td>
+                            <td class="py-2 pr-4"><span class="badge bg-semantic-success/10 text-semantic-success dark:bg-emerald-900/40 dark:text-semantic-success text-xs">emerald</span></td>
                             <td class="py-2">Ma demande acceptée</td>
                         </tr>
-                        <tr class="border-b border-border/50">
-                            <td class="py-2 pr-4 font-medium text-primary">Réponse (refusée)</td>
+                        <tr class="border-b border-semantic-border/50">
+                            <td class="py-2 pr-4 font-medium text-semantic-ink">Réponse (refusée)</td>
                             <td class="py-2 pr-4"><span class="i-lucide-x w-4 h-4 inline-block text-red-500"></span></td>
                             <td class="py-2 pr-4"><span class="badge bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400 text-xs">red</span></td>
                             <td class="py-2">Ma demande refusée</td>
                         </tr>
-                        <tr class="border-b border-border/50">
-                            <td class="py-2 pr-4 font-medium text-primary">Nouveau CR</td>
-                            <td class="py-2 pr-4"><span class="i-lucide-book-open w-4 h-4 inline-block text-crimson"></span></td>
-                            <td class="py-2 pr-4"><span class="badge bg-crimson/10 text-crimson dark:bg-indigo-900/40 dark:text-crimson text-xs">indigo</span></td>
+                        <tr class="border-b border-semantic-border/50">
+                            <td class="py-2 pr-4 font-medium text-semantic-ink">Nouveau CR</td>
+                            <td class="py-2 pr-4"><span class="i-lucide-book-open w-4 h-4 inline-block text-brand-primary"></span></td>
+                            <td class="py-2 pr-4"><span class="badge bg-brand-primary/10 text-brand-primary dark:bg-indigo-900/40 dark:text-brand-primary text-xs">indigo</span></td>
                             <td class="py-2">Joueur/partie suivi publie</td>
                         </tr>
-                        <tr class="border-b border-border/50">
-                            <td class="py-2 pr-4 font-medium text-primary">Recommandation</td>
-                            <td class="py-2 pr-4"><span class="i-lucide-sparkles w-4 h-4 inline-block text-violet"></span></td>
-                            <td class="py-2 pr-4"><span class="badge bg-violet-100 text-violet dark:bg-violet-900/40 dark:text-violet text-xs">violet (accent)</span></td>
+                        <tr class="border-b border-semantic-border/50">
+                            <td class="py-2 pr-4 font-medium text-semantic-ink">Recommandation</td>
+                            <td class="py-2 pr-4"><span class="i-lucide-sparkles w-4 h-4 inline-block text-brand-accent"></span></td>
+                            <td class="py-2 pr-4"><span class="badge bg-violet-100 text-brand-accent dark:bg-violet-900/40 dark:text-brand-accent text-xs">violet (accent)</span></td>
                             <td class="py-2">Quelqu'un recommande votre CR</td>
                         </tr>
-                        <tr class="border-b border-border/50">
-                            <td class="py-2 pr-4 font-medium text-primary">Mention</td>
+                        <tr class="border-b border-semantic-border/50">
+                            <td class="py-2 pr-4 font-medium text-semantic-ink">Mention</td>
                             <td class="py-2 pr-4"><span class="i-lucide-at-sign w-4 h-4 inline-block text-blue-500"></span></td>
                             <td class="py-2 pr-4"><span class="badge bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 text-xs">blue</span></td>
                             <td class="py-2">Mention dans un CR</td>
                         </tr>
-                        <tr class="border-b border-border/50">
-                            <td class="py-2 pr-4 font-medium text-primary">Invitation</td>
-                            <td class="py-2 pr-4"><span class="i-lucide-send w-4 h-4 inline-block text-crimson"></span></td>
-                            <td class="py-2 pr-4"><span class="badge bg-crimson/10 text-crimson text-xs">primary (crimson)</span></td>
+                        <tr class="border-b border-semantic-border/50">
+                            <td class="py-2 pr-4 font-medium text-semantic-ink">Invitation</td>
+                            <td class="py-2 pr-4"><span class="i-lucide-send w-4 h-4 inline-block text-brand-primary"></span></td>
+                            <td class="py-2 pr-4"><span class="badge bg-brand-primary/10 text-brand-primary text-xs">primary (crimson)</span></td>
                             <td class="py-2">Invitation CR/PNJ</td>
                         </tr>
-                        <tr class="border-b border-border/50">
-                            <td class="py-2 pr-4 font-medium text-primary">Nouveau follower</td>
-                            <td class="py-2 pr-4"><span class="i-lucide-user-plus w-4 h-4 inline-block text-info"></span></td>
-                            <td class="py-2 pr-4"><span class="badge bg-info/10 text-info dark:bg-info/10/40 dark:text-info text-xs">sky/blue</span></td>
+                        <tr class="border-b border-semantic-border/50">
+                            <td class="py-2 pr-4 font-medium text-semantic-ink">Nouveau follower</td>
+                            <td class="py-2 pr-4"><span class="i-lucide-user-plus w-4 h-4 inline-block text-semantic-info"></span></td>
+                            <td class="py-2 pr-4"><span class="badge bg-semantic-info/10 text-semantic-info dark:bg-semantic-info/10/40 dark:text-semantic-info text-xs">sky/blue</span></td>
                             <td class="py-2">Quelqu'un me suit</td>
                         </tr>
-                        <tr class="border-b border-border/50">
-                            <td class="py-2 pr-4 font-medium text-primary">Séquence Partagée</td>
-                            <td class="py-2 pr-4"><span class="i-lucide-edit w-4 h-4 inline-block text-violet"></span></td>
-                            <td class="py-2 pr-4"><span class="badge bg-violet-100 text-violet dark:bg-violet-900/40 dark:text-violet text-xs">violet</span></td>
+                        <tr class="border-b border-semantic-border/50">
+                            <td class="py-2 pr-4 font-medium text-semantic-ink">Séquence Partagée</td>
+                            <td class="py-2 pr-4"><span class="i-lucide-edit w-4 h-4 inline-block text-brand-accent"></span></td>
+                            <td class="py-2 pr-4"><span class="badge bg-violet-100 text-brand-accent dark:bg-violet-900/40 dark:text-brand-accent text-xs">violet</span></td>
                             <td class="py-2">Invitation / proposition publication</td>
                         </tr>
                         <tr>
-                            <td class="py-2 pr-4 font-medium text-primary">Révocation</td>
+                            <td class="py-2 pr-4 font-medium text-semantic-ink">Révocation</td>
                             <td class="py-2 pr-4"><span class="i-lucide-alert-triangle w-4 h-4 inline-block text-red-500"></span></td>
                             <td class="py-2 pr-4"><span class="badge bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400 text-xs">red</span></td>
                             <td class="py-2">Lien révoqué</td>
@@ -415,181 +415,181 @@
 <!-- ================================================================ -->
 <!-- SECTION 2 — PARAMÈTRES NOTIFICATIONS (/settings/notifications/) US-21 -->
 <!-- ================================================================ -->
-<section class="border-t-4 border-crimson mb-16">
+<section class="border-t-4 border-brand-primary mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-settings w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 2 — Paramètres de notification /settings/notifications/ (US-21)</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-settings w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 2 — Paramètres de notification /settings/notifications/ (US-21)</span>
     </div>
 
     <!-- Page header -->
-    <div class="border-b border-border bg-surface py-6">
+    <div class="border-b border-semantic-border bg-semantic-surface py-6">
         <div class="container-app px-4">
-            <h1 class="text-2xl font-bold text-primary">Préférences de notification</h1>
+            <h1 class="text-2xl font-bold text-semantic-ink">Préférences de notification</h1>
         </div>
     </div>
 
     <div class="container-app px-4 py-8 max-w-2xl">
 
         <form>
-            <div class="card border border-border rounded-xl overflow-hidden">
+            <div class="card border border-semantic-border rounded-xl overflow-hidden">
 
                 <!-- Table header -->
-                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border bg-surface">
-                    <div class="py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wide">Type</div>
-                    <div class="py-3 px-6 text-xs font-semibold text-muted uppercase tracking-wide text-center">In-app</div>
-                    <div class="py-3 px-6 text-xs font-semibold text-muted uppercase tracking-wide text-center">E-mail</div>
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border bg-semantic-surface">
+                    <div class="py-3 px-4 text-xs font-semibold text-semantic-muted uppercase tracking-wide">Type</div>
+                    <div class="py-3 px-6 text-xs font-semibold text-semantic-muted uppercase tracking-wide text-center">In-app</div>
+                    <div class="py-3 px-6 text-xs font-semibold text-semantic-muted uppercase tracking-wide text-center">E-mail</div>
                 </div>
 
                 <!-- Row: Demandes de lien -->
-                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border hover:bg-semantic-surface/60 transition-colors">
                     <div class="py-3.5 px-4 flex items-center gap-2">
                         <span class="i-lucide-git-merge w-4 h-4 inline-block text-amber-500 shrink-0"></span>
-                        <span class="text-sm text-primary">Demandes de lien</span>
+                        <span class="text-sm text-semantic-ink">Demandes de lien</span>
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <!-- In-app: always on, disabled -->
                         <input type="checkbox" checked disabled
-                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60"
+                            class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60"
                             title="Les notifications in-app sont toujours actives">
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <input type="checkbox" checked name="email_link_request"
-                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                     </div>
                 </div>
 
                 <!-- Row: Réponses -->
-                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border hover:bg-semantic-surface/60 transition-colors">
                     <div class="py-3.5 px-4 flex items-center gap-2">
-                        <span class="i-lucide-message-circle w-4 h-4 inline-block text-success shrink-0"></span>
-                        <span class="text-sm text-primary">Réponses aux demandes</span>
+                        <span class="i-lucide-message-circle w-4 h-4 inline-block text-semantic-success shrink-0"></span>
+                        <span class="text-sm text-semantic-ink">Réponses aux demandes</span>
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <input type="checkbox" checked disabled
-                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60">
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <input type="checkbox" checked name="email_link_response"
-                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                     </div>
                 </div>
 
                 <!-- Row: SharedSequence -->
-                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border hover:bg-semantic-surface/60 transition-colors">
                     <div class="py-3.5 px-4 flex items-center gap-2">
-                        <span class="i-lucide-edit w-4 h-4 inline-block text-violet shrink-0"></span>
-                        <span class="text-sm text-primary">Séquences Partagées</span>
+                        <span class="i-lucide-edit w-4 h-4 inline-block text-brand-accent shrink-0"></span>
+                        <span class="text-sm text-semantic-ink">Séquences Partagées</span>
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <input type="checkbox" checked disabled
-                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60">
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <input type="checkbox" checked name="email_shared_sequence"
-                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                     </div>
                 </div>
 
                 <!-- Row: Nouveaux CRs -->
-                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border hover:bg-semantic-surface/60 transition-colors">
                     <div class="py-3.5 px-4 flex items-center gap-2">
-                        <span class="i-lucide-book-open w-4 h-4 inline-block text-crimson shrink-0"></span>
-                        <span class="text-sm text-primary">Nouveaux comptes-rendus</span>
+                        <span class="i-lucide-book-open w-4 h-4 inline-block text-brand-primary shrink-0"></span>
+                        <span class="text-sm text-semantic-ink">Nouveaux comptes-rendus</span>
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <input type="checkbox" checked disabled
-                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60">
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <!-- email: off by default per wireframe -->
                         <input type="checkbox" name="email_new_report"
-                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                     </div>
                 </div>
 
                 <!-- Row: Recommandations -->
-                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border hover:bg-semantic-surface/60 transition-colors">
                     <div class="py-3.5 px-4 flex items-center gap-2">
-                        <span class="i-lucide-sparkles w-4 h-4 inline-block text-violet shrink-0"></span>
-                        <span class="text-sm text-primary">Recommandations</span>
+                        <span class="i-lucide-sparkles w-4 h-4 inline-block text-brand-accent shrink-0"></span>
+                        <span class="text-sm text-semantic-ink">Recommandations</span>
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <input type="checkbox" checked disabled
-                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60">
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <input type="checkbox" name="email_recommendation"
-                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                     </div>
                 </div>
 
                 <!-- Row: Mentions -->
-                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border hover:bg-semantic-surface/60 transition-colors">
                     <div class="py-3.5 px-4 flex items-center gap-2">
                         <span class="i-lucide-at-sign w-4 h-4 inline-block text-blue-500 shrink-0"></span>
-                        <span class="text-sm text-primary">Mentions</span>
+                        <span class="text-sm text-semantic-ink">Mentions</span>
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <input type="checkbox" checked disabled
-                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60">
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <input type="checkbox" checked name="email_mention"
-                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                     </div>
                 </div>
 
                 <!-- Row: Invitations -->
-                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border hover:bg-semantic-surface/60 transition-colors">
                     <div class="py-3.5 px-4 flex items-center gap-2">
-                        <span class="i-lucide-send w-4 h-4 inline-block text-crimson shrink-0"></span>
-                        <span class="text-sm text-primary">Invitations</span>
+                        <span class="i-lucide-send w-4 h-4 inline-block text-brand-primary shrink-0"></span>
+                        <span class="text-sm text-semantic-ink">Invitations</span>
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <input type="checkbox" checked disabled
-                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60">
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <input type="checkbox" checked name="email_invitation"
-                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                     </div>
                 </div>
 
                 <!-- Row: Nouveaux followers -->
-                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border hover:bg-semantic-surface/60 transition-colors">
                     <div class="py-3.5 px-4 flex items-center gap-2">
-                        <span class="i-lucide-user-plus w-4 h-4 inline-block text-info shrink-0"></span>
-                        <span class="text-sm text-primary">Nouveaux followers</span>
+                        <span class="i-lucide-user-plus w-4 h-4 inline-block text-semantic-info shrink-0"></span>
+                        <span class="text-sm text-semantic-ink">Nouveaux followers</span>
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <input type="checkbox" checked disabled
-                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60">
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <input type="checkbox" name="email_new_follower"
-                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                     </div>
                 </div>
 
                 <!-- Row: Révocations -->
-                <div class="grid grid-cols-[1fr_auto_auto] gap-0 hover:bg-surface/60 transition-colors">
+                <div class="grid grid-cols-[1fr_auto_auto] gap-0 hover:bg-semantic-surface/60 transition-colors">
                     <div class="py-3.5 px-4 flex items-center gap-2">
                         <span class="i-lucide-alert-triangle w-4 h-4 inline-block text-red-500 shrink-0"></span>
-                        <span class="text-sm text-primary">Révocations de lien</span>
+                        <span class="text-sm text-semantic-ink">Révocations de lien</span>
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <input type="checkbox" checked disabled
-                            class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60">
                     </div>
                     <div class="py-3.5 px-6 flex items-center justify-center">
                         <input type="checkbox" checked name="email_revocation"
-                            class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                            class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                     </div>
                 </div>
 
                 <!-- Info banner -->
-                <div class="border-t border-border bg-info/5 px-4 py-3 flex items-start gap-2 text-info text-sm">
+                <div class="border-t border-semantic-border bg-semantic-info/5 px-4 py-3 flex items-start gap-2 text-semantic-info text-sm">
                     <span class="i-lucide-info w-4 h-4 inline-block shrink-0 mt-0.5"></span>
                     <span>Les notifications in-app sont toujours actives et ne peuvent pas être désactivées.</span>
                 </div>
@@ -602,13 +602,13 @@
                     <span class="i-lucide-save w-4 h-4 inline-block"></span>
                     Enregistrer
                 </button>
-                <button type="button" class="btn-ghost btn-sm text-muted">Annuler</button>
+                <button type="button" class="btn-ghost btn-sm text-semantic-muted">Annuler</button>
             </div>
 
             <!-- Success confirmation state (shown after save) -->
             <div class="mt-4">
-                <p class="text-xs font-semibold text-muted uppercase tracking-wide mb-2">État — Confirmation après enregistrement</p>
-                <div class="flex items-center gap-2 text-sm text-success dark:text-success bg-success/5 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-lg px-4 py-2.5 max-w-sm">
+                <p class="text-xs font-semibold text-semantic-muted uppercase tracking-wide mb-2">État — Confirmation après enregistrement</p>
+                <div class="flex items-center gap-2 text-sm text-semantic-success dark:text-semantic-success bg-semantic-success/5 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-lg px-4 py-2.5 max-w-sm">
                     <span class="i-lucide-check-circle w-4 h-4 inline-block shrink-0"></span>
                     Préférences enregistrées.
                 </div>

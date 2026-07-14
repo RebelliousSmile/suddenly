@@ -17,22 +17,22 @@
         <div class="flex items-center justify-between mb-3">
             <span class="badge
                 {% if request.status == 'pending' %}badge-info
-                {% elif request.status == 'queued' %}badge bg-card-dark text-muted border border-border
-                {% elif request.status == 'accepted' %}badge bg-card-dark text-secondary border border-border
-                {% elif request.status == 'rejected' %}badge bg-card-dark text-muted border border-border
-                {% elif request.status == 'expired' %}badge bg-card-dark text-muted border border-border text-error
-                {% elif request.status == 'cancelled' %}badge bg-card-dark text-muted border border-border
+                {% elif request.status == 'queued' %}badge bg-semantic-card-sunken text-semantic-muted border border-semantic-border
+                {% elif request.status == 'accepted' %}badge bg-semantic-card-sunken text-semantic-ink-secondary border border-semantic-border
+                {% elif request.status == 'rejected' %}badge bg-semantic-card-sunken text-semantic-muted border border-semantic-border
+                {% elif request.status == 'expired' %}badge bg-semantic-card-sunken text-semantic-muted border border-semantic-border text-semantic-danger
+                {% elif request.status == 'cancelled' %}badge bg-semantic-card-sunken text-semantic-muted border border-semantic-border
                 {% endif %}">
                 {{ request.get_status_display }}
                 {% if request.status == 'queued' and queue_position %}(#{{ queue_position }}){% endif %}
             </span>
-            <time class="text-xs text-muted" datetime="{{ request.created_at|date:'c' }}">
+            <time class="text-xs text-semantic-muted" datetime="{{ request.created_at|date:'c' }}">
                 {{ request.created_at|timesince }}
             </time>
         </div>
 
         <!-- Type + actors -->
-        <p class="font-medium text-primary mb-2">
+        <p class="font-medium text-semantic-ink mb-2">
             {% if perspective == "received" %}
                 <a href="#" class="link">@{{ request.requester.username }}</a>
                 {% trans "wants to" %} <strong>{{ request.get_type_display|upper }}</strong>
@@ -45,20 +45,20 @@
             {% endif %}
 
             {% if request.target_character.remote %}
-                <span class="i-lucide-globe text-xs text-muted ml-1" title="Cross-instance"></span>
+                <span class="i-lucide-globe text-xs text-semantic-muted ml-1" title="Cross-instance"></span>
             {% endif %}
         </p>
 
         <!-- Message -->
         {% if request.message %}
-            <blockquote class="text-sm text-secondary italic border-l-2 border-border pl-3 mb-3">
+            <blockquote class="text-sm text-semantic-ink-secondary italic border-l-2 border-semantic-border pl-3 mb-3">
                 {{ request.message|truncatewords:50 }}
             </blockquote>
         {% endif %}
 
         <!-- Queue info -->
         {% if request.status == 'queued' %}
-            <p class="text-sm text-muted flex items-center gap-1 mb-3">
+            <p class="text-sm text-semantic-muted flex items-center gap-1 mb-3">
                 <span class="i-lucide-info text-xs"></span>
                 {% trans "Will be processable after the previous request." %}
             </p>
@@ -66,7 +66,7 @@
 
         <!-- Cross-instance expiration info -->
         {% if request.target_character.remote and request.status == 'pending' %}
-            <p class="text-sm text-muted flex items-center gap-1 mb-3">
+            <p class="text-sm text-semantic-muted flex items-center gap-1 mb-3">
                 <span class="i-lucide-clock text-xs"></span>
                 {% blocktrans with time=request.expires_at|timeuntil %}Expires in {{ time }}.{% endblocktrans %}
             </p>
@@ -99,14 +99,14 @@
             <button hx-post="{% url 'characters:link_request_cancel' pk=request.id %}"
                     hx-target="#request-{{ request.id }}"
                     hx-swap="outerHTML"
-                    class="btn-ghost btn-sm text-error">
+                    class="btn-ghost btn-sm text-semantic-danger">
                 {% trans "Cancel my request" %}
             </button>
         </div>
     {% elif request.status == 'expired' and perspective == 'sent' %}
         <div class="card-footer flex items-center gap-2">
             <button class="btn-secondary btn-sm">{% trans "Resend request" %}</button>
-            <button class="btn-ghost btn-sm text-error">{% trans "Delete" %}</button>
+            <button class="btn-ghost btn-sm text-semantic-danger">{% trans "Delete" %}</button>
         </div>
     {% endif %}
 </article>

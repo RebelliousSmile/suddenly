@@ -12,8 +12,8 @@
      TOKENS — repris de suddenly/frontend/src/base.css + uno.config.js
      ============================================================ */
   :root {
-    --c-bg: #faf9f6; --c-surface: #f0ede8; --c-card: #ffffff; --c-card-dark: #f5f2ec;
-    --c-border: #d4cfe8; --c-primary: #1a1a2e; --c-secondary: #555555; --c-muted: #8c8c8c;
+    --color-semantic-background: #faf9f6; --color-semantic-surface: #f0ede8; --color-semantic-card: #ffffff; --color-semantic-card-sunken: #f5f2ec;
+    --color-semantic-border: #d4cfe8; --color-semantic-ink: #1a1a2e; --color-semantic-ink-secondary: #555555; --color-semantic-muted: #8c8c8c;
     --shadow-card: 0 2px 16px rgba(0,0,0,0.07); --shadow-card-hover: 0 4px 24px rgba(0,0,0,0.12);
     --crimson: 224 53 88; --crimson-hover: 200 42 74; --violet: 124 58 237; --neon: 0 230 118;
     --brand: 99 102 241; --success: 21 128 61; --warning: 180 83 9; --error: 153 27 27; --info: 3 105 161;
@@ -24,8 +24,8 @@
     --font-display: 'Fraunces', Georgia, serif;
   }
   [data-theme="dark"] {
-    --c-bg: #0b0705; --c-surface: #170d08; --c-card: #25150e; --c-card-dark: #1d0f09;
-    --c-border: #3d2215; --c-primary: #f0f0f0; --c-secondary: #a0a0a0; --c-muted: #a0a0a0;
+    --color-semantic-background: #0b0705; --color-semantic-surface: #170d08; --color-semantic-card: #25150e; --color-semantic-card-sunken: #1d0f09;
+    --color-semantic-border: #3d2215; --color-semantic-ink: #f0f0f0; --color-semantic-ink-secondary: #a0a0a0; --color-semantic-muted: #a0a0a0;
     --shadow-card: 0 0 24px rgba(224,53,88,0.12), 0 2px 8px rgba(0,0,0,0.4);
     --shadow-card-hover: 0 0 36px rgba(224,53,88,0.22), 0 4px 16px rgba(0,0,0,0.5);
     --success: 74 222 128; --warning: 251 191 36; --error: 252 165 165; --info: 125 211 252;
@@ -33,7 +33,7 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
-  body { font-family: var(--font-body); background: var(--c-bg); color: var(--c-primary);
+  body { font-family: var(--font-body); background: var(--color-semantic-background); color: var(--color-semantic-ink);
     overflow: hidden; display: flex; flex-direction: column; -webkit-font-smoothing: antialiased; }
 
   /* ============================================================
@@ -93,10 +93,10 @@
      Il n'est plus la source du responsive : le contenu se replie sur
      la largeur réelle du conteneur via @container (voir plus bas).
      ============================================================ */
-  .preview-stage { flex: 1 1 auto; min-height: 0; overflow-y: auto; background: var(--c-bg); -webkit-overflow-scrolling: touch; }
+  .preview-stage { flex: 1 1 auto; min-height: 0; overflow-y: auto; background: var(--color-semantic-background); -webkit-overflow-scrolling: touch; }
   .preview-frame {
     width: 100%; max-width: 100%; margin: 0 auto; position: relative; overflow-x: hidden;
-    background: var(--c-bg); transition: max-width .4s cubic-bezier(.22,1,.36,1); min-height: 100%;
+    background: var(--color-semantic-background); transition: max-width .4s cubic-bezier(.22,1,.36,1); min-height: 100%;
     container-type: inline-size; container-name: app;   /* ← clé du mobile-first fluide */
   }
   .preview-frame.tablet { max-width: 834px; border: 10px solid var(--tool-ink-deep); border-radius: 22px; box-shadow: 0 30px 80px rgba(0,0,0,.25); margin: 20px auto; overflow: hidden; min-height: 0; }
@@ -107,25 +107,25 @@
      APP SHELL — mobile-first. Header compact par défaut, s'étoffe
      quand le CONTENEUR dépasse 768px (parité avec md: du vrai front).
      ============================================================ */
-  .app { color: var(--c-primary); line-height: 1.55; }
+  .app { color: var(--color-semantic-ink); line-height: 1.55; }
   .app a { color: inherit; text-decoration: none; }
   .container-app { width: 100%; max-width: 80rem; margin: 0 auto; padding: 0 16px; }
 
-  .app-header { background: var(--c-surface); border-bottom: 1px solid var(--c-border); position: sticky; top: 0; z-index: 50; }
+  .app-header { background: var(--color-semantic-surface); border-bottom: 1px solid var(--color-semantic-border); position: sticky; top: 0; z-index: 50; }
   .app-header__inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; }
-  .brand-lockup { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 19px; color: var(--c-primary); flex: 0 0 auto; }
+  .brand-lockup { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 19px; color: var(--color-semantic-ink); flex: 0 0 auto; }
   .brand-lockup__mark { width: 22px; height: 26px; flex: 0 0 auto; }
 
   /* nav desktop — cachée par défaut (mobile-first), montrée en conteneur large */
   .app-nav { display: none; align-items: center; gap: 22px; }
-  .app-nav a.navlink { color: var(--c-secondary); font-size: 14px; font-weight: 500; transition: color .15s; min-height: var(--tap); display: inline-flex; align-items: center; }
-  .app-nav a.navlink:hover, .app-nav a.navlink.is-active { color: var(--c-primary); }
+  .app-nav a.navlink { color: var(--color-semantic-ink-secondary); font-size: 14px; font-weight: 500; transition: color .15s; min-height: var(--tap); display: inline-flex; align-items: center; }
+  .app-nav a.navlink:hover, .app-nav a.navlink.is-active { color: var(--color-semantic-ink); }
   .app-nav a.navlink.is-active { color: rgb(var(--crimson)); }
 
   /* contrôles mobile — avatar + burger, visibles par défaut */
   .mobile-controls { display: flex; align-items: center; gap: 4px; }
-  .icon-btn { width: var(--tap); height: var(--tap); display: inline-flex; align-items: center; justify-content: center; background: none; border: none; cursor: pointer; color: var(--c-primary); border-radius: 10px; }
-  .icon-btn:hover { background: var(--c-card); }
+  .icon-btn { width: var(--tap); height: var(--tap); display: inline-flex; align-items: center; justify-content: center; background: none; border: none; cursor: pointer; color: var(--color-semantic-ink); border-radius: 10px; }
+  .icon-btn:hover { background: var(--color-semantic-card); }
   .icon-btn svg { width: 24px; height: 24px; }
 
   @container app (min-width: 768px) {
@@ -136,13 +136,13 @@
   }
 
   /* avatars */
-  .avatar-sm,.avatar-md,.avatar-xl { border-radius: 999px; background: var(--c-surface); display: inline-flex; align-items: center; justify-content: center; color: var(--c-secondary); overflow: hidden; flex: 0 0 auto; }
+  .avatar-sm,.avatar-md,.avatar-xl { border-radius: 999px; background: var(--color-semantic-surface); display: inline-flex; align-items: center; justify-content: center; color: var(--color-semantic-ink-secondary); overflow: hidden; flex: 0 0 auto; }
   .avatar-sm { width: 34px; height: 34px; } .avatar-md { width: 44px; height: 44px; } .avatar-xl { width: 64px; height: 64px; font-size: 24px; }
   .avatar--npc { border: 1.5px solid rgb(var(--warning) / .55); color: rgb(var(--warning)); }
   .avatar--remote { border: 1.5px dashed rgb(var(--violet) / .6); color: rgb(var(--violet)); }
-  .avatar--gone { border: 1.5px dotted var(--c-border); opacity: .6; }
+  .avatar--gone { border: 1.5px dotted var(--color-semantic-border); opacity: .6; }
   .avatar-badge { position: relative; }
-  .avatar-badge::after { content:""; position:absolute; bottom:0; right:0; width:11px; height:11px; border-radius:999px; background: rgb(var(--crimson)); border:2px solid var(--c-surface); }
+  .avatar-badge::after { content:""; position:absolute; bottom:0; right:0; width:11px; height:11px; border-radius:999px; background: rgb(var(--crimson)); border:2px solid var(--color-semantic-surface); }
 
   /* buttons — cible tactile garantie */
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 15px; font-family: var(--font-body); padding: 0 22px; min-height: var(--tap); border-radius: var(--r-btn); border: none; cursor: pointer; transition: all .2s; text-align: center; }
@@ -150,19 +150,19 @@
   .btn-block { width: 100%; }
   .btn-primary { background: rgb(var(--crimson)); color: #fff; }
   .btn-primary:hover { background: rgb(var(--crimson-hover)); }
-  .btn-secondary { background: transparent; border: 1px solid var(--c-border); color: var(--c-secondary); }
+  .btn-secondary { background: transparent; border: 1px solid var(--color-semantic-border); color: var(--color-semantic-ink-secondary); }
   .btn-secondary:hover { border-color: rgb(var(--crimson)); color: rgb(var(--crimson)); }
-  .btn-ghost { background: transparent; color: var(--c-secondary); min-height: var(--tap); padding: 0 12px; }
-  .btn-ghost:hover { color: var(--c-primary); }
+  .btn-ghost { background: transparent; color: var(--color-semantic-ink-secondary); min-height: var(--tap); padding: 0 12px; }
+  .btn-ghost:hover { color: var(--color-semantic-ink); }
 
   /* cards */
-  .card { background: var(--c-card); border: 1px solid var(--c-border); border-radius: var(--r-card); box-shadow: var(--shadow-card); }
+  .card { background: var(--color-semantic-card); border: 1px solid var(--color-semantic-border); border-radius: var(--r-card); box-shadow: var(--shadow-card); }
   .card-hover { transition: all .2s; cursor: pointer; }
   .card-hover:active { transform: scale(.99); }
   .card-hover:hover { box-shadow: var(--shadow-card-hover); border-color: rgb(var(--crimson) / .3); }
   .card-body { padding: 16px; }
   @container app (min-width: 640px) { .card-body { padding: 20px; } }
-  .card-footer { padding: 8px 12px; border-top: 1px solid var(--c-border); display: flex; align-items: center; gap: 6px; }
+  .card-footer { padding: 8px 12px; border-top: 1px solid var(--color-semantic-border); display: flex; align-items: center; gap: 6px; }
 
   /* badges */
   .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; border: 1px solid transparent; white-space: nowrap; }
@@ -173,16 +173,16 @@
   .badge-pc       { background: rgb(var(--brand) / .1); color: rgb(var(--brand)); border-color: rgb(var(--brand) / .3); }
   .badge-info     { background: rgb(var(--info) / .1); color: rgb(var(--info)); border-color: rgb(var(--info) / .3); }
   .badge-primary  { background: rgb(var(--crimson) / .1); color: rgb(var(--crimson)); border-color: rgb(var(--crimson) / .3); }
-  .badge-pending  { background: var(--c-surface); color: var(--c-muted); border-color: var(--c-border); }
+  .badge-pending  { background: var(--color-semantic-surface); color: var(--color-semantic-muted); border-color: var(--color-semantic-border); }
 
   /* typography */
-  .h-page { font-family: var(--font-display); font-size: clamp(24px, 6cqi, 30px); font-weight: 600; color: var(--c-primary); line-height: 1.15; }
-  .h-sec { font-family: var(--font-display); font-size: clamp(18px, 4.5cqi, 22px); font-weight: 600; color: var(--c-primary); }
-  .text-muted { color: var(--c-muted); } .text-secondary { color: var(--c-secondary); }
-  .text-crimson { color: rgb(var(--crimson)); } .text-warning { color: rgb(var(--warning)); }
+  .h-page { font-family: var(--font-display); font-size: clamp(24px, 6cqi, 30px); font-weight: 600; color: var(--color-semantic-ink); line-height: 1.15; }
+  .h-sec { font-family: var(--font-display); font-size: clamp(18px, 4.5cqi, 22px); font-weight: 600; color: var(--color-semantic-ink); }
+  .text-semantic-muted { color: var(--color-semantic-muted); } .text-semantic-ink-secondary { color: var(--color-semantic-ink-secondary); }
+  .text-brand-primary { color: rgb(var(--crimson)); } .text-semantic-warning { color: rgb(var(--warning)); }
   .text-sm { font-size: 14px; } .text-xs { font-size: 12px; } .text-lg { font-size: 17px; }
   .font-semibold { font-weight: 600; } .font-medium { font-weight: 500; } .font-bold { font-weight: 700; }
-  .lede { color: var(--c-secondary); max-width: 42rem; font-size: clamp(15px, 3.6cqi, 18px); }
+  .lede { color: var(--color-semantic-ink-secondary); max-width: 42rem; font-size: clamp(15px, 3.6cqi, 18px); }
 
   /* layout utilities */
   .content { padding: 24px 0; }
@@ -202,62 +202,62 @@
   .grid-feature { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 
   /* editor */
-  .editor-area { border: 1px solid var(--c-border); border-radius: var(--r-card); background: var(--c-card); }
-  .editor-toolbar { display: flex; gap: 4px; padding: 8px; border-bottom: 1px solid var(--c-border); flex-wrap: wrap; }
-  .editor-tool { width: 38px; height: 38px; border-radius: 6px; border: none; background: transparent; color: var(--c-secondary); cursor: pointer; font-weight: 600; }
-  .editor-tool:hover { background: var(--c-surface); }
-  .editor-input { padding: 16px; min-height: 160px; color: var(--c-secondary); font-size: 15px; line-height: 1.7; }
+  .editor-area { border: 1px solid var(--color-semantic-border); border-radius: var(--r-card); background: var(--color-semantic-card); }
+  .editor-toolbar { display: flex; gap: 4px; padding: 8px; border-bottom: 1px solid var(--color-semantic-border); flex-wrap: wrap; }
+  .editor-tool { width: 38px; height: 38px; border-radius: 6px; border: none; background: transparent; color: var(--color-semantic-ink-secondary); cursor: pointer; font-weight: 600; }
+  .editor-tool:hover { background: var(--color-semantic-surface); }
+  .editor-input { padding: 16px; min-height: 160px; color: var(--color-semantic-ink-secondary); font-size: 15px; line-height: 1.7; }
   .mention { color: rgb(var(--brand)); font-weight: 500; background: rgb(var(--brand) / .08); padding: 0 4px; border-radius: 4px; }
   .mention.npc { color: rgb(var(--warning)); background: rgb(var(--warning) / .1); }
   /* distribution d'une Story : une ligne de noms, fiche au survol/tap */
-  .castline { font-size: 13.5px; line-height: 2; color: var(--c-secondary); margin-bottom: 14px; }
+  .castline { font-size: 13.5px; line-height: 2; color: var(--color-semantic-ink-secondary); margin-bottom: 14px; }
   .castname { font-weight: 500; font-size: 13.5px; }
-  .castsep { color: var(--c-muted); margin: 0 7px; }
+  .castsep { color: var(--color-semantic-muted); margin: 0 7px; }
   .cast-pill__n { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px;
-    padding: 0 5px; margin-left: 2px; border-radius: 999px; background: var(--c-card-dark, var(--c-card));
-    border: 1px solid var(--c-border); font-size: 10px; font-weight: 600; color: var(--c-muted); }
-  .cast-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; min-height: 38px; border-radius: 999px; background: var(--c-surface); border: 1px solid var(--c-border); font-size: 13px; cursor: pointer; }
+    padding: 0 5px; margin-left: 2px; border-radius: 999px; background: var(--color-semantic-card-sunken, var(--color-semantic-card));
+    border: 1px solid var(--color-semantic-border); font-size: 10px; font-weight: 600; color: var(--color-semantic-muted); }
+  .cast-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; min-height: 38px; border-radius: 999px; background: var(--color-semantic-surface); border: 1px solid var(--color-semantic-border); font-size: 13px; cursor: pointer; }
 
   .stat-card { text-align: center; }
   .stat-num { font-family: var(--font-display); font-size: 28px; font-weight: 600; line-height: 1; }
-  .muted-box { border: 1px dashed var(--c-border); border-radius: var(--r-card); padding: 24px; text-align: center; color: var(--c-muted); }
+  .muted-box { border: 1px dashed var(--color-semantic-border); border-radius: var(--r-card); padding: 24px; text-align: center; color: var(--color-semantic-muted); }
 
   /* usermenu + dropdown (connecté) */
   .usermenu { position: relative; }
   .usermenu__trigger { background: none; border: none; cursor: pointer; padding: 4px; display: inline-flex; min-height: var(--tap); min-width: var(--tap); align-items: center; justify-content: center; }
   .dropdown-menu { display: none; position: absolute; right: 0; top: calc(100% + 8px); width: min(240px, 78vw);
-    background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 12px; box-shadow: var(--shadow-card-hover); padding: 6px; z-index: 60; }
+    background: var(--color-semantic-surface); border: 1px solid var(--color-semantic-border); border-radius: 12px; box-shadow: var(--shadow-card-hover); padding: 6px; z-index: 60; }
   .dropdown-menu.is-open { display: block; }
-  .dropdown-menu a { display: flex; align-items: center; gap: 10px; padding: 0 12px; min-height: var(--tap); border-radius: 8px; font-size: 14px; color: var(--c-secondary); cursor: pointer; }
-  .dropdown-menu a:hover { background: var(--c-card); color: var(--c-primary); }
+  .dropdown-menu a { display: flex; align-items: center; gap: 10px; padding: 0 12px; min-height: var(--tap); border-radius: 8px; font-size: 14px; color: var(--color-semantic-ink-secondary); cursor: pointer; }
+  .dropdown-menu a:hover { background: var(--color-semantic-card); color: var(--color-semantic-ink); }
   .dropdown-menu a.dd-badge { justify-content: space-between; }
   .dropdown-menu a.dd-badge > .badge { margin-left: auto; }
   .dropdown-menu a.dd-danger { color: rgb(var(--error)); }
-  .dropdown-sep { height: 1px; background: var(--c-border); margin: 6px 4px; }
-  .lang-select { color: var(--c-secondary); font-size: 13px; border: 1px solid var(--c-border); border-radius: 6px; padding: 0 10px; min-height: 38px; display: inline-flex; align-items: center; cursor: pointer; }
+  .dropdown-sep { height: 1px; background: var(--color-semantic-border); margin: 6px 4px; }
+  .lang-select { color: var(--color-semantic-ink-secondary); font-size: 13px; border: 1px solid var(--color-semantic-border); border-radius: 6px; padding: 0 10px; min-height: 38px; display: inline-flex; align-items: center; cursor: pointer; }
 
   /* drawer mobile (plein écran sous le header) */
-  .nav-drawer { display: none; border-top: 1px solid var(--c-border); background: var(--c-surface); padding: 8px 16px 16px; }
+  .nav-drawer { display: none; border-top: 1px solid var(--color-semantic-border); background: var(--color-semantic-surface); padding: 8px 16px 16px; }
   .nav-drawer.is-open { display: block; }
-  .nav-drawer a { display: flex; align-items: center; min-height: var(--tap); color: var(--c-secondary); font-weight: 500; font-size: 16px; border-bottom: 1px solid rgb(212 207 232 / .35); }
+  .nav-drawer a { display: flex; align-items: center; min-height: var(--tap); color: var(--color-semantic-ink-secondary); font-weight: 500; font-size: 16px; border-bottom: 1px solid rgb(212 207 232 / .35); }
   .nav-drawer a:last-child { border-bottom: none; }
   .nav-drawer a.is-active { color: rgb(var(--crimson)); font-weight: 600; }
-  .nav-drawer a.text-crimson { color: rgb(var(--crimson)); }
+  .nav-drawer a.text-brand-primary { color: rgb(var(--crimson)); }
   .nav-drawer a.dd-danger { color: rgb(var(--error)); }
   @container app (min-width: 768px) { .nav-drawer { display: none !important; } }
 
   /* tabs (feed) — scroll horizontal propre sur mobile */
-  .tabs { display: flex; border-bottom: 1px solid var(--c-border); margin-bottom: 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .tabs { display: flex; border-bottom: 1px solid var(--color-semantic-border); margin-bottom: 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
   .tabs::-webkit-scrollbar { display: none; }
-  .tab { padding: 0 14px; min-height: var(--tap); display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: var(--c-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; white-space: nowrap; flex: 0 0 auto; }
-  .tab:hover { color: var(--c-secondary); }
+  .tab { padding: 0 14px; min-height: var(--tap); display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: var(--color-semantic-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; white-space: nowrap; flex: 0 0 auto; }
+  .tab:hover { color: var(--color-semantic-ink-secondary); }
   .tab.is-active { color: rgb(var(--crimson)); border-bottom-color: rgb(var(--crimson)); }
 
   /* ---- Fil Amis : lecture de scène ---- */
   .stack--lg > * + * { margin-top: 20px; }
-  .scene__crumb { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--c-secondary); flex-wrap: wrap; }
+  .scene__crumb { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--color-semantic-ink-secondary); flex-wrap: wrap; }
   .scene__crumb a:hover { color: rgb(var(--crimson)); }
-  .scene__title { font-weight: 600; color: var(--c-primary); }
+  .scene__title { font-weight: 600; color: var(--color-semantic-ink); }
   .scene__meta { margin: 4px 0 14px; }
   .scene__body > * + * { margin-top: 14px; }
 
@@ -269,21 +269,21 @@
      kind ∈ {narration, description, action, discussion}
      ============================================================ */
   .rap { padding: 7px 0; }
-  .rap--reply { margin-left: 18px; padding-left: 14px; border-left: 2px solid var(--c-border); }
-  .rap__replyto { font-size: 12px; color: var(--c-muted); margin-bottom: 4px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
-  .rap__replyto b { color: var(--c-secondary); font-weight: 500; }
+  .rap--reply { margin-left: 18px; padding-left: 14px; border-left: 2px solid var(--color-semantic-border); }
+  .rap__replyto { font-size: 12px; color: var(--color-semantic-muted); margin-bottom: 4px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .rap__replyto b { color: var(--color-semantic-ink-secondary); font-weight: 500; }
   .rap__replyto svg { width: 12px; height: 12px; }
   .rap__replyto .iri { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: rgb(var(--violet)); }
 
   /* registres — identiques fil / scène */
-  .rap--narration .rap__text { font-size: 16px; line-height: 1.7; color: var(--c-primary); }
+  .rap--narration .rap__text { font-size: 16px; line-height: 1.7; color: var(--color-semantic-ink); }
   .rap--description .rap__text {
     font-family: var(--font-display); font-style: italic; font-weight: 400;
-    font-size: 16px; line-height: 1.7; color: var(--c-secondary);
+    font-size: 16px; line-height: 1.7; color: var(--color-semantic-ink-secondary);
     padding-left: 14px; border-left: 2px solid rgb(var(--info) / .35);
   }
   .rap--action .rap__text {
-    font-size: 15.5px; line-height: 1.6; color: var(--c-primary); font-weight: 500;
+    font-size: 15.5px; line-height: 1.6; color: var(--color-semantic-ink); font-weight: 500;
     position: relative; padding-left: 22px;
   }
   .rap--action .rap__text::before {
@@ -292,9 +292,9 @@
   }
   .rap--discussion { padding-top: 12px; }
   .rap__who { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-  .rap--discussion .rap__text { font-family: var(--font-display); font-size: 18px; line-height: 1.5; color: var(--c-primary); font-weight: 400; }
-  .rap__speaker { font-weight: 600; font-size: 14px; color: var(--c-primary); }
-  .rap__speaker .npc { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--c-muted); font-weight: 400; margin-left: 4px; }
+  .rap--discussion .rap__text { font-family: var(--font-display); font-size: 18px; line-height: 1.5; color: var(--color-semantic-ink); font-weight: 400; }
+  .rap__speaker { font-weight: 600; font-size: 14px; color: var(--color-semantic-ink); }
+  .rap__speaker .npc { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--color-semantic-muted); font-weight: 400; margin-left: 4px; }
 
   /* réplique citée (Quote) : liseré crimson + pastille */
   .rap--quoted .rap__text { border-left-color: rgb(var(--crimson) / .55); }
@@ -313,74 +313,74 @@
   .scene__read .rap--discussion .rap__text { font-size: 20px; }
 
   /* tooltip fiche — SCÈNE UNIQUEMENT (jamais dans le fil : trop dense) */
-  .defname { font-weight: 600; color: var(--c-primary); border-bottom: 1px dotted var(--c-muted);
+  .defname { font-weight: 600; color: var(--color-semantic-ink); border-bottom: 1px dotted var(--color-semantic-muted);
     cursor: help; position: relative; display: inline-flex; align-items: center; gap: 5px; }
   .defname:hover { border-bottom-color: rgb(var(--crimson)); color: rgb(var(--crimson)); }
-  .defname .tag-npc { font-weight: 400; color: var(--c-muted); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; border: none; }
+  .defname .tag-npc { font-weight: 400; color: var(--color-semantic-muted); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; border: none; }
   .def { position: absolute; z-index: 80; width: min(300px, 82vw);
     left: var(--def-x, 0); top: calc(100% + 8px);
-    background: var(--c-card); border: 1px solid var(--c-border); border-radius: var(--r-card);
+    background: var(--color-semantic-card); border: 1px solid var(--color-semantic-border); border-radius: var(--r-card);
     box-shadow: var(--shadow-card-hover); padding: 14px; opacity: 0; visibility: hidden; transform: translateY(-4px);
     transition: opacity .16s, transform .16s, visibility .16s; text-align: left; cursor: default; white-space: normal; }
   .defname:hover > .def, .def.is-open { opacity: 1; visibility: visible; transform: translateY(0); }
   .def__head { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
   .def__hgroup { min-width: 0; flex: 1; }
-  .def__name { font-family: var(--font-display); font-size: 17px; font-weight: 600; line-height: 1.2; color: var(--c-primary); }
-  .def__desc { font-size: 12.5px; line-height: 1.5; color: var(--c-secondary); margin-bottom: 12px; }
+  .def__name { font-family: var(--font-display); font-size: 17px; font-weight: 600; line-height: 1.2; color: var(--color-semantic-ink); }
+  .def__desc { font-size: 12.5px; line-height: 1.5; color: var(--color-semantic-ink-secondary); margin-bottom: 12px; }
   .def__rows { display: flex; flex-direction: column; gap: 7px; margin-bottom: 12px; }
   .def__row { display: flex; align-items: baseline; gap: 8px; font-size: 12px; }
-  .def__k { flex: 0 0 88px; color: var(--c-muted); text-transform: uppercase; letter-spacing: .04em; font-size: 10px; font-weight: 600; }
-  .def__v { color: var(--c-primary); font-weight: 500; min-width: 0; }
+  .def__k { flex: 0 0 88px; color: var(--color-semantic-muted); text-transform: uppercase; letter-spacing: .04em; font-size: 10px; font-weight: 600; }
+  .def__v { color: var(--color-semantic-ink); font-weight: 500; min-width: 0; }
   .def__v .you { color: rgb(var(--crimson)); font-weight: 600; }
   .def__v.iri { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: rgb(var(--violet)); word-break: break-all; font-weight: 400; }
   .def__sheet { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 600; color: rgb(var(--crimson)); text-decoration: none; cursor: pointer; }
   .def__sheet svg { width: 13px; height: 13px; }
-  .def__foot { border-top: 1px solid var(--c-border); padding-top: 10px; }
-  .def__note { font-size: 11.5px; color: var(--c-muted); font-style: italic; }
-  .badge-role { background: var(--c-surface); color: var(--c-secondary); border-color: var(--c-border); }
+  .def__foot { border-top: 1px solid var(--color-semantic-border); padding-top: 10px; }
+  .def__note { font-size: 11.5px; color: var(--color-semantic-muted); font-style: italic; }
+  .badge-role { background: var(--color-semantic-surface); color: var(--color-semantic-ink-secondary); border-color: var(--color-semantic-border); }
   .badge-remote { background: rgb(var(--violet) / .1); color: rgb(var(--violet)); border-color: rgb(var(--violet) / .3); }
 
   /* markers de structure — SCÈNE : typés ; FIL : pliés en "…" */
-  .scene__marker { display: flex; align-items: center; gap: 8px; justify-content: center; color: var(--c-muted); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin: 18px 0; }
-  .scene__marker::before, .scene__marker::after { content:""; flex:1; height:1px; background: var(--c-border); }
+  .scene__marker { display: flex; align-items: center; gap: 8px; justify-content: center; color: var(--color-semantic-muted); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin: 18px 0; }
+  .scene__marker::before, .scene__marker::after { content:""; flex:1; height:1px; background: var(--color-semantic-border); }
   .scene__marker svg { width: 13px; height: 13px; }
   .scene__marker--enter { color: #0a8f4d; }
   .scene__marker--oracle { color: rgb(var(--violet)); }
-  .rap__fold { font-size: 12px; color: var(--c-muted); letter-spacing: .1em; padding: 2px 0 6px; }
+  .rap__fold { font-size: 12px; color: var(--color-semantic-muted); letter-spacing: .1em; padding: 2px 0 6px; }
 
   /* Story : suite de comptes rendus d'une même partie, séparés visuellement */
-  .story__report + .story__report { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--c-border); }
+  .story__report + .story__report { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--color-semantic-border); }
   /* citations — surface publique de promotion */
   .quote-card { position: relative; padding: 20px 20px 16px; border-left: 3px solid rgb(var(--crimson) / .55); }
-  .quote-card__text { font-family: var(--font-display); font-style: italic; font-size: 18px; line-height: 1.55; color: var(--c-primary); }
-  .quote-card__meta { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; font-size: 12px; color: var(--c-muted); }
-  .quote-card__src { font-size: 11px; color: var(--c-muted); margin-top: 4px; }
-  .quote-card__src em { font-style: normal; color: var(--c-secondary); }
+  .quote-card__text { font-family: var(--font-display); font-style: italic; font-size: 18px; line-height: 1.55; color: var(--color-semantic-ink); }
+  .quote-card__meta { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; font-size: 12px; color: var(--color-semantic-muted); }
+  .quote-card__src { font-size: 11px; color: var(--color-semantic-muted); margin-top: 4px; }
+  .quote-card__src em { font-style: normal; color: var(--color-semantic-ink-secondary); }
   .quote-wall { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
-  .story__reportmeta { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--c-muted); margin-bottom: 14px; }
+  .story__reportmeta { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--color-semantic-muted); margin-bottom: 14px; }
 
   /* intercalaire de découverte — registre "pub" distinct des cartes de scène :
      fond légèrement teinté, liseré crimson à gauche, eyebrow qui l'annonce. */
   .promo { border: 1px solid rgb(var(--crimson) / .22); background:
-    linear-gradient(180deg, rgb(var(--crimson) / .05), transparent 60%), var(--c-card);
+    linear-gradient(180deg, rgb(var(--crimson) / .05), transparent 60%), var(--color-semantic-card);
     border-left: 3px solid rgb(var(--crimson) / .5); cursor: pointer; transition: box-shadow .2s; }
   .promo:hover { box-shadow: var(--shadow-card-hover); }
   .promo__eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
     color: rgb(var(--crimson)); display: inline-flex; align-items: center; gap: 5px; }
   .promo__eyebrow svg { width: 13px; height: 13px; }
-  .promo__hook { font-size: 13.5px; line-height: 1.5; color: var(--c-primary); font-weight: 500;
-    background: var(--c-surface); border-radius: var(--r-btn); padding: 9px 12px; margin-bottom: 12px; }
+  .promo__hook { font-size: 13.5px; line-height: 1.5; color: var(--color-semantic-ink); font-weight: 500;
+    background: var(--color-semantic-surface); border-radius: var(--r-btn); padding: 9px 12px; margin-bottom: 12px; }
   .promo__acts { display: flex; flex-wrap: wrap; gap: 8px; }
 
   /* sticky action bar (compose) — pouce, safe-area */
-  .actionbar { position: sticky; bottom: 0; background: var(--c-surface); border-top: 1px solid var(--c-border); padding: 10px 16px; padding-bottom: max(10px, env(safe-area-inset-bottom)); display: flex; gap: 10px; z-index: 40; }
+  .actionbar { position: sticky; bottom: 0; background: var(--color-semantic-surface); border-top: 1px solid var(--color-semantic-border); padding: 10px 16px; padding-bottom: max(10px, env(safe-area-inset-bottom)); display: flex; gap: 10px; z-index: 40; }
   .actionbar .btn { flex: 1; }
   @container app (min-width: 768px) { .actionbar { position: static; background: none; border: none; padding: 0; justify-content: flex-end; } .actionbar .btn { flex: 0 0 auto; } }
 
   /* footer */
-  .app-footer { border-top: 1px solid var(--c-border); background: var(--c-surface); padding: 28px 0; padding-bottom: max(28px, env(safe-area-inset-bottom)); margin-top: 36px; color: var(--c-muted); font-size: 13px; }
+  .app-footer { border-top: 1px solid var(--color-semantic-border); background: var(--color-semantic-surface); padding: 28px 0; padding-bottom: max(28px, env(safe-area-inset-bottom)); margin-top: 36px; color: var(--color-semantic-muted); font-size: 13px; }
   .app-footer .between { flex-direction: column; align-items: flex-start; gap: 14px; }
-  .app-footer a { color: var(--c-secondary); cursor: pointer; }
+  .app-footer a { color: var(--color-semantic-ink-secondary); cursor: pointer; }
   @container app (min-width: 640px) { .app-footer .between { flex-direction: row; align-items: center; justify-content: space-between; } }
 
   /* hero */
@@ -552,15 +552,15 @@
       <footer class="app-footer">
         <div class="container-app between">
           <div class="row" style="gap:8px">${LOGO}
-            <div><p class="font-semibold text-sm" style="color:var(--c-primary)">Suddenly</p>
-            <p class="text-xs text-muted">Réseau fédéré de fiction partagée</p></div>
+            <div><p class="font-semibold text-sm" style="color:var(--color-semantic-ink)">Suddenly</p>
+            <p class="text-xs text-semantic-muted">Réseau fédéré de fiction partagée</p></div>
           </div>
           <div class="text-xs" style="line-height:1.9">
-            <p class="text-muted"><span class="font-medium text-secondary">suddenly.social :</span>
+            <p class="text-semantic-muted"><span class="font-medium text-semantic-ink-secondary">suddenly.social :</span>
               <a onclick="setPage('accueil')" style="margin:0 6px">À propos</a>·
               <a onclick="setPage('citations')" style="margin:0 6px">Citations</a>·
               <a style="margin:0 6px">Annuaire</a>·<a style="margin-left:6px">Confidentialité</a></p>
-            <p class="text-muted"><span class="font-medium text-secondary">Suddenly :</span>
+            <p class="text-semantic-muted"><span class="font-medium text-semantic-ink-secondary">Suddenly :</span>
               <a href="https://github.com/RebelliousSmile/suddenly" style="margin:0 6px">Code source</a>·
               <span style="margin-left:6px">v0.1.0 · AGPL v3</span></p>
           </div>
@@ -582,7 +582,7 @@
     return `
       <section class="hero"><div class="container-app" style="text-align:center">
         <h1 class="hero__title" style="margin:0 auto;text-align:center">Bienvenue sur <em>Suddenly</em></h1>
-        <p class="lede" style="margin:16px auto 0;text-align:center">Réseau fédéré de fiction partagée. Publiez vos comptes rendus ; les PNJ mentionnés peuvent être <strong class="text-secondary">réclamés</strong>, <strong class="text-secondary">adoptés</strong> ou <strong class="text-secondary">dérivés</strong> par d'autres joueurs.</p>
+        <p class="lede" style="margin:16px auto 0;text-align:center">Réseau fédéré de fiction partagée. Publiez vos comptes rendus ; les PNJ mentionnés peuvent être <strong class="text-semantic-ink-secondary">réclamés</strong>, <strong class="text-semantic-ink-secondary">adoptés</strong> ou <strong class="text-semantic-ink-secondary">dérivés</strong> par d'autres joueurs.</p>
         <div class="hero-cta" style="justify-content:center">
           <button class="btn btn-primary" onclick="setAuth('user')">${I.sparkles} Rejoindre le réseau</button>
           <button class="btn btn-secondary" onclick="setAuth('user')">Se connecter</button>
@@ -591,7 +591,7 @@
 
       <section class="content" style="padding-top:0"><div class="container-app">
         <div class="grid-stats" style="--min:150px">
-          ${INSTANCE_STATS.map(([k,label,val])=>`<div class="card card-body stat-card"><p class="stat-num">${val}</p><p class="text-xs text-muted" style="margin-top:6px">${label}</p></div>`).join('')}
+          ${INSTANCE_STATS.map(([k,label,val])=>`<div class="card card-body stat-card"><p class="stat-num">${val}</p><p class="text-xs text-semantic-muted" style="margin-top:6px">${label}</p></div>`).join('')}
         </div>
       </div></section>
 
@@ -601,33 +601,33 @@
           ${[['link','Claim','« Ton PNJ, c\'était mon PJ depuis le début. » Un rétcon négocié.'],
              ['sparkles','Adopt','« Ton PNJ m\'intéresse : j\'en fais mon PJ. » L\'historique est conservé.'],
              ['users','Fork','« J\'en crée un PJ inspiré, mais distinct. » Deux personnages, un lien.']]
-            .map(([ic,t,d])=>`<div class="card card-body" style="text-align:center"><div class="text-crimson" style="display:flex;justify-content:center;margin-bottom:10px">${I[ic]}</div><h3 class="h-sec" style="font-size:18px;margin-bottom:6px">${t}</h3><p class="text-secondary text-sm">${d}</p></div>`).join('')}
+            .map(([ic,t,d])=>`<div class="card card-body" style="text-align:center"><div class="text-brand-primary" style="display:flex;justify-content:center;margin-bottom:10px">${I[ic]}</div><h3 class="h-sec" style="font-size:18px;margin-bottom:6px">${t}</h3><p class="text-semantic-ink-secondary text-sm">${d}</p></div>`).join('')}
         </div>
       </div></section>
 
-      <section class="content" style="background:var(--c-card)"><div class="container-app">
-        <div class="between" style="margin-bottom:20px"><h2 class="h-sec">Stories à lire</h2><a class="text-crimson text-sm" style="cursor:pointer" onclick="setPage('stories')">Toutes les stories →</a></div>
-        <p class="text-secondary text-sm" style="margin-bottom:20px">Des histoires terminées et libérées, lisibles sans compte. Chacune rassemble tous les comptes rendus d'une partie.</p>
+      <section class="content" style="background:var(--color-semantic-card)"><div class="container-app">
+        <div class="between" style="margin-bottom:20px"><h2 class="h-sec">Stories à lire</h2><a class="text-brand-primary text-sm" style="cursor:pointer" onclick="setPage('stories')">Toutes les stories →</a></div>
+        <p class="text-semantic-ink-secondary text-sm" style="margin-bottom:20px">Des histoires terminées et libérées, lisibles sans compte. Chacune rassemble tous les comptes rendus d'une partie.</p>
         <div class="grid-feature">${storiesIndex().map(function(st){
           const openArg = st.game.replace(/'/g,"\\'");
-          return `<div class="card card-body card-hover" onclick="openStory('${openArg}')"><h3 class="h-sec" style="font-size:18px;margin-bottom:6px">${esc(st.game)}</h3><p class="text-xs text-muted">${st.reports.length} compte${st.reports.length>1?'s':''} rendu${st.reports.length>1?'s':''}${st.remote?' · '+I.globe+' '+esc(st.instance||'fédéré'):''}</p></div>`;
+          return `<div class="card card-body card-hover" onclick="openStory('${openArg}')"><h3 class="h-sec" style="font-size:18px;margin-bottom:6px">${esc(st.game)}</h3><p class="text-xs text-semantic-muted">${st.reports.length} compte${st.reports.length>1?'s':''} rendu${st.reports.length>1?'s':''}${st.remote?' · '+I.globe+' '+esc(st.instance||'fédéré'):''}</p></div>`;
         }).join('')}</div>
       </div></section>
 
       <section class="content"><div class="container-app">
         <div class="between" style="margin-bottom:8px">
           <h2 class="h-sec">${I.quote} Ce qu'on y dit</h2>
-          <a class="text-crimson text-sm" style="cursor:pointer" onclick="setPage('citations')">Le mur des citations →</a>
+          <a class="text-brand-primary text-sm" style="cursor:pointer" onclick="setPage('citations')">Le mur des citations →</a>
         </div>
-        <p class="text-secondary text-sm" style="margin-bottom:20px">Des répliques retenues par leurs auteurs, tirées d'histoires libérées. C'est la voix de l'instance — et souvent celle d'un PNJ que personne n'a encore réclamé.</p>
+        <p class="text-semantic-ink-secondary text-sm" style="margin-bottom:20px">Des répliques retenues par leurs auteurs, tirées d'histoires libérées. C'est la voix de l'instance — et souvent celle d'un PNJ que personne n'a encore réclamé.</p>
         <div class="quote-wall">${quotesIndex().slice(0,3).map(function(q){ return quoteCard(q); }).join('')}</div>
       </div></section>
 
       <section class="content"><div class="container-app">
         <div class="card card-body" style="max-width:48rem;margin:0 auto;text-align:center">
-          <div class="text-crimson" style="display:flex;justify-content:center;margin-bottom:12px">${I.globe}</div>
+          <div class="text-brand-primary" style="display:flex;justify-content:center;margin-bottom:12px">${I.globe}</div>
           <h2 class="h-sec" style="margin-bottom:10px">Fédéré avec le Fediverse</h2>
-          <p class="text-secondary text-sm">Suddenly parle <strong>ActivityPub</strong> : suivez des joueurs depuis Mastodon, BookWyrm ou toute plateforme compatible.</p>
+          <p class="text-semantic-ink-secondary text-sm">Suddenly parle <strong>ActivityPub</strong> : suivez des joueurs depuis Mastodon, BookWyrm ou toute plateforme compatible.</p>
         </div>
       </div></section>`;
   }
@@ -640,13 +640,13 @@
     if (tab === 'amis') {
       const cards = mine.map(x=>sceneCard(x.s,x.i));
       body = cards.length
-        ? `<p class="text-sm text-muted" style="margin-bottom:16px">Les nouvelles interventions écrites pour vos histoires.</p>
+        ? `<p class="text-sm text-semantic-muted" style="margin-bottom:16px">Les nouvelles interventions écrites pour vos histoires.</p>
            <div class="stack stack--lg">${interleavePromos(cards, FEED_PROMO_EVERY).join('')}</div>`
         : `<div class="muted-box">Rien de neuf dans vos parties pour l'instant.</div>`;
     } else {
       const label = tab === 'bourgade' ? 'de votre instance' : 'du Fediverse';
       const set = tab === 'monde' ? others.concat(mine) : others; // maquette : jeux de démo
-      body = `<p class="text-xs text-muted" style="margin-bottom:14px">${tab==='monde'?I.globe+' ':''}Fictions ${label} — à explorer, repérez un PNJ disponible.</p>
+      body = `<p class="text-xs text-semantic-muted" style="margin-bottom:14px">${tab==='monde'?I.globe+' ':''}Fictions ${label} — à explorer, repérez un PNJ disponible.</p>
               <div class="stack">${set.map(x=>discoveryCard(x.s,x.i)).join('')}</div>`;
     }
     return `
@@ -675,23 +675,23 @@
       if (!r.actor || seen.has(r.actor)) return; seen.add(r.actor);
       const a = resolve(r.actor);
       const tag = a.kind==='remote'?'fédéré':(a.status&&a.status!=='pc')?'PNJ':'';
-      cast.push('<span class="cast-pill">'+avatarFor(a,'sm')+' '+esc(a.name)+(tag?' <span class="text-xs text-muted">'+tag+'</span>':'')+'</span>');
+      cast.push('<span class="cast-pill">'+avatarFor(a,'sm')+' '+esc(a.name)+(tag?' <span class="text-xs text-semantic-muted">'+tag+'</span>':'')+'</span>');
     });
     // seq déjà bornée par des markers bookend ; on rend tel quel
     return shell('accueil', `
       <section class="content content--narrow"><div class="container-app">
         <p class="scene__crumb" style="margin-bottom:12px">
           <a onclick="setPage('game')" style="cursor:pointer">${sc.game}</a>
-          <span class="text-muted">›</span> <span class="scene__title">${sc.scene}</span>
+          <span class="text-semantic-muted">›</span> <span class="scene__title">${sc.scene}</span>
         </p>
         <h1 class="h-page" style="margin-bottom:6px">${sc.scene}</h1>
-        <p class="text-sm text-muted" style="margin-bottom:4px">${sc.mine?'Votre partie':'Partie de '+(sc.instance||'la bourgade')} · ${sc.ago}${sc.remote?' · '+I.globe+' '+sc.instance:''}</p>
+        <p class="text-sm text-semantic-muted" style="margin-bottom:4px">${sc.mine?'Votre partie':'Partie de '+(sc.instance||'la bourgade')} · ${sc.ago}${sc.remote?' · '+I.globe+' '+sc.instance:''}</p>
         ${cast.length?`<div class="wrap-chips" style="margin-bottom:20px">${cast.join('')}</div>`:''}
 
         <div class="scene__read">${sc.seq.map(function(it){ return it.type==='marker' ? marker(it,'scene') : renderRap(it,'scene'); }).join('')}</div>
 
-        <div class="card card-body" style="margin-top:24px;background:var(--c-card-dark)">
-          <p class="text-sm text-muted">${sc.mine?'C\'est votre histoire — poursuivez-la.':'Un PNJ vous intrigue ? Proposez un lien à son auteur.'}</p>
+        <div class="card card-body" style="margin-top:24px;background:var(--color-semantic-card-sunken)">
+          <p class="text-sm text-semantic-muted">${sc.mine?'C\'est votre histoire — poursuivez-la.':'Un PNJ vous intrigue ? Proposez un lien à son auteur.'}</p>
           <div class="hero-cta" style="margin-top:12px">
             ${sc.mine
               ? `<button class="btn btn-primary btn-sm" onclick="setPage('compose')">${I.plus} Écrire la suite</button>`
@@ -731,7 +731,7 @@
     }
     const owner = a.owner
         ? '<span class="def__v">'+(a.owner===ME?'<span class="you">vous</span>':esc(a.owner))+'</span>'
-        : '<span class="def__v" style="color:var(--c-muted);font-weight:400">— disponible</span>';
+        : '<span class="def__v" style="color:var(--color-semantic-muted);font-weight:400">— disponible</span>';
     const creatorYou = a.creator===ME ? '<span class="you">vous</span>' : esc(a.creator||'—');
     const rows = [];
     if (a.creator || a.owner!==undefined){
@@ -827,25 +827,25 @@
     const body = (hidden > 0 ? '<div class="rap__fold">···</div>' : '')
                + shown.map(function(r){ return renderRap(r, 'feed'); }).join('');
     const more = hidden > 0
-      ? `<span class="text-xs text-muted">${hidden} rapport${hidden>1?'s':''} plus tôt</span>`
-      : `<span class="text-xs text-muted">${total} rapport${total>1?'s':''}</span>`;
+      ? `<span class="text-xs text-semantic-muted">${hidden} rapport${hidden>1?'s':''} plus tôt</span>`
+      : `<span class="text-xs text-semantic-muted">${total} rapport${total>1?'s':''}</span>`;
     return `
       <article class="card scene">
         <div class="card-body">
           <div class="scene__crumb">
             <a onclick="setPage('game')" style="cursor:pointer">${sc.game}</a>
-            <span class="text-muted">›</span>
+            <span class="text-semantic-muted">›</span>
             <a onclick="openScene(${idx})" style="cursor:pointer" class="scene__title">${sc.scene}</a>
-            <time class="text-xs text-muted" style="margin-left:auto">${sc.ago}</time>
+            <time class="text-xs text-semantic-muted" style="margin-left:auto">${sc.ago}</time>
           </div>
-          <p class="scene__meta text-xs text-muted">${more}${sc.remote?` · ${I.globe} ${sc.instance}`:''}</p>
+          <p class="scene__meta text-xs text-semantic-muted">${more}${sc.remote?` · ${I.globe} ${sc.instance}`:''}</p>
           <div class="scene__body">${body}</div>
         </div>
         <div class="card-footer">
           <button class="btn btn-ghost btn-sm" style="color:rgb(var(--crimson))" onclick="openScene(${idx})">Lire la scène complète →</button>
           <div style="margin-left:auto" class="row" style="gap:2px">
-            <button class="btn btn-ghost btn-sm text-muted">${I.heart}</button>
-            <button class="btn btn-ghost btn-sm text-muted">${I.comment}</button>
+            <button class="btn btn-ghost btn-sm text-semantic-muted">${I.heart}</button>
+            <button class="btn btn-ghost btn-sm text-semantic-muted">${I.comment}</button>
           </div>
         </div>
       </article>`;
@@ -886,11 +886,11 @@
             ${avatarFor(a,'md')}
             <div style="min-width:0">
               <p class="font-semibold">${esc(a.name)}</p>
-              <p class="text-xs text-muted">${a.game?esc(a.game)+' · ':''}créé par ${a.creator===ME?'vous':esc(a.creator||'—')}</p>
+              <p class="text-xs text-semantic-muted">${a.game?esc(a.game)+' · ':''}créé par ${a.creator===ME?'vous':esc(a.creator||'—')}</p>
             </div>
             <span class="badge ${free?'badge-available':'badge-forked'}" style="margin-left:auto;flex:0 0 auto">${free?'Disponible':'Déjà dérivé'}</span>
           </div>
-          ${a.desc?`<p class="text-secondary text-sm" style="margin-bottom:10px">${esc(a.desc)}</p>`:''}
+          ${a.desc?`<p class="text-semantic-ink-secondary text-sm" style="margin-bottom:10px">${esc(a.desc)}</p>`:''}
           <p class="promo__hook">${hook}</p>
           <div class="promo__acts">${acts.join('')}</div>
         </div>
@@ -933,10 +933,10 @@
       <article class="card card-hover" onclick="openScene(${idx})">
         <div class="card-body">
           <div class="between" style="margin-bottom:6px">
-            <span class="text-sm"><span class="font-medium">${sc.game}</span> <span class="text-muted">› ${sc.scene}</span></span>
-            <time class="text-xs text-muted" style="flex:0 0 auto">${sc.ago}${sc.remote?' · '+sc.instance:''}</time>
+            <span class="text-sm"><span class="font-medium">${sc.game}</span> <span class="text-semantic-muted">› ${sc.scene}</span></span>
+            <time class="text-xs text-semantic-muted" style="flex:0 0 auto">${sc.ago}${sc.remote?' · '+sc.instance:''}</time>
           </div>
-          <p class="text-secondary text-sm" style="margin-bottom:8px">${first.length>120?esc(first.slice(0,120))+'…':esc(first)}</p>
+          <p class="text-semantic-ink-secondary text-sm" style="margin-bottom:8px">${first.length>120?esc(first.slice(0,120))+'…':esc(first)}</p>
           ${npcs.length?`<div class="wrap-chips">${npcs.map(n=>`<span class="badge badge-available">${n} ${I.sparkles}</span>`).join('')}</div>`:''}
         </div>
       </article>`;
@@ -1113,7 +1113,7 @@
       ? '<button class="btn btn-secondary btn-sm" style="margin-top:12px" onclick="event.stopPropagation();setPage(\'linkflow\')">'+I.link+' Proposer un lien</button>' : '';
     return '<article class="card card-body quote-card card-hover" onclick="openStory(\''+openArg+'\')">'
       + '<p class="quote-card__text">'+esc(q.text)+'</p>'
-      + '<div class="quote-card__meta">'+avatarFor(a,'sm')+'<span class="text-secondary font-medium">'+esc(a.name)+'</span>'+tag+'</div>'
+      + '<div class="quote-card__meta">'+avatarFor(a,'sm')+'<span class="text-semantic-ink-secondary font-medium">'+esc(a.name)+'</span>'+tag+'</div>'
       + src + cta
       + '</article>';
   }
@@ -1162,10 +1162,10 @@
             </div>
             <div class="wrap-chips" style="margin-bottom:10px">
               ${g.system?`<span class="badge badge-info">${esc(g.system)}</span>`:''}
-              ${g.author?`<span class="text-xs text-muted">par ${esc(g.author)}</span>`:''}
+              ${g.author?`<span class="text-xs text-semantic-muted">par ${esc(g.author)}</span>`:''}
             </div>
-            ${g.desc?`<p class="text-secondary text-sm" style="margin-bottom:12px">${esc(g.desc)}</p>`:''}
-            <p class="text-xs text-muted" style="margin-bottom:8px">${nReports} compte${nReports>1?'s':''} rendu${nReports>1?'s':''} · ${cast.length} personnage${cast.length>1?'s':''} · lisible par tous</p>
+            ${g.desc?`<p class="text-semantic-ink-secondary text-sm" style="margin-bottom:12px">${esc(g.desc)}</p>`:''}
+            <p class="text-xs text-semantic-muted" style="margin-bottom:8px">${nReports} compte${nReports>1?'s':''} rendu${nReports>1?'s':''} · ${cast.length} personnage${cast.length>1?'s':''} · lisible par tous</p>
             ${chips?`<p class="castline">${chips}</p>`:''}
             <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openStory('${openArg}')">
               Lire l'histoire →
@@ -1197,15 +1197,15 @@
       <section class="content content--narrow"><div class="container-app">
         <p class="scene__crumb" style="margin-bottom:12px">
           <a onclick="setPage('stories')" style="cursor:pointer">Stories</a>
-          <span class="text-muted">›</span> <span class="scene__title">${esc(st.game)}</span>
+          <span class="text-semantic-muted">›</span> <span class="scene__title">${esc(st.game)}</span>
         </p>
         <h1 class="h-page" style="margin-bottom:6px">${esc(st.game)}</h1>
-        <p class="text-sm text-muted" style="margin-bottom:22px">${st.reports.length} compte${st.reports.length>1?'s':''} rendu${st.reports.length>1?'s':''}${st.remote?' · '+I.globe+' '+esc(st.instance||'fédéré'):''} · lisible par tous</p>
+        <p class="text-sm text-semantic-muted" style="margin-bottom:22px">${st.reports.length} compte${st.reports.length>1?'s':''} rendu${st.reports.length>1?'s':''}${st.remote?' · '+I.globe+' '+esc(st.instance||'fédéré'):''} · lisible par tous</p>
         ${body}
         ${(function(){
           const qs = quotesIndex().filter(function(q){ return q.game === st.game; });
           if (!qs.length) return '';
-          return `<div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--c-border)">
+          return `<div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--color-semantic-border)">
             <h2 class="h-sec" style="margin-bottom:14px">${I.quote} Citations retenues</h2>
             <div class="stack">${qs.map(function(q){ return quoteCard(q, {hideSource:true, cta:true}); }).join('')}</div>
           </div>`;
@@ -1225,7 +1225,7 @@
       <section class="content content--mid"><div class="container-app">
         <h1 class="h-page">${I.quote} Citations</h1>
         <p class="lede" style="margin:8px 0 6px">Les répliques retenues des histoires libérées. Lisibles sans compte, fédérables.</p>
-        <p class="text-xs text-muted" style="margin-bottom:22px">Une citation n'apparaît ici que si son compte rendu a été libéré <em>et</em> que son auteur l'a rendue publique. Rien de ce qui se joue encore ne remonte.</p>
+        <p class="text-xs text-semantic-muted" style="margin-bottom:22px">Une citation n'apparaît ici que si son compte rendu a été libéré <em>et</em> que son auteur l'a rendue publique. Rien de ce qui se joue encore ne remonte.</p>
         ${qs.length
           ? `<div class="quote-wall">${qs.map(function(q){ return quoteCard(q, {cta:true}); }).join('')}</div>`
           : `<div class="muted-box">Aucune citation libérée pour l'instant.</div>`}
@@ -1242,8 +1242,8 @@
         <div style="margin-bottom:24px">
           <div class="wrap-chips" style="margin-bottom:10px"><span class="badge badge-info">Monsterhearts 2</span><span class="badge badge-pc">Solo</span></div>
           <h1 class="h-page">Les Cendres de Valombre</h1>
-          <p class="text-muted text-sm" style="margin-top:6px">par @mara · depuis le 12/03/2026</p>
-          <p class="text-secondary" style="margin-top:12px">Une petite ville de montagne où chaque adulte cache un pacte. Chronique en cours, publiée au rythme des sessions.</p>
+          <p class="text-semantic-muted text-sm" style="margin-top:6px">par @mara · depuis le 12/03/2026</p>
+          <p class="text-semantic-ink-secondary" style="margin-top:12px">Une petite ville de montagne où chaque adulte cache un pacte. Chronique en cours, publiée au rythme des sessions.</p>
           <div class="hero-cta" style="margin-top:16px"><button class="btn btn-primary btn-sm">S'abonner</button><button class="btn btn-secondary btn-sm">${I.globe} Suivre depuis Mastodon</button></div>
         </div>
         <h2 class="h-sec" style="margin-bottom:14px">Comptes rendus (7)</h2>
@@ -1259,24 +1259,24 @@
   function pageReport() {
     return shell('report', `
       <section class="content content--narrow"><div class="container-app">
-        <p class="text-sm text-muted" style="margin-bottom:8px"><a onclick="setPage('game')" style="cursor:pointer">Les Cendres de Valombre</a> · Session du 04/06/2026</p>
+        <p class="text-sm text-semantic-muted" style="margin-bottom:8px"><a onclick="setPage('game')" style="cursor:pointer">Les Cendres de Valombre</a> · Session du 04/06/2026</p>
         <h1 class="h-page" style="margin-bottom:12px">La confession du bourgmestre</h1>
         <div class="between" style="margin-bottom:20px;flex-wrap:wrap">
-          <div class="row">${avatar('md','M')}<div><span class="font-medium">Mara Vionnet</span><br><span class="text-xs text-muted">@mara · il y a 2 h</span></div></div>
-          <div class="row"><button class="btn btn-ghost btn-sm text-muted">${I.heart} 12</button><button class="btn btn-ghost btn-sm text-muted">${I.comment} 3</button><button class="btn btn-ghost btn-sm text-muted">${I.share}</button></div>
+          <div class="row">${avatar('md','M')}<div><span class="font-medium">Mara Vionnet</span><br><span class="text-xs text-semantic-muted">@mara · il y a 2 h</span></div></div>
+          <div class="row"><button class="btn btn-ghost btn-sm text-semantic-muted">${I.heart} 12</button><button class="btn btn-ghost btn-sm text-semantic-muted">${I.comment} 3</button><button class="btn btn-ghost btn-sm text-semantic-muted">${I.share}</button></div>
         </div>
-        <div class="text-secondary" style="line-height:1.8;font-size:16px">
+        <div class="text-semantic-ink-secondary" style="line-height:1.8;font-size:16px">
           <p style="margin-bottom:16px">Nous avions traqué <span class="mention npc">@Le Bourgmestre</span> pendant trois nuits, persuadés qu'il fuyait un crime. La vérité était plus laide : il n'avait rien commis. Il <em>attendait</em>.</p>
           <p style="margin-bottom:16px"><span class="mention">@Selène</span> comprit la première, quand la <span class="mention npc">@La Voix sous le pont</span> répéta mot pour mot une promesse vieille de vingt ans.</p>
           <p>« Vous croyez que je me cache, dit-il. Mais c'est vous qu'on gardait au chaud. »</p>
         </div>
-        <div class="card" style="margin-top:24px;background:var(--c-card-dark)"><div class="card-body">
-          <div class="row" style="color:var(--c-muted);margin-bottom:8px">${I.quote}<span class="text-xs font-semibold" style="text-transform:uppercase;letter-spacing:.06em">Citation retenue</span></div>
+        <div class="card" style="margin-top:24px;background:var(--color-semantic-card-sunken)"><div class="card-body">
+          <div class="row" style="color:var(--color-semantic-muted);margin-bottom:8px">${I.quote}<span class="text-xs font-semibold" style="text-transform:uppercase;letter-spacing:.06em">Citation retenue</span></div>
           <p style="font-family:var(--font-display);font-style:italic;font-size:18px">« C'est vous qu'on gardait au chaud. »</p>
-          <p class="text-xs text-muted" style="margin-top:6px">— Le Bourgmestre · <span class="badge badge-available">PNJ disponible ${I.sparkles}</span></p>
+          <p class="text-xs text-semantic-muted" style="margin-top:6px">— Le Bourgmestre · <span class="badge badge-available">PNJ disponible ${I.sparkles}</span></p>
         </div></div>
         <div class="card" style="margin-top:16px;border-color:rgb(var(--crimson) / .3)"><div class="card-body">
-          <p class="font-semibold">Un PNJ vous intrigue ?</p><p class="text-sm text-muted" style="margin:4px 0 12px">Le Bourgmestre est disponible. Proposez un lien à son autrice.</p>
+          <p class="font-semibold">Un PNJ vous intrigue ?</p><p class="text-sm text-semantic-muted" style="margin:4px 0 12px">Le Bourgmestre est disponible. Proposez un lien à son autrice.</p>
           <button class="btn btn-primary btn-block" onclick="setPage('linkflow')">${I.link} Réclamer / Adopter / Dériver</button>
         </div></div>
       </div></section>`);
@@ -1290,14 +1290,14 @@
           <div style="flex:1;min-width:0">
             <div class="wrap-chips" style="margin-bottom:8px"><span class="badge badge-available">PNJ disponible ${I.sparkles}</span></div>
             <h1 class="h-page">Le Bourgmestre</h1>
-            <p class="text-muted text-sm" style="margin-top:4px">Créé dans <a onclick="setPage('game')" style="cursor:pointer">Les Cendres de Valombre</a> · @mara</p>
+            <p class="text-semantic-muted text-sm" style="margin-top:4px">Créé dans <a onclick="setPage('game')" style="cursor:pointer">Les Cendres de Valombre</a> · @mara</p>
           </div>
         </div>
-        <p class="text-secondary" style="margin-bottom:16px">Homme trop calme d'une ville trop silencieuse. Il n'a rien commis — il attendait qu'on vienne le chercher.</p>
+        <p class="text-semantic-ink-secondary" style="margin-bottom:16px">Homme trop calme d'une ville trop silencieuse. Il n'a rien commis — il attendait qu'on vienne le chercher.</p>
         <div class="hero-cta" style="margin-bottom:28px"><button class="btn btn-primary" onclick="setPage('linkflow')">${I.link} Proposer un lien</button><button class="btn btn-secondary">Suivre</button></div>
         <h2 class="h-sec" style="margin-bottom:12px">Apparitions</h2>
         <div class="stack" style="margin-bottom:28px">
-          ${[['La confession du bourgmestre','Rôle principal','2 h'],['Le marché sous le pont','Second rôle','6 j'],['Première neige','Mention','3 sem']].map(([t,role,ago])=>`<a class="card card-body card-hover between" onclick="setPage('report')"><div><p class="font-medium text-sm">${t}</p><p class="text-xs text-muted">${role}</p></div><span class="text-xs text-muted">${ago}</span></a>`).join('')}
+          ${[['La confession du bourgmestre','Rôle principal','2 h'],['Le marché sous le pont','Second rôle','6 j'],['Première neige','Mention','3 sem']].map(([t,role,ago])=>`<a class="card card-body card-hover between" onclick="setPage('report')"><div><p class="font-medium text-sm">${t}</p><p class="text-xs text-semantic-muted">${role}</p></div><span class="text-xs text-semantic-muted">${ago}</span></a>`).join('')}
         </div>
         <h2 class="h-sec" style="margin-bottom:12px">${I.quote} Citations</h2>
         ${(function(){
@@ -1311,17 +1311,17 @@
 
   function pageProfile() {
     return shell('profile', `
-      <section style="background:linear-gradient(to bottom,var(--c-surface),var(--c-bg));padding:32px 0"><div class="container-app">
+      <section style="background:linear-gradient(to bottom,var(--color-semantic-surface),var(--color-semantic-background));padding:32px 0"><div class="container-app">
         <div class="row" style="align-items:flex-start;gap:16px;flex-wrap:wrap">
           ${avatar('xl','M')}
           <div style="flex:1;min-width:200px">
-            <h1 class="h-page">Mara Vionnet</h1><p class="text-muted">@mara</p>
-            <p class="text-secondary" style="margin-top:12px">Rôliste solo. Je documente Valombre une session à la fois. Mes PNJ sont à vous — venez les chercher.</p>
+            <h1 class="h-page">Mara Vionnet</h1><p class="text-semantic-muted">@mara</p>
+            <p class="text-semantic-ink-secondary" style="margin-top:12px">Rôliste solo. Je documente Valombre une session à la fois. Mes PNJ sont à vous — venez les chercher.</p>
             <div class="wrap-chips" style="margin-top:14px;gap:16px">
-              <span class="text-sm"><strong>142</strong> <span class="text-muted">abonnés</span></span>
-              <span class="text-sm"><strong>87</strong> <span class="text-muted">abonnements</span></span>
+              <span class="text-sm"><strong>142</strong> <span class="text-semantic-muted">abonnés</span></span>
+              <span class="text-sm"><strong>87</strong> <span class="text-semantic-muted">abonnements</span></span>
             </div>
-            <p class="text-xs text-muted" style="margin-top:8px">${I.globe} @mara@suddenly.social</p>
+            <p class="text-xs text-semantic-muted" style="margin-top:8px">${I.globe} @mara@suddenly.social</p>
             <button class="btn btn-primary btn-sm" style="margin-top:14px">Suivre</button>
           </div>
         </div>
@@ -1329,7 +1329,7 @@
       <section class="content content--mid"><div class="container-app">
         <div class="tabs"><span class="tab is-active">Parties</span><span class="tab">Personnages</span><span class="tab">Comptes rendus</span></div>
         <div class="grid-feature">
-          ${[['Les Cendres de Valombre','Monsterhearts 2','7 comptes rendus'],['Ptolémée en ruines','Wretched & Alone','3 comptes rendus'],['Sans titre','Brouillon','—']].map(([t,sys,meta])=>`<a class="card card-body card-hover" onclick="setPage('game')"><p class="font-semibold">${t}</p><p class="text-xs text-muted" style="margin:4px 0 8px">${sys}</p><span class="badge badge-info">${meta}</span></a>`).join('')}
+          ${[['Les Cendres de Valombre','Monsterhearts 2','7 comptes rendus'],['Ptolémée en ruines','Wretched & Alone','3 comptes rendus'],['Sans titre','Brouillon','—']].map(([t,sys,meta])=>`<a class="card card-body card-hover" onclick="setPage('game')"><p class="font-semibold">${t}</p><p class="text-xs text-semantic-muted" style="margin:4px 0 8px">${sys}</p><span class="badge badge-info">${meta}</span></a>`).join('')}
         </div>
       </div></section>`);
   }
@@ -1340,14 +1340,14 @@
         <h1 class="h-page" style="margin-bottom:8px">Recherche fédérée</h1>
         <p class="lede" style="margin-bottom:18px">Trouvez un profil, une partie ou un personnage sur cette instance ou n'importe où sur le Fediverse.</p>
         <div class="editor-area" style="display:flex;align-items:center;padding:0 14px;margin-bottom:8px">
-          <span class="text-muted">${I.search}</span>
-          <input style="border:none;outline:none;background:transparent;padding:14px 10px;flex:1;color:var(--c-primary);font-size:15px;min-width:0" placeholder="@pseudo@instance.social…" value="@ghost@dice.town">
+          <span class="text-semantic-muted">${I.search}</span>
+          <input style="border:none;outline:none;background:transparent;padding:14px 10px;flex:1;color:var(--color-semantic-ink);font-size:15px;min-width:0" placeholder="@pseudo@instance.social…" value="@ghost@dice.town">
         </div>
         <button class="btn btn-primary btn-block" style="margin-bottom:8px">Chercher</button>
-        <p class="text-xs text-muted" style="margin-bottom:24px">Astuce : collez une adresse complète pour récupérer un acteur distant.</p>
+        <p class="text-xs text-semantic-muted" style="margin-bottom:24px">Astuce : collez une adresse complète pour récupérer un acteur distant.</p>
         <div class="stack">
           ${[['G','Ghost','Personnage · @ghost@dice.town'],['N','Neon Sabbath','Partie · @neonsabbath@dice.town']].map(([l,n,m])=>`
-            <div class="card card-body"><div class="between" style="flex-wrap:wrap;gap:10px"><div class="row">${avatar('md',l)}<div><p class="font-medium">${n}</p><p class="text-xs text-muted">${m}</p></div></div><button class="btn btn-secondary btn-sm">${I.globe} Suivre</button></div></div>`).join('')}
+            <div class="card card-body"><div class="between" style="flex-wrap:wrap;gap:10px"><div class="row">${avatar('md',l)}<div><p class="font-medium">${n}</p><p class="text-xs text-semantic-muted">${m}</p></div></div><button class="btn btn-secondary btn-sm">${I.globe} Suivre</button></div></div>`).join('')}
         </div>
       </div></section>`);
   }
@@ -1358,9 +1358,9 @@
     const tb = {claim:'badge-claimed',adopt:'badge-adopted',fork:'badge-forked'}[req.type];
     const tl = {claim:'Claim',adopt:'Adopt',fork:'Fork'}[req.type];
     return `
-      <div class="card card-body" style="background:var(--c-card-dark)">
+      <div class="card card-body" style="background:var(--color-semantic-card-sunken)">
         <div class="row" style="margin-bottom:8px;flex-wrap:wrap">${avatar('sm',req.fromLetter)}<div style="flex:1;min-width:0"><span class="font-medium text-sm">${req.from}</span> <span class="badge ${tb}">${tl}</span></div></div>
-        <p class="text-sm text-secondary" style="margin-bottom:12px">${req.message}</p>
+        <p class="text-sm text-semantic-ink-secondary" style="margin-bottom:12px">${req.message}</p>
         <div class="hero-cta" style="margin:0"><button class="btn btn-primary btn-sm">${I.check} Accepter</button><button class="btn btn-secondary btn-sm">${I.x} Refuser</button></div>
       </div>`;
   }
@@ -1374,15 +1374,15 @@
       <section class="content content--mid"><div class="container-app">
         <h1 class="h-page" style="margin-bottom:18px">Tableau de bord</h1>
         <div class="grid-stats" style="margin-bottom:28px">
-          <div class="card card-body stat-card"><p class="stat-num">12</p><p class="text-xs text-muted" style="margin-top:6px">PNJ créés</p></div>
-          <div class="card card-body stat-card"><p class="stat-num text-warning">3</p><p class="text-xs text-muted" style="margin-top:6px">demandes en attente</p></div>
-          <div class="card card-body stat-card"><p class="stat-num">5</p><p class="text-xs text-muted" style="margin-top:6px">personnages liés</p></div>
+          <div class="card card-body stat-card"><p class="stat-num">12</p><p class="text-xs text-semantic-muted" style="margin-top:6px">PNJ créés</p></div>
+          <div class="card card-body stat-card"><p class="stat-num text-semantic-warning">3</p><p class="text-xs text-semantic-muted" style="margin-top:6px">demandes en attente</p></div>
+          <div class="card card-body stat-card"><p class="stat-num">5</p><p class="text-xs text-semantic-muted" style="margin-top:6px">personnages liés</p></div>
           <div class="card card-body stat-card" style="display:flex;align-items:center;justify-content:center"><button class="btn btn-primary btn-sm btn-block" onclick="setPage('stories')">Parcourir les stories</button></div>
         </div>
         <h2 class="h-sec" style="margin-bottom:14px">${I.bell} PNJ avec demandes en attente</h2>
         <div class="card card-body" style="margin-bottom:28px">
           <div class="between" style="margin-bottom:14px;flex-wrap:wrap">
-            <div class="row" style="min-width:0">${avatar('md','F')}<div style="min-width:0"><a class="font-semibold" onclick="setPage('character')" style="cursor:pointer">Doyen Ferrant</a><p class="text-xs text-muted">Les Cendres de Valombre · 4 apparitions</p></div></div>
+            <div class="row" style="min-width:0">${avatar('md','F')}<div style="min-width:0"><a class="font-semibold" onclick="setPage('character')" style="cursor:pointer">Doyen Ferrant</a><p class="text-xs text-semantic-muted">Les Cendres de Valombre · 4 apparitions</p></div></div>
             <span class="badge badge-info">2 demandes</span>
           </div>
           <div class="stack">${reqs.map(linkRequestCard).join('')}</div>
@@ -1398,22 +1398,22 @@
     return shell('compose', `
       <section class="content content--mid"><div class="container-app">
         <h1 class="h-page" style="margin-bottom:18px">Nouveau compte rendu</h1>
-        <div class="card card-body" style="margin-bottom:16px"><label class="text-xs font-semibold text-muted" style="text-transform:uppercase;letter-spacing:.06em">Partie</label><p class="font-medium" style="margin-top:4px">Les Cendres de Valombre</p></div>
+        <div class="card card-body" style="margin-bottom:16px"><label class="text-xs font-semibold text-semantic-muted" style="text-transform:uppercase;letter-spacing:.06em">Partie</label><p class="font-medium" style="margin-top:4px">Les Cendres de Valombre</p></div>
         <div style="margin-bottom:16px">
           <label class="text-sm font-semibold" style="display:block;margin-bottom:8px">Distribution (cast)</label>
-          <p class="text-xs text-muted" style="margin-bottom:10px">Définissez qui apparaît avant de rédiger. Les mentions <span class="mention">@perso</span> seront proposées dans le texte.</p>
+          <p class="text-xs text-semantic-muted" style="margin-bottom:10px">Définissez qui apparaît avant de rédiger. Les mentions <span class="mention">@perso</span> seront proposées dans le texte.</p>
           <div class="wrap-chips">
             <span class="cast-pill">${avatar('sm','S')} Selène <span class="badge badge-pc">PJ</span></span>
             <span class="cast-pill">${avatar('sm','B')} Le Bourgmestre <span class="badge badge-available">PNJ</span></span>
             <span class="cast-pill" style="color:rgb(var(--crimson))">${I.plus} Ajouter</span>
           </div>
         </div>
-        <input class="editor-area" style="width:100%;padding:14px 16px;font-family:var(--font-display);font-size:20px;font-weight:600;margin-bottom:12px;color:var(--c-primary)" placeholder="Titre…" value="La confession du bourgmestre">
+        <input class="editor-area" style="width:100%;padding:14px 16px;font-family:var(--font-display);font-size:20px;font-weight:600;margin-bottom:12px;color:var(--color-semantic-ink)" placeholder="Titre…" value="La confession du bourgmestre">
         <div class="editor-area">
-          <div class="editor-toolbar">${['B','I','H','“','—'].map(t=>`<button class="editor-tool">${t}</button>`).join('')}<span style="width:1px;background:var(--c-border);margin:0 4px"></span><button class="editor-tool" style="color:rgb(var(--brand))">@</button></div>
-          <div class="editor-input">Nous avions traqué <span class="mention npc">@Le Bourgmestre</span> pendant trois nuits. <span class="mention">@Selène</span> comprit la première…<span style="color:var(--c-muted)">|</span></div>
+          <div class="editor-toolbar">${['B','I','H','“','—'].map(t=>`<button class="editor-tool">${t}</button>`).join('')}<span style="width:1px;background:var(--color-semantic-border);margin:0 4px"></span><button class="editor-tool" style="color:rgb(var(--brand))">@</button></div>
+          <div class="editor-input">Nous avions traqué <span class="mention npc">@Le Bourgmestre</span> pendant trois nuits. <span class="mention">@Selène</span> comprit la première…<span style="color:var(--color-semantic-muted)">|</span></div>
         </div>
-        <p class="text-xs text-muted" style="margin-top:10px">${I.sparkles} À la publication, les PNJ mentionnés deviennent réclamables.</p>
+        <p class="text-xs text-semantic-muted" style="margin-top:10px">${I.sparkles} À la publication, les PNJ mentionnés deviennent réclamables.</p>
       </div></section>
       <div class="actionbar"><button class="btn btn-secondary" onclick="alert('Brouillon (maquette)')">Brouillon</button><button class="btn btn-primary" onclick="alert('Publié (maquette)')">Publier</button></div>`);
   }
@@ -1423,27 +1423,27 @@
     if (step === 'choose') {
       return shell('linkflow', `
         <section class="content content--narrow"><div class="container-app">
-          <p class="text-sm text-muted" style="margin-bottom:6px">Personnage cible</p>
-          <div class="row" style="margin-bottom:20px">${avatar('md','B')}<div><p class="font-semibold">Le Bourgmestre</p><p class="text-xs text-muted">PNJ de Valombre · @mara</p></div></div>
+          <p class="text-sm text-semantic-muted" style="margin-bottom:6px">Personnage cible</p>
+          <div class="row" style="margin-bottom:20px">${avatar('md','B')}<div><p class="font-semibold">Le Bourgmestre</p><p class="text-xs text-semantic-muted">PNJ de Valombre · @mara</p></div></div>
           <h1 class="h-page" style="margin-bottom:8px">Quel lien proposez-vous ?</h1>
           <p class="lede" style="margin-bottom:20px">Trois façons de relier ce PNJ à votre fiction. Chaque proposition part chez son autrice.</p>
           <div class="stack">
             ${[['claim','Claim — rétcon','badge-claimed','« C\'était mon PJ depuis le début. » Le PNJ est remplacé par votre PJ ; la scène est rejouée. Exige une cohérence narrative.'],
                ['adopt','Adopt — reprise','badge-adopted','« J\'en fais mon PJ à partir de maintenant. » L\'historique du PNJ est conservé ; vous en prenez le contrôle.'],
                ['fork','Fork — dérivation','badge-forked','« J\'en crée un PJ inspiré, mais distinct. » Les deux personnages coexistent.']]
-              .map(([t,title,badge,desc])=>`<button class="card card-body card-hover" style="text-align:left;width:100%;border:1px solid var(--c-border)" onclick="setLinkStep('form')"><div class="between" style="margin-bottom:6px"><span class="badge ${badge}">${title}</span>${I.link}</div><p class="text-sm text-secondary">${desc}</p></button>`).join('')}
+              .map(([t,title,badge,desc])=>`<button class="card card-body card-hover" style="text-align:left;width:100%;border:1px solid var(--color-semantic-border)" onclick="setLinkStep('form')"><div class="between" style="margin-bottom:6px"><span class="badge ${badge}">${title}</span>${I.link}</div><p class="text-sm text-semantic-ink-secondary">${desc}</p></button>`).join('')}
           </div>
         </div></section>`);
     }
     return shell('linkflow', `
       <section class="content content--narrow"><div class="container-app">
-        <button class="btn btn-ghost btn-sm text-muted" style="margin-bottom:12px" onclick="setLinkStep('choose')">← Changer de type</button>
+        <button class="btn btn-ghost btn-sm text-semantic-muted" style="margin-bottom:12px" onclick="setLinkStep('choose')">← Changer de type</button>
         <h1 class="h-page" style="margin-bottom:6px">Proposer un Claim</h1>
-        <p class="text-sm text-muted" style="margin-bottom:20px">sur <strong>Le Bourgmestre</strong> · à @mara</p>
+        <p class="text-sm text-semantic-muted" style="margin-bottom:20px">sur <strong>Le Bourgmestre</strong> · à @mara</p>
         <label class="text-sm font-semibold" style="display:block;margin-bottom:8px">Votre PJ concerné</label>
         <div class="wrap-chips" style="margin-bottom:16px">${['Selka','Amère','+ nouveau PJ'].map((n,i)=>`<span class="cast-pill" style="${i===0?'border-color:rgb(var(--crimson));color:rgb(var(--crimson))':''}">${n}</span>`).join('')}</div>
         <label class="text-sm font-semibold" style="display:block;margin-bottom:8px">Message à l'autrice</label>
-        <textarea class="editor-area" style="width:100%;padding:14px;min-height:120px;font-family:var(--font-body);font-size:15px;color:var(--c-secondary);resize:vertical;margin-bottom:16px">Selka a grandi à Valombre et a disparu avant l'incendie. Et si le Bourgmestre l'avait reconnue ?</textarea>
+        <textarea class="editor-area" style="width:100%;padding:14px;min-height:120px;font-family:var(--font-body);font-size:15px;color:var(--color-semantic-ink-secondary);resize:vertical;margin-bottom:16px">Selka a grandi à Valombre et a disparu avant l'incendie. Et si le Bourgmestre l'avait reconnue ?</textarea>
         <div class="card card-body" style="border-color:rgb(var(--warning) / .3);background:rgb(var(--warning) / .06);margin-bottom:20px"><p class="text-sm">${I.sparkles} <strong>Si accepté :</strong> une séquence de jeu partagée s'ouvre pour sceller le lien.</p></div>
         <div class="hero-cta"><button class="btn btn-primary" onclick="setPage('dashboard')">Envoyer la proposition</button><button class="btn btn-secondary" onclick="setLinkStep('choose')">Annuler</button></div>
       </div></section>`);
@@ -1454,12 +1454,12 @@
       <section class="content content--mid"><div class="container-app">
         <div class="wrap-chips" style="margin-bottom:8px"><span class="badge badge-claimed">Claim accepté</span><span class="badge badge-info">Séquence partagée</span></div>
         <h1 class="h-page" style="margin-bottom:6px">Sceller le lien : Selka × Le Bourgmestre</h1>
-        <p class="text-sm text-muted" style="margin-bottom:20px">Éditeur asynchrone à quatre mains · @kader et @mara</p>
+        <p class="text-sm text-semantic-muted" style="margin-bottom:20px">Éditeur asynchrone à quatre mains · @kader et @mara</p>
         <div class="grid-feature" style="align-items:start">
-          <div class="editor-area"><div class="editor-toolbar between"><span class="text-xs font-semibold text-muted" style="padding:4px 8px">VOTRE VERSION</span><span class="badge badge-pending">Brouillon</span></div><div class="editor-input">Elle le reconnut à sa manière de ne pas la regarder. « Vous saviez », dit Selka…<span style="color:var(--c-muted)">|</span></div></div>
-          <div class="editor-area" style="opacity:.85"><div class="editor-toolbar between"><span class="text-xs font-semibold text-muted" style="padding:4px 8px">@mara</span><span class="badge badge-adopted">${I.check} Validé</span></div><div class="editor-input" style="color:var(--c-muted)">« Je t'ai gardée au chaud aussi longtemps que j'ai pu. »</div></div>
+          <div class="editor-area"><div class="editor-toolbar between"><span class="text-xs font-semibold text-semantic-muted" style="padding:4px 8px">VOTRE VERSION</span><span class="badge badge-pending">Brouillon</span></div><div class="editor-input">Elle le reconnut à sa manière de ne pas la regarder. « Vous saviez », dit Selka…<span style="color:var(--color-semantic-muted)">|</span></div></div>
+          <div class="editor-area" style="opacity:.85"><div class="editor-toolbar between"><span class="text-xs font-semibold text-semantic-muted" style="padding:4px 8px">@mara</span><span class="badge badge-adopted">${I.check} Validé</span></div><div class="editor-input" style="color:var(--color-semantic-muted)">« Je t'ai gardée au chaud aussi longtemps que j'ai pu. »</div></div>
         </div>
-        <div class="card card-body" style="margin-top:16px"><p class="text-sm text-muted" style="margin-bottom:12px">Quand les deux parties valident, la séquence rejoint l'historique des deux personnages.</p><div class="hero-cta" style="margin:0"><button class="btn btn-secondary btn-sm">Proposer la publication</button><button class="btn btn-primary btn-sm">${I.check} Valider ma version</button></div></div>
+        <div class="card card-body" style="margin-top:16px"><p class="text-sm text-semantic-muted" style="margin-bottom:12px">Quand les deux parties valident, la séquence rejoint l'historique des deux personnages.</p><div class="hero-cta" style="margin:0"><button class="btn btn-secondary btn-sm">Proposer la publication</button><button class="btn btn-primary btn-sm">${I.check} Valider ma version</button></div></div>
       </div></section>`);
   }
 
@@ -1473,9 +1473,9 @@
     ];
     return shell('notifications', `
       <section class="content content--narrow"><div class="container-app">
-        <div class="between" style="margin-bottom:18px"><h1 class="h-page">Notifications</h1><button class="btn btn-ghost btn-sm text-muted">Tout lu</button></div>
+        <div class="between" style="margin-bottom:18px"><h1 class="h-page">Notifications</h1><button class="btn btn-ghost btn-sm text-semantic-muted">Tout lu</button></div>
         <div class="card">
-          ${notifs.map(([ic,text,ago,unread],i)=>`<div class="card-body row" style="${i<notifs.length-1?'border-bottom:1px solid var(--c-border)':''};${unread?'background:rgb(var(--crimson) / .04)':''}"><span class="avatar-md" style="background:rgb(var(--crimson) / .1);color:rgb(var(--crimson))">${I[ic]}</span><div style="flex:1;min-width:0"><p class="text-sm">${text}</p><p class="text-xs text-muted">il y a ${ago}</p></div>${unread?'<span style="width:8px;height:8px;border-radius:999px;background:rgb(var(--crimson));flex:0 0 auto"></span>':''}</div>`).join('')}
+          ${notifs.map(([ic,text,ago,unread],i)=>`<div class="card-body row" style="${i<notifs.length-1?'border-bottom:1px solid var(--color-semantic-border)':''};${unread?'background:rgb(var(--crimson) / .04)':''}"><span class="avatar-md" style="background:rgb(var(--crimson) / .1);color:rgb(var(--crimson))">${I[ic]}</span><div style="flex:1;min-width:0"><p class="text-sm">${text}</p><p class="text-xs text-semantic-muted">il y a ${ago}</p></div>${unread?'<span style="width:8px;height:8px;border-radius:999px;background:rgb(var(--crimson));flex:0 0 auto"></span>':''}</div>`).join('')}
         </div>
       </div></section>`);
   }
@@ -1483,15 +1483,15 @@
   function pageOnboarding() {
     return shell('onboarding', `
       <section class="content content--narrow"><div class="container-app" style="max-width:34rem;text-align:center;padding-top:16px">
-        <div class="row" style="justify-content:center;gap:8px;margin-bottom:28px">${[1,2,3].map(n=>`<span style="width:${n===1?'28px':'8px'};height:8px;border-radius:999px;background:${n===1?'rgb(var(--crimson))':'var(--c-border)'}"></span>`).join('')}</div>
-        <div class="text-crimson" style="display:flex;justify-content:center;margin-bottom:16px">${I.dice}</div>
+        <div class="row" style="justify-content:center;gap:8px;margin-bottom:28px">${[1,2,3].map(n=>`<span style="width:${n===1?'28px':'8px'};height:8px;border-radius:999px;background:${n===1?'rgb(var(--crimson))':'var(--color-semantic-border)'}"></span>`).join('')}</div>
+        <div class="text-brand-primary" style="display:flex;justify-content:center;margin-bottom:16px">${I.dice}</div>
         <h1 class="h-page" style="margin-bottom:12px">Bienvenue sur Suddenly</h1>
         <p class="lede" style="margin:0 auto 24px">Un réseau où vos parties solo alimentent une fiction partagée. Commençons par votre première partie.</p>
         <div class="stack" style="text-align:left;margin-bottom:24px">
-          ${[['Créez une partie','Un titre, un système. C\'est votre fiction continue.'],['Publiez un compte rendu','Mentionnez vos personnages ; les PNJ deviennent réclamables.'],['Laissez le réseau tisser','D\'autres joueurs adoptent vos PNJ, vous adoptez les leurs.']].map(([t,d],i)=>`<div class="card card-body row" style="gap:14px"><span class="avatar-md" style="background:rgb(var(--brand) / .12);color:rgb(var(--brand));font-weight:700">${i+1}</span><div><p class="font-semibold text-sm">${t}</p><p class="text-xs text-muted">${d}</p></div></div>`).join('')}
+          ${[['Créez une partie','Un titre, un système. C\'est votre fiction continue.'],['Publiez un compte rendu','Mentionnez vos personnages ; les PNJ deviennent réclamables.'],['Laissez le réseau tisser','D\'autres joueurs adoptent vos PNJ, vous adoptez les leurs.']].map(([t,d],i)=>`<div class="card card-body row" style="gap:14px"><span class="avatar-md" style="background:rgb(var(--brand) / .12);color:rgb(var(--brand));font-weight:700">${i+1}</span><div><p class="font-semibold text-sm">${t}</p><p class="text-xs text-semantic-muted">${d}</p></div></div>`).join('')}
         </div>
         <button class="btn btn-primary btn-block" onclick="setPage('compose')">Créer ma première partie</button>
-        <button class="btn btn-ghost text-muted btn-block" style="margin-top:8px" onclick="setPage('accueil')">Explorer d'abord</button>
+        <button class="btn btn-ghost text-semantic-muted btn-block" style="margin-top:8px" onclick="setPage('accueil')">Explorer d'abord</button>
       </div></section>`);
   }
 

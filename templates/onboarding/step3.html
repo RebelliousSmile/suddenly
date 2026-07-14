@@ -8,30 +8,30 @@
     <div class="container-app max-w-lg">
 
         <div class="flex items-center justify-between mb-2">
-            <p class="text-sm text-muted">{% trans "Step 3 of 3" %}</p>
+            <p class="text-sm text-semantic-muted">{% trans "Step 3 of 3" %}</p>
             <a href="{% url 'feed:onboarding_step2' %}" class="link-muted text-sm">
                 <span class="i-lucide-arrow-left text-xs"></span> {% trans "Back" %}
             </a>
         </div>
-        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "What do you want to do?" %}</h1>
+        <h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "What do you want to do?" %}</h1>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <a href="{% url 'games:create' %}" class="card card-hover card-body text-center block">
-                <span class="i-game-icons-open-book text-3xl text-crimson mb-3 block"></span>
-                <h3 class="font-semibold text-primary mb-1">{% trans "Create my first game" %}</h3>
-                <p class="text-sm text-muted">{% trans "Start documenting your RPG sessions" %}</p>
+                <span class="i-game-icons-open-book text-3xl text-brand-primary mb-3 block"></span>
+                <h3 class="font-semibold text-semantic-ink mb-1">{% trans "Create my first game" %}</h3>
+                <p class="text-sm text-semantic-muted">{% trans "Start documenting your RPG sessions" %}</p>
             </a>
 
             <a href="{% url 'characters:list' %}" class="card card-hover card-body text-center block">
-                <span class="i-lucide-search text-3xl text-crimson mb-3 block"></span>
-                <h3 class="font-semibold text-primary mb-1">{% trans "Explore characters" %}</h3>
-                <p class="text-sm text-muted">{% trans "Discover other players' NPCs" %}</p>
+                <span class="i-lucide-search text-3xl text-brand-primary mb-3 block"></span>
+                <h3 class="font-semibold text-semantic-ink mb-1">{% trans "Explore characters" %}</h3>
+                <p class="text-sm text-semantic-muted">{% trans "Discover other players' NPCs" %}</p>
             </a>
 
             <a href="{% url 'feed:instance' %}" class="card card-hover card-body text-center block sm:col-span-2">
-                <span class="i-lucide-rss text-3xl text-crimson mb-3 block"></span>
-                <h3 class="font-semibold text-primary mb-1">{% trans "View local feed" %}</h3>
-                <p class="text-sm text-muted">{% trans "Follow the community's publications" %}</p>
+                <span class="i-lucide-rss text-3xl text-brand-primary mb-3 block"></span>
+                <h3 class="font-semibold text-semantic-ink mb-1">{% trans "View local feed" %}</h3>
+                <p class="text-sm text-semantic-muted">{% trans "Follow the community's publications" %}</p>
             </a>
         </div>
 

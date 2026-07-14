@@ -4,33 +4,33 @@
 {% if games %}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {% for game in games %}
-            <div class="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-card-hover transition-shadow"
+            <div class="bg-semantic-card border border-semantic-border rounded-2xl overflow-hidden hover:shadow-card-hover transition-shadow"
                  id="game-{{ game.pk }}">
 
                 {% if user.is_authenticated %}
                 <label x-show="selectMode" x-cloak
-                       class="flex items-center gap-3 p-4 sm:p-5 cursor-pointer hover:bg-card-dark/30">
+                       class="flex items-center gap-3 p-4 sm:p-5 cursor-pointer hover:bg-semantic-card-sunken/30">
                     <input type="checkbox" name="pks" value="{{ game.pk }}"
                            form="bulk-delete-games-form"
-                           class="h-4 w-4 shrink-0 rounded border-border accent-crimson">
+                           class="h-4 w-4 shrink-0 rounded border-semantic-border accent-brand-primary">
                     <div class="min-w-0">
-                        <p class="font-semibold text-primary truncate">{{ game.title }}</p>
-                        {% if game.game_system %}<p class="text-xs text-muted">{{ game.game_system }}</p>{% endif %}
+                        <p class="font-semibold text-semantic-ink truncate">{{ game.title }}</p>
+                        {% if game.game_system %}<p class="text-xs text-semantic-muted">{{ game.game_system }}</p>{% endif %}
                     </div>
                 </label>
                 {% endif %}
 
                 <a href="{% url 'games:detail' pk=game.pk %}"
                    x-show="!selectMode"
-                   class="p-4 sm:p-5 block hover:bg-card-dark/30 transition-colors">
-                    <h3 class="font-semibold text-primary mb-1">{{ game.title }}</h3>
+                   class="p-4 sm:p-5 block hover:bg-semantic-card-sunken/30 transition-colors">
+                    <h3 class="font-semibold text-semantic-ink mb-1">{{ game.title }}</h3>
                     {% if game.game_system %}
-                        <p class="text-xs text-muted mb-2">{{ game.game_system }}</p>
+                        <p class="text-xs text-semantic-muted mb-2">{{ game.game_system }}</p>
                     {% endif %}
                     {% if game.description %}
-                        <p class="text-sm text-secondary line-clamp-2 mb-2">{{ game.description }}</p>
+                        <p class="text-sm text-semantic-ink-secondary line-clamp-2 mb-2">{{ game.description }}</p>
                     {% endif %}
-                    <div class="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted mt-2">
+                    <div class="flex flex-wrap gap-x-3 gap-y-1 text-xs text-semantic-muted mt-2">
                         <span class="flex items-center gap-1" title="{% trans "Reports" %}">
                             <span class="i-lucide-scroll-text"></span>
                             {{ game.report_count|default:0 }}
@@ -60,13 +60,13 @@
                         </span>
                         {% endif %}
                     </div>
-                    <p class="text-xs text-muted mt-2">
+                    <p class="text-xs text-semantic-muted mt-2">
                         {% blocktrans with username=game.owner.username %}by @{{ username }}{% endblocktrans %}
                     </p>
                 </a>
 
                 {% if user == game.owner %}
-                <div class="border-t border-border px-4 sm:px-5 py-3 flex gap-2"
+                <div class="border-t border-semantic-border px-4 sm:px-5 py-3 flex gap-2"
                      x-show="!selectMode">
                     <a href="{% url 'games:edit' pk=game.pk %}"
                        class="btn-secondary btn-sm flex-1 justify-center">
@@ -89,7 +89,7 @@
     </div>
 {% else %}
     <div class="text-center py-12">
-        <span class="i-game-icons-open-book text-4xl text-muted mb-4 block"></span>
-        <p class="text-muted">{% trans "No games yet." %}</p>
+        <span class="i-game-icons-open-book text-4xl text-semantic-muted mb-4 block"></span>
+        <p class="text-semantic-muted">{% trans "No games yet." %}</p>
     </div>
 {% endif %}

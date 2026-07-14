@@ -4,11 +4,11 @@
 {% block title %}{% trans "Federation" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block settings_content %}
-        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "Federation" %}</h1>
+        <h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "Federation" %}</h1>
 
         <div class="card card-body mb-6">
             <h2 class="text-heading mb-3">{% trans "Your ActivityPub identifier" %}</h2>
-            <p class="text-sm text-secondary mb-2">@{{ user.username }}@{{ DOMAIN }}</p>
+            <p class="text-sm text-semantic-ink-secondary mb-2">@{{ user.username }}@{{ DOMAIN }}</p>
         </div>
 
         <div class="card card-body">

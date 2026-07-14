@@ -1,0 +1,415 @@
+{
+  "$schema": "design/references/manifest-schema#",
+  "$version": "1.1.0",
+  "mode": "utility-first",
+  "usage": {
+    "rawHexForbidden": true,
+    "colorUtilityPrefixes": ["bg", "text", "border", "ring", "outline", "from", "to", "via", "fill", "stroke", "decoration", "accent"],
+    "rules": [
+      {
+        "id": "state-colour-icon",
+        "description": "Un statut de personnage (pc, npc, available, remote, claimed, adopted, forked) doit être porté par un token color.domain.* ET par un libellé ou une icône — jamais par la couleur seule. L'anneau d'avatar ajoute une border.style distincte.",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "signal-never-text",
+        "description": "color.brand.signal (#00e676) ne porte jamais de glyphe : contraste 1,6:1 sur fond clair. Tout texte de disponibilité utilise color.domain.available-text. Le signal reste réservé aux pastilles, anneaux et fonds (seuil 3:1).",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "display-font-is-fiction",
+        "description": "font.family.display (Fraunces) est réservée au contenu de fiction (récit, titres narratifs, descriptions, dialogues). Le chrome applicatif utilise font.family.sans. L'italique Fraunces marque la description narrative — jamais une simple emphase.",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "focus-visible-required",
+        "description": "Tout élément focusable porte un focus visible dérivé du groupe focus.* (2px, offset 2px, color.semantic.focus). Jamais outline:none sans remplacement.",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "tap-target-min",
+        "description": "Tout contrôle interactif mesure au moins size.tap (44px) dans ses deux dimensions.",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "no-emoji-as-icon",
+        "description": "Aucun emoji comme icône UI, puce, pastille d'état ou glyphe de bouton. Jeu unique : icon.library = lucide, style outline.",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "container-not-viewport",
+        "description": "La responsivité passe par @container (app) aux seuils breakpoint.xs/sm/md, pas par @media. Les tailles fluides en cqi n'ont de sens que dans un contexte de conteneur nommé.",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "native-scales-not-overridden",
+        "description": "Les échelles spacing, fontSize, lineHeight, letterSpacing, borderRadius et maxWidth ne sont JAMAIS injectées dans le thème UnoCSS : leurs clés collisionnent avec l'échelle native pour des valeurs différentes (p-4 passerait de 16px à 4px, text-sm de 14px à 13px). Les valeurs du contrat se consomment par variable CSS. Équivalences natives : rounded-lg = 8px (radius.md), rounded-xl = 12px (radius.lg).",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "wireframes-out-of-scope",
+        "description": "templates/wireframes/*.html sont des maquettes statiques, pas des templates applicatifs : elles emploient des couleurs Tailwind natives et sont exclues du glob de lint.",
+        "enforcement": "pivot-only"
+      }
+    ]
+  },
+  "components": {
+    "btn": {
+      "base": "btn",
+      "elements": {
+        "icon": "btn__icon",
+        "label": "btn__label",
+        "spinner": "btn__spinner"
+      },
+      "modifiers": {
+        "primary": "btn--primary",
+        "secondary": "btn--secondary",
+        "ghost": "btn--ghost",
+        "danger": "btn--danger",
+        "sm": "btn--sm",
+        "block": "btn--block",
+        "loading": "btn--loading",
+        "disabled": "btn--disabled"
+      },
+      "backgrounds": [
+        "color.semantic.background",
+        "color.semantic.surface",
+        "color.semantic.card",
+        "color.brand.primary"
+      ],
+      "a11y": {
+        "role": "button",
+        "requires": ["aria-busy"]
+      }
+    },
+    "card": {
+      "base": "card",
+      "elements": {
+        "media": "card__media",
+        "body": "card__body",
+        "title": "card__title",
+        "meta": "card__meta",
+        "footer": "card__footer"
+      },
+      "modifiers": {
+        "hover": "card--hover",
+        "sunken": "card--sunken",
+        "empty": "card--empty"
+      },
+      "backgrounds": [
+        "color.semantic.card",
+        "color.semantic.card-sunken"
+      ],
+      "a11y": {
+        "role": "article",
+        "requires": []
+      }
+    },
+    "badge": {
+      "base": "badge",
+      "elements": {
+        "icon": "badge__icon",
+        "label": "badge__label"
+      },
+      "modifiers": {
+        "pc": "badge--pc",
+        "npc": "badge--npc",
+        "available": "badge--available",
+        "remote": "badge--remote",
+        "claimed": "badge--claimed",
+        "adopted": "badge--adopted",
+        "forked": "badge--forked",
+        "pending": "badge--pending"
+      },
+      "backgrounds": [
+        "color.semantic.card",
+        "color.semantic.surface"
+      ],
+      "a11y": {
+        "role": "status",
+        "requires": ["aria-label"]
+      }
+    },
+    "avatar": {
+      "base": "avatar",
+      "elements": {
+        "image": "avatar__image",
+        "initials": "avatar__initials",
+        "dot": "avatar__dot"
+      },
+      "modifiers": {
+        "sm": "avatar--sm",
+        "md": "avatar--md",
+        "xl": "avatar--xl",
+        "pc": "avatar--pc",
+        "npc": "avatar--npc",
+        "available": "avatar--available",
+        "remote": "avatar--remote",
+        "gone": "avatar--gone"
+      },
+      "backgrounds": [
+        "color.semantic.surface",
+        "color.semantic.card"
+      ],
+      "a11y": {
+        "role": "img",
+        "requires": ["alt"]
+      }
+    },
+    "rap": {
+      "base": "rap",
+      "elements": {
+        "replyto": "rap__replyto",
+        "qmark": "rap__qmark",
+        "body": "rap__body",
+        "actor": "rap__actor",
+        "fold": "rap__fold"
+      },
+      "modifiers": {
+        "narration": "rap--narration",
+        "description": "rap--description",
+        "action": "rap--action",
+        "discussion": "rap--discussion",
+        "reply": "rap--reply",
+        "quoted": "rap--quoted"
+      },
+      "backgrounds": [
+        "color.semantic.card",
+        "color.semantic.card-sunken",
+        "color.semantic.background"
+      ],
+      "a11y": {
+        "role": "article",
+        "requires": []
+      }
+    },
+    "scene-marker": {
+      "base": "scene__marker",
+      "elements": {
+        "icon": "scene__marker-icon",
+        "label": "scene__marker-label"
+      },
+      "modifiers": {
+        "enter": "scene__marker--enter",
+        "oracle": "scene__marker--oracle"
+      },
+      "backgrounds": [
+        "color.semantic.background"
+      ],
+      "a11y": {
+        "role": "note",
+        "requires": []
+      }
+    },
+    "mention": {
+      "base": "mention",
+      "elements": {},
+      "modifiers": {
+        "npc": "mention--npc"
+      },
+      "backgrounds": [
+        "color.semantic.card",
+        "color.semantic.background"
+      ],
+      "a11y": {
+        "role": "link",
+        "requires": []
+      }
+    },
+    "def": {
+      "base": "def",
+      "elements": {
+        "name": "def__name",
+        "card": "def__card",
+        "meta": "def__meta"
+      },
+      "modifiers": {},
+      "backgrounds": [
+        "color.semantic.card"
+      ],
+      "a11y": {
+        "role": "tooltip",
+        "requires": ["aria-describedby"]
+      }
+    },
+    "quote-card": {
+      "base": "quote-card",
+      "elements": {
+        "text": "quote-card__text",
+        "source": "quote-card__source"
+      },
+      "modifiers": {
+        "private": "quote-card--private"
+      },
+      "backgrounds": [
+        "color.semantic.card",
+        "color.semantic.card-sunken"
+      ],
+      "a11y": {
+        "role": "blockquote",
+        "requires": []
+      }
+    },
+    "editor": {
+      "base": "editor",
+      "elements": {
+        "area": "editor__area",
+        "toolbar": "editor__toolbar",
+        "tool": "editor__tool",
+        "input": "editor__input",
+        "error": "editor__error"
+      },
+      "modifiers": {
+        "invalid": "editor--invalid",
+        "disabled": "editor--disabled",
+        "loading": "editor--loading"
+      },
+      "backgrounds": [
+        "color.semantic.card",
+        "color.semantic.surface"
+      ],
+      "a11y": {
+        "role": "textbox",
+        "requires": ["aria-invalid", "aria-describedby"]
+      }
+    },
+    "form-field": {
+      "base": "form-field",
+      "elements": {
+        "label": "form-field__label",
+        "control": "form-field__control",
+        "hint": "form-field__hint",
+        "error": "form-field__error"
+      },
+      "modifiers": {
+        "invalid": "form-field--invalid",
+        "disabled": "form-field--disabled",
+        "required": "form-field--required"
+      },
+      "backgrounds": [
+        "color.semantic.surface",
+        "color.semantic.card"
+      ],
+      "a11y": {
+        "role": "group",
+        "requires": ["aria-invalid"]
+      }
+    },
+    "tabs": {
+      "base": "tabs",
+      "elements": {
+        "tab": "tabs__tab",
+        "panel": "tabs__panel"
+      },
+      "modifiers": {
+        "active": "tabs__tab--active"
+      },
+      "backgrounds": [
+        "color.semantic.background",
+        "color.semantic.surface"
+      ],
+      "a11y": {
+        "role": "tablist",
+        "requires": ["aria-selected"]
+      }
+    },
+    "dropdown": {
+      "base": "dropdown",
+      "elements": {
+        "trigger": "dropdown__trigger",
+        "menu": "dropdown__menu",
+        "item": "dropdown__item"
+      },
+      "modifiers": {},
+      "backgrounds": [
+        "color.semantic.card"
+      ],
+      "a11y": {
+        "role": "menu",
+        "requires": ["aria-expanded"]
+      }
+    },
+    "app-header": {
+      "base": "app-header",
+      "elements": {
+        "brand": "app-header__brand",
+        "nav": "app-header__nav",
+        "navlink": "app-header__navlink",
+        "controls": "app-header__controls"
+      },
+      "modifiers": {},
+      "backgrounds": [
+        "color.semantic.background",
+        "color.semantic.surface"
+      ],
+      "a11y": {
+        "role": "banner",
+        "requires": []
+      }
+    },
+    "nav-drawer": {
+      "base": "nav-drawer",
+      "elements": {
+        "panel": "nav-drawer__panel",
+        "item": "nav-drawer__item",
+        "scrim": "nav-drawer__scrim"
+      },
+      "modifiers": {
+        "open": "nav-drawer--open"
+      },
+      "backgrounds": [
+        "color.semantic.card"
+      ],
+      "a11y": {
+        "role": "dialog",
+        "requires": ["aria-modal", "aria-label"]
+      }
+    },
+    "actionbar": {
+      "base": "actionbar",
+      "elements": {
+        "action": "actionbar__action"
+      },
+      "modifiers": {},
+      "backgrounds": [
+        "color.semantic.card"
+      ],
+      "a11y": {
+        "role": "toolbar",
+        "requires": ["aria-label"]
+      }
+    },
+    "stat-card": {
+      "base": "stat-card",
+      "elements": {
+        "value": "stat-card__value",
+        "label": "stat-card__label"
+      },
+      "modifiers": {},
+      "backgrounds": [
+        "color.semantic.card",
+        "color.semantic.card-sunken"
+      ],
+      "a11y": {
+        "role": "group",
+        "requires": []
+      }
+    },
+    "icon-btn": {
+      "base": "icon-btn",
+      "elements": {},
+      "modifiers": {
+        "active": "icon-btn--active"
+      },
+      "backgrounds": [
+        "color.semantic.background",
+        "color.semantic.surface",
+        "color.semantic.card"
+      ],
+      "a11y": {
+        "role": "button",
+        "requires": ["aria-label"]
+      }
+    }
+  }
+}

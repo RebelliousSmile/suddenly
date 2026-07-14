@@ -134,7 +134,7 @@ Distinct du Django admin (`/admin/`). Interface dediee a la moderation.
 |  +------------------------------------------------------------+  |
 |                                                                  |
 |  +------------------------------------------------------------+  |
-|  | edgy.social            Mastodon 4.1.0     (amber) Limitee  |  |
+|  | edgy.social          Mastodon 4.1.0     (warning) Limitee  |  |
 |  | 2.1k utilisateurs      Limitee le 10 mars 2026             |  |
 |  |                                  [Debloquer]  [Bloquer]    |  |
 |  +------------------------------------------------------------+  |
@@ -147,7 +147,7 @@ Distinct du Django admin (`/admin/`). Interface dediee a la moderation.
 | Etat | Badge | Effet |
 |------|-------|-------|
 | **Federee** | (vert) | Interactions normales |
-| **Limitee** | (amber) | Contenu absent des fils publics, visible si suivi explicite |
+| **Limitee** | (warning) | Contenu absent des fils publics, visible si suivi explicite |
 | **Bloquee** | (rouge) | Toutes activites rejetees, contenu masque |
 
 ## Modal blocage instance

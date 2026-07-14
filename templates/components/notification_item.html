@@ -11,25 +11,25 @@
 <a href="{{ notification.target_url }}"
    hx-post="{% url 'mark_notification_read' pk=notification.id %}"
    hx-swap="none"
-   class="flex items-start gap-3 px-4 py-3 rounded-card transition-colors
-          {% if not notification.is_read %}bg-crimson/10 hover:bg-crimson/10{% else %}hover:bg-surface{% endif %}">
+   class="flex items-start gap-3 px-4 py-3 rounded-xl transition-colors
+          {% if not notification.is_read %}bg-brand-primary/10 hover:bg-brand-primary/10{% else %}hover:bg-semantic-surface{% endif %}">
 
     <!-- Indicateur non lu -->
     {% if not notification.is_read %}
-        <span class="w-2 h-2 rounded-full bg-crimson mt-2 flex-shrink-0"></span>
+        <span class="w-2 h-2 rounded-full bg-brand-primary mt-2 flex-shrink-0"></span>
     {% else %}
         <span class="w-2 h-2 mt-2 flex-shrink-0"></span>
     {% endif %}
 
     <!-- Icône type -->
     <span class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
-        {% if notification.type == 'link_request' %}bg-warning/15 text-warning
-        {% elif notification.type == 'link_accepted' %}bg-success/10 text-success
-        {% elif notification.type == 'link_rejected' %}bg-error/15 text-error
-        {% elif notification.type == 'new_report' %}bg-info/15 text-info
-        {% elif notification.type == 'new_follower' %}bg-info/15 text-info
-        {% elif notification.type == 'shared_sequence' %}bg-crimson/10 text-crimson
-        {% elif notification.type == 'revocation' %}bg-error/15 text-error
+        {% if notification.type == 'link_request' %}bg-semantic-warning/15 text-semantic-warning
+        {% elif notification.type == 'link_accepted' %}bg-semantic-success/10 text-semantic-success
+        {% elif notification.type == 'link_rejected' %}bg-semantic-danger/15 text-semantic-danger
+        {% elif notification.type == 'new_report' %}bg-semantic-info/15 text-semantic-info
+        {% elif notification.type == 'new_follower' %}bg-semantic-info/15 text-semantic-info
+        {% elif notification.type == 'shared_sequence' %}bg-brand-primary/10 text-brand-primary
+        {% elif notification.type == 'revocation' %}bg-semantic-danger/15 text-semantic-danger
         {% endif %}">
         {% if notification.type == 'link_request' %}<span class="i-lucide-git-merge text-sm"></span>
         {% elif notification.type == 'link_accepted' %}<span class="i-lucide-check text-sm"></span>
@@ -43,13 +43,13 @@
 
     <!-- Contenu -->
     <div class="flex-1 min-w-0">
-        <p class="text-sm text-primary {% if not notification.is_read %}font-medium{% endif %}">
+        <p class="text-sm text-semantic-ink {% if not notification.is_read %}font-medium{% endif %}">
             {{ notification.message }}
         </p>
-        <time class="text-xs text-muted" datetime="{{ notification.created_at|date:'c' }}">
+        <time class="text-xs text-semantic-muted" datetime="{{ notification.created_at|date:'c' }}">
             {{ notification.created_at|timesince }}
         </time>
     </div>
 
-    <span class="i-lucide-chevron-right text-muted text-sm flex-shrink-0 mt-1"></span>
+    <span class="i-lucide-chevron-right text-semantic-muted text-sm flex-shrink-0 mt-1"></span>
 </a>

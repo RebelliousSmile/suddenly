@@ -6,8 +6,8 @@
             role="switch"
             :aria-checked="checked.toString()"
             @click="checked = !checked"
-            class="relative flex-shrink-0 flex items-center h-6 w-11 rounded-full border px-0.5 cursor-pointer transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-crimson/50"
-            :class="checked ? 'bg-crimson border-crimson' : 'bg-muted/20 border-border'">
+            class="relative flex-shrink-0 flex items-center h-6 w-11 rounded-full border px-0.5 cursor-pointer transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/50"
+            :class="checked ? 'bg-brand-primary border-brand-primary' : 'bg-semantic-muted/20 border-semantic-border'">
         <span class="w-4 h-4 rounded-full bg-white shadow-sm transition-all duration-200 flex-shrink-0"
               :class="checked ? 'translate-x-6' : 'translate-x-0'">
         </span>
@@ -21,12 +21,12 @@
            class="sr-only">
 
     <div>
-        <label for="{{ field_id }}" class="text-sm font-medium text-secondary cursor-pointer select-none"
+        <label for="{{ field_id }}" class="text-sm font-medium text-semantic-ink-secondary cursor-pointer select-none"
                @click="checked = !checked">
             {{ field_label }}
         </label>
         {% if field_help %}
-            <p class="text-xs text-muted mt-0.5">{{ field_help }}</p>
+            <p class="text-xs text-semantic-muted mt-0.5">{{ field_help }}</p>
         {% endif %}
     </div>
 </div>

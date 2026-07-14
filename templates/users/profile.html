@@ -5,7 +5,7 @@
 
 {% block content %}
 <!-- Profile Header -->
-<section class="bg-gradient-to-b from-surface to-background py-12">
+<section class="bg-gradient-to-b from-semantic-surface to-semantic-background py-12">
     <div class="container-app">
         <div class="flex flex-col sm:flex-row items-start gap-8">
             <!-- Avatar -->
@@ -25,10 +25,10 @@
             <div class="flex-1">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
                     <div>
-                        <h1 class="text-3xl font-bold text-primary">
+                        <h1 class="text-3xl font-bold text-semantic-ink">
                             {{ profile_user.get_display_name }}
                         </h1>
-                        <p class="text-muted">@{{ profile_user.username }}</p>
+                        <p class="text-semantic-muted">@{{ profile_user.username }}</p>
                     </div>
 
                     <!-- Actions -->
@@ -47,7 +47,7 @@
 
                 <!-- Bio -->
                 {% if profile_user.bio %}
-                    <p class="text-secondary max-w-2xl mb-4">
+                    <p class="text-semantic-ink-secondary max-w-2xl mb-4">
                         {{ profile_user.bio|linebreaksbr }}
                     </p>
                 {% endif %}
@@ -56,11 +56,11 @@
                 <div class="flex items-center gap-4 text-sm">
                     <span>
                         <strong>{{ followers_count|default:0 }}</strong>
-                        <span class="text-muted">{% blocktrans count counter=followers_count|default:0 %}follower{% plural %}followers{% endblocktrans %}</span>
+                        <span class="text-semantic-muted">{% blocktrans count counter=followers_count|default:0 %}follower{% plural %}followers{% endblocktrans %}</span>
                     </span>
                     <span>
                         <strong>{{ following_count|default:0 }}</strong>
-                        <span class="text-muted">{% blocktrans count counter=following_count|default:0 %}following{% plural %}following{% endblocktrans %}</span>
+                        <span class="text-semantic-muted">{% blocktrans count counter=following_count|default:0 %}following{% plural %}following{% endblocktrans %}</span>
                     </span>
                 </div>
             </div>
@@ -68,7 +68,7 @@
 
         <!-- ActivityPub Actor URL -->
         {% if profile_user.actor_url %}
-            <div class="mt-6 flex items-center gap-2 text-sm text-muted">
+            <div class="mt-6 flex items-center gap-2 text-sm text-semantic-muted">
                 <span class="i-lucide-globe text-xs"></span>
                 <span>{{ profile_user.actor_url }}</span>
             </div>
@@ -84,10 +84,10 @@
         {% if games %}
             <div class="space-y-3">
                 {% for game in games %}
-                    <a href="{% url 'games:detail' pk=game.pk %}" class="card card-body block hover:bg-card-dark/30 transition-colors">
-                        <h3 class="font-semibold text-primary">{{ game.title }}</h3>
-                        {% if game.game_system %}<p class="text-sm text-muted">{{ game.game_system }}</p>{% endif %}
-                        <div class="flex gap-3 text-xs text-muted mt-1">
+                    <a href="{% url 'games:detail' pk=game.pk %}" class="card card-body block hover:bg-semantic-card-sunken/30 transition-colors">
+                        <h3 class="font-semibold text-semantic-ink">{{ game.title }}</h3>
+                        {% if game.game_system %}<p class="text-sm text-semantic-muted">{{ game.game_system }}</p>{% endif %}
+                        <div class="flex gap-3 text-xs text-semantic-muted mt-1">
                             <span class="flex items-center gap-1" title="{% trans "Reports" %}">
                                 <span class="i-lucide-scroll-text"></span>
                                 {{ game.report_count|default:0 }}
@@ -101,7 +101,7 @@
                 {% endfor %}
             </div>
         {% else %}
-            <p class="text-sm text-muted">{% trans "No published games yet." %}</p>
+            <p class="text-sm text-semantic-muted">{% trans "No published games yet." %}</p>
         {% endif %}
     </div>
 </section>
@@ -116,12 +116,12 @@
                 {% for character in characters %}
                     <div class="card card-body text-center">
                         <p class="font-medium text-sm">{{ character.name }}</p>
-                        <p class="text-xs text-muted">{{ character.get_status_display }}</p>
+                        <p class="text-xs text-semantic-muted">{{ character.get_status_display }}</p>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <p class="text-sm text-muted">{% trans "No characters yet." %}</p>
+            <p class="text-sm text-semantic-muted">{% trans "No characters yet." %}</p>
         {% endif %}
     </div>
 </section>

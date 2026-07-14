@@ -4,7 +4,7 @@
 {% block title %}{% trans "Preferences" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block settings_content %}
-        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "Preferences" %}</h1>
+        <h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "Preferences" %}</h1>
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -33,7 +33,7 @@
             <div>
                 <label for="{{ form.preferred_languages.id_for_label }}" class="form-label">
                     {{ form.preferred_languages.label }}
-                    <span class="text-muted">({% trans "optional" %})</span>
+                    <span class="text-semantic-muted">({% trans "optional" %})</span>
                 </label>
                 {{ form.preferred_languages }}
                 <p class="form-help">{% trans "Language codes separated by commas, e.g. fr, en" %}</p>
@@ -43,7 +43,7 @@
             </div>
 
             <!-- Show Unlabeled Content -->
-            <div class="py-4 border-t border-border">
+            <div class="py-4 border-t border-semantic-border">
                 {% include "components/form_switch.html" with field_id=form.show_unlabeled_content.id_for_label field_name=form.show_unlabeled_content.html_name field_label=form.show_unlabeled_content.label field_checked=form.show_unlabeled_content.value field_help=form.show_unlabeled_content.help_text %}
                 {% for error in form.show_unlabeled_content.errors %}
                     <p class="form-error mt-1">{{ error }}</p>
@@ -74,14 +74,14 @@
             <div>
                 <label for="{{ form.default_character_background.id_for_label }}" class="form-label">
                     {% trans "Default character background" %}
-                    <span class="text-muted">({% trans "optional" %})</span>
+                    <span class="text-semantic-muted">({% trans "optional" %})</span>
                 </label>
                 {% if bg_url %}
-                    <div class="mb-4 p-4 bg-surface rounded-lg flex items-center gap-3">
+                    <div class="mb-4 p-4 bg-semantic-surface rounded-lg flex items-center gap-3">
                         <img src="{{ bg_url }}" alt="{% trans "Current background" %}" class="w-16 h-24 object-cover rounded-lg">
                         <div>
-                            <p class="text-sm text-secondary">{% trans "Current image" %}</p>
-                            <label for="{{ form.default_character_background.id_for_label }}-clear" class="text-sm text-error hover:text-error/70">
+                            <p class="text-sm text-semantic-ink-secondary">{% trans "Current image" %}</p>
+                            <label for="{{ form.default_character_background.id_for_label }}-clear" class="text-sm text-semantic-danger hover:text-semantic-danger/70">
                                 <input id="{{ form.default_character_background.id_for_label }}-clear"
                                        name="{{ form.default_character_background.html_name }}-clear"
                                        type="checkbox">
@@ -92,8 +92,8 @@
                 {% endif %}
                 <div class="form-dropzone">
                     <div class="space-y-1 text-center">
-                        <span class="i-lucide-upload text-3xl text-muted"></span>
-                        <div class="flex text-sm text-secondary">
+                        <span class="i-lucide-upload text-3xl text-semantic-muted"></span>
+                        <div class="flex text-sm text-semantic-ink-secondary">
                             <label for="{{ form.default_character_background.id_for_label }}" class="form-dropzone-link">
                                 <span>{% trans "Upload an image" %}</span>
                                 <input id="{{ form.default_character_background.id_for_label }}"
@@ -104,7 +104,7 @@
                             </label>
                             <p class="pl-1">{% trans "or drag and drop" %}</p>
                         </div>
-                        <p class="text-xs text-muted">{% trans "PNG, JPG or GIF up to 10 MB" %}</p>
+                        <p class="text-xs text-semantic-muted">{% trans "PNG, JPG or GIF up to 10 MB" %}</p>
                     </div>
                 </div>
                 {% if form.default_character_background.help_text %}

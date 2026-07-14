@@ -6,10 +6,10 @@
 {% block content %}
 <section class="py-8">
     <div class="container-app max-w-2xl">
-        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "New game" %}</h1>
+        <h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "New game" %}</h1>
 
         {% if error %}
-            <div class="mb-4 p-4 rounded-lg bg-error/10 text-error border border-error/30">
+            <div class="mb-4 p-4 rounded-lg bg-semantic-danger/10 text-semantic-danger border border-semantic-danger/30">
                 {{ error }}
             </div>
         {% endif %}
@@ -27,7 +27,7 @@
 
             <div>
                 <label for="game_system" class="form-label">
-                    {% trans "Game system" %} <span class="text-muted">({% trans "optional" %})</span>
+                    {% trans "Game system" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
                 </label>
                 <input type="text" id="game_system" name="game_system"
                        value="{{ form_data.game_system|default:'' }}"
@@ -37,7 +37,7 @@
 
             <div>
                 <label for="started_at" class="form-label">
-                    {% trans "Start date" %} <span class="text-muted">({% trans "optional" %})</span>
+                    {% trans "Start date" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
                 </label>
                 <input type="date" id="started_at" name="started_at"
                        value="{{ form_data.started_at|default:'' }}"
@@ -47,7 +47,7 @@
 
             <div>
                 <label for="description" class="form-label">
-                    {% trans "Description" %} <span class="text-muted">({% trans "optional" %})</span>
+                    {% trans "Description" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
                 </label>
                 <textarea id="description" name="description" rows="4"
                           placeholder="{% trans "Describe your campaign..." %}"
@@ -57,7 +57,7 @@
             <div class="flex items-center gap-3">
                 <input type="checkbox" id="is_public" name="is_public"
                        checked
-                       class="h-4 w-4 rounded border-border text-crimson focus:ring-crimson">
+                       class="h-4 w-4 rounded border-semantic-border text-brand-primary focus:ring-brand-primary">
                 <label for="is_public" class="form-label mb-0">
                     {% trans "Public game (visible and followable)" %}
                 </label>
@@ -66,7 +66,7 @@
             {% trans "Cover image" as label_cover %}
             {% include "components/form_image_upload.html" with field_id="cover" field_name="cover" field_label=label_cover field_optional=True %}
 
-            <div class="flex items-center gap-3 pt-4 border-t border-border">
+            <div class="flex items-center gap-3 pt-4 border-t border-semantic-border">
                 <button type="submit" class="btn-primary">
                     <span class="i-lucide-plus"></span>
                     {% trans "Create a game" %}

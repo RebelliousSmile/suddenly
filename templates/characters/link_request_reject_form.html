@@ -6,7 +6,7 @@
 {% block content %}
 <section class="py-8">
     <div class="container-app max-w-lg">
-        <h1 class="text-xl font-bold text-primary mb-4">
+        <h1 class="text-xl font-bold text-semantic-ink mb-4">
             {% blocktrans with username=link_request.requester.username %}Reject request from @{{ username }}{% endblocktrans %}
         </h1>
 
@@ -14,7 +14,7 @@
             {% csrf_token %}
             <div>
                 <label for="response_message" class="form-label">
-                    {% trans "Reason for rejection" %} <span class="text-muted">({% trans "optional" %})</span>
+                    {% trans "Reason for rejection" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
                 </label>
                 <textarea id="response_message" name="response_message" rows="3"
                           placeholder="{% trans "Explain why..." %}"

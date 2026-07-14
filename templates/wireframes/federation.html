@@ -15,20 +15,20 @@
 <!-- ================================================================ -->
 <section class="mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-search w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 1 — Recherche fédérée (/search/) — US-22</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-search w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 1 — Recherche fédérée (/search/) — US-22</span>
     </div>
 
     <div class="container-app px-4 py-10">
 
         <!-- Page title -->
-        <h1 class="text-2xl font-bold text-primary mb-6">Recherche</h1>
+        <h1 class="text-2xl font-bold text-semantic-ink mb-6">Recherche</h1>
 
         <!-- Search input -->
         <div class="flex gap-3 mb-2 max-w-2xl">
             <div class="flex-1 relative">
-                <span class="i-lucide-search w-4 h-4 text-muted absolute left-3 top-1/2 -translate-y-1/2 inline-block pointer-events-none"></span>
+                <span class="i-lucide-search w-4 h-4 text-semantic-muted absolute left-3 top-1/2 -translate-y-1/2 inline-block pointer-events-none"></span>
                 <input
                     type="search"
                     class="form-input pl-9 w-full"
@@ -43,37 +43,37 @@
         </div>
 
         <!-- Hints -->
-        <p class="text-xs text-muted mb-6 max-w-2xl">
-            Exemples : <code class="bg-surface border border-border rounded px-1 py-0.5 font-mono">"Viktor"</code>,
-            <code class="bg-surface border border-border rounded px-1 py-0.5 font-mono">@alice</code>,
-            <code class="bg-surface border border-border rounded px-1 py-0.5 font-mono">@alice@suddenly.games</code>,
-            <code class="bg-surface border border-border rounded px-1 py-0.5 font-mono">City of Mist</code>
+        <p class="text-xs text-semantic-muted mb-6 max-w-2xl">
+            Exemples : <code class="bg-semantic-surface border border-semantic-border rounded px-1 py-0.5 font-mono">"Viktor"</code>,
+            <code class="bg-semantic-surface border border-semantic-border rounded px-1 py-0.5 font-mono">@alice</code>,
+            <code class="bg-semantic-surface border border-semantic-border rounded px-1 py-0.5 font-mono">@alice@suddenly.games</code>,
+            <code class="bg-semantic-surface border border-semantic-border rounded px-1 py-0.5 font-mono">City of Mist</code>
         </p>
 
         <!-- Scope tabs -->
-        <div class="flex gap-1 mb-8 border-b border-border">
-            <button class="px-4 py-2 text-sm font-medium text-crimson border-b-2 border-crimson -mb-px">Local</button>
-            <button class="px-4 py-2 text-sm font-medium text-muted hover:text-primary">Fédéré</button>
-            <button class="px-4 py-2 text-sm font-medium text-muted hover:text-primary">Tout</button>
+        <div class="flex gap-1 mb-8 border-b border-semantic-border">
+            <button class="px-4 py-2 text-sm font-medium text-brand-primary border-b-2 border-brand-primary -mb-px">Local</button>
+            <button class="px-4 py-2 text-sm font-medium text-semantic-muted hover:text-semantic-ink">Fédéré</button>
+            <button class="px-4 py-2 text-sm font-medium text-semantic-muted hover:text-semantic-ink">Tout</button>
         </div>
 
         <!-- Local results -->
         <div class="mb-10">
-            <h2 class="text-base font-semibold text-primary mb-5">
+            <h2 class="text-base font-semibold text-semantic-ink mb-5">
                 Résultats locaux
-                <span class="text-muted font-normal text-sm ml-1">(3)</span>
+                <span class="text-semantic-muted font-normal text-sm ml-1">(3)</span>
             </h2>
 
             <!-- Joueurs -->
             <div class="mb-6">
-                <p class="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Joueurs</p>
+                <p class="text-xs font-semibold text-semantic-muted uppercase tracking-widest mb-3">Joueurs</p>
                 <div class="card">
                     <div class="card-body flex items-center gap-4">
                         <div class="avatar-md avatar-placeholder flex-shrink-0">A</div>
                         <div class="flex-1 min-w-0">
-                            <p class="font-semibold text-primary text-sm">Alice Dupont</p>
-                            <p class="text-xs text-muted font-mono">@alice@suddenly.social</p>
-                            <p class="text-xs text-muted mt-0.5">12 parties</p>
+                            <p class="font-semibold text-semantic-ink text-sm">Alice Dupont</p>
+                            <p class="text-xs text-semantic-muted font-mono">@alice@suddenly.social</p>
+                            <p class="text-xs text-semantic-muted mt-0.5">12 parties</p>
                         </div>
                         <button class="btn-secondary btn-sm flex-shrink-0 flex items-center gap-1.5">
                             <span class="i-lucide-user-plus w-3.5 h-3.5 inline-block"></span>
@@ -85,13 +85,13 @@
 
             <!-- Parties -->
             <div class="mb-6">
-                <p class="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Parties</p>
+                <p class="text-xs font-semibold text-semantic-muted uppercase tracking-widest mb-3">Parties</p>
                 <div class="card card-hover">
                     <div class="card-body flex items-center gap-3">
-                        <span class="i-lucide-book-open w-5 h-5 text-muted flex-shrink-0 inline-block"></span>
+                        <span class="i-lucide-book-open w-5 h-5 text-semantic-muted flex-shrink-0 inline-block"></span>
                         <div class="flex-1 min-w-0">
-                            <p class="font-semibold text-primary text-sm">City of Mist — Saison 2</p>
-                            <p class="text-xs text-muted">@alice · 12 comptes-rendus</p>
+                            <p class="font-semibold text-semantic-ink text-sm">City of Mist — Saison 2</p>
+                            <p class="text-xs text-semantic-muted">@alice · 12 comptes-rendus</p>
                         </div>
                         <a href="#" class="link-muted text-xs flex items-center gap-1 flex-shrink-0">
                             Voir
@@ -103,13 +103,13 @@
 
             <!-- Personnages -->
             <div>
-                <p class="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Personnages</p>
+                <p class="text-xs font-semibold text-semantic-muted uppercase tracking-widest mb-3">Personnages</p>
                 <div class="card card-hover">
                     <div class="card-body flex items-center gap-3">
                         <div class="avatar-sm avatar-placeholder flex-shrink-0">V</div>
                         <div class="flex-1 min-w-0">
-                            <p class="font-semibold text-primary text-sm">Viktor</p>
-                            <p class="text-xs text-muted">City of Mist — PNJ</p>
+                            <p class="font-semibold text-semantic-ink text-sm">Viktor</p>
+                            <p class="text-xs text-semantic-muted">City of Mist — PNJ</p>
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
                             <span class="badge badge-available">Disponible</span>
@@ -125,30 +125,30 @@
 
         <!-- Federated results — loading state -->
         <div>
-            <h2 class="text-base font-semibold text-primary mb-2">
+            <h2 class="text-base font-semibold text-semantic-ink mb-2">
                 Résultats fédérés
-                <span class="text-muted font-normal text-sm ml-1">(chargement...)</span>
+                <span class="text-semantic-muted font-normal text-sm ml-1">(chargement...)</span>
             </h2>
-            <p class="text-xs text-muted mb-4 font-mono">
+            <p class="text-xs text-semantic-muted mb-4 font-mono">
                 hx-get="/search/federated/?q=Viktor" hx-trigger="load"
             </p>
 
             <!-- Spinner state -->
-            <div class="flex items-center gap-3 text-muted text-sm py-6 px-4 bg-surface border border-border rounded-lg mb-6">
+            <div class="flex items-center gap-3 text-semantic-muted text-sm py-6 px-4 bg-semantic-surface border border-semantic-border rounded-lg mb-6">
                 <span class="i-lucide-loader w-4 h-4 inline-block animate-spin"></span>
                 Interrogation des instances connues...
             </div>
 
             <!-- After load label -->
             <div class="flex items-center gap-3 mb-5">
-                <div class="flex-1 border-t border-dashed border-border"></div>
-                <span class="text-xs text-muted whitespace-nowrap">après chargement</span>
-                <div class="flex-1 border-t border-dashed border-border"></div>
+                <div class="flex-1 border-t border-dashed border-semantic-border"></div>
+                <span class="text-xs text-semantic-muted whitespace-nowrap">après chargement</span>
+                <div class="flex-1 border-t border-dashed border-semantic-border"></div>
             </div>
 
-            <h2 class="text-base font-semibold text-primary mb-5">
+            <h2 class="text-base font-semibold text-semantic-ink mb-5">
                 Résultats fédérés
-                <span class="text-muted font-normal text-sm ml-1">(2)</span>
+                <span class="text-semantic-muted font-normal text-sm ml-1">(2)</span>
             </h2>
 
             <div class="flex flex-col gap-3">
@@ -158,12 +158,12 @@
                     <div class="card-body flex items-start gap-4">
                         <div class="avatar-md avatar-placeholder flex-shrink-0">A</div>
                         <div class="flex-1 min-w-0">
-                            <p class="font-semibold text-primary text-sm font-mono">@alice@suddenly.games</p>
+                            <p class="font-semibold text-semantic-ink text-sm font-mono">@alice@suddenly.games</p>
                             <div class="flex items-center gap-1.5 mt-0.5 mb-1">
-                                <span class="i-lucide-dice-6 w-3.5 h-3.5 text-crimson inline-block"></span>
-                                <span class="text-xs text-muted">Suddenly · suddenly.games</span>
+                                <span class="i-lucide-dice-6 w-3.5 h-3.5 text-brand-primary inline-block"></span>
+                                <span class="text-xs text-semantic-muted">Suddenly · suddenly.games</span>
                             </div>
-                            <p class="text-xs text-muted">3 parties publiques</p>
+                            <p class="text-xs text-semantic-muted">3 parties publiques</p>
                         </div>
                         <div class="flex flex-col gap-2 flex-shrink-0 items-end">
                             <button class="btn-secondary btn-sm flex items-center gap-1.5">
@@ -180,12 +180,12 @@
                     <div class="card-body flex items-start gap-4">
                         <div class="avatar-md avatar-placeholder flex-shrink-0">F</div>
                         <div class="flex-1 min-w-0">
-                            <p class="font-semibold text-primary text-sm font-mono">@frank@mastodon.social</p>
+                            <p class="font-semibold text-semantic-ink text-sm font-mono">@frank@mastodon.social</p>
                             <div class="flex items-center gap-1.5 mt-0.5 mb-2">
-                                <span class="i-lucide-at-sign w-3.5 h-3.5 text-violet inline-block"></span>
-                                <span class="text-xs text-muted">Mastodon · mastodon.social</span>
+                                <span class="i-lucide-at-sign w-3.5 h-3.5 text-brand-accent inline-block"></span>
+                                <span class="text-xs text-semantic-muted">Mastodon · mastodon.social</span>
                             </div>
-                            <div class="bg-info/10 border border-info/30 rounded p-2 text-info text-xs flex items-start gap-2">
+                            <div class="bg-semantic-info/10 border border-semantic-info/30 rounded p-2 text-semantic-info text-xs flex items-start gap-2">
                                 <span class="i-lucide-info w-3.5 h-3.5 inline-block flex-shrink-0 mt-0.5"></span>
                                 Instance non-Suddenly : liens narratifs non disponibles
                             </div>
@@ -204,12 +204,12 @@
                     <div class="card-body flex items-center gap-4">
                         <div class="avatar-md avatar-placeholder flex-shrink-0">V</div>
                         <div class="flex-1 min-w-0">
-                            <p class="font-semibold text-primary text-sm">Viktor <span class="text-muted font-normal">(PNJ)</span></p>
+                            <p class="font-semibold text-semantic-ink text-sm">Viktor <span class="text-semantic-muted font-normal">(PNJ)</span></p>
                             <div class="flex items-center gap-1.5 mt-0.5 mb-1">
-                                <span class="i-lucide-dice-6 w-3.5 h-3.5 text-crimson inline-block"></span>
-                                <span class="text-xs text-muted">Suddenly · suddenly.games</span>
+                                <span class="i-lucide-dice-6 w-3.5 h-3.5 text-brand-primary inline-block"></span>
+                                <span class="text-xs text-semantic-muted">Suddenly · suddenly.games</span>
                             </div>
-                            <p class="text-xs text-muted">City of Mist</p>
+                            <p class="text-xs text-semantic-muted">City of Mist</p>
                         </div>
                         <a href="#" class="btn-secondary btn-sm flex-shrink-0 flex items-center gap-1.5">
                             Voir la fiche
@@ -227,18 +227,18 @@
 <!-- ================================================================ -->
 <!-- SECTION 1b — WEBFINGER LOOKUP FLOW -->
 <!-- ================================================================ -->
-<section class="border-t-4 border-crimson mb-16">
+<section class="border-t-4 border-brand-primary mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-fingerprint w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 1b — Recherche par identifiant fédéré (WebFinger lookup)</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-fingerprint w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 1b — Recherche par identifiant fédéré (WebFinger lookup)</span>
     </div>
 
     <div class="container-app px-4 py-10">
 
-        <p class="text-xs text-muted mb-6">
-            Saisir <code class="bg-surface border border-border rounded px-1 py-0.5 font-mono">@alice@suddenly.games</code> ou une URL de profil
-            (<code class="bg-surface border border-border rounded px-1 py-0.5 font-mono">https://suddenly.games/users/alice</code>) déclenche un WebFinger lookup.
+        <p class="text-xs text-semantic-muted mb-6">
+            Saisir <code class="bg-semantic-surface border border-semantic-border rounded px-1 py-0.5 font-mono">@alice@suddenly.games</code> ou une URL de profil
+            (<code class="bg-semantic-surface border border-semantic-border rounded px-1 py-0.5 font-mono">https://suddenly.games/users/alice</code>) déclenche un WebFinger lookup.
         </p>
 
         <div class="max-w-2xl">
@@ -246,7 +246,7 @@
             <!-- Input prefilled with federated handle -->
             <div class="flex gap-3 mb-6">
                 <div class="flex-1 relative">
-                    <span class="i-lucide-search w-4 h-4 text-muted absolute left-3 top-1/2 -translate-y-1/2 inline-block pointer-events-none"></span>
+                    <span class="i-lucide-search w-4 h-4 text-semantic-muted absolute left-3 top-1/2 -translate-y-1/2 inline-block pointer-events-none"></span>
                     <input
                         type="search"
                         class="form-input pl-9 w-full font-mono"
@@ -262,8 +262,8 @@
             <!-- State 1 — Resolving -->
             <div class="card mb-4">
                 <div class="card-body">
-                    <p class="text-xs font-semibold text-muted uppercase tracking-widest mb-4">État 1 — Résolution en cours</p>
-                    <div class="flex items-center gap-3 text-muted text-sm">
+                    <p class="text-xs font-semibold text-semantic-muted uppercase tracking-widest mb-4">État 1 — Résolution en cours</p>
+                    <div class="flex items-center gap-3 text-semantic-muted text-sm">
                         <span class="i-lucide-loader w-4 h-4 inline-block animate-spin"></span>
                         Résolution WebFinger...
                     </div>
@@ -272,19 +272,19 @@
 
             <!-- After resolution label -->
             <div class="flex items-center gap-3 mb-4">
-                <div class="flex-1 border-t border-dashed border-border"></div>
-                <span class="text-xs text-muted whitespace-nowrap">après résolution</span>
-                <div class="flex-1 border-t border-dashed border-border"></div>
+                <div class="flex-1 border-t border-dashed border-semantic-border"></div>
+                <span class="text-xs text-semantic-muted whitespace-nowrap">après résolution</span>
+                <div class="flex-1 border-t border-dashed border-semantic-border"></div>
             </div>
 
             <!-- State 2 — Redirect -->
             <div class="card">
                 <div class="card-body">
-                    <p class="text-xs font-semibold text-muted uppercase tracking-widest mb-3">État 2 — Profil trouvé</p>
+                    <p class="text-xs font-semibold text-semantic-muted uppercase tracking-widest mb-3">État 2 — Profil trouvé</p>
                     <div class="flex items-center gap-3 text-sm">
                         <span class="i-lucide-check-circle w-4 h-4 text-green-500 inline-block"></span>
-                        <span class="text-secondary">Redirection vers le profil distant de</span>
-                        <span class="font-mono text-primary font-semibold">@alice@suddenly.games</span>
+                        <span class="text-semantic-ink-secondary">Redirection vers le profil distant de</span>
+                        <span class="font-mono text-semantic-ink font-semibold">@alice@suddenly.games</span>
                     </div>
                     <div class="mt-3">
                         <a href="#" class="btn-primary btn-sm flex items-center gap-1.5 w-fit">
@@ -302,23 +302,23 @@
 <!-- ================================================================ -->
 <!-- SECTION 2 — PROFIL DISTANT /remote/@alice@suddenly.games/ — US-22 -->
 <!-- ================================================================ -->
-<section class="border-t-4 border-crimson mb-16">
+<section class="border-t-4 border-brand-primary mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-globe w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 2 — Profil distant (/remote/@alice@suddenly.games/) — US-22</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-globe w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 2 — Profil distant (/remote/@alice@suddenly.games/) — US-22</span>
     </div>
 
     <div class="container-app px-4 py-10">
 
         <!-- Remote instance banner -->
-        <div class="bg-info/10 border border-info/30 rounded-lg p-3 text-info text-sm flex items-start gap-3 mb-8">
+        <div class="bg-semantic-info/10 border border-semantic-info/30 rounded-lg p-3 text-semantic-info text-sm flex items-start gap-3 mb-8">
             <span class="i-lucide-globe w-5 h-5 inline-block flex-shrink-0 mt-0.5"></span>
             <div class="flex-1">
                 <p class="font-medium">Ce profil est hébergé sur <strong>suddenly.games</strong>.</p>
-                <p class="text-info/80 text-xs mt-0.5">Les données affichées sont celles partagées via ActivityPub.</p>
+                <p class="text-semantic-info/80 text-xs mt-0.5">Les données affichées sont celles partagées via ActivityPub.</p>
             </div>
-            <a href="https://suddenly.games/users/alice" class="text-info underline text-xs flex items-center gap-1 flex-shrink-0 mt-0.5">
+            <a href="https://suddenly.games/users/alice" class="text-semantic-info underline text-xs flex items-center gap-1 flex-shrink-0 mt-0.5">
                 Voir le profil complet
                 <span class="i-lucide-external-link w-3.5 h-3.5 inline-block"></span>
             </a>
@@ -328,16 +328,16 @@
         <div class="flex flex-col sm:flex-row gap-6 mb-10">
 
             <div class="flex-shrink-0">
-                <div class="w-20 h-20 rounded-full bg-surface border-2 border-border flex items-center justify-center text-2xl font-bold text-muted">A</div>
+                <div class="w-20 h-20 rounded-full bg-semantic-surface border-2 border-semantic-border flex items-center justify-center text-2xl font-bold text-semantic-muted">A</div>
             </div>
 
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-0.5">
-                    <h1 class="text-2xl font-bold text-primary">Alice Dupont</h1>
-                    <span class="i-lucide-globe w-4 h-4 text-muted inline-block" title="Profil distant"></span>
+                    <h1 class="text-2xl font-bold text-semantic-ink">Alice Dupont</h1>
+                    <span class="i-lucide-globe w-4 h-4 text-semantic-muted inline-block" title="Profil distant"></span>
                 </div>
-                <p class="text-secondary font-mono text-sm mb-3">@alice@suddenly.games</p>
-                <p class="text-secondary mb-5">Joueuse de City of Mist et Blades in the Dark.</p>
+                <p class="text-semantic-ink-secondary font-mono text-sm mb-3">@alice@suddenly.games</p>
+                <p class="text-semantic-ink-secondary mb-5">Joueuse de City of Mist et Blades in the Dark.</p>
                 <button class="btn-primary flex items-center gap-1.5">
                     <span class="i-lucide-user-plus w-4 h-4 inline-block"></span>
                     Suivre
@@ -348,9 +348,9 @@
         <!-- Public games -->
         <div class="mb-10">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-bold text-primary">
+                <h2 class="text-lg font-bold text-semantic-ink">
                     Parties publiques
-                    <span class="text-muted font-normal text-base ml-1">(3)</span>
+                    <span class="text-semantic-muted font-normal text-base ml-1">(3)</span>
                 </h2>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -358,30 +358,30 @@
                 <div class="card card-hover">
                     <div class="card-body">
                         <div class="flex items-start justify-between gap-2 mb-2">
-                            <h3 class="font-semibold text-primary text-sm leading-snug">City of Mist</h3>
-                            <span class="i-lucide-book-open w-4 h-4 text-muted flex-shrink-0 inline-block mt-0.5"></span>
+                            <h3 class="font-semibold text-semantic-ink text-sm leading-snug">City of Mist</h3>
+                            <span class="i-lucide-book-open w-4 h-4 text-semantic-muted flex-shrink-0 inline-block mt-0.5"></span>
                         </div>
-                        <p class="text-xs text-muted">suddenly.games</p>
+                        <p class="text-xs text-semantic-muted">suddenly.games</p>
                     </div>
                 </div>
 
                 <div class="card card-hover">
                     <div class="card-body">
                         <div class="flex items-start justify-between gap-2 mb-2">
-                            <h3 class="font-semibold text-primary text-sm leading-snug">Blades in the Dark</h3>
-                            <span class="i-lucide-book-open w-4 h-4 text-muted flex-shrink-0 inline-block mt-0.5"></span>
+                            <h3 class="font-semibold text-semantic-ink text-sm leading-snug">Blades in the Dark</h3>
+                            <span class="i-lucide-book-open w-4 h-4 text-semantic-muted flex-shrink-0 inline-block mt-0.5"></span>
                         </div>
-                        <p class="text-xs text-muted">suddenly.games</p>
+                        <p class="text-xs text-semantic-muted">suddenly.games</p>
                     </div>
                 </div>
 
                 <div class="card card-hover">
                     <div class="card-body">
                         <div class="flex items-start justify-between gap-2 mb-2">
-                            <h3 class="font-semibold text-primary text-sm leading-snug">Ironsworn</h3>
-                            <span class="i-lucide-book-open w-4 h-4 text-muted flex-shrink-0 inline-block mt-0.5"></span>
+                            <h3 class="font-semibold text-semantic-ink text-sm leading-snug">Ironsworn</h3>
+                            <span class="i-lucide-book-open w-4 h-4 text-semantic-muted flex-shrink-0 inline-block mt-0.5"></span>
                         </div>
-                        <p class="text-xs text-muted">suddenly.games</p>
+                        <p class="text-xs text-semantic-muted">suddenly.games</p>
                     </div>
                 </div>
 
@@ -391,9 +391,9 @@
         <!-- Public characters -->
         <div class="mb-10">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-bold text-primary">
+                <h2 class="text-lg font-bold text-semantic-ink">
                     Personnages publics
-                    <span class="text-muted font-normal text-base ml-1">(5)</span>
+                    <span class="text-semantic-muted font-normal text-base ml-1">(5)</span>
                 </h2>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -403,8 +403,8 @@
                         <div class="flex items-center gap-3 mb-3">
                             <div class="avatar-md avatar-placeholder">V</div>
                             <div>
-                                <p class="font-semibold text-primary text-sm">Viktor</p>
-                                <p class="text-xs text-muted">City of Mist</p>
+                                <p class="font-semibold text-semantic-ink text-sm">Viktor</p>
+                                <p class="text-xs text-semantic-muted">City of Mist</p>
                             </div>
                         </div>
                         <span class="badge">PNJ</span>
@@ -416,8 +416,8 @@
                         <div class="flex items-center gap-3 mb-3">
                             <div class="avatar-md avatar-placeholder">O</div>
                             <div>
-                                <p class="font-semibold text-primary text-sm">Ombra</p>
-                                <p class="text-xs text-muted">Ironsworn</p>
+                                <p class="font-semibold text-semantic-ink text-sm">Ombra</p>
+                                <p class="text-xs text-semantic-muted">Ironsworn</p>
                             </div>
                         </div>
                         <span class="badge">PNJ</span>
@@ -429,8 +429,8 @@
                         <div class="flex items-center gap-3 mb-3">
                             <div class="avatar-md avatar-placeholder">K</div>
                             <div>
-                                <p class="font-semibold text-primary text-sm">Kael</p>
-                                <p class="text-xs text-muted">Blades in the Dark</p>
+                                <p class="font-semibold text-semantic-ink text-sm">Kael</p>
+                                <p class="text-xs text-semantic-muted">Blades in the Dark</p>
                             </div>
                         </div>
                         <span class="badge badge-pending">Réclamé</span>
@@ -443,31 +443,31 @@
         <!-- Recent reports -->
         <div>
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-bold text-primary">Derniers comptes-rendus</h2>
+                <h2 class="text-lg font-bold text-semantic-ink">Derniers comptes-rendus</h2>
             </div>
             <div class="flex flex-col gap-4">
 
                 <div class="card card-hover">
                     <div class="card-body">
-                        <h3 class="font-semibold text-primary mb-1">Session 12 : L'Oracle brisé</h3>
-                        <p class="text-xs text-muted mb-2">City of Mist — suddenly.games</p>
-                        <p class="text-sm text-secondary line-clamp-2">La nuit tombait sur le Quartier des Reflets quand Viktor poussa la porte du bar...</p>
+                        <h3 class="font-semibold text-semantic-ink mb-1">Session 12 : L'Oracle brisé</h3>
+                        <p class="text-xs text-semantic-muted mb-2">City of Mist — suddenly.games</p>
+                        <p class="text-sm text-semantic-ink-secondary line-clamp-2">La nuit tombait sur le Quartier des Reflets quand Viktor poussa la porte du bar...</p>
                     </div>
                     <div class="card-footer flex items-center justify-between">
-                        <span class="text-xs text-muted font-mono">@alice@suddenly.games</span>
-                        <span class="text-xs text-muted">il y a 2h</span>
+                        <span class="text-xs text-semantic-muted font-mono">@alice@suddenly.games</span>
+                        <span class="text-xs text-semantic-muted">il y a 2h</span>
                     </div>
                 </div>
 
                 <div class="card card-hover">
                     <div class="card-body">
-                        <h3 class="font-semibold text-primary mb-1">Session 11 : Le pont des ombres</h3>
-                        <p class="text-xs text-muted mb-2">City of Mist — suddenly.games</p>
-                        <p class="text-sm text-secondary line-clamp-2">Ombra traverse seule le pont maudit. Le choix qu'elle fait ce soir-là changera tout...</p>
+                        <h3 class="font-semibold text-semantic-ink mb-1">Session 11 : Le pont des ombres</h3>
+                        <p class="text-xs text-semantic-muted mb-2">City of Mist — suddenly.games</p>
+                        <p class="text-sm text-semantic-ink-secondary line-clamp-2">Ombra traverse seule le pont maudit. Le choix qu'elle fait ce soir-là changera tout...</p>
                     </div>
                     <div class="card-footer flex items-center justify-between">
-                        <span class="text-xs text-muted font-mono">@alice@suddenly.games</span>
-                        <span class="text-xs text-muted">il y a 3 jours</span>
+                        <span class="text-xs text-semantic-muted font-mono">@alice@suddenly.games</span>
+                        <span class="text-xs text-semantic-muted">il y a 3 jours</span>
                     </div>
                 </div>
 
@@ -480,16 +480,16 @@
 <!-- ================================================================ -->
 <!-- SECTION 3 — RENDU MASTODON / ACTIVITYPUB — US-24 -->
 <!-- ================================================================ -->
-<section class="border-t-4 border-crimson mb-16">
+<section class="border-t-4 border-brand-primary mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-at-sign w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 3 — Rendu Mastodon / ActivityPub — US-24</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-at-sign w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 3 — Rendu Mastodon / ActivityPub — US-24</span>
     </div>
 
     <div class="container-app px-4 py-10">
 
-        <p class="text-sm text-muted mb-8">
+        <p class="text-sm text-semantic-muted mb-8">
             Ce que voit un utilisateur Mastodon dans son fil quand il suit un acteur Suddenly.
         </p>
 
@@ -497,7 +497,7 @@
 
             <!-- Mastodon UI simulation — Article (CR) -->
             <div>
-                <p class="text-xs font-semibold text-muted uppercase tracking-widest mb-3">CR vu comme Article depuis Mastodon</p>
+                <p class="text-xs font-semibold text-semantic-muted uppercase tracking-widest mb-3">CR vu comme Article depuis Mastodon</p>
 
                 <!-- Mastodon-style card -->
                 <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden dark:border-slate-700 dark:bg-slate-900">
@@ -513,7 +513,7 @@
                         <!-- Author row -->
                         <div class="flex items-start justify-between mb-3">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-crimson/10 dark:bg-indigo-900 flex items-center justify-center font-bold text-crimson dark:text-indigo-300 text-sm">A</div>
+                                <div class="w-10 h-10 rounded-full bg-brand-primary/10 dark:bg-indigo-900 flex items-center justify-center font-bold text-brand-primary dark:text-indigo-300 text-sm">A</div>
                                 <div>
                                     <p class="font-semibold text-slate-900 dark:text-slate-100 text-sm">Alice</p>
                                     <p class="text-slate-500 dark:text-slate-400 text-xs font-mono">@alice@suddenly.social</p>
@@ -537,7 +537,7 @@
                                     <p><span class="font-medium">Personnages :</span> Viktor, Lyra, Ombra</p>
                                     <p><span class="font-medium">Partie :</span> City of Mist — Saison 2</p>
                                 </div>
-                                <a href="#" class="text-crimson dark:text-crimson text-sm flex items-center gap-1 hover:underline">
+                                <a href="#" class="text-brand-primary dark:text-brand-primary text-sm flex items-center gap-1 hover:underline">
                                     Lire la suite sur suddenly.social
                                     <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block"></span>
                                 </a>
@@ -558,7 +558,7 @@
                                 <span class="i-lucide-message-circle w-4 h-4 inline-block"></span>
                                 2
                             </button>
-                            <button class="flex items-center gap-1.5 hover:text-crimson transition-colors text-xs">
+                            <button class="flex items-center gap-1.5 hover:text-brand-primary transition-colors text-xs">
                                 <span class="i-lucide-bookmark w-4 h-4 inline-block"></span>
                             </button>
                         </div>
@@ -568,7 +568,7 @@
 
             <!-- Mastodon UI simulation — Note (Quote) -->
             <div>
-                <p class="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Citation vue comme Note depuis Mastodon</p>
+                <p class="text-xs font-semibold text-semantic-muted uppercase tracking-widest mb-3">Citation vue comme Note depuis Mastodon</p>
 
                 <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden dark:border-slate-700 dark:bg-slate-900">
 
@@ -601,7 +601,7 @@
                                 — Viktor, dans "L'Oracle brisé"
                             </footer>
                         </blockquote>
-                        <a href="#" class="text-crimson dark:text-crimson text-xs font-mono hover:underline">
+                        <a href="#" class="text-brand-primary dark:text-brand-primary text-xs font-mono hover:underline">
                             suddenly.social/characters/viktor
                         </a>
 
@@ -619,7 +619,7 @@
                                 <span class="i-lucide-message-circle w-4 h-4 inline-block"></span>
                                 5
                             </button>
-                            <button class="flex items-center gap-1.5 hover:text-crimson transition-colors text-xs">
+                            <button class="flex items-center gap-1.5 hover:text-brand-primary transition-colors text-xs">
                                 <span class="i-lucide-bookmark w-4 h-4 inline-block"></span>
                             </button>
                         </div>
@@ -631,21 +631,21 @@
 
         <!-- Suddenly-only activities table -->
         <div class="mt-10">
-            <h2 class="text-base font-semibold text-primary mb-4">Activités Suddenly-only (non envoyées à Mastodon)</h2>
+            <h2 class="text-base font-semibold text-semantic-ink mb-4">Activités Suddenly-only (non envoyées à Mastodon)</h2>
 
             <div class="card overflow-hidden">
                 <table class="w-full text-sm">
                     <thead>
-                        <tr class="bg-surface border-b border-border">
-                            <th class="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Activité</th>
-                            <th class="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Type AP</th>
-                            <th class="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">Mastodon reçoit ?</th>
+                        <tr class="bg-semantic-surface border-b border-semantic-border">
+                            <th class="text-left px-4 py-3 text-xs font-semibold text-semantic-muted uppercase tracking-wide">Activité</th>
+                            <th class="text-left px-4 py-3 text-xs font-semibold text-semantic-muted uppercase tracking-wide">Type AP</th>
+                            <th class="text-left px-4 py-3 text-xs font-semibold text-semantic-muted uppercase tracking-wide">Mastodon reçoit ?</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-border">
+                    <tbody class="divide-y divide-semantic-border">
                         <tr>
-                            <td class="px-4 py-3 text-secondary">Publication CR</td>
-                            <td class="px-4 py-3 font-mono text-xs text-muted">Create(Article)</td>
+                            <td class="px-4 py-3 text-semantic-ink-secondary">Publication CR</td>
+                            <td class="px-4 py-3 font-mono text-xs text-semantic-muted">Create(Article)</td>
                             <td class="px-4 py-3">
                                 <span class="flex items-center gap-1.5 text-green-600">
                                     <span class="i-lucide-check w-4 h-4 inline-block"></span>
@@ -654,8 +654,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-3 text-secondary">Citation publique</td>
-                            <td class="px-4 py-3 font-mono text-xs text-muted">Create(Note)</td>
+                            <td class="px-4 py-3 text-semantic-ink-secondary">Citation publique</td>
+                            <td class="px-4 py-3 font-mono text-xs text-semantic-muted">Create(Note)</td>
                             <td class="px-4 py-3">
                                 <span class="flex items-center gap-1.5 text-green-600">
                                     <span class="i-lucide-check w-4 h-4 inline-block"></span>
@@ -663,29 +663,29 @@
                                 </span>
                             </td>
                         </tr>
-                        <tr class="bg-surface/50">
-                            <td class="px-4 py-3 text-secondary">Demande Adoption / Dérivation / Rétcon</td>
-                            <td class="px-4 py-3 font-mono text-xs text-muted">Offer</td>
+                        <tr class="bg-semantic-surface/50">
+                            <td class="px-4 py-3 text-semantic-ink-secondary">Demande Adoption / Dérivation / Rétcon</td>
+                            <td class="px-4 py-3 font-mono text-xs text-semantic-muted">Offer</td>
                             <td class="px-4 py-3">
-                                <span class="flex items-center gap-1.5 text-crimson font-semibold">
+                                <span class="flex items-center gap-1.5 text-brand-primary font-semibold">
                                     <span class="i-lucide-x w-4 h-4 inline-block"></span>
                                     Non
                                 </span>
                             </td>
                         </tr>
-                        <tr class="bg-surface/50">
-                            <td class="px-4 py-3 text-secondary">Acceptation / Refus</td>
-                            <td class="px-4 py-3 font-mono text-xs text-muted">Accept / Reject</td>
+                        <tr class="bg-semantic-surface/50">
+                            <td class="px-4 py-3 text-semantic-ink-secondary">Acceptation / Refus</td>
+                            <td class="px-4 py-3 font-mono text-xs text-semantic-muted">Accept / Reject</td>
                             <td class="px-4 py-3">
-                                <span class="flex items-center gap-1.5 text-crimson font-semibold">
+                                <span class="flex items-center gap-1.5 text-brand-primary font-semibold">
                                     <span class="i-lucide-x w-4 h-4 inline-block"></span>
                                     Non
                                 </span>
                             </td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-3 text-secondary">SharedSequence publiée</td>
-                            <td class="px-4 py-3 font-mono text-xs text-muted">Create(Article)</td>
+                            <td class="px-4 py-3 text-semantic-ink-secondary">SharedSequence publiée</td>
+                            <td class="px-4 py-3 font-mono text-xs text-semantic-muted">Create(Article)</td>
                             <td class="px-4 py-3">
                                 <span class="flex items-center gap-1.5 text-green-600">
                                     <span class="i-lucide-check w-4 h-4 inline-block"></span>
@@ -697,8 +697,8 @@
                 </table>
             </div>
 
-            <p class="text-xs text-muted mt-3">
-                L'instance vérifie <code class="bg-surface border border-border rounded px-1 py-0.5 font-mono">FederatedServer.application_type == "suddenly"</code> avant d'envoyer les activités Suddenly-only.
+            <p class="text-xs text-semantic-muted mt-3">
+                L'instance vérifie <code class="bg-semantic-surface border border-semantic-border rounded px-1 py-0.5 font-mono">FederatedServer.application_type == "suddenly"</code> avant d'envoyer les activités Suddenly-only.
             </p>
         </div>
 
@@ -708,16 +708,16 @@
 <!-- ================================================================ -->
 <!-- SECTION 4 — NODEINFO / WEBFINGER (endpoints techniques) -->
 <!-- ================================================================ -->
-<section class="border-t-4 border-crimson">
+<section class="border-t-4 border-brand-primary">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-code-2 w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 4 — NodeInfo / WebFinger (endpoints techniques JSON)</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-code-2 w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 4 — NodeInfo / WebFinger (endpoints techniques JSON)</span>
     </div>
 
     <div class="container-app px-4 py-10">
 
-        <p class="text-sm text-muted mb-8">
+        <p class="text-sm text-semantic-muted mb-8">
             Ces endpoints ne possèdent pas d'interface graphique — ils retournent du JSON brut. Cette section présente les réponses de référence.
         </p>
 
@@ -728,12 +728,12 @@
                 <div class="card-header">
                     <div class="flex items-center gap-2 mb-1">
                         <span class="badge badge-info text-xs font-mono">GET</span>
-                        <code class="text-xs font-mono text-primary">/.well-known/nodeinfo</code>
+                        <code class="text-xs font-mono text-semantic-ink">/.well-known/nodeinfo</code>
                     </div>
-                    <p class="text-xs text-muted">Découverte NodeInfo</p>
+                    <p class="text-xs text-semantic-muted">Découverte NodeInfo</p>
                 </div>
                 <div class="card-body">
-                    <pre class="bg-surface border border-border rounded-lg p-3 text-xs font-mono text-secondary overflow-x-auto leading-relaxed whitespace-pre-wrap">{
+                    <pre class="bg-semantic-surface border border-semantic-border rounded-lg p-3 text-xs font-mono text-semantic-ink-secondary overflow-x-auto leading-relaxed whitespace-pre-wrap">{
   "links": [
     {
       "rel": "http://nodeinfo.diaspora.software/ns/schema/2.1",
@@ -749,12 +749,12 @@
                 <div class="card-header">
                     <div class="flex items-center gap-2 mb-1">
                         <span class="badge badge-info text-xs font-mono">GET</span>
-                        <code class="text-xs font-mono text-primary">/nodeinfo/2.1</code>
+                        <code class="text-xs font-mono text-semantic-ink">/nodeinfo/2.1</code>
                     </div>
-                    <p class="text-xs text-muted">Informations instance</p>
+                    <p class="text-xs text-semantic-muted">Informations instance</p>
                 </div>
                 <div class="card-body">
-                    <pre class="bg-surface border border-border rounded-lg p-3 text-xs font-mono text-secondary overflow-x-auto leading-relaxed whitespace-pre-wrap">{
+                    <pre class="bg-semantic-surface border border-semantic-border rounded-lg p-3 text-xs font-mono text-semantic-ink-secondary overflow-x-auto leading-relaxed whitespace-pre-wrap">{
   "software": {
     "name": "suddenly",
     "version": "0.1.0"
@@ -778,12 +778,12 @@
                 <div class="card-header">
                     <div class="flex items-center gap-2 mb-1">
                         <span class="badge badge-info text-xs font-mono">GET</span>
-                        <code class="text-xs font-mono text-primary">/.well-known/webfinger</code>
+                        <code class="text-xs font-mono text-semantic-ink">/.well-known/webfinger</code>
                     </div>
-                    <p class="text-xs text-muted">?resource=acct:alice@suddenly.social</p>
+                    <p class="text-xs text-semantic-muted">?resource=acct:alice@suddenly.social</p>
                 </div>
                 <div class="card-body">
-                    <pre class="bg-surface border border-border rounded-lg p-3 text-xs font-mono text-secondary overflow-x-auto leading-relaxed whitespace-pre-wrap">{
+                    <pre class="bg-semantic-surface border border-semantic-border rounded-lg p-3 text-xs font-mono text-semantic-ink-secondary overflow-x-auto leading-relaxed whitespace-pre-wrap">{
   "subject": "acct:alice@suddenly.social",
   "aliases": [
     "https://suddenly.social/users/alice"
@@ -808,49 +808,49 @@
 
         <!-- Technical flow diagram -->
         <div class="mt-10">
-            <h2 class="text-base font-semibold text-primary mb-5">Flux de résolution d'un acteur distant</h2>
+            <h2 class="text-base font-semibold text-semantic-ink mb-5">Flux de résolution d'un acteur distant</h2>
 
             <div class="card">
                 <div class="card-body">
                     <ol class="space-y-4">
 
                         <li class="flex items-start gap-4">
-                            <div class="w-7 h-7 rounded-full bg-crimson/10 text-crimson text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</div>
+                            <div class="w-7 h-7 rounded-full bg-brand-primary/10 text-brand-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</div>
                             <div class="flex-1">
-                                <p class="text-sm font-medium text-primary">Saisie de l'identifiant fédéré</p>
-                                <p class="text-xs text-muted mt-0.5">L'utilisateur saisit <code class="font-mono bg-surface border border-border rounded px-1">@alice@suddenly.games</code> dans la barre de recherche.</p>
+                                <p class="text-sm font-medium text-semantic-ink">Saisie de l'identifiant fédéré</p>
+                                <p class="text-xs text-semantic-muted mt-0.5">L'utilisateur saisit <code class="font-mono bg-semantic-surface border border-semantic-border rounded px-1">@alice@suddenly.games</code> dans la barre de recherche.</p>
                             </div>
                         </li>
 
                         <li class="flex items-start gap-4">
-                            <div class="w-7 h-7 rounded-full bg-crimson/10 text-crimson text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
+                            <div class="w-7 h-7 rounded-full bg-brand-primary/10 text-brand-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
                             <div class="flex-1">
-                                <p class="text-sm font-medium text-primary">Requête WebFinger</p>
-                                <p class="text-xs text-muted mt-0.5">Le serveur appelle <code class="font-mono bg-surface border border-border rounded px-1">https://suddenly.games/.well-known/webfinger?resource=acct:alice@suddenly.games</code></p>
+                                <p class="text-sm font-medium text-semantic-ink">Requête WebFinger</p>
+                                <p class="text-xs text-semantic-muted mt-0.5">Le serveur appelle <code class="font-mono bg-semantic-surface border border-semantic-border rounded px-1">https://suddenly.games/.well-known/webfinger?resource=acct:alice@suddenly.games</code></p>
                             </div>
                         </li>
 
                         <li class="flex items-start gap-4">
-                            <div class="w-7 h-7 rounded-full bg-crimson/10 text-crimson text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
+                            <div class="w-7 h-7 rounded-full bg-brand-primary/10 text-brand-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
                             <div class="flex-1">
-                                <p class="text-sm font-medium text-primary">Récupération du profil ActivityPub</p>
-                                <p class="text-xs text-muted mt-0.5">Le serveur effectue un <code class="font-mono bg-surface border border-border rounded px-1">GET</code> sur l'<code class="font-mono bg-surface border border-border rounded px-1">href</code> retourné, avec <code class="font-mono bg-surface border border-border rounded px-1">Accept: application/activity+json</code>.</p>
+                                <p class="text-sm font-medium text-semantic-ink">Récupération du profil ActivityPub</p>
+                                <p class="text-xs text-semantic-muted mt-0.5">Le serveur effectue un <code class="font-mono bg-semantic-surface border border-semantic-border rounded px-1">GET</code> sur l'<code class="font-mono bg-semantic-surface border border-semantic-border rounded px-1">href</code> retourné, avec <code class="font-mono bg-semantic-surface border border-semantic-border rounded px-1">Accept: application/activity+json</code>.</p>
                             </div>
                         </li>
 
                         <li class="flex items-start gap-4">
-                            <div class="w-7 h-7 rounded-full bg-crimson/10 text-crimson text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">4</div>
+                            <div class="w-7 h-7 rounded-full bg-brand-primary/10 text-brand-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">4</div>
                             <div class="flex-1">
-                                <p class="text-sm font-medium text-primary">Vérification NodeInfo</p>
-                                <p class="text-xs text-muted mt-0.5">NodeInfo est consulté pour déterminer si l'instance distante est de type <code class="font-mono bg-surface border border-border rounded px-1">"suddenly"</code> et activer les liens narratifs.</p>
+                                <p class="text-sm font-medium text-semantic-ink">Vérification NodeInfo</p>
+                                <p class="text-xs text-semantic-muted mt-0.5">NodeInfo est consulté pour déterminer si l'instance distante est de type <code class="font-mono bg-semantic-surface border border-semantic-border rounded px-1">"suddenly"</code> et activer les liens narratifs.</p>
                             </div>
                         </li>
 
                         <li class="flex items-start gap-4">
-                            <div class="w-7 h-7 rounded-full bg-crimson/10 text-crimson text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">5</div>
+                            <div class="w-7 h-7 rounded-full bg-brand-primary/10 text-brand-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">5</div>
                             <div class="flex-1">
-                                <p class="text-sm font-medium text-primary">Affichage du profil distant</p>
-                                <p class="text-xs text-muted mt-0.5">Redirection vers <code class="font-mono bg-surface border border-border rounded px-1">/remote/@alice@suddenly.games/</code> avec le profil mis en cache localement.</p>
+                                <p class="text-sm font-medium text-semantic-ink">Affichage du profil distant</p>
+                                <p class="text-xs text-semantic-muted mt-0.5">Redirection vers <code class="font-mono bg-semantic-surface border border-semantic-border rounded px-1">/remote/@alice@suddenly.games/</code> avec le profil mis en cache localement.</p>
                             </div>
                         </li>
 

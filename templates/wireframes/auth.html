@@ -5,23 +5,23 @@
 <div class="container-app py-8">
 
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-primary mb-2">Authentification — Prototype</h1>
-        <p class="text-secondary">Pages d'authentification : connexion, inscription et déconnexion.</p>
+        <h1 class="text-3xl font-bold text-semantic-ink mb-2">Authentification — Prototype</h1>
+        <p class="text-semantic-ink-secondary">Pages d'authentification : connexion, inscription et déconnexion.</p>
     </div>
 
     <!-- ============================================================ -->
     <!-- SECTION 1 — LOGIN /accounts/login/ -->
     <!-- ============================================================ -->
     <div class="mb-4">
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 1</span>
-        <h2 class="text-lg font-semibold text-primary">Login — <code class="text-sm text-crimson font-mono">/accounts/login/</code></h2>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 1</span>
+        <h2 class="text-lg font-semibold text-semantic-ink">Login — <code class="text-sm text-brand-primary font-mono">/accounts/login/</code></h2>
     </div>
 
     <div class="max-w-md mx-auto mb-12">
         <div class="card">
             <div class="card-body">
 
-                <h2 class="text-2xl font-bold text-primary mb-6">Connexion</h2>
+                <h2 class="text-2xl font-bold text-semantic-ink mb-6">Connexion</h2>
 
                 <form class="space-y-5">
 
@@ -51,9 +51,9 @@
                         <input
                             type="checkbox"
                             id="login-remember"
-                            class="w-4 h-4 rounded border-border text-crimson cursor-pointer"
+                            class="w-4 h-4 rounded border-semantic-border text-brand-primary cursor-pointer"
                         >
-                        <label for="login-remember" class="text-sm text-secondary cursor-pointer select-none">
+                        <label for="login-remember" class="text-sm text-semantic-ink-secondary cursor-pointer select-none">
                             Se souvenir de moi
                         </label>
                     </div>
@@ -65,7 +65,7 @@
                 </form>
 
                 <div class="mt-5 space-y-2 text-sm text-center">
-                    <p class="text-secondary">
+                    <p class="text-semantic-ink-secondary">
                         Pas de compte ?
                         <a href="#signup" class="link font-medium">S'inscrire</a>
                     </p>
@@ -82,8 +82,8 @@
     <!-- SECTION 2 — SIGNUP /accounts/signup/ -->
     <!-- ============================================================ -->
     <div class="mb-4" id="signup">
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 2</span>
-        <h2 class="text-lg font-semibold text-primary">Signup — <code class="text-sm text-crimson font-mono">/accounts/signup/</code></h2>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 2</span>
+        <h2 class="text-lg font-semibold text-semantic-ink">Signup — <code class="text-sm text-brand-primary font-mono">/accounts/signup/</code></h2>
     </div>
 
     <div class="max-w-md mx-auto mb-12">
@@ -91,8 +91,8 @@
             <div class="card-body">
 
                 <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-primary mb-1">Rejoindre Suddenly</h2>
-                    <p class="text-secondary text-sm">Réseau fédéré de fiction partagée où les PNJ des uns deviennent les PJ des autres.</p>
+                    <h2 class="text-2xl font-bold text-semantic-ink mb-1">Rejoindre Suddenly</h2>
+                    <p class="text-semantic-ink-secondary text-sm">Réseau fédéré de fiction partagée où les PNJ des uns deviennent les PJ des autres.</p>
                 </div>
 
                 <form class="space-y-5"
@@ -116,15 +116,15 @@
                           },
                           get strengthColor() {
                               const s = this.strength;
-                              if (s <= 1) return 'bg-error';
-                              if (s === 2) return 'bg-warning';
-                              return 'bg-success';
+                              if (s <= 1) return 'bg-semantic-danger';
+                              if (s === 2) return 'bg-semantic-warning';
+                              return 'bg-semantic-success';
                           },
                           get strengthTextColor() {
                               const s = this.strength;
-                              if (s <= 1) return 'text-error';
-                              if (s === 2) return 'text-warning';
-                              return 'text-success';
+                              if (s <= 1) return 'text-semantic-danger';
+                              if (s === 2) return 'text-semantic-warning';
+                              return 'text-semantic-success';
                           },
                           get strengthWidth() {
                               return (this.strength / 4 * 100) + '%';
@@ -143,7 +143,7 @@
                         >
                         <p class="form-help">
                             <span class="i-lucide-at-sign text-xs align-middle"></span>
-                            Vous serez identifié comme <span class="font-mono text-primary">@username@suddenly.social</span>
+                            Vous serez identifié comme <span class="font-mono text-semantic-ink">@username@suddenly.social</span>
                         </p>
                     </div>
 
@@ -172,7 +172,7 @@
                         >
                         <!-- Strength bar -->
                         <div class="mt-2" x-show="password.length > 0">
-                            <div class="w-full h-1.5 bg-border rounded-full overflow-hidden">
+                            <div class="w-full h-1.5 bg-semantic-border rounded-full overflow-hidden">
                                 <div
                                     class="h-full rounded-full transition-all duration-300"
                                     :class="strengthColor"
@@ -183,24 +183,24 @@
                         </div>
                         <!-- Static 3-state preview (shown when field is empty, for prototype only) -->
                         <div class="mt-3 space-y-1.5" x-show="password.length === 0">
-                            <p class="text-xs text-muted font-medium mb-1">Aperçu des états :</p>
+                            <p class="text-xs text-semantic-muted font-medium mb-1">Aperçu des états :</p>
                             <div class="flex items-center gap-2">
-                                <div class="flex-1 h-1.5 bg-border rounded-full overflow-hidden">
-                                    <div class="h-full rounded-full bg-error" style="width: 25%"></div>
+                                <div class="flex-1 h-1.5 bg-semantic-border rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full bg-semantic-danger" style="width: 25%"></div>
                                 </div>
-                                <span class="text-xs text-error w-12">Faible</span>
+                                <span class="text-xs text-semantic-danger w-12">Faible</span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <div class="flex-1 h-1.5 bg-border rounded-full overflow-hidden">
-                                    <div class="h-full rounded-full bg-warning" style="width: 50%"></div>
+                                <div class="flex-1 h-1.5 bg-semantic-border rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full bg-semantic-warning" style="width: 50%"></div>
                                 </div>
-                                <span class="text-xs text-warning w-12">Moyen</span>
+                                <span class="text-xs text-semantic-warning w-12">Moyen</span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <div class="flex-1 h-1.5 bg-border rounded-full overflow-hidden">
-                                    <div class="h-full rounded-full bg-success" style="width: 100%"></div>
+                                <div class="flex-1 h-1.5 bg-semantic-border rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full bg-semantic-success" style="width: 100%"></div>
                                 </div>
-                                <span class="text-xs text-success w-12">Fort</span>
+                                <span class="text-xs text-semantic-success w-12">Fort</span>
                             </div>
                         </div>
                     </div>
@@ -218,22 +218,22 @@
                     </div>
 
                     <!-- Instance rules -->
-                    <div class="border border-border rounded-xl p-4 bg-surface">
-                        <p class="text-sm font-semibold text-primary mb-3 flex items-center gap-1.5">
-                            <span class="i-lucide-shield-check text-crimson text-base"></span>
+                    <div class="border border-semantic-border rounded-xl p-4 bg-semantic-surface">
+                        <p class="text-sm font-semibold text-semantic-ink mb-3 flex items-center gap-1.5">
+                            <span class="i-lucide-shield-check text-brand-primary text-base"></span>
                             Règles de l'instance
                         </p>
-                        <ol class="space-y-1.5 text-sm text-secondary list-none">
+                        <ol class="space-y-1.5 text-sm text-semantic-ink-secondary list-none">
                             <li class="flex items-start gap-2">
-                                <span class="text-muted font-mono text-xs mt-0.5">1.</span>
+                                <span class="text-semantic-muted font-mono text-xs mt-0.5">1.</span>
                                 Respectez les autres membres et leurs personnages.
                             </li>
                             <li class="flex items-start gap-2">
-                                <span class="text-muted font-mono text-xs mt-0.5">2.</span>
+                                <span class="text-semantic-muted font-mono text-xs mt-0.5">2.</span>
                                 Utilisez les avertissements de contenu (CW) pour les sujets sensibles.
                             </li>
                             <li class="flex items-start gap-2">
-                                <span class="text-muted font-mono text-xs mt-0.5">3.</span>
+                                <span class="text-semantic-muted font-mono text-xs mt-0.5">3.</span>
                                 Pas de spam, publicité ou contenu hors-sujet.
                             </li>
                         </ol>
@@ -248,9 +248,9 @@
                         <input
                             type="checkbox"
                             id="signup-rules"
-                            class="w-4 h-4 rounded border-border text-crimson cursor-pointer mt-0.5 flex-shrink-0"
+                            class="w-4 h-4 rounded border-semantic-border text-brand-primary cursor-pointer mt-0.5 flex-shrink-0"
                         >
-                        <label for="signup-rules" class="text-sm text-secondary cursor-pointer select-none leading-snug">
+                        <label for="signup-rules" class="text-sm text-semantic-ink-secondary cursor-pointer select-none leading-snug">
                             J'accepte les règles de cette instance et les
                             <a href="#" class="link">conditions d'utilisation</a>.
                         </label>
@@ -263,7 +263,7 @@
                 </form>
 
                 <div class="mt-5 text-sm text-center">
-                    <p class="text-secondary">
+                    <p class="text-semantic-ink-secondary">
                         Déjà un compte ?
                         <a href="#" class="link font-medium">Se connecter</a>
                     </p>
@@ -277,8 +277,8 @@
     <!-- SECTION 3 — LOGOUT /accounts/logout/ -->
     <!-- ============================================================ -->
     <div class="mb-4" id="logout">
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 3</span>
-        <h2 class="text-lg font-semibold text-primary">Logout — <code class="text-sm text-crimson font-mono">/accounts/logout/</code></h2>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 3</span>
+        <h2 class="text-lg font-semibold text-semantic-ink">Logout — <code class="text-sm text-brand-primary font-mono">/accounts/logout/</code></h2>
     </div>
 
     <div class="max-w-sm mx-auto mb-12">
@@ -286,8 +286,8 @@
             <div class="card-body text-center">
 
                 <div class="mb-4">
-                    <span class="i-lucide-log-out text-4xl text-muted mx-auto block w-10 h-10 mb-3"></span>
-                    <p class="text-primary font-medium">Êtes-vous sûr de vouloir vous déconnecter ?</p>
+                    <span class="i-lucide-log-out text-4xl text-semantic-muted mx-auto block w-10 h-10 mb-3"></span>
+                    <p class="text-semantic-ink font-medium">Êtes-vous sûr de vouloir vous déconnecter ?</p>
                 </div>
 
                 <form class="space-y-3">

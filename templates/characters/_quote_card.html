@@ -1,22 +1,22 @@
 {# Partial: single quote card (returned after HTMX add) #}
 {% load i18n %}
 
-<blockquote class="border-l-4 border-crimson/40 pl-4 mb-4"
+<blockquote class="border-l-4 border-brand-primary/40 pl-4 mb-4"
             id="quote-{{ quote.id }}">
     {% if quote.content_warning %}
-        <p class="text-sm text-warning mb-1">
+        <p class="text-sm text-semantic-warning mb-1">
             <span class="i-lucide-alert-triangle text-xs"></span>
             {{ quote.content_warning }}
         </p>
     {% endif %}
-    <p class="text-primary italic font-serif text-lg">"{{ quote.content }}"</p>
+    <p class="text-semantic-ink italic font-serif text-lg">"{{ quote.content }}"</p>
     {% if quote.context %}
-        <p class="text-sm text-muted mt-1">{{ quote.context }}</p>
+        <p class="text-sm text-semantic-muted mt-1">{{ quote.context }}</p>
     {% endif %}
-    <footer class="text-xs text-muted mt-1">
+    <footer class="text-xs text-semantic-muted mt-1">
         — {{ quote.character.name }}, {% blocktrans with username=quote.author.username %}by @{{ username }}{% endblocktrans %}
         {% if quote.visibility == 'private' %}
-            <span class="badge bg-card-dark text-muted border border-border ml-1"><span class="i-lucide-lock text-xs"></span> {% trans "Private" %}</span>
+            <span class="badge bg-semantic-card-sunken text-semantic-muted border border-semantic-border ml-1"><span class="i-lucide-lock text-xs"></span> {% trans "Private" %}</span>
         {% endif %}
     </footer>
 </blockquote>

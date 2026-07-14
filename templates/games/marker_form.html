@@ -1,7 +1,7 @@
 {% load i18n %}
 <div x-data="{ kind: '{{ form.kind.value|default:'' }}' }">
     {% if form.non_field_errors %}
-        <div class="mb-3 p-3 rounded-lg bg-error/10 text-error border border-error/30 text-sm">
+        <div class="mb-3 p-3 rounded-lg bg-semantic-danger/10 text-semantic-danger border border-semantic-danger/30 text-sm">
             {% for error in form.non_field_errors %}{{ error }}{% endfor %}
         </div>
     {% endif %}
@@ -19,13 +19,13 @@
                         <input type="radio" name="kind" value="{{ value }}"
                                {% if form.kind.value == value %}checked{% endif %}
                                @change="kind = '{{ value }}'"
-                               class="h-4 w-4 text-crimson focus:ring-crimson">
+                               class="h-4 w-4 text-brand-primary focus:ring-brand-primary">
                         <span class="text-sm">{{ label }}</span>
                     </label>
                 {% endfor %}
             </div>
             {% if form.kind.errors %}
-                <p class="form-error text-error text-xs mt-1">{{ form.kind.errors.0 }}</p>
+                <p class="form-error text-semantic-danger text-xs mt-1">{{ form.kind.errors.0 }}</p>
             {% endif %}
         </div>
 
@@ -42,7 +42,7 @@
                     {% endfor %}
                 </select>
             {% else %}
-                <p class="text-sm text-muted">
+                <p class="text-sm text-semantic-muted">
                     {% trans "No character available for this game." %}
                     <a href="{% url 'games:detail' rapport.report.game.pk %}" class="link-muted">
                         {% trans "Go back to the game." %}
@@ -50,7 +50,7 @@
                 </p>
             {% endif %}
             {% if form.character.errors %}
-                <p class="form-error text-error text-xs mt-1">{{ form.character.errors.0 }}</p>
+                <p class="form-error text-semantic-danger text-xs mt-1">{{ form.character.errors.0 }}</p>
             {% endif %}
         </div>
 

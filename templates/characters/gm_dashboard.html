@@ -7,21 +7,21 @@
 <section class="py-8">
     <div class="container-app">
 
-        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "Dashboard" %}</h1>
+        <h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "Dashboard" %}</h1>
 
         <!-- Stats -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
             <div class="card card-body text-center">
-                <p class="text-2xl font-bold text-primary">{{ total_npcs|default:0 }}</p>
-                <p class="text-xs text-muted">{% trans "NPCs created" %}</p>
+                <p class="text-2xl font-bold text-semantic-ink">{{ total_npcs|default:0 }}</p>
+                <p class="text-xs text-semantic-muted">{% trans "NPCs created" %}</p>
             </div>
             <div class="card card-body text-center">
-                <p class="text-2xl font-bold text-warning">{{ total_requests|default:0 }}</p>
-                <p class="text-xs text-muted">{% trans "pending requests" %}</p>
+                <p class="text-2xl font-bold text-semantic-warning">{{ total_requests|default:0 }}</p>
+                <p class="text-xs text-semantic-muted">{% trans "pending requests" %}</p>
             </div>
             <div class="card card-body text-center">
-                <p class="text-2xl font-bold text-primary">{{ linked|length }}</p>
-                <p class="text-xs text-muted">{% trans "linked characters" %}</p>
+                <p class="text-2xl font-bold text-semantic-ink">{{ linked|length }}</p>
+                <p class="text-xs text-semantic-muted">{% trans "linked characters" %}</p>
             </div>
             <div class="card card-body text-center">
                 <a href="{% url 'characters:list' %}" class="btn-primary btn-sm w-full">
@@ -34,7 +34,7 @@
         {% if npcs_with_requests %}
             <div class="mb-8">
                 <h2 class="text-heading text-lg mb-4">
-                    <span class="i-lucide-bell text-warning mr-1"></span>
+                    <span class="i-lucide-bell text-semantic-warning mr-1"></span>
                     {% trans "NPCs with pending requests" %}
                 </h2>
                 <div class="space-y-4">
@@ -46,10 +46,10 @@
                                 </span>
                                 <div>
                                     <a href="{% url 'characters:detail' slug=npc.slug %}"
-                                       class="font-semibold text-primary hover:text-crimson">
+                                       class="font-semibold text-semantic-ink hover:text-brand-primary">
                                         {{ npc.name }}
                                     </a>
-                                    <p class="text-xs text-muted">
+                                    <p class="text-xs text-semantic-muted">
                                         {{ npc.origin_game.title }} · {% blocktrans count counter=npc.appearances.count %}{{ counter }} appearance{% plural %}{{ counter }} appearances{% endblocktrans %}
                                     </p>
                                 </div>
@@ -74,7 +74,7 @@
                         <a href="{% url 'characters:detail' slug=npc.slug %}"
                            class="card card-body text-center hover:shadow-card-hover transition-shadow">
                             <p class="font-medium text-sm">{{ npc.name }}</p>
-                            <p class="text-xs text-muted">{{ npc.origin_game.title }}</p>
+                            <p class="text-xs text-semantic-muted">{{ npc.origin_game.title }}</p>
                         </a>
                     {% endfor %}
                 </div>
@@ -90,7 +90,7 @@
                         <div class="card card-body flex items-center justify-between">
                             <div>
                                 <a href="{% url 'characters:detail' slug=char.slug %}"
-                                   class="font-medium text-primary hover:text-crimson">
+                                   class="font-medium text-semantic-ink hover:text-brand-primary">
                                     {{ char.name }}
                                 </a>
                                 <span class="{% if char.status == 'npc' %}badge-available{% else %}badge-{{ char.status }}{% endif %} text-xs ml-2">
@@ -99,11 +99,11 @@
                             </div>
                             <div class="flex items-center gap-3">
                                 {% if char.owner %}
-                                    <span class="text-xs text-muted">{% blocktrans with username=char.owner.username %}by @{{ username }}{% endblocktrans %}</span>
+                                    <span class="text-xs text-semantic-muted">{% blocktrans with username=char.owner.username %}by @{{ username }}{% endblocktrans %}</span>
                                 {% endif %}
                                 {% if char.active_links %}
                                     <a href="{% url 'characters:link_revoke' pk=char.active_links.0.pk %}"
-                                       class="btn-secondary btn-sm text-error border-error/40 hover:bg-error/10">
+                                       class="btn-secondary btn-sm text-semantic-danger border-semantic-danger/40 hover:bg-semantic-danger/10">
                                         <span class="i-lucide-unlink"></span> {% trans "Révoquer" %}
                                     </a>
                                 {% endif %}
@@ -117,9 +117,9 @@
         <!-- Empty state -->
         {% if not npcs_with_requests and not npcs_available and not linked %}
             <div class="text-center py-16">
-                <span class="i-game-icons-two-shadows text-5xl text-muted mb-4 block"></span>
-                <h3 class="font-semibold text-primary mb-2">{% trans "You have no NPCs yet" %}</h3>
-                <p class="text-sm text-muted mb-4">
+                <span class="i-game-icons-two-shadows text-5xl text-semantic-muted mb-4 block"></span>
+                <h3 class="font-semibold text-semantic-ink mb-2">{% trans "You have no NPCs yet" %}</h3>
+                <p class="text-sm text-semantic-muted mb-4">
                     {% trans "NPCs are created automatically when you mention them in a report." %}
                 </p>
                 <a href="{% url 'games:list' %}" class="btn-primary btn-sm">{% trans "See my games" %}</a>

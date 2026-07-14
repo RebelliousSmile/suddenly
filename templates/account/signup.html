@@ -5,10 +5,10 @@
 {% block content %}
 <section class="py-12">
     <div class="container-app max-w-md">
-        <h1 class="text-3xl font-bold text-primary mb-2 text-center">
+        <h1 class="text-3xl font-bold text-semantic-ink mb-2 text-center">
             Rejoindre {{ SITE_NAME }}
         </h1>
-        <p class="text-center text-sm text-muted mb-8">{{ SITE_DESCRIPTION }}</p>
+        <p class="text-center text-sm text-semantic-muted mb-8">{{ SITE_DESCRIPTION }}</p>
 
         <form method="post" action="{% url 'account_signup' %}">
             {% csrf_token %}
@@ -107,8 +107,8 @@
                 </div>
 
                 <!-- Instance rules -->
-                <div class="border-t border-border pt-4">
-                    <p class="text-sm text-secondary mb-2">
+                <div class="border-t border-semantic-border pt-4">
+                    <p class="text-sm text-semantic-ink-secondary mb-2">
                         En vous inscrivant, vous acceptez les
                         <a href="{% url 'core:about' %}" class="link">règles de cette instance</a>.
                     </p>
@@ -125,7 +125,7 @@
         </form>
 
         <!-- Link to login -->
-        <p class="mt-6 text-center text-sm text-secondary">
+        <p class="mt-6 text-center text-sm text-semantic-ink-secondary">
             Déjà un compte ?
             <a href="{% url 'account_login' %}" class="link font-medium">
                 Se connecter

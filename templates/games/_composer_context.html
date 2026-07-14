@@ -19,8 +19,8 @@
         <legend class="form-label">{% trans "Nature" %}</legend>
         <div class="flex flex-wrap gap-2">
             {% for value, label in kinds %}
-                <label class="inline-flex items-center gap-2 min-h-[44px] px-3 rounded-badge border border-border cursor-pointer"
-                       :class="kind === '{{ value }}' ? 'border-crimson bg-crimson/10 text-primary' : 'text-secondary'">
+                <label class="inline-flex items-center gap-2 min-h-[44px] px-3 rounded-full border border-semantic-border cursor-pointer"
+                       :class="kind === '{{ value }}' ? 'border-brand-primary bg-brand-primary/10 text-semantic-ink' : 'text-semantic-ink-secondary'">
                     <input type="radio" name="kind" value="{{ value }}" x-model="kind" class="sr-only">
                     <span class="text-sm">{{ label }}</span>
                 </label>
@@ -35,7 +35,7 @@
             {# MJ: the chip is a sheet — Voix du MJ / vos PJ / PNJ du casting / + Nouveau PNJ #}
             <div class="relative" x-data="{ sheet: false }">
                 <button type="button" @click="sheet = !sheet"
-                        class="inline-flex items-center gap-2 min-h-[44px] px-3 rounded-badge border border-border text-sm">
+                        class="inline-flex items-center gap-2 min-h-[44px] px-3 rounded-full border border-semantic-border text-sm">
                     <span class="i-lucide-drama text-xs"></span>
                     <span x-text="actorLabel || '{% trans "Voix du MJ" %}'"></span>
                     <span class="i-lucide-chevron-down text-xs opacity-60"></span>
@@ -44,32 +44,32 @@
                      class="absolute z-dropdown mt-1 w-72 card card-body p-1 space-y-0.5">
                     <button type="button" x-show="!needsActor"
                             @click="actor = ''; actorLabel = ''; sheet = false"
-                            class="block w-full text-left px-3 py-2 min-h-[44px] rounded hover:bg-card-dark text-sm">
+                            class="block w-full text-left px-3 py-2 min-h-[44px] rounded hover:bg-semantic-card-sunken text-sm">
                         {% trans "Voix du MJ" %}
                     </button>
                     {% if own_pcs %}
-                        <p class="px-3 pt-2 pb-1 text-xs text-muted uppercase tracking-wide">{% trans "Votre personnage" %}</p>
+                        <p class="px-3 pt-2 pb-1 text-xs text-semantic-muted uppercase tracking-wide">{% trans "Votre personnage" %}</p>
                         {% for pc in own_pcs %}
                             <button type="button"
                                     @click="actor = '{{ pc.slug }}'; actorLabel = '{{ pc.name|escapejs }}'; sheet = false"
-                                    class="block w-full text-left px-3 py-2 min-h-[44px] rounded hover:bg-card-dark text-sm">
+                                    class="block w-full text-left px-3 py-2 min-h-[44px] rounded hover:bg-semantic-card-sunken text-sm">
                                 {{ pc.name }}
                             </button>
                         {% endfor %}
                     {% endif %}
                     {% if cast_npcs %}
-                        <p class="px-3 pt-2 pb-1 text-xs text-muted uppercase tracking-wide">{% trans "PNJ de la partie" %}</p>
+                        <p class="px-3 pt-2 pb-1 text-xs text-semantic-muted uppercase tracking-wide">{% trans "PNJ de la partie" %}</p>
                         {% for npc in cast_npcs %}
                             <button type="button"
                                     @click="actor = '{{ npc.slug }}'; actorLabel = '{{ npc.name|escapejs }}'; sheet = false"
-                                    class="block w-full text-left px-3 py-2 min-h-[44px] rounded hover:bg-card-dark text-sm">
+                                    class="block w-full text-left px-3 py-2 min-h-[44px] rounded hover:bg-semantic-card-sunken text-sm">
                                 {{ npc.name }}
                             </button>
                         {% endfor %}
                     {% endif %}
-                    <div class="border-t border-border pt-1" x-data="{ open: false }">
+                    <div class="border-t border-semantic-border pt-1" x-data="{ open: false }">
                         <button type="button" @click="open = !open"
-                                class="block w-full text-left px-3 py-2 min-h-[44px] rounded hover:bg-card-dark text-sm text-crimson">
+                                class="block w-full text-left px-3 py-2 min-h-[44px] rounded hover:bg-semantic-card-sunken text-sm text-brand-primary">
                             {% trans "+ Nouveau PNJ" %}
                         </button>
                         <div x-show="open" x-cloak class="p-2 space-y-2">
@@ -91,14 +91,14 @@
             </div>
         {% else %}
             {# Joueur: the chip is locked to their character — cadenas, non-cliquable #}
-            <div class="inline-flex items-center gap-2 min-h-[44px] px-3 rounded-badge border border-border bg-card-dark text-sm"
+            <div class="inline-flex items-center gap-2 min-h-[44px] px-3 rounded-full border border-semantic-border bg-semantic-card-sunken text-sm"
                  title="{% trans "Vous publiez sous votre personnage." %}">
-                <span class="i-lucide-lock text-xs text-muted"></span>
+                <span class="i-lucide-lock text-xs text-semantic-muted"></span>
                 <span>{{ own_pcs.first.name|default:_("Votre personnage") }}</span>
             </div>
         {% endif %}
     </div>
-    <p class="mb-4 text-xs text-muted" x-show="actorForbidden" x-cloak>
+    <p class="mb-4 text-xs text-semantic-muted" x-show="actorForbidden" x-cloak>
         {% trans "Narration — la voix du récit. Pas d'acteur." %}
     </p>
 
@@ -112,18 +112,18 @@
             <span class="form-label">{% trans "En réponse à" %}</span>
             <div class="flex flex-wrap gap-2 mb-2">
                 <button type="button" @click="scope = 'none'"
-                        class="min-h-[36px] px-3 rounded-badge border text-sm"
-                        :class="scope === 'none' ? 'border-crimson bg-crimson/10 text-primary' : 'border-border text-secondary'">
+                        class="min-h-[36px] px-3 rounded-full border text-sm"
+                        :class="scope === 'none' ? 'border-brand-primary bg-brand-primary/10 text-semantic-ink' : 'border-semantic-border text-semantic-ink-secondary'">
                     {% trans "Aucune" %}
                 </button>
                 <button type="button" @click="scope = 'local'"
-                        class="min-h-[36px] px-3 rounded-badge border text-sm"
-                        :class="scope === 'local' ? 'border-crimson bg-crimson/10 text-primary' : 'border-border text-secondary'">
+                        class="min-h-[36px] px-3 rounded-full border text-sm"
+                        :class="scope === 'local' ? 'border-brand-primary bg-brand-primary/10 text-semantic-ink' : 'border-semantic-border text-semantic-ink-secondary'">
                     {% trans "Dans la scène" %}
                 </button>
                 <button type="button" @click="scope = 'iri'"
-                        class="min-h-[36px] px-3 rounded-badge border text-sm"
-                        :class="scope === 'iri' ? 'border-crimson bg-crimson/10 text-primary' : 'border-border text-secondary'">
+                        class="min-h-[36px] px-3 rounded-full border text-sm"
+                        :class="scope === 'iri' ? 'border-brand-primary bg-brand-primary/10 text-semantic-ink' : 'border-semantic-border text-semantic-ink-secondary'">
                     {% trans "Fédéré (IRI)" %}
                 </button>
             </div>
@@ -142,6 +142,6 @@
         </div>
     {% endif %}
 {% else %}
-    <p class="mb-4 text-sm text-muted">{% trans "Choisissez une partie pour continuer." %}</p>
+    <p class="mb-4 text-sm text-semantic-muted">{% trans "Choisissez une partie pour continuer." %}</p>
 {% endif %}
 </div>

@@ -25,16 +25,16 @@
 
             <div class="flex-1 min-w-0">
                 <a href="{% url 'profile' report.author.username %}"
-                   class="font-medium text-primary hover:text-crimson">
+                   class="font-medium text-semantic-ink hover:text-brand-primary">
                     {{ report.author.display_name|default:report.author.username }}
                 </a>
-                <span class="text-muted text-sm mx-1">{% trans "in" %}</span>
-                <a href="#" class="text-secondary hover:text-crimson text-sm">
+                <span class="text-semantic-muted text-sm mx-1">{% trans "in" %}</span>
+                <a href="#" class="text-semantic-ink-secondary hover:text-brand-primary text-sm">
                     {{ report.game.title }}
                 </a>
             </div>
 
-            <time class="text-xs text-muted flex-shrink-0"
+            <time class="text-xs text-semantic-muted flex-shrink-0"
                   datetime="{{ report.published_at|date:'c' }}">
                 {{ report.published_at|timesince }}
             </time>
@@ -42,7 +42,7 @@
 
         <!-- Title -->
         <h3 class="font-semibold text-lg mb-2">
-            <a href="{{ report.get_absolute_url }}" class="text-primary hover:text-crimson">
+            <a href="{{ report.get_absolute_url }}" class="text-semantic-ink hover:text-brand-primary">
                 {{ report.title }}
             </a>
         </h3>
@@ -52,9 +52,9 @@
             <div class="flex flex-wrap gap-1 mb-3">
                 {% for appearance in report.character_appearances.all|slice:":6" %}
                     <a href="#"
-                       class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-badge
-                              {% if appearance.character.status == 'npc' %}bg-warning/15 text-warning
-                              {% else %}bg-info/15 text-info{% endif %}">
+                       class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full
+                              {% if appearance.character.status == 'npc' %}bg-semantic-warning/15 text-semantic-warning
+                              {% else %}bg-semantic-info/15 text-semantic-info{% endif %}">
                         {{ appearance.character.name }}
                         {% if appearance.character.status == 'npc' %}
                             <span class="i-lucide-sparkles text-xs" title="{% trans "Available NPC" %}"></span>
@@ -63,7 +63,7 @@
                 {% endfor %}
                 {% with total=report.character_appearances.count %}
                     {% if total > 6 %}
-                        <span class="text-xs text-muted">+{{ total|add:"-6" }}</span>
+                        <span class="text-xs text-semantic-muted">+{{ total|add:"-6" }}</span>
                     {% endif %}
                 {% endwith %}
             </div>
@@ -72,27 +72,27 @@
 
     <!-- Footer actions -->
     <div class="card-footer flex items-center gap-4">
-        <button class="btn-ghost btn-sm text-muted">
+        <button class="btn-ghost btn-sm text-semantic-muted">
             <span class="i-lucide-heart text-sm"></span>
         </button>
-        <button class="btn-ghost btn-sm text-muted">
+        <button class="btn-ghost btn-sm text-semantic-muted">
             <span class="i-lucide-message-circle text-sm"></span>
         </button>
-        <button class="btn-ghost btn-sm text-muted">
+        <button class="btn-ghost btn-sm text-semantic-muted">
             <span class="i-lucide-share text-sm"></span>
         </button>
 
         <!-- Context menu (report) -->
         <div class="ml-auto relative" x-data="dropdown">
-            <button @click="toggle()" class="btn-ghost btn-sm text-muted">
+            <button @click="toggle()" class="btn-ghost btn-sm text-semantic-muted">
                 <span class="i-lucide-more-horizontal text-sm"></span>
             </button>
             <div x-show="open" @click.away="close()" x-cloak
                  class="dropdown-menu right-0 mt-1 w-40">
-                <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-secondary hover:bg-surface">
+                <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-surface">
                     <span class="i-lucide-link text-xs"></span> {% trans "Copy link" %}
                 </a>
-                <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-error hover:bg-error/10">
+                <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-semantic-danger hover:bg-semantic-danger/10">
                     <span class="i-lucide-flag text-xs"></span> {% trans "Report" %}
                 </a>
             </div>

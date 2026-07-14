@@ -305,7 +305,7 @@ Un badge discret indiquant l'instance d'origine. Visible sur :
 ```
 Format inline :    (globe) suddenly.games
 Format card :      texte gris sous le nom d'auteur
-Classe :           text-xs text-gray-500 flex items-center gap-1
+Classe :           text-xs text-semantic-muted flex items-center gap-1
                    + i-lucide-globe
 ```
 

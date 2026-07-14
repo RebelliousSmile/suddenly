@@ -9,8 +9,8 @@
 
         <!-- Header -->
         <div class="mb-6">
-            <h1 class="text-xl font-bold text-primary mb-2">{% trans "Shared Sequence" %}</h1>
-            <p class="text-sm text-muted">
+            <h1 class="text-xl font-bold text-semantic-ink mb-2">{% trans "Shared Sequence" %}</h1>
+            <p class="text-sm text-semantic-muted">
                 {{ sequence.link.source.name }} ↔ {{ sequence.link.target.name }}
                 · {{ sequence.link.get_type_display }}
             </p>
@@ -18,10 +18,10 @@
                 {% if sequence.status == 'draft' %}
                     <span class="badge-info">{% trans "Draft" %}</span>
                 {% else %}
-                    <span class="badge bg-card-dark text-secondary border border-border">{% trans "Published" %}</span>
+                    <span class="badge bg-semantic-card-sunken text-semantic-ink-secondary border border-semantic-border">{% trans "Published" %}</span>
                 {% endif %}
                 {% if sequence.last_edited_by %}
-                    <span class="text-xs text-muted">
+                    <span class="text-xs text-semantic-muted">
                         {% blocktrans with username=sequence.last_edited_by.username %}Last edited by @{{ username }}{% endblocktrans %}
                         {% if sequence.last_edited_at %}, {{ sequence.last_edited_at|timesince }}{% endif %}
                     </span>
@@ -34,7 +34,7 @@
         {% endif %}
 
         {% if saved %}
-            <div class="mb-4 p-3 rounded-lg bg-success/10 text-success border border-success/30 text-sm">
+            <div class="mb-4 p-3 rounded-lg bg-semantic-success/10 text-semantic-success border border-semantic-success/30 text-sm">
                 <span class="i-lucide-check text-xs mr-1"></span> {% trans "Saved." %}
             </div>
         {% endif %}
@@ -44,8 +44,8 @@
             {% if sequence.publication_proposed_by == user %}
                 {% include "components/status_banner.html" with type="info" icon="send" message=_("You have proposed publication. Waiting for the other participant's validation.") %}
             {% else %}
-                <div class="mb-4 p-4 rounded-lg bg-crimson/10 border border-crimson/30">
-                    <p class="text-sm text-crimson/80 mb-3">
+                <div class="mb-4 p-4 rounded-lg bg-brand-primary/10 border border-brand-primary/30">
+                    <p class="text-sm text-brand-primary/80 mb-3">
                         <span class="i-lucide-send text-xs mr-1"></span>
                         {% blocktrans with username=sequence.publication_proposed_by.username %}@{{ username }} proposes to publish this sequence.{% endblocktrans %}
                     </p>
@@ -101,7 +101,7 @@
         {% else %}
             <!-- Published: read-only -->
             <div class="card card-body">
-                <h2 class="text-lg font-semibold text-primary mb-4">{{ sequence.title }}</h2>
+                <h2 class="text-lg font-semibold text-semantic-ink mb-4">{{ sequence.title }}</h2>
                 <div class="prose-report">
                     {{ sequence.content|linebreaksbr }}
                 </div>

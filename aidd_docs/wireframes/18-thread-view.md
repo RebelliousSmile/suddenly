@@ -39,7 +39,7 @@ Tous les Rapports dans l'ordre d'arrivee, differencies visuellement par type.
 |  +------------------------------------------------------------+  |
 |  | (book-open) DESCRIPTION              il y a 2h  (globe)?   |  |
 |  |                                                             |  |
-|  | card bg-indigo-50 border-l-4 border-indigo-400              |  |
+|  | rap rap--description  (italique serif, aucun fond colore)   |  |
 |  |                                                             |  |
 |  | La nuit tombait sur le Quartier des Reflets. Les neons      |  |
 |  | clignotaient dans la bruine, projetant des ombres           |  |
@@ -51,7 +51,7 @@ Tous les Rapports dans l'ordre d'arrivee, differencies visuellement par type.
 |  +------------------------------------------------------------+  |
 |  | (message-circle) DISCUSSION           il y a 1h45          |  |
 |  |                                                             |  |
-|  | card bg-emerald-50 border-l-4 border-emerald-400            |  |
+|  | rap rap--discussion  (dialogue, taille augmentee)           |  |
 |  |                                                             |  |
 |  | +------+  Viktor :                                         |  |
 |  | |avatar|  "Tu es en retard. L'Oracle n'attend pas."        |  |
@@ -63,7 +63,7 @@ Tous les Rapports dans l'ordre d'arrivee, differencies visuellement par type.
 |  +------------------------------------------------------------+  |
 |  | (zap) ACTION                          il y a 1h30          |  |
 |  |                                                             |  |
-|  | card bg-amber-50 border-l-4 border-amber-400               |  |
+|  | rap rap--action  (bordure gauche)                          |  |
 |  |                                                             |  |
 |  | Lyra pousse la porte du bar. Son manteau ruisselle          |  |
 |  | de pluie. Elle pose un dossier sur la table sans            |  |
@@ -75,7 +75,7 @@ Tous les Rapports dans l'ordre d'arrivee, differencies visuellement par type.
 |  +------------------------------------------------------------+  |
 |  | (feather) NARRATION                   il y a 1h             |  |
 |  |                                                             |  |
-|  | card bg-violet-50 border-l-4 border-violet-400             |  |
+|  | rap rap--narration  (recit neutre)                         |  |
 |  |                                                             |  |
 |  | Le silence s'installe. Dehors, le bruit d'une              |  |
 |  | sirene s'eloigne. Les trois personnages se regardent,       |  |
@@ -89,14 +89,33 @@ Tous les Rapports dans l'ordre d'arrivee, differencies visuellement par type.
 +------------------------------------------------------------------+
 ```
 
-### Codes couleur par type de Rapport
+### Differenciation par type de Rapport
 
-| Type | Fond | Bordure gauche | Icone |
-|------|------|---------------|-------|
-| Description | `bg-indigo-50` | `border-indigo-400` | `i-lucide-book-open` |
-| Discussion | `bg-emerald-50` | `border-emerald-400` | `i-lucide-message-circle` |
-| Action | `bg-amber-50` | `border-amber-400` | `i-lucide-zap` |
-| Narration | `bg-violet-50` | `border-violet-400` | `i-lucide-feather` |
+> **Mise a jour 2026-07-14 — les fonds pastel par type sont abandonnes.**
+> L'ancienne version donnait a chaque type un fond colore (`bg-indigo-50`, `bg-emerald-50`…).
+> Deux raisons de ne plus le faire :
+>
+> 1. Ces teintes sont **reservees a la semantique de domaine** dans le contrat : l'indigo signifie
+>    « personnage joueur », le violet « instance distante / oracle », l'ambre « PNJ ». Les employer
+>    pour un type de rapport entre en collision directe avec la lecture du produit.
+> 2. La maquette v3 differencie les types par la **typographie et la bordure**, pas par la couleur —
+>    un fil de discussion reste ainsi lisible en noir et blanc, et pour un lecteur daltonien.
+
+Le moteur de rendu est un composant unique, `rap`, decline par modificateur
+(cf. `design/components.json`) :
+
+| Type | Classe | Differenciation |
+|------|--------|-----------------|
+| Narration | `rap--narration` | recit neutre, serif, pas d'acteur |
+| Description | `rap--description` | **italique serif** — l'italique porte le sens |
+| Action | `rap--action` | bordure gauche (`border.width.heavy`) |
+| Discussion | `rap--discussion` | dialogue, taille augmentee en lecture |
+
+Modificateurs transverses : `rap--reply` (reponse indentee), `rap--quoted` (rapport cite, bordure
+crimson). Sous-parties : `rap__replyto`, `rap__qmark`.
+
+Les icones restent : `i-lucide-book-open` (description), `i-lucide-message-circle` (discussion),
+`i-lucide-zap` (action), `i-lucide-feather` (narration).
 
 ---
 
@@ -227,18 +246,22 @@ Toggle mode :
 
 ## Mapping composants UnoCSS
 
+> Classes cibles du contrat (`mode: utility-first`). Le code n'est pas encore migre : cf.
+> `aidd_docs/tasks/2026_07/2026_07_14-design-contract-namespace-migration.md` et la table de
+> correspondance de `aidd_docs/memory/internal/DESIGN.md`.
+
 | Element | Classes |
 |---------|---------|
-| Rapport Description | `card bg-indigo-50 border-l-4 border-indigo-400 card-body` |
-| Rapport Discussion | `card bg-emerald-50 border-l-4 border-emerald-400 card-body` |
-| Rapport Action | `card bg-amber-50 border-l-4 border-amber-400 card-body` |
-| Rapport Narration | `card bg-violet-50 border-l-4 border-violet-400 card-body` |
-| Scene container | `card card-body overflow-hidden` |
+| Rapport Description | `rap rap--description` |
+| Rapport Discussion | `rap rap--discussion` |
+| Rapport Action | `rap rap--action` |
+| Rapport Narration | `rap rap--narration` |
+| Scene container | `card card__body overflow-hidden` |
 | Dots navigation | `flex items-center gap-2 justify-center` |
-| Dot active | `w-2 h-2 rounded-full bg-primary-500` |
-| Dot inactive | `w-2 h-2 rounded-full bg-gray-300` |
-| Badge distant | `instance-badge` (text-xs text-gray-500 + i-lucide-globe) |
-| Breadcrumb | `text-sm text-gray-500` + `link-muted` |
+| Dot active | `w-2 h-2 rounded-full bg-brand-primary` |
+| Dot inactive | `w-2 h-2 rounded-full bg-semantic-border` |
+| Badge distant | `badge badge--remote` (+ `i-lucide-globe`) — token `color.domain.remote` |
+| Breadcrumb | `text-sm text-semantic-muted` + `link-muted` |
 | Mode tabs | `(alpine:tabs)` avec border-b |
 
 ---

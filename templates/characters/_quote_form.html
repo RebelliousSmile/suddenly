@@ -20,7 +20,7 @@
 
     <div>
         <label for="quote-context" class="form-label">
-            {% trans "Context" %} <span class="text-muted">({% trans "optional" %})</span>
+            {% trans "Context" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
         </label>
         <textarea id="quote-context" name="context" rows="2"
                   placeholder="{% trans "Narrative situation..." %}"
@@ -29,7 +29,7 @@
 
     <div>
         <label for="quote-cw" class="form-label">
-            {% trans "Content warning" %} <span class="text-muted">({% trans "optional" %})</span>
+            {% trans "Content warning" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
         </label>
         <input type="text" id="quote-cw" name="content_warning"
                value="{{ form_data.content_warning|default:'' }}"

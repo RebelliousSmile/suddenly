@@ -15,18 +15,18 @@
 <!-- ================================================================ -->
 <section class="mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-file-text w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 1 — CR complet · Vue lecteur connecté · Public</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-file-text w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 1 — CR complet · Vue lecteur connecté · Public</span>
     </div>
 
     <!-- Breadcrumb + header -->
-    <div class="border-b border-border bg-surface py-6">
+    <div class="border-b border-semantic-border bg-semantic-surface py-6">
         <div class="container-app px-4">
 
             <!-- Breadcrumb + follow button -->
             <div class="flex items-center justify-between gap-4 mb-4">
-                <div class="flex items-center gap-2 text-sm text-muted">
+                <div class="flex items-center gap-2 text-sm text-semantic-muted">
                     <a href="#" class="link-muted">City of Mist</a>
                     <span class="i-lucide-chevron-right w-3.5 h-3.5 inline-block"></span>
                     <a href="#" class="link-muted">Session 14</a>
@@ -39,7 +39,7 @@
             </div>
 
             <!-- Title -->
-            <h1 class="text-3xl font-bold text-primary mb-4">L'Écho des Miroirs</h1>
+            <h1 class="text-3xl font-bold text-semantic-ink mb-4">L'Écho des Miroirs</h1>
 
             <!-- Author + dates + visibility -->
             <div class="flex items-center gap-3">
@@ -47,12 +47,12 @@
                 <div>
                     <div class="flex items-center gap-2 flex-wrap">
                         <a href="#" class="link font-medium text-sm">@alice</a>
-                        <span class="text-muted text-sm">·</span>
-                        <span class="text-muted text-sm">Session du 12 avr. 2026</span>
+                        <span class="text-semantic-muted text-sm">·</span>
+                        <span class="text-semantic-muted text-sm">Session du 12 avr. 2026</span>
                     </div>
-                    <div class="flex items-center gap-2 mt-0.5 flex-wrap text-xs text-muted">
+                    <div class="flex items-center gap-2 mt-0.5 flex-wrap text-xs text-semantic-muted">
                         <span>publiée le 15 avr. 2026</span>
-                        <span class="text-border">·</span>
+                        <span class="text-semantic-border">·</span>
                         <span class="flex items-center gap-1">
                             <span class="i-lucide-globe w-3.5 h-3.5 inline-block text-green-600"></span>
                             Public
@@ -64,12 +64,12 @@
     </div>
 
     <!-- Distribution (cast) — all badge variants -->
-    <div class="border-b border-border py-6">
+    <div class="border-b border-semantic-border py-6">
         <div class="container-app px-4">
-            <h2 class="text-xs font-semibold text-muted uppercase tracking-widest mb-4">Distribution</h2>
+            <h2 class="text-xs font-semibold text-semantic-muted uppercase tracking-widest mb-4">Distribution</h2>
 
             <!-- ★ Principaux -->
-            <p class="text-sm font-semibold text-primary mb-3 flex items-center gap-1.5">
+            <p class="text-sm font-semibold text-semantic-ink mb-3 flex items-center gap-1.5">
                 <span class="text-amber-500">★</span> Principaux
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
@@ -82,8 +82,8 @@
                             <a href="#" class="link font-medium text-sm">Viktor</a>
                             <span class="badge badge-available text-xs">NPC</span>
                         </div>
-                        <p class="text-xs text-muted truncate">@alice · City of Mist</p>
-                        <p class="text-xs text-muted">Principal</p>
+                        <p class="text-xs text-semantic-muted truncate">@alice · City of Mist</p>
+                        <p class="text-xs text-semantic-muted">Principal</p>
                     </div>
                 </div>
 
@@ -95,15 +95,15 @@
                             <a href="#" class="link font-medium text-sm">Lyra</a>
                             <span class="badge badge-pc text-xs">PC</span>
                         </div>
-                        <p class="text-xs text-muted">@alice</p>
-                        <p class="text-xs text-muted">Principal</p>
+                        <p class="text-xs text-semantic-muted">@alice</p>
+                        <p class="text-xs text-semantic-muted">Principal</p>
                     </div>
                 </div>
             </div>
 
             <!-- · Secondaires -->
-            <p class="text-sm font-semibold text-primary mb-3 flex items-center gap-1.5">
-                <span class="text-muted">·</span> Secondaires
+            <p class="text-sm font-semibold text-semantic-ink mb-3 flex items-center gap-1.5">
+                <span class="text-semantic-muted">·</span> Secondaires
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
 
@@ -120,21 +120,21 @@
                                 ⟵ claim
                             </button>
                         </div>
-                        <p class="text-xs text-muted truncate">@bob (retcon de @alice)</p>
-                        <p class="text-xs text-muted">Secondaire</p>
+                        <p class="text-xs text-semantic-muted truncate">@bob (retcon de @alice)</p>
+                        <p class="text-xs text-semantic-muted">Secondaire</p>
 
                         <!-- Detail panel (inline, toggled by Alpine) -->
-                        <div x-show="open" x-transition class="mt-3 pt-3 border-t border-border">
+                        <div x-show="open" x-transition class="mt-3 pt-3 border-t border-semantic-border">
                             <div class="flex items-start gap-2">
                                 <div class="avatar-sm avatar-placeholder shrink-0">O</div>
                                 <div>
-                                    <p class="text-sm font-medium text-primary">Ombra — @bob@soudainement.fr</p>
+                                    <p class="text-sm font-medium text-semantic-ink">Ombra — @bob@soudainement.fr</p>
                                 </div>
                             </div>
-                            <div class="mt-2 flex items-start gap-2 text-xs text-muted">
-                                <span class="i-lucide-rotate-ccw w-3.5 h-3.5 inline-block shrink-0 mt-0.5 text-violet"></span>
+                            <div class="mt-2 flex items-start gap-2 text-xs text-semantic-muted">
+                                <span class="i-lucide-rotate-ccw w-3.5 h-3.5 inline-block shrink-0 mt-0.5 text-brand-accent"></span>
                                 <div>
-                                    <p class="text-violet dark:text-violet-300 font-medium mb-1">Rétrocon — ce personnage était déjà le PC de @bob depuis le début.</p>
+                                    <p class="text-brand-accent dark:text-violet-300 font-medium mb-1">Rétrocon — ce personnage était déjà le PC de @bob depuis le début.</p>
                                     <p>PNJ originel : <a href="#" class="link">Ombra (@alice)</a> · City of Mist · Sessions 1–7</p>
                                     <p class="mt-1">Claim accepté le 10 mars 2026</p>
                                 </div>
@@ -160,21 +160,21 @@
                                 ⟵ adopt
                             </button>
                         </div>
-                        <p class="text-xs text-muted truncate">@carol (adopté de @alice)</p>
-                        <p class="text-xs text-muted">Secondaire</p>
+                        <p class="text-xs text-semantic-muted truncate">@carol (adopté de @alice)</p>
+                        <p class="text-xs text-semantic-muted">Secondaire</p>
 
                         <!-- Detail panel -->
-                        <div x-show="open" x-transition class="mt-3 pt-3 border-t border-border">
+                        <div x-show="open" x-transition class="mt-3 pt-3 border-t border-semantic-border">
                             <div class="flex items-start gap-2">
                                 <div class="avatar-sm avatar-placeholder shrink-0">K</div>
                                 <div>
-                                    <p class="text-sm font-medium text-primary">Kael — @carol@soudainement.fr</p>
+                                    <p class="text-sm font-medium text-semantic-ink">Kael — @carol@soudainement.fr</p>
                                 </div>
                             </div>
-                            <div class="mt-2 flex items-start gap-2 text-xs text-muted">
-                                <span class="i-lucide-heart w-3.5 h-3.5 inline-block shrink-0 mt-0.5 text-success"></span>
+                            <div class="mt-2 flex items-start gap-2 text-xs text-semantic-muted">
+                                <span class="i-lucide-heart w-3.5 h-3.5 inline-block shrink-0 mt-0.5 text-semantic-success"></span>
                                 <div>
-                                    <p class="text-success dark:text-emerald-300 font-medium mb-1">Adopté depuis</p>
+                                    <p class="text-semantic-success dark:text-emerald-300 font-medium mb-1">Adopté depuis</p>
                                     <p>PNJ originel : <a href="#" class="link">Kael (@alice)</a> · City of Mist · Session 8</p>
                                     <p class="mt-1">Demande acceptée le 20 mars 2026</p>
                                 </div>
@@ -189,8 +189,8 @@
             </div>
 
             <!-- ○ Mentionnés -->
-            <p class="text-sm font-semibold text-primary mb-3 flex items-center gap-1.5">
-                <span class="text-muted">○</span> Mentionnés
+            <p class="text-sm font-semibold text-semantic-ink mb-3 flex items-center gap-1.5">
+                <span class="text-semantic-muted">○</span> Mentionnés
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
@@ -207,18 +207,18 @@
                                 ⟵ fork
                             </button>
                         </div>
-                        <p class="text-xs text-muted truncate">@dan (dérivé de Viktor)</p>
-                        <p class="text-xs text-muted">Mentionné</p>
+                        <p class="text-xs text-semantic-muted truncate">@dan (dérivé de Viktor)</p>
+                        <p class="text-xs text-semantic-muted">Mentionné</p>
 
                         <!-- Detail panel -->
-                        <div x-show="open" x-transition class="mt-3 pt-3 border-t border-border">
+                        <div x-show="open" x-transition class="mt-3 pt-3 border-t border-semantic-border">
                             <div class="flex items-start gap-2">
                                 <div class="avatar-sm avatar-placeholder shrink-0">S</div>
                                 <div>
-                                    <p class="text-sm font-medium text-primary">Sable — @dan@suddenly.social</p>
+                                    <p class="text-sm font-medium text-semantic-ink">Sable — @dan@suddenly.social</p>
                                 </div>
                             </div>
-                            <div class="mt-2 flex items-start gap-2 text-xs text-muted">
+                            <div class="mt-2 flex items-start gap-2 text-xs text-semantic-muted">
                                 <span class="i-lucide-git-branch w-3.5 h-3.5 inline-block shrink-0 mt-0.5 text-amber-500"></span>
                                 <div>
                                     <p class="text-amber-700 dark:text-amber-300 font-medium mb-1">Dérivé de</p>
@@ -239,7 +239,7 @@
     </div>
 
     <!-- Report prose content -->
-    <div class="border-b border-border py-8">
+    <div class="border-b border-semantic-border py-8">
         <div class="container-app px-4">
             <div class="prose-report max-w-none">
                 <p>La nuit tombait sur le Quartier des Reflets quand <strong>Viktor</strong> poussa la porte du bar. L'Oracle l'attendait, ses yeux brillant d'une lueur froide — électrique, presque féline. Nul autre client n'osait s'approcher de cette table depuis que les miroirs avaient commencé à murmurer.</p>
@@ -258,23 +258,23 @@
     </div>
 
     <!-- Quotes section -->
-    <div class="border-b border-border py-6">
+    <div class="border-b border-semantic-border py-6">
         <div class="container-app px-4">
-            <h2 class="text-sm font-semibold text-primary mb-4">Citations de cette session</h2>
+            <h2 class="text-sm font-semibold text-semantic-ink mb-4">Citations de cette session</h2>
 
             <div class="flex flex-col gap-3 mb-4">
 
                 <!-- Quote 1 -->
                 <div class="card p-4">
-                    <blockquote class="text-secondary italic mb-3">
+                    <blockquote class="text-semantic-ink-secondary italic mb-3">
                         « Les mythes ne meurent pas, ils changent de visage. »
                     </blockquote>
                     <div class="flex items-center justify-between gap-2 flex-wrap">
                         <div class="flex items-center gap-2">
                             <div class="avatar-sm avatar-placeholder">V</div>
-                            <span class="text-sm text-muted">Viktor</span>
-                            <span class="text-xs text-muted">·</span>
-                            <span class="flex items-center gap-1 text-xs text-muted">
+                            <span class="text-sm text-semantic-muted">Viktor</span>
+                            <span class="text-xs text-semantic-muted">·</span>
+                            <span class="flex items-center gap-1 text-xs text-semantic-muted">
                                 <span class="i-lucide-globe w-3 h-3 inline-block"></span>
                                 public
                             </span>
@@ -284,7 +284,7 @@
                                 <span class="i-lucide-flag w-3.5 h-3.5 inline-block"></span>
                                 Signaler
                             </button>
-                            <button type="button" class="flex items-center gap-1 text-muted hover:text-crimson transition-colors text-sm">
+                            <button type="button" class="flex items-center gap-1 text-semantic-muted hover:text-brand-primary transition-colors text-sm">
                                 <span class="i-lucide-heart w-4 h-4 inline-block"></span>
                                 <span>3</span>
                             </button>
@@ -294,15 +294,15 @@
 
                 <!-- Quote 2 -->
                 <div class="card p-4">
-                    <blockquote class="text-secondary italic mb-3">
+                    <blockquote class="text-semantic-ink-secondary italic mb-3">
                         « Je ne suis pas venue pour négocier. »
                     </blockquote>
                     <div class="flex items-center justify-between gap-2 flex-wrap">
                         <div class="flex items-center gap-2">
                             <div class="avatar-sm avatar-placeholder">L</div>
-                            <span class="text-sm text-muted">Lyra</span>
-                            <span class="text-xs text-muted">·</span>
-                            <span class="flex items-center gap-1 text-xs text-muted">
+                            <span class="text-sm text-semantic-muted">Lyra</span>
+                            <span class="text-xs text-semantic-muted">·</span>
+                            <span class="flex items-center gap-1 text-xs text-semantic-muted">
                                 <span class="i-lucide-globe w-3 h-3 inline-block"></span>
                                 public
                             </span>
@@ -312,7 +312,7 @@
                                 <span class="i-lucide-flag w-3.5 h-3.5 inline-block"></span>
                                 Signaler
                             </button>
-                            <button type="button" class="flex items-center gap-1 text-muted hover:text-crimson transition-colors text-sm">
+                            <button type="button" class="flex items-center gap-1 text-semantic-muted hover:text-brand-primary transition-colors text-sm">
                                 <span class="i-lucide-heart w-4 h-4 inline-block"></span>
                                 <span>7</span>
                             </button>
@@ -333,15 +333,15 @@
     <div class="py-4">
         <div class="container-app px-4">
             <div class="flex items-center gap-6">
-                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-crimson transition-colors">
+                <button type="button" class="flex items-center gap-1.5 text-semantic-muted hover:text-brand-primary transition-colors">
                     <span class="i-lucide-heart w-5 h-5 inline-block"></span>
                     <span class="text-sm font-medium">12</span>
                 </button>
-                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-primary transition-colors">
+                <button type="button" class="flex items-center gap-1.5 text-semantic-muted hover:text-semantic-ink transition-colors">
                     <span class="i-lucide-repeat-2 w-5 h-5 inline-block"></span>
                     <span class="text-sm font-medium">Recommander</span>
                 </button>
-                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-primary transition-colors">
+                <button type="button" class="flex items-center gap-1.5 text-semantic-muted hover:text-semantic-ink transition-colors">
                     <span class="i-lucide-more-horizontal w-5 h-5 inline-block"></span>
                     <span class="text-sm">Plus</span>
                 </button>
@@ -354,11 +354,11 @@
 <!-- ================================================================ -->
 <!-- SECTION 2 — LÉGENDE DES BADGES (référence) -->
 <!-- ================================================================ -->
-<section class="border-t-4 border-crimson mb-16">
+<section class="border-t-4 border-brand-primary mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-tag w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 2 — Légende des statuts de personnages et rôles de cast</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-tag w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 2 — Légende des statuts de personnages et rôles de cast</span>
     </div>
 
     <div class="container-app px-4 py-8">
@@ -367,41 +367,41 @@
 
             <!-- Statuts badges -->
             <div>
-                <h3 class="text-sm font-semibold text-primary mb-4">Statuts de personnages</h3>
+                <h3 class="text-sm font-semibold text-semantic-ink mb-4">Statuts de personnages</h3>
                 <div class="flex flex-col gap-3">
                     <div class="flex items-center gap-3">
                         <span class="badge badge-available w-24 justify-center text-xs">NPC</span>
                         <div>
-                            <p class="text-sm text-primary font-medium">NPC</p>
-                            <p class="text-xs text-muted">PNJ du GM auteur — pas de lien externe</p>
+                            <p class="text-sm text-semantic-ink font-medium">NPC</p>
+                            <p class="text-xs text-semantic-muted">PNJ du GM auteur — pas de lien externe</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="badge badge-pc w-24 justify-center text-xs">PC</span>
                         <div>
-                            <p class="text-sm text-primary font-medium">PC</p>
-                            <p class="text-xs text-muted">PJ de l'auteur — pas de lien externe</p>
+                            <p class="text-sm text-semantic-ink font-medium">PC</p>
+                            <p class="text-xs text-semantic-muted">PJ de l'auteur — pas de lien externe</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="badge badge-claimed w-24 justify-center text-xs">⟵ claim</span>
                         <div>
-                            <p class="text-sm text-primary font-medium">Claim</p>
-                            <p class="text-xs text-muted">PNJ rétroactivement réclamé (retcon)</p>
+                            <p class="text-sm text-semantic-ink font-medium">Claim</p>
+                            <p class="text-xs text-semantic-muted">PNJ rétroactivement réclamé (retcon)</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="badge badge-adopted w-24 justify-center text-xs">⟵ adopt</span>
                         <div>
-                            <p class="text-sm text-primary font-medium">Adopt</p>
-                            <p class="text-xs text-muted">PNJ adopté comme PC par un autre joueur</p>
+                            <p class="text-sm text-semantic-ink font-medium">Adopt</p>
+                            <p class="text-xs text-semantic-muted">PNJ adopté comme PC par un autre joueur</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="badge badge-forked w-24 justify-center text-xs">⟵ fork</span>
                         <div>
-                            <p class="text-sm text-primary font-medium">Fork</p>
-                            <p class="text-xs text-muted">Nouveau PC dérivé/inspiré du PNJ</p>
+                            <p class="text-sm text-semantic-ink font-medium">Fork</p>
+                            <p class="text-xs text-semantic-muted">Nouveau PC dérivé/inspiré du PNJ</p>
                         </div>
                     </div>
                 </div>
@@ -409,27 +409,27 @@
 
             <!-- Rôles de cast -->
             <div>
-                <h3 class="text-sm font-semibold text-primary mb-4">Rôles de cast</h3>
+                <h3 class="text-sm font-semibold text-semantic-ink mb-4">Rôles de cast</h3>
                 <div class="flex flex-col gap-3">
                     <div class="flex items-center gap-3">
                         <span class="text-amber-500 text-xl w-24 text-center">★</span>
                         <div>
-                            <p class="text-sm text-primary font-medium">Principal</p>
-                            <p class="text-xs text-muted">Personnage central de la session</p>
+                            <p class="text-sm text-semantic-ink font-medium">Principal</p>
+                            <p class="text-xs text-semantic-muted">Personnage central de la session</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
-                        <span class="text-muted text-xl w-24 text-center font-bold">·</span>
+                        <span class="text-semantic-muted text-xl w-24 text-center font-bold">·</span>
                         <div>
-                            <p class="text-sm text-primary font-medium">Secondaire</p>
-                            <p class="text-xs text-muted">Rôle significatif mais non central</p>
+                            <p class="text-sm text-semantic-ink font-medium">Secondaire</p>
+                            <p class="text-xs text-semantic-muted">Rôle significatif mais non central</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
-                        <span class="text-muted text-xl w-24 text-center">○</span>
+                        <span class="text-semantic-muted text-xl w-24 text-center">○</span>
                         <div>
-                            <p class="text-sm text-primary font-medium">Mentionné</p>
-                            <p class="text-xs text-muted">Référencé sans apparition directe</p>
+                            <p class="text-sm text-semantic-ink font-medium">Mentionné</p>
+                            <p class="text-xs text-semantic-muted">Référencé sans apparition directe</p>
                         </div>
                     </div>
                 </div>
@@ -443,16 +443,16 @@
 <!-- ================================================================ -->
 <!-- SECTION 3 — VARIANTE : CONTENT WARNING -->
 <!-- ================================================================ -->
-<section class="border-t-4 border-crimson mb-16">
+<section class="border-t-4 border-brand-primary mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-alert-triangle w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 3 — Variante · Content Warning</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-alert-triangle w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 3 — Variante · Content Warning</span>
     </div>
 
     <div class="container-app px-4 py-8 max-w-2xl">
 
-        <p class="text-xs text-muted mb-5">Apparence dans le fil quand un CW est renseigné. Masqué par défaut — clic → Alpine.js toggle inline.</p>
+        <p class="text-xs text-semantic-muted mb-5">Apparence dans le fil quand un CW est renseigné. Masqué par défaut — clic → Alpine.js toggle inline.</p>
 
         <!-- Feed card — collapsed (CW hidden) -->
         <div class="card mb-3" x-data="{ expanded: false }">
@@ -463,12 +463,12 @@
                         <div class="flex items-center justify-between gap-2">
                             <div>
                                 <a href="#" class="link font-medium text-sm">@alice</a>
-                                <span class="text-muted text-xs mx-1">·</span>
+                                <span class="text-semantic-muted text-xs mx-1">·</span>
                                 <a href="#" class="link-muted text-xs">City of Mist</a>
                             </div>
-                            <span class="text-xs text-muted shrink-0">il y a 2h</span>
+                            <span class="text-xs text-semantic-muted shrink-0">il y a 2h</span>
                         </div>
-                        <p class="text-sm text-primary font-medium mt-0.5">Session 14 : L'Écho des Miroirs</p>
+                        <p class="text-sm text-semantic-ink font-medium mt-0.5">Session 14 : L'Écho des Miroirs</p>
                     </div>
                 </div>
 
@@ -487,33 +487,33 @@
                     <span x-text="expanded ? 'Masquer le contenu' : 'Afficher le contenu'">Afficher le contenu</span>
                 </button>
 
-                <div x-show="expanded" x-transition class="mt-3 pt-3 border-t border-border">
-                    <p class="text-sm text-secondary line-clamp-4">
+                <div x-show="expanded" x-transition class="mt-3 pt-3 border-t border-semantic-border">
+                    <p class="text-sm text-semantic-ink-secondary line-clamp-4">
                         La nuit tombait sur le Quartier des Reflets quand Viktor poussa la porte du bar. L'Oracle l'attendait, ses yeux brillant d'une lueur froide. Lyra arriva par la porte de derrière, son manteau ruisselant de pluie...
                     </p>
                     <a href="#" class="link text-sm mt-2 inline-block">Lire la suite</a>
                 </div>
             </div>
-            <div class="card-footer flex items-center gap-4 text-muted">
-                <button class="flex items-center gap-1 hover:text-crimson transition-colors text-sm">
+            <div class="card-footer flex items-center gap-4 text-semantic-muted">
+                <button class="flex items-center gap-1 hover:text-brand-primary transition-colors text-sm">
                     <span class="i-lucide-heart w-4 h-4 inline-block"></span> 12
                 </button>
-                <button class="flex items-center gap-1 hover:text-primary transition-colors text-sm">
+                <button class="flex items-center gap-1 hover:text-semantic-ink transition-colors text-sm">
                     <span class="i-lucide-repeat-2 w-4 h-4 inline-block"></span> Recommander
                 </button>
-                <button class="flex items-center gap-1 hover:text-primary transition-colors text-sm ml-auto">
+                <button class="flex items-center gap-1 hover:text-semantic-ink transition-colors text-sm ml-auto">
                     <span class="i-lucide-more-horizontal w-4 h-4 inline-block"></span>
                 </button>
             </div>
         </div>
 
         <!-- Vue détail avec CW — bandeau au-dessus du contenu -->
-        <p class="text-xs text-muted mb-3 mt-8">Vue détail avec CW — bandeau au-dessus du corps (utilisateur a cliqué Afficher) :</p>
-        <div class="border border-border rounded-xl overflow-hidden">
-            <div class="py-4 px-4 border-b border-border text-xs text-muted italic">
+        <p class="text-xs text-semantic-muted mb-3 mt-8">Vue détail avec CW — bandeau au-dessus du corps (utilisateur a cliqué Afficher) :</p>
+        <div class="border border-semantic-border rounded-xl overflow-hidden">
+            <div class="py-4 px-4 border-b border-semantic-border text-xs text-semantic-muted italic">
                 [Distribution — identique à la vue standard]
             </div>
-            <div class="px-4 py-4 border-b border-border bg-amber-50 dark:bg-amber-950/20" x-data="{ shown: true }">
+            <div class="px-4 py-4 border-b border-semantic-border bg-amber-50 dark:bg-amber-950/20" x-data="{ shown: true }">
                 <div class="flex items-center gap-2 text-sm text-amber-700 dark:text-amber-400 mb-2">
                     <span class="i-lucide-alert-triangle w-4 h-4 inline-block shrink-0"></span>
                     <span>Avertissement : Violence, thèmes sombres</span>
@@ -527,7 +527,7 @@
                     <span x-text="shown ? 'Masquer le contenu' : 'Afficher le contenu'">Masquer le contenu</span>
                 </button>
             </div>
-            <div class="px-4 py-6 text-sm text-secondary italic text-muted">
+            <div class="px-4 py-6 text-sm text-semantic-ink-secondary italic text-semantic-muted">
                 La nuit tombait sur le Quartier des Reflets... (contenu visible car l'utilisateur a cliqué Afficher)
             </div>
         </div>
@@ -539,11 +539,11 @@
 <!-- ================================================================ -->
 <!-- SECTION 4 — VARIANTE : BROUILLON (vue auteur) -->
 <!-- ================================================================ -->
-<section class="border-t-4 border-crimson mb-16">
+<section class="border-t-4 border-brand-primary mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-clock w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 4 — Variante · Brouillon (vue auteur)</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-clock w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 4 — Variante · Brouillon (vue auteur)</span>
     </div>
 
     <!-- Draft banner -->
@@ -553,10 +553,10 @@
     </div>
 
     <!-- Header -->
-    <div class="border-b border-border bg-surface py-6">
+    <div class="border-b border-semantic-border bg-semantic-surface py-6">
         <div class="container-app px-4">
             <div class="flex items-center justify-between gap-4 mb-4">
-                <div class="flex items-center gap-2 text-sm text-muted">
+                <div class="flex items-center gap-2 text-sm text-semantic-muted">
                     <a href="#" class="link-muted">City of Mist</a>
                     <span class="i-lucide-chevron-right w-3.5 h-3.5 inline-block"></span>
                     <a href="#" class="link-muted">Session 14 (brouillon)</a>
@@ -566,14 +566,14 @@
                     Modifier
                 </a>
             </div>
-            <h1 class="text-3xl font-bold text-primary mb-4">L'Écho des Miroirs</h1>
+            <h1 class="text-3xl font-bold text-semantic-ink mb-4">L'Écho des Miroirs</h1>
             <div class="flex items-center gap-3">
                 <div class="avatar-md avatar-placeholder">A</div>
                 <div>
                     <div class="flex items-center gap-2">
                         <a href="#" class="link font-medium text-sm">@alice</a>
-                        <span class="text-muted text-sm">·</span>
-                        <span class="text-muted text-sm">créé le 14 avr. 2026</span>
+                        <span class="text-semantic-muted text-sm">·</span>
+                        <span class="text-semantic-muted text-sm">créé le 14 avr. 2026</span>
                     </div>
                     <div class="flex items-center gap-1 mt-0.5 text-xs text-amber-600 dark:text-amber-400">
                         <span class="i-lucide-clock w-3.5 h-3.5 inline-block"></span>
@@ -585,12 +585,12 @@
     </div>
 
     <!-- Distribution placeholder -->
-    <div class="border-b border-border py-4 px-4 text-xs text-muted italic container-app">
+    <div class="border-b border-semantic-border py-4 px-4 text-xs text-semantic-muted italic container-app">
         [Distribution — identique à la vue standard]
     </div>
 
     <!-- Content placeholder -->
-    <div class="border-b border-border py-4 px-4 text-xs text-muted italic container-app">
+    <div class="border-b border-semantic-border py-4 px-4 text-xs text-semantic-muted italic container-app">
         [Contenu du CR]
     </div>
 
@@ -619,31 +619,31 @@
 <!-- ================================================================ -->
 <!-- SECTION 5 — VARIANTE : NON-LISTÉ -->
 <!-- ================================================================ -->
-<section class="border-t-4 border-crimson mb-16">
+<section class="border-t-4 border-brand-primary mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-unlock w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 5 — Variante · Non-listé</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-unlock w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 5 — Variante · Non-listé</span>
     </div>
 
     <!-- Header -->
-    <div class="border-b border-border bg-surface py-6">
+    <div class="border-b border-semantic-border bg-semantic-surface py-6">
         <div class="container-app px-4">
-            <div class="flex items-center gap-2 text-sm text-muted mb-4">
+            <div class="flex items-center gap-2 text-sm text-semantic-muted mb-4">
                 <a href="#" class="link-muted">City of Mist</a>
                 <span class="i-lucide-chevron-right w-3.5 h-3.5 inline-block"></span>
                 <a href="#" class="link-muted">Session 14</a>
             </div>
-            <h1 class="text-3xl font-bold text-primary mb-4">L'Écho des Miroirs</h1>
+            <h1 class="text-3xl font-bold text-semantic-ink mb-4">L'Écho des Miroirs</h1>
             <div class="flex items-center gap-3">
                 <div class="avatar-md avatar-placeholder">A</div>
                 <div>
                     <div class="flex items-center gap-2">
                         <a href="#" class="link font-medium text-sm">@alice</a>
-                        <span class="text-muted text-sm">·</span>
-                        <span class="text-muted text-sm">Session du 12 avr. 2026</span>
+                        <span class="text-semantic-muted text-sm">·</span>
+                        <span class="text-semantic-muted text-sm">Session du 12 avr. 2026</span>
                     </div>
-                    <div class="flex items-center gap-1.5 mt-0.5 text-xs text-muted">
+                    <div class="flex items-center gap-1.5 mt-0.5 text-xs text-semantic-muted">
                         <span class="i-lucide-unlock w-3.5 h-3.5 inline-block text-amber-500"></span>
                         <span>Non-listé — accessible par lien direct · non visible dans les fils d'actualité</span>
                     </div>
@@ -652,7 +652,7 @@
         </div>
     </div>
 
-    <div class="border-b border-border py-4 px-4 text-xs text-muted italic container-app">
+    <div class="border-b border-semantic-border py-4 px-4 text-xs text-semantic-muted italic container-app">
         [Distribution + contenu identiques — badge Non-listé à la place de Public]
     </div>
 
@@ -660,16 +660,16 @@
     <div class="py-4">
         <div class="container-app px-4">
             <div class="flex items-center gap-6">
-                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-crimson transition-colors">
+                <button type="button" class="flex items-center gap-1.5 text-semantic-muted hover:text-brand-primary transition-colors">
                     <span class="i-lucide-heart w-5 h-5 inline-block"></span>
                     <span class="text-sm font-medium">12</span>
                 </button>
                 <!-- Pas de bouton Recommander pour Non-listé -->
-                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-primary transition-colors">
+                <button type="button" class="flex items-center gap-1.5 text-semantic-muted hover:text-semantic-ink transition-colors">
                     <span class="i-lucide-more-horizontal w-5 h-5 inline-block"></span>
                     <span class="text-sm">Plus</span>
                 </button>
-                <span class="text-xs text-muted italic ml-2">(pas de bouton Recommander)</span>
+                <span class="text-xs text-semantic-muted italic ml-2">(pas de bouton Recommander)</span>
             </div>
         </div>
     </div>
@@ -679,19 +679,19 @@
 <!-- ================================================================ -->
 <!-- SECTION 6 — VARIANTE : ABONNÉS SEULEMENT -->
 <!-- ================================================================ -->
-<section class="border-t-4 border-crimson mb-16">
+<section class="border-t-4 border-brand-primary mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-lock w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 6 — Variante · Abonnés seulement</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-lock w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 6 — Variante · Abonnés seulement</span>
     </div>
 
     <div class="container-app px-4 py-8 max-w-2xl">
 
-        <p class="text-xs text-muted mb-5">Deux états : vue auteur/abonné (contenu visible) et vue visiteur non-abonné (contenu caché).</p>
+        <p class="text-xs text-semantic-muted mb-5">Deux états : vue auteur/abonné (contenu visible) et vue visiteur non-abonné (contenu caché).</p>
 
         <!-- Vue auteur / abonné — header -->
-        <p class="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Vue auteur ou abonné :</p>
+        <p class="text-xs font-semibold text-semantic-muted uppercase tracking-widest mb-3">Vue auteur ou abonné :</p>
         <div class="card mb-8">
             <div class="card-body">
                 <div class="flex items-center gap-3 mb-1">
@@ -699,27 +699,27 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <a href="#" class="link font-medium text-sm">@alice</a>
-                            <span class="text-muted text-sm">·</span>
-                            <span class="text-muted text-sm">Session du 12 avr. 2026</span>
+                            <span class="text-semantic-muted text-sm">·</span>
+                            <span class="text-semantic-muted text-sm">Session du 12 avr. 2026</span>
                         </div>
-                        <div class="flex items-center gap-1.5 mt-0.5 text-xs text-muted">
-                            <span class="i-lucide-lock w-3.5 h-3.5 inline-block text-crimson"></span>
+                        <div class="flex items-center gap-1.5 mt-0.5 text-xs text-semantic-muted">
+                            <span class="i-lucide-lock w-3.5 h-3.5 inline-block text-brand-primary"></span>
                             <span>Abonnés seulement</span>
                         </div>
                     </div>
                 </div>
-                <h2 class="text-xl font-bold text-primary mt-3 mb-1">L'Écho des Miroirs</h2>
-                <p class="text-sm text-secondary">La nuit tombait sur le Quartier des Reflets quand Viktor poussa la porte du bar...</p>
+                <h2 class="text-xl font-bold text-semantic-ink mt-3 mb-1">L'Écho des Miroirs</h2>
+                <p class="text-sm text-semantic-ink-secondary">La nuit tombait sur le Quartier des Reflets quand Viktor poussa la porte du bar...</p>
             </div>
         </div>
 
         <!-- Vue visiteur non-abonné -->
-        <p class="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Vue visiteur non-abonné :</p>
-        <div class="card border-2 border-border">
+        <p class="text-xs font-semibold text-semantic-muted uppercase tracking-widest mb-3">Vue visiteur non-abonné :</p>
+        <div class="card border-2 border-semantic-border">
             <div class="card-body text-center py-10">
-                <span class="i-lucide-lock w-10 h-10 inline-block text-muted mb-4"></span>
-                <h2 class="text-lg font-semibold text-primary mb-2">L'Écho des Miroirs</h2>
-                <p class="text-sm text-muted mb-4">
+                <span class="i-lucide-lock w-10 h-10 inline-block text-semantic-muted mb-4"></span>
+                <h2 class="text-lg font-semibold text-semantic-ink mb-2">L'Écho des Miroirs</h2>
+                <p class="text-sm text-semantic-muted mb-4">
                     <span class="i-lucide-lock w-3.5 h-3.5 inline-block"></span>
                     Ce contenu est réservé aux abonnés de <a href="#" class="link">@alice</a>.
                 </p>
@@ -737,36 +737,36 @@
 <!-- ================================================================ -->
 <!-- SECTION 7 — VARIANTE : CR DISTANT / FÉDÉRÉ (autre instance) -->
 <!-- ================================================================ -->
-<section class="border-t-4 border-crimson mb-16">
+<section class="border-t-4 border-brand-primary mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-globe w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 7 — Variante · CR distant / fédéré (autre instance)</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-globe w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 7 — Variante · CR distant / fédéré (autre instance)</span>
     </div>
 
     <!-- Header -->
-    <div class="border-b border-border bg-surface py-6">
+    <div class="border-b border-semantic-border bg-semantic-surface py-6">
         <div class="container-app px-4">
-            <div class="flex items-center gap-2 text-sm text-muted mb-4">
+            <div class="flex items-center gap-2 text-sm text-semantic-muted mb-4">
                 <a href="#" class="link-muted">City of Mist</a>
                 <span class="i-lucide-chevron-right w-3.5 h-3.5 inline-block"></span>
                 <a href="#" class="link-muted">Session 14</a>
-                <span class="text-border">·</span>
+                <span class="text-semantic-border">·</span>
                 <span class="flex items-center gap-1 text-xs badge badge-info">
                     <span class="i-lucide-globe w-3 h-3 inline-block"></span>
                     suddenly.social
                 </span>
             </div>
-            <h1 class="text-3xl font-bold text-primary mb-4">L'Écho des Miroirs</h1>
+            <h1 class="text-3xl font-bold text-semantic-ink mb-4">L'Écho des Miroirs</h1>
             <div class="flex items-center gap-3">
                 <div class="avatar-md avatar-placeholder">A</div>
                 <div>
                     <div class="flex items-center gap-2 flex-wrap">
                         <a href="#" class="link font-medium text-sm">@alice@suddenly.social</a>
-                        <span class="text-muted text-sm">·</span>
-                        <span class="text-muted text-sm">15 avr. 2026</span>
+                        <span class="text-semantic-muted text-sm">·</span>
+                        <span class="text-semantic-muted text-sm">15 avr. 2026</span>
                     </div>
-                    <div class="flex items-center gap-1.5 mt-0.5 text-xs text-muted">
+                    <div class="flex items-center gap-1.5 mt-0.5 text-xs text-semantic-muted">
                         <span class="i-lucide-globe w-3.5 h-3.5 inline-block text-green-600"></span>
                         <span>Public · Instance distante</span>
                     </div>
@@ -776,11 +776,11 @@
     </div>
 
     <!-- Distribution — personnages distants -->
-    <div class="border-b border-border py-6">
+    <div class="border-b border-semantic-border py-6">
         <div class="container-app px-4">
-            <h2 class="text-xs font-semibold text-muted uppercase tracking-widest mb-4">Distribution</h2>
+            <h2 class="text-xs font-semibold text-semantic-muted uppercase tracking-widest mb-4">Distribution</h2>
 
-            <p class="text-sm font-semibold text-primary mb-3 flex items-center gap-1.5">
+            <p class="text-sm font-semibold text-semantic-ink mb-3 flex items-center gap-1.5">
                 <span class="text-amber-500">★</span> Principaux
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
@@ -793,8 +793,8 @@
                             <a href="#" class="link font-medium text-sm">Viktor</a>
                             <span class="badge badge-available text-xs">NPC</span>
                         </div>
-                        <p class="text-xs text-muted truncate">@alice@suddenly.social</p>
-                        <div class="flex items-center gap-1 mt-0.5 text-xs text-muted">
+                        <p class="text-xs text-semantic-muted truncate">@alice@suddenly.social</p>
+                        <div class="flex items-center gap-1 mt-0.5 text-xs text-semantic-muted">
                             <span class="i-lucide-globe w-3 h-3 inline-block"></span>
                             distant
                         </div>
@@ -809,8 +809,8 @@
                             <a href="#" class="link font-medium text-sm">Ombra</a>
                             <span class="badge badge-claimed text-xs">⟵ claim</span>
                         </div>
-                        <p class="text-xs text-muted truncate">@bob@suddenly.social</p>
-                        <div class="flex items-center gap-1 mt-0.5 text-xs text-muted">
+                        <p class="text-xs text-semantic-muted truncate">@bob@suddenly.social</p>
+                        <div class="flex items-center gap-1 mt-0.5 text-xs text-semantic-muted">
                             <span class="i-lucide-globe w-3 h-3 inline-block"></span>
                             distant
                         </div>
@@ -819,14 +819,14 @@
             </div>
 
             <!-- Info notice cross-instance -->
-            <div class="flex items-start gap-2 text-xs text-muted bg-surface border border-border rounded-lg px-3 py-2.5">
+            <div class="flex items-start gap-2 text-xs text-semantic-muted bg-semantic-surface border border-semantic-border rounded-lg px-3 py-2.5">
                 <span class="i-lucide-info w-3.5 h-3.5 inline-block shrink-0 mt-0.5 text-blue-500"></span>
                 <p>Les personnages liés (claim/adopt/fork) sont affichés tels que fournis par l'instance distante. Les demandes de lien cross-instance sont disponibles via <a href="#" class="link">Lier à mon histoire</a>.</p>
             </div>
         </div>
     </div>
 
-    <div class="border-b border-border py-4 px-4 text-xs text-muted italic container-app">
+    <div class="border-b border-semantic-border py-4 px-4 text-xs text-semantic-muted italic container-app">
         [Contenu + citations identiques à la vue standard]
     </div>
 
@@ -834,15 +834,15 @@
     <div class="py-4">
         <div class="container-app px-4">
             <div class="flex items-center gap-4 flex-wrap">
-                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-crimson transition-colors">
+                <button type="button" class="flex items-center gap-1.5 text-semantic-muted hover:text-brand-primary transition-colors">
                     <span class="i-lucide-heart w-5 h-5 inline-block"></span>
                     <span class="text-sm font-medium">12</span>
                 </button>
-                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-primary transition-colors">
+                <button type="button" class="flex items-center gap-1.5 text-semantic-muted hover:text-semantic-ink transition-colors">
                     <span class="i-lucide-repeat-2 w-5 h-5 inline-block"></span>
                     <span class="text-sm">Recommander</span>
                 </button>
-                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-primary transition-colors">
+                <button type="button" class="flex items-center gap-1.5 text-semantic-muted hover:text-semantic-ink transition-colors">
                     <span class="i-lucide-more-horizontal w-5 h-5 inline-block"></span>
                 </button>
                 <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5 ml-auto">
@@ -858,18 +858,18 @@
 <!-- ================================================================ -->
 <!-- SECTION 8 — VARIANTE : VUE AUTEUR (CR publié) -->
 <!-- ================================================================ -->
-<section class="border-t-4 border-crimson mb-16">
+<section class="border-t-4 border-brand-primary mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-user-check w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 8 — Variante · Vue auteur (CR publié)</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-user-check w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 8 — Variante · Vue auteur (CR publié)</span>
     </div>
 
     <!-- Header -->
-    <div class="border-b border-border bg-surface py-6">
+    <div class="border-b border-semantic-border bg-semantic-surface py-6">
         <div class="container-app px-4">
             <div class="flex items-center justify-between gap-4 mb-4">
-                <div class="flex items-center gap-2 text-sm text-muted">
+                <div class="flex items-center gap-2 text-sm text-semantic-muted">
                     <a href="#" class="link-muted">City of Mist</a>
                     <span class="i-lucide-chevron-right w-3.5 h-3.5 inline-block"></span>
                     <a href="#" class="link-muted">Session 14</a>
@@ -879,21 +879,21 @@
                     Modifier
                 </a>
             </div>
-            <h1 class="text-3xl font-bold text-primary mb-4">L'Écho des Miroirs</h1>
+            <h1 class="text-3xl font-bold text-semantic-ink mb-4">L'Écho des Miroirs</h1>
             <div class="flex items-center gap-3">
                 <div class="avatar-md avatar-placeholder">A</div>
                 <div>
                     <div class="flex items-center gap-2">
                         <a href="#" class="link font-medium text-sm">@alice</a>
-                        <span class="text-muted text-sm">·</span>
-                        <span class="text-muted text-sm">Session du 12 avr. 2026</span>
+                        <span class="text-semantic-muted text-sm">·</span>
+                        <span class="text-semantic-muted text-sm">Session du 12 avr. 2026</span>
                     </div>
-                    <div class="flex items-center gap-2 mt-0.5 text-xs text-muted flex-wrap">
+                    <div class="flex items-center gap-2 mt-0.5 text-xs text-semantic-muted flex-wrap">
                         <span class="flex items-center gap-1">
                             <span class="i-lucide-globe w-3.5 h-3.5 inline-block text-green-600"></span>
                             Public
                         </span>
-                        <span class="text-border">·</span>
+                        <span class="text-semantic-border">·</span>
                         <span class="flex items-center gap-1">
                             <span class="i-lucide-check-circle w-3.5 h-3.5 inline-block text-green-600"></span>
                             Fédéré
@@ -904,11 +904,11 @@
         </div>
     </div>
 
-    <div class="border-b border-border py-4 px-4 text-xs text-muted italic container-app">
+    <div class="border-b border-semantic-border py-4 px-4 text-xs text-semantic-muted italic container-app">
         [Distribution — idem vue standard, sans le bouton Lier à mon histoire]
     </div>
 
-    <div class="border-b border-border py-4 px-4 text-xs text-muted italic container-app">
+    <div class="border-b border-semantic-border py-4 px-4 text-xs text-semantic-muted italic container-app">
         [Contenu du CR]
     </div>
 
@@ -916,11 +916,11 @@
     <div class="py-4">
         <div class="container-app px-4">
             <div class="flex items-center gap-4 flex-wrap">
-                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-crimson transition-colors">
+                <button type="button" class="flex items-center gap-1.5 text-semantic-muted hover:text-brand-primary transition-colors">
                     <span class="i-lucide-heart w-5 h-5 inline-block"></span>
                     <span class="text-sm font-medium">12</span>
                 </button>
-                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-primary transition-colors">
+                <button type="button" class="flex items-center gap-1.5 text-semantic-muted hover:text-semantic-ink transition-colors">
                     <span class="i-lucide-repeat-2 w-5 h-5 inline-block"></span>
                     <span class="text-sm">3 recommandations</span>
                 </button>
@@ -941,11 +941,11 @@
 <!-- ================================================================ -->
 <!-- SECTION 9 — MATRICE VISIBILITÉ × ACTIONS -->
 <!-- ================================================================ -->
-<section class="border-t-4 border-crimson">
+<section class="border-t-4 border-brand-primary">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-table w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 9 — Matrice visibilité × actions disponibles</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-table w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 9 — Matrice visibilité × actions disponibles</span>
     </div>
 
     <div class="container-app px-4 py-8">
@@ -954,25 +954,25 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
-                        <tr class="bg-surface border-b border-border">
-                            <th class="text-left px-4 py-3 font-semibold text-primary">Visibilité</th>
-                            <th class="text-center px-4 py-3 font-semibold text-primary">
+                        <tr class="bg-semantic-surface border-b border-semantic-border">
+                            <th class="text-left px-4 py-3 font-semibold text-semantic-ink">Visibilité</th>
+                            <th class="text-center px-4 py-3 font-semibold text-semantic-ink">
                                 <span class="i-lucide-repeat-2 w-4 h-4 inline-block"></span>
                                 Recommander
                             </th>
-                            <th class="text-center px-4 py-3 font-semibold text-primary">
+                            <th class="text-center px-4 py-3 font-semibold text-semantic-ink">
                                 <span class="i-lucide-link-2 w-4 h-4 inline-block"></span>
                                 Lier
                             </th>
-                            <th class="text-center px-4 py-3 font-semibold text-primary">
+                            <th class="text-center px-4 py-3 font-semibold text-semantic-ink">
                                 <span class="i-lucide-globe w-4 h-4 inline-block"></span>
                                 Fédéré
                             </th>
-                            <th class="text-center px-4 py-3 font-semibold text-primary">Dans le fil</th>
+                            <th class="text-center px-4 py-3 font-semibold text-semantic-ink">Dans le fil</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-border">
-                        <tr class="hover:bg-surface/50 transition-colors">
+                    <tbody class="divide-y divide-semantic-border">
+                        <tr class="hover:bg-semantic-surface/50 transition-colors">
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-2">
                                     <span class="i-lucide-globe w-4 h-4 inline-block text-green-600"></span>
@@ -982,7 +982,7 @@
                             <td class="px-4 py-3 text-center">
                                 <span class="i-lucide-check w-4 h-4 inline-block text-green-600"></span>
                             </td>
-                            <td class="px-4 py-3 text-center text-xs text-muted">NPC distants</td>
+                            <td class="px-4 py-3 text-center text-xs text-semantic-muted">NPC distants</td>
                             <td class="px-4 py-3 text-center">
                                 <span class="i-lucide-check w-4 h-4 inline-block text-green-600"></span>
                             </td>
@@ -990,7 +990,7 @@
                                 <span class="i-lucide-check w-4 h-4 inline-block text-green-600"></span>
                             </td>
                         </tr>
-                        <tr class="hover:bg-surface/50 transition-colors">
+                        <tr class="hover:bg-semantic-surface/50 transition-colors">
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-2">
                                     <span class="i-lucide-unlock w-4 h-4 inline-block text-amber-500"></span>
@@ -998,7 +998,7 @@
                                 </div>
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <span class="i-lucide-x w-4 h-4 inline-block text-muted"></span>
+                                <span class="i-lucide-x w-4 h-4 inline-block text-semantic-muted"></span>
                             </td>
                             <td class="px-4 py-3 text-center">
                                 <span class="i-lucide-check w-4 h-4 inline-block text-green-600"></span>
@@ -1007,43 +1007,43 @@
                                 <span class="i-lucide-check w-4 h-4 inline-block text-green-600"></span>
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <span class="i-lucide-x w-4 h-4 inline-block text-muted"></span>
+                                <span class="i-lucide-x w-4 h-4 inline-block text-semantic-muted"></span>
                             </td>
                         </tr>
-                        <tr class="hover:bg-surface/50 transition-colors">
+                        <tr class="hover:bg-semantic-surface/50 transition-colors">
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-2">
-                                    <span class="i-lucide-lock w-4 h-4 inline-block text-crimson"></span>
+                                    <span class="i-lucide-lock w-4 h-4 inline-block text-brand-primary"></span>
                                     <span class="font-medium">Abonnés</span>
                                 </div>
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <span class="i-lucide-x w-4 h-4 inline-block text-muted"></span>
+                                <span class="i-lucide-x w-4 h-4 inline-block text-semantic-muted"></span>
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <span class="i-lucide-x w-4 h-4 inline-block text-muted"></span>
+                                <span class="i-lucide-x w-4 h-4 inline-block text-semantic-muted"></span>
                             </td>
-                            <td class="px-4 py-3 text-center text-xs text-muted">followers</td>
-                            <td class="px-4 py-3 text-center text-xs text-muted">followers</td>
+                            <td class="px-4 py-3 text-center text-xs text-semantic-muted">followers</td>
+                            <td class="px-4 py-3 text-center text-xs text-semantic-muted">followers</td>
                         </tr>
-                        <tr class="hover:bg-surface/50 transition-colors">
+                        <tr class="hover:bg-semantic-surface/50 transition-colors">
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-2">
-                                    <span class="i-lucide-clock w-4 h-4 inline-block text-muted"></span>
+                                    <span class="i-lucide-clock w-4 h-4 inline-block text-semantic-muted"></span>
                                     <span class="font-medium">Brouillon</span>
                                 </div>
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <span class="i-lucide-x w-4 h-4 inline-block text-muted"></span>
+                                <span class="i-lucide-x w-4 h-4 inline-block text-semantic-muted"></span>
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <span class="i-lucide-x w-4 h-4 inline-block text-muted"></span>
+                                <span class="i-lucide-x w-4 h-4 inline-block text-semantic-muted"></span>
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <span class="i-lucide-x w-4 h-4 inline-block text-muted"></span>
+                                <span class="i-lucide-x w-4 h-4 inline-block text-semantic-muted"></span>
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <span class="i-lucide-x w-4 h-4 inline-block text-muted"></span>
+                                <span class="i-lucide-x w-4 h-4 inline-block text-semantic-muted"></span>
                             </td>
                         </tr>
                     </tbody>

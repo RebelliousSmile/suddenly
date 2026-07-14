@@ -17,8 +17,8 @@
     <!-- ============================================================ -->
     <section>
         <div class="mb-4 flex items-center gap-2">
-            <span class="i-lucide-party-popper w-5 h-5 inline-block text-muted"></span>
-            <h2 class="text-xs font-semibold text-muted uppercase tracking-widest">Section 1 — Onboarding — /onboarding/</h2>
+            <span class="i-lucide-party-popper w-5 h-5 inline-block text-semantic-muted"></span>
+            <h2 class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 1 — Onboarding — /onboarding/</h2>
         </div>
 
         <div x-data="{ step: 1 }" class="flex flex-col gap-8">
@@ -28,7 +28,7 @@
                 <template x-for="s in [1, 2, 3]" :key="s">
                     <button type="button"
                         @click="step = s"
-                        :class="step === s ? 'bg-crimson text-white' : 'bg-surface border border-border text-secondary hover:text-primary'"
+                        :class="step === s ? 'bg-brand-primary text-white' : 'bg-semantic-surface border border-semantic-border text-semantic-ink-secondary hover:text-semantic-ink'"
                         class="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors">
                         Étape <span x-text="s"></span>
                     </button>
@@ -39,24 +39,24 @@
             <!-- STEP 1 — Compléter son profil                        -->
             <!-- ---------------------------------------------------- -->
             <div x-show="step === 1">
-                <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg">
-                    <span class="i-lucide-user w-4 h-4 text-muted inline-block"></span>
-                    <span class="text-xs font-semibold text-muted uppercase tracking-widest">Étape 1 — Compléter son profil</span>
+                <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg">
+                    <span class="i-lucide-user w-4 h-4 text-semantic-muted inline-block"></span>
+                    <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Étape 1 — Compléter son profil</span>
                 </div>
 
                 <div class="max-w-xl">
                     <!-- Welcome header -->
                     <div class="mb-8">
-                        <h1 class="text-2xl font-bold text-primary mb-1">Bienvenue sur Suddenly, alice !</h1>
+                        <h1 class="text-2xl font-bold text-semantic-ink mb-1">Bienvenue sur Suddenly, alice !</h1>
                         <div class="flex items-center justify-between mt-4">
                             <div class="flex items-center gap-3">
                                 <!-- Steps dots -->
-                                <span class="w-2.5 h-2.5 rounded-full bg-crimson inline-block"></span>
-                                <span class="w-2.5 h-2.5 rounded-full bg-border inline-block"></span>
-                                <span class="w-2.5 h-2.5 rounded-full bg-border inline-block"></span>
-                                <span class="text-sm text-muted ml-1">Étape 1 de 3</span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-brand-primary inline-block"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-semantic-border inline-block"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-semantic-border inline-block"></span>
+                                <span class="text-sm text-semantic-muted ml-1">Étape 1 de 3</span>
                             </div>
-                            <button type="button" class="btn-ghost btn-sm flex items-center gap-1.5 text-muted">
+                            <button type="button" class="btn-ghost btn-sm flex items-center gap-1.5 text-semantic-muted">
                                 Passer l'introduction
                                 <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
                             </button>
@@ -65,7 +65,7 @@
 
                     <div class="card">
                         <div class="card-header">
-                            <h2 class="text-lg font-bold text-primary">Complétez votre profil</h2>
+                            <h2 class="text-lg font-bold text-semantic-ink">Complétez votre profil</h2>
                         </div>
                         <div class="card-body">
                             <form novalidate>
@@ -80,7 +80,7 @@
                                 <div class="mb-5">
                                     <label for="onb-bio" class="form-label">
                                         Biographie
-                                        <span class="text-muted font-normal">(optionnel)</span>
+                                        <span class="text-semantic-muted font-normal">(optionnel)</span>
                                     </label>
                                     <textarea id="onb-bio" class="form-input" rows="3" placeholder="Parlez de vos jeux, de vos personnages..."></textarea>
                                 </div>
@@ -89,21 +89,21 @@
                                 <div class="mb-8">
                                     <label class="form-label">
                                         Avatar
-                                        <span class="text-muted font-normal">(optionnel)</span>
+                                        <span class="text-semantic-muted font-normal">(optionnel)</span>
                                     </label>
-                                    <div class="mt-2 border-2 border-dashed border-border rounded-xl p-6 flex flex-col items-center gap-2 hover:border-crimson/40 transition-colors cursor-pointer">
-                                        <span class="i-lucide-upload-cloud w-8 h-8 text-muted inline-block"></span>
-                                        <p class="text-sm text-secondary">Glisser une image ici ou</p>
-                                        <label class="text-sm text-crimson font-medium cursor-pointer hover:underline">
+                                    <div class="mt-2 border-2 border-dashed border-semantic-border rounded-xl p-6 flex flex-col items-center gap-2 hover:border-brand-primary/40 transition-colors cursor-pointer">
+                                        <span class="i-lucide-upload-cloud w-8 h-8 text-semantic-muted inline-block"></span>
+                                        <p class="text-sm text-semantic-ink-secondary">Glisser une image ici ou</p>
+                                        <label class="text-sm text-brand-primary font-medium cursor-pointer hover:underline">
                                             cliquer pour choisir
                                             <input type="file" class="hidden" accept="image/*">
                                         </label>
-                                        <p class="text-xs text-muted">PNG, JPG, GIF — max 2 Mo</p>
+                                        <p class="text-xs text-semantic-muted">PNG, JPG, GIF — max 2 Mo</p>
                                     </div>
                                 </div>
 
                                 <!-- Next -->
-                                <div class="flex items-center justify-end pt-2 border-t border-border">
+                                <div class="flex items-center justify-end pt-2 border-t border-semantic-border">
                                     <button type="button" @click="step = 2" class="btn-primary flex items-center gap-2">
                                         Continuer
                                         <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
@@ -120,31 +120,31 @@
             <!-- STEP 2 — Découverte de l'instance                    -->
             <!-- ---------------------------------------------------- -->
             <div x-show="step === 2">
-                <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg">
-                    <span class="i-lucide-compass w-4 h-4 text-muted inline-block"></span>
-                    <span class="text-xs font-semibold text-muted uppercase tracking-widest">Étape 2 — Découverte de l'instance</span>
+                <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg">
+                    <span class="i-lucide-compass w-4 h-4 text-semantic-muted inline-block"></span>
+                    <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Étape 2 — Découverte de l'instance</span>
                 </div>
 
                 <div class="max-w-xl">
                     <!-- Step header -->
                     <div class="mb-8 flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <span class="w-2.5 h-2.5 rounded-full bg-border inline-block"></span>
-                            <span class="w-2.5 h-2.5 rounded-full bg-crimson inline-block"></span>
-                            <span class="w-2.5 h-2.5 rounded-full bg-border inline-block"></span>
-                            <span class="text-sm text-muted ml-1">Étape 2 de 3</span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-semantic-border inline-block"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-brand-primary inline-block"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-semantic-border inline-block"></span>
+                            <span class="text-sm text-semantic-muted ml-1">Étape 2 de 3</span>
                         </div>
-                        <button type="button" class="btn-ghost btn-sm flex items-center gap-1.5 text-muted">
+                        <button type="button" class="btn-ghost btn-sm flex items-center gap-1.5 text-semantic-muted">
                             Passer l'introduction
                             <span class="i-lucide-arrow-right w-4 h-4 inline-block"></span>
                         </button>
                     </div>
 
-                    <h2 class="text-xl font-bold text-primary mb-6">Découvrez votre instance</h2>
+                    <h2 class="text-xl font-bold text-semantic-ink mb-6">Découvrez votre instance</h2>
 
                     <!-- Migration notice -->
-                    <div class="bg-info/5 border border-info/20 rounded-xl p-4 flex flex-col gap-2 mb-6">
-                        <p class="text-sm font-medium text-primary">Vous migrez d'une autre instance ?</p>
+                    <div class="bg-semantic-info/5 border border-semantic-info/20 rounded-xl p-4 flex flex-col gap-2 mb-6">
+                        <p class="text-sm font-medium text-semantic-ink">Vous migrez d'une autre instance ?</p>
                         <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5 w-fit">
                             <span class="i-lucide-upload w-4 h-4 inline-block"></span>
                             Importer mes follows (CSV)
@@ -153,17 +153,17 @@
 
                     <!-- Recent local reports -->
                     <div class="mb-6">
-                        <h3 class="text-sm font-semibold text-secondary uppercase tracking-wide mb-3">Aperçu de l'activité locale</h3>
+                        <h3 class="text-sm font-semibold text-semantic-ink-secondary uppercase tracking-wide mb-3">Aperçu de l'activité locale</h3>
                         <div class="flex flex-col gap-2">
                             <div class="card card-hover">
                                 <div class="card-body py-3">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-crimson/30 to-crimson/10 flex items-center justify-center shrink-0">
-                                            <span class="text-xs font-bold text-crimson">M</span>
+                                        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-brand-primary/30 to-brand-primary/10 flex items-center justify-center shrink-0">
+                                            <span class="text-xs font-bold text-brand-primary">M</span>
                                         </div>
                                         <div>
-                                            <p class="text-sm font-medium text-primary">Session 14 : La Forêt des Miroirs</p>
-                                            <p class="text-xs text-muted">@mirkwood · il y a 2h</p>
+                                            <p class="text-sm font-medium text-semantic-ink">Session 14 : La Forêt des Miroirs</p>
+                                            <p class="text-xs text-semantic-muted">@mirkwood · il y a 2h</p>
                                         </div>
                                     </div>
                                 </div>
@@ -172,11 +172,11 @@
                                 <div class="card-body py-3">
                                     <div class="flex items-center gap-2">
                                         <div class="w-7 h-7 rounded-full bg-gradient-to-br from-violet-400/30 to-violet-400/10 flex items-center justify-center shrink-0">
-                                            <span class="text-xs font-bold text-violet">S</span>
+                                            <span class="text-xs font-bold text-brand-accent">S</span>
                                         </div>
                                         <div>
-                                            <p class="text-sm font-medium text-primary">Séance 7 : L'Oracle Brisé</p>
-                                            <p class="text-xs text-muted">@sablier · il y a 5h</p>
+                                            <p class="text-sm font-medium text-semantic-ink">Séance 7 : L'Oracle Brisé</p>
+                                            <p class="text-xs text-semantic-muted">@sablier · il y a 5h</p>
                                         </div>
                                     </div>
                                 </div>
@@ -186,49 +186,49 @@
 
                     <!-- Active players -->
                     <div class="mb-6">
-                        <h3 class="text-sm font-semibold text-secondary uppercase tracking-wide mb-3">Joueurs actifs sur cette instance</h3>
-                        <div class="flex flex-col divide-y divide-border border border-border rounded-xl overflow-hidden">
+                        <h3 class="text-sm font-semibold text-semantic-ink-secondary uppercase tracking-wide mb-3">Joueurs actifs sur cette instance</h3>
+                        <div class="flex flex-col divide-y divide-semantic-border border border-semantic-border rounded-xl overflow-hidden">
 
-                            <div class="flex items-center gap-3 px-4 py-3 bg-surface hover:bg-surface/80 transition-colors">
-                                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400/30 to-emerald-400/10 flex items-center justify-center shrink-0 border border-border">
-                                    <span class="text-sm font-bold text-success">A</span>
+                            <div class="flex items-center gap-3 px-4 py-3 bg-semantic-surface hover:bg-semantic-surface/80 transition-colors">
+                                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400/30 to-emerald-400/10 flex items-center justify-center shrink-0 border border-semantic-border">
+                                    <span class="text-sm font-bold text-semantic-success">A</span>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-primary">@alice</p>
-                                    <p class="text-xs text-muted">12 parties</p>
+                                    <p class="text-sm font-medium text-semantic-ink">@alice</p>
+                                    <p class="text-xs text-semantic-muted">12 parties</p>
                                 </div>
                                 <button type="button" class="btn-secondary btn-sm flex-shrink-0">Suivre</button>
                             </div>
 
-                            <div class="flex items-center gap-3 px-4 py-3 bg-surface hover:bg-surface/80 transition-colors">
-                                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-400/30 to-sky-400/10 flex items-center justify-center shrink-0 border border-border">
-                                    <span class="text-sm font-bold text-info">B</span>
+                            <div class="flex items-center gap-3 px-4 py-3 bg-semantic-surface hover:bg-semantic-surface/80 transition-colors">
+                                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-400/30 to-sky-400/10 flex items-center justify-center shrink-0 border border-semantic-border">
+                                    <span class="text-sm font-bold text-semantic-info">B</span>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-primary">@bob</p>
-                                    <p class="text-xs text-muted">8 parties</p>
+                                    <p class="text-sm font-medium text-semantic-ink">@bob</p>
+                                    <p class="text-xs text-semantic-muted">8 parties</p>
                                 </div>
                                 <button type="button" class="btn-secondary btn-sm flex-shrink-0">Suivre</button>
                             </div>
 
-                            <div class="flex items-center gap-3 px-4 py-3 bg-surface hover:bg-surface/80 transition-colors">
-                                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400/30 to-amber-400/10 flex items-center justify-center shrink-0 border border-border">
+                            <div class="flex items-center gap-3 px-4 py-3 bg-semantic-surface hover:bg-semantic-surface/80 transition-colors">
+                                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400/30 to-amber-400/10 flex items-center justify-center shrink-0 border border-semantic-border">
                                     <span class="text-sm font-bold text-amber-700">C</span>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-primary">@charlie</p>
-                                    <p class="text-xs text-muted">5 parties</p>
+                                    <p class="text-sm font-medium text-semantic-ink">@charlie</p>
+                                    <p class="text-xs text-semantic-muted">5 parties</p>
                                 </div>
                                 <button type="button" class="btn-secondary btn-sm flex-shrink-0">Suivre</button>
                             </div>
 
-                            <div class="flex items-center gap-3 px-4 py-3 bg-surface hover:bg-surface/80 transition-colors">
-                                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-rose-400/30 to-rose-400/10 flex items-center justify-center shrink-0 border border-border">
+                            <div class="flex items-center gap-3 px-4 py-3 bg-semantic-surface hover:bg-semantic-surface/80 transition-colors">
+                                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-rose-400/30 to-rose-400/10 flex items-center justify-center shrink-0 border border-semantic-border">
                                     <span class="text-sm font-bold text-rose-700">D</span>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-primary">@dave</p>
-                                    <p class="text-xs text-muted">3 parties</p>
+                                    <p class="text-sm font-medium text-semantic-ink">@dave</p>
+                                    <p class="text-xs text-semantic-muted">3 parties</p>
                                 </div>
                                 <button type="button" class="btn-secondary btn-sm flex-shrink-0">Suivre</button>
                             </div>
@@ -238,17 +238,17 @@
 
                     <!-- Popular games -->
                     <div class="mb-8">
-                        <h3 class="text-sm font-semibold text-secondary uppercase tracking-wide mb-3">Parties populaires</h3>
+                        <h3 class="text-sm font-semibold text-semantic-ink-secondary uppercase tracking-wide mb-3">Parties populaires</h3>
                         <div class="flex flex-col gap-2">
 
                             <div class="card card-hover">
                                 <div class="card-body py-3 flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-crimson/20 to-crimson/5 flex items-center justify-center shrink-0">
-                                        <span class="i-lucide-shield w-4 h-4 inline-block text-crimson"></span>
+                                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-primary/20 to-brand-primary/5 flex items-center justify-center shrink-0">
+                                        <span class="i-lucide-shield w-4 h-4 inline-block text-brand-primary"></span>
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium text-primary truncate">Les Gardiens de l'Aube — Blades in the Dark</p>
-                                        <p class="text-xs text-muted">@alice · 12 CRs</p>
+                                        <p class="text-sm font-medium text-semantic-ink truncate">Les Gardiens de l'Aube — Blades in the Dark</p>
+                                        <p class="text-xs text-semantic-muted">@alice · 12 CRs</p>
                                     </div>
                                     <button type="button" class="btn-secondary btn-sm flex-shrink-0">Suivre</button>
                                 </div>
@@ -257,11 +257,11 @@
                             <div class="card card-hover">
                                 <div class="card-body py-3 flex items-center gap-3">
                                     <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-violet-400/20 to-violet-400/5 flex items-center justify-center shrink-0">
-                                        <span class="i-lucide-wand w-4 h-4 inline-block text-violet"></span>
+                                        <span class="i-lucide-wand w-4 h-4 inline-block text-brand-accent"></span>
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium text-primary truncate">Chroniques d'Eorzéa — PBTA</p>
-                                        <p class="text-xs text-muted">@charlie · 8 CRs</p>
+                                        <p class="text-sm font-medium text-semantic-ink truncate">Chroniques d'Eorzéa — PBTA</p>
+                                        <p class="text-xs text-semantic-muted">@charlie · 8 CRs</p>
                                     </div>
                                     <button type="button" class="btn-secondary btn-sm flex-shrink-0">Suivre</button>
                                 </div>
@@ -270,11 +270,11 @@
                             <div class="card card-hover">
                                 <div class="card-body py-3 flex items-center gap-3">
                                     <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-sky-400/20 to-sky-400/5 flex items-center justify-center shrink-0">
-                                        <span class="i-lucide-compass w-4 h-4 inline-block text-info"></span>
+                                        <span class="i-lucide-compass w-4 h-4 inline-block text-semantic-info"></span>
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium text-primary truncate">Expédition Kethara — Ironsworn</p>
-                                        <p class="text-xs text-muted">@bob · 5 CRs</p>
+                                        <p class="text-sm font-medium text-semantic-ink truncate">Expédition Kethara — Ironsworn</p>
+                                        <p class="text-xs text-semantic-muted">@bob · 5 CRs</p>
                                     </div>
                                     <button type="button" class="btn-secondary btn-sm flex-shrink-0">Suivre</button>
                                 </div>
@@ -284,8 +284,8 @@
                     </div>
 
                     <!-- Navigation -->
-                    <div class="flex items-center justify-between pt-2 border-t border-border">
-                        <button type="button" @click="step = 1" class="btn-ghost btn-sm flex items-center gap-1.5 text-secondary">
+                    <div class="flex items-center justify-between pt-2 border-t border-semantic-border">
+                        <button type="button" @click="step = 1" class="btn-ghost btn-sm flex items-center gap-1.5 text-semantic-ink-secondary">
                             <span class="i-lucide-arrow-left w-4 h-4 inline-block"></span>
                             Retour
                         </button>
@@ -301,34 +301,34 @@
             <!-- STEP 3 — Première action                             -->
             <!-- ---------------------------------------------------- -->
             <div x-show="step === 3">
-                <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg">
-                    <span class="i-lucide-rocket w-4 h-4 text-muted inline-block"></span>
-                    <span class="text-xs font-semibold text-muted uppercase tracking-widest">Étape 3 — Première action</span>
+                <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg">
+                    <span class="i-lucide-rocket w-4 h-4 text-semantic-muted inline-block"></span>
+                    <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Étape 3 — Première action</span>
                 </div>
 
                 <div class="max-w-xl">
                     <!-- Step header -->
                     <div class="mb-8 flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <span class="w-2.5 h-2.5 rounded-full bg-border inline-block"></span>
-                            <span class="w-2.5 h-2.5 rounded-full bg-border inline-block"></span>
-                            <span class="w-2.5 h-2.5 rounded-full bg-crimson inline-block"></span>
-                            <span class="text-sm text-muted ml-1">Étape 3 de 3</span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-semantic-border inline-block"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-semantic-border inline-block"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-brand-primary inline-block"></span>
+                            <span class="text-sm text-semantic-muted ml-1">Étape 3 de 3</span>
                         </div>
                     </div>
 
-                    <h2 class="text-xl font-bold text-primary mb-6">Que voulez-vous faire en premier ?</h2>
+                    <h2 class="text-xl font-bold text-semantic-ink mb-6">Que voulez-vous faire en premier ?</h2>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
 
                         <!-- Card: Créer une partie -->
                         <a href="#" class="card card-hover flex flex-col gap-3 p-5 no-underline group">
-                            <div class="w-10 h-10 rounded-xl bg-crimson/10 flex items-center justify-center">
-                                <span class="i-lucide-book-open w-5 h-5 inline-block text-crimson"></span>
+                            <div class="w-10 h-10 rounded-xl bg-brand-primary/10 flex items-center justify-center">
+                                <span class="i-lucide-book-open w-5 h-5 inline-block text-brand-primary"></span>
                             </div>
                             <div>
-                                <p class="font-semibold text-primary group-hover:text-crimson transition-colors">Créer ma première partie</p>
-                                <p class="text-sm text-muted mt-1">Commencez à documenter vos sessions de JDR</p>
+                                <p class="font-semibold text-semantic-ink group-hover:text-brand-primary transition-colors">Créer ma première partie</p>
+                                <p class="text-sm text-semantic-muted mt-1">Commencez à documenter vos sessions de JDR</p>
                             </div>
                             <div class="mt-auto">
                                 <span class="btn-primary btn-sm inline-flex items-center gap-1.5">
@@ -341,11 +341,11 @@
                         <!-- Card: Explorer les personnages -->
                         <a href="#" class="card card-hover flex flex-col gap-3 p-5 no-underline group">
                             <div class="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center">
-                                <span class="i-lucide-search w-5 h-5 inline-block text-violet"></span>
+                                <span class="i-lucide-search w-5 h-5 inline-block text-brand-accent"></span>
                             </div>
                             <div>
-                                <p class="font-semibold text-primary group-hover:text-violet transition-colors">Explorer les personnages</p>
-                                <p class="text-sm text-muted mt-1">Découvrez les PNJ d'autres joueurs</p>
+                                <p class="font-semibold text-semantic-ink group-hover:text-brand-accent transition-colors">Explorer les personnages</p>
+                                <p class="text-sm text-semantic-muted mt-1">Découvrez les PNJ d'autres joueurs</p>
                             </div>
                             <div class="mt-auto">
                                 <span class="btn-secondary btn-sm inline-flex items-center gap-1.5">
@@ -360,12 +360,12 @@
                     <!-- Card: Fil d'actualité -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                         <a href="#" class="card card-hover flex flex-col gap-3 p-5 no-underline group">
-                            <div class="w-10 h-10 rounded-xl bg-info/10/10 flex items-center justify-center">
-                                <span class="i-lucide-rss w-5 h-5 inline-block text-info"></span>
+                            <div class="w-10 h-10 rounded-xl bg-semantic-info/10/10 flex items-center justify-center">
+                                <span class="i-lucide-rss w-5 h-5 inline-block text-semantic-info"></span>
                             </div>
                             <div>
-                                <p class="font-semibold text-primary group-hover:text-info transition-colors">Voir mon fil d'actualité</p>
-                                <p class="text-sm text-muted mt-1">Suivez les publications de la communauté</p>
+                                <p class="font-semibold text-semantic-ink group-hover:text-semantic-info transition-colors">Voir mon fil d'actualité</p>
+                                <p class="text-sm text-semantic-muted mt-1">Suivez les publications de la communauté</p>
                             </div>
                             <div class="mt-auto">
                                 <span class="btn-secondary btn-sm inline-flex items-center gap-1.5">
@@ -377,8 +377,8 @@
                     </div>
 
                     <!-- Navigation -->
-                    <div class="flex items-center justify-between pt-2 border-t border-border">
-                        <button type="button" @click="step = 2" class="btn-ghost btn-sm flex items-center gap-1.5 text-secondary">
+                    <div class="flex items-center justify-between pt-2 border-t border-semantic-border">
+                        <button type="button" @click="step = 2" class="btn-ghost btn-sm flex items-center gap-1.5 text-semantic-ink-secondary">
                             <span class="i-lucide-arrow-left w-4 h-4 inline-block"></span>
                             Retour
                         </button>
@@ -394,55 +394,55 @@
     <!-- ============================================================ -->
     <section>
         <div class="mb-4 flex items-center gap-2">
-            <span class="i-lucide-flag w-5 h-5 inline-block text-muted"></span>
-            <h2 class="text-xs font-semibold text-muted uppercase tracking-widest">Section 2 — Modal signalement — US-27</h2>
+            <span class="i-lucide-flag w-5 h-5 inline-block text-semantic-muted"></span>
+            <h2 class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 2 — Modal signalement — US-27</h2>
         </div>
 
         <div x-data="{ modal: 'form', dropdown: false }" class="flex flex-col gap-6">
 
             <!-- Trigger context: card with dropdown -->
             <div>
-                <p class="text-xs text-muted mb-3 uppercase tracking-wide font-semibold">Bouton déclencheur (dans les cartes)</p>
+                <p class="text-xs text-semantic-muted mb-3 uppercase tracking-wide font-semibold">Bouton déclencheur (dans les cartes)</p>
                 <div class="card max-w-md">
                     <div class="card-body">
                         <div class="flex items-start gap-3">
-                            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-crimson/20 to-crimson/5 flex items-center justify-center shrink-0">
-                                <span class="text-sm font-bold text-crimson">T</span>
+                            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-primary/20 to-brand-primary/5 flex items-center justify-center shrink-0">
+                                <span class="text-sm font-bold text-brand-primary">T</span>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-semibold text-primary">Session 8 : Le Pacte de Sel</p>
-                                <p class="text-xs text-muted">@troll123 · il y a 3h</p>
-                                <p class="text-sm text-secondary mt-1.5">Ce soir, l'équipe a négocié avec les Marchands de Sel...</p>
+                                <p class="text-sm font-semibold text-semantic-ink">Session 8 : Le Pacte de Sel</p>
+                                <p class="text-xs text-semantic-muted">@troll123 · il y a 3h</p>
+                                <p class="text-sm text-semantic-ink-secondary mt-1.5">Ce soir, l'équipe a négocié avec les Marchands de Sel...</p>
                             </div>
                         </div>
                         <!-- Action bar -->
-                        <div class="flex items-center justify-between mt-4 pt-3 border-t border-border">
+                        <div class="flex items-center justify-between mt-4 pt-3 border-t border-semantic-border">
                             <div class="flex items-center gap-4">
-                                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-crimson transition-colors text-sm">
+                                <button type="button" class="flex items-center gap-1.5 text-semantic-muted hover:text-brand-primary transition-colors text-sm">
                                     <span class="i-lucide-heart w-4 h-4 inline-block"></span>
                                     4
                                 </button>
-                                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-primary transition-colors text-sm">
+                                <button type="button" class="flex items-center gap-1.5 text-semantic-muted hover:text-semantic-ink transition-colors text-sm">
                                     <span class="i-lucide-message-circle w-4 h-4 inline-block"></span>
                                     2
                                 </button>
-                                <button type="button" class="flex items-center gap-1.5 text-muted hover:text-primary transition-colors text-sm">
+                                <button type="button" class="flex items-center gap-1.5 text-semantic-muted hover:text-semantic-ink transition-colors text-sm">
                                     <span class="i-lucide-share w-4 h-4 inline-block"></span>
                                 </button>
                             </div>
                             <!-- Context menu -->
                             <div class="relative" x-data="{ open: false }">
-                                <button type="button" @click="open = !open" class="btn-ghost btn-sm text-muted">
+                                <button type="button" @click="open = !open" class="btn-ghost btn-sm text-semantic-muted">
                                     <span class="i-lucide-more-horizontal w-4 h-4 inline-block"></span>
                                 </button>
                                 <div x-show="open" @click.outside="open = false"
-                                     class="absolute right-0 bottom-full mb-1 w-44 bg-surface border border-border rounded-xl shadow-lg z-10 overflow-hidden py-1">
-                                    <button type="button" class="w-full text-left px-4 py-2 text-sm text-secondary hover:bg-surface/80 hover:text-primary transition-colors flex items-center gap-2">
+                                     class="absolute right-0 bottom-full mb-1 w-44 bg-semantic-surface border border-semantic-border rounded-xl shadow-lg z-10 overflow-hidden py-1">
+                                    <button type="button" class="w-full text-left px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-surface/80 hover:text-semantic-ink transition-colors flex items-center gap-2">
                                         <span class="i-lucide-link w-4 h-4 inline-block"></span>
                                         Copier le lien
                                     </button>
-                                    <div class="border-t border-border my-1"></div>
-                                    <button type="button" @click="open = false; $dispatch('open-report')" class="w-full text-left px-4 py-2 text-sm text-crimson hover:bg-crimson/5 transition-colors flex items-center gap-2">
+                                    <div class="border-t border-semantic-border my-1"></div>
+                                    <button type="button" @click="open = false; $dispatch('open-report')" class="w-full text-left px-4 py-2 text-sm text-brand-primary hover:bg-brand-primary/5 transition-colors flex items-center gap-2">
                                         <span class="i-lucide-flag w-4 h-4 inline-block"></span>
                                         Signaler
                                     </button>
@@ -455,15 +455,15 @@
 
             <!-- Modal states switcher -->
             <div>
-                <p class="text-xs text-muted mb-3 uppercase tracking-wide font-semibold">États du modal (cliquer pour basculer)</p>
+                <p class="text-xs text-semantic-muted mb-3 uppercase tracking-wide font-semibold">États du modal (cliquer pour basculer)</p>
                 <div class="flex gap-2">
                     <button type="button" @click="modal = 'form'"
-                        :class="modal === 'form' ? 'bg-crimson text-white' : 'bg-surface border border-border text-secondary hover:text-primary'"
+                        :class="modal === 'form' ? 'bg-brand-primary text-white' : 'bg-semantic-surface border border-semantic-border text-semantic-ink-secondary hover:text-semantic-ink'"
                         class="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors">
                         Formulaire
                     </button>
                     <button type="button" @click="modal = 'confirm'"
-                        :class="modal === 'confirm' ? 'bg-crimson text-white' : 'bg-surface border border-border text-secondary hover:text-primary'"
+                        :class="modal === 'confirm' ? 'bg-brand-primary text-white' : 'bg-semantic-surface border border-semantic-border text-semantic-ink-secondary hover:text-semantic-ink'"
                         class="px-3 py-1.5 rounded-full text-xs font-semibold transition-colors">
                         Confirmation
                     </button>
@@ -472,12 +472,12 @@
 
             <!-- Modal: report form -->
             <div x-show="modal === 'form'" class="max-w-md">
-                <div class="bg-surface border border-border rounded-2xl shadow-lg overflow-hidden">
+                <div class="bg-semantic-surface border border-semantic-border rounded-2xl shadow-lg overflow-hidden">
 
                     <!-- Modal header -->
-                    <div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-border">
-                        <h3 class="text-base font-bold text-primary">Signaler ce contenu</h3>
-                        <button type="button" class="btn-ghost btn-sm text-muted">
+                    <div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-semantic-border">
+                        <h3 class="text-base font-bold text-semantic-ink">Signaler ce contenu</h3>
+                        <button type="button" class="btn-ghost btn-sm text-semantic-muted">
                             <span class="i-lucide-x w-4 h-4 inline-block"></span>
                         </button>
                     </div>
@@ -485,9 +485,9 @@
                     <div class="px-5 py-4">
 
                         <!-- Content reference -->
-                        <div class="bg-surface border border-border rounded-lg px-3 py-2 mb-5 flex items-center gap-2">
-                            <span class="i-lucide-book-open w-4 h-4 inline-block text-muted shrink-0"></span>
-                            <p class="text-sm text-secondary truncate">CR "Session 8" par <span class="font-medium text-primary">@troll123</span></p>
+                        <div class="bg-semantic-surface border border-semantic-border rounded-lg px-3 py-2 mb-5 flex items-center gap-2">
+                            <span class="i-lucide-book-open w-4 h-4 inline-block text-semantic-muted shrink-0"></span>
+                            <p class="text-sm text-semantic-ink-secondary truncate">CR "Session 8" par <span class="font-medium text-semantic-ink">@troll123</span></p>
                         </div>
 
                         <!-- Category -->
@@ -495,20 +495,20 @@
                             <legend class="form-label mb-2">Catégorie</legend>
                             <div class="flex flex-col gap-2">
                                 <label class="flex items-center gap-2.5 cursor-pointer group">
-                                    <input type="radio" name="report-cat" value="spam" class="accent-crimson w-4 h-4">
-                                    <span class="text-sm text-primary group-hover:text-crimson transition-colors">Spam</span>
+                                    <input type="radio" name="report-cat" value="spam" class="accent-brand-primary w-4 h-4">
+                                    <span class="text-sm text-semantic-ink group-hover:text-brand-primary transition-colors">Spam</span>
                                 </label>
                                 <label class="flex items-center gap-2.5 cursor-pointer group">
-                                    <input type="radio" name="report-cat" value="harassment" class="accent-crimson w-4 h-4">
-                                    <span class="text-sm text-primary group-hover:text-crimson transition-colors">Harcèlement</span>
+                                    <input type="radio" name="report-cat" value="harassment" class="accent-brand-primary w-4 h-4">
+                                    <span class="text-sm text-semantic-ink group-hover:text-brand-primary transition-colors">Harcèlement</span>
                                 </label>
                                 <label class="flex items-center gap-2.5 cursor-pointer group">
-                                    <input type="radio" name="report-cat" value="inappropriate" checked class="accent-crimson w-4 h-4">
-                                    <span class="text-sm text-primary group-hover:text-crimson transition-colors">Contenu inapproprié</span>
+                                    <input type="radio" name="report-cat" value="inappropriate" checked class="accent-brand-primary w-4 h-4">
+                                    <span class="text-sm text-semantic-ink group-hover:text-brand-primary transition-colors">Contenu inapproprié</span>
                                 </label>
                                 <label class="flex items-center gap-2.5 cursor-pointer group">
-                                    <input type="radio" name="report-cat" value="other" class="accent-crimson w-4 h-4">
-                                    <span class="text-sm text-primary group-hover:text-crimson transition-colors">Autre</span>
+                                    <input type="radio" name="report-cat" value="other" class="accent-brand-primary w-4 h-4">
+                                    <span class="text-sm text-semantic-ink group-hover:text-brand-primary transition-colors">Autre</span>
                                 </label>
                             </div>
                         </fieldset>
@@ -517,21 +517,21 @@
                         <div class="mb-5">
                             <label for="report-comment" class="form-label">
                                 Commentaire
-                                <span class="text-muted font-normal">(optionnel)</span>
+                                <span class="text-semantic-muted font-normal">(optionnel)</span>
                             </label>
                             <textarea id="report-comment" class="form-input" rows="3" placeholder="Décrivez le problème en quelques mots..."></textarea>
                         </div>
 
                         <!-- Info banner -->
-                        <div class="bg-info/5 border border-info/20 rounded-lg px-3 py-2.5 flex items-start gap-2 mb-5 text-sm text-secondary">
-                            <span class="i-lucide-info w-4 h-4 inline-block text-info shrink-0 mt-0.5"></span>
+                        <div class="bg-semantic-info/5 border border-semantic-info/20 rounded-lg px-3 py-2.5 flex items-start gap-2 mb-5 text-sm text-semantic-ink-secondary">
+                            <span class="i-lucide-info w-4 h-4 inline-block text-semantic-info shrink-0 mt-0.5"></span>
                             <p>Le signalement sera envoyé à l'admin de votre instance. Si le contenu provient d'une instance distante, l'admin pourra transmettre le signalement.</p>
                         </div>
 
                     </div>
 
                     <!-- Modal footer -->
-                    <div class="flex items-center justify-end gap-3 px-5 py-4 border-t border-border bg-surface">
+                    <div class="flex items-center justify-end gap-3 px-5 py-4 border-t border-semantic-border bg-semantic-surface">
                         <button type="button" class="link-muted text-sm">Annuler</button>
                         <button type="button" @click="modal = 'confirm'" class="btn-primary flex items-center gap-1.5">
                             <span class="i-lucide-flag w-4 h-4 inline-block"></span>
@@ -544,17 +544,17 @@
 
             <!-- Modal: confirmation -->
             <div x-show="modal === 'confirm'" class="max-w-md">
-                <div class="bg-surface border border-border rounded-2xl shadow-lg overflow-hidden">
+                <div class="bg-semantic-surface border border-semantic-border rounded-2xl shadow-lg overflow-hidden">
 
                     <div class="px-5 py-6 flex flex-col gap-4">
                         <div class="flex items-center gap-3">
-                            <span class="i-lucide-check-circle w-6 h-6 inline-block text-success"></span>
-                            <p class="text-base font-semibold text-primary">Signalement envoyé.</p>
+                            <span class="i-lucide-check-circle w-6 h-6 inline-block text-semantic-success"></span>
+                            <p class="text-base font-semibold text-semantic-ink">Signalement envoyé.</p>
                         </div>
-                        <p class="text-sm text-secondary">L'équipe de modération examinera votre signalement. Vous serez notifié de la décision.</p>
+                        <p class="text-sm text-semantic-ink-secondary">L'équipe de modération examinera votre signalement. Vous serez notifié de la décision.</p>
                     </div>
 
-                    <div class="flex items-center justify-end px-5 py-4 border-t border-border bg-surface">
+                    <div class="flex items-center justify-end px-5 py-4 border-t border-semantic-border bg-semantic-surface">
                         <button type="button" @click="modal = 'form'" class="btn-secondary">Fermer</button>
                     </div>
 
@@ -569,17 +569,17 @@
     <!-- ============================================================ -->
     <section>
         <div class="mb-4 flex items-center gap-2">
-            <span class="i-lucide-trash-2 w-5 h-5 inline-block text-muted"></span>
-            <h2 class="text-xs font-semibold text-muted uppercase tracking-widest">Section 3 — Modal suppression générique</h2>
+            <span class="i-lucide-trash-2 w-5 h-5 inline-block text-semantic-muted"></span>
+            <h2 class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 3 — Modal suppression générique</h2>
         </div>
 
         <div class="max-w-md">
-            <div class="bg-surface border border-border rounded-2xl shadow-lg overflow-hidden">
+            <div class="bg-semantic-surface border border-semantic-border rounded-2xl shadow-lg overflow-hidden">
 
                 <!-- Modal header -->
-                <div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-border">
-                    <h3 class="text-base font-bold text-primary">Supprimer ce compte-rendu ?</h3>
-                    <button type="button" class="btn-ghost btn-sm text-muted">
+                <div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-semantic-border">
+                    <h3 class="text-base font-bold text-semantic-ink">Supprimer ce compte-rendu ?</h3>
+                    <button type="button" class="btn-ghost btn-sm text-semantic-muted">
                         <span class="i-lucide-x w-4 h-4 inline-block"></span>
                     </button>
                 </div>
@@ -587,16 +587,16 @@
                 <div class="px-5 py-4">
 
                     <!-- Content reference -->
-                    <div class="bg-surface border border-border rounded-lg px-3 py-2 mb-5 flex items-center gap-2">
-                        <span class="i-lucide-book-open w-4 h-4 inline-block text-muted shrink-0"></span>
-                        <p class="text-sm font-medium text-primary truncate">Session 12 : L'Oracle Brisé</p>
+                    <div class="bg-semantic-surface border border-semantic-border rounded-lg px-3 py-2 mb-5 flex items-center gap-2">
+                        <span class="i-lucide-book-open w-4 h-4 inline-block text-semantic-muted shrink-0"></span>
+                        <p class="text-sm font-medium text-semantic-ink truncate">Session 12 : L'Oracle Brisé</p>
                     </div>
 
                     <!-- Warning -->
-                    <div class="bg-error/5 border border-error/20 rounded-lg px-3 py-2.5 flex items-start gap-2 text-sm">
-                        <span class="i-lucide-alert-triangle w-4 h-4 inline-block text-crimson shrink-0 mt-0.5"></span>
-                        <p class="text-secondary">
-                            <span class="font-semibold text-crimson">Cette action est irréversible.</span>
+                    <div class="bg-semantic-danger/5 border border-semantic-danger/20 rounded-lg px-3 py-2.5 flex items-start gap-2 text-sm">
+                        <span class="i-lucide-alert-triangle w-4 h-4 inline-block text-brand-primary shrink-0 mt-0.5"></span>
+                        <p class="text-semantic-ink-secondary">
+                            <span class="font-semibold text-brand-primary">Cette action est irréversible.</span>
                             Le contenu sera supprimé et les mentions de personnages seront retirées.
                         </p>
                     </div>
@@ -604,7 +604,7 @@
                 </div>
 
                 <!-- Modal footer -->
-                <div class="flex items-center justify-end gap-3 px-5 py-4 border-t border-border bg-surface">
+                <div class="flex items-center justify-end gap-3 px-5 py-4 border-t border-semantic-border bg-semantic-surface">
                     <button type="button" class="link-muted text-sm">Annuler</button>
                     <button type="button" class="btn-danger flex items-center gap-1.5">
                         <span class="i-lucide-trash-2 w-4 h-4 inline-block"></span>
@@ -621,26 +621,26 @@
     <!-- ============================================================ -->
     <section>
         <div class="mb-4 flex items-center gap-2">
-            <span class="i-lucide-alert-circle w-5 h-5 inline-block text-muted"></span>
-            <h2 class="text-xs font-semibold text-muted uppercase tracking-widest">Section 4 — Pages d'erreur</h2>
+            <span class="i-lucide-alert-circle w-5 h-5 inline-block text-semantic-muted"></span>
+            <h2 class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 4 — Pages d'erreur</h2>
         </div>
 
         <div class="flex flex-col gap-6">
 
             <!-- 404 -->
             <div>
-                <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-4 rounded-t-lg">
+                <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2 mb-4 rounded-t-lg">
                     <span class="badge badge-info text-xs font-mono">404</span>
-                    <span class="text-xs font-semibold text-muted uppercase tracking-widest">Page non trouvée</span>
+                    <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Page non trouvée</span>
                 </div>
-                <div class="border border-border rounded-2xl overflow-hidden">
-                    <div class="py-16 px-8 flex flex-col items-center text-center gap-4 bg-surface">
-                        <div class="w-16 h-16 rounded-2xl bg-surface border-2 border-border flex items-center justify-center mb-2">
-                            <span class="i-lucide-search-x w-8 h-8 inline-block text-muted"></span>
+                <div class="border border-semantic-border rounded-2xl overflow-hidden">
+                    <div class="py-16 px-8 flex flex-col items-center text-center gap-4 bg-semantic-surface">
+                        <div class="w-16 h-16 rounded-2xl bg-semantic-surface border-2 border-semantic-border flex items-center justify-center mb-2">
+                            <span class="i-lucide-search-x w-8 h-8 inline-block text-semantic-muted"></span>
                         </div>
                         <div>
-                            <h1 class="text-2xl font-bold text-primary mb-2">Page non trouvée</h1>
-                            <p class="text-secondary max-w-sm">Le personnage que vous cherchez a peut-être changé d'histoire.</p>
+                            <h1 class="text-2xl font-bold text-semantic-ink mb-2">Page non trouvée</h1>
+                            <p class="text-semantic-ink-secondary max-w-sm">Le personnage que vous cherchez a peut-être changé d'histoire.</p>
                         </div>
                         <div class="flex items-center gap-3 mt-2">
                             <a href="#" class="btn-primary">Retour à l'accueil</a>
@@ -652,18 +652,18 @@
 
             <!-- 403 -->
             <div>
-                <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-4 rounded-t-lg">
+                <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2 mb-4 rounded-t-lg">
                     <span class="badge badge-info text-xs font-mono">403</span>
-                    <span class="text-xs font-semibold text-muted uppercase tracking-widest">Accès refusé</span>
+                    <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Accès refusé</span>
                 </div>
-                <div class="border border-border rounded-2xl overflow-hidden">
-                    <div class="py-16 px-8 flex flex-col items-center text-center gap-4 bg-surface">
-                        <div class="w-16 h-16 rounded-2xl bg-surface border-2 border-border flex items-center justify-center mb-2">
-                            <span class="i-lucide-shield-x w-8 h-8 inline-block text-muted"></span>
+                <div class="border border-semantic-border rounded-2xl overflow-hidden">
+                    <div class="py-16 px-8 flex flex-col items-center text-center gap-4 bg-semantic-surface">
+                        <div class="w-16 h-16 rounded-2xl bg-semantic-surface border-2 border-semantic-border flex items-center justify-center mb-2">
+                            <span class="i-lucide-shield-x w-8 h-8 inline-block text-semantic-muted"></span>
                         </div>
                         <div>
-                            <h1 class="text-2xl font-bold text-primary mb-2">Accès refusé</h1>
-                            <p class="text-secondary max-w-sm">Vous n'avez pas les droits pour accéder à cette page.</p>
+                            <h1 class="text-2xl font-bold text-semantic-ink mb-2">Accès refusé</h1>
+                            <p class="text-semantic-ink-secondary max-w-sm">Vous n'avez pas les droits pour accéder à cette page.</p>
                         </div>
                         <div class="flex items-center gap-3 mt-2">
                             <a href="#" class="btn-primary">Retour à l'accueil</a>
@@ -678,18 +678,18 @@
 
             <!-- 500 -->
             <div>
-                <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-4 rounded-t-lg">
-                    <span class="bg-crimson/10 text-crimson text-xs font-mono font-semibold px-2 py-0.5 rounded-full">500</span>
-                    <span class="text-xs font-semibold text-muted uppercase tracking-widest">Erreur serveur</span>
+                <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2 mb-4 rounded-t-lg">
+                    <span class="bg-brand-primary/10 text-brand-primary text-xs font-mono font-semibold px-2 py-0.5 rounded-full">500</span>
+                    <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Erreur serveur</span>
                 </div>
-                <div class="border border-border rounded-2xl overflow-hidden">
-                    <div class="py-16 px-8 flex flex-col items-center text-center gap-4 bg-surface">
-                        <div class="w-16 h-16 rounded-2xl bg-surface border-2 border-crimson/20 flex items-center justify-center mb-2">
-                            <span class="i-lucide-alert-triangle w-8 h-8 inline-block text-crimson"></span>
+                <div class="border border-semantic-border rounded-2xl overflow-hidden">
+                    <div class="py-16 px-8 flex flex-col items-center text-center gap-4 bg-semantic-surface">
+                        <div class="w-16 h-16 rounded-2xl bg-semantic-surface border-2 border-brand-primary/20 flex items-center justify-center mb-2">
+                            <span class="i-lucide-alert-triangle w-8 h-8 inline-block text-brand-primary"></span>
                         </div>
                         <div>
-                            <h1 class="text-2xl font-bold text-primary mb-2">Oups, quelque chose s'est mal passé</h1>
-                            <p class="text-secondary max-w-sm">L'équipe a été notifiée. Réessayez dans quelques instants.</p>
+                            <h1 class="text-2xl font-bold text-semantic-ink mb-2">Oups, quelque chose s'est mal passé</h1>
+                            <p class="text-semantic-ink-secondary max-w-sm">L'équipe a été notifiée. Réessayez dans quelques instants.</p>
                         </div>
                         <div class="flex items-center gap-3 mt-2">
                             <a href="#" class="btn-primary">Retour à l'accueil</a>

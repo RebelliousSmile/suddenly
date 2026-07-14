@@ -12,7 +12,7 @@
                     hx-post="{% url 'characters:trait_set_delete' slug=character.slug set_pk=set.pk %}"
                     hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
                     hx-confirm="{% trans 'Supprimer ce lot et tout son contenu ?' %}"
-                    class="btn-ghost btn-sm text-error" title="{% trans 'Delete' %}">
+                    class="btn-ghost btn-sm text-semantic-danger" title="{% trans 'Delete' %}">
                 <span class="i-lucide-trash-2"></span>
             </button>
         {% endif %}
@@ -21,25 +21,25 @@
     {# ── Traits ────────────────────────────────────────────── #}
     <ul class="space-y-1 mb-3">
         {% for trait in set.traits.all %}
-            <li class="flex items-center justify-between gap-2 py-1 border-b border-border last:border-0">
+            <li class="flex items-center justify-between gap-2 py-1 border-b border-semantic-border last:border-0">
                 <span class="flex items-center gap-2">
-                    <span class="font-medium text-primary">{{ trait.name }}</span>
+                    <span class="font-medium text-semantic-ink">{{ trait.name }}</span>
                     {% if trait.value is not None %}
-                        <span class="badge bg-card-dark text-secondary border border-border text-xs">{{ trait.value|stringformat:"+d" }}</span>
+                        <span class="badge bg-semantic-card-sunken text-semantic-ink-secondary border border-semantic-border text-xs">{{ trait.value|stringformat:"+d" }}</span>
                     {% endif %}
-                    {% if trait.note %}<span class="text-xs text-muted">— {{ trait.note }}</span>{% endif %}
+                    {% if trait.note %}<span class="text-xs text-semantic-muted">— {{ trait.note }}</span>{% endif %}
                 </span>
                 {% if editable %}
                     <button type="button"
                             hx-post="{% url 'characters:trait_delete' slug=character.slug trait_pk=trait.pk %}"
                             hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
-                            class="btn-ghost btn-sm text-muted hover:text-error" title="{% trans 'Delete' %}">
+                            class="btn-ghost btn-sm text-semantic-muted hover:text-semantic-danger" title="{% trans 'Delete' %}">
                         <span class="i-lucide-x text-xs"></span>
                     </button>
                 {% endif %}
             </li>
         {% empty %}
-            <li class="text-sm text-muted">{% trans "No trait yet." %}</li>
+            <li class="text-sm text-semantic-muted">{% trans "No trait yet." %}</li>
         {% endfor %}
     </ul>
 
@@ -62,17 +62,17 @@
             </select>
             <input x-show="mode === 'free'" x-model="free" type="number"
                    placeholder="±" class="form-input w-24">
-            <span x-show="mode === 'none'" class="text-xs text-muted italic">{% trans 'no value' %}</span>
+            <span x-show="mode === 'none'" class="text-xs text-semantic-muted italic">{% trans 'no value' %}</span>
 
             <div class="flex items-center gap-1 text-xs">
                 <button type="button" @click="mode = 'range'"
-                        :class="mode === 'range' ? 'text-crimson font-medium' : 'text-muted'">−5/+5</button>
-                <span class="text-border">·</span>
+                        :class="mode === 'range' ? 'text-brand-primary font-medium' : 'text-semantic-muted'">−5/+5</button>
+                <span class="text-semantic-border">·</span>
                 <button type="button" @click="mode = 'free'"
-                        :class="mode === 'free' ? 'text-crimson font-medium' : 'text-muted'">{% trans 'free' %}</button>
-                <span class="text-border">·</span>
+                        :class="mode === 'free' ? 'text-brand-primary font-medium' : 'text-semantic-muted'">{% trans 'free' %}</button>
+                <span class="text-semantic-border">·</span>
                 <button type="button" @click="mode = 'none'"
-                        :class="mode === 'none' ? 'text-crimson font-medium' : 'text-muted'">{% trans 'none' %}</button>
+                        :class="mode === 'none' ? 'text-brand-primary font-medium' : 'text-semantic-muted'">{% trans 'none' %}</button>
             </div>
 
             <input type="hidden" name="value"
@@ -87,16 +87,16 @@
 
     {# ── Actions ───────────────────────────────────────────── #}
     {% if set.actions.all or editable %}
-        <h4 class="text-sm font-semibold text-secondary uppercase tracking-wide mb-2">{% trans "Actions" %}</h4>
+        <h4 class="text-sm font-semibold text-semantic-ink-secondary uppercase tracking-wide mb-2">{% trans "Actions" %}</h4>
     {% endif %}
     <div class="space-y-3 mb-3">
         {% for action in set.actions.all %}
-            <div class="rounded-lg bg-surface p-3">
+            <div class="rounded-lg bg-semantic-surface p-3">
                 <div class="flex items-center justify-between gap-2">
                     <span class="flex items-center flex-wrap gap-2">
-                        <span class="font-medium text-primary">{{ action.name }}</span>
+                        <span class="font-medium text-semantic-ink">{{ action.name }}</span>
                         {% for t in action.traits.all %}
-                            <span class="badge bg-card-dark text-secondary border border-border text-xs">
+                            <span class="badge bg-semantic-card-sunken text-semantic-ink-secondary border border-semantic-border text-xs">
                                 {{ t.name }}{% if t.value is not None %} {{ t.value|stringformat:"+d" }}{% endif %}
                             </span>
                         {% endfor %}
@@ -105,19 +105,19 @@
                         <button type="button"
                                 hx-post="{% url 'characters:action_delete' slug=character.slug action_pk=action.pk %}"
                                 hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
-                                class="btn-ghost btn-sm text-muted hover:text-error" title="{% trans 'Delete' %}">
+                                class="btn-ghost btn-sm text-semantic-muted hover:text-semantic-danger" title="{% trans 'Delete' %}">
                             <span class="i-lucide-x text-xs"></span>
                         </button>
                     {% endif %}
                 </div>
                 {% if action.condition %}
-                    <p class="text-sm text-secondary mt-1">
-                        <span class="text-muted">{% trans "When" %}:</span> {{ action.condition }}
+                    <p class="text-sm text-semantic-ink-secondary mt-1">
+                        <span class="text-semantic-muted">{% trans "When" %}:</span> {{ action.condition }}
                     </p>
                 {% endif %}
                 {% if action.outcome %}
-                    <p class="text-sm text-secondary">
-                        <span class="text-muted">{% trans "Then" %}:</span> {{ action.outcome }}
+                    <p class="text-sm text-semantic-ink-secondary">
+                        <span class="text-semantic-muted">{% trans "Then" %}:</span> {{ action.outcome }}
                     </p>
                 {% endif %}
             </div>
@@ -127,7 +127,7 @@
     {% if editable %}
         <form hx-post="{% url 'characters:action_create' slug=character.slug set_pk=set.pk %}"
               hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
-              class="space-y-2 rounded-lg border border-dashed border-border p-3"
+              class="space-y-2 rounded-lg border border-dashed border-semantic-border p-3"
               @submit="$nextTick(() => $el.reset())">
             <div class="flex flex-wrap items-center gap-2">
                 <input type="text" name="name" required maxlength="200"

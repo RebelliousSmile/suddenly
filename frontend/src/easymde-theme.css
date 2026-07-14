@@ -6,13 +6,13 @@
 .EasyMDEContainer {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--c-border);
+  border: 1px solid var(--color-semantic-border);
   border-radius: 0.5rem;
 }
 
 /* Toolbar */
 .editor-toolbar {
-  background: var(--c-card-dark);
+  background: var(--color-semantic-card-sunken);
   border-color: transparent;
   border-radius: 0.5rem 0.5rem 0 0;
   padding: 4px 8px;
@@ -20,26 +20,26 @@
 }
 
 .editor-toolbar button {
-  color: var(--c-secondary) !important;
+  color: var(--color-semantic-ink-secondary) !important;
   border: none;
 }
 
 .editor-toolbar button:hover,
 .editor-toolbar button.active {
-  background: var(--c-surface);
-  color: var(--c-primary) !important;
-  border-color: var(--c-border);
+  background: var(--color-semantic-surface);
+  color: var(--color-semantic-ink) !important;
+  border-color: var(--color-semantic-border);
 }
 
 .editor-toolbar i.separator {
-  border-color: var(--c-border);
+  border-color: var(--color-semantic-border);
 }
 
 /* Editor area (CodeMirror) */
 .EasyMDEContainer .CodeMirror {
-  background: var(--c-card);
-  color: var(--c-primary);
-  border: 1px solid rgb(var(--c-crimson) / 0.5);
+  background: var(--color-semantic-card);
+  color: var(--color-semantic-ink);
+  border: 1px solid rgb(var(--color-brand-primary-rgb) / 0.5);
   border-radius: 0 0 0.5rem 0.5rem;
   font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
   font-size: 0.875rem;
@@ -49,20 +49,20 @@
 
 /* Syntax highlight — aligné sur la sémantique prose-report :
    seuls les liens sont crimson ; titres/gras/italique restent neutres */
-.cm-header        { color: var(--c-primary) !important; font-weight: 700; }
-.cm-strong        { color: var(--c-primary) !important; }
-.cm-em            { color: var(--c-secondary) !important; }
-.cm-quote         { color: var(--c-secondary) !important; }
-.cm-link          { color: rgb(var(--c-crimson)) !important; }
-.cm-url           { color: rgb(var(--c-crimson) / 0.7) !important; }
-.cm-comment       { color: var(--c-muted) !important; }
+.cm-header        { color: var(--color-semantic-ink) !important; font-weight: 700; }
+.cm-strong        { color: var(--color-semantic-ink) !important; }
+.cm-em            { color: var(--color-semantic-ink-secondary) !important; }
+.cm-quote         { color: var(--color-semantic-ink-secondary) !important; }
+.cm-link          { color: rgb(var(--color-brand-primary-rgb)) !important; }
+.cm-url           { color: rgb(var(--color-brand-primary-rgb) / 0.7) !important; }
+.cm-comment       { color: var(--color-semantic-muted) !important; }
 
 .CodeMirror-scroll {
   min-height: 280px;
 }
 
 .CodeMirror-cursor {
-  border-left-color: var(--c-primary);
+  border-left-color: var(--color-semantic-ink);
 }
 
 .CodeMirror-selected,
@@ -72,13 +72,13 @@
 
 /* Placeholder */
 .CodeMirror pre.CodeMirror-placeholder {
-  color: var(--c-muted);
+  color: var(--color-semantic-muted);
 }
 
 /* Status bar */
 .editor-statusbar {
-  color: var(--c-muted);
-  border-top-color: var(--c-border);
+  color: var(--color-semantic-muted);
+  border-top-color: var(--color-semantic-border);
   font-size: 0.75rem;
   padding: 4px 8px;
 }
@@ -86,17 +86,17 @@
 /* Preview & side-by-side */
 .editor-preview,
 .editor-preview-side {
-  background: var(--c-card);
-  color: var(--c-primary);
-  border-color: var(--c-border);
+  background: var(--color-semantic-card);
+  color: var(--color-semantic-ink);
+  border-color: var(--color-semantic-border);
 }
 
 .editor-preview-side {
-  border-left-color: var(--c-border);
+  border-left-color: var(--color-semantic-border);
 }
 
 /* Fullscreen */
 .EasyMDEContainer.fullscreen .CodeMirror,
 .EasyMDEContainer.fullscreen .editor-toolbar {
-  background: var(--c-bg);
+  background: var(--color-semantic-background);
 }

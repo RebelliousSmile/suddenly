@@ -30,24 +30,24 @@
 <body class="h-full font-sans antialiased">
 
     <!-- Header -->
-    <header class="bg-surface border-b border-border sticky top-0 z-sticky">
+    <header class="bg-semantic-surface border-b border-semantic-border sticky top-0 z-sticky">
         <nav class="container-app">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
-                <a href="/" class="flex items-center gap-2 text-xl font-semibold text-primary hover:text-crimson transition-colors">
+                <a href="/" class="flex items-center gap-2 text-xl font-semibold text-semantic-ink hover:text-brand-primary transition-colors">
                     <img src="{% static 'img/suddenly-logo.svg' %}" alt="{{ SITE_NAME }}" width="28" height="34" class="inline-block">
                     <span class="hidden sm:inline">{{ SITE_NAME }}</span>
                 </a>
 
                 <!-- Navigation desktop -->
                 <div class="hidden md:flex items-center gap-6">
-                    <a href="{% url 'core:home' %}" class="text-secondary hover:text-primary transition-colors">
+                    <a href="{% url 'core:home' %}" class="text-semantic-ink-secondary hover:text-semantic-ink transition-colors">
                         {% trans "Home" %}
                     </a>
-                    <a href="{% url 'games:stories' %}" class="text-secondary hover:text-primary transition-colors">
+                    <a href="{% url 'games:stories' %}" class="text-semantic-ink-secondary hover:text-semantic-ink transition-colors">
                         {% trans "Stories" %}
                     </a>
-                    <a href="{% url 'core:quotes' %}" class="text-secondary hover:text-primary transition-colors">
+                    <a href="{% url 'core:quotes' %}" class="text-semantic-ink-secondary hover:text-semantic-ink transition-colors">
                         {% trans "Quotes" %}
                     </a>
 
@@ -65,7 +65,7 @@
                                     </span>
                                 {% endif %}
                                 {% if pending_requests_count or unread_notifications_count or new_stats_count %}
-                                    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-crimson border-2 border-surface"></span>
+                                    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-brand-primary border-2 border-semantic-surface"></span>
                                 {% endif %}
                             </button>
 
@@ -73,48 +73,48 @@
                                  x-transition
                                  @click.away="close"
                                  class="dropdown-menu right-0 mt-2 w-56">
-                                <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                                <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                     <span class="i-lucide-user mr-2"></span>{% trans "My profile" %}
                                 </a>
-                                <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                                <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                     <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Dashboard" %}
                                 </a>
-                                <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                                <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                     <span class="i-lucide-settings mr-2"></span>{% trans "Preferences" %}
                                 </a>
                                 {% if request.user.is_admin %}
-                                <a href="{% url 'gmh:dashboard' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                                <a href="{% url 'gmh:dashboard' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                     <span class="i-lucide-shield mr-2"></span>{% trans "Admin" %}
                                 </a>
                                 {% endif %}
-                                <hr class="my-1 border-border">
-                                <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
+                                <hr class="my-1 border-semantic-border">
+                                <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
                                     <span><span class="i-lucide-inbox mr-2"></span>{% trans "Requests" %}</span>
                                     {% if pending_requests_count %}<span class="badge-primary">{{ pending_requests_count }}</span>{% endif %}
                                 </a>
-                                <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
+                                <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
                                     <span><span class="i-lucide-bell mr-2"></span>{% trans "Notifications" %}</span>
                                     {% if unread_notifications_count %}<span class="badge-primary">{{ unread_notifications_count }}</span>{% endif %}
                                 </a>
-                                <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
+                                <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
                                     <span><span class="i-lucide-gem mr-2"></span>{% trans "Stats & achievements" %}</span>
                                     {% if new_stats_count %}<span class="badge-primary">{{ new_stats_count }}</span>{% endif %}
                                 </a>
-                                <hr class="my-1 border-border">
-                                <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-error hover:bg-error/10">
+                                <hr class="my-1 border-semantic-border">
+                                <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-semantic-danger hover:bg-semantic-danger/10">
                                     <span class="i-lucide-log-out mr-2"></span>{% trans "Log out" %}
                                 </a>
                             </div>
                         </div>
                         <!-- Theme toggle switch (authenticated: stays in header) -->
                         <button @click="toggle()"
-                                class="relative flex items-center h-7 w-14 rounded-full border border-border bg-card px-0.5 cursor-pointer transition-colors duration-300"
-                                :class="isDark ? 'border-crimson/50' : 'border-amber-300/60'"
+                                class="relative flex items-center h-7 w-14 rounded-full border border-semantic-border bg-semantic-card px-0.5 cursor-pointer transition-colors duration-300"
+                                :class="isDark ? 'border-brand-primary/50' : 'border-ui-sun-soft/60'"
                                 :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
-                            <span class="i-lucide-moon absolute left-1.5 text-sm text-crimson pointer-events-none"></span>
-                            <span class="i-lucide-sun absolute right-1.5 text-sm text-amber-400 pointer-events-none"></span>
+                            <span class="i-lucide-moon absolute left-1.5 text-sm text-brand-primary pointer-events-none"></span>
+                            <span class="i-lucide-sun absolute right-1.5 text-sm text-ui-sun pointer-events-none"></span>
                             <span class="w-5 h-5 rounded-full shadow-sm transition-all duration-300 flex-shrink-0 pointer-events-none"
-                                  :class="isDark ? 'translate-x-0 bg-crimson' : 'translate-x-8 bg-amber-400'">
+                                  :class="isDark ? 'translate-x-0 bg-brand-primary' : 'translate-x-8 bg-ui-sun'">
                             </span>
                         </button>
                     {% else %}
@@ -134,28 +134,28 @@
                                  x-transition
                                  @click.away="open = false"
                                  class="dropdown-menu right-0 mt-2 w-56">
-                                <a href="{% url 'account_login' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                                <a href="{% url 'account_login' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                     <span class="i-lucide-log-in mr-2"></span>{% trans "Log in" %}
                                 </a>
-                                <a href="{% url 'account_signup' %}" class="block px-4 py-2 text-sm text-crimson font-medium hover:bg-card">
+                                <a href="{% url 'account_signup' %}" class="block px-4 py-2 text-sm text-brand-primary font-medium hover:bg-semantic-card">
                                     <span class="i-lucide-user-plus mr-2"></span>{% trans "Sign up" %}
                                 </a>
-                                <hr class="my-1 border-border">
+                                <hr class="my-1 border-semantic-border">
                                 <!-- Theme toggle row -->
                                 <button @click="toggle()" type="button"
-                                        class="w-full flex items-center justify-between px-4 py-2 text-sm text-secondary hover:bg-card outline-none focus:outline-none"
+                                        class="w-full flex items-center justify-between px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card outline-none focus:outline-none"
                                         :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
                                     <span class="flex items-center">
                                         <span class="mr-2" :class="isDark ? 'i-lucide-sun' : 'i-lucide-moon'"></span>
                                         <span x-text="isDark ? '{% trans "Light mode" %}' : '{% trans "Dark mode" %}'"></span>
                                     </span>
-                                    <span class="relative flex items-center h-6 w-11 rounded-full border bg-card px-0.5 flex-shrink-0 transition-colors duration-300"
-                                          :class="isDark ? 'border-crimson/50' : 'border-amber-300/60'">
+                                    <span class="relative flex items-center h-6 w-11 rounded-full border bg-semantic-card px-0.5 flex-shrink-0 transition-colors duration-300"
+                                          :class="isDark ? 'border-brand-primary/50' : 'border-ui-sun-soft/60'">
                                         <span class="w-4 h-4 rounded-full shadow-sm transition-all duration-300 flex-shrink-0 pointer-events-none"
-                                              :class="isDark ? 'translate-x-0 bg-crimson' : 'translate-x-5 bg-amber-400'"></span>
+                                              :class="isDark ? 'translate-x-0 bg-brand-primary' : 'translate-x-5 bg-ui-sun'"></span>
                                     </span>
                                 </button>
-                                <hr class="my-1 border-border">
+                                <hr class="my-1 border-semantic-border">
                                 <!-- Language links (one submit per language) -->
                                 {% get_current_language as CURRENT_LANGUAGE %}
                                 {% get_available_languages as AVAILABLE_LANGUAGES %}
@@ -165,7 +165,7 @@
                                         <input type="hidden" name="next" value="{{ request.path }}">
                                         <input type="hidden" name="language" value="{{ lang_code }}">
                                         <button type="submit"
-                                                class="w-full text-left px-4 py-2 text-sm hover:bg-card flex items-center outline-none focus:outline-none {% if lang_code == CURRENT_LANGUAGE %}text-crimson font-medium{% else %}text-secondary{% endif %}">
+                                                class="w-full text-left px-4 py-2 text-sm hover:bg-semantic-card flex items-center outline-none focus:outline-none {% if lang_code == CURRENT_LANGUAGE %}text-brand-primary font-medium{% else %}text-semantic-ink-secondary{% endif %}">
                                             <span class="i-lucide-globe mr-2"></span>{{ lang_name }}
                                             {% if lang_code == CURRENT_LANGUAGE %}<span class="i-lucide-check ml-auto"></span>{% endif %}
                                         </button>
@@ -191,42 +191,42 @@
                                 </span>
                             {% endif %}
                             {% if pending_requests_count or unread_notifications_count or new_stats_count %}
-                                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-crimson border-2 border-surface"></span>
+                                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-brand-primary border-2 border-semantic-surface"></span>
                             {% endif %}
                         </button>
                         <div x-show="open"
                              x-transition
                              @click.away="close"
                              class="dropdown-menu right-0 mt-2 w-56">
-                            <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                            <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                 <span class="i-lucide-user mr-2"></span>{% trans "My profile" %}
                             </a>
-                            <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                            <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                 <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Dashboard" %}
                             </a>
-                            <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                            <a href="{% url 'users:settings_data' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                 <span class="i-lucide-settings mr-2"></span>{% trans "Preferences" %}
                             </a>
                             {% if request.user.is_admin %}
-                            <a href="{% url 'gmh:dashboard' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                            <a href="{% url 'gmh:dashboard' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                 <span class="i-lucide-shield mr-2"></span>{% trans "Admin" %}
                             </a>
                             {% endif %}
-                            <hr class="my-1 border-border">
-                            <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
+                            <hr class="my-1 border-semantic-border">
+                            <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
                                 <span><span class="i-lucide-inbox mr-2"></span>{% trans "Requests" %}</span>
                                 {% if pending_requests_count %}<span class="badge-primary">{{ pending_requests_count }}</span>{% endif %}
                             </a>
-                            <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
+                            <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
                                 <span><span class="i-lucide-bell mr-2"></span>{% trans "Notifications" %}</span>
                                 {% if unread_notifications_count %}<span class="badge-primary">{{ unread_notifications_count }}</span>{% endif %}
                             </a>
-                            <a href="#" class="block px-4 py-2 text-sm text-secondary hover:bg-card flex items-center justify-between">
+                            <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
                                 <span><span class="i-lucide-gem mr-2"></span>{% trans "Stats & achievements" %}</span>
                                 {% if new_stats_count %}<span class="badge-primary">{{ new_stats_count }}</span>{% endif %}
                             </a>
-                            <hr class="my-1 border-border">
-                            <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-error hover:bg-error/10">
+                            <hr class="my-1 border-semantic-border">
+                            <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-semantic-danger hover:bg-semantic-danger/10">
                                 <span class="i-lucide-log-out mr-2"></span>{% trans "Log out" %}
                             </a>
                         </div>
@@ -246,13 +246,13 @@
                              x-transition
                              @click.away="close"
                              class="dropdown-menu right-0 mt-2 w-56">
-                            <a href="{% url 'account_login' %}" class="block px-4 py-2 text-sm text-secondary hover:bg-card">
+                            <a href="{% url 'account_login' %}" class="block px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
                                 <span class="i-lucide-log-in mr-2"></span>{% trans "Log in" %}
                             </a>
-                            <a href="{% url 'account_signup' %}" class="block px-4 py-2 text-sm text-crimson font-medium hover:bg-card">
+                            <a href="{% url 'account_signup' %}" class="block px-4 py-2 text-sm text-brand-primary font-medium hover:bg-semantic-card">
                                 <span class="i-lucide-user-plus mr-2"></span>{% trans "Sign up" %}
                             </a>
-                            <hr class="my-1 border-border">
+                            <hr class="my-1 border-semantic-border">
                             <!-- Language links (one submit per language) -->
                             {% get_current_language as CURRENT_LANGUAGE %}
                             {% get_available_languages as AVAILABLE_LANGUAGES %}
@@ -262,7 +262,7 @@
                                     <input type="hidden" name="next" value="{{ request.path }}">
                                     <input type="hidden" name="language" value="{{ lang_code }}">
                                     <button type="submit"
-                                            class="w-full text-left px-4 py-2 text-sm hover:bg-card flex items-center outline-none focus:outline-none {% if lang_code == CURRENT_LANGUAGE %}text-crimson font-medium{% else %}text-secondary{% endif %}">
+                                            class="w-full text-left px-4 py-2 text-sm hover:bg-semantic-card flex items-center outline-none focus:outline-none {% if lang_code == CURRENT_LANGUAGE %}text-brand-primary font-medium{% else %}text-semantic-ink-secondary{% endif %}">
                                         <span class="i-lucide-globe mr-2"></span>{{ lang_name }}
                                         {% if lang_code == CURRENT_LANGUAGE %}<span class="i-lucide-check ml-auto"></span>{% endif %}
                                     </button>
@@ -273,7 +273,7 @@
                     {% endif %}
                     <!-- Burger menu button -->
                     <button x-data @click="$dispatch('toggle-mobile-menu')"
-                            class="p-2 text-secondary hover:text-primary bg-transparent border-0">
+                            class="p-2 text-semantic-ink-secondary hover:text-semantic-ink bg-transparent border-0">
                         <span class="i-lucide-menu text-xl"></span>
                     </button>
                 </div>
@@ -285,22 +285,22 @@
              @toggle-mobile-menu.window="open = !open"
              x-show="open"
              x-transition
-             class="md:hidden border-t border-border bg-surface">
+             class="md:hidden border-t border-semantic-border bg-semantic-surface">
             <div class="container-app py-4 space-y-2">
-                <a href="{% url 'core:home' %}" class="block py-2 text-secondary">{% trans "Home" %}</a>
-                <a href="{% url 'games:stories' %}" class="block py-2 text-secondary">{% trans "Stories" %}</a>
-                <a href="{% url 'core:quotes' %}" class="block py-2 text-secondary">{% trans "Quotes" %}</a>
-                <hr class="my-2 border-border">
+                <a href="{% url 'core:home' %}" class="block py-2 text-semantic-ink-secondary">{% trans "Home" %}</a>
+                <a href="{% url 'games:stories' %}" class="block py-2 text-semantic-ink-secondary">{% trans "Stories" %}</a>
+                <a href="{% url 'core:quotes' %}" class="block py-2 text-semantic-ink-secondary">{% trans "Quotes" %}</a>
+                <hr class="my-2 border-semantic-border">
                 <!-- Theme toggle mobile -->
                 <button @click="toggle()"
-                        class="flex items-center gap-3 py-2 text-secondary w-full"
+                        class="flex items-center gap-3 py-2 text-semantic-ink-secondary w-full"
                         :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
-                    <span class="relative flex items-center h-7 w-14 rounded-full border bg-card px-0.5 flex-shrink-0 transition-colors duration-300"
-                          :class="isDark ? 'border-crimson/50' : 'border-amber-300/60'">
-                        <span class="i-lucide-moon absolute left-1.5 text-sm text-crimson pointer-events-none"></span>
-                        <span class="i-lucide-sun absolute right-1.5 text-sm text-amber-400 pointer-events-none"></span>
+                    <span class="relative flex items-center h-7 w-14 rounded-full border bg-semantic-card px-0.5 flex-shrink-0 transition-colors duration-300"
+                          :class="isDark ? 'border-brand-primary/50' : 'border-ui-sun-soft/60'">
+                        <span class="i-lucide-moon absolute left-1.5 text-sm text-brand-primary pointer-events-none"></span>
+                        <span class="i-lucide-sun absolute right-1.5 text-sm text-ui-sun pointer-events-none"></span>
                         <span class="w-5 h-5 rounded-full shadow-sm transition-all duration-300 flex-shrink-0 pointer-events-none"
-                              :class="isDark ? 'translate-x-0 bg-crimson' : 'translate-x-8 bg-amber-400'">
+                              :class="isDark ? 'translate-x-0 bg-brand-primary' : 'translate-x-8 bg-ui-sun'">
                         </span>
                     </span>
                     <span x-text="isDark ? '{% trans "Light mode" %}' : '{% trans "Dark mode" %}'"></span>
@@ -314,10 +314,10 @@
         <div class="container-app mt-4">
             {% for message in messages %}
                 <div class="mb-2 p-4 rounded-lg flex items-center gap-3
-                            {% if message.tags == 'success' %}bg-success/10 text-success border border-success/30{% endif %}
-                            {% if message.tags == 'error' %}bg-error/10 text-error border border-error/30{% endif %}
-                            {% if message.tags == 'warning' %}bg-warning/10 text-warning border border-warning/30{% endif %}
-                            {% if message.tags == 'info' %}bg-info/10 text-info border border-info/30{% endif %}">
+                            {% if message.tags == 'success' %}bg-semantic-success/10 text-semantic-success border border-semantic-success/30{% endif %}
+                            {% if message.tags == 'error' %}bg-semantic-danger/10 text-semantic-danger border border-semantic-danger/30{% endif %}
+                            {% if message.tags == 'warning' %}bg-semantic-warning/10 text-semantic-warning border border-semantic-warning/30{% endif %}
+                            {% if message.tags == 'info' %}bg-semantic-info/10 text-semantic-info border border-semantic-info/30{% endif %}">
                     {% if message.tags == 'success' %}<span class="i-lucide-check-circle"></span>{% endif %}
                     {% if message.tags == 'error' %}<span class="i-lucide-x-circle"></span>{% endif %}
                     {% if message.tags == 'warning' %}<span class="i-lucide-alert-triangle"></span>{% endif %}
@@ -334,31 +334,31 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-surface border-t border-border mt-16">
+    <footer class="bg-semantic-surface border-t border-semantic-border mt-16">
         <div class="container-app py-8">
             <div class="flex flex-col md:flex-row items-center justify-between gap-6">
                 <!-- Logo + baseline -->
                 <div class="flex items-center gap-2 shrink-0">
                     <img src="{% static 'img/suddenly-logo.svg' %}" alt="{{ SITE_NAME }}" width="20" height="24" class="inline-block">
                     <div>
-                        <p class="font-semibold text-sm text-primary leading-tight">{{ SITE_NAME }}</p>
-                        <p class="text-xs text-muted">{% trans "Federated shared fiction network" %}</p>
+                        <p class="font-semibold text-sm text-semantic-ink leading-tight">{{ SITE_NAME }}</p>
+                        <p class="text-xs text-semantic-muted">{% trans "Federated shared fiction network" %}</p>
                     </div>
                 </div>
                 <!-- Links -->
                 <div class="text-xs text-right leading-6">
-                    <p class="text-muted">
-                        <span class="font-medium text-secondary">{{ request.get_host }} :</span>
-                        <a href="{% url 'core:about' %}" class="text-muted hover:text-primary mx-2">{% trans "About" %}</a>·
-                        <a href="#" class="text-muted hover:text-primary mx-2">{% trans "Profile directory" %}</a>·
-                        <a href="#" class="text-muted hover:text-primary ml-2">{% trans "Privacy policy" %}</a>
+                    <p class="text-semantic-muted">
+                        <span class="font-medium text-semantic-ink-secondary">{{ request.get_host }} :</span>
+                        <a href="{% url 'core:about' %}" class="text-semantic-muted hover:text-semantic-ink mx-2">{% trans "About" %}</a>·
+                        <a href="#" class="text-semantic-muted hover:text-semantic-ink mx-2">{% trans "Profile directory" %}</a>·
+                        <a href="#" class="text-semantic-muted hover:text-semantic-ink ml-2">{% trans "Privacy policy" %}</a>
                     </p>
-                    <p class="text-muted">
-                        <span class="font-medium text-secondary">{{ SITE_NAME }} :</span>
-                        <a href="{% url 'core:about' %}" class="text-muted hover:text-primary mx-2">{% trans "About" %}</a>·
-                        <a href="#" class="text-muted hover:text-primary mx-2">{% trans "Apps" %}</a>·
-                        <a href="#" class="text-muted hover:text-primary mx-2">{% trans "Keyboard shortcuts" %}</a>·
-                        <a href="https://github.com/RebelliousSmile/suddenly" class="text-muted hover:text-primary mx-2">{% trans "View source code" %}</a>·
+                    <p class="text-semantic-muted">
+                        <span class="font-medium text-semantic-ink-secondary">{{ SITE_NAME }} :</span>
+                        <a href="{% url 'core:about' %}" class="text-semantic-muted hover:text-semantic-ink mx-2">{% trans "About" %}</a>·
+                        <a href="#" class="text-semantic-muted hover:text-semantic-ink mx-2">{% trans "Apps" %}</a>·
+                        <a href="#" class="text-semantic-muted hover:text-semantic-ink mx-2">{% trans "Keyboard shortcuts" %}</a>·
+                        <a href="https://github.com/RebelliousSmile/suddenly" class="text-semantic-muted hover:text-semantic-ink mx-2">{% trans "View source code" %}</a>·
                         <span class="ml-2">v0.x.x</span>
                     </p>
                 </div>
@@ -378,9 +378,9 @@
                  x-transition:leave-start="opacity-100"
                  x-transition:leave-end="opacity-0"
                  :class="{
-                     'bg-success/10 text-success border-success/30': item.type === 'success',
-                     'bg-error/10 text-error border-error/30': item.type === 'error',
-                     'bg-info/10 text-info border-info/30': item.type === 'info',
+                     'bg-semantic-success/10 text-semantic-success border-semantic-success/30': item.type === 'success',
+                     'bg-semantic-danger/10 text-semantic-danger border-semantic-danger/30': item.type === 'error',
+                     'bg-semantic-info/10 text-semantic-info border-semantic-info/30': item.type === 'info',
                  }"
                  class="p-4 rounded-lg shadow-lg border max-w-sm flex items-center gap-3">
                 <span x-text="item.message"></span>
@@ -392,7 +392,7 @@
     </div>
 
     <!-- Loading indicator (styles in frontend/src/htmx-indicator.css) -->
-    <div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-crimson z-toast"></div>
+    <div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-brand-primary z-toast"></div>
 
     <!-- Scripts (Vite build with cache-busting) -->
     {% vite_asset "src/main.js" %}

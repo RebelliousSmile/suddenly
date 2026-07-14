@@ -8,7 +8,7 @@
     <div class="container-app max-w-3xl">
 
         <!-- Breadcrumb -->
-        <p class="text-sm text-muted mb-4">
+        <p class="text-sm text-semantic-muted mb-4">
             <a href="{% url 'games:detail' pk=game.pk %}" class="link-muted">{{ game.title }}</a>
             › {{ report.title|default:_("Report") }}
         </p>
@@ -16,7 +16,7 @@
         <!-- Header -->
         <div class="mb-6">
             <div class="flex items-start justify-between gap-4 mb-2">
-                <h1 class="text-2xl font-bold text-primary">
+                <h1 class="text-2xl font-bold text-semantic-ink">
                     {{ report.title|default:_("Untitled") }}
                 </h1>
                 {% if request.user == report.author %}
@@ -27,7 +27,7 @@
                     </a>
                 {% endif %}
             </div>
-            <div class="flex flex-wrap items-center gap-3 text-sm text-muted">
+            <div class="flex flex-wrap items-center gap-3 text-sm text-semantic-muted">
                 <span>{% blocktrans with username=report.author.username %}by @{{ username }}{% endblocktrans %}</span>
                 {% if report.session_date %}
                     <span>· {{ report.session_date }}</span>
@@ -35,19 +35,19 @@
                 {% if report.published_at %}
                     <span>· {% blocktrans with date=report.published_at|timesince %}published {{ date }}{% endblocktrans %}</span>
                 {% else %}
-                    <span class="badge bg-card-dark text-muted border border-border">{% trans "Draft" %}</span>
+                    <span class="badge bg-semantic-card-sunken text-semantic-muted border border-semantic-border">{% trans "Draft" %}</span>
                 {% endif %}
                 {% if report.language %}
-                    <span class="badge bg-card-dark text-muted border border-border uppercase text-xs">{{ report.language }}</span>
+                    <span class="badge bg-semantic-card-sunken text-semantic-muted border border-semantic-border uppercase text-xs">{{ report.language }}</span>
                 {% endif %}
                 {% if report.visibility != 'public' %}
-                    <span class="badge bg-card-dark text-muted border border-border">
+                    <span class="badge bg-semantic-card-sunken text-semantic-muted border border-semantic-border">
                         {% if report.visibility == 'unlisted' %}{% trans "Unlisted" %}{% endif %}
                         {% if report.visibility == 'followers' %}{% trans "Followers" %}{% endif %}
                     </span>
                 {% endif %}
                 {% if report.is_released %}
-                    <span class="badge bg-success/15 text-success border border-success/30">
+                    <span class="badge bg-semantic-success/15 text-semantic-success border border-semantic-success/30">
                         <span class="i-lucide-book-open text-xs"></span>
                         {% trans "Released" %}
                     </span>
@@ -60,19 +60,19 @@
             <div class="card card-body mb-6 flex items-center justify-between gap-3">
                 <div class="text-sm">
                     {% if report.is_released %}
-                        <p class="text-primary font-medium">{% trans "This report is released." %}</p>
-                        <p class="text-xs text-muted">
+                        <p class="text-semantic-ink font-medium">{% trans "This report is released." %}</p>
+                        <p class="text-xs text-semantic-muted">
                             {% trans "It is readable by everyone in Stories." %}
                         </p>
                     {% else %}
-                        <p class="text-primary font-medium">{% trans "Behind the wall" %}</p>
-                        <p class="text-xs text-muted">
+                        <p class="text-semantic-ink font-medium">{% trans "Behind the wall" %}</p>
+                        <p class="text-xs text-semantic-muted">
                             {% trans "Release to let everyone read this scene as a resolved account." %}
                         </p>
                     {% endif %}
                 </div>
                 {% if report.is_released and report.ap_id %}
-                    <span class="text-xs text-muted">{% trans "Federated — release is final." %}</span>
+                    <span class="text-xs text-semantic-muted">{% trans "Federated — release is final." %}</span>
                 {% else %}
                     <form method="post" action="{% url 'games:report_release' game_pk=game.pk pk=report.pk %}">
                         {% csrf_token %}
@@ -94,14 +94,14 @@
 
         <!-- Content Warning -->
         {% if report.content_warning %}
-            <div class="card card-body mb-6 bg-warning/10 border-warning/30"
+            <div class="card card-body mb-6 bg-semantic-warning/10 border-semantic-warning/30"
                  x-data="{ show: false }">
-                <div class="flex items-center gap-2 text-warning">
+                <div class="flex items-center gap-2 text-semantic-warning">
                     <span class="i-lucide-alert-triangle"></span>
                     <strong class="text-sm">{{ report.content_warning }}</strong>
                 </div>
                 <button @click="show = !show"
-                        class="btn-ghost btn-sm mt-2 text-warning"
+                        class="btn-ghost btn-sm mt-2 text-semantic-warning"
                         x-text="show ? '{% trans "Hide" %}' : '{% trans "Show content" %}'">
                 </button>
                 <div x-show="show" x-transition class="mt-4 prose-report">
@@ -121,9 +121,9 @@
                 <h2 class="text-heading mb-3">{% trans "Cast" %}</h2>
                 <div class="flex flex-wrap gap-2">
                     {% for app in cast %}
-                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-badge text-sm
-                                  {% if app.character.status == 'npc' %}bg-success/15 text-success
-                                  {% else %}bg-info/15 text-info{% endif %}">
+                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm
+                                  {% if app.character.status == 'npc' %}bg-semantic-success/15 text-semantic-success
+                                  {% else %}bg-semantic-info/15 text-semantic-info{% endif %}">
                             {% include "characters/_char_link.html" with character=app.character %}
                             <span class="text-xs opacity-60">{{ app.get_role_display }}</span>
                         </span>
@@ -136,7 +136,7 @@
                 <h2 class="text-heading mb-3">{% trans "Cast" %}</h2>
                 <div class="flex flex-wrap gap-2">
                     {% for entry in cast_fallback %}
-                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-badge text-sm bg-card-dark text-muted border border-border">
+                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm bg-semantic-card-sunken text-semantic-muted border border-semantic-border">
                             {{ entry.new_character_name }}
                             <span class="text-xs opacity-60">{{ entry.get_role_display }}</span>
                         </span>
@@ -195,15 +195,15 @@
 
                 <div id="report-quote-list" class="space-y-2">
                     {% for quote in manage_quotes %}
-                        <div class="flex items-start justify-between gap-2 border-l-4 border-border pl-3">
+                        <div class="flex items-start justify-between gap-2 border-l-4 border-semantic-border pl-3">
                             <div>
-                                <p class="text-secondary text-sm">« {{ quote.content }} »</p>
-                                <p class="text-xs text-muted">
+                                <p class="text-semantic-ink-secondary text-sm">« {{ quote.content }} »</p>
+                                <p class="text-xs text-semantic-muted">
                                     {{ quote.character.name }} ·
                                     {% if quote.visibility == 'public' %}{% trans "publique" %}
                                     {% elif quote.visibility == 'private' %}{% trans "privée" %}
                                     {% else %}{% trans "éphémère" %}{% endif %}
-                                    {% if not report.is_released %}· <span class="text-warning">{% trans "en attente du mur" %}</span>{% endif %}
+                                    {% if not report.is_released %}· <span class="text-semantic-warning">{% trans "en attente du mur" %}</span>{% endif %}
                                 </p>
                             </div>
                             <button type="button"
@@ -211,7 +211,7 @@
                                     hx-confirm="{% trans "Supprimer cette citation ?" %}"
                                     hx-target="closest div.flex"
                                     hx-swap="outerHTML"
-                                    class="btn-ghost btn-sm text-error shrink-0">
+                                    class="btn-ghost btn-sm text-semantic-danger shrink-0">
                                 <span class="i-lucide-trash-2 text-xs"></span>
                             </button>
                         </div>

@@ -11,15 +11,15 @@
                          class="w-full h-32 object-cover">
                 {% endif %}
                 <div class="card-body">
-                    <h2 class="font-semibold text-primary mb-1">{{ game.title }}</h2>
-                    <p class="text-xs text-muted mb-2">
+                    <h2 class="font-semibold text-semantic-ink mb-1">{{ game.title }}</h2>
+                    <p class="text-xs text-semantic-muted mb-2">
                         {% blocktrans with username=game.owner.username %}by @{{ username }}{% endblocktrans %}
                         {% if game.game_system %}
                             · {{ game.game_system }}
                         {% endif %}
                     </p>
                     {% if game.description %}
-                        <p class="text-sm text-secondary line-clamp-2">{{ game.description }}</p>
+                        <p class="text-sm text-semantic-ink-secondary line-clamp-2">{{ game.description }}</p>
                     {% endif %}
                 </div>
             </a>
@@ -27,9 +27,9 @@
     </div>
 {% else %}
     <div class="text-center py-16">
-        <span class="i-lucide-book-open text-5xl text-muted mb-4 block"></span>
-        <h3 class="font-semibold text-primary mb-2">{% trans "No story yet" %}</h3>
-        <p class="text-sm text-muted">
+        <span class="i-lucide-book-open text-5xl text-semantic-muted mb-4 block"></span>
+        <h3 class="font-semibold text-semantic-ink mb-2">{% trans "No story yet" %}</h3>
+        <p class="text-sm text-semantic-muted">
             {% trans "When authors release their reports, they appear here." %}
         </p>
     </div>

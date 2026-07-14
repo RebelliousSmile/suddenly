@@ -1,96 +1,36 @@
+/* Base styles.
+   Les TOKENS ne vivent plus ici : ils sont dans design/adapters/tokens.css
+   (généré depuis design/tokens.json), importé avant ce fichier par main.js.
+   Ce fichier ne contient que ce qui n'est pas un token : reset, décoration de
+   page, styles de contrôles natifs. */
+
 /* Reset box-sizing — non inclus dans le preflight UnoCSS */
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
-:root {
-  /* Structural tokens */
-  --c-bg: #faf9f6;
-  --c-surface: #f0ede8;
-  --c-card: #ffffff;
-  --c-card-dark: #f5f2ec;
-  --c-border: #d4cfe8;
-  --c-input-bg: #f0ede8;   /* = surface en light — fond inputs */
-  --c-primary: #1a1a2e;
-  --c-secondary: #555555;
-  --c-muted: #8c8c8c;
-  --shadow-card: 0 2px 16px rgba(0,0,0,0.07);
-  --shadow-card-hover: 0 4px 24px rgba(0,0,0,0.12);
-  --body-bg: #faf9f6;
-
-  /* Action colors — RGB channels (supports bg-crimson/10 opacity modifiers) */
-  --c-crimson: 224 53 88;
-  --c-crimson-hover: 200 42 74;
-  --c-violet: 124 58 237;
-  --c-violet-hover: 109 40 217;
-  --c-neon: 0 230 118;
-  --c-neon-hover: 0 200 83;
-  --c-brand: 99 102 241;      /* #6366f1 — couleur logo */
-  --c-brand-hover: 79 70 229;
-
-  /* Semantic feedback — light mode: darker shades for readability on white */
-  --c-success: 21 128 61;    /* green-700  #15803d */
-  --c-warning: 180 83 9;     /* amber-700  #b45309 */
-  --c-error: 153 27 27;      /* red-800    #991b1b — distinct from crimson */
-  --c-info: 3 105 161;       /* sky-700    #0369a1 — distinct from violet */
-}
-
-[data-theme="light"] {
-  --c-bg: #faf9f6;
-  --c-surface: #f0ede8;
-  --c-card: #ffffff;
-  --c-card-dark: #f5f2ec;
-  --c-border: #d4cfe8;
-  --c-input-bg: #f0ede8;
-  --c-primary: #1a1a2e;
-  --c-secondary: #555555;
-  --c-muted: #8c8c8c;
-  --shadow-card: 0 2px 16px rgba(0,0,0,0.07);
-  --shadow-card-hover: 0 4px 24px rgba(0,0,0,0.12);
-  --body-bg: #faf9f6;
-  --c-brand: 99 102 241;
-  --c-brand-hover: 79 70 229;
-
-  /* Semantic feedback — light mode */
-  --c-success: 21 128 61;
-  --c-warning: 180 83 9;
-  --c-error: 153 27 27;
-  --c-info: 3 105 161;
-}
-
-[data-theme="dark"] {
-  --c-bg: #0b0705;
-  --c-surface: #170d08;
-  --c-card: #25150e;
-  --c-card-dark: #1d0f09;
-  --c-border: #3d2215;
-  --c-input-bg: rgba(224, 53, 88, 0.06); /* fallback solid pour background-color */
-  --c-primary: #f0f0f0;
-  --c-secondary: #a0a0a0;
-  --c-muted: #a0a0a0;
-  --c-brand: 99 102 241;
-  --c-brand-hover: 129 140 248;
-  --shadow-card: 0 0 24px rgba(224,53,88,0.12), 0 2px 8px rgba(0,0,0,0.4);
-  --shadow-card-hover: 0 0 36px rgba(224,53,88,0.22), 0 4px 16px rgba(0,0,0,0.5);
-  --body-bg: radial-gradient(ellipse at top, rgba(60,20,10,0.55), #0b0705) #0b0705;
-
-  /* Semantic feedback — dark mode: lighter shades for readability on near-black */
-  --c-success: 74 222 128;   /* green-400  #4ade80 */
-  --c-warning: 251 191 36;   /* amber-400  #fbbf24 */
-  --c-error: 252 165 165;    /* red-300    #fca5a5 — soft, distinct from crimson */
-  --c-info: 125 211 252;     /* sky-300    #7dd3fc — distinct from violet */
-}
-
 body {
-  background: var(--body-bg);
-  color: var(--c-primary);
+  background: var(--color-semantic-background);
+  color: var(--color-semantic-ink);
 }
 
-/* Inputs dark mode — dégradé directionnel crimson → transparent, très basse opacité */
+/* Fond de page en mode sombre — décoration, pas un token :
+   halo chaud remontant du haut de page sur le sépia profond. */
+[data-theme="dark"] body {
+  background:
+    radial-gradient(ellipse at top, rgba(60, 20, 10, 0.55), var(--color-sepia-900))
+    var(--color-sepia-900);
+}
+
+/* Inputs en mode sombre — dégradé directionnel crimson, très basse opacité */
 [data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
 [data-theme="dark"] textarea,
 [data-theme="dark"] select {
-  background: linear-gradient(135deg, rgba(224, 53, 88, 0.09) 0%, rgba(224, 53, 88, 0.03) 100%);
+  background: linear-gradient(
+    135deg,
+    rgb(var(--color-brand-primary-rgb) / 0.09) 0%,
+    rgb(var(--color-brand-primary-rgb) / 0.03) 100%
+  );
 }
 
 a { text-decoration: none; }
@@ -112,8 +52,8 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
   cursor: pointer;
   opacity: 0.5;
-  transition: opacity 0.15s;
-  accent-color: rgb(var(--c-crimson));
+  transition: opacity var(--duration-fast);
+  accent-color: var(--color-brand-primary);
 }
 input[type=number]::-webkit-inner-spin-button:hover,
 input[type=number]::-webkit-outer-spin-button:hover {
@@ -124,14 +64,14 @@ input[type=number]::-webkit-outer-spin-button:hover {
 input[type=date]::-webkit-calendar-picker-indicator {
   cursor: pointer;
   opacity: 0.45;
-  transition: opacity 0.15s;
+  transition: opacity var(--duration-fast);
   border-radius: 3px;
   padding: 2px;
-  accent-color: rgb(var(--c-crimson));
+  accent-color: var(--color-brand-primary);
 }
 input[type=date]::-webkit-calendar-picker-indicator:hover {
   opacity: 1;
-  background-color: rgb(var(--c-crimson) / 0.12);
+  background-color: rgb(var(--color-brand-primary-rgb) / 0.12);
 }
 
 [data-theme="dark"] input[type=date]::-webkit-calendar-picker-indicator {

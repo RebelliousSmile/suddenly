@@ -1,14 +1,14 @@
 {% load i18n %}
-<span id="marker-{{ marker.pk }}" class="inline-flex items-center gap-1.5 badge bg-card-dark border border-border text-xs">
+<span id="marker-{{ marker.pk }}" class="inline-flex items-center gap-1.5 badge bg-semantic-card-sunken border border-semantic-border text-xs">
     <span>{{ marker.get_kind_display }}</span>
     {% if marker.character %}
-        <span class="text-muted">· {{ marker.character.name }}</span>
+        <span class="text-semantic-muted">· {{ marker.character.name }}</span>
     {% endif %}
     {% if request.user == marker.rapport.report.author %}
         <button hx-post="{% url 'games:marker_delete' marker.rapport.report.game.pk marker.rapport.report.pk marker.rapport.pk marker.pk %}"
                 hx-target="#marker-{{ marker.pk }}"
                 hx-swap="outerHTML"
-                class="ml-1 text-muted hover:text-error transition-colors">
+                class="ml-1 text-semantic-muted hover:text-semantic-danger transition-colors">
             <span class="i-lucide-x text-xs"></span>
         </button>
     {% endif %}

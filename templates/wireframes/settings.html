@@ -16,10 +16,10 @@
 <section>
 
     <!-- Page header -->
-    <div class="border-b border-border bg-surface py-6">
+    <div class="border-b border-semantic-border bg-semantic-surface py-6">
         <div class="container-app px-4">
-            <h1 class="text-2xl font-bold text-primary flex items-center gap-3">
-                <span class="i-lucide-settings w-6 h-6 inline-block text-muted"></span>
+            <h1 class="text-2xl font-bold text-semantic-ink flex items-center gap-3">
+                <span class="i-lucide-settings w-6 h-6 inline-block text-semantic-muted"></span>
                 Paramètres
             </h1>
         </div>
@@ -37,7 +37,7 @@
                     <li>
                         <button type="button"
                             @click="tab = 'profil'"
-                            :class="tab === 'profil' ? 'bg-crimson/10 text-crimson font-semibold' : 'text-secondary hover:bg-surface hover:text-primary'"
+                            :class="tab === 'profil' ? 'bg-brand-primary/10 text-brand-primary font-semibold' : 'text-semantic-ink-secondary hover:bg-semantic-surface hover:text-semantic-ink'"
                             class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2.5 transition-colors whitespace-nowrap">
                             <span class="i-lucide-user w-4 h-4 inline-block shrink-0"></span>
                             Profil
@@ -47,7 +47,7 @@
                     <li>
                         <button type="button"
                             @click="tab = 'compte'"
-                            :class="tab === 'compte' ? 'bg-crimson/10 text-crimson font-semibold' : 'text-secondary hover:bg-surface hover:text-primary'"
+                            :class="tab === 'compte' ? 'bg-brand-primary/10 text-brand-primary font-semibold' : 'text-semantic-ink-secondary hover:bg-semantic-surface hover:text-semantic-ink'"
                             class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2.5 transition-colors whitespace-nowrap">
                             <span class="i-lucide-at-sign w-4 h-4 inline-block shrink-0"></span>
                             Compte
@@ -57,7 +57,7 @@
                     <li>
                         <button type="button"
                             @click="tab = 'securite'"
-                            :class="tab === 'securite' ? 'bg-crimson/10 text-crimson font-semibold' : 'text-secondary hover:bg-surface hover:text-primary'"
+                            :class="tab === 'securite' ? 'bg-brand-primary/10 text-brand-primary font-semibold' : 'text-semantic-ink-secondary hover:bg-semantic-surface hover:text-semantic-ink'"
                             class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2.5 transition-colors whitespace-nowrap">
                             <span class="i-lucide-shield w-4 h-4 inline-block shrink-0"></span>
                             Sécurité
@@ -67,7 +67,7 @@
                     <li>
                         <button type="button"
                             @click="tab = 'langues'"
-                            :class="tab === 'langues' ? 'bg-crimson/10 text-crimson font-semibold' : 'text-secondary hover:bg-surface hover:text-primary'"
+                            :class="tab === 'langues' ? 'bg-brand-primary/10 text-brand-primary font-semibold' : 'text-semantic-ink-secondary hover:bg-semantic-surface hover:text-semantic-ink'"
                             class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2.5 transition-colors whitespace-nowrap">
                             <span class="i-lucide-languages w-4 h-4 inline-block shrink-0"></span>
                             Langues
@@ -77,7 +77,7 @@
                     <li>
                         <button type="button"
                             @click="tab = 'notifications'"
-                            :class="tab === 'notifications' ? 'bg-crimson/10 text-crimson font-semibold' : 'text-secondary hover:bg-surface hover:text-primary'"
+                            :class="tab === 'notifications' ? 'bg-brand-primary/10 text-brand-primary font-semibold' : 'text-semantic-ink-secondary hover:bg-semantic-surface hover:text-semantic-ink'"
                             class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2.5 transition-colors whitespace-nowrap">
                             <span class="i-lucide-bell w-4 h-4 inline-block shrink-0"></span>
                             Notifications
@@ -87,7 +87,7 @@
                     <li>
                         <button type="button"
                             @click="tab = 'federation'"
-                            :class="tab === 'federation' ? 'bg-crimson/10 text-crimson font-semibold' : 'text-secondary hover:bg-surface hover:text-primary'"
+                            :class="tab === 'federation' ? 'bg-brand-primary/10 text-brand-primary font-semibold' : 'text-semantic-ink-secondary hover:bg-semantic-surface hover:text-semantic-ink'"
                             class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2.5 transition-colors whitespace-nowrap">
                             <span class="i-lucide-globe w-4 h-4 inline-block shrink-0"></span>
                             Fédération
@@ -97,7 +97,7 @@
                     <li>
                         <button type="button"
                             @click="tab = 'donnees'"
-                            :class="tab === 'donnees' ? 'bg-crimson/10 text-crimson font-semibold' : 'text-secondary hover:bg-surface hover:text-primary'"
+                            :class="tab === 'donnees' ? 'bg-brand-primary/10 text-brand-primary font-semibold' : 'text-semantic-ink-secondary hover:bg-semantic-surface hover:text-semantic-ink'"
                             class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2.5 transition-colors whitespace-nowrap">
                             <span class="i-lucide-database w-4 h-4 inline-block shrink-0"></span>
                             Mes données
@@ -116,15 +116,15 @@
                 <!-- TAB: PROFIL -->
                 <!-- ==================================================== -->
                 <div x-show="tab === 'profil'">
-                    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
-                        <span class="i-lucide-user w-4 h-4 text-muted inline-block"></span>
-                        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Onglet Profil — redirect vers /users/alice/edit/</span>
+                    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
+                        <span class="i-lucide-user w-4 h-4 text-semantic-muted inline-block"></span>
+                        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Onglet Profil — redirect vers /users/alice/edit/</span>
                     </div>
 
                     <div class="max-w-lg">
                         <div class="card">
                             <div class="card-header">
-                                <h2 class="text-xl font-bold text-primary">Modifier mon profil</h2>
+                                <h2 class="text-xl font-bold text-semantic-ink">Modifier mon profil</h2>
                             </div>
                             <div class="card-body">
                                 <form method="post" enctype="multipart/form-data" novalidate>
@@ -146,31 +146,31 @@ Mes PNJ cherchent des histoires.</textarea>
                                     <div class="mb-3">
                                         <label class="form-label">Avatar</label>
                                         <div class="form-dropzone">
-                                            <span class="i-lucide-upload-cloud w-8 h-8 text-muted inline-block mb-2"></span>
-                                            <p class="text-sm text-secondary">Glisser une image ici ou</p>
+                                            <span class="i-lucide-upload-cloud w-8 h-8 text-semantic-muted inline-block mb-2"></span>
+                                            <p class="text-sm text-semantic-ink-secondary">Glisser une image ici ou</p>
                                             <label class="form-dropzone-link cursor-pointer">
                                                 cliquer pour choisir
                                                 <input type="file" class="hidden" accept="image/*">
                                             </label>
-                                            <p class="text-xs text-muted mt-1">PNG, JPG, GIF — max 2 Mo</p>
+                                            <p class="text-xs text-semantic-muted mt-1">PNG, JPG, GIF — max 2 Mo</p>
                                         </div>
                                     </div>
 
                                     <!-- Delete avatar -->
                                     <div class="mb-5 flex items-center gap-2">
-                                        <input id="edit-delete-avatar" type="checkbox" class="rounded border-border text-crimson focus:ring-crimson">
-                                        <label for="edit-delete-avatar" class="text-sm text-secondary cursor-pointer">Supprimer l'avatar</label>
+                                        <input id="edit-delete-avatar" type="checkbox" class="rounded border-semantic-border text-brand-primary focus:ring-brand-primary">
+                                        <label for="edit-delete-avatar" class="text-sm text-semantic-ink-secondary cursor-pointer">Supprimer l'avatar</label>
                                     </div>
 
                                     <!-- Custom fields -->
                                     <div class="mb-6">
-                                        <p class="form-label mb-3">Champs personnalisés <span class="text-muted font-normal">(max 4)</span></p>
+                                        <p class="form-label mb-3">Champs personnalisés <span class="text-semantic-muted font-normal">(max 4)</span></p>
 
                                         <!-- Field 1 -->
                                         <div class="flex gap-2 mb-2">
                                             <input type="text" class="form-input w-1/3" placeholder="Label" value="Pronoms">
                                             <input type="text" class="form-input flex-1" placeholder="Valeur" value="elle/elle">
-                                            <button type="button" class="btn-ghost btn-sm flex-shrink-0 text-crimson" title="Supprimer">
+                                            <button type="button" class="btn-ghost btn-sm flex-shrink-0 text-brand-primary" title="Supprimer">
                                                 <span class="i-lucide-x w-4 h-4 inline-block"></span>
                                             </button>
                                         </div>
@@ -179,7 +179,7 @@ Mes PNJ cherchent des histoires.</textarea>
                                         <div class="flex gap-2 mb-2">
                                             <input type="text" class="form-input w-1/3" placeholder="Label" value="Site">
                                             <input type="text" class="form-input flex-1" placeholder="Valeur" value="https://alice.blog">
-                                            <button type="button" class="btn-ghost btn-sm flex-shrink-0 text-crimson" title="Supprimer">
+                                            <button type="button" class="btn-ghost btn-sm flex-shrink-0 text-brand-primary" title="Supprimer">
                                                 <span class="i-lucide-x w-4 h-4 inline-block"></span>
                                             </button>
                                         </div>
@@ -192,7 +192,7 @@ Mes PNJ cherchent des histoires.</textarea>
                                     </div>
 
                                     <!-- Actions -->
-                                    <div class="flex items-center gap-4 pt-2 border-t border-border">
+                                    <div class="flex items-center gap-4 pt-2 border-t border-semantic-border">
                                         <button type="submit" class="btn-primary">
                                             <span class="i-lucide-check w-4 h-4 inline-block mr-1.5"></span>
                                             Enregistrer
@@ -210,9 +210,9 @@ Mes PNJ cherchent des histoires.</textarea>
                 <!-- TAB: COMPTE -->
                 <!-- ==================================================== -->
                 <div x-show="tab === 'compte'">
-                    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
-                        <span class="i-lucide-at-sign w-4 h-4 text-muted inline-block"></span>
-                        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Onglet Compte — /settings/account/</span>
+                    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
+                        <span class="i-lucide-at-sign w-4 h-4 text-semantic-muted inline-block"></span>
+                        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Onglet Compte — /settings/account/</span>
                     </div>
 
                     <div class="max-w-lg">
@@ -220,7 +220,7 @@ Mes PNJ cherchent des histoires.</textarea>
                         <!-- Account info form -->
                         <div class="card mb-8">
                             <div class="card-header">
-                                <h2 class="text-lg font-bold text-primary">Compte</h2>
+                                <h2 class="text-lg font-bold text-semantic-ink">Compte</h2>
                             </div>
                             <div class="card-body">
                                 <form novalidate>
@@ -242,7 +242,7 @@ Mes PNJ cherchent des histoires.</textarea>
                                     </div>
 
                                     <!-- Actions -->
-                                    <div class="flex items-center gap-4 pt-2 border-t border-border">
+                                    <div class="flex items-center gap-4 pt-2 border-t border-semantic-border">
                                         <button type="submit" class="btn-primary">
                                             <span class="i-lucide-save w-4 h-4 inline-block mr-1.5"></span>
                                             Enregistrer
@@ -254,19 +254,19 @@ Mes PNJ cherchent des histoires.</textarea>
                         </div>
 
                         <!-- Danger zone -->
-                        <div class="bg-error/10 border border-error/30 rounded-lg p-4">
-                            <h3 class="text-base font-bold text-crimson mb-4 flex items-center gap-2">
+                        <div class="bg-semantic-danger/10 border border-semantic-danger/30 rounded-lg p-4">
+                            <h3 class="text-base font-bold text-brand-primary mb-4 flex items-center gap-2">
                                 <span class="i-lucide-alert-triangle w-4 h-4 inline-block"></span>
                                 Zone dangereuse
                             </h3>
 
                             <!-- Disable account -->
-                            <div class="mb-4 pb-4 border-b border-error/20">
+                            <div class="mb-4 pb-4 border-b border-semantic-danger/20">
                                 <button type="button" class="btn-secondary btn-sm mb-2">
                                     <span class="i-lucide-eye-off w-4 h-4 inline-block mr-1.5"></span>
                                     Désactiver mon compte
                                 </button>
-                                <p class="text-sm text-secondary">
+                                <p class="text-sm text-semantic-ink-secondary">
                                     Votre compte sera masqué et vos followers distants seront notifiés (Delete activity). Vous pourrez le réactiver sous 30 jours.
                                 </p>
                             </div>
@@ -277,7 +277,7 @@ Mes PNJ cherchent des histoires.</textarea>
                                     <span class="i-lucide-trash-2 w-4 h-4 inline-block mr-1.5"></span>
                                     Supprimer définitivement
                                 </button>
-                                <p class="text-sm text-crimson/80">
+                                <p class="text-sm text-brand-primary/80">
                                     Irréversible. Toutes vos données seront effacées après un délai de grâce de 30 jours.
                                 </p>
                             </div>
@@ -290,9 +290,9 @@ Mes PNJ cherchent des histoires.</textarea>
                 <!-- TAB: SÉCURITÉ -->
                 <!-- ==================================================== -->
                 <div x-show="tab === 'securite'">
-                    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
-                        <span class="i-lucide-shield w-4 h-4 text-muted inline-block"></span>
-                        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Onglet Sécurité — /settings/security/</span>
+                    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
+                        <span class="i-lucide-shield w-4 h-4 text-semantic-muted inline-block"></span>
+                        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Onglet Sécurité — /settings/security/</span>
                     </div>
 
                     <div class="max-w-lg">
@@ -300,7 +300,7 @@ Mes PNJ cherchent des histoires.</textarea>
                         <!-- Change password -->
                         <div class="card mb-8">
                             <div class="card-header">
-                                <h2 class="text-lg font-bold text-primary">Changer le mot de passe</h2>
+                                <h2 class="text-lg font-bold text-semantic-ink">Changer le mot de passe</h2>
                             </div>
                             <div class="card-body">
                                 <form novalidate>
@@ -320,7 +320,7 @@ Mes PNJ cherchent des histoires.</textarea>
                                         <input id="sec-confirm-pw" type="password" class="form-input" placeholder="••••••••">
                                     </div>
 
-                                    <div class="pt-2 border-t border-border">
+                                    <div class="pt-2 border-t border-semantic-border">
                                         <button type="submit" class="btn-primary">
                                             <span class="i-lucide-key w-4 h-4 inline-block mr-1.5"></span>
                                             Changer le mot de passe
@@ -334,56 +334,56 @@ Mes PNJ cherchent des histoires.</textarea>
                         <!-- Active sessions -->
                         <div class="card">
                             <div class="card-header">
-                                <h2 class="text-lg font-bold text-primary">Sessions actives</h2>
+                                <h2 class="text-lg font-bold text-semantic-ink">Sessions actives</h2>
                             </div>
                             <div class="card-body flex flex-col gap-4">
 
                                 <!-- Session 1 — current -->
                                 <div class="flex items-start justify-between gap-3">
                                     <div class="flex items-start gap-3">
-                                        <div class="shrink-0 w-9 h-9 rounded-full bg-surface flex items-center justify-center border border-border">
-                                            <span class="i-lucide-monitor w-4.5 h-4.5 inline-block text-secondary"></span>
+                                        <div class="shrink-0 w-9 h-9 rounded-full bg-semantic-surface flex items-center justify-center border border-semantic-border">
+                                            <span class="i-lucide-monitor w-4.5 h-4.5 inline-block text-semantic-ink-secondary"></span>
                                         </div>
                                         <div>
-                                            <p class="text-sm font-medium text-primary">Firefox, Linux</p>
-                                            <p class="text-xs text-muted">Connecté depuis 2h</p>
+                                            <p class="text-sm font-medium text-semantic-ink">Firefox, Linux</p>
+                                            <p class="text-xs text-semantic-muted">Connecté depuis 2h</p>
                                             <span class="badge badge-info text-xs mt-1">Session actuelle</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="border-t border-border"></div>
+                                <div class="border-t border-semantic-border"></div>
 
                                 <!-- Session 2 — other device -->
                                 <div class="flex items-start justify-between gap-3">
                                     <div class="flex items-start gap-3">
-                                        <div class="shrink-0 w-9 h-9 rounded-full bg-surface flex items-center justify-center border border-border">
-                                            <span class="i-lucide-smartphone w-4.5 h-4.5 inline-block text-secondary"></span>
+                                        <div class="shrink-0 w-9 h-9 rounded-full bg-semantic-surface flex items-center justify-center border border-semantic-border">
+                                            <span class="i-lucide-smartphone w-4.5 h-4.5 inline-block text-semantic-ink-secondary"></span>
                                         </div>
                                         <div>
-                                            <p class="text-sm font-medium text-primary">Safari, iOS</p>
-                                            <p class="text-xs text-muted">Dernière activité il y a 3j</p>
+                                            <p class="text-sm font-medium text-semantic-ink">Safari, iOS</p>
+                                            <p class="text-xs text-semantic-muted">Dernière activité il y a 3j</p>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn-ghost btn-sm text-crimson flex-shrink-0">
+                                    <button type="button" class="btn-ghost btn-sm text-brand-primary flex-shrink-0">
                                         <span class="i-lucide-log-out w-4 h-4 inline-block mr-1"></span>
                                         Révoquer
                                     </button>
                                 </div>
 
                                 <!-- Session 3 — other device -->
-                                <div class="border-t border-border"></div>
+                                <div class="border-t border-semantic-border"></div>
                                 <div class="flex items-start justify-between gap-3">
                                     <div class="flex items-start gap-3">
-                                        <div class="shrink-0 w-9 h-9 rounded-full bg-surface flex items-center justify-center border border-border">
-                                            <span class="i-lucide-chrome w-4.5 h-4.5 inline-block text-secondary"></span>
+                                        <div class="shrink-0 w-9 h-9 rounded-full bg-semantic-surface flex items-center justify-center border border-semantic-border">
+                                            <span class="i-lucide-chrome w-4.5 h-4.5 inline-block text-semantic-ink-secondary"></span>
                                         </div>
                                         <div>
-                                            <p class="text-sm font-medium text-primary">Chrome, Windows</p>
-                                            <p class="text-xs text-muted">Dernière activité il y a 7j</p>
+                                            <p class="text-sm font-medium text-semantic-ink">Chrome, Windows</p>
+                                            <p class="text-xs text-semantic-muted">Dernière activité il y a 7j</p>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn-ghost btn-sm text-crimson flex-shrink-0">
+                                    <button type="button" class="btn-ghost btn-sm text-brand-primary flex-shrink-0">
                                         <span class="i-lucide-log-out w-4 h-4 inline-block mr-1"></span>
                                         Révoquer
                                     </button>
@@ -405,15 +405,15 @@ Mes PNJ cherchent des histoires.</textarea>
                 <!-- TAB: LANGUES -->
                 <!-- ==================================================== -->
                 <div x-show="tab === 'langues'">
-                    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
-                        <span class="i-lucide-languages w-4 h-4 text-muted inline-block"></span>
-                        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Onglet Langues — /settings/languages/</span>
+                    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
+                        <span class="i-lucide-languages w-4 h-4 text-semantic-muted inline-block"></span>
+                        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Onglet Langues — /settings/languages/</span>
                     </div>
 
                     <div class="max-w-lg">
                         <div class="card">
                             <div class="card-header">
-                                <h2 class="text-lg font-bold text-primary">Langues</h2>
+                                <h2 class="text-lg font-bold text-semantic-ink">Langues</h2>
                             </div>
                             <div class="card-body">
                                 <form novalidate>
@@ -436,23 +436,23 @@ Mes PNJ cherchent des histoires.</textarea>
                                         <div class="flex flex-col gap-2 mt-2">
 
                                             <label class="flex items-center gap-2 cursor-pointer">
-                                                <input type="checkbox" checked class="rounded border-border text-crimson focus:ring-crimson accent-crimson">
-                                                <span class="text-sm text-primary">Français</span>
+                                                <input type="checkbox" checked class="rounded border-semantic-border text-brand-primary focus:ring-brand-primary accent-brand-primary">
+                                                <span class="text-sm text-semantic-ink">Français</span>
                                             </label>
 
                                             <label class="flex items-center gap-2 cursor-pointer">
-                                                <input type="checkbox" checked class="rounded border-border text-crimson focus:ring-crimson accent-crimson">
-                                                <span class="text-sm text-primary">English</span>
+                                                <input type="checkbox" checked class="rounded border-semantic-border text-brand-primary focus:ring-brand-primary accent-brand-primary">
+                                                <span class="text-sm text-semantic-ink">English</span>
                                             </label>
 
                                             <label class="flex items-center gap-2 cursor-pointer">
-                                                <input type="checkbox" class="rounded border-border text-crimson focus:ring-crimson accent-crimson">
-                                                <span class="text-sm text-primary">Deutsch</span>
+                                                <input type="checkbox" class="rounded border-semantic-border text-brand-primary focus:ring-brand-primary accent-brand-primary">
+                                                <span class="text-sm text-semantic-ink">Deutsch</span>
                                             </label>
 
                                             <label class="flex items-center gap-2 cursor-pointer">
-                                                <input type="checkbox" class="rounded border-border text-crimson focus:ring-crimson accent-crimson">
-                                                <span class="text-sm text-primary">Español</span>
+                                                <input type="checkbox" class="rounded border-semantic-border text-brand-primary focus:ring-brand-primary accent-brand-primary">
+                                                <span class="text-sm text-semantic-ink">Español</span>
                                             </label>
 
                                             <button type="button" class="btn-ghost btn-sm flex items-center gap-1.5 w-fit mt-1">
@@ -466,8 +466,8 @@ Mes PNJ cherchent des histoires.</textarea>
                                     <!-- Show untagged content -->
                                     <div class="mb-6">
                                         <label class="flex items-start gap-2 cursor-pointer">
-                                            <input type="checkbox" class="rounded border-border text-crimson focus:ring-crimson accent-crimson mt-0.5">
-                                            <span class="text-sm text-primary">Afficher le contenu sans langue définie</span>
+                                            <input type="checkbox" class="rounded border-semantic-border text-brand-primary focus:ring-brand-primary accent-brand-primary mt-0.5">
+                                            <span class="text-sm text-semantic-ink">Afficher le contenu sans langue définie</span>
                                         </label>
                                         <p class="form-help mt-1 flex items-start gap-1">
                                             <span class="i-lucide-info w-3.5 h-3.5 inline-block shrink-0 mt-0.5"></span>
@@ -476,7 +476,7 @@ Mes PNJ cherchent des histoires.</textarea>
                                     </div>
 
                                     <!-- Actions -->
-                                    <div class="pt-2 border-t border-border">
+                                    <div class="pt-2 border-t border-semantic-border">
                                         <button type="submit" class="btn-primary">
                                             <span class="i-lucide-save w-4 h-4 inline-block mr-1.5"></span>
                                             Enregistrer
@@ -493,150 +493,150 @@ Mes PNJ cherchent des histoires.</textarea>
                 <!-- TAB: NOTIFICATIONS -->
                 <!-- ==================================================== -->
                 <div x-show="tab === 'notifications'">
-                    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
-                        <span class="i-lucide-bell w-4 h-4 text-muted inline-block"></span>
-                        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Onglet Notifications — /settings/notifications/ (US-21)</span>
+                    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
+                        <span class="i-lucide-bell w-4 h-4 text-semantic-muted inline-block"></span>
+                        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Onglet Notifications — /settings/notifications/ (US-21)</span>
                     </div>
 
                     <div class="max-w-lg">
                         <form>
-                            <div class="card border border-border rounded-xl overflow-hidden">
+                            <div class="card border border-semantic-border rounded-xl overflow-hidden">
 
                                 <!-- Table header -->
-                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border bg-surface">
-                                    <div class="py-3 px-4 text-xs font-semibold text-muted uppercase tracking-wide">Type</div>
-                                    <div class="py-3 px-6 text-xs font-semibold text-muted uppercase tracking-wide text-center">In-app</div>
-                                    <div class="py-3 px-6 text-xs font-semibold text-muted uppercase tracking-wide text-center">E-mail</div>
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border bg-semantic-surface">
+                                    <div class="py-3 px-4 text-xs font-semibold text-semantic-muted uppercase tracking-wide">Type</div>
+                                    <div class="py-3 px-6 text-xs font-semibold text-semantic-muted uppercase tracking-wide text-center">In-app</div>
+                                    <div class="py-3 px-6 text-xs font-semibold text-semantic-muted uppercase tracking-wide text-center">E-mail</div>
                                 </div>
 
                                 <!-- Row: Demandes de lien -->
-                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border hover:bg-semantic-surface/60 transition-colors">
                                     <div class="py-3.5 px-4 flex items-center gap-2">
                                         <span class="i-lucide-git-merge w-4 h-4 inline-block text-amber-500 shrink-0"></span>
-                                        <span class="text-sm text-primary">Demandes de lien</span>
+                                        <span class="text-sm text-semantic-ink">Demandes de lien</span>
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60" title="Les notifications in-app sont toujours actives">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60" title="Les notifications in-app sont toujours actives">
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" checked name="email_link_request" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                        <input type="checkbox" checked name="email_link_request" class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                                     </div>
                                 </div>
 
                                 <!-- Row: Réponses -->
-                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border hover:bg-semantic-surface/60 transition-colors">
                                     <div class="py-3.5 px-4 flex items-center gap-2">
-                                        <span class="i-lucide-message-circle w-4 h-4 inline-block text-success shrink-0"></span>
-                                        <span class="text-sm text-primary">Réponses aux demandes</span>
+                                        <span class="i-lucide-message-circle w-4 h-4 inline-block text-semantic-success shrink-0"></span>
+                                        <span class="text-sm text-semantic-ink">Réponses aux demandes</span>
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60">
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" checked name="email_link_response" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                        <input type="checkbox" checked name="email_link_response" class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                                     </div>
                                 </div>
 
                                 <!-- Row: Séquences Partagées -->
-                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border hover:bg-semantic-surface/60 transition-colors">
                                     <div class="py-3.5 px-4 flex items-center gap-2">
-                                        <span class="i-lucide-edit w-4 h-4 inline-block text-violet shrink-0"></span>
-                                        <span class="text-sm text-primary">Séquences Partagées</span>
+                                        <span class="i-lucide-edit w-4 h-4 inline-block text-brand-accent shrink-0"></span>
+                                        <span class="text-sm text-semantic-ink">Séquences Partagées</span>
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60">
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" checked name="email_shared_sequence" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                        <input type="checkbox" checked name="email_shared_sequence" class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                                     </div>
                                 </div>
 
                                 <!-- Row: Nouveaux CRs -->
-                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border hover:bg-semantic-surface/60 transition-colors">
                                     <div class="py-3.5 px-4 flex items-center gap-2">
-                                        <span class="i-lucide-book-open w-4 h-4 inline-block text-crimson shrink-0"></span>
-                                        <span class="text-sm text-primary">Nouveaux comptes-rendus</span>
+                                        <span class="i-lucide-book-open w-4 h-4 inline-block text-brand-primary shrink-0"></span>
+                                        <span class="text-sm text-semantic-ink">Nouveaux comptes-rendus</span>
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60">
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" name="email_new_report" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                        <input type="checkbox" name="email_new_report" class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                                     </div>
                                 </div>
 
                                 <!-- Row: Recommandations -->
-                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border hover:bg-semantic-surface/60 transition-colors">
                                     <div class="py-3.5 px-4 flex items-center gap-2">
-                                        <span class="i-lucide-sparkles w-4 h-4 inline-block text-violet shrink-0"></span>
-                                        <span class="text-sm text-primary">Recommandations</span>
+                                        <span class="i-lucide-sparkles w-4 h-4 inline-block text-brand-accent shrink-0"></span>
+                                        <span class="text-sm text-semantic-ink">Recommandations</span>
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60">
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" name="email_recommendation" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                        <input type="checkbox" name="email_recommendation" class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                                     </div>
                                 </div>
 
                                 <!-- Row: Mentions -->
-                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border hover:bg-semantic-surface/60 transition-colors">
                                     <div class="py-3.5 px-4 flex items-center gap-2">
                                         <span class="i-lucide-at-sign w-4 h-4 inline-block text-blue-500 shrink-0"></span>
-                                        <span class="text-sm text-primary">Mentions</span>
+                                        <span class="text-sm text-semantic-ink">Mentions</span>
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60">
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" checked name="email_mention" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                        <input type="checkbox" checked name="email_mention" class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                                     </div>
                                 </div>
 
                                 <!-- Row: Invitations -->
-                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border hover:bg-semantic-surface/60 transition-colors">
                                     <div class="py-3.5 px-4 flex items-center gap-2">
-                                        <span class="i-lucide-send w-4 h-4 inline-block text-crimson shrink-0"></span>
-                                        <span class="text-sm text-primary">Invitations</span>
+                                        <span class="i-lucide-send w-4 h-4 inline-block text-brand-primary shrink-0"></span>
+                                        <span class="text-sm text-semantic-ink">Invitations</span>
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60">
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" checked name="email_invitation" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                        <input type="checkbox" checked name="email_invitation" class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                                     </div>
                                 </div>
 
                                 <!-- Row: Nouveaux followers -->
-                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-border hover:bg-surface/60 transition-colors">
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 border-b border-semantic-border hover:bg-semantic-surface/60 transition-colors">
                                     <div class="py-3.5 px-4 flex items-center gap-2">
-                                        <span class="i-lucide-user-plus w-4 h-4 inline-block text-info shrink-0"></span>
-                                        <span class="text-sm text-primary">Nouveaux followers</span>
+                                        <span class="i-lucide-user-plus w-4 h-4 inline-block text-semantic-info shrink-0"></span>
+                                        <span class="text-sm text-semantic-ink">Nouveaux followers</span>
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60">
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" name="email_new_follower" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                        <input type="checkbox" name="email_new_follower" class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                                     </div>
                                 </div>
 
                                 <!-- Row: Révocations -->
-                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 hover:bg-surface/60 transition-colors">
+                                <div class="grid grid-cols-[1fr_auto_auto] gap-0 hover:bg-semantic-surface/60 transition-colors">
                                     <div class="py-3.5 px-4 flex items-center gap-2">
                                         <span class="i-lucide-alert-triangle w-4 h-4 inline-block text-red-500 shrink-0"></span>
-                                        <span class="text-sm text-primary">Révocations de lien</span>
+                                        <span class="text-sm text-semantic-ink">Révocations de lien</span>
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-crimson cursor-not-allowed opacity-60">
+                                        <input type="checkbox" checked disabled class="w-4 h-4 rounded accent-brand-primary cursor-not-allowed opacity-60">
                                     </div>
                                     <div class="py-3.5 px-6 flex items-center justify-center">
-                                        <input type="checkbox" checked name="email_revocation" class="w-4 h-4 rounded accent-crimson cursor-pointer">
+                                        <input type="checkbox" checked name="email_revocation" class="w-4 h-4 rounded accent-brand-primary cursor-pointer">
                                     </div>
                                 </div>
 
                                 <!-- Info banner -->
-                                <div class="border-t border-border bg-info/5 px-4 py-3 flex items-start gap-2 text-info text-sm">
+                                <div class="border-t border-semantic-border bg-semantic-info/5 px-4 py-3 flex items-start gap-2 text-semantic-info text-sm">
                                     <span class="i-lucide-info w-4 h-4 inline-block shrink-0 mt-0.5"></span>
                                     <span>Les notifications in-app sont toujours actives et ne peuvent pas être désactivées.</span>
                                 </div>
@@ -649,7 +649,7 @@ Mes PNJ cherchent des histoires.</textarea>
                                     <span class="i-lucide-save w-4 h-4 inline-block"></span>
                                     Enregistrer
                                 </button>
-                                <button type="button" class="btn-ghost btn-sm text-muted">Annuler</button>
+                                <button type="button" class="btn-ghost btn-sm text-semantic-muted">Annuler</button>
                             </div>
 
                         </form>
@@ -660,9 +660,9 @@ Mes PNJ cherchent des histoires.</textarea>
                 <!-- TAB: FÉDÉRATION -->
                 <!-- ==================================================== -->
                 <div x-show="tab === 'federation'">
-                    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
-                        <span class="i-lucide-globe w-4 h-4 text-muted inline-block"></span>
-                        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Onglet Fédération — /settings/federation/</span>
+                    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
+                        <span class="i-lucide-globe w-4 h-4 text-semantic-muted inline-block"></span>
+                        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Onglet Fédération — /settings/federation/</span>
                     </div>
 
                     <div class="max-w-lg flex flex-col gap-6">
@@ -670,7 +670,7 @@ Mes PNJ cherchent des histoires.</textarea>
                         <!-- ActivityPub identity -->
                         <div class="card">
                             <div class="card-header">
-                                <h2 class="text-lg font-bold text-primary">Fédération</h2>
+                                <h2 class="text-lg font-bold text-semantic-ink">Fédération</h2>
                             </div>
                             <div class="card-body flex flex-col gap-5">
 
@@ -678,7 +678,7 @@ Mes PNJ cherchent des histoires.</textarea>
                                 <div>
                                     <p class="form-label">Votre identifiant ActivityPub</p>
                                     <div class="flex items-center gap-3 mt-1">
-                                        <span class="font-mono text-sm text-primary bg-surface border border-border rounded px-3 py-2 flex-1">@alice@suddenly.social</span>
+                                        <span class="font-mono text-sm text-semantic-ink bg-semantic-surface border border-semantic-border rounded px-3 py-2 flex-1">@alice@suddenly.social</span>
                                         <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5 flex-shrink-0">
                                             <span class="i-lucide-copy w-4 h-4 inline-block"></span>
                                             Copier
@@ -704,20 +704,20 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1v3+a8LzqJQbgG3t...
                         <!-- Followed instances -->
                         <div class="card">
                             <div class="card-header">
-                                <h2 class="text-base font-bold text-primary">Instances suivies</h2>
+                                <h2 class="text-base font-bold text-semantic-ink">Instances suivies</h2>
                             </div>
                             <div class="card-body flex flex-col gap-3">
                                 <div class="flex items-center justify-between">
                                     <div>
-                                        <p class="text-sm font-medium text-primary">suddenly.games</p>
-                                        <p class="text-xs text-muted">3 acteurs suivis</p>
+                                        <p class="text-sm font-medium text-semantic-ink">suddenly.games</p>
+                                        <p class="text-xs text-semantic-muted">3 acteurs suivis</p>
                                     </div>
                                 </div>
-                                <div class="border-t border-border"></div>
+                                <div class="border-t border-semantic-border"></div>
                                 <div class="flex items-center justify-between">
                                     <div>
-                                        <p class="text-sm font-medium text-primary">mastodon.social</p>
-                                        <p class="text-xs text-muted">1 acteur suivi</p>
+                                        <p class="text-sm font-medium text-semantic-ink">mastodon.social</p>
+                                        <p class="text-xs text-semantic-muted">1 acteur suivi</p>
                                     </div>
                                 </div>
                             </div>
@@ -726,8 +726,8 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1v3+a8LzqJQbgG3t...
                         <!-- Blocked accounts -->
                         <div class="card">
                             <div class="card-header">
-                                <h2 class="text-base font-bold text-primary flex items-center gap-2">
-                                    <span class="i-lucide-shield-off w-4 h-4 inline-block text-muted"></span>
+                                <h2 class="text-base font-bold text-semantic-ink flex items-center gap-2">
+                                    <span class="i-lucide-shield-off w-4 h-4 inline-block text-semantic-muted"></span>
                                     Comptes bloqués
                                 </h2>
                             </div>
@@ -744,12 +744,12 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1v3+a8LzqJQbgG3t...
                                 </p>
 
                                 <!-- Blocked list -->
-                                <div class="border-t border-border pt-3 flex items-center justify-between">
+                                <div class="border-t border-semantic-border pt-3 flex items-center justify-between">
                                     <div>
-                                        <p class="text-sm font-medium text-primary font-mono">@troll123</p>
-                                        <p class="text-xs text-muted">Bloqué le 5 mars</p>
+                                        <p class="text-sm font-medium text-semantic-ink font-mono">@troll123</p>
+                                        <p class="text-xs text-semantic-muted">Bloqué le 5 mars</p>
                                     </div>
-                                    <button type="button" class="btn-ghost btn-sm text-secondary">
+                                    <button type="button" class="btn-ghost btn-sm text-semantic-ink-secondary">
                                         Débloquer
                                     </button>
                                 </div>
@@ -760,8 +760,8 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1v3+a8LzqJQbgG3t...
                         <!-- Muted accounts -->
                         <div class="card">
                             <div class="card-header">
-                                <h2 class="text-base font-bold text-primary flex items-center gap-2">
-                                    <span class="i-lucide-bell-off w-4 h-4 inline-block text-muted"></span>
+                                <h2 class="text-base font-bold text-semantic-ink flex items-center gap-2">
+                                    <span class="i-lucide-bell-off w-4 h-4 inline-block text-semantic-muted"></span>
                                     Comptes masqués (mute)
                                 </h2>
                             </div>
@@ -777,7 +777,7 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1v3+a8LzqJQbgG3t...
                                     Son contenu sera masqué de vos fils mais il pourra encore interagir.
                                 </p>
 
-                                <p class="text-sm text-muted italic">Aucun compte masqué.</p>
+                                <p class="text-sm text-semantic-muted italic">Aucun compte masqué.</p>
 
                             </div>
                         </div>
@@ -785,8 +785,8 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1v3+a8LzqJQbgG3t...
                         <!-- Blocked instances -->
                         <div class="card">
                             <div class="card-header">
-                                <h2 class="text-base font-bold text-primary flex items-center gap-2">
-                                    <span class="i-lucide-server-off w-4 h-4 inline-block text-muted"></span>
+                                <h2 class="text-base font-bold text-semantic-ink flex items-center gap-2">
+                                    <span class="i-lucide-server-off w-4 h-4 inline-block text-semantic-muted"></span>
                                     Instances bloquées (personnel)
                                 </h2>
                             </div>
@@ -802,7 +802,7 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1v3+a8LzqJQbgG3t...
                                     Vous ne verrez plus le contenu de cette instance.
                                 </p>
 
-                                <p class="text-sm text-muted italic">Aucune instance bloquée.</p>
+                                <p class="text-sm text-semantic-muted italic">Aucune instance bloquée.</p>
 
                             </div>
                         </div>
@@ -814,9 +814,9 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1v3+a8LzqJQbgG3t...
                 <!-- TAB: DONNÉES -->
                 <!-- ==================================================== -->
                 <div x-show="tab === 'donnees'">
-                    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
-                        <span class="i-lucide-database w-4 h-4 text-muted inline-block"></span>
-                        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Onglet Mes données — /settings/data/</span>
+                    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2 mb-6 rounded-t-lg -mx-4 lg:mx-0">
+                        <span class="i-lucide-database w-4 h-4 text-semantic-muted inline-block"></span>
+                        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Onglet Mes données — /settings/data/</span>
                     </div>
 
                     <div class="max-w-lg flex flex-col gap-6">
@@ -824,10 +824,10 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1v3+a8LzqJQbgG3t...
                         <!-- Import / Export follows -->
                         <div class="card">
                             <div class="card-header">
-                                <h2 class="text-lg font-bold text-primary">Mes données</h2>
+                                <h2 class="text-lg font-bold text-semantic-ink">Mes données</h2>
                             </div>
                             <div class="card-body">
-                                <h3 class="text-sm font-semibold text-primary mb-3">Import / Export d'abonnements</h3>
+                                <h3 class="text-sm font-semibold text-semantic-ink mb-3">Import / Export d'abonnements</h3>
                                 <div class="flex flex-col gap-4">
 
                                     <!-- Export follows -->
@@ -842,7 +842,7 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1v3+a8LzqJQbgG3t...
                                         </p>
                                     </div>
 
-                                    <div class="border-t border-border"></div>
+                                    <div class="border-t border-semantic-border"></div>
 
                                     <!-- Import follows -->
                                     <div>
@@ -863,7 +863,7 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1v3+a8LzqJQbgG3t...
                         <!-- Full data export -->
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="text-base font-bold text-primary">Exporter mes données complètes</h3>
+                                <h3 class="text-base font-bold text-semantic-ink">Exporter mes données complètes</h3>
                             </div>
                             <div class="card-body">
                                 <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5 mb-2">
@@ -880,7 +880,7 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1v3+a8LzqJQbgG3t...
                         <!-- Import data -->
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="text-base font-bold text-primary">Importer des données</h3>
+                                <h3 class="text-base font-bold text-semantic-ink">Importer des données</h3>
                             </div>
                             <div class="card-body">
                                 <button type="button" class="btn-secondary btn-sm flex items-center gap-1.5 mb-2">
@@ -897,8 +897,8 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1v3+a8LzqJQbgG3t...
                         <!-- Account alias (incoming migration) -->
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="text-base font-bold text-primary flex items-center gap-2">
-                                    <span class="i-lucide-link w-4 h-4 inline-block text-muted"></span>
+                                <h3 class="text-base font-bold text-semantic-ink flex items-center gap-2">
+                                    <span class="i-lucide-link w-4 h-4 inline-block text-semantic-muted"></span>
                                     Alias de compte
                                     <span class="badge badge-info text-xs">Migration entrante</span>
                                 </h3>
@@ -926,8 +926,8 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1v3+a8LzqJQbgG3t...
                         <!-- Migration to another instance -->
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="text-base font-bold text-primary flex items-center gap-2">
-                                    <span class="i-lucide-arrow-right-circle w-4 h-4 inline-block text-muted"></span>
+                                <h3 class="text-base font-bold text-semantic-ink flex items-center gap-2">
+                                    <span class="i-lucide-arrow-right-circle w-4 h-4 inline-block text-semantic-muted"></span>
                                     Migrer vers une autre instance
                                 </h3>
                             </div>

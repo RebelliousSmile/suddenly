@@ -4,13 +4,13 @@
 {% block title %}{% trans "Instance settings" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block gmh_content %}
-<h1 class="text-2xl font-bold text-primary mb-6">{% trans "Instance settings" %}</h1>
+<h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "Instance settings" %}</h1>
 
 {% if messages %}
     {% for message in messages %}
         <div class="mb-4 p-4 rounded-lg flex items-center gap-3
-                    {% if message.tags == 'success' %}bg-success/10 text-success border border-success/30{% endif %}
-                    {% if message.tags == 'error' %}bg-error/10 text-error border border-error/30{% endif %}">
+                    {% if message.tags == 'success' %}bg-semantic-success/10 text-semantic-success border border-semantic-success/30{% endif %}
+                    {% if message.tags == 'error' %}bg-semantic-danger/10 text-semantic-danger border border-semantic-danger/30{% endif %}">
             {% if message.tags == 'success' %}<span class="i-lucide-check-circle"></span>{% endif %}
             {% if message.tags == 'error' %}<span class="i-lucide-x-circle"></span>{% endif %}
             <span>{{ message }}</span>
@@ -22,34 +22,34 @@
     {% csrf_token %}
 
     <div class="space-y-1">
-        <label for="id_name" class="text-sm font-medium text-secondary">
-            {% trans "Instance name" %} <span class="text-error">*</span>
+        <label for="id_name" class="text-sm font-medium text-semantic-ink-secondary">
+            {% trans "Instance name" %} <span class="text-semantic-danger">*</span>
         </label>
         <input type="text"
                id="id_name"
                name="name"
                value="{{ instance.name }}"
                required
-               class="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-primary placeholder-muted focus:outline-none focus:ring-2 focus:ring-crimson/50">
+               class="w-full rounded-lg border border-semantic-border bg-semantic-card px-3 py-2 text-sm text-semantic-ink placeholder-semantic-muted focus:outline-none focus:ring-2 focus:ring-brand-primary/50">
     </div>
 
     <div class="space-y-1">
-        <label for="id_description" class="text-sm font-medium text-secondary">
+        <label for="id_description" class="text-sm font-medium text-semantic-ink-secondary">
             {% trans "Description" %}
         </label>
         <textarea id="id_description"
                   name="description"
                   rows="4"
-                  class="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-primary placeholder-muted focus:outline-none focus:ring-2 focus:ring-crimson/50">{{ instance.description }}</textarea>
+                  class="w-full rounded-lg border border-semantic-border bg-semantic-card px-3 py-2 text-sm text-semantic-ink placeholder-semantic-muted focus:outline-none focus:ring-2 focus:ring-brand-primary/50">{{ instance.description }}</textarea>
     </div>
 
     <div class="space-y-1">
-        <label for="id_language" class="text-sm font-medium text-secondary">
+        <label for="id_language" class="text-sm font-medium text-semantic-ink-secondary">
             {% trans "Language" %}
         </label>
         <select id="id_language"
                 name="language"
-                class="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-crimson/50">
+                class="w-full rounded-lg border border-semantic-border bg-semantic-card px-3 py-2 text-sm text-semantic-ink focus:outline-none focus:ring-2 focus:ring-brand-primary/50">
             {% for lang_code, lang_name in languages %}
                 <option value="{{ lang_code }}" {% if lang_code == instance.language %}selected{% endif %}>
                     {{ lang_name }}

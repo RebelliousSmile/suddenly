@@ -6,12 +6,12 @@
 {% block content %}
 <section class="py-8">
     <div class="container-app max-w-2xl">
-        <h1 class="text-2xl font-bold text-primary mb-6">
+        <h1 class="text-2xl font-bold text-semantic-ink mb-6">
             {% if character %}{% trans "Edit character" %}{% else %}{% trans "New character" %}{% endif %}
         </h1>
 
         {% if error %}
-            <div class="mb-4 p-4 rounded-lg bg-error/10 text-error border border-error/30">{{ error }}</div>
+            <div class="mb-4 p-4 rounded-lg bg-semantic-danger/10 text-semantic-danger border border-semantic-danger/30">{{ error }}</div>
         {% endif %}
 
         <form method="post" enctype="multipart/form-data" class="card card-body space-y-4">
@@ -26,7 +26,7 @@
 
             <div>
                 <label for="description" class="form-label">
-                    {% trans "Description" %} <span class="text-muted">({% trans "optional" %})</span>
+                    {% trans "Description" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
                 </label>
                 <textarea id="description" name="description" rows="4"
                           class="form-input">{{ form_data.description|default:character.description|default:'' }}</textarea>
@@ -34,7 +34,7 @@
 
             <div>
                 <label for="sheet_url" class="form-label">
-                    {% trans "Sheet URL" %} <span class="text-muted">({% trans "optional" %})</span>
+                    {% trans "Sheet URL" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
                 </label>
                 <input type="url" id="sheet_url" name="sheet_url"
                        value="{{ form_data.sheet_url|default:character.sheet_url|default:'' }}"
@@ -44,7 +44,7 @@
 
             <div>
                 <label for="tags" class="form-label">
-                    {% trans "Tags" %} <span class="text-muted">({% trans "optional" %})</span>
+                    {% trans "Tags" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
                 </label>
                 <input type="text" id="tags" name="tags"
                        value="{% if form_data.tags %}{{ form_data.tags }}{% else %}{% if character.pk %}{{ character.tags.all|join:', ' }}{% endif %}{% endif %}"
@@ -57,14 +57,14 @@
             <!-- Avatar -->
             <div>
                 <label for="avatar" class="form-label">
-                    {% trans "Avatar" %} <span class="text-muted">({% trans "optional" %})</span>
+                    {% trans "Avatar" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
                 </label>
                 {% if character.avatar %}
-                    <div class="mb-4 p-4 bg-surface rounded-lg flex items-center gap-3">
+                    <div class="mb-4 p-4 bg-semantic-surface rounded-lg flex items-center gap-3">
                         <img src="{{ character.avatar.url }}" alt="{% trans "Current avatar" %}" class="avatar-md">
                         <div>
-                            <p class="text-sm text-secondary">{% trans "Current image" %}</p>
-                            <label for="avatar-clear" class="text-sm text-error hover:text-error/70">
+                            <p class="text-sm text-semantic-ink-secondary">{% trans "Current image" %}</p>
+                            <label for="avatar-clear" class="text-sm text-semantic-danger hover:text-semantic-danger/70">
                                 <input id="avatar-clear"
                                        name="avatar-clear"
                                        type="checkbox">
@@ -75,8 +75,8 @@
                 {% endif %}
                 <div class="form-dropzone">
                     <div class="space-y-1 text-center">
-                        <span class="i-lucide-upload text-3xl text-muted"></span>
-                        <div class="flex text-sm text-secondary">
+                        <span class="i-lucide-upload text-3xl text-semantic-muted"></span>
+                        <div class="flex text-sm text-semantic-ink-secondary">
                             <label for="avatar" class="form-dropzone-link">
                                 <span>{% trans "Upload an image" %}</span>
                                 <input id="avatar"
@@ -87,12 +87,12 @@
                             </label>
                             <p class="pl-1">{% trans "or drag and drop" %}</p>
                         </div>
-                        <p class="text-xs text-muted">{% trans "PNG, JPG or GIF up to 10 MB" %}</p>
+                        <p class="text-xs text-semantic-muted">{% trans "PNG, JPG or GIF up to 10 MB" %}</p>
                     </div>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3 pt-4 border-t border-border">
+            <div class="flex items-center gap-3 pt-4 border-t border-semantic-border">
                 <button type="submit" class="btn-primary">
                     {% if character %}
                         <span class="i-lucide-save"></span>{% trans "Save" %}

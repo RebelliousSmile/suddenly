@@ -3,11 +3,11 @@
   Props: type (info|warning|success|error), icon, message, action_label, action_url, dismiss
 {% endcomment %}
 
-<div class="flex items-center gap-3 px-4 py-3 rounded-card text-sm
-    {% if type == 'info' %}bg-info/10 text-info border border-info/30
-    {% elif type == 'warning' %}bg-warning/10 text-warning border border-warning/30
-    {% elif type == 'success' %}bg-success/10 text-success border border-success/30
-    {% elif type == 'error' %}bg-error/10 text-error border border-error/30
+<div class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm
+    {% if type == 'info' %}bg-semantic-info/10 text-semantic-info border border-semantic-info/30
+    {% elif type == 'warning' %}bg-semantic-warning/10 text-semantic-warning border border-semantic-warning/30
+    {% elif type == 'success' %}bg-semantic-success/10 text-semantic-success border border-semantic-success/30
+    {% elif type == 'error' %}bg-semantic-danger/10 text-semantic-danger border border-semantic-danger/30
     {% endif %}"
     {% if dismiss %}x-data="{ show: true }" x-show="show"{% endif %}>
 

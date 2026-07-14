@@ -7,23 +7,23 @@
 <section class="py-8">
     <div class="container-app max-w-3xl">
 
-        <p class="text-sm text-muted mb-4">
+        <p class="text-sm text-semantic-muted mb-4">
             <a href="{% url 'games:list' %}" class="link-muted">{% trans "Games" %}</a>
             › {% trans "New report" %}
         </p>
 
-        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "New report" %}</h1>
+        <h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "New report" %}</h1>
 
         {% if error %}
-            <div class="mb-4 p-4 rounded-lg bg-error/10 text-error border border-error/30">
+            <div class="mb-4 p-4 rounded-lg bg-semantic-danger/10 text-semantic-danger border border-semantic-danger/30">
                 {{ error }}
             </div>
         {% endif %}
 
         {% if not characters %}
             <div class="card card-body text-center py-12">
-                <span class="i-lucide-users text-4xl text-muted mb-4 block"></span>
-                <p class="text-muted mb-4">{% trans "No characters linked to your games yet." %}</p>
+                <span class="i-lucide-users text-4xl text-semantic-muted mb-4 block"></span>
+                <p class="text-semantic-muted mb-4">{% trans "No characters linked to your games yet." %}</p>
                 <a href="{% url 'characters:list' %}" class="btn-primary">
                     {% trans "Create a character" %}
                 </a>
@@ -69,8 +69,8 @@
                          class="dropdown-menu w-64">
                         <template x-for="(s, i) in suggestions" :key="s.id">
                             <button @click="selectSuggestion(s)"
-                                    :class="{'bg-card-dark': i === selectedIndex}"
-                                    class="w-full px-3 py-2 text-left text-sm hover:bg-card"
+                                    :class="{'bg-semantic-card-sunken': i === selectedIndex}"
+                                    class="w-full px-3 py-2 text-left text-sm hover:bg-semantic-card"
                                     x-text="s.name">
                             </button>
                         </template>
@@ -78,13 +78,13 @@
 
                     <p class="form-help">
                         <span class="i-lucide-info text-xs mr-1"></span>
-                        {% trans "Markdown supported. Type" %} <code class="bg-card px-1 rounded">@</code> {% trans "to mention." %}
+                        {% trans "Markdown supported. Type" %} <code class="bg-semantic-card px-1 rounded">@</code> {% trans "to mention." %}
                     </p>
                 </div>
 
                 <div>
                     <label for="content_warning" class="form-label">
-                        {% trans "Content warning" %} <span class="text-muted">({% trans "optional" %})</span>
+                        {% trans "Content warning" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
                     </label>
                     <input type="text" id="content_warning" name="content_warning"
                            value="{{ form_data.content_warning|default:'' }}"
@@ -101,7 +101,7 @@
                         <label class="flex items-center gap-2 py-1">
                             <input type="radio" name="visibility" value="{{ value }}"
                                    {% if value == 'public' %}checked{% endif %}
-                                   class="h-4 w-4 text-crimson focus:ring-crimson">
+                                   class="h-4 w-4 text-brand-primary focus:ring-brand-primary">
                             <span class="text-sm">
                                 {% if value == 'public' %}<span class="i-lucide-globe text-xs"></span>{% endif %}
                                 {% if value == 'unlisted' %}<span class="i-lucide-unlock text-xs"></span>{% endif %}

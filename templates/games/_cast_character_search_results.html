@@ -1,7 +1,7 @@
 {% load i18n %}
 {% for char in characters %}
 <button type="button"
-        class="block w-full text-left px-2 py-1 text-sm hover:bg-surface rounded cursor-pointer"
+        class="block w-full text-left px-2 py-1 text-sm hover:bg-semantic-surface rounded cursor-pointer"
         data-slug="{{ char.slug|escapejs }}"
         data-name="{{ char.name|escapejs }}"
         @click="
@@ -12,5 +12,5 @@
     {{ char.name }}
 </button>
 {% empty %}
-<p class="text-xs text-muted px-2">{% trans "No character found." %}</p>
+<p class="text-xs text-semantic-muted px-2">{% trans "No character found." %}</p>
 {% endfor %}

@@ -8,12 +8,12 @@
 
                 {% if user.is_authenticated %}
                 <label x-show="selectMode" x-cloak
-                       class="flex items-center gap-3 p-4 cursor-pointer hover:bg-card-dark/30 rounded-xl border border-border bg-card">
+                       class="flex items-center gap-3 p-4 cursor-pointer hover:bg-semantic-card-sunken/30 rounded-xl border border-semantic-border bg-semantic-card">
                     <input type="checkbox" name="slugs" value="{{ character.slug }}"
                            form="bulk-delete-chars-form"
-                           class="h-4 w-4 shrink-0 rounded border-border accent-crimson">
+                           class="h-4 w-4 shrink-0 rounded border-semantic-border accent-brand-primary">
                     <div class="min-w-0">
-                        <p class="font-semibold text-primary truncate text-sm">{{ character.name }}</p>
+                        <p class="font-semibold text-semantic-ink truncate text-sm">{{ character.name }}</p>
                         <span class="{% if character.status == 'npc' %}badge-available{% else %}badge-{{ character.status }}{% endif %} text-xs">
                             {{ character.get_status_display }}
                         </span>
@@ -34,7 +34,7 @@
                         <img src="{{ default_bg }}" alt=""
                              class="absolute inset-0 w-full h-full object-cover">
                     {% else %}
-                        <div class="absolute inset-0 bg-gradient-to-br from-violet/30 to-crimson/20"></div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-brand-accent/30 to-brand-primary/20"></div>
                     {% endif %}
 
                     <!-- Gradient overlay -->
@@ -63,8 +63,8 @@
     </div>
 {% else %}
     <div class="text-center py-12">
-        <span class="i-lucide-search-x text-4xl text-muted mb-4 block"></span>
-        <p class="text-muted">
+        <span class="i-lucide-search-x text-4xl text-semantic-muted mb-4 block"></span>
+        <p class="text-semantic-muted">
             {% if query %}
                 {% blocktrans with q=query %}No character found for "{{ q }}".{% endblocktrans %}
             {% else %}

@@ -17,8 +17,8 @@
 <div class="container-app py-8">
 
   <div class="mb-8">
-    <h1 class="text-2xl font-semibold text-primary mb-1">Layout — Prototype</h1>
-    <p class="text-muted text-sm">Wireframe <code>01-layout.md</code> — Composants de mise en page globale</p>
+    <h1 class="text-2xl font-semibold text-semantic-ink mb-1">Layout — Prototype</h1>
+    <p class="text-semantic-muted text-sm">Wireframe <code>01-layout.md</code> — Composants de mise en page globale</p>
   </div>
 
   <!-- ══════════════════════════════════════════════════════════ -->
@@ -26,33 +26,33 @@
   <!-- ══════════════════════════════════════════════════════════ -->
   <div class="card mb-6">
     <div class="card-header">
-      <h2 class="font-semibold text-primary">1. Header — Utilisateur connecté</h2>
-      <p class="text-xs text-muted mt-0.5">Logo · Accueil · Jouer · Explorer · avatar (point rouge si notif) + dropdown ouvert</p>
+      <h2 class="font-semibold text-semantic-ink">1. Header — Utilisateur connecté</h2>
+      <p class="text-xs text-semantic-muted mt-0.5">Logo · Accueil · Jouer · Explorer · avatar (point rouge si notif) + dropdown ouvert</p>
     </div>
     <div class="card-body">
 
       <!-- Barre header -->
-      <div class="bg-surface border border-border rounded-lg">
+      <div class="bg-semantic-surface border border-semantic-border rounded-lg">
         <div class="flex items-center justify-between px-6 h-16">
 
           <!-- Logo -->
-          <a href="#" class="flex items-center gap-2 text-xl font-semibold text-primary hover:text-crimson transition-colors no-underline">
+          <a href="#" class="flex items-center gap-2 text-xl font-semibold text-semantic-ink hover:text-brand-primary transition-colors no-underline">
             <img src="/static/img/suddenly-logo.svg" alt="Suddenly" width="28" height="34" class="inline-block">
             <span>Suddenly</span>
           </a>
 
           <!-- Nav (identique connecté / visiteur) -->
           <nav class="flex items-center gap-6 text-sm">
-            <a href="#" class="text-secondary no-underline hover:text-primary transition-colors">Accueil</a>
-            <a href="#" class="text-secondary no-underline hover:text-primary transition-colors">Jouer</a>
-            <a href="#" class="text-secondary no-underline hover:text-primary transition-colors">Explorer</a>
+            <a href="#" class="text-semantic-ink-secondary no-underline hover:text-semantic-ink transition-colors">Accueil</a>
+            <a href="#" class="text-semantic-ink-secondary no-underline hover:text-semantic-ink transition-colors">Jouer</a>
+            <a href="#" class="text-semantic-ink-secondary no-underline hover:text-semantic-ink transition-colors">Explorer</a>
           </nav>
 
           <!-- Avatar (avec point rouge) -->
           <button class="relative flex items-center rounded-full bg-transparent border-0 outline-none cursor-pointer">
             <span class="avatar-sm avatar-placeholder"><span class="i-lucide-user text-sm"></span></span>
             <!-- Point rouge : présence de notifs ou demandes -->
-            <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-crimson border-2 border-surface"></span>
+            <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-brand-primary border-2 border-semantic-surface"></span>
           </button>
 
         </div>
@@ -60,38 +60,38 @@
 
       <!-- Dropdown user (ouvert, aligné droite) -->
       <div class="flex justify-end mt-1">
-        <div class="w-56 bg-surface border border-border rounded-lg shadow-lg overflow-hidden">
-          <a href="#" class="block px-4 py-2 text-sm text-secondary no-underline hover:bg-card">
+        <div class="w-56 bg-semantic-surface border border-semantic-border rounded-lg shadow-lg overflow-hidden">
+          <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary no-underline hover:bg-semantic-card">
             <span class="i-lucide-user mr-2"></span>Mon profil
           </a>
-          <a href="#" class="block px-4 py-2 text-sm text-secondary no-underline hover:bg-card">
+          <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary no-underline hover:bg-semantic-card">
             <span class="i-lucide-layout-dashboard mr-2"></span>Tableau de bord
           </a>
-          <a href="#" class="block px-4 py-2 text-sm text-secondary no-underline hover:bg-card">
+          <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary no-underline hover:bg-semantic-card">
             <span class="i-lucide-settings mr-2"></span>Préférences
           </a>
-          <hr class="my-1 border-border">
-          <a href="#" class="flex items-center justify-between px-4 py-2 text-sm text-secondary no-underline hover:bg-card">
+          <hr class="my-1 border-semantic-border">
+          <a href="#" class="flex items-center justify-between px-4 py-2 text-sm text-semantic-ink-secondary no-underline hover:bg-semantic-card">
             <span><span class="i-lucide-link-2 mr-2"></span>Demandes</span>
-            <span class="inline-flex items-center justify-center min-w-4 h-4 rounded-full text-[0.6rem] font-bold px-1 bg-crimson text-white">2</span>
+            <span class="inline-flex items-center justify-center min-w-4 h-4 rounded-full text-[0.6rem] font-bold px-1 bg-brand-primary text-white">2</span>
           </a>
-          <a href="#" class="flex items-center justify-between px-4 py-2 text-sm text-secondary no-underline hover:bg-card">
+          <a href="#" class="flex items-center justify-between px-4 py-2 text-sm text-semantic-ink-secondary no-underline hover:bg-semantic-card">
             <span><span class="i-lucide-bell mr-2"></span>Notifications</span>
-            <span class="inline-flex items-center justify-center min-w-4 h-4 rounded-full text-[0.6rem] font-bold px-1 bg-crimson text-white">3</span>
+            <span class="inline-flex items-center justify-center min-w-4 h-4 rounded-full text-[0.6rem] font-bold px-1 bg-brand-primary text-white">3</span>
           </a>
-          <a href="#" class="flex items-center justify-between px-4 py-2 text-sm text-secondary no-underline hover:bg-card">
+          <a href="#" class="flex items-center justify-between px-4 py-2 text-sm text-semantic-ink-secondary no-underline hover:bg-semantic-card">
             <span><span class="i-lucide-gem mr-2"></span>Stats &amp; succès</span>
-            <span class="inline-flex items-center justify-center min-w-4 h-4 rounded-full text-[0.6rem] font-bold px-1 bg-crimson text-white">1</span>
+            <span class="inline-flex items-center justify-center min-w-4 h-4 rounded-full text-[0.6rem] font-bold px-1 bg-brand-primary text-white">1</span>
           </a>
-          <hr class="my-1 border-border">
-          <a href="#" class="block px-4 py-2 text-sm text-error no-underline hover:bg-error/10">
+          <hr class="my-1 border-semantic-border">
+          <a href="#" class="block px-4 py-2 text-sm text-semantic-danger no-underline hover:bg-semantic-danger/10">
             <span class="i-lucide-log-out mr-2"></span>Déconnexion
           </a>
         </div>
       </div>
 
       <!-- Notes -->
-      <div class="mt-3 flex flex-wrap gap-4 text-xs text-muted">
+      <div class="mt-3 flex flex-wrap gap-4 text-xs text-semantic-muted">
         <span>Point rouge sur avatar si demandes ou notifications non lues (au moins 1)</span>
         <span>Compteurs dans le dropdown — clic → <code>/requests/</code> · <code>/notifications/</code></span>
         <span>Dropdown : Alpine.js <code>x-data="dropdown"</code> · <code>@click.away="close"</code></span>
@@ -104,24 +104,24 @@
   <!-- ══════════════════════════════════════════════════════════ -->
   <div class="card mb-6">
     <div class="card-header">
-      <h2 class="font-semibold text-primary">2. Header — Visiteur (non connecté)</h2>
-      <p class="text-xs text-muted mt-0.5">Logo · Accueil · Jouer · Explorer · Connexion + S'inscrire</p>
+      <h2 class="font-semibold text-semantic-ink">2. Header — Visiteur (non connecté)</h2>
+      <p class="text-xs text-semantic-muted mt-0.5">Logo · Accueil · Jouer · Explorer · Connexion + S'inscrire</p>
     </div>
     <div class="card-body">
-      <div class="bg-surface border border-border rounded-lg overflow-hidden">
+      <div class="bg-semantic-surface border border-semantic-border rounded-lg overflow-hidden">
         <div class="flex items-center justify-between px-6 h-16">
 
           <!-- Logo -->
-          <a href="#" class="flex items-center gap-2 text-xl font-semibold text-primary hover:text-crimson transition-colors no-underline">
+          <a href="#" class="flex items-center gap-2 text-xl font-semibold text-semantic-ink hover:text-brand-primary transition-colors no-underline">
             <img src="/static/img/suddenly-logo.svg" alt="Suddenly" width="28" height="34" class="inline-block">
             <span>Suddenly</span>
           </a>
 
           <!-- Nav -->
           <nav class="flex items-center gap-6 text-sm">
-            <a href="#" class="text-secondary no-underline hover:text-primary transition-colors">Accueil</a>
-            <a href="#" class="text-secondary no-underline hover:text-primary transition-colors">Jouer</a>
-            <a href="#" class="text-secondary no-underline hover:text-primary transition-colors">Explorer</a>
+            <a href="#" class="text-semantic-ink-secondary no-underline hover:text-semantic-ink transition-colors">Accueil</a>
+            <a href="#" class="text-semantic-ink-secondary no-underline hover:text-semantic-ink transition-colors">Jouer</a>
+            <a href="#" class="text-semantic-ink-secondary no-underline hover:text-semantic-ink transition-colors">Explorer</a>
           </nav>
 
           <!-- CTA -->
@@ -140,16 +140,16 @@
   <!-- ══════════════════════════════════════════════════════════ -->
   <div class="card mb-6">
     <div class="card-header">
-      <h2 class="font-semibold text-primary">3. Header — Mobile (&lt; 768px)</h2>
-      <p class="text-xs text-muted mt-0.5">Logo + burger · drawer ouvert (connecté)</p>
+      <h2 class="font-semibold text-semantic-ink">3. Header — Mobile (&lt; 768px)</h2>
+      <p class="text-xs text-semantic-muted mt-0.5">Logo + burger · drawer ouvert (connecté)</p>
     </div>
     <div class="card-body">
       <div class="max-w-sm">
 
         <!-- Barre header -->
-        <div class="bg-surface border border-border rounded-lg">
+        <div class="bg-semantic-surface border border-semantic-border rounded-lg">
           <div class="flex items-center justify-between px-4 h-16">
-            <a href="#" class="flex items-center gap-2 text-xl font-semibold text-primary hover:text-crimson transition-colors no-underline">
+            <a href="#" class="flex items-center gap-2 text-xl font-semibold text-semantic-ink hover:text-brand-primary transition-colors no-underline">
               <img src="/static/img/suddenly-logo.svg" alt="Suddenly" width="28" height="34" class="inline-block">
               <span>Suddenly</span>
             </a>
@@ -157,10 +157,10 @@
               <!-- Avatar (point rouge) -->
               <button class="relative p-2 flex items-center rounded-full bg-transparent border-0 outline-none cursor-pointer">
                 <span class="avatar-sm avatar-placeholder"><span class="i-lucide-user text-sm"></span></span>
-                <span class="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-crimson border-2 border-surface"></span>
+                <span class="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-brand-primary border-2 border-semantic-surface"></span>
               </button>
               <!-- Burger -->
-              <button class="p-2 bg-transparent border-0 text-secondary hover:text-primary cursor-pointer">
+              <button class="p-2 bg-transparent border-0 text-semantic-ink-secondary hover:text-semantic-ink cursor-pointer">
                 <span class="i-lucide-menu text-xl"></span>
               </button>
             </div>
@@ -169,45 +169,45 @@
 
         <!-- Dropdown user (ouvert sous l'avatar) -->
         <div class="flex justify-end mt-1">
-          <div class="w-56 bg-surface border border-border rounded-lg shadow-lg overflow-hidden">
-            <a href="#" class="block px-4 py-2 text-sm text-secondary no-underline hover:bg-card">
+          <div class="w-56 bg-semantic-surface border border-semantic-border rounded-lg shadow-lg overflow-hidden">
+            <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary no-underline hover:bg-semantic-card">
               <span class="i-lucide-user mr-2"></span>Mon profil
             </a>
-            <a href="#" class="block px-4 py-2 text-sm text-secondary no-underline hover:bg-card">
+            <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary no-underline hover:bg-semantic-card">
               <span class="i-lucide-layout-dashboard mr-2"></span>Tableau de bord
             </a>
-            <a href="#" class="block px-4 py-2 text-sm text-secondary no-underline hover:bg-card">
+            <a href="#" class="block px-4 py-2 text-sm text-semantic-ink-secondary no-underline hover:bg-semantic-card">
               <span class="i-lucide-settings mr-2"></span>Préférences
             </a>
-            <hr class="my-1 border-border">
-            <a href="#" class="flex items-center justify-between px-4 py-2 text-sm text-secondary no-underline hover:bg-card">
+            <hr class="my-1 border-semantic-border">
+            <a href="#" class="flex items-center justify-between px-4 py-2 text-sm text-semantic-ink-secondary no-underline hover:bg-semantic-card">
               <span><span class="i-lucide-link-2 mr-2"></span>Demandes</span>
-              <span class="inline-flex items-center justify-center min-w-4 h-4 rounded-full text-[0.6rem] font-bold px-1 bg-crimson text-white">2</span>
+              <span class="inline-flex items-center justify-center min-w-4 h-4 rounded-full text-[0.6rem] font-bold px-1 bg-brand-primary text-white">2</span>
             </a>
-            <a href="#" class="flex items-center justify-between px-4 py-2 text-sm text-secondary no-underline hover:bg-card">
+            <a href="#" class="flex items-center justify-between px-4 py-2 text-sm text-semantic-ink-secondary no-underline hover:bg-semantic-card">
               <span><span class="i-lucide-bell mr-2"></span>Notifications</span>
-              <span class="inline-flex items-center justify-center min-w-4 h-4 rounded-full text-[0.6rem] font-bold px-1 bg-crimson text-white">3</span>
+              <span class="inline-flex items-center justify-center min-w-4 h-4 rounded-full text-[0.6rem] font-bold px-1 bg-brand-primary text-white">3</span>
             </a>
-            <a href="#" class="flex items-center justify-between px-4 py-2 text-sm text-secondary no-underline hover:bg-card">
+            <a href="#" class="flex items-center justify-between px-4 py-2 text-sm text-semantic-ink-secondary no-underline hover:bg-semantic-card">
               <span><span class="i-lucide-gem mr-2"></span>Stats &amp; succès</span>
-              <span class="inline-flex items-center justify-center min-w-4 h-4 rounded-full text-[0.6rem] font-bold px-1 bg-crimson text-white">1</span>
+              <span class="inline-flex items-center justify-center min-w-4 h-4 rounded-full text-[0.6rem] font-bold px-1 bg-brand-primary text-white">1</span>
             </a>
-            <hr class="my-1 border-border">
-            <a href="#" class="block px-4 py-2 text-sm text-error no-underline hover:bg-error/10">
+            <hr class="my-1 border-semantic-border">
+            <a href="#" class="block px-4 py-2 text-sm text-semantic-danger no-underline hover:bg-semantic-danger/10">
               <span class="i-lucide-log-out mr-2"></span>Déconnexion
             </a>
           </div>
         </div>
 
         <!-- Drawer nav (ouvert sous le burger) -->
-        <div class="mt-1 bg-surface border border-border rounded-lg px-4 py-4 space-y-1">
-          <a href="#" class="block py-2 text-secondary no-underline">Accueil</a>
-          <a href="#" class="block py-2 text-secondary no-underline">Jouer</a>
-          <a href="#" class="block py-2 text-secondary no-underline">Explorer</a>
+        <div class="mt-1 bg-semantic-surface border border-semantic-border rounded-lg px-4 py-4 space-y-1">
+          <a href="#" class="block py-2 text-semantic-ink-secondary no-underline">Accueil</a>
+          <a href="#" class="block py-2 text-semantic-ink-secondary no-underline">Jouer</a>
+          <a href="#" class="block py-2 text-semantic-ink-secondary no-underline">Explorer</a>
         </div>
 
       </div>
-      <p class="text-xs text-muted mt-3">
+      <p class="text-xs text-semantic-muted mt-3">
         Burger → drawer nav (Accueil · Jouer · Explorer) · Avatar → dropdown user (identique desktop)
         · Alpine.js <code>@toggle-mobile-menu.window</code> pour le burger · <code>x-data="dropdown"</code> pour l'avatar
       </p>
@@ -219,13 +219,13 @@
   <!-- ══════════════════════════════════════════════════════════ -->
   <div class="card mb-6">
     <div class="card-header">
-      <h2 class="font-semibold text-primary">4. Flash messages</h2>
-      <p class="text-xs text-muted mt-0.5">Quatre variantes : succès · avertissement · erreur · info</p>
+      <h2 class="font-semibold text-semantic-ink">4. Flash messages</h2>
+      <p class="text-xs text-semantic-muted mt-0.5">Quatre variantes : succès · avertissement · erreur · info</p>
     </div>
     <div class="card-body space-y-3">
 
       <!-- Success -->
-      <div class="flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm bg-success/10 border border-success/30 text-success">
+      <div class="flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm bg-semantic-success/10 border border-semantic-success/30 text-semantic-success">
         <span class="i-lucide-check-circle text-lg flex-shrink-0"></span>
         <span>Compte-rendu publié avec succès.</span>
         <button class="ml-auto opacity-60 hover:opacity-100 bg-transparent border-none flex items-center p-0 text-inherit cursor-pointer" aria-label="Fermer">
@@ -234,7 +234,7 @@
       </div>
 
       <!-- Warning -->
-      <div class="flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm bg-warning/10 border border-warning/30 text-warning">
+      <div class="flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm bg-semantic-warning/10 border border-semantic-warning/30 text-semantic-warning">
         <span class="i-lucide-alert-triangle text-lg flex-shrink-0"></span>
         <span>Votre session expire bientôt.</span>
         <button class="ml-auto opacity-60 hover:opacity-100 bg-transparent border-none flex items-center p-0 text-inherit cursor-pointer" aria-label="Fermer">
@@ -243,7 +243,7 @@
       </div>
 
       <!-- Error -->
-      <div class="flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm bg-error/10 border border-error/30 text-error">
+      <div class="flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm bg-semantic-danger/10 border border-semantic-danger/30 text-semantic-danger">
         <span class="i-lucide-x-circle text-lg flex-shrink-0"></span>
         <span>Erreur lors de la sauvegarde.</span>
         <button class="ml-auto opacity-60 hover:opacity-100 bg-transparent border-none flex items-center p-0 text-inherit cursor-pointer" aria-label="Fermer">
@@ -252,7 +252,7 @@
       </div>
 
       <!-- Info -->
-      <div class="flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm bg-info/10 border border-info/30 text-info">
+      <div class="flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm bg-semantic-info/10 border border-semantic-info/30 text-semantic-info">
         <span class="i-lucide-info text-lg flex-shrink-0"></span>
         <span>Une nouvelle version de Suddenly est disponible.</span>
         <button class="ml-auto opacity-60 hover:opacity-100 bg-transparent border-none flex items-center p-0 text-inherit cursor-pointer" aria-label="Fermer">
@@ -260,7 +260,7 @@
         </button>
       </div>
 
-      <p class="text-xs text-muted pt-1">
+      <p class="text-xs text-semantic-muted pt-1">
         Injectés via <code>{% templatetag openblock %} if messages {% templatetag closeblock %}</code> dans <code>base.html</code> · container <code>.container-app mt-4</code>
       </p>
     </div>
@@ -271,18 +271,18 @@
   <!-- ══════════════════════════════════════════════════════════ -->
   <div class="card mb-6">
     <div class="card-header">
-      <h2 class="font-semibold text-primary">5. Footer</h2>
-      <p class="text-xs text-muted mt-0.5">Deux sections : Suddenly (plateforme) · Instance</p>
+      <h2 class="font-semibold text-semantic-ink">5. Footer</h2>
+      <p class="text-xs text-semantic-muted mt-0.5">Deux sections : Suddenly (plateforme) · Instance</p>
     </div>
     <div class="card-body">
-      <div class="bg-surface border border-border rounded-lg px-8 py-6 flex items-center justify-between gap-8">
+      <div class="bg-semantic-surface border border-semantic-border rounded-lg px-8 py-6 flex items-center justify-between gap-8">
 
         <!-- Gauche : logo + baseline -->
         <div class="flex items-center gap-2 shrink-0">
           <img src="/static/img/suddenly-logo.svg" alt="Suddenly" width="20" height="24" class="inline-block">
           <div>
-            <p class="font-semibold text-sm text-primary leading-tight">Suddenly</p>
-            <p class="text-xs text-muted">Réseau fédéré pour joueurs de JDR</p>
+            <p class="font-semibold text-sm text-semantic-ink leading-tight">Suddenly</p>
+            <p class="text-xs text-semantic-muted">Réseau fédéré pour joueurs de JDR</p>
           </div>
         </div>
 
@@ -290,20 +290,20 @@
         <div class="text-xs text-right leading-6">
 
           <!-- Instance -->
-          <p class="text-muted">
-            <span class="font-medium text-secondary">suddenly.social :</span>
-            <a href="#" class="text-muted no-underline hover:text-primary mx-2">À propos</a>·
-            <a href="#" class="text-muted no-underline hover:text-primary mx-2">Annuaire des profils</a>·
-            <a href="#" class="text-muted no-underline hover:text-primary ml-2">Politique de confidentialité</a>
+          <p class="text-semantic-muted">
+            <span class="font-medium text-semantic-ink-secondary">suddenly.social :</span>
+            <a href="#" class="text-semantic-muted no-underline hover:text-semantic-ink mx-2">À propos</a>·
+            <a href="#" class="text-semantic-muted no-underline hover:text-semantic-ink mx-2">Annuaire des profils</a>·
+            <a href="#" class="text-semantic-muted no-underline hover:text-semantic-ink ml-2">Politique de confidentialité</a>
           </p>
 
           <!-- Plateforme -->
-          <p class="text-muted">
-            <span class="font-medium text-secondary">Suddenly :</span>
-            <a href="#" class="text-muted no-underline hover:text-primary mx-2">À propos</a>·
-            <a href="#" class="text-muted no-underline hover:text-primary mx-2">Les applications</a>·
-            <a href="#" class="text-muted no-underline hover:text-primary mx-2">Raccourcis clavier</a>·
-            <a href="#" class="text-muted no-underline hover:text-primary mx-2">Voir le code source</a>·
+          <p class="text-semantic-muted">
+            <span class="font-medium text-semantic-ink-secondary">Suddenly :</span>
+            <a href="#" class="text-semantic-muted no-underline hover:text-semantic-ink mx-2">À propos</a>·
+            <a href="#" class="text-semantic-muted no-underline hover:text-semantic-ink mx-2">Les applications</a>·
+            <a href="#" class="text-semantic-muted no-underline hover:text-semantic-ink mx-2">Raccourcis clavier</a>·
+            <a href="#" class="text-semantic-muted no-underline hover:text-semantic-ink mx-2">Voir le code source</a>·
             <span class="ml-2">v0.x.x</span>
           </p>
 
@@ -317,23 +317,23 @@
   <!-- ══════════════════════════════════════════════════════════ -->
   <div class="card mb-6">
     <div class="card-header">
-      <h2 class="font-semibold text-primary">6. Toast notification</h2>
-      <p class="text-xs text-muted mt-0.5">Coin bas-droite · apparaît via HTMX polling/SSE · disparaît après 5 s</p>
+      <h2 class="font-semibold text-semantic-ink">6. Toast notification</h2>
+      <p class="text-xs text-semantic-muted mt-0.5">Coin bas-droite · apparaît via HTMX polling/SSE · disparaît après 5 s</p>
     </div>
     <div class="card-body">
       <div class="flex justify-end">
-        <div class="bg-surface border border-border rounded-lg shadow-lg p-4 max-w-xs flex flex-col gap-1">
-          <div class="flex items-center gap-2 font-semibold text-sm text-primary">
-            <span class="i-lucide-bell text-crimson text-base"></span>
+        <div class="bg-semantic-surface border border-semantic-border rounded-lg shadow-lg p-4 max-w-xs flex flex-col gap-1">
+          <div class="flex items-center gap-2 font-semibold text-sm text-semantic-ink">
+            <span class="i-lucide-bell text-brand-primary text-base"></span>
             Nouvelle demande
           </div>
-          <div class="text-[0.8125rem] text-secondary pl-6">
+          <div class="text-[0.8125rem] text-semantic-ink-secondary pl-6">
             Demande d'Adoption sur <strong>Viktor</strong>
           </div>
-          <div class="text-xs text-muted text-right">il y a 2 s</div>
+          <div class="text-xs text-semantic-muted text-right">il y a 2 s</div>
         </div>
       </div>
-      <p class="text-xs text-muted mt-3">
+      <p class="text-xs text-semantic-muted mt-3">
         Alpine.js composant <code>notifications</code> · <code>x-for</code> · <code>x-transition</code> · timeout 5 000 ms · z-index <code>z-toast</code>
       </p>
     </div>
@@ -344,23 +344,23 @@
   <!-- ══════════════════════════════════════════════════════════ -->
   <div class="card mb-6">
     <div class="card-header">
-      <h2 class="font-semibold text-primary">7. Indicateur de chargement HTMX</h2>
-      <p class="text-xs text-muted mt-0.5">Barre 2 px en haut de page pendant les requêtes HTMX</p>
+      <h2 class="font-semibold text-semantic-ink">7. Indicateur de chargement HTMX</h2>
+      <p class="text-xs text-semantic-muted mt-0.5">Barre 2 px en haut de page pendant les requêtes HTMX</p>
     </div>
     <div class="card-body">
-      <p class="text-xs text-muted mb-3">Simulation animée de la barre :</p>
+      <p class="text-xs text-semantic-muted mb-3">Simulation animée de la barre :</p>
 
       <!-- Barre simulée -->
-      <div class="relative h-0.5 bg-border rounded-full overflow-hidden mb-3">
-        <div class="mock-loading-bar absolute left-0 top-0 h-full w-3/5 bg-crimson rounded-full"></div>
+      <div class="relative h-0.5 bg-semantic-border rounded-full overflow-hidden mb-3">
+        <div class="mock-loading-bar absolute left-0 top-0 h-full w-3/5 bg-brand-primary rounded-full"></div>
       </div>
 
-      <div class="bg-card border border-dashed border-border rounded-md p-6 text-[0.8125rem] text-muted text-center">
+      <div class="bg-semantic-card border border-dashed border-semantic-border rounded-md p-6 text-[0.8125rem] text-semantic-muted text-center">
         (contenu de la page)
       </div>
 
-      <p class="text-xs text-muted mt-3">
-        Élément <code>&lt;div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-crimson z-toast"&gt;</code>
+      <p class="text-xs text-semantic-muted mt-3">
+        Élément <code>&lt;div class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-brand-primary z-toast"&gt;</code>
         dans <code>base.html</code> · visible uniquement pendant les requêtes HTMX via classe <code>.htmx-request</code>
       </p>
     </div>

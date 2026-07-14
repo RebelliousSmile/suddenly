@@ -6,12 +6,12 @@
 {% block doc_content %}
 <div class="space-y-6">
   <!-- Breadcrumb -->
-  <nav class="text-sm text-muted flex items-center gap-2">
-    <a href="{% url 'docs:index' %}" class="hover:text-primary">Documentation</a>
+  <nav class="text-sm text-semantic-muted flex items-center gap-2">
+    <a href="{% url 'docs:index' %}" class="hover:text-semantic-ink">Documentation</a>
     <span>/</span>
     <span>{{ current_section_label }}</span>
     <span>/</span>
-    <span class="text-primary">{{ current_label }}</span>
+    <span class="text-semantic-ink">{{ current_label }}</span>
   </nav>
 
   <!-- Content -->

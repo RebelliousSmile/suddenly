@@ -13,8 +13,8 @@
 
         {% if error %}
             <div class="text-center py-16">
-                <span class="i-lucide-alert-triangle text-5xl text-muted mb-4 block"></span>
-                <p class="text-muted">{{ error }}</p>
+                <span class="i-lucide-alert-triangle text-5xl text-semantic-muted mb-4 block"></span>
+                <p class="text-semantic-muted">{{ error }}</p>
             </div>
         {% elif actor %}
             {% trans "This profile is hosted on " as banner_prefix %}{% trans ". The displayed data is shared via ActivityPub." as banner_suffix %}
@@ -31,15 +31,15 @@
                         </span>
                     {% endif %}
                     <div>
-                        <h1 class="text-xl font-bold text-primary">{{ actor.name|default:actor.preferredUsername }}</h1>
-                        <p class="text-sm text-muted">
+                        <h1 class="text-xl font-bold text-semantic-ink">{{ actor.name|default:actor.preferredUsername }}</h1>
+                        <p class="text-sm text-semantic-muted">
                             @{{ actor.preferredUsername }}@{{ domain }}
                         </p>
                     </div>
                 </div>
 
                 {% if actor.summary %}
-                    <p class="text-secondary mb-4">{{ actor.summary|striptags }}</p>
+                    <p class="text-semantic-ink-secondary mb-4">{{ actor.summary|striptags }}</p>
                 {% endif %}
 
                 {% if user.is_authenticated %}
@@ -47,7 +47,7 @@
                 {% endif %}
             </div>
 
-            <p class="text-sm text-muted mt-4">
+            <p class="text-sm text-semantic-muted mt-4">
                 <a href="{{ ap_id }}" class="link-muted" target="_blank" rel="noopener">
                     {% blocktrans with d=domain %}View full profile on {{ d }}{% endblocktrans %}
                     <span class="i-lucide-external-link text-xs"></span>

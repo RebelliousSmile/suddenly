@@ -5,7 +5,7 @@
 
 {% block gmh_content %}
 <div class="max-w-lg">
-    <h1 class="text-xl font-bold text-primary mb-4">{% blocktrans with name=server.server_name %}Block {{ name }}{% endblocktrans %}</h1>
+    <h1 class="text-xl font-bold text-semantic-ink mb-4">{% blocktrans with name=server.server_name %}Block {{ name }}{% endblocktrans %}</h1>
 
     {% include "components/status_banner.html" with type="error" icon="alert-triangle" message=_("This action will reject all incoming activities and hide content from this instance.") %}
 

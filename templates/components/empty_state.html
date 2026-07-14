@@ -14,10 +14,10 @@
 {% endcomment %}
 
 <div class="text-center py-12 px-4">
-    <span class="i-lucide-{{ icon }} text-4xl text-muted mb-4 mx-auto block w-12 h-12"></span>
-    <h3 class="text-heading text-primary mb-2">{{ title }}</h3>
+    <span class="i-lucide-{{ icon }} text-4xl text-semantic-muted mb-4 mx-auto block w-12 h-12"></span>
+    <h3 class="text-heading text-semantic-ink mb-2">{{ title }}</h3>
     {% if description %}
-        <p class="text-sm text-muted max-w-md mx-auto mb-4">{{ description }}</p>
+        <p class="text-sm text-semantic-muted max-w-md mx-auto mb-4">{{ description }}</p>
     {% endif %}
     {% if cta_label and cta_url %}
         <a href="{{ cta_url }}" class="btn-primary btn-sm">

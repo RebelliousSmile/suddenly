@@ -10,22 +10,22 @@
                             <span class="i-lucide-user text-sm"></span>
                         </span>
                         <div class="flex-1 min-w-0">
-                            <span class="font-medium text-primary">@{{ report.author.username }}</span>
-                            <span class="text-muted text-sm mx-1">{% trans "in" %}</span>
+                            <span class="font-medium text-semantic-ink">@{{ report.author.username }}</span>
+                            <span class="text-semantic-muted text-sm mx-1">{% trans "in" %}</span>
                             <a href="{% url 'games:detail' pk=report.game.pk %}"
-                               class="text-secondary hover:text-crimson text-sm">
+                               class="text-semantic-ink-secondary hover:text-brand-primary text-sm">
                                 {{ report.game.title }}
                             </a>
                         </div>
                         {% if report.published_at %}
-                            <time class="text-xs text-muted flex-shrink-0">
+                            <time class="text-xs text-semantic-muted flex-shrink-0">
                                 {{ report.published_at|timesince }}
                             </time>
                         {% endif %}
                     </div>
 
                     {% if report.content_warning %}
-                        <div class="flex items-center gap-2 text-sm text-warning mb-2">
+                        <div class="flex items-center gap-2 text-sm text-semantic-warning mb-2">
                             <span class="i-lucide-alert-triangle text-xs"></span>
                             {{ report.content_warning }}
                         </div>
@@ -33,19 +33,19 @@
 
                     <h3 class="font-semibold text-lg mb-1">
                         <a href="{% url 'games:report_detail' game_pk=report.game.pk pk=report.pk %}"
-                           class="text-primary hover:text-crimson">
+                           class="text-semantic-ink hover:text-brand-primary">
                             {{ report.title|default:_("Untitled") }}
                         </a>
                     </h3>
 
                     {% if not report.content_warning %}
-                        <p class="text-sm text-secondary line-clamp-3">
+                        <p class="text-sm text-semantic-ink-secondary line-clamp-3">
                             {{ report.content|truncatewords:40 }}
                         </p>
                     {% endif %}
 
                     {% if report.game.game_system %}
-                        <p class="text-xs text-muted mt-2">{{ report.game.game_system }}</p>
+                        <p class="text-xs text-semantic-muted mt-2">{{ report.game.game_system }}</p>
                     {% endif %}
                 </div>
             </article>
@@ -53,7 +53,7 @@
     </div>
 {% else %}
     <div class="text-center py-16">
-        <span class="i-lucide-scroll-text text-5xl text-muted mb-4 block"></span>
-        <p class="text-muted">{% trans "No published reports yet." %}</p>
+        <span class="i-lucide-scroll-text text-5xl text-semantic-muted mb-4 block"></span>
+        <p class="text-semantic-muted">{% trans "No published reports yet." %}</p>
     </div>
 {% endif %}

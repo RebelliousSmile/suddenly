@@ -5,7 +5,7 @@
 {% block content %}
 <section class="py-12">
     <div class="container-app max-w-md">
-        <h1 class="text-3xl font-bold text-primary mb-8 text-center">
+        <h1 class="text-3xl font-bold text-semantic-ink mb-8 text-center">
             Connexion
         </h1>
 
@@ -65,7 +65,7 @@
                            id="{{ form.remember.id_for_label }}"
                            name="{{ form.remember.html_name }}"
                            {% if form.remember.value %}checked{% endif %}
-                           class="h-4 w-4 rounded border-border text-crimson focus:ring-crimson">
+                           class="h-4 w-4 rounded border-semantic-border text-brand-primary focus:ring-brand-primary">
                     <label for="{{ form.remember.id_for_label }}" class="form-label mb-0">
                         {{ form.remember.label }}
                     </label>
@@ -83,7 +83,7 @@
         </form>
 
         <!-- Links -->
-        <div class="mt-6 text-center text-sm text-secondary space-y-2">
+        <div class="mt-6 text-center text-sm text-semantic-ink-secondary space-y-2">
             <p>
                 Pas encore de compte ?
                 <a href="{% url 'account_signup' %}" class="link font-medium">

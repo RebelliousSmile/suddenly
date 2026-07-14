@@ -9,20 +9,20 @@
 {% endcomment %}
 {% load i18n %}
 
-<div class="border border-warning/50 rounded-card p-3 bg-warning/10 hover:shadow-card-hover transition-shadow">
+<div class="border border-semantic-warning/50 rounded-xl p-3 bg-semantic-warning/10 hover:shadow-card-hover transition-shadow">
     <div class="flex items-center gap-2 mb-1">
         {% if character.avatar %}
             <img src="{{ character.avatar.url }}" alt="{{ character.name }}" class="avatar-sm">
         {% else %}
-            <div class="avatar-sm avatar-placeholder bg-warning/15 text-warning">
+            <div class="avatar-sm avatar-placeholder bg-semantic-warning/15 text-semantic-warning">
                 <span class="i-lucide-sparkles text-xs"></span>
             </div>
         {% endif %}
-        <p class="font-medium text-sm text-primary truncate">{{ character.name }}</p>
+        <p class="font-medium text-sm text-semantic-ink truncate">{{ character.name }}</p>
     </div>
-    <p class="text-xs text-muted mb-2 truncate">{{ character.origin_game.title }}</p>
+    <p class="text-xs text-semantic-muted mb-2 truncate">{{ character.origin_game.title }}</p>
     <a href="#"
-       class="text-xs text-warning hover:text-warning font-medium flex items-center gap-1">
+       class="text-xs text-semantic-warning hover:text-semantic-warning font-medium flex items-center gap-1">
         {% trans "View profile" %}
         <span class="i-lucide-arrow-right text-xs"></span>
     </a>

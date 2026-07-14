@@ -13,16 +13,16 @@
                 <img src="{{ game.cover.url }}" alt="{{ game.title }}"
                      class="w-full h-48 object-cover rounded-2xl mb-4">
             {% endif %}
-            <h1 class="text-2xl font-bold text-primary mb-2">{{ game.title }}</h1>
-            <p class="text-sm text-muted">
+            <h1 class="text-2xl font-bold text-semantic-ink mb-2">{{ game.title }}</h1>
+            <p class="text-sm text-semantic-muted">
                 {% blocktrans with username=game.owner.username %}By @{{ username }}{% endblocktrans %}
                 {% if game.game_system %}· {{ game.game_system }}{% endif %}
             </p>
             {% if game.description %}
-                <p class="text-secondary mt-3 max-w-2xl">{{ game.description }}</p>
+                <p class="text-semantic-ink-secondary mt-3 max-w-2xl">{{ game.description }}</p>
             {% endif %}
             {% if game.started_at %}
-                <p class="text-sm text-muted">{% trans "Depuis le" %} {{ game.started_at|date:"d/m/Y" }}</p>
+                <p class="text-sm text-semantic-muted">{% trans "Depuis le" %} {{ game.started_at|date:"d/m/Y" }}</p>
             {% endif %}
 
             {% if is_owner %}
@@ -50,15 +50,15 @@
                         <div class="card card-body">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <h3 class="font-semibold text-primary">
+                                    <h3 class="font-semibold text-semantic-ink">
                                         {{ report.title|default:_("Untitled") }}
                                     </h3>
-                                    <p class="text-xs text-muted">
+                                    <p class="text-xs text-semantic-muted">
                                         {% blocktrans with username=report.author.username %}by @{{ username }}{% endblocktrans %}
                                         {% if report.session_date %}
-                                            · <span class="text-sm text-muted">{% trans "Session du" %} {{ report.session_date|date:"d/m/Y" }}</span>
+                                            · <span class="text-sm text-semantic-muted">{% trans "Session du" %} {{ report.session_date|date:"d/m/Y" }}</span>
                                         {% elif report.published_at %}
-                                            · <span class="text-sm text-muted">{{ report.published_at|timesince }}</span>
+                                            · <span class="text-sm text-semantic-muted">{{ report.published_at|timesince }}</span>
                                         {% endif %}
                                     </p>
                                 </div>
@@ -73,7 +73,7 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <p class="text-sm text-muted">{% trans "No published report." %}</p>
+                <p class="text-sm text-semantic-muted">{% trans "No published report." %}</p>
             {% endif %}
         </div>
 
@@ -88,7 +88,7 @@
                     {% for character in characters %}
                         <a href="{% url 'characters:detail' slug=character.slug %}"
                            class="card card-body text-center hover:shadow-card-hover transition-shadow">
-                            <p class="font-medium text-sm text-primary">{{ character.name }}</p>
+                            <p class="font-medium text-sm text-semantic-ink">{{ character.name }}</p>
                             <span class="{% if character.status == 'npc' %}badge-available{% else %}badge-{{ character.status }}{% endif %} text-xs mt-1">
                                 {{ character.get_status_display }}
                             </span>
@@ -96,7 +96,7 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <p class="text-sm text-muted">{% trans "No characters in this game." %}</p>
+                <p class="text-sm text-semantic-muted">{% trans "No characters in this game." %}</p>
             {% endif %}
         </div>
 

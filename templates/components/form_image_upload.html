@@ -2,15 +2,15 @@
 {% load i18n %}
 <div>
     <label for="{{ field_id }}" class="form-label">
-        {{ field_label }}{% if field_optional %} <span class="text-muted">({% trans "optional" %})</span>{% endif %}
+        {{ field_label }}{% if field_optional %} <span class="text-semantic-muted">({% trans "optional" %})</span>{% endif %}
     </label>
 
     {% if current_url %}
-    <div class="mb-4 p-4 bg-surface rounded-lg flex items-center gap-3">
+    <div class="mb-4 p-4 bg-semantic-surface rounded-lg flex items-center gap-3">
         <img src="{{ current_url }}" alt="{{ field_label }}" class="avatar-md">
         <div>
-            <p class="text-sm text-secondary">{% trans "Current image" %}</p>
-            <label for="{{ clear_id }}" class="text-sm text-error hover:text-error/70 cursor-pointer">
+            <p class="text-sm text-semantic-ink-secondary">{% trans "Current image" %}</p>
+            <label for="{{ clear_id }}" class="text-sm text-semantic-danger hover:text-semantic-danger/70 cursor-pointer">
                 <input id="{{ clear_id }}" name="{{ clear_name }}" type="checkbox">
                 {% trans "Delete image" %}
             </label>
@@ -20,15 +20,15 @@
 
     <div class="form-dropzone">
         <div class="space-y-1 text-center">
-            <span class="i-lucide-upload text-3xl text-muted"></span>
-            <div class="flex text-sm text-secondary justify-center">
+            <span class="i-lucide-upload text-3xl text-semantic-muted"></span>
+            <div class="flex text-sm text-semantic-ink-secondary justify-center">
                 <label for="{{ field_id }}" class="form-dropzone-link">
                     <span>{% trans "Upload an image" %}</span>
                     <input id="{{ field_id }}" name="{{ field_name }}" type="file" accept="image/*" class="sr-only">
                 </label>
                 <p class="pl-1">{% trans "or drag and drop" %}</p>
             </div>
-            <p class="text-xs text-muted">{% trans "PNG, JPG or GIF up to 10 MB" %}</p>
+            <p class="text-xs text-semantic-muted">{% trans "PNG, JPG or GIF up to 10 MB" %}</p>
         </div>
     </div>
 </div>

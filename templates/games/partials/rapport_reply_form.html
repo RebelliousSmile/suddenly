@@ -2,17 +2,17 @@
 <div id="reply-form-slot-{{ parent.pk }}"
      x-data="{ kind: '{{ form.kind.value|default:'' }}' }">
 
-    <div class="mb-3 p-3 rounded-lg bg-muted/10 border border-border text-sm flex items-center gap-2">
-        <span class="i-lucide-corner-down-right text-muted text-xs"></span>
-        <span class="text-muted">{% trans "In reply to:" %}</span>
-        <span class="badge bg-card-dark text-muted border border-border text-xs">
+    <div class="mb-3 p-3 rounded-lg bg-semantic-muted/10 border border-semantic-border text-sm flex items-center gap-2">
+        <span class="i-lucide-corner-down-right text-semantic-muted text-xs"></span>
+        <span class="text-semantic-muted">{% trans "In reply to:" %}</span>
+        <span class="badge bg-semantic-card-sunken text-semantic-muted border border-semantic-border text-xs">
             {{ parent.get_kind_display }}
         </span>
-        <span class="text-secondary truncate">{{ parent.content|truncatechars:60 }}</span>
+        <span class="text-semantic-ink-secondary truncate">{{ parent.content|truncatechars:60 }}</span>
     </div>
 
     {% if form.non_field_errors %}
-        <div class="mb-3 p-3 rounded-lg bg-error/10 text-error border border-error/30 text-sm">
+        <div class="mb-3 p-3 rounded-lg bg-semantic-danger/10 text-semantic-danger border border-semantic-danger/30 text-sm">
             {% for error in form.non_field_errors %}{{ error }}{% endfor %}
         </div>
     {% endif %}
@@ -31,13 +31,13 @@
                         <input type="radio" name="kind" value="{{ value }}"
                                {% if form.kind.value == value %}checked{% endif %}
                                @change="kind = '{{ value }}'"
-                               class="h-4 w-4 text-crimson focus:ring-crimson">
+                               class="h-4 w-4 text-brand-primary focus:ring-brand-primary">
                         <span class="text-sm">{{ label }}</span>
                     </label>
                 {% endfor %}
             </div>
             {% if form.kind.errors %}
-                <p class="form-error text-error text-xs mt-1">{{ form.kind.errors.0 }}</p>
+                <p class="form-error text-semantic-danger text-xs mt-1">{{ form.kind.errors.0 }}</p>
             {% endif %}
         </div>
 
@@ -47,7 +47,7 @@
                       placeholder="{% trans "Write your reply..." %}"
                       class="form-input w-full">{{ form.content.value|default:'' }}</textarea>
             {% if form.content.errors %}
-                <p class="form-error text-error text-xs mt-1">{{ form.content.errors.0 }}</p>
+                <p class="form-error text-semantic-danger text-xs mt-1">{{ form.content.errors.0 }}</p>
             {% endif %}
         </div>
 
@@ -64,12 +64,12 @@
                     {% endfor %}
                 </select>
             {% else %}
-                <p class="text-sm text-muted">
+                <p class="text-sm text-semantic-muted">
                     {% trans "No character available for this game." %}
                 </p>
             {% endif %}
             {% if form.actor.errors %}
-                <p class="form-error text-error text-xs mt-1">{{ form.actor.errors.0 }}</p>
+                <p class="form-error text-semantic-danger text-xs mt-1">{{ form.actor.errors.0 }}</p>
             {% endif %}
         </div>
 

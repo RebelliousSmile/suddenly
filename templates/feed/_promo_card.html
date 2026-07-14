@@ -8,9 +8,9 @@
    Expects `character` — an available NPC.
 {% endcomment %}
 {% load i18n %}
-<article class="card border-l-2 border-crimson bg-crimson/5">
+<article class="card border-l-2 border-brand-primary bg-brand-primary/5">
     <div class="card-body">
-        <p class="text-xs font-semibold uppercase tracking-widest text-crimson mb-2">
+        <p class="text-xs font-semibold uppercase tracking-widest text-brand-primary mb-2">
             <span class="i-lucide-megaphone text-xs"></span>
             {% trans "Available to play" %}
         </p>
@@ -24,16 +24,16 @@
             {% endif %}
             <div class="min-w-0">
                 <a href="{% url 'characters:detail' slug=character.slug %}"
-                   class="font-semibold text-primary hover:text-crimson">
+                   class="font-semibold text-semantic-ink hover:text-brand-primary">
                     {{ character.name }}
                 </a>
-                <p class="text-xs text-muted truncate">
+                <p class="text-xs text-semantic-muted truncate">
                     {% blocktrans with title=character.origin_game.title %}from {{ title }}{% endblocktrans %}
                 </p>
             </div>
         </div>
         {% if character.description %}
-            <p class="text-sm text-secondary line-clamp-2 mb-3">{{ character.description }}</p>
+            <p class="text-sm text-semantic-ink-secondary line-clamp-2 mb-3">{{ character.description }}</p>
         {% endif %}
         <div class="flex flex-wrap items-center gap-2">
             <a href="{% url 'characters:link_request_form' slug=character.slug link_type='claim' %}"

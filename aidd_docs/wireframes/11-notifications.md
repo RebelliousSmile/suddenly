@@ -66,16 +66,19 @@
 
 ### Types de notifications
 
-| Type | Icone | Couleur | Declencheur |
-|------|-------|---------|-------------|
-| Demande de lien | (merge) | amber | LinkRequest creee sur mon PNJ |
-| Reponse demande | (check)/(x) | emerald/red | Ma demande acceptee/refusee |
-| Nouveau CR | (book-open) | indigo | Joueur/partie suivi publie |
-| **Recommandation** | **(sparkles)** | **accent** | **Quelqu'un a recommande votre CR** |
-| **Mention** | **(at-sign)** | **blue** | **Quelqu'un vous a mentionne dans un CR** |
-| **Invitation** | **(send)** | **primary** | **Quelqu'un vous invite a decouvrir un CR/PNJ** |
-| Nouveau follower | (user-plus) | blue | Quelqu'un me suit |
-| SharedSequence | (edit) | violet | Invitation, proposition publication |
+> Couleurs exprimees en **tokens**, jamais en teintes Tailwind. Une notification ne se distingue
+> jamais par la seule couleur : l'icone et le libelle portent le sens (`usage.rules[state-colour-icon]`).
+
+| Type | Icone | Token | Declencheur |
+|------|-------|-------|-------------|
+| Demande de lien | (merge) | `color.semantic.warning` | LinkRequest creee sur mon PNJ |
+| Reponse demande | (check)/(x) | `color.semantic.success` / `.danger` | Ma demande acceptee/refusee |
+| Nouveau CR | (book-open) | `color.semantic.info` | Joueur/partie suivi publie |
+| **Recommandation** | **(sparkles)** | **`color.brand.accent`** | **Quelqu'un a recommande votre CR** |
+| **Mention** | **(at-sign)** | **`color.domain.pc`** | **Quelqu'un vous a mentionne dans un CR** |
+| **Invitation** | **(send)** | **`color.brand.primary`** | **Quelqu'un vous invite a decouvrir un CR/PNJ** |
+| Nouveau follower | (user-plus) | `color.semantic.info` | Quelqu'un me suit |
+| SharedSequence | (edit) | `color.domain.remote` | Invitation, proposition publication |
 | Revocation | (alert-triangle) | red | Lien revoque |
 
 ## Parametres notifications (`/settings/notifications/`) — US-21

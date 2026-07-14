@@ -8,8 +8,8 @@
     <div class="container-app max-w-2xl">
 
         <header class="mb-6">
-            <h1 class="text-2xl font-bold text-primary">{% trans "Le mur des citations" %}</h1>
-            <p class="text-sm text-muted mt-1">
+            <h1 class="text-2xl font-bold text-semantic-ink">{% trans "Le mur des citations" %}</h1>
+            <p class="text-sm text-semantic-muted mt-1">
                 {% trans "Ce qui a été dit, une fois les scènes libérées." %}
             </p>
         </header>
@@ -28,7 +28,7 @@
                             {% trans "Précédentes" %}
                         </a>
                     {% else %}<span></span>{% endif %}
-                    <span class="text-muted">
+                    <span class="text-semantic-muted">
                         {% blocktrans with num=page_obj.number total=page_obj.paginator.num_pages %}{{ num }} / {{ total }}{% endblocktrans %}
                     </span>
                     {% if page_obj.has_next %}
@@ -39,7 +39,7 @@
                 </nav>
             {% endif %}
         {% else %}
-            <div class="card card-body text-center text-muted">
+            <div class="card card-body text-center text-semantic-muted">
                 {% trans "Aucune citation libérée pour l'instant." %}
             </div>
         {% endif %}

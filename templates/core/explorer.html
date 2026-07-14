@@ -8,19 +8,19 @@
     <div class="container-app" x-data="{ selectMode: false }">
 
         <!-- Hero -->
-        <div class="bg-gradient-to-br from-surface to-background rounded-2xl p-8 mb-6 text-center">
-            <h1 class="text-3xl font-bold text-primary mb-2">{% trans "Explore" %}</h1>
-            <p class="text-secondary text-lg">{% trans "Which character do you want to play today?" %}</p>
+        <div class="bg-gradient-to-br from-semantic-surface to-semantic-background rounded-2xl p-8 mb-6 text-center">
+            <h1 class="text-3xl font-bold text-semantic-ink mb-2">{% trans "Explore" %}</h1>
+            <p class="text-semantic-ink-secondary text-lg">{% trans "Which character do you want to play today?" %}</p>
         </div>
 
         <!-- Tab nav -->
-        <div class="flex border-b border-border mb-6">
+        <div class="flex border-b border-semantic-border mb-6">
             <a href="{% url 'core:explorer' %}?tab=characters"
-               class="px-4 py-2 text-sm font-medium border-b-2 -mb-px {% if active_tab == 'characters' %}border-crimson text-crimson{% else %}border-transparent text-muted hover:text-secondary{% endif %}">
+               class="px-4 py-2 text-sm font-medium border-b-2 -mb-px {% if active_tab == 'characters' %}border-brand-primary text-brand-primary{% else %}border-transparent text-semantic-muted hover:text-semantic-ink-secondary{% endif %}">
                 {% trans "Characters" %}
             </a>
             <a href="{% url 'core:explorer' %}?tab=games"
-               class="px-4 py-2 text-sm font-medium border-b-2 -mb-px {% if active_tab == 'games' %}border-crimson text-crimson{% else %}border-transparent text-muted hover:text-secondary{% endif %}">
+               class="px-4 py-2 text-sm font-medium border-b-2 -mb-px {% if active_tab == 'games' %}border-brand-primary text-brand-primary{% else %}border-transparent text-semantic-muted hover:text-semantic-ink-secondary{% endif %}">
                 {% trans "Games" %}
             </a>
         </div>
@@ -38,7 +38,7 @@
                        hx-trigger="keyup changed delay:300ms"
                        hx-target="#explorer-results"
                        hx-include="[name='status'],[name='system'],[name='tag']">
-                <span class="i-lucide-search absolute right-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none text-lg"></span>
+                <span class="i-lucide-search absolute right-3 top-1/2 -translate-y-1/2 text-semantic-muted pointer-events-none text-lg"></span>
             </div>
             <!-- Filters -->
             <div class="flex gap-3 flex-wrap">
@@ -76,7 +76,7 @@
                        hx-trigger="keyup changed delay:300ms"
                        hx-target="#explorer-results"
                        hx-include="[name='system'],[name='tag']">
-                <span class="i-lucide-search absolute right-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none text-lg"></span>
+                <span class="i-lucide-search absolute right-3 top-1/2 -translate-y-1/2 text-semantic-muted pointer-events-none text-lg"></span>
             </div>
             <!-- Filters -->
             <input type="text" name="system" value="{{ system_filter }}"

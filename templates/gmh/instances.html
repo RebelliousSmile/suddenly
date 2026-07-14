@@ -4,15 +4,15 @@
 {% block title %}{% trans "Federated instances" %} — {% trans "Administration" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block gmh_content %}
-<h1 class="text-2xl font-bold text-primary mb-6">{% trans "Federated instances" %}</h1>
+<h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "Federated instances" %}</h1>
 
 {% if instances %}
     <div class="space-y-3">
         {% for server in instances %}
             <div class="card card-body flex items-center justify-between">
                 <div>
-                    <p class="font-medium text-primary">{{ server.server_name }}</p>
-                    <p class="text-xs text-muted">
+                    <p class="font-medium text-semantic-ink">{{ server.server_name }}</p>
+                    <p class="text-xs text-semantic-muted">
                         {{ server.application_type|default:_("unknown") }}
                         {{ server.application_version }}
                         · {% blocktrans with count=server.user_count %}{{ count }} users{% endblocktrans %}
@@ -23,27 +23,27 @@
                         <span class="badge-available">{% trans "Federated" %}</span>
                         <form method="post" action="{% url 'gmh:instance_block' pk=server.pk %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn-ghost btn-sm text-error"
+                            <button type="submit" class="btn-ghost btn-sm text-semantic-danger"
                                     onclick="return confirm('{% blocktrans with name=server.server_name %}Block {{ name }}?{% endblocktrans %}')">
                                 {% trans "Block" %}
                             </button>
                         </form>
                     {% elif server.status == 'BLOCKED' %}
-                        <span class="badge bg-error/15 text-error">{% trans "Blocked" %}</span>
+                        <span class="badge bg-semantic-danger/15 text-semantic-danger">{% trans "Blocked" %}</span>
                         <form method="post" action="{% url 'gmh:instance_unblock' pk=server.pk %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn-ghost btn-sm text-success">
+                            <button type="submit" class="btn-ghost btn-sm text-semantic-success">
                                 {% trans "Unblock" %}
                             </button>
                         </form>
                     {% else %}
-                        <span class="badge bg-card-dark text-muted border border-border">{% trans "Unknown" %}</span>
+                        <span class="badge bg-semantic-card-sunken text-semantic-muted border border-semantic-border">{% trans "Unknown" %}</span>
                     {% endif %}
                 </div>
             </div>
         {% endfor %}
     </div>
 {% else %}
-    <p class="text-muted text-center py-8">{% trans "No known instance." %}</p>
+    <p class="text-semantic-muted text-center py-8">{% trans "No known instance." %}</p>
 {% endif %}
 {% endblock %}

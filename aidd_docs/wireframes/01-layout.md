@@ -69,7 +69,8 @@
 +------------------------------------------------------------------+
 ```
 
-Couleurs : success=emerald, warning=amber, error=red, info=blue.
+Couleurs : tokens `color.semantic.*` — `success`, `warning`, `danger` (et non `error`), `info`.
+Un bandeau ne repose jamais sur la seule couleur : il porte toujours son icone et son libelle.
 
 ## Footer
 
@@ -100,8 +101,9 @@ Apparait via HTMX polling ou SSE. Disparait apres 5s.
 ## Loading indicator (HTMX)
 
 ```
-+==================================================================+  <- barre indigo 2px
++==================================================================+  <- barre crimson 2px
 | (contenu de la page)                                             |
 ```
 
-Barre animee en haut de page pendant les requetes HTMX.
+Barre animee en haut de page pendant les requetes HTMX — token `color.brand.primary`
+(la couleur d'action). Sous `prefers-reduced-motion`, l'animation est desactivee.

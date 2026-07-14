@@ -4,7 +4,7 @@
 {% block title %}{% trans "Edit my profile" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block settings_content %}
-        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "Edit my profile" %}</h1>
+        <h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "Edit my profile" %}</h1>
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -14,7 +14,7 @@
             <div>
                 <label for="{{ form.display_name.id_for_label }}" class="form-label">
                     {{ form.display_name.label }}
-                    <span class="text-muted">({% trans "optional" %})</span>
+                    <span class="text-semantic-muted">({% trans "optional" %})</span>
                 </label>
                 <input type="text"
                        id="{{ form.display_name.id_for_label }}"
@@ -36,7 +36,7 @@
             <div>
                 <label for="{{ form.bio.id_for_label }}" class="form-label">
                     {{ form.bio.label }}
-                    <span class="text-muted">({% trans "optional" %})</span>
+                    <span class="text-semantic-muted">({% trans "optional" %})</span>
                 </label>
                 <textarea id="{{ form.bio.id_for_label }}"
                           name="{{ form.bio.html_name }}"

@@ -1,13 +1,13 @@
 {% load i18n %}
 <nav class="text-sm">
-  <a href="{% url 'core:home' %}" class="flex items-center gap-1 text-muted hover:text-primary mb-6 text-xs">
+  <a href="{% url 'core:home' %}" class="flex items-center gap-1 text-semantic-muted hover:text-semantic-ink mb-6 text-xs">
     <span class="i-lucide-arrow-left w-3 h-3"></span>
     {% trans "← Application" %}
   </a>
 
   {% for section in nav %}
   <details open class="mb-4">
-    <summary class="cursor-pointer font-semibold text-primary mb-2 list-none flex items-center gap-2">
+    <summary class="cursor-pointer font-semibold text-semantic-ink mb-2 list-none flex items-center gap-2">
       <span class="i-lucide-chevron-right w-3 h-3"></span>
       {{ section.section }}
     </summary>
@@ -16,16 +16,16 @@
       <li>
         {% if section.slug == "wireframes" %}
         <a href="{% url 'docs:wireframe_prototype' entry.slug %}"
-           class="block px-2 py-1 rounded text-sm transition-colors text-muted hover:bg-surface hover:text-primary">
+           class="block px-2 py-1 rounded text-sm transition-colors text-semantic-muted hover:bg-semantic-surface hover:text-semantic-ink">
           {{ entry.label }}
         </a>
         {% else %}
         <a href="{% url 'docs:page' section.slug entry.slug %}"
            class="block px-2 py-1 rounded text-sm transition-colors
                   {% if current_section == section.slug and current_slug == entry.slug %}
-                  bg-primary/10 text-primary font-medium
+                  bg-semantic-ink/10 text-semantic-ink font-medium
                   {% else %}
-                  text-muted hover:bg-surface hover:text-primary
+                  text-semantic-muted hover:bg-semantic-surface hover:text-semantic-ink
                   {% endif %}">
           {{ entry.label }}
         </a>

@@ -5,6 +5,10 @@
 // UnoCSS - génère les styles
 import 'virtual:uno.css'
 
+// Design tokens — GÉNÉRÉ depuis design/tokens.json, ne pas éditer.
+// Doit être importé AVANT base.css : celui-ci consomme les variables --color-*.
+import '../../design/adapters/tokens.css'
+
 // EasyMDE — Markdown editor
 import EasyMDE from 'easymde'
 import 'easymde/dist/easymde.min.css'

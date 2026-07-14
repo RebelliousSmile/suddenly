@@ -22,18 +22,18 @@
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="translate-y-0"
          x-transition:leave-end="translate-y-full"
-         class="fixed inset-0 z-modal flex flex-col bg-background"
+         class="fixed inset-0 z-modal flex flex-col bg-semantic-background"
          style="padding-bottom: env(safe-area-inset-bottom)">
 
         {# Barre du composer #}
-        <div class="flex items-center justify-between gap-3 px-4 py-2 bg-[#12121f] text-white border-b-2 border-crimson"
+        <div class="flex items-center justify-between gap-3 px-4 py-2 bg-[#12121f] text-white border-b-2 border-brand-primary"
              style="padding-top: max(0.5rem, env(safe-area-inset-top))">
             <button type="button" @click="composerOpen = false"
                     class="p-1 text-white/75 hover:text-white" aria-label="{% trans "Annuler" %}">
                 <span class="i-lucide-x text-lg"></span>
             </button>
             <div class="text-sm font-semibold flex items-center gap-2">
-                <span class="inline-block w-2 h-3 bg-crimson" style="clip-path: polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%)"></span>
+                <span class="inline-block w-2 h-3 bg-brand-primary" style="clip-path: polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%)"></span>
                 {% trans "Nouveau post" %}
                 <span class="text-xs font-normal text-white/50 uppercase tracking-wide">
                     {% if frozen %}{% trans "ajout" %}{% else %}{% trans "au fil" %}{% endif %}

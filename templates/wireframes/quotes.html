@@ -15,19 +15,19 @@
 <!-- ================================================================ -->
 <section class="mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-quote w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 1 — Citations sur fiche personnage (/characters/viktor/)</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-quote w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 1 — Citations sur fiche personnage (/characters/viktor/)</span>
     </div>
 
     <!-- Character page header (context) -->
-    <div class="border-b border-border bg-surface py-6">
+    <div class="border-b border-semantic-border bg-semantic-surface py-6">
         <div class="container-app px-4">
             <div class="flex items-center gap-4">
                 <div class="avatar-md avatar-placeholder text-lg font-bold">V</div>
                 <div>
-                    <h1 class="text-2xl font-bold text-primary">Viktor</h1>
-                    <p class="text-sm text-muted">PNJ · ajouté par <a href="#" class="link-muted">@alice</a> · City of Mist</p>
+                    <h1 class="text-2xl font-bold text-semantic-ink">Viktor</h1>
+                    <p class="text-sm text-semantic-muted">PNJ · ajouté par <a href="#" class="link-muted">@alice</a> · City of Mist</p>
                 </div>
                 <span class="badge badge-available ml-auto">Disponible</span>
             </div>
@@ -40,8 +40,8 @@
 
             <!-- Section heading + add button -->
             <div class="flex items-center justify-between mb-5">
-                <h2 class="text-base font-semibold text-primary flex items-center gap-2">
-                    <span class="i-lucide-quote w-4 h-4 inline-block text-muted"></span>
+                <h2 class="text-base font-semibold text-semantic-ink flex items-center gap-2">
+                    <span class="i-lucide-quote w-4 h-4 inline-block text-semantic-muted"></span>
                     Citations
                     <span class="badge badge-info text-xs">2</span>
                 </h2>
@@ -67,22 +67,22 @@
                     <div class="card-body">
 
                         <!-- Quote text -->
-                        <blockquote class="text-secondary italic text-base leading-relaxed mb-3 border-l-2 border-border pl-4">
+                        <blockquote class="text-semantic-ink-secondary italic text-base leading-relaxed mb-3 border-l-2 border-semantic-border pl-4">
                             « Les mythes ne meurent pas, ils changent simplement de visage. »
                         </blockquote>
 
                         <!-- Context -->
-                        <p class="text-sm text-muted mb-3">
+                        <p class="text-sm text-semantic-muted mb-3">
                             <span class="i-lucide-map-pin w-3.5 h-3.5 inline-block mr-1"></span>
                             Dans le bar des Reflets, face à l'Oracle.
                         </p>
 
                         <!-- Footer: attribution + actions -->
                         <div class="flex items-center justify-between gap-3 flex-wrap">
-                            <div class="flex items-center gap-2 text-xs text-muted flex-wrap">
+                            <div class="flex items-center gap-2 text-xs text-semantic-muted flex-wrap">
                                 <!-- Character avatar + name -->
                                 <div class="avatar-sm avatar-placeholder">V</div>
-                                <span class="font-medium text-secondary">Viktor</span>
+                                <span class="font-medium text-semantic-ink-secondary">Viktor</span>
                                 <span>·</span>
                                 <!-- Author -->
                                 <span>ajoutée par</span>
@@ -113,17 +113,17 @@
                                     <!-- Edit -->
                                     <button
                                         type="button"
-                                        class="w-full flex items-center gap-2 px-3 py-2 text-sm text-primary hover:bg-surface transition-colors text-left"
+                                        class="w-full flex items-center gap-2 px-3 py-2 text-sm text-semantic-ink hover:bg-semantic-surface transition-colors text-left"
                                         hx-get="/characters/viktor/quotes/1/edit/"
                                         hx-target="#quote-form-container"
                                         hx-swap="innerHTML">
-                                        <span class="i-lucide-pencil w-4 h-4 inline-block text-muted"></span>
+                                        <span class="i-lucide-pencil w-4 h-4 inline-block text-semantic-muted"></span>
                                         Modifier
                                     </button>
                                     <!-- Delete -->
                                     <button
                                         type="button"
-                                        class="w-full flex items-center gap-2 px-3 py-2 text-sm text-crimson hover:bg-surface transition-colors text-left border-t border-border"
+                                        class="w-full flex items-center gap-2 px-3 py-2 text-sm text-brand-primary hover:bg-semantic-surface transition-colors text-left border-t border-semantic-border"
                                         hx-delete="/characters/viktor/quotes/1/"
                                         hx-target="closest .card"
                                         hx-swap="outerHTML"
@@ -143,14 +143,14 @@
                     <div class="card-body">
 
                         <!-- Quote text -->
-                        <blockquote class="text-secondary italic text-base leading-relaxed mb-3 border-l-2 border-border pl-4">
+                        <blockquote class="text-semantic-ink-secondary italic text-base leading-relaxed mb-3 border-l-2 border-semantic-border pl-4">
                             « Je reviendrai. Les gens comme moi reviennent toujours. »
                         </blockquote>
 
                         <!-- Footer: attribution (no context on this one) -->
-                        <div class="flex items-center gap-2 text-xs text-muted flex-wrap">
+                        <div class="flex items-center gap-2 text-xs text-semantic-muted flex-wrap">
                             <div class="avatar-sm avatar-placeholder">V</div>
-                            <span class="font-medium text-secondary">Viktor</span>
+                            <span class="font-medium text-semantic-ink-secondary">Viktor</span>
                             <span>·</span>
                             <span>ajoutée par</span>
                             <a href="#" class="link-muted font-medium">@bob</a>
@@ -160,7 +160,7 @@
                 </div>
 
                 <!-- Quote 3 — private (badge cadenas, visible author only) -->
-                <div class="card border border-dashed border-border opacity-80">
+                <div class="card border border-dashed border-semantic-border opacity-80">
                     <div class="card-body">
 
                         <!-- Visibility badge -->
@@ -169,19 +169,19 @@
                                 <span class="i-lucide-lock w-3 h-3 inline-block"></span>
                                 Privée
                             </span>
-                            <span class="text-xs text-muted">Visible uniquement par vous</span>
+                            <span class="text-xs text-semantic-muted">Visible uniquement par vous</span>
                         </div>
 
                         <!-- Quote text -->
-                        <blockquote class="text-secondary italic text-base leading-relaxed mb-3 border-l-2 border-border pl-4">
+                        <blockquote class="text-semantic-ink-secondary italic text-base leading-relaxed mb-3 border-l-2 border-semantic-border pl-4">
                             « On ne choisit pas ses fantômes. »
                         </blockquote>
 
                         <!-- Footer -->
                         <div class="flex items-center justify-between gap-3 flex-wrap">
-                            <div class="flex items-center gap-2 text-xs text-muted flex-wrap">
+                            <div class="flex items-center gap-2 text-xs text-semantic-muted flex-wrap">
                                 <div class="avatar-sm avatar-placeholder">V</div>
-                                <span class="font-medium text-secondary">Viktor</span>
+                                <span class="font-medium text-semantic-ink-secondary">Viktor</span>
                                 <span>·</span>
                                 <span>ajoutée par</span>
                                 <a href="#" class="link-muted font-medium">@alice</a>
@@ -201,11 +201,11 @@
                                     x-transition
                                     class="dropdown-menu right-0 top-full mt-1 min-w-40"
                                     @click="menuOpen = false">
-                                    <button type="button" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-primary hover:bg-surface transition-colors text-left">
-                                        <span class="i-lucide-pencil w-4 h-4 inline-block text-muted"></span>
+                                    <button type="button" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-semantic-ink hover:bg-semantic-surface transition-colors text-left">
+                                        <span class="i-lucide-pencil w-4 h-4 inline-block text-semantic-muted"></span>
                                         Modifier
                                     </button>
-                                    <button type="button" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-crimson hover:bg-surface transition-colors text-left border-t border-border">
+                                    <button type="button" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-brand-primary hover:bg-semantic-surface transition-colors text-left border-t border-semantic-border">
                                         <span class="i-lucide-trash-2 w-4 h-4 inline-block"></span>
                                         Supprimer
                                     </button>
@@ -227,25 +227,25 @@
 <!-- ================================================================ -->
 <!-- SECTION 2 — FORMULAIRE D'AJOUT (partial HTMX) -->
 <!-- ================================================================ -->
-<section class="border-t-4 border-crimson mb-16">
+<section class="border-t-4 border-brand-primary mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-plus-circle w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 2 — Formulaire d'ajout HTMX (injecté dans #quote-form-container)</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-plus-circle w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 2 — Formulaire d'ajout HTMX (injecté dans #quote-form-container)</span>
     </div>
 
     <div class="container-app px-4 py-8 max-w-2xl">
 
-        <p class="text-xs text-muted mb-4">
-            Partial renvoyé par <code class="bg-surface px-1 py-0.5 rounded text-xs font-mono">GET /characters/viktor/quotes/add/</code>.
-            Injecté dans <code class="bg-surface px-1 py-0.5 rounded text-xs font-mono">#quote-form-container</code> par HTMX.
+        <p class="text-xs text-semantic-muted mb-4">
+            Partial renvoyé par <code class="bg-semantic-surface px-1 py-0.5 rounded text-xs font-mono">GET /characters/viktor/quotes/add/</code>.
+            Injecté dans <code class="bg-semantic-surface px-1 py-0.5 rounded text-xs font-mono">#quote-form-container</code> par HTMX.
         </p>
 
         <!-- The form partial as it appears after injection -->
-        <div class="card border border-border">
+        <div class="card border border-semantic-border">
             <div class="card-header">
-                <h3 class="font-semibold text-primary text-sm flex items-center gap-2">
-                    <span class="i-lucide-quote w-4 h-4 inline-block text-muted"></span>
+                <h3 class="font-semibold text-semantic-ink text-sm flex items-center gap-2">
+                    <span class="i-lucide-quote w-4 h-4 inline-block text-semantic-muted"></span>
                     Nouvelle citation pour Viktor
                 </h3>
             </div>
@@ -270,7 +270,7 @@
                     <div>
                         <label class="form-label" for="quote-context">
                             Contexte
-                            <span class="text-xs font-normal text-muted">(optionnel)</span>
+                            <span class="text-xs font-normal text-semantic-muted">(optionnel)</span>
                         </label>
                         <textarea
                             id="quote-context"
@@ -284,7 +284,7 @@
                     <div>
                         <label class="form-label" for="quote-cw">
                             Avertissement
-                            <span class="text-xs font-normal text-muted">(optionnel)</span>
+                            <span class="text-xs font-normal text-semantic-muted">(optionnel)</span>
                         </label>
                         <input
                             id="quote-cw"
@@ -324,7 +324,7 @@
                     <div>
                         <label class="form-label" for="quote-report">
                             Rapport de session
-                            <span class="text-xs font-normal text-muted">(optionnel)</span>
+                            <span class="text-xs font-normal text-semantic-muted">(optionnel)</span>
                         </label>
                         <select id="quote-report" name="report_id" class="form-input w-full">
                             <option value="">— Aucun rapport associé —</option>
@@ -335,7 +335,7 @@
                     </div>
 
                     <!-- Actions -->
-                    <div class="flex items-center gap-3 pt-2 border-t border-border">
+                    <div class="flex items-center gap-3 pt-2 border-t border-semantic-border">
                         <button type="submit" class="btn-primary btn-sm flex items-center gap-2">
                             <span class="i-lucide-check w-4 h-4 inline-block"></span>
                             Enregistrer
@@ -355,25 +355,25 @@
         </div>
 
         <!-- Behaviour notes -->
-        <div class="mt-6 card bg-surface border border-border">
+        <div class="mt-6 card bg-semantic-surface border border-semantic-border">
             <div class="card-body">
-                <p class="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Comportement HTMX</p>
-                <ul class="flex flex-col gap-2 text-xs text-muted">
+                <p class="text-xs font-semibold text-semantic-muted uppercase tracking-wide mb-3">Comportement HTMX</p>
+                <ul class="flex flex-col gap-2 text-xs text-semantic-muted">
                     <li class="flex items-start gap-2">
-                        <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block mt-0.5 shrink-0 text-primary"></span>
-                        <span><code class="font-mono bg-border px-1 rounded">[+ Ajouter]</code> → <code class="font-mono bg-border px-1 rounded">hx-get</code> injecte ce formulaire dans <code class="font-mono bg-border px-1 rounded">#quote-form-container</code></span>
+                        <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block mt-0.5 shrink-0 text-semantic-ink"></span>
+                        <span><code class="font-mono bg-semantic-border px-1 rounded">[+ Ajouter]</code> → <code class="font-mono bg-semantic-border px-1 rounded">hx-get</code> injecte ce formulaire dans <code class="font-mono bg-semantic-border px-1 rounded">#quote-form-container</code></span>
                     </li>
                     <li class="flex items-start gap-2">
-                        <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block mt-0.5 shrink-0 text-primary"></span>
-                        <span><code class="font-mono bg-border px-1 rounded">[Enregistrer]</code> → <code class="font-mono bg-border px-1 rounded">hx-post</code> injecte la nouvelle <code class="font-mono bg-border px-1 rounded">quote_card</code> en <code class="font-mono bg-border px-1 rounded">afterbegin</code> dans <code class="font-mono bg-border px-1 rounded">#quote-list</code></span>
+                        <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block mt-0.5 shrink-0 text-semantic-ink"></span>
+                        <span><code class="font-mono bg-semantic-border px-1 rounded">[Enregistrer]</code> → <code class="font-mono bg-semantic-border px-1 rounded">hx-post</code> injecte la nouvelle <code class="font-mono bg-semantic-border px-1 rounded">quote_card</code> en <code class="font-mono bg-semantic-border px-1 rounded">afterbegin</code> dans <code class="font-mono bg-semantic-border px-1 rounded">#quote-list</code></span>
                     </li>
                     <li class="flex items-start gap-2">
-                        <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block mt-0.5 shrink-0 text-primary"></span>
-                        <span><code class="font-mono bg-border px-1 rounded">Annuler</code> → vide <code class="font-mono bg-border px-1 rounded">#quote-form-container</code> via <code class="font-mono bg-border px-1 rounded">hx-get</code> de la liste</span>
+                        <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block mt-0.5 shrink-0 text-semantic-ink"></span>
+                        <span><code class="font-mono bg-semantic-border px-1 rounded">Annuler</code> → vide <code class="font-mono bg-semantic-border px-1 rounded">#quote-form-container</code> via <code class="font-mono bg-semantic-border px-1 rounded">hx-get</code> de la liste</span>
                     </li>
                     <li class="flex items-start gap-2">
-                        <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block mt-0.5 shrink-0 text-primary"></span>
-                        <span>Erreur <code class="font-mono bg-border px-1 rounded">422</code> → formulaire avec erreurs re-injecté dans <code class="font-mono bg-border px-1 rounded">#quote-form-container</code></span>
+                        <span class="i-lucide-arrow-right w-3.5 h-3.5 inline-block mt-0.5 shrink-0 text-semantic-ink"></span>
+                        <span>Erreur <code class="font-mono bg-semantic-border px-1 rounded">422</code> → formulaire avec erreurs re-injecté dans <code class="font-mono bg-semantic-border px-1 rounded">#quote-form-container</code></span>
                     </li>
                 </ul>
             </div>
@@ -386,16 +386,16 @@
 <!-- ================================================================ -->
 <!-- SECTION 3 — DROPDOWN ÉDITION / SUPPRESSION (détail interactif) -->
 <!-- ================================================================ -->
-<section class="border-t-4 border-crimson mb-16">
+<section class="border-t-4 border-brand-primary mb-16">
 
-    <div class="bg-surface border-b border-border px-4 py-2 flex items-center gap-2">
-        <span class="i-lucide-more-horizontal w-4 h-4 text-muted inline-block"></span>
-        <span class="text-xs font-semibold text-muted uppercase tracking-widest">Section 3 — Dropdown contextuel édition/suppression (auteur uniquement)</span>
+    <div class="bg-semantic-surface border-b border-semantic-border px-4 py-2 flex items-center gap-2">
+        <span class="i-lucide-more-horizontal w-4 h-4 text-semantic-muted inline-block"></span>
+        <span class="text-xs font-semibold text-semantic-muted uppercase tracking-widest">Section 3 — Dropdown contextuel édition/suppression (auteur uniquement)</span>
     </div>
 
     <div class="container-app px-4 py-8 max-w-2xl">
 
-        <p class="text-xs text-muted mb-6">
+        <p class="text-xs text-semantic-muted mb-6">
             Le bouton ⋯ n'est rendu que pour l'auteur de la citation. Alpine.js gère l'ouverture/fermeture. HTMX cible la carte parente pour la suppression.
         </p>
 
@@ -404,14 +404,14 @@
 
             <!-- State A: dropdown closed -->
             <div>
-                <p class="text-xs text-muted font-semibold mb-2 uppercase tracking-wide">Fermé</p>
+                <p class="text-xs text-semantic-muted font-semibold mb-2 uppercase tracking-wide">Fermé</p>
                 <div class="card">
                     <div class="card-body">
-                        <blockquote class="text-secondary italic text-sm leading-relaxed mb-3 border-l-2 border-border pl-3">
+                        <blockquote class="text-semantic-ink-secondary italic text-sm leading-relaxed mb-3 border-l-2 border-semantic-border pl-3">
                             « Les mythes ne meurent pas, ils changent simplement de visage. »
                         </blockquote>
                         <div class="flex items-center justify-between gap-2">
-                            <div class="flex items-center gap-2 text-xs text-muted">
+                            <div class="flex items-center gap-2 text-xs text-semantic-muted">
                                 <div class="avatar-sm avatar-placeholder">V</div>
                                 <span>Viktor · <a href="#" class="link-muted">@alice</a></span>
                             </div>
@@ -426,29 +426,29 @@
 
             <!-- State B: dropdown open -->
             <div>
-                <p class="text-xs text-muted font-semibold mb-2 uppercase tracking-wide">Ouvert</p>
+                <p class="text-xs text-semantic-muted font-semibold mb-2 uppercase tracking-wide">Ouvert</p>
                 <div class="card relative">
                     <div class="card-body">
-                        <blockquote class="text-secondary italic text-sm leading-relaxed mb-3 border-l-2 border-border pl-3">
+                        <blockquote class="text-semantic-ink-secondary italic text-sm leading-relaxed mb-3 border-l-2 border-semantic-border pl-3">
                             « Les mythes ne meurent pas, ils changent simplement de visage. »
                         </blockquote>
                         <div class="flex items-center justify-between gap-2">
-                            <div class="flex items-center gap-2 text-xs text-muted">
+                            <div class="flex items-center gap-2 text-xs text-semantic-muted">
                                 <div class="avatar-sm avatar-placeholder">V</div>
                                 <span>Viktor · <a href="#" class="link-muted">@alice</a></span>
                             </div>
                             <!-- Trigger button + open dropdown -->
                             <div class="relative">
-                                <button type="button" class="btn-ghost btn-sm flex items-center gap-1 bg-surface">
+                                <button type="button" class="btn-ghost btn-sm flex items-center gap-1 bg-semantic-surface">
                                     <span class="i-lucide-more-horizontal w-4 h-4 inline-block"></span>
                                 </button>
                                 <!-- Dropdown visible -->
                                 <div class="dropdown-menu right-0 top-full mt-1 min-w-40" style="display:block;">
-                                    <button type="button" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-primary hover:bg-surface transition-colors text-left">
-                                        <span class="i-lucide-pencil w-4 h-4 inline-block text-muted"></span>
+                                    <button type="button" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-semantic-ink hover:bg-semantic-surface transition-colors text-left">
+                                        <span class="i-lucide-pencil w-4 h-4 inline-block text-semantic-muted"></span>
                                         Modifier
                                     </button>
-                                    <button type="button" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-crimson hover:bg-surface transition-colors text-left border-t border-border">
+                                    <button type="button" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-brand-primary hover:bg-semantic-surface transition-colors text-left border-t border-semantic-border">
                                         <span class="i-lucide-trash-2 w-4 h-4 inline-block"></span>
                                         Supprimer
                                     </button>
@@ -462,9 +462,9 @@
         </div>
 
         <!-- Visibility legend -->
-        <div class="mt-8 card border border-border bg-surface">
+        <div class="mt-8 card border border-semantic-border bg-semantic-surface">
             <div class="card-body">
-                <p class="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Badges de visibilité des citations</p>
+                <p class="text-xs font-semibold text-semantic-muted uppercase tracking-wide mb-3">Badges de visibilité des citations</p>
                 <div class="flex flex-col gap-3">
 
                     <div class="flex items-center gap-3">
@@ -472,7 +472,7 @@
                             <span class="i-lucide-globe w-3 h-3 inline-block"></span>
                             Publique
                         </span>
-                        <p class="text-xs text-muted">Visible par tous · fédérée via ActivityPub</p>
+                        <p class="text-xs text-semantic-muted">Visible par tous · fédérée via ActivityPub</p>
                     </div>
 
                     <div class="flex items-center gap-3">
@@ -480,7 +480,7 @@
                             <span class="i-lucide-lock w-3 h-3 inline-block"></span>
                             Privée
                         </span>
-                        <p class="text-xs text-muted">Visible uniquement par l'auteur · non fédérée</p>
+                        <p class="text-xs text-semantic-muted">Visible uniquement par l'auteur · non fédérée</p>
                     </div>
 
                     <div class="flex items-center gap-3">
@@ -488,7 +488,7 @@
                             <span class="i-lucide-clock w-3 h-3 inline-block"></span>
                             Éphémère
                         </span>
-                        <p class="text-xs text-muted">Non persistée après la session · non listée · non fédérée</p>
+                        <p class="text-xs text-semantic-muted">Non persistée après la session · non listée · non fédérée</p>
                     </div>
 
                 </div>

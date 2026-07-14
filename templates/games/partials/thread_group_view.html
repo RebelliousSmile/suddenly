@@ -6,14 +6,14 @@
 
         <!-- Scene header -->
         <div class="flex items-center justify-between mb-4">
-            <h2 class="text-sm font-semibold text-muted uppercase tracking-wide">
+            <h2 class="text-sm font-semibold text-semantic-muted uppercase tracking-wide">
                 {% if parent_rapport_id %}
                     {% trans "Scene" %} {{ forloop.counter }}
                 {% else %}
                     {% trans "Root" %}
                 {% endif %}
             </h2>
-            <span class="text-xs text-muted">{{ rapports|length }} {% trans "rapports" %}</span>
+            <span class="text-xs text-semantic-muted">{{ rapports|length }} {% trans "rapports" %}</span>
         </div>
 
         {% for rapport in rapports %}
@@ -22,25 +22,25 @@
 
     </div>
     {% empty %}
-        <p class="text-muted text-sm">{% trans "No rapports yet." %}</p>
+        <p class="text-semantic-muted text-sm">{% trans "No rapports yet." %}</p>
     {% endfor %}
 
     {% if scenes %}
     <!-- Navigation -->
     <div class="flex items-center justify-center gap-4 mt-6">
-        <button @click="prev()" class="hidden sm:flex px-3 py-1 rounded bg-surface text-sm">[&lt;]</button>
+        <button @click="prev()" class="hidden sm:flex px-3 py-1 rounded bg-semantic-surface text-sm">[&lt;]</button>
 
         <div class="flex gap-1">
             {% for _ in scenes %}
             <button
                 @click="currentScene = {{ forloop.counter0 }}"
                 class="w-2 h-2 rounded-full transition-colors"
-                :class="currentScene === {{ forloop.counter0 }} ? 'bg-primary' : 'bg-muted'"
+                :class="currentScene === {{ forloop.counter0 }} ? 'bg-semantic-ink' : 'bg-semantic-muted'"
             ></button>
             {% endfor %}
         </div>
 
-        <button @click="next()" class="hidden sm:flex px-3 py-1 rounded bg-surface text-sm">[&gt;]</button>
+        <button @click="next()" class="hidden sm:flex px-3 py-1 rounded bg-semantic-surface text-sm">[&gt;]</button>
     </div>
     {% endif %}
 
