@@ -108,10 +108,13 @@ class Report(BaseModel):
     )
 
     # Language
+    # The language belongs to the *scene*, not to individual posts: Rapports
+    # inherit it. BCP-47 tag (no enum) so it lines up with ActivityPub's
+    # ``contentMap``, which is indexed by language tag ('fr', 'fr-CA', …).
     language = models.CharField(
-        max_length=10,
-        choices=settings.LANGUAGES,
+        max_length=16,
         default="fr",
+        help_text="Langue de la scène, BCP-47 ('fr', 'fr-CA'). Les Rapports en héritent.",
     )
 
     # Status & visibility
@@ -222,6 +225,40 @@ class ReportCast(BaseModel):
         return self.character is None and bool(self.new_character_name)
 
 
+class GameCast(BaseModel):
+    """Declares that a character is *available* in a game.
+
+    Distinct from :class:`~suddenly.characters.models.CharacterAppearance`
+    (a posteriori, tied to a Report). ``Character.origin_game`` only says where
+    a character was *born*; ``GameCast`` says where they may be summoned. It
+    feeds the composer's actor selectors **before** the first post, breaking the
+    circle "to post with an NPC it must appear / to appear it must be posted".
+
+    A character born in game A may join the cast of game B — **same UUID**, never
+    duplicated. A recovered NPC keeps its origin name, on purpose.
+    """
+
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="cast")
+    character = models.ForeignKey(
+        "characters.Character", on_delete=models.CASCADE, related_name="castings"
+    )
+    added_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["game", "character"], name="unique_game_cast"),
+        ]
+        ordering = ["created_at"]
+        indexes = [
+            models.Index(fields=["game"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.character.name} in {self.game.title} cast"
+
+
 class RapportKind(models.TextChoices):
     DESCRIPTION = "description", _("Description")
     ACTION = "action", _("Action")
@@ -265,49 +302,54 @@ class Rapport(BaseModel):
         ]
 
     def clean(self) -> None:
-        if self.kind == RapportKind.DISCUSSION and self.actor is None:
-            raise ValidationError({"actor": "Actor is required for discussion type."})
-        if self.kind != RapportKind.DISCUSSION and self.actor is not None:
-            raise ValidationError({"actor": "Actor must be empty for non-discussion types."})
+        # The actor carries the posture (composer rule 2c):
+        #   narration   → never an actor (it *is* the GM's voice)
+        #   description → optional (empty = "Voix du MJ", or a character)
+        #   action      → required (someone acts)
+        #   discussion  → required (a spoken line is embodied)
+        if self.kind == RapportKind.NARRATION and self.actor is not None:
+            raise ValidationError({"actor": "Narration is the narrative voice; it takes no actor."})
+        if self.kind in (RapportKind.ACTION, RapportKind.DISCUSSION) and self.actor is None:
+            raise ValidationError({"actor": f"An actor is required for a {self.kind}."})
 
     def __str__(self) -> str:
         return f"{self.get_kind_display()} — {self.report}"
 
 
 class RapportMedia(BaseModel):
-    """
-    An image attached to a Rapport.
+    """One image, one description. Never several — a medium *is* a mood.
 
-    Media is only meaningful on a ``description`` rapport (the visual beat of a
-    scene). ``alt_text`` is required-friendly for accessibility and maps to the
-    ActivityPub ``Document.name`` on federation. A rapport may carry several
-    media, ordered by ``order``.
+    The cardinality *is* the semantics: a ``OneToOneField`` (not a ForeignKey)
+    makes it **impossible** to attach two images to the same description. Media
+    only exists on a ``description`` rapport — enforced in :meth:`clean` (and the
+    view layer); the one-media rule is enforced at the database by the OneToOne.
     """
 
-    rapport = models.ForeignKey(Rapport, on_delete=models.CASCADE, related_name="media")
-    image = models.ImageField(upload_to="rapports/")
-    alt_text = models.CharField(
-        max_length=500,
+    rapport = models.OneToOneField(Rapport, on_delete=models.CASCADE, related_name="media")
+    image = models.ImageField(upload_to="rapports/%Y/%m/")
+    alt = models.CharField(
+        max_length=280,
         blank=True,
-        help_text="Alternative text (a11y + ActivityPub Document.name)",
+        help_text="Ce que montre l'image (a11y + ActivityPub Document.name).",
     )
-    order = models.PositiveSmallIntegerField(default=0)
+    tone = models.CharField(
+        max_length=80,
+        blank=True,
+        help_text="L'ambiance de l'image : lourde, feutrée…",
+    )
 
     class Meta:
-        ordering = ["order", "created_at"]
-        indexes = [
-            models.Index(fields=["rapport", "order"]),
-        ]
+        ordering = ["created_at"]
 
     def clean(self) -> None:
-        # Media only attaches to a description rapport (schema of the maquette).
+        # Media only attaches to a description rapport (composer rule 2e).
         if self.rapport_id is not None and self.rapport.kind != RapportKind.DESCRIPTION:
             raise ValidationError(
                 {"rapport": "Media can only be attached to a description rapport."}
             )
 
     def __str__(self) -> str:
-        return f"Media #{self.order} — {self.rapport}"
+        return f"Media — {self.rapport}"
 
 
 class RapportLink(BaseModel):

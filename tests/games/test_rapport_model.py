@@ -27,18 +27,36 @@ class TestRapportClean:
         rapport.clean()
 
     @pytest.mark.django_db
-    def test_non_discussion_with_actor_raises(self) -> None:
+    def test_narration_with_actor_raises(self) -> None:
+        """Rule 2c: narration is the narrative voice; it takes no actor."""
         from django.core.exceptions import ValidationError
 
         character = CharacterFactory()
-        rapport = Rapport(kind=RapportKind.DESCRIPTION, content="A scene.", actor=character)
+        rapport = Rapport(kind=RapportKind.NARRATION, content="Dawn breaks.", actor=character)
         with pytest.raises(ValidationError) as exc_info:
             rapport.clean()
         assert "actor" in exc_info.value.message_dict
 
-    def test_non_discussion_without_actor_valid(self) -> None:
+    def test_action_requires_actor(self) -> None:
+        """Rule 2c: an action needs someone who acts."""
+        from django.core.exceptions import ValidationError
+
         rapport = Rapport(kind=RapportKind.ACTION, content="She runs.", actor=None)
+        with pytest.raises(ValidationError) as exc_info:
+            rapport.clean()
+        assert "actor" in exc_info.value.message_dict
+
+    def test_description_without_actor_valid(self) -> None:
+        """Rule 2c: description's énonciateur is optional (empty = Voix du MJ)."""
+        rapport = Rapport(kind=RapportKind.DESCRIPTION, content="A dim hall.", actor=None)
         # Must not raise
+        rapport.clean()
+
+    @pytest.mark.django_db
+    def test_description_with_actor_valid(self) -> None:
+        character = CharacterFactory()
+        rapport = Rapport(kind=RapportKind.DESCRIPTION, content="A dim hall.", actor=character)
+        # Must not raise — an actor is allowed on a description.
         rapport.clean()
 
 
