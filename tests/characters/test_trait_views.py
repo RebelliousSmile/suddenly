@@ -158,10 +158,14 @@ class TestActionCrud:
         assert action.traits.count() == 2
         assert action.condition == "Quand X"
         assert action.outcome == "Alors Y"
+        # 3bis: the HTMX editor must keep both trait_set and character populated —
+        # character is NOT NULL since migration 0016.
+        assert action.trait_set_id == ts.pk
+        assert action.character_id == character.pk
 
     def test_delete_action(self, logged_client: Client, character: Character) -> None:
         ts = TraitSet.objects.create(character=character)
-        action = Action.objects.create(trait_set=ts, name="Gone")
+        action = Action.objects.create(trait_set=ts, character=character, name="Gone")
         url = reverse(
             "characters:action_delete",
             kwargs={"slug": character.slug, "action_pk": action.pk},
@@ -180,7 +184,11 @@ class TestSheetDisplay:
         Trait.objects.create(trait_set=ts, name="Casse-cou", value=3)
         Trait.objects.create(trait_set=ts, name="Sworn")  # valueless
         action = Action.objects.create(
-            trait_set=ts, name="Foncer", condition="Quand tu fonces", outcome="Tu t'exposes"
+            trait_set=ts,
+            character=character,
+            name="Foncer",
+            condition="Quand tu fonces",
+            outcome="Tu t'exposes",
         )
         action.traits.set(list(ts.traits.all()))
 

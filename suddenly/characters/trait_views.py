@@ -142,6 +142,7 @@ def action_create(request: AuthenticatedRequest, slug: str, set_pk: str) -> Http
     if form.is_valid():
         action = form.save(commit=False)
         action.trait_set = trait_set
+        action.character = trait_set.character
         action.save()
         form.save_m2m()
         return HttpResponse(_render_set(request, trait_set))
@@ -159,6 +160,10 @@ def action_delete(request: AuthenticatedRequest, slug: str, action_pk: str) -> H
         trait_set__character=character,
     )
     trait_set = action.trait_set
+    if trait_set is None:
+        # Unreachable: the queryset above joins on trait_set__character, which
+        # excludes actions without a trait_set (transverse actions).
+        return HttpResponseForbidden()
     if request.method == "POST":
         action.delete()
     return HttpResponse(_render_set(request, trait_set))
