@@ -226,3 +226,87 @@ class TestSheetDisplay:
 
         client.force_login(other_user)
         assert editor_url.encode() not in client.get(detail_url).content
+
+
+@pytest.mark.django_db
+class TestTransverseActions:
+    """'Actions transverses' block (Phase 4): actions with trait_set=None.
+
+    Read-only in both callers (character_detail + traits_editor) — there is
+    no endpoint that can mutate a trait_set=None action (action_delete's
+    queryset requires trait_set__character=character).
+    """
+
+    def test_transverse_action_shown_on_detail(
+        self, plain_static: None, client: Client, character: Character
+    ) -> None:
+        ts1 = TraitSet.objects.create(character=character, label="Corps")
+        ts2 = TraitSet.objects.create(character=character, label="Esprit")
+        costaud = Trait.objects.create(trait_set=ts1, name="Costaud", value=3)
+        ruse = Trait.objects.create(trait_set=ts2, name="Ruse")
+        action = Action.objects.create(
+            trait_set=None,
+            character=character,
+            name="Charger",
+            condition="Quand la fuite est impossible",
+            outcome="Obstacle cede",
+        )
+        action.traits.set([costaud, ruse])
+
+        url = reverse("characters:detail", kwargs={"slug": character.slug})
+        resp = client.get(url)
+        content = resp.content.decode()
+
+        assert resp.status_code == 200
+        assert "Actions transverses" in content
+        assert "Charger" in content
+        assert "Costaud" in content
+        assert "Ruse" in content
+        assert "Quand la fuite est impossible" in content
+
+    def test_transverse_action_shown_on_traits_editor(
+        self, plain_static: None, logged_client: Client, character: Character
+    ) -> None:
+        ts = TraitSet.objects.create(character=character, label="Corps")
+        Action.objects.create(
+            trait_set=None,
+            character=character,
+            name="Charger",
+        )
+
+        url = reverse("characters:traits_editor", kwargs={"slug": character.slug})
+        resp = logged_client.get(url)
+        content = resp.content.decode()
+
+        assert resp.status_code == 200
+        assert "Actions transverses" in content
+        assert "Charger" in content
+        assert ts.label in content  # sanity: the classic editor still renders
+
+    def test_no_transverse_block_when_none_exist(
+        self, plain_static: None, client: Client, character: Character
+    ) -> None:
+        url = reverse("characters:detail", kwargs={"slug": character.slug})
+        resp = client.get(url)
+        assert "Actions transverses" not in resp.content.decode()
+
+    def test_classic_action_with_trait_set_not_in_transverse_block(
+        self, plain_static: None, client: Client, character: Character
+    ) -> None:
+        """An action created via the classic editor (trait_set set) stays in
+        its concept block, never in 'Actions transverses' (regression guard)."""
+        ts = TraitSet.objects.create(character=character, label="Corps")
+        trait = Trait.objects.create(trait_set=ts, name="Costaud", value=3)
+        action = Action.objects.create(
+            trait_set=ts,
+            character=character,
+            name="Frapper fort",
+        )
+        action.traits.set([trait])
+
+        url = reverse("characters:detail", kwargs={"slug": character.slug})
+        resp = client.get(url)
+        content = resp.content.decode()
+
+        assert "Frapper fort" in content
+        assert "Actions transverses" not in content

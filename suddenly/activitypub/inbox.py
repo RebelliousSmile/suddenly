@@ -435,6 +435,7 @@ def _ingest_trait_sets(character: Any, obj: dict[str, Any]) -> None:
                     continue
                 action = Action.objects.create(
                     trait_set=trait_set,
+                    character=character,
                     name=name,
                     condition=str(item.get("condition") or ""),
                     outcome=str(item.get("outcome") or ""),

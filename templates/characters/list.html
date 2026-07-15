@@ -5,7 +5,7 @@
 
 {% block content %}
 <section class="py-8">
-    <div class="container-app" x-data="{ selectMode: false }">
+    <div class="container-app" x-data="{ selectMode: false, view: 'grid' }">
 
         <form id="bulk-delete-chars-form" method="post" action="{% url 'characters:delete_bulk' %}">
             {% csrf_token %}
@@ -13,8 +13,23 @@
 
         <div class="flex items-center justify-between mb-4">
             <h1 class="text-2xl font-bold text-semantic-ink">{% trans "Characters" %}</h1>
-            {% if user.is_authenticated %}
             <div class="flex items-center gap-2">
+                {# Bascule grille / liste #}
+                <div class="inline-flex rounded-lg border border-semantic-border overflow-hidden" x-show="!selectMode">
+                    <button type="button" @click="view = 'grid'"
+                            class="tap-target px-2.5 py-1.5"
+                            :class="view === 'grid' ? 'bg-brand-primary/10 text-brand-primary' : 'text-semantic-muted hover:text-semantic-ink'"
+                            title="{% trans "Grid view" %}" aria-label="{% trans "Grid view" %}">
+                        <span class="i-lucide-layout-grid"></span>
+                    </button>
+                    <button type="button" @click="view = 'list'"
+                            class="tap-target px-2.5 py-1.5 border-l border-semantic-border"
+                            :class="view === 'list' ? 'bg-brand-primary/10 text-brand-primary' : 'text-semantic-muted hover:text-semantic-ink'"
+                            title="{% trans "List view" %}" aria-label="{% trans "List view" %}">
+                        <span class="i-lucide-list"></span>
+                    </button>
+                </div>
+                {% if user.is_authenticated %}
                 {% if first_character %}
                 <a href="{% url 'games:compose' %}?character={{ first_character.slug }}"
                    class="btn-primary btn-sm" x-show="!selectMode">
@@ -45,8 +60,8 @@
                         {% trans "Cancel" %}
                     </button>
                 </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
 
         <!-- Search + filters -->

@@ -2359,3 +2359,23 @@ msgstr "Passer en mode sombre"
 #: templates/base.html
 msgid "Dismiss notification"
 msgstr "Masquer la notification"
+
+#: templates/characters/_list_results.html
+msgid "Sheet"
+msgstr "Fiche"
+
+#: templates/characters/_list_results.html
+msgid "Origin game"
+msgstr "Partie d'origine"
+
+#: templates/characters/_list_results.html
+msgid "No description yet."
+msgstr "Pas encore de description."
+
+#: templates/characters/list.html
+msgid "Grid view"
+msgstr "Vue grille"
+
+#: templates/characters/list.html
+msgid "List view"
+msgstr "Vue liste"

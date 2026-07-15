@@ -4,6 +4,8 @@ Character services — link workflows and queryset builders.
 
 from __future__ import annotations
 
+from typing import Any
+
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.core.exceptions import ValidationError
@@ -13,9 +15,11 @@ from django.db.models.query import QuerySet
 from django.utils import timezone
 
 from suddenly.core.models import Notification, NotificationType
+from suddenly.games.models import Game
 from suddenly.users.models import User
 
 from .models import (
+    Action,
     Character,
     CharacterLink,
     CharacterLinkStatus,
@@ -25,6 +29,8 @@ from .models import (
     LinkType,
     SharedSequence,
     SharedSequenceStatus,
+    Trait,
+    TraitSet,
 )
 
 
@@ -333,6 +339,118 @@ class LinkService:
             target_object_id=link.target.pk,
             message=f"{actor} a révoqué le lien sur {link.target.name}",
         )
+
+
+@transaction.atomic
+def create_character_with_sheet(
+    *,
+    user: User,
+    name: str,
+    description: str,
+    origin_game: Game,
+    sheet_url: str,
+    avatar: object | None,
+    cover_alt: str,
+    cover_tone: str,
+    trait_sets: list[dict[str, Any]],
+    actions: list[dict[str, Any]],
+) -> Character:
+    """Create a full PC (identity + multi-concept traits + cross-concept actions) atomically.
+
+    Backs the single-gesture ``characters:create`` flow: the caller (Phase 3's
+    view) has already ``json.loads``-ed the payload into plain Python objects —
+    this function only builds the domain graph and never touches ``HttpRequest``.
+
+    ``trait_sets`` — ``[{"label": str, "traits": [{"name": str, "value": int|None,
+    "note": str}]}]``, created in order (``order=index`` on both ``TraitSet`` and
+    ``Trait``).
+
+    ``actions`` — ``[{"name": str, "trait_refs": [[set_index, trait_index]],
+    "condition": str, "outcome": str}]``. Every action is created with
+    ``trait_set=None`` (cross-concept, per ``Action.character`` widening in
+    Phase 1) and its ``trait_refs`` resolved against the ``Trait`` instances
+    just created in this same call, by ``(set_index, trait_index)`` position.
+
+    An out-of-bounds ``trait_refs`` entry raises ``KeyError`` naturally (lookup
+    against the ``(set_index, trait_index)`` map built while creating traits) —
+    deliberately not wrapped into ``ValidationError``, so Phase 3's view must
+    catch ``KeyError`` (alongside ``ValidationError`` from ``full_clean()``)
+    around its call to this service. Being inside ``@transaction.atomic``, any
+    such exception rolls back the whole call — no orphaned ``Character``/
+    ``TraitSet``/``Trait``/``Action`` rows survive a failed create.
+
+    ``slug`` is excluded from ``full_clean()`` — it is still blank at this
+    point and auto-generated inside ``Character.save()``'s override (same
+    defensive precedent as ``create_scene_post``'s
+    ``rapport.full_clean(exclude=["report"])`` in ``games/services.py``).
+    """
+    character = Character(
+        name=name,
+        description=description,
+        status=CharacterStatus.PC,
+        owner=user,
+        creator=user,
+        origin_game=origin_game,
+        sheet_url=sheet_url,
+        avatar=avatar,
+        cover_alt=cover_alt,
+        cover_tone=cover_tone,
+    )
+    character.full_clean(exclude=["slug"])
+    character.save()
+
+    traits_by_ref: dict[tuple[int, int], Trait] = {}
+    for set_index, trait_set_data in enumerate(trait_sets):
+        trait_set = TraitSet(
+            character=character,
+            label=trait_set_data["label"],
+            order=set_index,
+        )
+        trait_set.full_clean()
+        trait_set.save()
+
+        for trait_index, trait_data in enumerate(trait_set_data["traits"]):
+            trait = Trait(
+                trait_set=trait_set,
+                name=trait_data["name"],
+                value=trait_data.get("value"),
+                note=trait_data.get("note", ""),
+                order=trait_index,
+            )
+            trait.full_clean()
+            trait.save()
+            traits_by_ref[(set_index, trait_index)] = trait
+
+    for action_index, action_data in enumerate(actions):
+        action = Action(
+            character=character,
+            trait_set=None,
+            name=action_data["name"],
+            condition=action_data.get("condition", ""),
+            outcome=action_data.get("outcome", ""),
+            order=action_index,
+        )
+        action.full_clean()
+        action.save()
+
+        resolved_traits = [
+            traits_by_ref[(set_index, trait_index)]
+            for set_index, trait_index in action_data.get("trait_refs", [])
+        ]
+        action.traits.set(resolved_traits)
+
+    return character
+
+
+def build_transverse_actions_queryset(character: Character) -> QuerySet[Action]:
+    """Cross-concept actions on a character — ``trait_set=None`` (span multiple concepts).
+
+    Shared by ``character_detail`` ("Actions transverses" block) and
+    ``traits_editor`` — both need the same "actions not scoped to a single
+    ``TraitSet``" queryset (DEC: shared queryset builders live in services.py
+    as soon as 2+ callers need them).
+    """
+    return character.actions.filter(trait_set__isnull=True).prefetch_related("traits")
 
 
 def build_owned_pc_queryset(user: User) -> QuerySet[Character]:

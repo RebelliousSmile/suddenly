@@ -33,6 +33,42 @@ suddenly.core.context_processors.account_badges context processor.
     {% if new_stats_count %}<span class="badge-primary">{{ new_stats_count }}</span>{% endif %}
 </a>
 <hr class="my-1 border-semantic-border">
+<!-- Theme toggle row. `$dispatch('toggle-theme')` (not `toggle()` directly) because
+     this partial is included inside `x-data="dropdown"`, whose own `toggle()` method
+     would shadow the `theme` component's — the event is caught by the `theme` root
+     on <html> instead. -->
+<button @click="$dispatch('toggle-theme')" type="button"
+        class="w-full flex items-center justify-between px-4 py-2 text-sm text-semantic-ink-secondary hover:bg-semantic-card outline-none focus:outline-none"
+        data-label-light="{% trans 'Switch to light mode' %}"
+        data-label-dark="{% trans 'Switch to dark mode' %}"
+        :aria-label="isDark ? $el.dataset.labelLight : $el.dataset.labelDark">
+    <span class="flex items-center">
+        <span class="mr-2" :class="isDark ? 'i-lucide-sun' : 'i-lucide-moon'"></span>
+        <span x-text="isDark ? '{% trans "Light mode" %}' : '{% trans "Dark mode" %}'"></span>
+    </span>
+    <span class="relative flex items-center h-6 w-11 rounded-full border bg-semantic-card px-0.5 flex-shrink-0 transition-colors duration-300"
+          :class="isDark ? 'border-brand-primary/50' : 'border-ui-sun-soft/60'">
+        <span class="w-4 h-4 rounded-full shadow-sm transition-all duration-300 flex-shrink-0 pointer-events-none"
+              :class="isDark ? 'translate-x-0 bg-brand-primary' : 'translate-x-5 bg-ui-sun'"></span>
+    </span>
+</button>
+<hr class="my-1 border-semantic-border">
+<!-- Language links (one submit per language) -->
+{% get_current_language as CURRENT_LANGUAGE %}
+{% get_available_languages as AVAILABLE_LANGUAGES %}
+{% for lang_code, lang_name in AVAILABLE_LANGUAGES %}
+    <form method="post" action="{% url 'set_language' %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <input type="hidden" name="language" value="{{ lang_code }}">
+        <button type="submit"
+                class="w-full text-left px-4 py-2 text-sm hover:bg-semantic-card flex items-center outline-none focus:outline-none {% if lang_code == CURRENT_LANGUAGE %}text-brand-primary font-medium{% else %}text-semantic-ink-secondary{% endif %}">
+            <span class="i-lucide-globe mr-2"></span>{{ lang_name }}
+            {% if lang_code == CURRENT_LANGUAGE %}<span class="i-lucide-check ml-auto"></span>{% endif %}
+        </button>
+    </form>
+{% endfor %}
+<hr class="my-1 border-semantic-border">
 <a href="{% url 'account_logout' %}" class="block px-4 py-3 text-sm text-semantic-danger hover:bg-semantic-danger/10">
     <span class="i-lucide-log-out mr-2"></span>{% trans "Log out" %}
 </a>

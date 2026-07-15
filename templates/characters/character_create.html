@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "New character" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-3xl">
+        <h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "New character" %}</h1>
+
+        {% if error %}
+            <div class="mb-4 p-4 rounded-lg bg-semantic-danger/10 text-semantic-danger border border-semantic-danger/30">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="space-y-6"
+              x-data="characterCreate" @submit="onSubmit($event)">
+            {% csrf_token %}
+
+            <!-- Identity -->
+            <div class="card card-body space-y-4">
+                <h2 class="text-heading">{% trans "Identity" %}</h2>
+
+                <div>
+                    <label for="name" class="form-label">{% trans "Name" %}</label>
+                    <input type="text" id="name" name="name" x-ref="nameInput"
+                           value="{{ form_data.name|default:'' }}"
+                           @input="hasName = $refs.nameInput.value.trim().length > 0"
+                           required class="form-input">
+                </div>
+
+                <div>
+                    <label for="description" class="form-label">
+                        {% trans "Description" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
+                    </label>
+                    <textarea id="description" name="description" rows="4"
+                              class="form-input">{{ form_data.description|default:'' }}</textarea>
+                </div>
+
+                <div>
+                    <label for="origin_game" class="form-label">{% trans "Origin game" %}</label>
+                    <select id="origin_game" name="origin_game" x-ref="gameSelect"
+                            @change="hasGame = $refs.gameSelect.value.length > 0"
+                            class="form-input" required>
+                        <option value="">{% trans "Choose a game" %}</option>
+                        {% for g in games %}
+                            <option value="{{ g.pk }}"
+                                {% if form_data.origin_game == g.pk|stringformat:"s" %}selected{% endif %}>
+                                {{ g.title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <p class="form-help">{% trans "A PC can only originate from one of your own games." %}</p>
+                </div>
+
+                <div>
+                    <label for="cover_alt" class="form-label">
+                        {% trans "Cover alt text" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
+                    </label>
+                    <input type="text" id="cover_alt" name="cover_alt"
+                           value="{{ form_data.cover_alt|default:'' }}" class="form-input">
+                </div>
+
+                <div>
+                    <label for="cover_tone" class="form-label">
+                        {% trans "Cover tone" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
+                    </label>
+                    <input type="text" id="cover_tone" name="cover_tone"
+                           value="{{ form_data.cover_tone|default:'' }}" class="form-input">
+                </div>
+
+                {% trans "Avatar" as label_avatar %}
+                {% include "components/form_image_upload.html" with field_id="avatar" field_name="avatar" field_label=label_avatar field_optional=True current_url="" %}
+            </div>
+
+            <!-- Traits: addable/removable concepts (TraitSet) and traits -->
+            <div class="card card-body space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-heading">{% trans "Traits" %}</h2>
+                    <button type="button" class="btn-secondary btn-sm" @click="addSet">
+                        <span class="i-lucide-plus"></span> {% trans "Concept" %}
+                    </button>
+                </div>
+
+                <p class="text-sm text-semantic-muted">
+                    {% blocktrans %}Group traits by concept (e.g. Body, Mind, Gear). Values are display-only — Suddenly never rolls, resolves or computes anything.{% endblocktrans %}
+                </p>
+
+                <template x-if="sets.length === 0">
+                    <p class="text-sm text-semantic-muted">{% trans "No concept yet." %}</p>
+                </template>
+
+                <template x-for="(set, setIndex) in sets" :key="set.id">
+                    <div class="rounded-lg border border-semantic-border p-3 space-y-3">
+                        <div class="flex items-center gap-2">
+                            <input type="text" x-model="set.name" required maxlength="200"
+                                   placeholder="{% trans 'Concept name…' %}" class="form-input flex-1">
+                            <button type="button" class="btn-ghost btn-sm text-semantic-danger"
+                                    @click="removeSet(setIndex)" title="{% trans 'Delete' %}">
+                                <span class="i-lucide-trash-2"></span>
+                            </button>
+                        </div>
+
+                        <ul class="space-y-2">
+                            <template x-for="(trait, traitIndex) in set.traits" :key="trait.id">
+                                <li class="flex flex-wrap items-center gap-2">
+                                    <input type="text" x-model="trait.name" maxlength="200"
+                                           placeholder="{% trans 'Trait name…' %}" class="form-input flex-1 min-w-32">
+                                    <input type="number" x-model.number="trait.value" min="-5" max="5"
+                                           @change="clampValue(trait)"
+                                           placeholder="±" class="form-input w-20">
+                                    <input type="text" x-model="trait.note" maxlength="500"
+                                           placeholder="{% trans 'note (optional)' %}" class="form-input w-40">
+                                    <button type="button" class="btn-ghost btn-sm text-semantic-muted hover:text-semantic-danger"
+                                            @click="removeTrait(setIndex, traitIndex)" title="{% trans 'Delete' %}">
+                                        <span class="i-lucide-x text-xs"></span>
+                                    </button>
+                                </li>
+                            </template>
+                        </ul>
+
+                        <button type="button" class="btn-secondary btn-sm" @click="addTrait(setIndex)">
+                            <span class="i-lucide-plus"></span> {% trans "Trait" %}
+                        </button>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Actions: name + trait picker spanning all concepts + free-text condition/outcome -->
+            <div class="card card-body space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-heading">{% trans "Actions" %}</h2>
+                    <button type="button" class="btn-secondary btn-sm" @click="addAction">
+                        <span class="i-lucide-plus"></span> {% trans "Action" %}
+                    </button>
+                </div>
+
+                <p class="text-sm text-semantic-muted">
+                    {% blocktrans %}An action can draw on traits from any concept. Condition and outcome are free text — displayed as written, never evaluated.{% endblocktrans %}
+                </p>
+
+                <template x-if="actions.length === 0">
+                    <p class="text-sm text-semantic-muted">{% trans "No action yet." %}</p>
+                </template>
+
+                <template x-for="(action, actionIndex) in actions" :key="action.id">
+                    <div class="rounded-lg border border-dashed border-semantic-border p-3 space-y-2">
+                        <div class="flex items-center gap-2">
+                            <input type="text" x-model="action.name" required maxlength="200"
+                                   placeholder="{% trans 'Action name…' %}" class="form-input flex-1">
+                            <button type="button" class="btn-ghost btn-sm text-semantic-danger"
+                                    @click="removeAction(actionIndex)" title="{% trans 'Delete' %}">
+                                <span class="i-lucide-trash-2"></span>
+                            </button>
+                        </div>
+
+                        <template x-if="allTraits.length === 0">
+                            <p class="text-xs text-semantic-muted italic">{% trans "Add traits above to link this action to them." %}</p>
+                        </template>
+                        <div class="flex flex-wrap gap-2">
+                            <template x-for="t in allTraits" :key="t.id">
+                                <label class="badge cursor-pointer select-none min-h-11 inline-flex items-center"
+                                       :class="action.traitIds.includes(t.id) ? 'bg-brand-primary/10 border-brand-primary text-brand-primary' : 'bg-semantic-card-sunken text-semantic-ink-secondary border border-semantic-border'">
+                                    <input type="checkbox" class="sr-only"
+                                           :checked="action.traitIds.includes(t.id)"
+                                           @change="toggleTraitRef(action, t.id)">
+                                    <span x-text="t.setName + ' · ' + t.name"></span>
+                                </label>
+                            </template>
+                        </div>
+
+                        <input type="text" x-model="action.condition" maxlength="1000"
+                               placeholder="{% trans 'When this applies (displayed text)…' %}" class="form-input w-full">
+                        <input type="text" x-model="action.outcome" maxlength="1000"
+                               placeholder="{% trans 'What it produces (displayed text)…' %}" class="form-input w-full">
+                    </div>
+                </template>
+            </div>
+
+            <!-- External sheet -->
+            <div class="card card-body space-y-4">
+                <h2 class="text-heading">{% trans "External sheet" %}</h2>
+                <div>
+                    <label for="sheet_url" class="form-label">
+                        {% trans "Sheet URL" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
+                    </label>
+                    <input type="url" id="sheet_url" name="sheet_url"
+                           value="{{ form_data.sheet_url|default:'' }}"
+                           placeholder="https://..." class="form-input">
+                </div>
+            </div>
+
+            {# Serialized client-side by the characterCreate Alpine component (buildPayload) —
+               matches _parse_character_create_payload's expected shape exactly. #}
+            <input type="hidden" name="payload" :value="JSON.stringify(buildPayload())">
+
+            <div class="flex items-center gap-3">
+                <button type="submit" class="btn-primary" :disabled="!canSubmit">
+                    <span class="i-lucide-plus"></span>{% trans "Create" %}
+                </button>
+                <a href="{% url 'characters:list' %}" class="btn-ghost">{% trans "Cancel" %}</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

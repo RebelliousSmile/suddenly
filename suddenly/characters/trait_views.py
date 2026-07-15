@@ -17,6 +17,7 @@ from suddenly.core.views import htmx_render
 
 from .forms import ActionForm, TraitForm, TraitSetForm
 from .models import Action, Character, Trait, TraitSet
+from .services import build_transverse_actions_queryset
 
 
 def _get_editable_character(request: AuthenticatedRequest, slug: str) -> Character | None:
@@ -49,6 +50,7 @@ def traits_editor(request: AuthenticatedRequest, slug: str) -> HttpResponse:
         return HttpResponseForbidden()
 
     trait_sets = character.trait_sets.prefetch_related("traits", "actions__traits")
+    transverse_actions = build_transverse_actions_queryset(character)
     return htmx_render(
         request,
         full_template="characters/traits_editor.html",
@@ -56,6 +58,7 @@ def traits_editor(request: AuthenticatedRequest, slug: str) -> HttpResponse:
         context={
             "character": character,
             "trait_sets": trait_sets,
+            "transverse_actions": transverse_actions,
             "set_form": TraitSetForm(),
         },
     )
