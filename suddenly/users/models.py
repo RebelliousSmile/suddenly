@@ -56,6 +56,16 @@ class User(AbstractUser):
         help_text=_("UI language. Empty = use instance default."),
     )
 
+    # Muses — opt-in to automatic post-ingestion assistance (#126). Default off:
+    # nothing is sent to the hub for imported reports unless the author asks.
+    muses_post_ingest_optin = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Receive an editable summary and federated-link suggestions from Muses "
+            "when a report is imported from choix-narratifs."
+        ),
+    )
+
     # Admin
     is_admin = models.BooleanField(default=False)
 

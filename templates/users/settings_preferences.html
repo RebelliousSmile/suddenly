@@ -50,6 +50,14 @@
                 {% endfor %}
             </div>
 
+            <!-- Muses — post-ingestion assistance opt-in (#126) -->
+            <div class="py-4 border-t border-border">
+                {% include "components/form_switch.html" with field_id=form.muses_post_ingest_optin.id_for_label field_name=form.muses_post_ingest_optin.html_name field_label=form.muses_post_ingest_optin.label field_checked=form.muses_post_ingest_optin.value field_help=form.muses_post_ingest_optin.help_text %}
+                {% for error in form.muses_post_ingest_optin.errors %}
+                    <p class="form-error mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+
             <!-- Interface Language -->
             <div>
                 <label for="{{ form.interface_language.id_for_label }}" class="form-label">
