@@ -17,7 +17,7 @@ from django.urls import reverse
 from django.utils.dateparse import parse_datetime
 
 from suddenly.core.types import AuthenticatedRequest
-from suddenly.users.forms import PreferencesForm
+from suddenly.users.forms import MusesSettingsForm, PreferencesForm
 from suddenly.users.models import User
 
 
@@ -40,6 +40,34 @@ def settings_preferences(request: AuthenticatedRequest) -> HttpResponse:
     except ValueError:
         bg_url = ""
     return render(request, "users/settings_preferences.html", {"form": form, "bg_url": bg_url})
+
+
+@login_required
+def settings_muses(request: AuthenticatedRequest) -> HttpResponse:
+    """Muses tab: activation switch, credit counter, and per-feature opt-ins."""
+    from django.conf import settings as django_settings
+
+    if request.method == "POST":
+        form = MusesSettingsForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            from django.contrib import messages
+
+            messages.success(request, "Muses settings saved.")
+            return redirect(reverse("users:settings_muses"))
+    else:
+        form = MusesSettingsForm(instance=request.user)
+
+    return render(
+        request,
+        "users/settings_muses.html",
+        {
+            "form": form,
+            "muses_credits": request.user.muses_credits,
+            # Instance-level availability: if the hub is off, the switch is moot.
+            "hub_configured": bool(getattr(django_settings, "SUDDENLY_MUSES_ENABLED", False)),
+        },
+    )
 
 
 @login_required

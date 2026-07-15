@@ -157,9 +157,28 @@ class IngestReportView(APIView):  # type: ignore[misc]
                 status=RapportStatus.PUBLISHED,
             )
 
+        # Offer post-ingestion Muses assistance (#126). Fire-and-forget: the
+        # task self-gates on the flag + the author's opt-in and degrades on any
+        # hub failure, so ingestion succeeds regardless of broker/hub state.
+        self._queue_muses_assist(report.id)
+
         report_url = f"{settings.AP_BASE_URL}/reports/{report.id}"
 
         return Response(
             {"id": str(report.id), "url": report_url},
             status=status.HTTP_201_CREATED,
         )
+
+    @staticmethod
+    def _queue_muses_assist(report_id: object) -> None:
+        """Enqueue muses_post_ingest, swallowing broker unavailability."""
+        from suddenly.games.tasks import muses_post_ingest
+
+        try:
+            muses_post_ingest.delay(str(report_id))
+        except Exception as exc:  # never let queueing break ingestion
+            import logging
+
+            logging.getLogger("suddenly.muses").warning(
+                "Failed to queue muses_post_ingest for %s: %s", report_id, exc
+            )
