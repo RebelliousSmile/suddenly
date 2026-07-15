@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% if report %}{% trans "Edit report" %}{% else %}{% trans "New report" %}{% endif %} — {{ game.title }} — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% if report %}{% trans "Edit scene" %}{% else %}{% trans "New scene" %}{% endif %} — {{ game.title }} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
@@ -13,13 +13,13 @@
                 › <a href="{% url 'games:report_detail' game_pk=game.pk pk=report.pk %}" class="link-muted">{{ report.title|default:_("Report") }}</a>
                 › {% trans "Edit" %}
             {% else %}
-                › {% trans "New report" %}
+                › {% trans "New scene" %}
             {% endif %}
         </p>
 
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold text-semantic-ink">
-                {% if report %}{% trans "Edit report" %}{% else %}{% trans "New report" %}{% endif %}
+                {% if report %}{% trans "Edit scene" %}{% else %}{% trans "New scene" %}{% endif %}
             </h1>
 
             <!-- Bouton d'aide -->
@@ -33,7 +33,7 @@
                 <div x-show="open" x-transition x-cloak
                      class="mt-2 p-4 card card-body text-sm space-y-2 text-semantic-muted">
                     <p><span class="i-lucide-pencil-line text-xs mr-1"></span>{% trans "Minimum 50 characters — enough to set the scene." %}</p>
-                    <p><span class="i-lucide-at-sign text-xs mr-1"></span>{% trans "Type @ to mention a character and link them to this report." %}</p>
+                    <p><span class="i-lucide-at-sign text-xs mr-1"></span>{% trans "Type @ to mention a character and link them to this scene." %}</p>
                     <p><span class="i-lucide-bold text-xs mr-1"></span>{% trans "Markdown supported: **bold**, *italic*, > quote, - list." %}</p>
                     <p><span class="i-lucide-eye-off text-xs mr-1"></span>{% trans "Add a content warning to hide sensitive content behind a 'Show' button." %}</p>
                 </div>

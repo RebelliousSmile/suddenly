@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{{ report.title|default:_("Report") }} — {{ SITE_NAME }}{% endblock %}
+{% block title %}{{ report.title|default:_("Scene") }} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
@@ -10,7 +10,7 @@
         <!-- Breadcrumb -->
         <p class="text-sm text-semantic-muted mb-4">
             <a href="{% url 'games:detail' pk=game.pk %}" class="link-muted">{{ game.title }}</a>
-            › {{ report.title|default:_("Report") }}
+            › {{ report.title|default:_("Scene") }}
         </p>
 
         <!-- Header -->
@@ -60,7 +60,7 @@
             <div class="card card-body mb-6 flex items-center justify-between gap-3">
                 <div class="text-sm">
                     {% if report.is_released %}
-                        <p class="text-semantic-ink font-medium">{% trans "This report is released." %}</p>
+                        <p class="text-semantic-ink font-medium">{% trans "This scene is released." %}</p>
                         <p class="text-xs text-semantic-muted">
                             {% trans "It is readable by everyone in Stories." %}
                         </p>
@@ -223,14 +223,14 @@
         <!-- Rapports -->
         <div class="mb-6">
             <div class="flex items-center justify-between mb-3">
-                <h2 class="text-heading">{% trans "Rapports" %}</h2>
+                <h2 class="text-heading">{% trans "Posts" %}</h2>
                 {% if request.user == report.author %}
                     <button hx-get="{% url 'games:rapport_create' report.game.pk report.pk %}"
                             hx-target="#rapport-form-container"
                             hx-swap="innerHTML"
                             class="btn-secondary btn-sm">
                         <span class="i-lucide-plus text-xs"></span>
-                        {% trans "Add a Rapport" %}
+                        {% trans "Add a post" %}
                     </button>
                 {% endif %}
             </div>

@@ -2,7 +2,7 @@
 {% for rapport in page_obj %}
     {% include "games/partials/thread_rapport_card.html" with rapport=rapport report=report %}
 {% empty %}
-    <p class="text-semantic-muted text-sm">{% trans "No rapports yet." %}</p>
+    <p class="text-semantic-muted text-sm">{% trans "No posts yet." %}</p>
 {% endfor %}
 
 {% if has_next %}

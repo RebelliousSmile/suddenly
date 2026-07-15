@@ -33,7 +33,7 @@
         <div>
             <label for="id_content" class="form-label">{% trans "Content" %}</label>
             <textarea id="id_content" name="content" rows="4"
-                      placeholder="{% trans "Write the rapport entry..." %}"
+                      placeholder="{% trans "Write the post..." %}"
                       class="form-input w-full">{{ form.content.value|default:'' }}</textarea>
             {% if form.content.errors %}
                 <p class="form-error text-semantic-danger text-xs mt-1">{{ form.content.errors.0 }}</p>
