@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
+from django.views.decorators.http import require_POST
 
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
@@ -86,14 +87,14 @@ def trait_set_create(request: AuthenticatedRequest, slug: str) -> HttpResponse:
     )
 
 
+@require_POST
 @login_required
 def trait_set_delete(request: AuthenticatedRequest, slug: str, set_pk: str) -> HttpResponse:
     character = _get_editable_character(request, slug)
     if character is None:
         return HttpResponseForbidden()
     trait_set = get_object_or_404(TraitSet, pk=set_pk, character=character)
-    if request.method == "POST":
-        trait_set.delete()
+    trait_set.delete()
     return HttpResponse("")
 
 
@@ -116,6 +117,7 @@ def trait_create(request: AuthenticatedRequest, slug: str, set_pk: str) -> HttpR
     return HttpResponse(_render_set(request, trait_set), status=422)
 
 
+@require_POST
 @login_required
 def trait_delete(request: AuthenticatedRequest, slug: str, trait_pk: str) -> HttpResponse:
     character = _get_editable_character(request, slug)
@@ -127,8 +129,7 @@ def trait_delete(request: AuthenticatedRequest, slug: str, trait_pk: str) -> Htt
         trait_set__character=character,
     )
     trait_set = trait.trait_set
-    if request.method == "POST":
-        trait.delete()
+    trait.delete()
     return HttpResponse(_render_set(request, trait_set))
 
 
@@ -152,6 +153,7 @@ def action_create(request: AuthenticatedRequest, slug: str, set_pk: str) -> Http
     return HttpResponse(_render_set(request, trait_set), status=422)
 
 
+@require_POST
 @login_required
 def action_delete(request: AuthenticatedRequest, slug: str, action_pk: str) -> HttpResponse:
     character = _get_editable_character(request, slug)
@@ -167,6 +169,5 @@ def action_delete(request: AuthenticatedRequest, slug: str, action_pk: str) -> H
         # Unreachable: the queryset above joins on trait_set__character, which
         # excludes actions without a trait_set (transverse actions).
         return HttpResponseForbidden()
-    if request.method == "POST":
-        action.delete()
+    action.delete()
     return HttpResponse(_render_set(request, trait_set))

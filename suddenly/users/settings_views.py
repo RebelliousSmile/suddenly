@@ -15,6 +15,7 @@ from django.http import FileResponse, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.dateparse import parse_datetime
+from django.utils.translation import gettext as _
 
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.users.forms import MusesSettingsForm, PreferencesForm
@@ -30,7 +31,7 @@ def settings_preferences(request: AuthenticatedRequest) -> HttpResponse:
             form.save()
             from django.contrib import messages
 
-            messages.success(request, "Preferences saved.")
+            messages.success(request, _("Preferences saved."))
             return redirect(reverse("users:settings_preferences"))
     else:
         form = PreferencesForm(instance=request.user)
@@ -53,7 +54,7 @@ def settings_muses(request: AuthenticatedRequest) -> HttpResponse:
             form.save()
             from django.contrib import messages
 
-            messages.success(request, "Muses settings saved.")
+            messages.success(request, _("Muses settings saved."))
             return redirect(reverse("users:settings_muses"))
     else:
         form = MusesSettingsForm(instance=request.user)
@@ -85,10 +86,8 @@ def export_follows_csv(request: AuthenticatedRequest) -> HttpResponse:
     from suddenly.users.models import User
 
     user_ct = ContentType.objects.get_for_model(User)
-    follows = (
-        Follow.objects.filter(follower=request.user, content_type=user_ct)
-        .select_related("follower")
-        .values_list("object_id", flat=True)
+    follows = Follow.objects.filter(follower=request.user, content_type=user_ct).values_list(
+        "object_id", flat=True
     )
 
     followed_users = User.objects.filter(pk__in=follows)
@@ -120,27 +119,34 @@ def import_follows_csv(request: AuthenticatedRequest) -> HttpResponse:
             return render(request, "users/settings_data.html")
         decoded = csv_file.read().decode("utf-8")
         reader = csv.DictReader(io.StringIO(decoded))
+        addresses = [addr for row in reader if (addr := row.get("Account address", "").strip())]
 
-        imported = 0
-        errors = 0
-        for row in reader:
-            address = row.get("Account address", "").strip()
-            if not address:
-                continue
-
-            user_to_follow = _resolve_and_follow(request.user, address)
-            if user_to_follow:
-                imported += 1
-            else:
-                errors += 1
+        # Offload resolution: each address hits a remote WebFinger endpoint, so
+        # resolving inline would block the web worker for N × timeout. The task
+        # runs off-request; with no broker configured it degrades to eager (sync).
+        _queue_follow_import(str(request.user.pk), addresses)
 
         return render(
             request,
             "users/settings_data.html",
-            {"import_success": True, "imported_count": imported, "import_errors": errors},
+            {"import_queued": True, "import_count": len(addresses)},
         )
 
     return render(request, "users/settings_data.html")
+
+
+def _queue_follow_import(user_id: str, addresses: list[str]) -> None:
+    """Enqueue the follow-import task, falling back to inline run if the broker is down."""
+    from kombu.exceptions import KombuError  # type: ignore[import-untyped]
+
+    from suddenly.users.tasks import import_follows_from_rows
+
+    try:
+        import_follows_from_rows.delay(user_id, addresses)
+    except (KombuError, ConnectionError, TimeoutError, OSError):
+        # Broker configured but unreachable: run inline rather than drop the
+        # import silently. Blocks this request, but only on broker failure.
+        import_follows_from_rows(user_id, addresses)
 
 
 @login_required
@@ -303,7 +309,7 @@ def import_characters(request: AuthenticatedRequest) -> HttpResponse:
 
     from django.core.files.uploadedfile import UploadedFile
 
-    from suddenly.characters.models import Character
+    from suddenly.characters.models import Character, CharacterStatus
     from suddenly.games.models import Game
 
     characters_file = request.FILES.get("characters_file")
@@ -356,7 +362,10 @@ def import_characters(request: AuthenticatedRequest) -> HttpResponse:
             skipped += 1
             continue
 
-        status = item.get("status", "npc")
+        # Whitelist the imported status against the enum — never trust a raw
+        # value from an uploaded JSON file (an arbitrary string would persist).
+        raw_status = item.get("status", CharacterStatus.NPC)
+        status = raw_status if raw_status in CharacterStatus.values else CharacterStatus.NPC
         character = Character.objects.create(
             name=name,
             description=item.get("description", ""),
@@ -364,7 +373,7 @@ def import_characters(request: AuthenticatedRequest) -> HttpResponse:
             sheet_url=item.get("sheet_url") or None,
             origin_game=origin_game,
             creator=request.user,
-            owner=request.user if status == "pc" else None,
+            owner=request.user if status == CharacterStatus.PC else None,
             remote=False,
         )
         if created_at:
@@ -398,15 +407,11 @@ def _get_domain() -> str:
 
 def _resolve_and_follow(follower: User, address: str) -> bool:
     """Resolve a @user@instance address and create Follow. Returns True on success."""
-    import logging
-
-    import httpx
     from django.contrib.contenttypes.models import ContentType
 
+    from suddenly.activitypub._http import fetch_ap_json
     from suddenly.characters.models import Follow
     from suddenly.users.models import User
-
-    logger = logging.getLogger(__name__)
 
     # Parse address
     address = address.lstrip("@")
@@ -420,31 +425,26 @@ def _resolve_and_follow(follower: User, address: str) -> bool:
         # Check if already known
         target = User.objects.filter(ap_id__icontains=f"/{username}", remote=True).first()
         if not target:
-            # WebFinger lookup
-            try:
-                url = f"https://{domain}/.well-known/webfinger?resource=acct:{address}"
-                with httpx.Client(timeout=10) as client:
-                    resp = client.get(url, headers={"Accept": "application/jrd+json"})
-                if resp.status_code != 200:
-                    return False
-
-                data = resp.json()
-                actor_url = None
-                for link in data.get("links", []):
-                    if link.get("rel") == "self" and "activity" in link.get("type", ""):
-                        actor_url = link["href"]
-                        break
-
-                if not actor_url:
-                    return False
-
-                # Create remote user
-                from suddenly.activitypub.tasks import get_or_create_remote_user
-
-                target = get_or_create_remote_user(actor_url)
-            except Exception:
-                logger.warning("WebFinger failed for %s", address, exc_info=True)
+            # WebFinger lookup — domain is user-supplied (CSV import), so the
+            # fetch must go through the SSRF-safe guard, never a raw httpx.Client.
+            url = f"https://{domain}/.well-known/webfinger?resource=acct:{address}"
+            data = fetch_ap_json(url, accept="application/jrd+json")
+            if not data:
                 return False
+
+            actor_url = None
+            for link in data.get("links", []):
+                if link.get("rel") == "self" and "activity" in link.get("type", ""):
+                    actor_url = link["href"]
+                    break
+
+            if not actor_url:
+                return False
+
+            # Create remote user (actor_url fetched via SSRF-safe fetch_ap_actor).
+            from suddenly.activitypub.tasks import get_or_create_remote_user
+
+            target = get_or_create_remote_user(actor_url)
     else:
         return False
 

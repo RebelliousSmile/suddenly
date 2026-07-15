@@ -467,6 +467,19 @@ def handle_update(activity: dict[str, Any], actor_type: str, actor_identifier: s
 
     if obj_type == "Character":
         _handle_update_character(obj)
+    elif obj_type == "Person":
+        # A remote actor announcing an updated profile may have rotated its
+        # signing key. Drop the cached key so the next verification re-fetches
+        # it, instead of failing once against the stale key (08-activitypub §4b).
+        _invalidate_actor_key(activity.get("actor"))
+
+
+def _invalidate_actor_key(actor_url: object) -> None:
+    """Drop the cached public key for a remote actor (key rotation via Update(Person))."""
+    from .models import PublicKeyCache
+
+    if isinstance(actor_url, str) and actor_url:
+        PublicKeyCache.objects.filter(actor_url=actor_url).delete()
 
 
 def _handle_update_character(obj: dict[str, Any]) -> None:

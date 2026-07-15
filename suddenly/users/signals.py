@@ -16,7 +16,7 @@ from suddenly.users.models import User
 logger = logging.getLogger(__name__)
 
 
-@receiver(user_signed_up)
+@receiver(user_signed_up, dispatch_uid="users.initialize_activitypub_actor")
 def initialize_activitypub_actor(
     request: object,
     user: User,

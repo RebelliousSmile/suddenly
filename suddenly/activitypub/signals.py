@@ -11,6 +11,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+from django.db import transaction
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
@@ -46,7 +47,13 @@ def report_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: 
         if created or (
             instance.published_at and (timezone.now() - instance.published_at).seconds < 10
         ):
-            _safe_delay(send_create_activity, "report", str(instance.id))
+            # Defer the broadcast until after the surrounding transaction commits.
+            # Without on_commit, a caller that creates the report inside an atomic
+            # block (e.g. ingest, which then creates cast/rapports) would broadcast
+            # a Create before its children exist. Outside a transaction, Django
+            # runs the callback immediately — no behavior change for auto-commit.
+            report_id = str(instance.id)
+            transaction.on_commit(lambda: _safe_delay(send_create_activity, "report", report_id))
 
 
 @receiver(pre_save, sender="games.Report")

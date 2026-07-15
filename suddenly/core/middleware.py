@@ -30,14 +30,22 @@ class InstanceLanguageMiddleware:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
+        activated = False
         try:
             from suddenly.core.models import InstanceSettings  # local import avoids circular deps
 
             lang = InstanceSettings.get().language
             translation.activate(lang)
+            activated = True
         except Exception:  # noqa: BLE001 — boot-safe; fall through to Django default
             pass
-        return self.get_response(request)
+        try:
+            return self.get_response(request)
+        finally:
+            # Reset thread-local translation so the activated language cannot bleed
+            # into the next request served by a pooled worker thread.
+            if activated:
+                translation.deactivate()
 
 
 class UserLanguageMiddleware:

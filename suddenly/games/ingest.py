@@ -13,6 +13,7 @@ from __future__ import annotations
 import hmac
 
 from django.conf import settings
+from django.db import transaction
 from rest_framework import serializers, status
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -128,34 +129,43 @@ class IngestReportView(APIView):  # type: ignore[misc]
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        report = Report.objects.create(
-            game=game,
-            author=game.owner,
-            title=payload["title"],
-            content=payload["content"],
-            content_warning=payload.get("content_warning", ""),
-            language=payload.get("language", "fr"),
-            visibility=payload.get("visibility", ReportVisibility.PUBLIC),
-            session_date=payload.get("session_date"),
-            status=ReportStatus.PUBLISHED,
-            # published_at is set automatically by the pre_save signal
-        )
-
-        for cast_item in data.get("cast", []):
-            ReportCast.objects.create(
-                report=report,
-                new_character_name=cast_item["character_name"],
-                new_character_description=cast_item.get("character_description", ""),
-                role=cast_item.get("role", CastRole.MENTIONED),
+        # Atomic: the report and its cast/rapports must commit together, or not
+        # at all. Combined with the report_post_save signal's transaction.on_commit,
+        # the AP Create broadcast only fires once all children exist — never on a
+        # half-populated report (03-django-services + ap-pivots §3).
+        with transaction.atomic():
+            report = Report.objects.create(
+                game=game,
+                author=game.owner,
+                title=payload["title"],
+                content=payload["content"],
+                content_warning=payload.get("content_warning", ""),
+                language=payload.get("language", "fr"),
+                visibility=payload.get("visibility", ReportVisibility.PUBLIC),
+                session_date=payload.get("session_date"),
+                status=ReportStatus.PUBLISHED,
+                # published_at is set automatically by the pre_save signal
             )
 
-        for rapport_item in data.get("rapports", []):
-            Rapport.objects.create(
-                report=report,
-                kind=rapport_item["kind"],
-                content=rapport_item["content"],
-                status=RapportStatus.PUBLISHED,
+            ReportCast.objects.bulk_create(
+                [
+                    ReportCast(
+                        report=report,
+                        new_character_name=cast_item["character_name"],
+                        new_character_description=cast_item.get("character_description", ""),
+                        role=cast_item.get("role", CastRole.MENTIONED),
+                    )
+                    for cast_item in data.get("cast", [])
+                ]
             )
+
+            for rapport_item in data.get("rapports", []):
+                Rapport.objects.create(
+                    report=report,
+                    kind=rapport_item["kind"],
+                    content=rapport_item["content"],
+                    status=RapportStatus.PUBLISHED,
+                )
 
         # Offer post-ingestion Muses assistance (#126). Fire-and-forget: the
         # task self-gates on the flag + the author's opt-in and degrades on any

@@ -76,7 +76,8 @@ class GameViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
     def characters(self, request: Request, pk: str | None = None) -> Response:
         """List characters from this game."""
         game = self.get_object()
-        characters = game.characters.all().select_related("owner", "creator")
+        # origin_game is needed: CharacterSerializer exposes origin_game.title.
+        characters = game.characters.all().select_related("owner", "creator", "origin_game")
         serializer = CharacterSerializer(characters, many=True)
         return Response(serializer.data)
 
