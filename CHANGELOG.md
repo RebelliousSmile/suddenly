@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-07-15
+
+### Added
+- **Personnages** — Nouvelle vue de création (identité, traits, actions, image
+  de couverture), jusqu'ici absente du flux — seule l'édition existait.
+- **Personnages** — Liste refondue en cartes produit avec bascule grille/liste.
+- **Personnages** — Champs `cover_alt` / `cover_tone` sur `Character`.
+- **Personnages** — `Action.character` devient une clé étrangère requise ;
+  `Action.__str__` se replie sur le personnage quand `trait_set` est absent.
+
+### Fixed
+- **Personnages** — `action_create` renseignait implicitement `action.character` ;
+  l'affectation est désormais explicite.
+- **Parties** — Protection de `cover.url` contre une valeur absente au
+  re-rendu de `game_form`.
+
+### Changed
+- **CI** — La suite pytest complète est retirée du hook pre-push (gain de
+  vitesse sur chaque push ; la suite complète reste exécutée en CI).
+
 ## [0.4.0] - 2026-07-15
 
 ### Added
