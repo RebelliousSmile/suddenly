@@ -73,6 +73,7 @@ urlpatterns = [
         name="sequence_publish",
     ),
     path("bulk-delete/", front_views.character_delete_bulk, name="delete_bulk"),
+    path("new/", front_views.character_create, name="create"),
     # Character detail + actions
     path("<slug:slug>/", front_views.character_detail, name="detail"),
     path("<slug:slug>/edit/", front_views.character_edit, name="edit"),

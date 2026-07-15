@@ -1,6 +1,6 @@
 {% load static vite i18n %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE|default:'en' }}" class="h-full" x-data="theme">
+<html lang="{{ LANGUAGE_CODE|default:'en' }}" class="h-full" x-data="theme" @toggle-theme.window="toggle()">
 <head>
     <!-- Anti-flash: set theme before CSS loads -->
     <script>
@@ -76,19 +76,6 @@
                             {% include "components/_user_menu_items.html" %}
                         </div>
                         </div>
-                        <!-- Theme toggle switch (authenticated: stays in header) -->
-                        <button @click="toggle()"
-                                class="relative flex items-center h-7 w-14 rounded-full border border-semantic-border bg-semantic-card px-0.5 cursor-pointer transition-colors duration-300"
-                                :class="isDark ? 'border-brand-primary/50' : 'border-ui-sun-soft/60'"
-                                data-label-light="{% trans 'Switch to light mode' %}"
-                                data-label-dark="{% trans 'Switch to dark mode' %}"
-                                :aria-label="isDark ? $el.dataset.labelLight : $el.dataset.labelDark">
-                            <span class="i-lucide-moon absolute left-1.5 text-sm text-brand-primary pointer-events-none"></span>
-                            <span class="i-lucide-sun absolute right-1.5 text-sm text-ui-sun pointer-events-none"></span>
-                            <span class="w-5 h-5 rounded-full shadow-sm transition-all duration-300 flex-shrink-0 pointer-events-none"
-                                  :class="isDark ? 'translate-x-0 bg-brand-primary' : 'translate-x-8 bg-ui-sun'">
-                            </span>
-                        </button>
                     {% else %}
                         <!-- Auth dropdown (anonymous): login, signup, theme, language.
                              x-data="{ open: false }" (no `toggle` method) so the theme
@@ -235,8 +222,9 @@
                 <a href="{% url 'core:home' %}" class="block py-2 text-semantic-ink-secondary">{% trans "Home" %}</a>
                 <a href="{% url 'games:stories' %}" class="block py-2 text-semantic-ink-secondary">{% trans "Stories" %}</a>
                 <a href="{% url 'core:quotes' %}" class="block py-2 text-semantic-ink-secondary">{% trans "Quotes" %}</a>
+                {% if not user.is_authenticated %}
                 <hr class="my-2 border-semantic-border">
-                <!-- Theme toggle mobile -->
+                <!-- Theme toggle mobile (authenticated users get this from the account dropdown) -->
                 <button @click="toggle()"
                         class="flex items-center gap-3 py-2 text-semantic-ink-secondary w-full"
                         data-label-light="{% trans 'Switch to light mode' %}"
@@ -252,6 +240,7 @@
                     </span>
                     <span x-text="isDark ? '{% trans "Light mode" %}' : '{% trans "Dark mode" %}'"></span>
                 </button>
+                {% endif %}
             </div>
         </div>
     </header>

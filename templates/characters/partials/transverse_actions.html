@@ -1,0 +1,40 @@
+{% load i18n %}
+{% comment %}
+  "Actions transverses" — actions whose trait_set is None (span multiple
+  concepts, referenced by traits across different TraitSets). Read-only in
+  both callers (character detail + traits editor): there is no endpoint to
+  mutate a trait_set=None action (action_delete's queryset requires a
+  trait_set). Context: transverse_actions (queryset, prefetched .traits).
+{% endcomment %}
+{% if transverse_actions %}
+<div class="card card-body mb-6">
+    <h2 class="text-heading mb-1">{% trans "Actions transverses" %}</h2>
+    <p class="text-sm text-semantic-muted mb-3">
+        {% blocktrans %}Actions drawing on traits from more than one concept.{% endblocktrans %}
+    </p>
+    <div class="space-y-3">
+        {% for action in transverse_actions %}
+            <div class="rounded-lg bg-semantic-surface p-3">
+                <div class="flex items-center flex-wrap gap-2">
+                    <span class="font-medium text-semantic-ink">{{ action.name }}</span>
+                    {% for t in action.traits.all %}
+                        <span class="badge bg-semantic-card-sunken text-semantic-ink-secondary border border-semantic-border text-xs">
+                            {{ t.name }}{% if t.value is not None %} {{ t.value|stringformat:"+d" }}{% endif %}
+                        </span>
+                    {% endfor %}
+                </div>
+                {% if action.condition %}
+                    <p class="text-sm text-semantic-ink-secondary mt-1">
+                        <span class="text-semantic-muted">{% trans "When" %}:</span> {{ action.condition }}
+                    </p>
+                {% endif %}
+                {% if action.outcome %}
+                    <p class="text-sm text-semantic-ink-secondary">
+                        <span class="text-semantic-muted">{% trans "Then" %}:</span> {{ action.outcome }}
+                    </p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}

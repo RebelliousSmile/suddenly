@@ -23,7 +23,11 @@ def _seed_sheet(character: Character) -> None:
     casse = Trait.objects.create(trait_set=ts, name="Casse-cou", value=3)
     sworn = Trait.objects.create(trait_set=ts, name="Sworn", note="au trône")  # valueless
     action = Action.objects.create(
-        trait_set=ts, name="Foncer", condition="Quand tu fonces", outcome="Tu t'exposes"
+        trait_set=ts,
+        character=character,
+        name="Foncer",
+        condition="Quand tu fonces",
+        outcome="Tu t'exposes",
     )
     action.traits.set([casse, sworn])
 

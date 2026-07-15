@@ -45,6 +45,16 @@ class Character(BaseModel):
     )
     description = models.TextField(blank=True)
     avatar = models.ImageField(upload_to="characters/", blank=True, null=True)
+    cover_alt = models.CharField(
+        max_length=280,
+        blank=True,
+        help_text="Ce que montre la couverture (a11y + ActivityPub Document.name).",
+    )
+    cover_tone = models.CharField(
+        max_length=80,
+        blank=True,
+        help_text="L'ambiance de la couverture : lourde, feutrée…",
+    )
 
     # Status
     status = models.CharField(
@@ -551,7 +561,10 @@ class Action(BaseModel):
     sharing membrane, not a play surface.
     """
 
-    trait_set = models.ForeignKey(TraitSet, on_delete=models.CASCADE, related_name="actions")
+    trait_set = models.ForeignKey(
+        TraitSet, on_delete=models.CASCADE, related_name="actions", null=True, blank=True
+    )
+    character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name="actions")
     name = models.CharField(
         max_length=200,
         help_text="Free-form action name (e.g. Foncer dans le tas, Convaincre)",
@@ -577,6 +590,8 @@ class Action(BaseModel):
         indexes = [models.Index(fields=["trait_set"])]
 
     def __str__(self) -> str:
+        if self.trait_set is None:
+            return f"{self.name} → {self.character.name}"
         return f"{self.name} → {self.trait_set.label}"
 
 

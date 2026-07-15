@@ -108,6 +108,8 @@
             </div>
         {% endif %}
 
+        {% include "characters/partials/transverse_actions.html" %}
+
         <!-- External sheet (fallback for non-transposable systems) -->
         {% if character.sheet_url %}
             <div class="card card-body mb-6">

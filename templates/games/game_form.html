@@ -112,7 +112,12 @@
             </div>
 
             {% trans "Cover image" as label_cover %}
-            {% include "components/form_image_upload.html" with field_id="cover" field_name="cover" field_label=label_cover field_optional=True current_url=game.cover.url|default:'' clear_id="cover-clear" clear_name="cover-clear" %}
+            {# Only resolve .url when a file exists — an empty ImageFieldFile raises ValueError on .url (|default can't catch it). #}
+            {% if game.cover %}
+            {% include "components/form_image_upload.html" with field_id="cover" field_name="cover" field_label=label_cover field_optional=True current_url=game.cover.url clear_id="cover-clear" clear_name="cover-clear" %}
+            {% else %}
+            {% include "components/form_image_upload.html" with field_id="cover" field_name="cover" field_label=label_cover field_optional=True current_url="" clear_id="cover-clear" clear_name="cover-clear" %}
+            {% endif %}
 
             <div class="flex items-center gap-3 pt-4 border-t border-semantic-border">
                 <button type="submit" class="btn-primary">

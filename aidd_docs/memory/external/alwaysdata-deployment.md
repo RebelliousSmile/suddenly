@@ -87,11 +87,13 @@ python manage.py createsuperuser
 | Répertoire de travail | `www/soudainement/` |
 | Version Python | `3.12` |
 | Répertoire du virtualenv | `www/soudainement/venv` |
-| Chemins statiques | `/static/ staticfiles/` et `/media/ media/` |
+| Chemins statiques | `/static/=staticfiles/` et `/media/=media/` (une ligne chacun) |
 
 > **Pièges** :
 > - Le fichier WSGI est dans `suddenly/wsgi.py`, **pas** `config/wsgi.py`
 > - Les chemins statiques sont **relatifs au répertoire de travail** (ne pas mettre le chemin absolu)
+> - **Format `url_path=file_path` avec un `=`**, jamais une espace. Une entrée `/media/ media/` (espace) est silencieusement ignorée par le frontal → les fichiers uploadés (avatars, covers) renvoient 404. Le CSS continue de s'afficher car Whitenoise sert `/static/` via Django indépendamment de ce mapping — ne pas s'y fier pour valider `/media/`.
+> - Vérifier après coup : `curl -I https://<domaine>/media/avatars/<fichier>` doit renvoyer `200` + `content-type: image/...` **sans** `set-cookie`/`x-frame-options` (si ces en-têtes Django apparaissent, c'est que la requête traverse jusqu'à l'app → mapping non actif).
 
 ### Variables d'environnement (format `FOO=bar` sans `export`)
 

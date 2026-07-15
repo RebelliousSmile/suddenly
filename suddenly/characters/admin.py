@@ -4,9 +4,11 @@ Characters admin configuration.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from django.contrib import admin
+from django.forms.models import BaseInlineFormSet
+from django.http import HttpRequest
 
 from .models import (
     Action,
@@ -75,6 +77,25 @@ class TraitSetAdmin(_TraitSetBase):
     search_fields = ["label", "character__name"]
     raw_id_fields = ["character"]
     inlines = [TraitInline, ActionInline]
+
+    def save_formset(
+        self,
+        request: HttpRequest,
+        form: Any,
+        formset: BaseInlineFormSet[Any, Any, Any],
+        change: bool,
+    ) -> None:
+        # Action.character is a required FK not exposed on the inline form (only
+        # trait_set is, as the parent link). Backfill it from the parent TraitSet,
+        # mirroring trait_views.action_create's `action.character = trait_set.character`.
+        instances = formset.save(commit=False)
+        for instance in instances:
+            if isinstance(instance, Action) and not instance.character_id and instance.trait_set:
+                instance.character = instance.trait_set.character
+            instance.save()
+        formset.save_m2m()
+        for obj in formset.deleted_objects:
+            obj.delete()
 
 
 @admin.register(Character)
