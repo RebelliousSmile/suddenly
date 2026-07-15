@@ -25,6 +25,17 @@
                 <p class="text-sm text-semantic-muted">{% trans "Depuis le" %} {{ game.started_at|date:"d/m/Y" }}</p>
             {% endif %}
 
+            {# Tags — chips linking to the tag-filtered game list. #}
+            {% if game.tags.all %}
+                <div class="flex flex-wrap gap-2 mt-3">
+                    {% for tag in game.tags.all %}
+                        <a href="{% url 'games:list' %}?tag={{ tag.name|urlencode }}" class="btn-secondary btn-sm">
+                            <span class="i-lucide-tag"></span>{{ tag.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
             {% if is_owner %}
                 <div class="mt-4">
                     <a href="{% url 'games:edit' pk=game.pk %}" class="btn-secondary btn-sm">
@@ -40,9 +51,16 @@
 
         <!-- Reports -->
         <div class="mb-8">
-            <h2 class="text-heading text-xl mb-4">
-                {% trans "Reports" %} {% if reports %}({{ reports|length }}){% endif %}
-            </h2>
+            <div class="flex items-center justify-between gap-3 mb-4">
+                <h2 class="text-heading text-xl">
+                    {% trans "Scenes" %} {% if reports %}({{ reports|length }}){% endif %}
+                </h2>
+                {% if is_owner %}
+                    <a href="{% url 'games:report_create' game_pk=game.pk %}" class="btn-secondary btn-sm shrink-0">
+                        <span class="i-lucide-plus"></span>{% trans "New scene" %}
+                    </a>
+                {% endif %}
+            </div>
 
             {% if reports %}
                 <div class="space-y-3">
@@ -73,15 +91,22 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <p class="text-sm text-semantic-muted">{% trans "No published report." %}</p>
+                <p class="text-sm text-semantic-muted">{% trans "No published scene." %}</p>
             {% endif %}
         </div>
 
         <!-- Characters -->
         <div>
-            <h2 class="text-heading text-xl mb-4">
-                {% trans "Characters" %} {% if characters %}({{ characters|length }}){% endif %}
-            </h2>
+            <div class="flex items-center justify-between gap-3 mb-4">
+                <h2 class="text-heading text-xl">
+                    {% trans "Characters" %} {% if characters %}({{ characters|length }}){% endif %}
+                </h2>
+                {% if is_owner %}
+                    <a href="{% url 'characters:create' %}?game={{ game.pk }}" class="btn-secondary btn-sm shrink-0">
+                        <span class="i-lucide-plus"></span>{% trans "New character" %}
+                    </a>
+                {% endif %}
+            </div>
 
             {% if characters %}
                 <div class="grid grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 gap-3">

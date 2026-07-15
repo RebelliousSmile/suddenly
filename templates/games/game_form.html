@@ -33,22 +33,25 @@
                 <label for="game_system" class="form-label">
                     {% trans "Game system" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
                 </label>
-                <input type="text" id="game_system" name="game_system" x-ref="systemInput"
-                       value="{% if form_data.game_system %}{{ form_data.game_system }}{% elif game %}{{ game.game_system }}{% endif %}"
-                       placeholder="{% trans "e.g. Mist Engine, FATE, PbtA…" %}"
-                       @input="onInput" class="form-input">
-                <p class="form-help">{% trans "Free-form label — no catalogue." %}</p>
+                <div class="relative">
+                    <input type="text" id="game_system" name="game_system" x-ref="systemInput"
+                           value="{% if form_data.game_system %}{{ form_data.game_system }}{% elif game %}{{ game.game_system }}{% endif %}"
+                           placeholder="{% trans "e.g. Mist Engine, FATE, PbtA…" %}"
+                           autocomplete="off"
+                           @input="onInput" @focus="onFocus" @keydown.escape="showSuggestions = false"
+                           class="form-input">
 
-                {# Top-10 most-used systems on this instance — click to fill. #}
-                {% if system_suggestions %}
-                <div class="flex flex-wrap gap-2 mt-2">
-                    {% for label in system_suggestions %}
-                    <button type="button" class="btn-secondary btn-sm"
-                            @click="pick($el.dataset.label)"
-                            data-label="{{ label|escapejs }}">{{ label }}</button>
-                    {% endfor %}
+                    {# Top-10 most-used systems on this instance — shown while typing/focused, dismissed on pick or outside click. #}
+                    <div x-show="showSuggestions && filteredSuggestions.length" x-cloak
+                         @click.outside="showSuggestions = false"
+                         class="dropdown-menu w-full mt-1 max-h-56 overflow-y-auto">
+                        <template x-for="label in filteredSuggestions" :key="label">
+                            <button type="button"
+                                    class="w-full px-3 py-2 text-left hover:bg-semantic-card-sunken transition-colors"
+                                    @click="pick(label)" x-text="label"></button>
+                        </template>
+                    </div>
                 </div>
-                {% endif %}
 
                 {# Near-duplicate guard — client-computed (nearDup) or server-flagged fallback. #}
                 <div x-show="nearDup" x-cloak
@@ -92,7 +95,7 @@
                     {% trans "Start date" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
                 </label>
                 <input type="date" id="id_started_at" name="started_at"
-                       value="{% if form_data.started_at %}{{ form_data.started_at }}{% elif game.started_at %}{{ game.started_at|date:'Y-m-d' }}{% endif %}"
+                       value="{% if form_data.started_at %}{{ form_data.started_at }}{% elif game %}{% if game.started_at %}{{ game.started_at|date:'Y-m-d' }}{% endif %}{% else %}{% now 'Y-m-d' %}{% endif %}"
                        class="form-input">
             </div>
 
