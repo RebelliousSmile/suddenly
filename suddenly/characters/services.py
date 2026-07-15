@@ -580,8 +580,12 @@ def suggested_characters_to_link(user: User, limit: int = 8) -> list[Character]:
             break
 
     for character in ordered:
-        character.available_actions = (
-            ["claim", "adopt", "fork"] if character.status == CharacterStatus.NPC else ["fork"]
+        # Transient view-model attribute read by templates/characters/_link_suggestions.html;
+        # setattr keeps mypy from flagging an attribute the model does not declare.
+        setattr(
+            character,
+            "available_actions",
+            ["claim", "adopt", "fork"] if character.status == CharacterStatus.NPC else ["fork"],
         )
 
     return ordered
