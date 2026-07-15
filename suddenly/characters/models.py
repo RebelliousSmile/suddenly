@@ -561,7 +561,10 @@ class Action(BaseModel):
     sharing membrane, not a play surface.
     """
 
-    trait_set = models.ForeignKey(TraitSet, on_delete=models.CASCADE, related_name="actions")
+    trait_set = models.ForeignKey(
+        TraitSet, on_delete=models.CASCADE, related_name="actions", null=True, blank=True
+    )
+    character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name="actions")
     name = models.CharField(
         max_length=200,
         help_text="Free-form action name (e.g. Foncer dans le tas, Convaincre)",
