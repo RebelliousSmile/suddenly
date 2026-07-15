@@ -30,6 +30,11 @@ urlpatterns = [
         name="link_request_accept",
     ),
     path(
+        "requests/<uuid:pk>/check-coherence/",
+        link_views.link_request_check_coherence,
+        name="link_request_check_coherence",
+    ),
+    path(
         "requests/<uuid:pk>/reject/",
         link_views.link_request_reject,
         name="link_request_reject",

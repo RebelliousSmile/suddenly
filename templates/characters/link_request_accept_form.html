@@ -14,6 +14,23 @@
             {% blocktrans with username=link_request.requester.username type=link_request.get_type_display name=link_request.target_character.name %}@{{ username }} wants to <strong>{{ type }}</strong> {{ name }}.{% endblocktrans %}
         </p>
 
+        {# Muses claim-coherence check (#128) — recipient, Claim only. Advisory. #}
+        {% if link_request.type == 'claim' %}
+            <div class="mb-4">
+                <button type="button" class="btn-secondary btn-sm"
+                        hx-post="{% url 'characters:link_request_check_coherence' pk=link_request.id %}"
+                        hx-target="#claim-coherence-slot"
+                        hx-swap="innerHTML">
+                    <span class="i-lucide-scale"></span>
+                    {% trans "Check coherence" %}
+                </button>
+                <p class="text-xs text-muted mt-1">
+                    {% trans "An advisory plausibility analysis. It never decides for you." %}
+                </p>
+                <div id="claim-coherence-slot" class="mt-3"></div>
+            </div>
+        {% endif %}
+
         <form method="post" class="card card-body space-y-4">
             {% csrf_token %}
             <div>

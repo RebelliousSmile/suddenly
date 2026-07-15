@@ -29,6 +29,15 @@ def axial_tags(character: Character) -> list[str]:
     return [tag.name for tag in character.tags.all()]
 
 
+def corpus_content(character: Character, *, limit: int = 5) -> str:
+    """A single text corpus for a character: name, blurb, then its anchor reports.
+
+    Used by claim coherence (#128) to hand the hub one labelled body per side.
+    """
+    parts = [character.name, character.description, *anchor_reports(character, limit=limit)]
+    return "\n\n".join(part for part in parts if part)
+
+
 def anchor_reports(character: Character, *, limit: int = 5) -> list[str]:
     """Text of the reports where the character appears — its anchor scene(s).
 

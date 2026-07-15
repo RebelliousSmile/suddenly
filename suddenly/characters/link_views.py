@@ -202,6 +202,70 @@ def link_request_accept(request: HttpRequest, pk: str) -> HttpResponse:
 
 
 @login_required
+def link_request_check_coherence(request: HttpRequest, pk: str) -> HttpResponse:
+    """Advisory plausibility analysis for a Claim (#128) — never a decision.
+
+    Recipient-only, Claim-only. Projects the NPC and candidate-PC corpora onto
+    the hub's pattern tables and renders a non-blocking side panel. The accept/
+    reject decision stays entirely human. Degrades to a note if the hub is
+    unavailable (#88).
+    """
+    from suddenly.muses.client import Corpus, MusesClient
+    from suddenly.muses.exceptions import MusesError
+
+    from .muses_context import axial_tags, corpus_content
+
+    lr = get_object_or_404(
+        LinkRequest,
+        pk=pk,
+        target_character__creator=request.user,
+        type=LinkType.CLAIM,
+    )
+
+    if request.method != "POST":
+        return redirect(reverse("characters:link_request_accept", kwargs={"pk": pk}))
+
+    npc = lr.target_character
+    candidate = lr.proposed_character
+    if candidate is None:
+        # A Claim without a proposed PC has nothing to compare against.
+        return render(
+            request,
+            "characters/_claim_coherence.html",
+            {"link_request": lr, "analysis": None, "no_candidate": True},
+        )
+
+    corpora = [
+        Corpus(label="npc", content=corpus_content(npc), tags=axial_tags(npc)),
+        Corpus(label="candidate_pc", content=corpus_content(candidate), tags=axial_tags(candidate)),
+    ]
+    tags = sorted(set(axial_tags(npc)) | set(axial_tags(candidate)))
+
+    analysis: dict[str, object] | None = None
+    try:
+        result = MusesClient().analyze(
+            feature="claim_coherence",
+            corpora=corpora,
+            tags=tags,
+            extra={"link_type": LinkType.CLAIM, "argument": lr.message},
+        )
+        analysis = {
+            "compatibility": result.get("compatibility") or [],
+            "incompatibility": result.get("incompatibility") or [],
+            "plausibility": str(result.get("plausibility", "")),
+            "harmonization": result.get("harmonization") or [],
+        }
+    except MusesError:
+        analysis = None  # degraded mode: render the discreet unavailable note
+
+    return render(
+        request,
+        "characters/_claim_coherence.html",
+        {"link_request": lr, "analysis": analysis, "no_candidate": False},
+    )
+
+
+@login_required
 def link_request_reject(request: HttpRequest, pk: str) -> HttpResponse:
     """Reject a link request. US-11, US-14."""
     lr = get_object_or_404(
