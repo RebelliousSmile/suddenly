@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-07-15
+
+### Added
+- **Flux** — Composer de post en sidebar persistante sur les trois flux
+  (Amis / Instance / Fédiverse), avec point d'entrée mobile compact vers le
+  composer plein écran. Pool de protagonistes (PJ propres + PNJ maîtrisés) et
+  cartes de scène montrant les derniers posts d'une scène.
+- **Personnages** — Suggestions de personnages à lier (réclamer / adopter /
+  dériver) sur la page de création ; publication de séquence partagée avec
+  notifications aux deux parties.
+- **Parties** — Puces de tags cliquables, autocomplétion du système de jeu et
+  aperçu d'image dans le formulaire.
+
+### Changed
+- **Affichage** — Vocabulaire UI unifié : un `Report` s'affiche « scène », un
+  `Rapport` « post » (FR + EN).
+
+### Security
+- **Fédération** — Durcissement des bords réseau (audit high-findings) :
+  résolution WebFinger/acteur via `fetch_ap_json` avec épinglage anti-rebind
+  DNS et invalidation de la clé d'acteur à la rotation ; diffusion AP `Create`
+  sur `transaction.on_commit` ; ingestion atomique ; correction de la fuite de
+  langue thread-local du middleware ; `totalItems` de l'outbox calculé sur la
+  collection complète ; `@require_POST` sur les suppressions de traits/actions.
+
 ## [0.5.0] - 2026-07-15
 
 ### Added
