@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-07-15
+
+### Added
+- **Parties** — Refonte du formulaire de création/édition sur le design system.
+  Tags alignés sur le modèle de contenu fédéré Mastodon : normalisation
+  insensible à la casse (accents préservés) et dédoublonnage. Champ « système de
+  jeu » enrichi de suggestions basées sur les 10 libellés les plus utilisés de
+  l'instance, plus un validateur anti-doublon (métrique de similarité partagée
+  client/serveur) exigeant confirmation sur une saisie très proche mais différente
+  (ex. « L'appel de cthulhu » vs « Appel de Cthulhu »).
+
+### Fixed
+- **Parties** — La création de partie ignorait entièrement les tags saisis.
+- **Docker** — Copie de `design/` dans l'étape frontend-builder avant le build
+  (requis par `uno.config.js`).
+
 ## [0.3.0] - 2026-07-15
 
 ### Added
