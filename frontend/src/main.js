@@ -460,6 +460,100 @@ Alpine.data('threadGroup', () => ({
   },
 }))
 
+// Game create/edit form — game_system suggestions + near-duplicate guard.
+// The similarity metric mirrors near_duplicate_system in games/services.py
+// (threshold 0.84). The <input> is the source of truth (read/written via
+// $refs), so no user text is ever interpolated into a JS string.
+Alpine.data('gameForm', () => ({
+  known: [],
+  nearDup: null,
+  confirmed: false,
+
+  init() {
+    const data = document.getElementById('known-systems-data')
+    if (data) {
+      try {
+        const parsed = JSON.parse(data.textContent)
+        if (Array.isArray(parsed)) this.known = parsed
+      } catch { /* leave known empty */ }
+    }
+    // Surface a near-duplicate flagged by a server round-trip (JS-off fallback).
+    this.check()
+  },
+
+  get systemValue() {
+    return this.$refs.systemInput ? this.$refs.systemInput.value : ''
+  },
+
+  pick(label) {
+    if (this.$refs.systemInput) this.$refs.systemInput.value = label
+    this.confirmed = false
+    this.nearDup = null
+  },
+
+  onInput() {
+    this.confirmed = false
+    this.check()
+  },
+
+  onSubmit(event) {
+    this.check()
+    if (this.nearDup && !this.confirmed) event.preventDefault()
+  },
+
+  useExisting() {
+    if (this.nearDup && this.$refs.systemInput) this.$refs.systemInput.value = this.nearDup
+    this.nearDup = null
+    this.confirmed = true
+  },
+
+  keepMine() {
+    this.nearDup = null
+    this.confirmed = true
+  },
+
+  check() {
+    const entered = this.systemValue.trim()
+    if (!entered || this.known.includes(entered)) { this.nearDup = null; return }
+    const key = this._normalize(entered)
+    if (!key) { this.nearDup = null; return }
+    let best = null
+    let bestRatio = 0
+    for (const label of this.known) {
+      const ratio = this._similarity(key, this._normalize(label))
+      if (ratio > bestRatio) { best = label; bestRatio = ratio }
+    }
+    this.nearDup = bestRatio >= 0.84 ? best : null
+  },
+
+  _normalize(label) {
+    return label
+      .normalize('NFD').replace(/\p{M}/gu, '')
+      .toLowerCase().replace(/[^a-z0-9]+/g, ' ')
+      .trim().replace(/\s+/g, ' ')
+  },
+
+  _similarity(a, b) {
+    if (!a && !b) return 1
+    if (!a || !b) return 0
+    const m = a.length
+    const n = b.length
+    let prev = Array.from({ length: n + 1 }, (_, j) => j)
+    for (let i = 1; i <= m; i++) {
+      const cur = [i]
+      for (let j = 1; j <= n; j++) {
+        cur[j] = Math.min(
+          prev[j] + 1,
+          cur[j - 1] + 1,
+          prev[j - 1] + (a[i - 1] !== b[j - 1] ? 1 : 0),
+        )
+      }
+      prev = cur
+    }
+    return 1 - prev[n] / Math.max(m, n)
+  },
+}))
+
 // =================================================================
 // Initialisation
 // =================================================================

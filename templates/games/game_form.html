@@ -14,7 +14,11 @@
             <div class="mb-4 p-4 rounded-lg bg-semantic-danger/10 text-semantic-danger border border-semantic-danger/30">{{ error }}</div>
         {% endif %}
 
-        <form method="post" enctype="multipart/form-data" class="card card-body space-y-4">
+        {# Known game_system labels (most-used first) — consumed by the gameForm Alpine component. #}
+        {{ system_known|json_script:"known-systems-data" }}
+
+        <form method="post" enctype="multipart/form-data" class="card card-body space-y-4"
+              x-data="gameForm" @submit="onSubmit($event)">
             {% csrf_token %}
 
             <div>
@@ -29,11 +33,49 @@
                 <label for="game_system" class="form-label">
                     {% trans "Game system" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
                 </label>
-                <input type="text" id="game_system" name="game_system"
+                <input type="text" id="game_system" name="game_system" x-ref="systemInput"
                        value="{% if form_data.game_system %}{{ form_data.game_system }}{% elif game %}{{ game.game_system }}{% endif %}"
                        placeholder="{% trans "e.g. Mist Engine, FATE, PbtA…" %}"
-                       class="form-input">
+                       @input="onInput" class="form-input">
                 <p class="form-help">{% trans "Free-form label — no catalogue." %}</p>
+
+                {# Top-10 most-used systems on this instance — click to fill. #}
+                {% if system_suggestions %}
+                <div class="flex flex-wrap gap-2 mt-2">
+                    {% for label in system_suggestions %}
+                    <button type="button" class="btn-secondary btn-sm"
+                            @click="pick($el.dataset.label)"
+                            data-label="{{ label|escapejs }}">{{ label }}</button>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {# Near-duplicate guard — client-computed (nearDup) or server-flagged fallback. #}
+                <div x-show="nearDup" x-cloak
+                     class="mt-3 p-3 rounded-lg bg-semantic-warning/10 border border-semantic-warning/30 text-sm">
+                    <p class="text-semantic-ink-secondary">
+                        {% trans "A very similar system already exists:" %}
+                        <strong x-text="nearDup"></strong>.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <button type="button" class="btn-secondary btn-sm" @click="useExisting">
+                            {% trans "Use the existing one" %}
+                        </button>
+                        <button type="button" class="btn-ghost btn-sm" @click="keepMine">
+                            {% trans "Keep mine" %}
+                        </button>
+                    </div>
+                </div>
+                {% if system_warning %}
+                <noscript>
+                    <p class="mt-3 text-sm text-semantic-warning">
+                        {% blocktrans %}A very similar system already exists: {{ system_warning }}. Confirm to keep your entry.{% endblocktrans %}
+                    </p>
+                </noscript>
+                {% endif %}
+
+                {# Confirmation flag — set once the user resolves a near-duplicate. #}
+                <input type="hidden" name="system_confirmed" :value="confirmed ? '1' : ''">
             </div>
 
             <div>
@@ -46,10 +88,12 @@
             </div>
 
             <div>
-                <label class="label" for="id_started_at">{% trans "Date de début" %} <span class="text-semantic-muted text-sm">({% trans "optionnelle" %})</span></label>
+                <label class="form-label" for="id_started_at">
+                    {% trans "Start date" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
+                </label>
                 <input type="date" id="id_started_at" name="started_at"
-                       value="{{ form_data.started_at|default:game.started_at|default:'' }}"
-                       class="input">
+                       value="{% if form_data.started_at %}{{ form_data.started_at }}{% elif game.started_at %}{{ game.started_at|date:'Y-m-d' }}{% endif %}"
+                       class="form-input">
             </div>
 
             {% trans "Public game (visible and followable)" as label_is_public %}
@@ -64,7 +108,7 @@
                        placeholder="fantasy, investigation, horror..."
                        @keydown.enter.prevent
                        class="form-input">
-                <p class="form-help">{% trans "Tags séparés par des virgules" %}</p>
+                <p class="form-help">{% trans "Comma-separated tags." %}</p>
             </div>
 
             {% trans "Cover image" as label_cover %}

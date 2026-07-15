@@ -55,11 +55,19 @@ from .services import (
     create_npc_in_cast,
     create_scene_post,
     is_game_master,
+    known_game_systems,
     move_rapport,
+    near_duplicate_system,
     open_new_scene,
     publish_report,
     reopen_scene,
 )
+
+
+def _game_form_extra(known: list[str] | None = None) -> dict[str, object]:
+    """Shared game-form context: known systems + the top-10 suggestion pills."""
+    known = known_game_systems() if known is None else known
+    return {"system_known": known, "system_suggestions": known[:10]}
 
 
 @login_required
@@ -420,8 +428,29 @@ def game_create(request: AuthenticatedRequest) -> HttpResponse:
                     "error": _("Title is required."),
                     "form_data": request.POST,
                     "is_public_checked": request.POST.get("is_public") == "on",
+                    **_game_form_extra(),
                 },
             )
+
+        # Near-duplicate game_system guard — force a confirmation when the entered
+        # label is very close to an existing one but not identical (mirrors the
+        # client-side check; the server is the enforcement).
+        known = known_game_systems()
+        if request.POST.get("system_confirmed") != "1":
+            system_warning = near_duplicate_system(game_system_text, known)
+            if system_warning:
+                return htmx_render(
+                    request,
+                    full_template="games/game_form.html",
+                    partial_template="games/game_form.html",
+                    context={
+                        "game": None,
+                        "form_data": request.POST,
+                        "is_public_checked": is_public,
+                        "system_warning": system_warning,
+                        **_game_form_extra(known),
+                    },
+                )
 
         started_at_raw = request.POST.get("started_at", "").strip()
         try:
@@ -439,13 +468,16 @@ def game_create(request: AuthenticatedRequest) -> HttpResponse:
             cover=cover,
             started_at=started_at,
         )
+        from suddenly.core.models import Tag
+
+        game.tags.set(Tag.resolve_names(request.POST.get("tags", "")))
         return redirect(reverse("games:detail", kwargs={"pk": game.pk}))
 
     return htmx_render(
         request,
         full_template="games/game_form.html",
         partial_template="games/game_form.html",
-        context={"game": None, "is_public_checked": True, "form_data": {}},
+        context={"game": None, "is_public_checked": True, "form_data": {}, **_game_form_extra()},
     )
 
 
@@ -911,11 +943,31 @@ def game_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
                     "error": _("Title is required."),
                     "form_data": request.POST,
                     "is_public_checked": is_public_checked,
+                    **_game_form_extra(),
                 },
             )
+
+        game_system_text = request.POST.get("game_system", "").strip()
+        known = known_game_systems()
+        if request.POST.get("system_confirmed") != "1":
+            system_warning = near_duplicate_system(game_system_text, known)
+            if system_warning:
+                return htmx_render(
+                    request,
+                    full_template="games/game_form.html",
+                    partial_template="games/game_form.html",
+                    context={
+                        "game": game,
+                        "form_data": request.POST,
+                        "is_public_checked": is_public_checked,
+                        "system_warning": system_warning,
+                        **_game_form_extra(known),
+                    },
+                )
+
         game.title = title
         game.description = request.POST.get("description", "").strip()
-        game.game_system = request.POST.get("game_system", "").strip()
+        game.game_system = game_system_text
         game.is_public = is_public_checked
 
         started_at_raw = request.POST.get("started_at", "").strip()
@@ -945,14 +997,9 @@ def game_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
             ]
         )
 
-        tags_raw = request.POST.get("tags", "").strip()
         from suddenly.core.models import Tag
 
-        tag_objects = [
-            Tag.objects.get_or_create(name=name)[0]
-            for name in [t.strip() for t in tags_raw.split(",") if t.strip()]
-        ]
-        game.tags.set(tag_objects)
+        game.tags.set(Tag.resolve_names(request.POST.get("tags", "")))
 
         return redirect(reverse("games:detail", kwargs={"pk": game.pk}))
 
@@ -960,7 +1007,12 @@ def game_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
         request,
         full_template="games/game_form.html",
         partial_template="games/game_form.html",
-        context={"game": game, "is_public_checked": game.is_public, "form_data": {}},
+        context={
+            "game": game,
+            "is_public_checked": game.is_public,
+            "form_data": {},
+            **_game_form_extra(),
+        },
     )
 
 

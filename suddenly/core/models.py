@@ -4,6 +4,7 @@ Modèles abstraits de base et modèles core.
 Tous les modèles de l'application héritent de BaseModel.
 """
 
+import unicodedata
 import uuid
 from typing import Any
 
@@ -99,7 +100,12 @@ class Notification(BaseModel):
 
 
 class Tag(BaseModel):
-    """Hashtag for cross-instance content discovery."""
+    """Hashtag for cross-instance content discovery.
+
+    Federated content, à la Mastodon: a tag is user-authored text, never
+    translated. It is matched case-insensitively (accents preserved) so that
+    "Enquête", "enquête" and "  Enquête " collapse to a single tag.
+    """
 
     name = models.CharField(max_length=100, unique=True)
 
@@ -108,6 +114,26 @@ class Tag(BaseModel):
 
     def __str__(self) -> str:
         return f"#{self.name}"
+
+    @staticmethod
+    def normalize_name(raw: str) -> str:
+        """Canonical tag form: NFC + trimmed + inner whitespace collapsed + lowercased."""
+        return unicodedata.normalize("NFC", " ".join(raw.split())).lower()
+
+    @classmethod
+    def resolve_names(cls, raw: str) -> list["Tag"]:
+        """Parse a comma-separated string into Tag objects, creating any missing.
+
+        Normalizes each part, dedupes within the input, and preserves order.
+        Empty parts are dropped. This is the single entry point for turning a
+        CSV tag field into ``Tag`` rows (games, characters).
+        """
+        resolved: dict[str, Tag] = {}
+        for part in raw.split(","):
+            name = cls.normalize_name(part)
+            if name and name not in resolved:
+                resolved[name] = cls.objects.get_or_create(name=name)[0]
+        return list(resolved.values())
 
 
 class NotificationPreference(BaseModel):

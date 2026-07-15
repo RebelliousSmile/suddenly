@@ -6,6 +6,8 @@ Shared queryset builders and business logic for the games domain.
 
 from __future__ import annotations
 
+import re
+import unicodedata
 from typing import TYPE_CHECKING, Any
 
 from django.contrib.auth.base_user import AbstractBaseUser
@@ -428,3 +430,69 @@ def move_rapport(*, report: Report, rapport: Rapport, direction: str) -> None:
         if item.order != position:
             item.order = position
             item.save(update_fields=["order", "updated_at"])
+
+
+# ---------------------------------------------------------------------------
+# Game system labels — free-form text, no catalogue.
+#
+# Two services back the create/edit form:
+#   - ``known_game_systems`` feeds the top-N suggestion pills (most-used first).
+#   - ``near_duplicate_system`` guards against near-duplicate labels
+#     ("L'appel de cthulhu" vs "Appel de Cthulhu") — the metric is mirrored
+#     client-side in the ``gameForm`` Alpine component (frontend/src/main.js).
+# ---------------------------------------------------------------------------
+
+_SYSTEM_NEAR_DUP_THRESHOLD = 0.84
+_KNOWN_SYSTEMS_CAP = 500
+
+
+def known_game_systems(limit: int = _KNOWN_SYSTEMS_CAP) -> list[str]:
+    """Distinct non-empty game_system labels, most-used first (instance-wide)."""
+    rows = (
+        Game.objects.exclude(game_system="")
+        .values("game_system")
+        .annotate(n=Count("id"))
+        .order_by("-n", "game_system")[:limit]
+    )
+    return [row["game_system"] for row in rows]
+
+
+def normalize_system(label: str) -> str:
+    """Comparison key: accent-stripped, lowercased, punctuation → space, collapsed."""
+    decomposed = unicodedata.normalize("NFD", label)
+    stripped = "".join(c for c in decomposed if not unicodedata.combining(c))
+    return " ".join(re.sub(r"[^a-z0-9]+", " ", stripped.lower()).split())
+
+
+def _similarity(a: str, b: str) -> float:
+    """Normalized Levenshtein ratio in [0, 1]. Mirrored in gameForm (main.js)."""
+    if not a and not b:
+        return 1.0
+    if not a or not b:
+        return 0.0
+    prev = list(range(len(b) + 1))
+    for i, char_a in enumerate(a, start=1):
+        cur = [i]
+        for j, char_b in enumerate(b, start=1):
+            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (char_a != char_b)))
+        prev = cur
+    return 1.0 - prev[-1] / max(len(a), len(b))
+
+
+def near_duplicate_system(
+    entered: str, known: list[str], threshold: float = _SYSTEM_NEAR_DUP_THRESHOLD
+) -> str | None:
+    """Closest known label if ``entered`` is a near-duplicate (but not an exact match)."""
+    entered = entered.strip()
+    if not entered or entered in known:
+        return None
+    entered_key = normalize_system(entered)
+    if not entered_key:
+        return None
+    best: str | None = None
+    best_ratio = 0.0
+    for label in known:
+        ratio = _similarity(entered_key, normalize_system(label))
+        if ratio > best_ratio:
+            best, best_ratio = label, ratio
+    return best if best_ratio >= threshold else None
