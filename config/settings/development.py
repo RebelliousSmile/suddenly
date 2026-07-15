@@ -65,6 +65,19 @@ CSRF_TRUSTED_ORIGINS = [f"http://{DOMAIN}", "http://localhost:8000"]
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
+# Static files — manifest-free storage in dev/CI.
+# base.py sets CompressedManifestStaticFilesStorage: a production optimisation that
+# requires `collectstatic` to have generated staticfiles.json. Dev, tests and CI never
+# run collectstatic, so every {% static %} lookup would raise "Missing staticfiles
+# manifest entry". Rebind to a plain backend (new dict — never mutate the shared base
+# STORAGES object; see the note in production.py).
+STORAGES = {
+    **STORAGES,  # noqa: F405
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
 # Development logging overrides
 LOGGING["root"]["level"] = "DEBUG"  # type: ignore[index]  # noqa: F405
 LOGGING["loggers"]["suddenly"]["level"] = "DEBUG"  # type: ignore[index]  # noqa: F405
