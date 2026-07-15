@@ -7,7 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-07-15
+
 ### Added
+- **Design system** — Contrat de design 3 couches (tokens / composants / charte) v1.1 → v1.3 :
+  migration complète du frontend, trois jeux d'icônes avec rôles et noms accessibles, responsive
+  par container queries (invariant `container-not-viewport`).
+- **Navigation** — Menu déroulant de compte avec avatar, liens de langue, « Histoires complètes »,
+  mur de citations, commande de seed de démo.
+- **UI (phase-6)** — Include DRY du menu de compte (`_user_menu_items`), entrée « Stats &
+  achievements », partials interventions / rapports, accessibilité (aria-label/aria-hidden,
+  cibles tactiles 44 px), gestion des safe-areas mobiles (`pt-safe-t`).
 - **Personnages** — Méta-modèle narratif interne : lots de traits (`TraitSet`), traits nommés
   à valeur affichée et nullable (`Trait`), actions en texte (`Action`). Transpose une fiche
   narrative (PbtA, FATE, Mist) sans catalogue. Rien n'est jamais évalué : Suddenly affiche.
@@ -16,12 +26,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Personnages** — Section « Traits » et bloc « Fiche technique : lien externe » (`sheet_url`)
   sur la fiche publique ; inlines admin pour `TraitSet` (traits + actions).
 
+### Changed
+- **Frontend** — Migration vers les tokens du design system v1.3 (`semantic-*` / `brand-*`) et
+  grilles container-query explicites.
+- **Navigation** — Consolidation sur le mur `core:quotes` (retrait du doublon `games:quotes_wall`
+  et des templates `citations`).
+
 ### Removed
 - **Parties** — Sous-système FoundryVTT retiré : modèle `GameSystem`, FK `Game.game_system_ref`,
   tâche de synchronisation `sync_foundry_systems`, commande de gestion associée, picker catalogue
   et recherche inline. `Game.game_system` reste un champ texte libre (aucun catalogue).
 - **Explorer** — Facette « systèmes distincts » (`get_distinct_game_systems`) et son invalidation
   de cache retirées.
+
+### Fixed
+- **i18n / a11y** — Traduction des noms accessibles, correction de deux libellés fautifs.
+- **Personnages** — Déduplication de la liste de tags du filtre (piège `distinct` + `ordering`).
+- **Histoires** — Alignement de la fiche histoire sur la maquette v3 (retrait de la couverture,
+  résumé N rapports, libellés de rapport discrets).
+- **Templates** — Conversion des commentaires multi-lignes `{# #}` en `{% comment %}` (Django les
+  rendait en texte).
 
 ## [0.2.0] - 2026-07-06
 
