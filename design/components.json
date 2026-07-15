@@ -1,6 +1,6 @@
 {
   "$schema": "design/references/manifest-schema#",
-  "$version": "1.3.0",
+  "$version": "1.4.0",
   "mode": "utility-first",
   "usage": {
     "rawHexForbidden": true,
@@ -8,7 +8,7 @@
     "rules": [
       {
         "id": "state-colour-icon",
-        "description": "Un statut de personnage (pc, npc, available, remote, claimed, adopted, forked) doit être porté par un token color.domain.* ET par un libellé ou une icône — jamais par la couleur seule. L'anneau d'avatar ajoute une border.style distincte.",
+        "description": "Tout état narratif porté par un token color.domain.* doit l'être AUSSI par un libellé ou une icône — jamais par la couleur seule. Trois familles : (1) statut de personnage (pc, npc, available, remote, claimed, adopted, forked, gone) — l'anneau d'avatar ajoute une border.style distincte ; (2) kind de rapport (kind-description, kind-action, kind-discussion, kind-closure) — la couleur du kmark/liseré double toujours l'icône de nature et la forme typographique ; (3) état de scène (state-draft, state-closed, state-released) — la pastille d'état (statepill) porte toujours son libellé texte à côté de la couleur.",
         "enforcement": "pivot-only"
       },
       {
@@ -347,10 +347,13 @@
         "navlink": "app-header__navlink",
         "controls": "app-header__controls"
       },
-      "modifiers": {},
+      "modifiers": {
+        "chrome": "app-header--chrome"
+      },
       "backgrounds": [
         "color.semantic.background",
-        "color.semantic.surface"
+        "color.semantic.surface",
+        "color.semantic.chrome"
       ],
       "a11y": {
         "role": "banner",

@@ -1,5 +1,5 @@
 ---
-version: 1.3.0
+version: 1.4.0
 status: figé
 source: app/templates/wireframes/maquette-v3.html (16 pages, extraction CSS)
 derived_by: design:define → destructure → adjust
@@ -242,6 +242,42 @@ section) est une piste ouverte, non arbitrée.
 ---
 
 ## 6. Provenance
+
+### v1.4.0 — 2026-07-15 — re-figeage : composer + édition de scène
+
+Deux wireframes (`aidd_docs/wireframes/suddenly-composer.html`, `suddenly-scene-edit.html`) — le
+**post composer** (rédaction d'un Rapport) et l'**édition de scène** (séquence réordonnable,
+clôture, partage). `01-arbitrate` : direction unique, `:root` identique dans les deux (consensus
+2/2). **~95 % confirme v1.3.0 sans le modifier** (crimson→`brand.primary`, violet→`brand.accent`,
+info→`semantic.info`, neon→`brand.signal`, indigo→`brand.identity`, success→`semantic.success`,
+tous les neutres → `semantic.*`).
+
+**Quatre décisions d'arbitrage** (gate humain, point de non-retour) :
+
+1. **Amber conservé** — le wireframe proposait `#d97706` (amber-600) ; on garde `semantic.warning
+   #b45309` (amber-700), meilleur contraste texte-sur-teinte et zéro churn. Les maquettes s'alignent.
+2. **Barre chrome nommée** — le bandeau supérieur sombre `#12121f` (persistant clair + dark) devient
+   `color.neutral.950` + `color.semantic.chrome`. Ajouté aux `backgrounds` de `app-header`
+   (+ modifier `app-header--chrome`).
+3. **Familles narratives nommées dans `domain.*`** — deux dimensions de couleur nouvelles, plutôt que
+   réutilisation anonyme :
+   - *kind de rapport* : `domain.kind-description`→info, `kind-action`→primary, `kind-discussion`→accent,
+     `kind-closure`→info (narration = sans couleur, neutre).
+   - *état de scène* : `domain.state-draft`→warning, `state-closed`→info, `state-released`→success.
+   - `domain.gone` (personnage parti de la scène) → muted.
+   La règle `state-colour-icon` est étendue à ces trois familles (couleur + icône/libellé, jamais seule).
+4. **Neutres dark raffinés** — `ink-secondary` et `muted` cessent d'être fondus sur un même gris :
+   `sepia.300 #a0a0a0 → #b8b0a8` (secondary) et nouveau `sepia.400 #8f857c` (muted).
+
+Hors périmètre : classes BEM des wireframes (`.castbox`, `.item`, `.statepill`, `.closure`,
+`.composer`…) **non figées** — mode `utility-first`, elles deviendront des utilitaires UnoCSS à
+l'implémentation (`diffuse`). Fonds d'avatar générés par `hue` (JS) et SVG placeholder = contenu
+procédural, pas des tokens.
+
+Réconciliation `02-freeze § 2bis` : 142 templates de production propres contre v1.4.0 (ajout de
+tokens additif → aucune divergence code→manifeste). **Suite requise** : régénérer
+`design/adapters/tokens.css` + `uno-tokens.mjs` (via `diffuse`) pour exposer les 11 nouveaux tokens
+comme variables CSS / thème UnoCSS avant de bâtir les écrans composer/scène.
 
 ### v1.3.0 — 2026-07-15 — gates enforce câblés
 
