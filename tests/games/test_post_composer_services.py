@@ -6,8 +6,11 @@ transactional gestures (create_scene_post / open_new_scene).
 
 from __future__ import annotations
 
+import io
+
 import pytest
 from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from suddenly.characters.models import (
     CharacterAppearance,
@@ -19,6 +22,7 @@ from suddenly.games.models import (
     GameCast,
     Rapport,
     RapportKind,
+    RapportMedia,
     RapportStatus,
     Report,
     ReportCast,
@@ -27,6 +31,9 @@ from suddenly.games.models import (
 from suddenly.games.services import (
     available_kinds,
     build_actor_pool,
+    build_composer_feed_context,
+    build_game_queryset,
+    build_protagonist_pool,
     create_npc_in_cast,
     create_scene_post,
     is_game_master,
@@ -34,6 +41,16 @@ from suddenly.games.services import (
     validate_actor_for_role,
 )
 from tests.factories import CharacterFactory, GameFactory, ReportFactory, UserFactory
+
+
+def _png_bytes() -> bytes:
+    """A minimal valid 1x1 PNG (validated by Pillow on full_clean)."""
+    from PIL import Image
+
+    buf = io.BytesIO()
+    Image.new("RGB", (1, 1), (255, 0, 0)).save(buf, format="PNG")
+    return buf.getvalue()
+
 
 # ---------------------------------------------------------------------------
 # build_owned_pc_queryset — "mes PJs" (player)
@@ -93,6 +110,32 @@ def test_actor_pool_player_only_own_pcs() -> None:
 
     pks = set(build_actor_pool(player, game).values_list("pk", flat=True))
     assert pks == {my_pc.pk}
+
+
+@pytest.mark.django_db
+def test_protagonist_pool_excludes_non_pc_and_creator_only() -> None:
+    """The free-mode Personnage picker must offer only valid protagonists.
+
+    Regression: a character merely *created* by the user, or owned but not
+    ``pc`` (adopted/claimed/forked), leaked into the picker and then failed
+    ``open_new_scene``'s ``build_actor_pool`` re-check with a 422.
+    """
+    user = UserFactory()
+    game = GameFactory(owner=user)
+
+    own_pc = CharacterFactory(owner=user, status=CharacterStatus.PC, origin_game=game)
+    mastered_npc = CharacterFactory(status=CharacterStatus.NPC, origin_game=game)
+    GameCast.objects.create(game=game, character=mastered_npc, added_by=user)
+
+    # Excluded: owned but not PC (the reported "adopted" case).
+    CharacterFactory(owner=user, status=CharacterStatus.ADOPTED, origin_game=game)
+    # Excluded: merely created by the user, owned by someone else.
+    CharacterFactory(owner=UserFactory(), creator=user, status=CharacterStatus.PC, origin_game=game)
+    # Excluded: an NPC not cast into any game the user masters.
+    CharacterFactory(status=CharacterStatus.NPC, origin_game=GameFactory(owner=UserFactory()))
+
+    pks = set(build_protagonist_pool(user).values_list("pk", flat=True))
+    assert pks == {own_pc.pk, mastered_npc.pk}
 
 
 @pytest.mark.django_db
@@ -329,6 +372,28 @@ def test_open_new_scene_any_game_enters_cast() -> None:
     assert GameCast.objects.filter(game=other_game, character=pc).exists()
 
 
+@pytest.mark.django_db
+def test_open_new_scene_attaches_media_for_description() -> None:
+    player = UserFactory()
+    game = GameFactory(owner=player)
+    pc = CharacterFactory(owner=player, status=CharacterStatus.PC, origin_game=game)
+    image = SimpleUploadedFile("s.png", _png_bytes(), content_type="image/png")
+
+    _report, rapport = open_new_scene(
+        user=player,
+        character=pc,
+        kind=RapportKind.DESCRIPTION,
+        content="Brume.",
+        image=image,
+        media_alt="Route déserte",
+        media_tone="lourde",
+    )
+
+    media = RapportMedia.objects.get(rapport=rapport)
+    assert media.alt == "Route déserte"
+    assert media.tone == "lourde"
+
+
 # ---------------------------------------------------------------------------
 # available_kinds — narration is GM-only (rule 2c)
 # ---------------------------------------------------------------------------
@@ -373,3 +438,84 @@ def test_create_npc_in_cast_creates_character_and_cast() -> None:
     assert entry.added_by_id == gm.pk
     # The fresh NPC is immediately incarnable by the GM.
     assert build_actor_pool(gm, game).filter(pk=npc.pk).exists()
+
+
+# ---------------------------------------------------------------------------
+# build_composer_feed_context — free-mode sidebar/composer context
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+def test_build_composer_feed_context_free_mode_unselected() -> None:
+    """No game/character picked yet: pickers are populated, role-scoped state is empty."""
+    user = UserFactory()
+    own_game = GameFactory(owner=user)
+    own_pc = CharacterFactory(owner=user, status=CharacterStatus.PC, origin_game=own_game)
+
+    ctx = build_composer_feed_context(user)
+
+    assert ctx["frozen"] is False
+    assert ctx["report"] is None
+    assert ctx["game"] is None
+    assert ctx["kinds"] == []
+    assert ctx["can_send"] is False
+    assert own_game in ctx["games"]
+    assert own_pc in ctx["personnages"]
+
+
+@pytest.mark.django_db
+def test_build_composer_feed_context_with_game_and_character() -> None:
+    """Once a game/personnage is picked, role-scoped kinds and actor pool populate."""
+    gm = UserFactory()
+    game = GameFactory(owner=gm)
+    pc = CharacterFactory(owner=gm, status=CharacterStatus.PC, origin_game=game)
+
+    ctx = build_composer_feed_context(gm, game=game, character=pc)
+
+    assert ctx["game"] == game
+    assert ctx["is_gm"] is True
+    assert RapportKind.NARRATION in [v for v, _ in ctx["kinds"]]
+    assert ctx["can_send"] is True
+
+
+# ---------------------------------------------------------------------------
+# build_game_queryset — filtered by character (origin game ∪ GameCast)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+def test_build_game_queryset_character_none_is_unfiltered() -> None:
+    user = UserFactory()
+    game = GameFactory(owner=user)
+    assert game in build_game_queryset(user)
+
+
+@pytest.mark.django_db
+def test_build_game_queryset_filters_to_origin_and_cast() -> None:
+    """A freshly created character has no GameCast entry yet — its origin game
+    must still be offered, or it could never open its first scene."""
+    user = UserFactory()
+    origin = GameFactory(owner=user)
+    cast_game = GameFactory(owner=UserFactory())
+    unrelated = GameFactory(owner=UserFactory())
+    pc = CharacterFactory(owner=user, status=CharacterStatus.PC, origin_game=origin)
+    GameCast.objects.create(game=cast_game, character=pc, added_by=user)
+
+    games = build_game_queryset(user, character=pc)
+
+    assert origin in games
+    assert cast_game in games
+    assert unrelated not in games
+
+
+@pytest.mark.django_db
+def test_build_composer_feed_context_games_filtered_once_character_picked() -> None:
+    user = UserFactory()
+    origin = GameFactory(owner=user)
+    unrelated = GameFactory(owner=UserFactory())
+    pc = CharacterFactory(owner=user, status=CharacterStatus.PC, origin_game=origin)
+
+    ctx = build_composer_feed_context(user, character=pc)
+
+    assert origin in ctx["games"]
+    assert unrelated not in ctx["games"]

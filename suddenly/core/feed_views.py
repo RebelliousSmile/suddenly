@@ -19,6 +19,7 @@ from django.shortcuts import render
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 from suddenly.games.models import Report, ReportStatus
+from suddenly.games.services import build_composer_feed_context
 
 
 def interleave_promos(reports: list[Any], npcs: list[Any], every: int) -> list[dict[str, Any]]:
@@ -53,6 +54,19 @@ def interleave_promos(reports: list[Any], npcs: list[Any], every: int) -> list[d
             items.append({"type": "promo", "obj": npc})
 
     return items
+
+
+def _composer_sidebar_context(request: HttpRequest) -> dict[str, object]:
+    """Composer context for the feed sidebar — first load only, authenticated only.
+
+    ``htmx_render`` only renders ``full_template`` on the first, non-HTMX load;
+    tab switches swap ``#feed-content`` alone (see ``partial_template``). The
+    sidebar therefore never needs recomputing on an HTMX swap, and anonymous
+    visitors (allowed on Instance/Fediverse) never get a composer at all.
+    """
+    if not request.user.is_authenticated or getattr(request, "htmx", False):
+        return {}
+    return build_composer_feed_context(request.user)
 
 
 @login_required
@@ -122,12 +136,17 @@ def feed_home(request: AuthenticatedRequest) -> HttpResponse:
             "npcs": npcs,
             "active_tab": "subscriptions",
             "is_empty": not Follow.objects.filter(follower=user).exists(),
+            **_composer_sidebar_context(request),
         },
     )
 
 
 def feed_instance(request: HttpRequest) -> HttpResponse:
     """Feed — Instance tab. All public local content."""
+    from django.db.models import Prefetch
+
+    from suddenly.games.models import Rapport
+
     reports = (
         Report.objects.filter(
             status=ReportStatus.PUBLISHED,
@@ -135,6 +154,12 @@ def feed_instance(request: HttpRequest) -> HttpResponse:
             remote=False,
         )
         .select_related("game", "author")
+        .prefetch_related(
+            Prefetch(
+                "rapports",
+                queryset=Rapport.objects.select_related("actor").order_by("created_at"),
+            )
+        )
         .order_by("-published_at")[:20]
     )
 
@@ -145,12 +170,17 @@ def feed_instance(request: HttpRequest) -> HttpResponse:
         context={
             "reports": reports,
             "active_tab": "instance",
+            **_composer_sidebar_context(request),
         },
     )
 
 
 def feed_fediverse(request: HttpRequest) -> HttpResponse:
     """Feed — Fediverse tab. Federated content."""
+    from django.db.models import Prefetch
+
+    from suddenly.games.models import Rapport
+
     reports = (
         Report.objects.filter(
             status=ReportStatus.PUBLISHED,
@@ -158,6 +188,12 @@ def feed_fediverse(request: HttpRequest) -> HttpResponse:
             remote=True,
         )
         .select_related("game", "author")
+        .prefetch_related(
+            Prefetch(
+                "rapports",
+                queryset=Rapport.objects.select_related("actor").order_by("created_at"),
+            )
+        )
         .order_by("-published_at")[:20]
     )
 
@@ -168,6 +204,7 @@ def feed_fediverse(request: HttpRequest) -> HttpResponse:
         context={
             "reports": reports,
             "active_tab": "fediverse",
+            **_composer_sidebar_context(request),
         },
     )
 

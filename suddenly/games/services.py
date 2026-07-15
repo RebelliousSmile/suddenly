@@ -43,8 +43,13 @@ def build_game_queryset(
     q: str = "",
     system: str = "",
     tag: str = "",
+    character: Character | None = None,
 ) -> QuerySet[Game]:
-    """Build filtered game queryset from explicit params."""
+    """Build filtered game queryset from explicit params.
+
+    ``character`` — when given, restricts to games the character can act in:
+    its origin game, plus any game it has already been cast into (``GameCast``).
+    """
     public_filter = Q(is_public=True, remote=False)
     if user.is_authenticated:
         public_filter |= Q(owner=user, remote=False)
@@ -71,6 +76,9 @@ def build_game_queryset(
 
     if tag.strip():
         qs = qs.filter(tags__name=tag.strip())
+
+    if character is not None:
+        qs = qs.filter(Q(pk=character.origin_game_id) | Q(cast__character=character)).distinct()
 
     return qs
 
@@ -114,6 +122,28 @@ def build_actor_pool(user: User, game: Game) -> QuerySet[Character]:
     return Character.objects.filter(owned_pcs)
 
 
+def build_protagonist_pool(user: User) -> QuerySet[Character]:
+    """Characters the user may feature as the protagonist of a *new* scene.
+
+    Game-independent union of :func:`build_actor_pool` across every game the user
+    could open a scene in:
+
+    - their own PCs (``owner=user, status=pc``) — actable in any game;
+    - NPCs cast into a game they master (``status=npc`` &
+      ``castings__game__owner=user``) — actable as GM of that game.
+
+    This is what the free-mode "Personnage" picker must offer: every character it
+    lists is a valid protagonist for at least one game the composer will let the
+    user pick, so ``open_new_scene``'s per-game ``build_actor_pool`` re-check
+    never rejects a legitimately-offered choice. A character merely *created*
+    (not owned) by the user, or owned but not ``pc`` (adopted, claimed, forked),
+    is deliberately excluded — it cannot open a scene.
+    """
+    own_pcs = Q(owner=user, status=CharacterStatus.PC)
+    mastered_npcs = Q(status=CharacterStatus.NPC, castings__game__owner=user)
+    return Character.objects.filter(own_pcs | mastered_npcs).distinct()
+
+
 def available_kinds(user: User, game: Game) -> list[tuple[str, Any]]:
     """The Rapport kinds the writer may pick in ``game``, given their role.
 
@@ -131,6 +161,91 @@ def available_kinds(user: User, game: Game) -> list[tuple[str, Any]]:
 def build_game_cast(game: Game) -> QuerySet[Character]:
     """The characters declared available in ``game`` (its ``GameCast``)."""
     return Character.objects.filter(castings__game=game).order_by("name")
+
+
+def build_composer_context(
+    user: User,
+    *,
+    report: Report | None = None,
+    game: Game | None = None,
+    character: Character | None = None,
+    selected_actor: str = "",
+    selected_actor_label: str = "",
+) -> dict[str, object]:
+    """Build the single source of truth the ``_composer.html`` partial consumes.
+
+    Frozen mode (``report`` given): game, personnage and language are inherited
+    from the scene — the header is a breadcrumb. Free mode (``report`` absent):
+    the header is two selectors and the caller supplies ``games``/``personnages``.
+
+    Either way the role-scoped, non-negotiable pieces are computed here:
+    ``is_gm`` (deduced), ``kinds`` (narration only for a GM) and the actor pool.
+    """
+    frozen = report is not None
+    if frozen and report is not None:
+        game = report.game
+
+    if game is not None:
+        is_gm = is_game_master(user, game)
+        kinds = available_kinds(user, game)
+        actors = build_actor_pool(user, game).select_related("origin_game").order_by("name")
+        cast_npcs = build_game_cast(game).filter(status=CharacterStatus.NPC)
+    else:
+        is_gm = False
+        kinds = []
+        actors = Character.objects.none()
+        cast_npcs = Character.objects.none()
+
+    own_pcs = Character.objects.filter(owner=user, status=CharacterStatus.PC).order_by("name")
+
+    # Reply targets (discussion) — the scene's own posts. Only in frozen mode:
+    # from the feed there is no scene yet to reply within.
+    reply_targets = (
+        report.rapports.select_related("actor").order_by("order", "created_at")
+        if report is not None
+        else Rapport.objects.none()
+    )
+
+    # Rule 2a: nothing leaves without a personnage AND a partie — drafts too.
+    # In frozen mode both are inherited from the scene, so sending is allowed.
+    can_send = frozen or (game is not None and character is not None)
+
+    return {
+        "report": report,
+        "frozen": frozen,
+        "game": game,
+        "is_gm": is_gm,
+        "kinds": kinds,
+        "actors": actors,
+        "cast_npcs": cast_npcs,
+        "own_pcs": own_pcs,
+        "reply_targets": reply_targets,
+        "selected_character": character,
+        "selected_actor": selected_actor,
+        "selected_actor_label": selected_actor_label,
+        "can_send": can_send,
+    }
+
+
+def build_composer_feed_context(
+    user: User,
+    *,
+    game: Game | None = None,
+    character: Character | None = None,
+) -> dict[str, object]:
+    """Free-mode composer context: adds the game/personnage pickers to the base context.
+
+    Used both by the standalone ``games:composer`` page (which recomputes role-scoped
+    context as the writer picks a game/personnage) and by the feed sidebar (initial,
+    unselected state — called with no ``game``/``character``).
+
+    ``games`` is scoped to ``character`` once one is picked (rule 2b): its origin
+    game plus any game it has already been cast into.
+    """
+    ctx = build_composer_context(user, game=game, character=character)
+    ctx["games"] = build_game_queryset(user, character=character)
+    ctx["personnages"] = build_protagonist_pool(user).select_related("origin_game").order_by("name")
+    return ctx
 
 
 def next_rapport_order(report: Report) -> int:
@@ -185,6 +300,21 @@ def validate_actor_for_role(user: User, game: Game, actor: Character | None) -> 
         raise ValidationError({"actor": "This actor is not one you may make speak in this game."})
 
 
+def _attach_rapport_media(
+    rapport: Rapport, kind: str, image: object | None, media_alt: str, media_tone: str
+) -> None:
+    """One image = one mood, description only (``RapportMedia.clean`` also enforces this)."""
+    if image is not None and kind == RapportKind.DESCRIPTION:
+        media = RapportMedia(
+            rapport=rapport,
+            image=image,
+            alt=(media_alt or "").strip(),
+            tone=(media_tone or "").strip(),
+        )
+        media.full_clean()
+        media.save()
+
+
 @transaction.atomic
 def create_scene_post(
     *,
@@ -235,16 +365,7 @@ def create_scene_post(
         link.full_clean(exclude=["rapport"])
         link.save()
 
-    # One image = one mood, description only (RapportMedia.clean enforces kind).
-    if image is not None and kind == RapportKind.DESCRIPTION:
-        media = RapportMedia(
-            rapport=rapport,
-            image=image,
-            alt=(media_alt or "").strip(),
-            tone=(media_tone or "").strip(),
-        )
-        media.full_clean()
-        media.save()
+    _attach_rapport_media(rapport, kind, image, media_alt, media_tone)
     return rapport
 
 
@@ -258,12 +379,20 @@ def open_new_scene(
     game: Game | None = None,
     actor: Character | None = None,
     status: str = RapportStatus.PUBLISHED,
+    image: object | None = None,
+    media_alt: str = "",
+    media_tone: str = "",
 ) -> tuple[Report, Rapport]:
     """Open a new scene featuring a character, in one transaction.
 
-    ``game`` defaults to ``character.origin_game`` but may be **any** game — a
-    character "peut intervenir dans n'importe quelle partie du réseau" (rule 2b),
-    so the composer's game selector is not filtered by the chosen character.
+    ``game`` defaults to ``character.origin_game`` but may be any game the
+    character is allowed to act in per ``build_actor_pool`` (rule 2b) — the
+    composer's free-mode game picker further restricts choices to the
+    character's origin game plus games it is already cast into, but this
+    function itself does not enforce that narrower UI-level restriction.
+
+    ``image``/``media_alt``/``media_tone`` attach a ``RapportMedia`` when
+    ``kind`` is ``description`` (see ``_attach_rapport_media``).
 
     Produces, atomically:
       - ``Report(game=game, author=user, status=draft, released_at=None)`` — a
@@ -314,6 +443,8 @@ def open_new_scene(
     add_to_cast(game, character, user)
     if actor is not None and actor.pk != character.pk:
         add_to_cast(game, actor, user)
+
+    _attach_rapport_media(rapport, kind, image, media_alt, media_tone)
 
     return report, rapport
 
