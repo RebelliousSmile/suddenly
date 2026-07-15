@@ -92,6 +92,14 @@ flowchart TD
 | `suddenly/core/services.py` | Explorer queries (cached) | Yes |
 | `suddenly/core/notification_signals.py` | Notification wiring | Yes |
 | `suddenly/core/feed_views.py` | Feed aggregation | Yes |
+| `suddenly/games/services.py` | Composer context (public) + protagonist pool | Yes |
+
+## Composer & feed services
+
+- `games/services.py` : `build_composer_context`, `build_composer_feed_context`, `build_protagonist_pool(user)` (PJ propres + PNJ maîtrisés) — publics, consommés par le composer **et** la sidebar des 3 flux
+- `core/feed_views.py` : `_composer_sidebar_context(request)` peuple la sidebar au 1er chargement seulement (skip si anonyme ou swap HTMX) ; flux rendus en `_scene_card.html` (3 derniers posts via `Prefetch` des `rapports`)
+- `characters/services.py` : `suggested_characters_to_link(user)` (candidats claim/adopt/fork sur la page create) ; `LinkService.publish_sequence` (publication de séquence partagée + notifications bilatérales) — reject/cancel délèguent aussi à `LinkService`
+- `users/tasks.py` : import de follows offloadé en tâche Celery (fallback inline sur erreur broker)
 
 ## App Import Relations
 
