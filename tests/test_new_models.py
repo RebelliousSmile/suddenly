@@ -256,7 +256,7 @@ class TestNotification:
         assert n.is_read
 
     def test_all_notification_types(self) -> None:
-        assert len(NotificationType.choices) == 10
+        assert len(NotificationType.choices) == 11
 
     def test_notification_ordering(self, user: User) -> None:
         """Notifications are ordered by -created_at."""

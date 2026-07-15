@@ -67,3 +67,14 @@ class PreferencesForm(forms.ModelForm):  # type: ignore[type-arg]
             return result
         except (json.JSONDecodeError, TypeError):
             return [code.strip() for code in value.split(",") if code.strip()]
+
+
+class MusesSettingsForm(forms.ModelForm):  # type: ignore[type-arg]
+    """Muses activation and per-feature opt-ins (credits are read-only, not here)."""
+
+    class Meta:
+        model = User
+        fields = [
+            "muses_enabled",
+            "muses_post_ingest_optin",
+        ]

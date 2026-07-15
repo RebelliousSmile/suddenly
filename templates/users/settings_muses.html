@@ -1,0 +1,61 @@
+{% extends "users/settings_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Muses" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block settings_content %}
+        <h1 class="text-2xl font-bold text-primary mb-6">{% trans "Muses" %}</h1>
+
+        <!-- Credit counter -->
+        <div class="card card-body mb-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs uppercase tracking-wide text-muted mb-1">
+                        {% trans "Available credits" %}
+                    </p>
+                    <p class="text-3xl font-bold text-primary tabular-nums">{{ muses_credits }}</p>
+                </div>
+                <span class="i-lucide-sparkles text-3xl text-accent"></span>
+            </div>
+            <p class="text-xs text-muted mt-3">
+                {% trans "One credit is spent per Muses assistance. Credits are granted by the instance admin." %}
+            </p>
+        </div>
+
+        {% if not hub_configured %}
+            {% include "components/status_banner.html" with type="info" icon="cloud-off" message=_("This instance is not connected to a Muses hub yet — assistance stays unavailable even when enabled.") %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="card card-body space-y-6"
+                 x-data="{ enabled: {{ form.muses_enabled.value|yesno:'true,false' }} }">
+
+                <!-- Master activation switch -->
+                <div x-init="$watch('enabled', v => {})">
+                    {% include "components/form_switch.html" with field_id=form.muses_enabled.id_for_label field_name=form.muses_enabled.html_name field_label=form.muses_enabled.label field_checked=form.muses_enabled.value field_help=form.muses_enabled.help_text %}
+                    {% for error in form.muses_enabled.errors %}
+                        <p class="form-error mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <!-- Per-feature opt-in: automatic post-ingestion assistance (#126) -->
+                <div class="py-4 border-t border-border">
+                    {% include "components/form_switch.html" with field_id=form.muses_post_ingest_optin.id_for_label field_name=form.muses_post_ingest_optin.html_name field_label=form.muses_post_ingest_optin.label field_checked=form.muses_post_ingest_optin.value field_help=form.muses_post_ingest_optin.help_text %}
+                    <p class="text-xs text-muted mt-1">
+                        {% trans "Only applies while Muses is enabled above." %}
+                    </p>
+                    {% for error in form.muses_post_ingest_optin.errors %}
+                        <p class="form-error mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="btn-primary">
+                        <span class="i-lucide-save"></span>
+                        {% trans "Save" %}
+                    </button>
+                </div>
+            </div>
+        </form>
+{% endblock %}
