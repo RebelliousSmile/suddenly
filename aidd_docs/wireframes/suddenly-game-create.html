@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Suddenly — nouvelle partie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c-bg: #faf9f6; --c-surface: #f0ede8; --c-card: #ffffff; --c-card-dark: #f5f2ec;
+    --c-border: #d4cfe8; --c-primary: #1a1a2e; --c-secondary: #555555; --c-muted: #8c8c8c;
+    --shadow-card: 0 2px 16px rgba(0,0,0,0.07); --shadow-pop: 0 -6px 32px rgba(0,0,0,0.18);
+    --crimson: 224 53 88; --violet: 124 58 237; --info: 3 105 161; --neon: 0 230 118; --amber: 217 119 6;
+    --brand: 99 102 241; --success: 21 128 61;
+    --r-card: 0.75rem; --r-btn: 0.5rem; --r-sheet: 1.25rem; --tap: 44px;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-display: 'Fraunces', Georgia, serif;
+    --safe-b: env(safe-area-inset-bottom);
+  }
+  [data-theme="dark"] {
+    --c-bg: #0b0705; --c-surface: #170d08; --c-card: #25150e; --c-card-dark: #1d0f09;
+    --c-border: #3d2215; --c-primary: #f0f0f0; --c-secondary: #b8b0a8; --c-muted: #8f857c;
+    --shadow-card: 0 0 24px rgba(224,53,88,0.12), 0 2px 8px rgba(0,0,0,0.4);
+    --shadow-pop: 0 -8px 40px rgba(0,0,0,0.6);
+    --success: 74 222 128;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { font-family: var(--font-body); background: var(--c-bg); color: var(--c-primary); line-height: 1.6;
+    -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; overscroll-behavior: none; }
+
+  .mock-bar { display: flex; align-items: center; gap: 10px; justify-content: space-between; flex: 0 0 auto;
+    background: #12121f; color: #fff; padding: 8px 14px; padding-top: max(8px, env(safe-area-inset-top));
+    border-bottom: 2px solid rgb(var(--crimson)); position: sticky; top: 0; z-index: 200; }
+  .mock-bar__left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .mock-bar__brand { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .mock-bar__brand small { font-size: 11px; font-weight: 400; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
+  .mock-dot { width: 9px; height: 11px; background: rgb(var(--crimson)); clip-path: polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%); flex: 0 0 auto; }
+  .barback { background: none; border: none; color: rgba(255,255,255,.75); cursor: pointer; display: inline-flex; align-items: center; padding: 4px; }
+  .barback svg { width: 20px; height: 20px; }
+  .mock-btn { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); color: #fff;
+    height: 34px; min-width: 34px; padding: 0 10px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: 500 13px var(--font-body); flex: 0 0 auto; }
+
+  main { flex: 1 1 auto; overflow-y: auto; }
+  .wrap { max-width: 660px; margin: 0 auto; padding: 16px 14px 28px; display: flex; flex-direction: column; gap: 18px; }
+
+  .sec { background: var(--c-card); border: 1px solid var(--c-border); border-radius: var(--r-card); box-shadow: var(--shadow-card); }
+  .sec__head { display: flex; align-items: baseline; gap: 8px; padding: 14px 16px 0; }
+  .sec__t { font-family: var(--font-display); font-size: 18px; font-weight: 600; }
+  .sec__d { font-size: 11.5px; color: var(--c-muted); }
+  .sec__body { padding: 12px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field > label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--c-muted); }
+  .in, .ta { width: 100%; font: 400 15px var(--font-body); color: var(--c-primary); background: var(--c-bg);
+    border: 1.5px solid var(--c-border); border-radius: var(--r-btn); padding: 10px 12px; min-height: var(--tap); }
+  .in:focus, .ta:focus { outline: none; border-color: rgb(var(--brand)); }
+  .ta { resize: vertical; min-height: 76px; line-height: 1.55; }
+  .in--title { font-family: var(--font-display); font-size: 19px; font-weight: 600; }
+  .fhint { font-size: 11.5px; color: var(--c-muted); line-height: 1.4; }
+
+  /* système : champ libre + suggestions rapides */
+  .sysrow { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tpill { display: inline-flex; align-items: center; gap: 4px; font: 500 12px var(--font-body); padding: 3px 10px; min-height: 28px;
+    border-radius: 999px; border: 1.5px solid var(--c-border); background: var(--c-card); color: var(--c-secondary); cursor: pointer; }
+  .tpill.is-on { border-color: rgb(var(--brand)); color: rgb(var(--brand)); background: rgb(var(--brand) / .06); }
+
+  /* visibilité : deux options exclusives (is_public: boolean) */
+  .visopt { display: flex; align-items: flex-start; gap: 12px; width: 100%; text-align: left; background: var(--c-card-dark);
+    border: 1.5px solid var(--c-border); border-radius: var(--r-card); cursor: pointer; padding: 12px; color: inherit; font-family: inherit; }
+  .visopt.sel { border-color: rgb(var(--brand)); background: rgb(var(--brand) / .05); }
+  .visopt__ic { width: 36px; height: 36px; flex: 0 0 auto; border-radius: 999px; background: var(--c-surface);
+    display: inline-flex; align-items: center; justify-content: center; color: var(--c-secondary); }
+  .visopt.sel .visopt__ic { color: rgb(var(--brand)); }
+  .visopt__ic svg { width: 18px; height: 18px; }
+  .visopt__col { min-width: 0; }
+  .visopt__t { font-size: 14.5px; font-weight: 600; line-height: 1.3; }
+  .visopt__d { font-size: 12px; color: var(--c-muted); line-height: 1.45; }
+  .visopt__radio { margin-left: auto; flex: 0 0 auto; width: 18px; height: 18px; border-radius: 999px;
+    border: 2px solid var(--c-border); align-self: center; position: relative; }
+  .visopt.sel .visopt__radio { border-color: rgb(var(--brand)); }
+  .visopt.sel .visopt__radio::after { content: ""; position: absolute; inset: 3px; border-radius: 999px; background: rgb(var(--brand)); }
+
+  .fedhint { display: flex; gap: 8px; align-items: flex-start; font-size: 11.5px; color: var(--c-muted); line-height: 1.45;
+    border-left: 2px solid rgb(var(--violet) / .4); padding-left: 10px; }
+  .fedhint svg { width: 14px; height: 14px; flex: 0 0 auto; margin-top: 2px; color: rgb(var(--violet)); }
+  .fedhint .iri { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: rgb(var(--violet)); word-break: break-all; }
+
+  /* couverture — média scalaire {alt, tone} | null, pattern du composer */
+  .coveradd { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 56px;
+    border: 1.5px dashed var(--c-border); border-radius: var(--r-btn); background: var(--c-bg); color: var(--c-muted);
+    cursor: pointer; font: 500 13px var(--font-body); }
+  .coveradd:hover { border-color: rgb(var(--crimson) / .5); color: rgb(var(--crimson)); }
+  .coveradd svg { width: 17px; height: 17px; }
+  .coverprev { position: relative; border-radius: var(--r-btn); overflow: hidden; border: 1px solid var(--c-border); }
+  .coverprev img { display: block; width: 100%; height: 104px; object-fit: cover; }
+  .coverprev__flag { position: absolute; bottom: 6px; left: 6px; font-size: 8px; font-weight: 700; letter-spacing: .04em;
+    text-transform: uppercase; background: rgb(var(--amber)); color: #000; padding: 1px 5px; border-radius: 3px; }
+  .coverprev__alt { position: absolute; bottom: 6px; right: 6px; max-width: 60%; font-size: 10px; color: #fff;
+    background: rgba(0,0,0,.45); padding: 2px 6px; border-radius: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .coverfields { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .coverrm { align-self: flex-start; background: none; border: none; color: rgb(var(--crimson)); cursor: pointer;
+    font: 600 12.5px var(--font-body); padding: 6px 0; }
+
+  /* dock */
+  .dock { flex: 0 0 auto; background: var(--c-card); border-top: 1.5px solid var(--c-border); box-shadow: var(--shadow-pop); padding-bottom: var(--safe-b); }
+  .dock__inner { max-width: 660px; margin: 0 auto; padding: 10px 14px 12px; display: flex; align-items: center; gap: 10px; }
+  .dock__lead { flex: 1 1 auto; min-width: 0; }
+  .dock__lead-t { font-size: 13px; font-weight: 600; line-height: 1.25; }
+  .dock__lead-d { font-size: 11.5px; color: var(--c-muted); line-height: 1.3; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; font-size: 14px;
+    font-family: var(--font-body); border-radius: var(--r-btn); cursor: pointer; border: 1.5px solid transparent; min-height: var(--tap); padding: 0 18px; }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .btn--primary { background: rgb(var(--crimson)); color: #fff; }
+  .btn svg { width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     MAQUETTE [Sud] — CRÉATION DE PARTIE (Game)
+     Jalon v0.1 « Création de parties ».
+
+     Modèle (suddenly-conception.md) — champs saisis à la création :
+       Game { title (requis), description?, game_system?, owner: user,
+              is_public: boolean }
+     Le reste (remote, ap_id, inbox/outbox) est posé par le serveur : la
+     partie est un ACTEUR ActivityPub suivable — l'UI ne fait que l'annoncer.
+
+     FIDÉLITÉ AU MODÈLE :
+       - Pas de statut brouillon : Game n'a pas de status (contrairement à
+         Report). Une partie existe dès sa création ; ce sont ses comptes
+         rendus qui passent par DRAFT → PUBLISHED.
+       - Visibilité = is_public, un booléen — pas le triptyque
+         public/non listé/abonnés des Reports. Deux options, pas trois.
+       - game_system est une STRING LIBRE, nullable. Les pastilles ne sont
+         que des raccourcis de saisie, pas un référentiel.
+       - Pas de casting à la création : le casting de partie
+         (Game ──N:M──> Character) reste une proposition non tranchée
+         (cf. suddenly-composer.html) — on ne le préjuge pas ici.
+       - COUVERTURE : média scalaire {alt, tone} | null, même sémantique que
+         le média de description. Champ PROPOSÉ — le modèle Game n'a aucun
+         champ image aujourd'hui.
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<header class="mock-bar">
+  <div class="mock-bar__left">
+    <button class="barback" id="backBtn" aria-label="Retour">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="mock-bar__brand"><span class="mock-dot"></span> Suddenly <small>· nouvelle partie</small></div>
+  </div>
+  <button class="mock-btn" id="themeBtn" aria-label="Thème">◐</button>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <!-- ── LA FICTION ───────────────────────────────────────────────── -->
+    <section class="sec">
+      <div class="sec__head"><h2 class="sec__t">La fiction</h2><span class="sec__d">une histoire continue, à votre rythme</span></div>
+      <div class="sec__body">
+        <div class="field">
+          <label for="fTitle">Titre</label>
+          <input class="in in--title" id="fTitle" type="text" placeholder="Les Cendres de Valombre…" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="fDesc">Description</label>
+          <textarea class="ta" id="fDesc" placeholder="Le pitch, le ton, la promesse — ce qui donnera envie de suivre cette partie."></textarea>
+        </div>
+        <div class="field">
+          <label>Couverture</label>
+          <div id="coverBox"></div>
+          <span class="fhint">L'image de la partie sur le fil et sa carte fédérée — schéma <code>{alt, tone}</code>. Champ proposé&nbsp;: le modèle Game n'a aucun champ image.</span>
+        </div>
+        <div class="field">
+          <label for="fSys">Système de jeu</label>
+          <input class="in" id="fSys" type="text" placeholder="Libre — ou choisissez un raccourci" autocomplete="off">
+          <div class="sysrow" id="sysPills"></div>
+          <span class="fhint">Champ libre et optionnel. Les fiches de personnage détaillées vivront en lien externe.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── VISIBILITÉ ───────────────────────────────────────────────── -->
+    <section class="sec">
+      <div class="sec__head"><h2 class="sec__t">Visibilité</h2><span class="sec__d">is_public</span></div>
+      <div class="sec__body">
+        <button class="visopt sel" data-vis="public" type="button">
+          <span class="visopt__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+          <span class="visopt__col">
+            <span class="visopt__t">Publique</span>
+            <span class="visopt__d">Visible et suivable sur le réseau fédéré. Vos PNJ deviennent des points d'ancrage que d'autres pourront réclamer, adopter ou dériver.</span>
+          </span>
+          <span class="visopt__radio"></span>
+        </button>
+        <button class="visopt" data-vis="private" type="button">
+          <span class="visopt__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+          <span class="visopt__col">
+            <span class="visopt__t">Privée</span>
+            <span class="visopt__d">Visible de vous seul. Rien ne fédère, aucun personnage n'est exposé au réseau.</span>
+          </span>
+          <span class="visopt__radio"></span>
+        </button>
+        <div class="fedhint" id="fedHint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span>Une partie publique est un acteur fédéré — on pourra la suivre depuis toute instance compatible&nbsp;: <span class="iri" id="fedIri">@…@suddenly.social</span></span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="dock">
+  <div class="dock__inner">
+    <div class="dock__lead">
+      <div class="dock__lead-t" id="dockT">Il manque un titre</div>
+      <div class="dock__lead-d">Les comptes rendus, le casting et les personnages viennent après.</div>
+    </div>
+    <button class="btn btn--primary" id="createBtn" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+      Créer la partie
+    </button>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  /* raccourcis de saisie — PAS un référentiel : game_system reste libre */
+  const SYS_SHORTCUTS = ['PbtA', 'FATE', 'Mist', 'Sans système'];
+
+  const S = { title:'', desc:'', system:'', isPublic:true, cover:null };  // cover: {alt, tone} | null (⚠ champ proposé)
+
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  /* ── couverture — média scalaire, pattern du composer ────────────── */
+  function coverSVG(){
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="104" viewBox="0 0 320 104">'
+      + '<rect width="320" height="104" fill="#e8e2d8"/>'
+      + '<path d="M0 84l70-46 50 34 40-22 80 40 80-30v44H0z" fill="#c9bfae"/></svg>';
+  }
+  function renderCover(){
+    const host=document.getElementById('coverBox');
+    if(S.cover===null){
+      host.innerHTML = '<button class="coveradd" id="coverAdd" type="button">'
+        + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>'
+        + ' Ajouter une couverture</button>';
+      return;
+    }
+    host.innerHTML = '<div class="coverprev">'
+      + '<img src="data:image/svg+xml;utf8,'+encodeURIComponent(coverSVG())+'" alt="'+esc(S.cover.alt)+'">'
+      + '<span class="coverprev__flag">prop.</span>'
+      + '<span class="coverprev__alt" id="coverAltPrev">'+(esc(S.cover.alt)||'&nbsp;')+'</span></div>'
+      + '<div class="coverfields">'
+      + '<div class="field"><label for="cAlt">Texte alternatif</label>'
+      +   '<input class="in" id="cAlt" data-cf="alt" value="'+esc(S.cover.alt)+'" placeholder="Ce que montre l\u2019image, en une phrase."></div>'
+      + '<div class="field"><label for="cTone">Tonalité</label>'
+      +   '<input class="in" id="cTone" data-cf="tone" value="'+esc(S.cover.tone)+'" placeholder="L\u2019ambiance qu\u2019elle porte : lourde, feutrée, blafarde…"></div>'
+      + '<button class="coverrm" id="coverRm" type="button">Retirer la couverture</button></div>';
+  }
+  document.getElementById('coverBox').addEventListener('click', e=>{
+    if(e.target.closest('#coverAdd')){ S.cover={alt:'',tone:''}; renderCover(); document.getElementById('cAlt').focus(); return; }
+    if(e.target.closest('#coverRm')){ S.cover=null; renderCover(); }
+  });
+  document.getElementById('coverBox').addEventListener('input', e=>{
+    const f=e.target.dataset.cf; if(!f||S.cover===null) return;
+    S.cover[f]=e.target.value;
+    if(f==='alt'){ const p=document.getElementById('coverAltPrev'); if(p) p.innerHTML=esc(e.target.value)||'&nbsp;'; }
+  });
+
+  /* pastilles système : préremplissent le champ libre, ne le contraignent pas */
+  const sysIn = document.getElementById('fSys');
+  function renderPills(){
+    document.getElementById('sysPills').innerHTML = SYS_SHORTCUTS.map(s=>
+      '<button class="tpill'+(S.system.trim()===s?' is-on':'')+'" data-sys="'+esc(s)+'" type="button">'+esc(s)+'</button>'
+    ).join('');
+  }
+  document.getElementById('sysPills').addEventListener('click', e=>{
+    const b=e.target.closest('[data-sys]'); if(!b) return;
+    const v=b.dataset.sys;
+    S.system = (S.system.trim()===v) ? '' : v;   // re-cliquer désélectionne
+    sysIn.value=S.system; renderPills();
+  });
+  sysIn.addEventListener('input', e=>{ S.system=e.target.value; renderPills(); });
+
+  /* visibilité — booléen, deux options exclusives */
+  document.querySelectorAll('.visopt').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      S.isPublic = el.dataset.vis==='public';
+      document.querySelectorAll('.visopt').forEach(x=>x.classList.toggle('sel', x===el));
+      document.getElementById('fedHint').style.display = S.isPublic ? 'flex' : 'none';
+      render();
+    });
+  });
+
+  /* slug d'aperçu de l'acteur fédéré — purement illustratif */
+  function slug(t){
+    return (t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,32) || '…';
+  }
+
+  document.getElementById('fTitle').addEventListener('input', e=>{ S.title=e.target.value; render(); });
+  document.getElementById('fDesc').addEventListener('input', e=>{ S.desc=e.target.value; });
+
+  function render(){
+    const ok = !!S.title.trim();
+    document.getElementById('createBtn').disabled = !ok;
+    document.getElementById('dockT').textContent = ok
+      ? 'Prête — « '+S.title.trim()+' »'+(S.isPublic?' rejoindra le fil fédéré':' restera privée')
+      : 'Il manque un titre';
+    document.getElementById('fedIri').textContent = '@'+slug(S.title)+'@suddenly.social';
+  }
+
+  /* payload — miroir du modèle Game, champs de création uniquement */
+  function buildPayload(){
+    return {
+      game: {
+        title: S.title.trim(),
+        description: S.desc.trim() || null,
+        game_system: S.system.trim() || null,
+        is_public: S.isPublic,
+        cover: S.cover===null ? null : { alt:S.cover.alt.trim(), tone:S.cover.tone.trim() },  // ⚠ champ proposé
+      },
+    };
+  }
+  document.getElementById('createBtn').addEventListener('click', ()=>{
+    alert('CRÉATION (maquette) :\n\n'+JSON.stringify(buildPayload(),null,2));
+  });
+  document.getElementById('backBtn').addEventListener('click', ()=>alert('Retour (maquette).'));
+  document.getElementById('themeBtn').addEventListener('click', ()=>{
+    document.body.dataset.theme = document.body.dataset.theme==='dark' ? '' : 'dark';
+  });
+
+  renderPills(); renderCover(); render();
+})();
+</script>
+</body>
+</html>

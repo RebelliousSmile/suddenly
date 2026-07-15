@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Suddenly — nouveau personnage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c-bg: #faf9f6; --c-surface: #f0ede8; --c-card: #ffffff; --c-card-dark: #f5f2ec;
+    --c-border: #d4cfe8; --c-primary: #1a1a2e; --c-secondary: #555555; --c-muted: #8c8c8c;
+    --shadow-card: 0 2px 16px rgba(0,0,0,0.07); --shadow-pop: 0 -6px 32px rgba(0,0,0,0.18);
+    --crimson: 224 53 88; --violet: 124 58 237; --info: 3 105 161; --neon: 0 230 118; --amber: 217 119 6;
+    --brand: 99 102 241; --success: 21 128 61;
+    --r-card: 0.75rem; --r-btn: 0.5rem; --r-sheet: 1.25rem; --tap: 44px;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-display: 'Fraunces', Georgia, serif;
+    --safe-b: env(safe-area-inset-bottom);
+  }
+  [data-theme="dark"] {
+    --c-bg: #0b0705; --c-surface: #170d08; --c-card: #25150e; --c-card-dark: #1d0f09;
+    --c-border: #3d2215; --c-primary: #f0f0f0; --c-secondary: #b8b0a8; --c-muted: #8f857c;
+    --shadow-card: 0 0 24px rgba(224,53,88,0.12), 0 2px 8px rgba(0,0,0,0.4);
+    --shadow-pop: 0 -8px 40px rgba(0,0,0,0.6);
+    --success: 74 222 128;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { font-family: var(--font-body); background: var(--c-bg); color: var(--c-primary); line-height: 1.6;
+    -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; overscroll-behavior: none; }
+
+  .mock-bar { display: flex; align-items: center; gap: 10px; justify-content: space-between; flex: 0 0 auto;
+    background: #12121f; color: #fff; padding: 8px 14px; padding-top: max(8px, env(safe-area-inset-top));
+    border-bottom: 2px solid rgb(var(--crimson)); position: sticky; top: 0; z-index: 200; }
+  .mock-bar__left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .mock-bar__brand { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .mock-bar__brand small { font-size: 11px; font-weight: 400; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
+  .mock-dot { width: 9px; height: 11px; background: rgb(var(--crimson)); clip-path: polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%); flex: 0 0 auto; }
+  .barback { background: none; border: none; color: rgba(255,255,255,.75); cursor: pointer; display: inline-flex; align-items: center; padding: 4px; }
+  .barback svg { width: 20px; height: 20px; }
+  .mock-btn { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); color: #fff;
+    height: 34px; min-width: 34px; padding: 0 10px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: 500 13px var(--font-body); flex: 0 0 auto; }
+  .mock-btn svg { width: 16px; height: 16px; }
+
+  /* contexte : partie d'origine */
+  .ctx-head { flex: 0 0 auto; background: var(--c-surface); border-bottom: 1px solid var(--c-border); }
+  .ctx-head__inner { max-width: 660px; margin: 0 auto; padding: 8px 14px; display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 4px 12px; border-radius: 999px;
+    border: 1.5px solid var(--c-border); background: var(--c-card); color: var(--c-primary); cursor: pointer;
+    font: 500 13px var(--font-body); max-width: 100%; }
+  .chip svg { width: 15px; height: 15px; flex: 0 0 auto; color: var(--c-muted); }
+  .chip--need { border-color: rgb(var(--crimson) / .55); color: rgb(var(--crimson)); }
+  .chip--need svg { color: rgb(var(--crimson)); }
+  .chip--set { border-color: rgb(var(--brand) / .5); }
+  .chip__t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ctx-note { font-size: 11.5px; color: var(--c-muted); margin-left: auto; text-align: right; }
+
+  main { flex: 1 1 auto; overflow-y: auto; }
+  .wrap { max-width: 660px; margin: 0 auto; padding: 16px 14px 28px; display: flex; flex-direction: column; gap: 18px; }
+
+  .sec { background: var(--c-card); border: 1px solid var(--c-border); border-radius: var(--r-card); box-shadow: var(--shadow-card); }
+  .sec__head { display: flex; align-items: baseline; gap: 8px; padding: 14px 16px 0; }
+  .sec__t { font-family: var(--font-display); font-size: 18px; font-weight: 600; }
+  .sec__d { font-size: 11.5px; color: var(--c-muted); }
+  .sec__body { padding: 12px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field > label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--c-muted); }
+  .in, .ta { width: 100%; font: 400 15px var(--font-body); color: var(--c-primary); background: var(--c-bg);
+    border: 1.5px solid var(--c-border); border-radius: var(--r-btn); padding: 10px 12px; min-height: var(--tap); }
+  .in:focus, .ta:focus { outline: none; border-color: rgb(var(--brand)); }
+  .ta { resize: vertical; min-height: 76px; line-height: 1.55; }
+  .in--url { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
+  .fhint { font-size: 11.5px; color: var(--c-muted); line-height: 1.4; }
+
+  /* identité : avatar auto-initiale */
+  .id-row { display: flex; gap: 14px; align-items: flex-start; }
+  .id-av { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .av-wrap { position: relative; display: inline-flex; }
+  .av { border-radius: 999px; background: var(--c-surface); display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 600; color: var(--c-secondary); border: 3px solid rgb(var(--brand)); overflow: hidden; width: 64px; height: 64px; }
+  .av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .av-dot { position: absolute; bottom: 0; right: 0; width: 14px; height: 14px; border-radius: 999px;
+    border: 2.5px solid var(--c-card); background: rgb(var(--brand)); }
+  .id-av small { font-size: 9.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--c-muted); font-weight: 600; }
+  .id-fields { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+
+  /* ensembles de traits */
+  .tset { border: 1px solid var(--c-border); border-radius: var(--r-card); background: var(--c-card-dark); }
+  .tset__head { display: flex; align-items: center; gap: 8px; padding: 10px 10px 8px 12px; }
+  .tset__name { flex: 1 1 auto; min-width: 0; font: 600 15px var(--font-display); color: var(--c-primary);
+    background: transparent; border: none; border-bottom: 1.5px dashed var(--c-border); padding: 4px 2px; }
+  .tset__name:focus { outline: none; border-bottom-color: rgb(var(--brand)); }
+  .tset__body { padding: 2px 8px 10px; display: flex; flex-direction: column; gap: 2px; }
+
+  .trow { display: flex; align-items: center; gap: 6px; padding: 3px 0; border-radius: var(--r-btn); }
+  .trow.is-moved { background: rgb(var(--crimson) / .06); }
+  .trow__move { flex: 0 0 auto; width: 26px; display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .marw { width: 24px; height: 20px; border: none; background: none; color: var(--c-muted); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; border-radius: 5px; -webkit-tap-highlight-color: transparent; padding: 0; }
+  .marw:hover:not(:disabled) { color: rgb(var(--crimson)); background: var(--c-surface); }
+  .marw:disabled { opacity: .25; cursor: default; }
+  .marw svg { width: 14px; height: 14px; }
+  .trow__name { flex: 1 1 auto; min-width: 0; }
+  .trow__val { flex: 0 0 64px; text-align: center; font-variant-numeric: tabular-nums; }
+  .trow .in { min-height: 38px; padding: 7px 10px; font-size: 14px; }
+  .iact { width: 34px; height: 34px; flex: 0 0 auto; border-radius: var(--r-btn); border: none; background: none; color: var(--c-muted);
+    cursor: pointer; display: inline-flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; }
+  .iact:hover { color: var(--c-primary); background: var(--c-surface); }
+  .iact--del:hover { color: rgb(var(--crimson)); }
+  .iact.is-on { color: rgb(var(--info)); }
+  .iact svg { width: 16px; height: 16px; }
+  .trow__note { margin: 0 0 6px 32px; display: none; }
+  .trow__note.on { display: block; }
+  .trow__note .in { font-size: 13px; font-style: italic; color: var(--c-secondary); }
+
+  .addline { display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 4px 8px; margin-left: 24px;
+    background: none; border: none; color: rgb(var(--crimson)); cursor: pointer; font: 600 13px var(--font-body); border-radius: var(--r-btn); }
+  .addline:hover { background: rgb(var(--crimson) / .07); }
+  .addline svg { width: 15px; height: 15px; }
+  .addline--set { margin-left: 0; }
+
+  /* actions */
+  .act { border: 1px solid var(--c-border); border-radius: var(--r-card); background: var(--c-card-dark); padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 9px; }
+  .act__row1 { display: flex; align-items: center; gap: 6px; }
+  .act__row1 .in { flex: 1 1 auto; min-height: 38px; padding: 7px 10px; font-size: 14px; font-weight: 600; }
+  .act__traits { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .act__tlabel { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--c-muted); flex: 0 0 auto; }
+  .tpill { display: inline-flex; align-items: center; gap: 4px; font: 500 12px var(--font-body); padding: 3px 10px; min-height: 28px;
+    border-radius: 999px; border: 1.5px solid var(--c-border); background: var(--c-card); color: var(--c-secondary); cursor: pointer; }
+  .tpill.is-on { border-color: rgb(var(--brand)); color: rgb(var(--brand)); background: rgb(var(--brand) / .06); }
+  .tpill--empty { border-style: dashed; cursor: default; color: var(--c-muted); font-style: italic; }
+  .act__co { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  @media (min-width: 560px) { .act__co { grid-template-columns: 1fr 1fr; } }
+  .act__co .ta { min-height: 58px; font-size: 13.5px; }
+  .noeval { display: flex; gap: 8px; align-items: flex-start; font-size: 11.5px; color: var(--c-muted); line-height: 1.45;
+    border-left: 2px solid rgb(var(--info) / .4); padding-left: 10px; }
+  .noeval svg { width: 14px; height: 14px; flex: 0 0 auto; margin-top: 2px; color: rgb(var(--info)); }
+
+  /* couverture — média scalaire {alt, tone} | null, pattern du composer */
+  .coveradd { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 56px;
+    border: 1.5px dashed var(--c-border); border-radius: var(--r-btn); background: var(--c-bg); color: var(--c-muted);
+    cursor: pointer; font: 500 13px var(--font-body); }
+  .coveradd:hover { border-color: rgb(var(--crimson) / .5); color: rgb(var(--crimson)); }
+  .coveradd svg { width: 17px; height: 17px; }
+  .coverprev { position: relative; border-radius: var(--r-btn); overflow: hidden; border: 1px solid var(--c-border); }
+  .coverprev img { display: block; width: 100%; height: 104px; object-fit: cover; }
+  .coverprev__flag { position: absolute; bottom: 6px; left: 6px; font-size: 8px; font-weight: 700; letter-spacing: .04em;
+    text-transform: uppercase; background: rgb(var(--amber)); color: #000; padding: 1px 5px; border-radius: 3px; }
+  .coverprev__alt { position: absolute; bottom: 6px; right: 6px; max-width: 60%; font-size: 10px; color: #fff;
+    background: rgba(0,0,0,.45); padding: 2px 6px; border-radius: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .coverfields { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .coverrm { align-self: flex-start; background: none; border: none; color: rgb(var(--crimson)); cursor: pointer;
+    font: 600 12.5px var(--font-body); padding: 6px 0; }
+
+  /* dock */
+  .dock { flex: 0 0 auto; background: var(--c-card); border-top: 1.5px solid var(--c-border); box-shadow: var(--shadow-pop); padding-bottom: var(--safe-b); }
+  .dock__inner { max-width: 660px; margin: 0 auto; padding: 10px 14px 12px; display: flex; align-items: center; gap: 10px; }
+  .dock__lead { flex: 1 1 auto; min-width: 0; }
+  .dock__lead-t { font-size: 13px; font-weight: 600; line-height: 1.25; }
+  .dock__lead-d { font-size: 11.5px; color: var(--c-muted); line-height: 1.3; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; font-size: 14px;
+    font-family: var(--font-body); border-radius: var(--r-btn); cursor: pointer; border: 1.5px solid transparent; min-height: var(--tap); padding: 0 18px; }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .btn--primary { background: rgb(var(--crimson)); color: #fff; }
+  .btn--ghost { background: none; border-color: var(--c-border); color: var(--c-secondary); }
+  .btn svg { width: 16px; height: 16px; }
+
+  /* sheets */
+  .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 300; opacity: 0; pointer-events: none; transition: opacity .18s; }
+  .scrim.on { opacity: 1; pointer-events: auto; }
+  .sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 310; background: var(--c-card);
+    border-radius: var(--r-sheet) var(--r-sheet) 0 0; box-shadow: var(--shadow-pop); transform: translateY(105%);
+    transition: transform .22s ease; padding: 10px 12px calc(14px + var(--safe-b)); max-height: 72vh; overflow-y: auto; }
+  .sheet.on { transform: none; }
+  .sheet__grab { width: 38px; height: 4px; border-radius: 999px; background: var(--c-border); margin: 2px auto 10px; }
+  .sheet__title { font-family: var(--font-display); font-size: 17px; font-weight: 600; padding: 0 6px 8px; }
+  .opt { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: none; border: none;
+    cursor: pointer; padding: 10px 8px; border-radius: var(--r-btn); color: inherit; font-family: inherit; min-height: var(--tap); }
+  .opt:hover { background: var(--c-surface); }
+  .opt.sel { background: rgb(var(--brand) / .08); }
+  .opt__ic { width: 34px; height: 34px; flex: 0 0 auto; border-radius: 999px; background: var(--c-surface);
+    display: inline-flex; align-items: center; justify-content: center; color: var(--c-secondary); }
+  .opt__ic svg { width: 17px; height: 17px; }
+  .opt__col { display: flex; flex-direction: column; min-width: 0; }
+  .opt__t { font-size: 14.5px; font-weight: 600; }
+  .opt__d { font-size: 12px; color: var(--c-muted); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     MAQUETTE [Sud] — CRÉATION DE PERSONNAGE (PJ)
+     Jalon v0.2 « Création de PJ avec fiche minimale ».
+
+     Modèle Django visé :
+       Character { name, description, avatar?, status: PC, owner: user,
+                   creator: user, origin_game (FK requis), sheet_url? }
+       characters.TraitSet { character FK, name }            — un CONCEPT :
+                             les traits se classent par concept
+       characters.Trait    { set FK, name, value: int|null,  — borné −5..+5
+                             note? }                            (validators
+                             MinValue(-5) / MaxValue(5) à poser en migration)
+       characters.Action   { character FK, name, traits M2M,
+                             condition: TextField, outcome: TextField }
+
+     PRINCIPE STRUCTUREL — « affiché, jamais évalué » :
+       condition / outcome sont du texte montré au lecteur. Aucun évaluateur
+       n'existe ni ne peut être branché sans réécrire le modèle. L'UI ne doit
+       suggérer aucune mécanique (pas de dés, pas de calcul, pas de jauges).
+
+     Cible : MJ PbtA / FATE / Mist. Les systèmes à caractéristiques +
+     compétences + dés sont redirigés vers sheet_url (fiche externe).
+
+     ⚠ HYPOTHÈSES DE MAQUETTE (à trancher côté Django si divergence) :
+       - TraitSet ──1:N──> Trait ; un Character porte PLUSIEURS concepts
+         (ex. « Héritière du sceau brisé » + « L'ombre du conseil »).
+       - Action.traits pioche dans TOUS les traits du personnage, tous
+         concepts confondus.
+       - L'avatar est l'initiale auto-générée (comme scene-edit) ; l'upload
+         d'image n'est pas dans cette passe.
+       - COUVERTURE : média scalaire {alt, tone} | null, même sémantique que
+         le média de description (une image = une ambiance). Champ PROPOSÉ,
+         distinct de Character.avatar — absent du modèle Django actuel.
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<header class="mock-bar">
+  <div class="mock-bar__left">
+    <button class="barback" id="backBtn" aria-label="Retour">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="mock-bar__brand"><span class="mock-dot"></span> Suddenly <small>· nouveau personnage</small></div>
+  </div>
+  <button class="mock-btn" id="themeBtn" aria-label="Thème">◐</button>
+</header>
+
+<!-- origine : tout personnage naît dans une partie (origin_game requis) -->
+<div class="ctx-head">
+  <div class="ctx-head__inner">
+    <button class="chip chip--need" id="chipGame">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      <span class="chip__t" id="chipGameLabel">Partie d'origine ?</span>
+    </button>
+    <span class="ctx-note">Un personnage naît dans une partie,<br>puis voyage sur tout le réseau.</span>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+
+    <!-- ── IDENTITÉ ─────────────────────────────────────────────────── -->
+    <section class="sec">
+      <div class="sec__head"><h2 class="sec__t">Identité</h2><span class="sec__d">la fiche minimale</span></div>
+      <div class="sec__body">
+        <div class="id-row">
+          <div class="id-av">
+            <span class="av-wrap"><span class="av" id="avPrev"><img id="avImg" alt="" src=""></span><span class="av-dot"></span></span>
+            <small>PJ</small>
+          </div>
+          <div class="id-fields">
+            <div class="field">
+              <label for="fName">Nom</label>
+              <input class="in" id="fName" type="text" placeholder="Selène, Le Bourgmestre…" autocomplete="off">
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fDesc">Description</label>
+          <textarea class="ta" id="fDesc" placeholder="Qui est ce personnage ? Ce que le réseau verra de lui."></textarea>
+          <span class="fhint">Publique une fois le personnage cité dans un compte rendu publié.</span>
+        </div>
+        <div class="field">
+          <label>Couverture</label>
+          <div id="coverBox"></div>
+          <span class="fhint">Une image, une ambiance — schéma <code>{alt, tone}</code>, distinct de l'avatar. Champ proposé&nbsp;: absent du modèle Character actuel.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TRAITS ───────────────────────────────────────────────────── -->
+    <section class="sec">
+      <div class="sec__head"><h2 class="sec__t">Traits</h2><span class="sec__d">classés par concept, de −5 à +5</span></div>
+      <div class="sec__body">
+        <div id="tsets"></div>
+        <button class="addline addline--set" id="addSet">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          Nouveau concept
+        </button>
+        <div class="noeval">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          <span>La valeur est un entier de −5 à +5, optionnel — Suddenly l'affiche, ne la calcule jamais.
+          Système à caractéristiques, compétences et dés&nbsp;? Renseignez plutôt la fiche externe ci-dessous.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── ACTIONS ──────────────────────────────────────────────────── -->
+    <section class="sec">
+      <div class="sec__head"><h2 class="sec__t">Actions</h2><span class="sec__d">ce que le personnage sait faire</span></div>
+      <div class="sec__body">
+        <div id="acts" style="display:flex;flex-direction:column;gap:10px"></div>
+        <button class="addline addline--set" id="addAct">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          Ajouter une action
+        </button>
+        <div class="noeval">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13.73 21a2 2 0 0 1-3.46 0"/><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+          <span>Condition et effet sont du texte, affiché tel quel au lecteur — jamais évalué par la plateforme.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FICHE EXTERNE ────────────────────────────────────────────── -->
+    <section class="sec">
+      <div class="sec__head"><h2 class="sec__t">Fiche externe</h2><span class="sec__d">pour le reste du crunch</span></div>
+      <div class="sec__body">
+        <div class="field">
+          <label for="fSheet">sheet_url</label>
+          <input class="in in--url" id="fSheet" type="url" placeholder="https://…" autocomplete="off">
+          <span class="fhint">Caractéristiques, compétences, jets de dés : la fiche complète vit ailleurs, Suddenly n'en garde que le lien.</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="dock">
+  <div class="dock__inner">
+    <div class="dock__lead">
+      <div class="dock__lead-t" id="dockT">Nom et partie d'origine requis</div>
+      <div class="dock__lead-d" id="dockD">Traits, actions et fiche externe restent modifiables ensuite.</div>
+    </div>
+    <button class="btn btn--ghost" id="draftBtn">Brouillon</button>
+    <button class="btn btn--primary" id="createBtn" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+      Créer
+    </button>
+  </div>
+</footer>
+
+<!-- sheet : partie d'origine -->
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheetGame" role="dialog" aria-label="Partie d'origine">
+  <div class="sheet__grab"></div>
+  <div class="sheet__title">Partie d'origine</div>
+  <div id="gameOpts"></div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ── données de maquette ─────────────────────────────────────────── */
+  const GAMES = [
+    { id:'valombre', title:'Les Cendres de Valombre', role:'gm' },
+    { id:'rade',     title:'La Rade des Trois Vents', role:'player' },
+  ];
+
+  let uid = 0; const nid = () => 'k'+(++uid);
+
+  /* état — préchargé pour montrer la maquette habitée (exemple FATE-ish) */
+  const S = {
+    game: null,
+    name: '', desc: '', sheet: '',
+    cover: null,   // {alt, tone} | null — une image, une ambiance (⚠ champ proposé)
+    sets: [
+      { id:nid(), name:'Héritière du sceau brisé', traits:[
+        { id:nid(), name:'Autorité contestée', value:2, note:'', noteOn:false },
+        { id:nid(), name:'Je ne mens jamais deux fois', value:-1, note:'Se retourne contre elle sous pression', noteOn:true },
+      ]},
+      { id:nid(), name:'L\u2019ombre du conseil', traits:[
+        { id:nid(), name:'Lire une salle', value:3, note:'', noteOn:false },
+        { id:nid(), name:'Dettes anciennes', value:-3, note:'', noteOn:false },
+      ]},
+    ],
+    acts: [
+      { id:nid(), name:'Lire une salle', traits:[], condition:'En entrant dans un lieu chargé', outcome:'Le MJ révèle un détail que personne d\u2019autre n\u2019a vu.' },
+    ],
+  };
+  // l'action « Lire une salle » s'appuie sur le trait du même nom
+  S.acts[0].traits.push(S.sets[1].traits[0].id);
+
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function allTraits(){ return S.sets.flatMap(t=>t.traits); }
+  function game(){ return GAMES.find(g=>g.id===S.game)||null; }
+
+  /* ── avatar auto-initiale (repris de scene-edit) ─────────────────── */
+  function avatarData(name){
+    const init = esc((name||'?').trim().charAt(0).toUpperCase()||'?');
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">'
+      + '<text x="40" y="40" dy="0.35em" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="38" font-weight="600" fill="#8c8c8c">'+init+'</text></svg>';
+    return 'data:image/svg+xml;utf8,'+encodeURIComponent(svg);
+  }
+
+  /* ── couverture — média scalaire, pattern du composer ────────────── */
+  function coverSVG(){
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="104" viewBox="0 0 320 104">'
+      + '<rect width="320" height="104" fill="#e8e2d8"/>'
+      + '<path d="M0 84l70-46 50 34 40-22 80 40 80-30v44H0z" fill="#c9bfae"/></svg>';
+  }
+  function renderCover(){
+    const host=document.getElementById('coverBox');
+    if(S.cover===null){
+      host.innerHTML = '<button class="coveradd" id="coverAdd" type="button">'
+        + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>'
+        + ' Ajouter une couverture</button>';
+      return;
+    }
+    host.innerHTML = '<div class="coverprev">'
+      + '<img src="data:image/svg+xml;utf8,'+encodeURIComponent(coverSVG())+'" alt="'+esc(S.cover.alt)+'">'
+      + '<span class="coverprev__flag">prop.</span>'
+      + '<span class="coverprev__alt" id="coverAltPrev">'+(esc(S.cover.alt)||'&nbsp;')+'</span></div>'
+      + '<div class="coverfields">'
+      + '<div class="field"><label for="cAlt">Texte alternatif</label>'
+      +   '<input class="in" id="cAlt" data-cf="alt" value="'+esc(S.cover.alt)+'" placeholder="Ce que montre l\u2019image, en une phrase."></div>'
+      + '<div class="field"><label for="cTone">Tonalité</label>'
+      +   '<input class="in" id="cTone" data-cf="tone" value="'+esc(S.cover.tone)+'" placeholder="L\u2019ambiance qu\u2019elle porte : lourde, feutrée, blafarde…"></div>'
+      + '<button class="coverrm" id="coverRm" type="button">Retirer la couverture</button></div>';
+  }
+  document.getElementById('coverBox').addEventListener('click', e=>{
+    if(e.target.closest('#coverAdd')){ S.cover={alt:'',tone:''}; renderCover(); document.getElementById('cAlt').focus(); return; }
+    if(e.target.closest('#coverRm')){ S.cover=null; renderCover(); }
+  });
+  document.getElementById('coverBox').addEventListener('input', e=>{
+    const f=e.target.dataset.cf; if(!f||S.cover===null) return;
+    S.cover[f]=e.target.value;
+    if(f==='alt'){ const p=document.getElementById('coverAltPrev'); if(p) p.innerHTML=esc(e.target.value)||'&nbsp;'; }
+  });
+
+  /* ── sheets ──────────────────────────────────────────────────────── */
+  const scrim=document.getElementById('scrim');
+  function openSheet(id){ scrim.classList.add('on'); document.getElementById(id).classList.add('on'); }
+  function closeSheets(){ scrim.classList.remove('on'); document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on')); }
+  scrim.addEventListener('click', closeSheets);
+
+  document.getElementById('chipGame').addEventListener('click', ()=>{
+    document.getElementById('gameOpts').innerHTML = GAMES.map(g=>
+      '<button class="opt'+(S.game===g.id?' sel':'')+'" data-game="'+g.id+'" type="button">'
+      + '<span class="opt__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg></span>'
+      + '<span class="opt__col"><span class="opt__t">'+esc(g.title)+'</span>'
+      + '<span class="opt__d">'+(g.role==='gm'?'Vous y êtes MJ':'Vous y jouez')+'</span></span></button>'
+    ).join('');
+    openSheet('sheetGame');
+  });
+  document.getElementById('gameOpts').addEventListener('click', e=>{
+    const b=e.target.closest('[data-game]'); if(!b) return;
+    S.game=b.dataset.game; syncHead(); render(); closeSheets();
+  });
+
+  /* ── rendu : ensembles de traits ─────────────────────────────────── */
+  const ICON = {
+    up:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="18 15 12 9 6 15"/></svg>',
+    dn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>',
+    del:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>',
+    note:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+    plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+  };
+
+  function renderSets(){
+    const host=document.getElementById('tsets');
+    host.style.display='flex'; host.style.flexDirection='column'; host.style.gap='12px';
+    host.innerHTML = S.sets.map(set=>{
+      const rows = set.traits.map((t,i)=>{
+        const first=i===0, last=i===set.traits.length-1;
+        return '<div class="trow" data-tid="'+t.id+'">'
+          + '<span class="trow__move">'
+          +   '<button class="marw" data-mv="up" '+(first?'disabled':'')+' aria-label="Monter">'+ICON.up+'</button>'
+          +   '<button class="marw" data-mv="dn" '+(last?'disabled':'')+' aria-label="Descendre">'+ICON.dn+'</button>'
+          + '</span>'
+          + '<input class="in trow__name" data-f="tname" value="'+esc(t.name)+'" placeholder="Nom du trait">'
+          + '<input class="in trow__val" data-f="tval" type="number" inputmode="numeric" min="-5" max="5" step="1" value="'+(t.value===null?'':t.value)+'" placeholder="—" aria-label="Valeur (−5 à +5, optionnelle)">'
+          + '<button class="iact'+(t.noteOn?' is-on':'')+'" data-tact="note" aria-label="Note">'+ICON.note+'</button>'
+          + '<button class="iact iact--del" data-tact="del" aria-label="Supprimer">'+ICON.del+'</button>'
+          + '</div>'
+          + '<div class="trow__note'+(t.noteOn?' on':'')+'" data-noteof="'+t.id+'">'
+          +   '<input class="in" data-f="tnote" data-tid="'+t.id+'" value="'+esc(t.note)+'" placeholder="Note (optionnelle)">'
+          + '</div>';
+      }).join('');
+      return '<div class="tset" data-sid="'+set.id+'">'
+        + '<div class="tset__head">'
+        +   '<input class="tset__name" data-f="sname" value="'+esc(set.name)+'" placeholder="Concept">'
+        +   '<button class="iact iact--del" data-sact="del" aria-label="Supprimer le concept">'+ICON.del+'</button>'
+        + '</div>'
+        + '<div class="tset__body">'+ (rows || '')
+        +   '<button class="addline" data-sact="addtrait">'+ICON.plus+' Ajouter un trait</button>'
+        + '</div></div>';
+    }).join('');
+  }
+
+  /* délégation : édition + réordonnancement + notes, sans re-render sur input */
+  document.getElementById('tsets').addEventListener('input', e=>{
+    const f=e.target.dataset.f; if(!f) return;
+    const sid=e.target.closest('.tset')?.dataset.sid;
+    const set=S.sets.find(s=>s.id===sid); if(!set) return;
+    if(f==='sname'){ set.name=e.target.value; return; }
+    const tid=e.target.closest('.trow')?.dataset.tid || e.target.dataset.tid;
+    const t=set.traits.find(x=>x.id===tid); if(!t) return;
+    if(f==='tname') t.name=e.target.value;
+    if(f==='tval'){
+      const v=e.target.value.trim();
+      if(v===''){ t.value=null; }
+      else {
+        let n=parseInt(v,10);
+        if(isNaN(n)) { t.value=null; }
+        else { n=Math.max(-5, Math.min(5, n)); t.value=n; if(String(n)!==v) e.target.value=n; }
+      }
+    }
+    if(f==='tnote') t.note=e.target.value;
+    if(f==='tname') renderActs();   // les pastilles d'action suivent le nom
+  });
+  document.getElementById('tsets').addEventListener('click', e=>{
+    const sEl=e.target.closest('.tset'); if(!sEl) return;
+    const set=S.sets.find(s=>s.id===sEl.dataset.sid); if(!set) return;
+
+    const sact=e.target.closest('[data-sact]')?.dataset.sact;
+    if(sact==='del'){
+      if(set.traits.length && !confirm('Supprimer le concept « '+set.name+' » et ses traits ?')) return;
+      const ids=set.traits.map(t=>t.id);
+      S.sets=S.sets.filter(s=>s!==set);
+      S.acts.forEach(a=>a.traits=a.traits.filter(id=>!ids.includes(id)));
+      renderSets(); renderActs(); render(); return;
+    }
+    if(sact==='addtrait'){
+      set.traits.push({ id:nid(), name:'', value:null, note:'', noteOn:false });
+      renderSets(); focusLastName(sEl.dataset.sid); return;
+    }
+
+    const row=e.target.closest('.trow'); if(!row) return;
+    const t=set.traits.find(x=>x.id===row.dataset.tid); if(!t) return;
+    const tact=e.target.closest('[data-tact]')?.dataset.tact;
+    if(tact==='del'){
+      set.traits=set.traits.filter(x=>x!==t);
+      S.acts.forEach(a=>a.traits=a.traits.filter(id=>id!==t.id));
+      renderSets(); renderActs(); return;
+    }
+    if(tact==='note'){ t.noteOn=!t.noteOn; renderSets(); return; }
+    const mv=e.target.closest('[data-mv]')?.dataset.mv;
+    if(mv){
+      const i=set.traits.indexOf(t), j=mv==='up'?i-1:i+1;
+      if(j<0||j>=set.traits.length) return;
+      [set.traits[i],set.traits[j]]=[set.traits[j],set.traits[i]];
+      renderSets();
+      const nr=document.querySelector('.trow[data-tid="'+t.id+'"]');
+      if(nr){ nr.classList.add('is-moved'); setTimeout(()=>nr.classList.remove('is-moved'),350); }
+    }
+  });
+  function focusLastName(sid){
+    const rows=document.querySelectorAll('.tset[data-sid="'+sid+'"] .trow__name');
+    if(rows.length) rows[rows.length-1].focus();
+  }
+  document.getElementById('addSet').addEventListener('click', ()=>{
+    S.sets.push({ id:nid(), name:'', traits:[] });
+    renderSets();
+    const names=document.querySelectorAll('.tset__name');
+    if(names.length) names[names.length-1].focus();
+  });
+
+  /* ── rendu : actions ─────────────────────────────────────────────── */
+  function renderActs(){
+    const host=document.getElementById('acts');
+    const traits=allTraits().filter(t=>t.name.trim());
+    host.innerHTML = S.acts.map(a=>{
+      const pills = traits.length
+        ? traits.map(t=>'<button class="tpill'+(a.traits.includes(t.id)?' is-on':'')+'" data-pill="'+t.id+'" type="button">'+esc(t.name)+'</button>').join('')
+        : '<span class="tpill tpill--empty">Aucun trait nommé pour l\u2019instant</span>';
+      return '<div class="act" data-aid="'+a.id+'">'
+        + '<div class="act__row1">'
+        +   '<input class="in" data-f="aname" value="'+esc(a.name)+'" placeholder="Nom de l\u2019action">'
+        +   '<button class="iact iact--del" data-aact="del" aria-label="Supprimer">'+ICON.del+'</button>'
+        + '</div>'
+        + '<div class="act__traits"><span class="act__tlabel">Traits liés</span>'+pills+'</div>'
+        + '<div class="act__co">'
+        +   '<div class="field"><label>Condition</label><textarea class="ta" data-f="acond" placeholder="Quand…">'+esc(a.condition)+'</textarea></div>'
+        +   '<div class="field"><label>Effet</label><textarea class="ta" data-f="aout" placeholder="Alors…">'+esc(a.outcome)+'</textarea></div>'
+        + '</div></div>';
+    }).join('');
+  }
+  document.getElementById('acts').addEventListener('input', e=>{
+    const f=e.target.dataset.f; if(!f) return;
+    const a=S.acts.find(x=>x.id===e.target.closest('.act')?.dataset.aid); if(!a) return;
+    if(f==='aname') a.name=e.target.value;
+    if(f==='acond') a.condition=e.target.value;
+    if(f==='aout')  a.outcome=e.target.value;
+  });
+  document.getElementById('acts').addEventListener('click', e=>{
+    const a=S.acts.find(x=>x.id===e.target.closest('.act')?.dataset.aid); if(!a) return;
+    if(e.target.closest('[data-aact]')?.dataset.aact==='del'){
+      S.acts=S.acts.filter(x=>x!==a); renderActs(); return;
+    }
+    const pill=e.target.closest('[data-pill]'); if(!pill) return;
+    const tid=pill.dataset.pill;
+    a.traits = a.traits.includes(tid) ? a.traits.filter(x=>x!==tid) : a.traits.concat(tid);
+    renderActs();
+  });
+  document.getElementById('addAct').addEventListener('click', ()=>{
+    S.acts.push({ id:nid(), name:'', traits:[], condition:'', outcome:'' });
+    renderActs();
+    const names=document.querySelectorAll('.act [data-f="aname"]');
+    if(names.length) names[names.length-1].focus();
+  });
+
+  /* ── identité + gating ───────────────────────────────────────────── */
+  document.getElementById('fName').addEventListener('input', e=>{ S.name=e.target.value; syncAvatar(); render(); });
+  document.getElementById('fDesc').addEventListener('input', e=>{ S.desc=e.target.value; });
+  document.getElementById('fSheet').addEventListener('input', e=>{ S.sheet=e.target.value; });
+
+  function syncAvatar(){ document.getElementById('avImg').src = avatarData(S.name); }
+  function syncHead(){
+    const g=game(), c=document.getElementById('chipGame'), l=document.getElementById('chipGameLabel');
+    l.textContent = g ? g.title : 'Partie d\u2019origine ?';
+    c.className = 'chip ' + (g ? 'chip--set' : 'chip--need');
+  }
+  function render(){
+    const ok = !!S.name.trim() && !!S.game;
+    document.getElementById('createBtn').disabled = !ok;
+    const dt=document.getElementById('dockT');
+    dt.textContent = ok
+      ? 'Prêt — ' + S.name.trim() + (game()? ' naît dans « '+game().title+' »':'')
+      : (!S.name.trim() && !S.game ? 'Nom et partie d\u2019origine requis'
+        : !S.name.trim() ? 'Il manque un nom' : 'Choisissez la partie d\u2019origine');
+  }
+
+  /* ── payload — miroir du modèle, sans invention ──────────────────── */
+  function buildPayload(status){
+    const traits=allTraits();
+    const tname = id => { const t=traits.find(x=>x.id===id); return t?t.name.trim():null; };
+    return {
+      character: {
+        name: S.name.trim(),
+        description: S.desc.trim(),
+        status: 'pc',
+        origin_game: S.game,
+        sheet_url: S.sheet.trim() || null,
+        avatar: null,               // initiale auto côté rendu, pas d'upload ici
+        cover: S.cover===null ? null : { alt:S.cover.alt.trim(), tone:S.cover.tone.trim() },  // ⚠ champ proposé
+        _create_status: status,     // UX seulement : 'create' | 'draft'
+      },
+      trait_sets: S.sets
+        .filter(s=>s.name.trim() || s.traits.some(t=>t.name.trim()))
+        .map(s=>({
+          name: s.name.trim(),
+          traits: s.traits.filter(t=>t.name.trim()).map(t=>({
+            name: t.name.trim(),
+            value: (t.value===null||isNaN(t.value)) ? null : Math.max(-5, Math.min(5, t.value)),
+            note: t.note.trim() || null,
+          })),
+        })),
+      actions: S.acts
+        .filter(a=>a.name.trim())
+        .map(a=>({
+          name: a.name.trim(),
+          traits: a.traits.map(tname).filter(Boolean),
+          condition: a.condition.trim(),   // affiché, jamais évalué
+          outcome: a.outcome.trim(),       // affiché, jamais évalué
+        })),
+    };
+  }
+  document.getElementById('createBtn').addEventListener('click', ()=>{
+    alert('CRÉATION (maquette) :\n\n'+JSON.stringify(buildPayload('create'),null,2));
+  });
+  document.getElementById('draftBtn').addEventListener('click', ()=>{
+    alert('BROUILLON (maquette) — fiche gardée pour vous :\n\n'+JSON.stringify(buildPayload('draft'),null,2));
+  });
+  document.getElementById('backBtn').addEventListener('click', ()=>alert('Retour (maquette).'));
+  document.getElementById('themeBtn').addEventListener('click', ()=>{
+    document.body.dataset.theme = document.body.dataset.theme==='dark' ? '' : 'dark';
+  });
+
+  /* ── boot ────────────────────────────────────────────────────────── */
+  syncAvatar(); syncHead(); renderSets(); renderActs(); renderCover(); render();
+})();
+</script>
+</body>
+</html>
