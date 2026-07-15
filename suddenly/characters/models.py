@@ -45,6 +45,16 @@ class Character(BaseModel):
     )
     description = models.TextField(blank=True)
     avatar = models.ImageField(upload_to="characters/", blank=True, null=True)
+    cover_alt = models.CharField(
+        max_length=280,
+        blank=True,
+        help_text="Ce que montre la couverture (a11y + ActivityPub Document.name).",
+    )
+    cover_tone = models.CharField(
+        max_length=80,
+        blank=True,
+        help_text="L'ambiance de la couverture : lourde, feutrée…",
+    )
 
     # Status
     status = models.CharField(
