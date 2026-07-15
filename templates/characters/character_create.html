@@ -5,13 +5,15 @@
 
 {% block content %}
 <section class="py-8">
-    <div class="container-app max-w-3xl">
+    <div class="container-app max-w-6xl">
         <h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "New character" %}</h1>
 
         {% if error %}
             <div class="mb-4 p-4 rounded-lg bg-semantic-danger/10 text-semantic-danger border border-semantic-danger/30">{{ error }}</div>
         {% endif %}
 
+        <div class="grid gap-6 items-start @lg:grid-cols-3">
+        <div class="@lg:col-span-2">
         <form method="post" enctype="multipart/form-data" class="space-y-6"
               x-data="characterCreate" @submit="onSubmit($event)">
             {% csrf_token %}
@@ -44,7 +46,7 @@
                         <option value="">{% trans "Choose a game" %}</option>
                         {% for g in games %}
                             <option value="{{ g.pk }}"
-                                {% if form_data.origin_game == g.pk|stringformat:"s" %}selected{% endif %}>
+                                {% if form_data.origin_game == g.pk|stringformat:"s" or preselected_game == g.pk|stringformat:"s" %}selected{% endif %}>
                                 {{ g.title }}
                             </option>
                         {% endfor %}
@@ -189,8 +191,10 @@
                 </div>
             </div>
 
-            {# Serialized client-side by the characterCreate Alpine component (buildPayload) —
-               matches _parse_character_create_payload's expected shape exactly. #}
+            {% comment %}
+            Serialized client-side by the characterCreate Alpine component (buildPayload) —
+            matches _parse_character_create_payload's expected shape exactly.
+            {% endcomment %}
             <input type="hidden" name="payload" :value="JSON.stringify(buildPayload())">
 
             <div class="flex items-center gap-3">
@@ -200,6 +204,12 @@
                 <a href="{% url 'characters:list' %}" class="btn-ghost">{% trans "Cancel" %}</a>
             </div>
         </form>
+        </div>
+
+        <aside class="@lg:col-span-1 @lg:sticky @lg:top-6">
+            {% include "characters/_link_suggestions.html" %}
+        </aside>
+        </div>
     </div>
 </section>
 {% endblock %}

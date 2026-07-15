@@ -1,7 +1,10 @@
 """
 SharedSequence editor views (DA-3: async editor, not CRDT).
 
-Wireframe 09-links.md. Pessimistic locking via last_edited_by.
+Wireframe 09-links.md. Concurrent edits are last-write-wins: ``last_edited_by`` /
+``last_edited_at`` record authorship for display only — there is no version or
+precondition check on save, so a simultaneous edit by the other party is a lost
+update by design (acceptable for the async TTRPG cadence).
 """
 
 from __future__ import annotations
@@ -16,6 +19,7 @@ from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
 from .models import SharedSequence, SharedSequenceStatus
+from .services import LinkService
 
 
 def _get_sequence_for_user(pk: str, user: object) -> SharedSequence:
@@ -176,10 +180,8 @@ def sequence_validate_publish(request: AuthenticatedRequest, pk: str) -> HttpRes
         and sequence.publication_proposed_by != request.user
         and sequence.status == SharedSequenceStatus.DRAFT
     ):
-        sequence.status = SharedSequenceStatus.PUBLISHED
-        sequence.save(update_fields=["status", "updated_at"])
-
-        # TODO: Update character status per DA-2/ADR-011
-        # TODO: Create notification for both parties
+        # Character status + link were already set at acceptance (DEC-035).
+        # Publishing finalizes the co-created sequence and notifies both parties.
+        LinkService.publish_sequence(sequence, request.user)
 
     return redirect(reverse("characters:sequence_edit", kwargs={"pk": pk}))

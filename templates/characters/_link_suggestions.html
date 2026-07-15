@@ -1,0 +1,77 @@
+{% load i18n %}
+{% comment %}
+Suggested existing characters to claim/adopt/fork — right column of characters:create.
+Each `c` carries `available_actions` (subset of claim/adopt/fork) from
+services.suggested_characters_to_link; only accepted actions are rendered.
+{% endcomment %}
+<section class="card card-body space-y-4" aria-labelledby="link-suggestions-title">
+    <div>
+        <h2 id="link-suggestions-title" class="text-heading">{% trans "Link an existing character" %}</h2>
+        <p class="text-sm text-semantic-muted mt-1">
+            {% trans "Rather than start from scratch, connect your story to a character already out there." %}
+        </p>
+    </div>
+
+    {% if link_suggestions %}
+        <ul class="space-y-3 list-none pl-0">
+            {% for c in link_suggestions %}
+            <li class="rounded-lg border border-semantic-border p-3 space-y-2">
+                <div class="flex items-start gap-3">
+                    {# Redundant with the name/View links below — decorative for AT (no empty link). #}
+                    <a href="{% url 'characters:detail' slug=c.slug %}" class="shrink-0" aria-hidden="true" tabindex="-1">
+                        {% if c.avatar %}
+                            <img src="{{ c.avatar.url }}" alt="" class="avatar-md">
+                        {% else %}
+                            <span class="avatar-md bg-semantic-card-sunken flex items-center justify-center text-semantic-muted">
+                                <span class="i-lucide-user" aria-hidden="true"></span>
+                            </span>
+                        {% endif %}
+                    </a>
+                    <div class="min-w-0 flex-1">
+                        <a href="{% url 'characters:detail' slug=c.slug %}"
+                           class="font-medium text-sm text-semantic-ink hover:underline block truncate">{{ c.name }}</a>
+                        <span class="{% if c.status == 'npc' %}badge-available{% else %}badge-{{ c.status }}{% endif %} text-xs">
+                            {{ c.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+
+                {% if c.description %}
+                    <p class="text-xs text-semantic-ink-secondary line-clamp-3">{{ c.description }}</p>
+                {% endif %}
+
+                {% if c.tags.all %}
+                    <div class="flex flex-wrap gap-1">
+                        {% for t in c.tags.all %}
+                            <span class="text-xs px-1.5 py-0.5 rounded bg-semantic-card-sunken text-semantic-ink-secondary">{{ t.name }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="flex flex-wrap items-center gap-2 pt-1">
+                    {% if 'claim' in c.available_actions %}
+                        <a href="{% url 'characters:link_request_form' slug=c.slug link_type='claim' %}"
+                           class="btn-secondary btn-sm">{% trans "Claim" %}</a>
+                    {% endif %}
+                    {% if 'adopt' in c.available_actions %}
+                        <a href="{% url 'characters:link_request_form' slug=c.slug link_type='adopt' %}"
+                           class="btn-secondary btn-sm">{% trans "Adopt" %}</a>
+                    {% endif %}
+                    {% if 'fork' in c.available_actions %}
+                        <a href="{% url 'characters:link_request_form' slug=c.slug link_type='fork' %}"
+                           class="btn-secondary btn-sm">{% trans "Fork" %}</a>
+                    {% endif %}
+                    <a href="{% url 'characters:detail' slug=c.slug %}"
+                       class="link-muted text-xs ml-auto whitespace-nowrap">
+                        {% trans "View" %} <span class="i-lucide-arrow-right text-xs" aria-hidden="true"></span>
+                    </a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-sm text-semantic-muted">
+            {% trans "No character to suggest yet — follow players or characters to see candidates here." %}
+        </p>
+    {% endif %}
+</section>

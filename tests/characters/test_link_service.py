@@ -601,6 +601,74 @@ class TestRevokeLink:
 
 
 # ---------------------------------------------------------------------------
+# publish_sequence (Option A: publication finalizes content + notifies parties,
+# character status already transitioned at acceptance)
+# ---------------------------------------------------------------------------
+
+
+class TestPublishSequence:
+    def _accepted_adopt_sequence(self, requester: User, character: Character) -> SharedSequence:
+        request = LinkRequest.objects.create(
+            type=LinkType.ADOPT,
+            requester=requester,
+            target_character=character,
+            message="adopt",
+        )
+        link = LinkService.accept_request(request)
+        return link.shared_sequence
+
+    def test_publish_sets_status_published(
+        self, db: Any, other_user: User, character: Character
+    ) -> None:
+        sequence = self._accepted_adopt_sequence(other_user, character)
+        assert sequence.status == SharedSequenceStatus.DRAFT
+
+        LinkService.publish_sequence(sequence, actor=character.creator)
+
+        sequence.refresh_from_db()
+        assert sequence.status == SharedSequenceStatus.PUBLISHED
+
+    def test_publish_does_not_change_character_status(
+        self, db: Any, other_user: User, character: Character
+    ) -> None:
+        """Option A: status transitioned at acceptance; publication is a no-op on it."""
+        sequence = self._accepted_adopt_sequence(other_user, character)
+        character.refresh_from_db()
+        assert character.status == CharacterStatus.ADOPTED  # set at acceptance
+
+        LinkService.publish_sequence(sequence, actor=character.creator)
+
+        character.refresh_from_db()
+        assert character.status == CharacterStatus.ADOPTED  # unchanged
+
+    def test_publish_notifies_other_party(
+        self, db: Any, other_user: User, character: Character
+    ) -> None:
+        sequence = self._accepted_adopt_sequence(other_user, character)
+
+        LinkService.publish_sequence(sequence, actor=character.creator)
+
+        # Publisher (creator) is excluded; the requester is notified.
+        note = Notification.objects.get(type=NotificationType.SHARED_SEQUENCE)
+        assert note.recipient == other_user
+        assert note.actor == character.creator
+        ct = ContentType.objects.get_for_model(SharedSequence)
+        assert note.target_content_type == ct
+        assert note.target_object_id == sequence.pk
+
+    def test_cannot_publish_non_draft(
+        self, db: Any, other_user: User, character: Character
+    ) -> None:
+        sequence = self._accepted_adopt_sequence(other_user, character)
+        LinkService.publish_sequence(sequence, actor=character.creator)
+
+        with pytest.raises(ValidationError) as exc:
+            LinkService.publish_sequence(sequence, actor=character.creator)
+
+        assert "n'est plus en brouillon" in str(exc.value)
+
+
+# ---------------------------------------------------------------------------
 # Concurrency invariant (DEC-035: atomic check-then-create)
 # ---------------------------------------------------------------------------
 
