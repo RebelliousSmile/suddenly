@@ -220,10 +220,11 @@ def user_outbox(request: HttpRequest, username: str) -> HttpResponse:
     except User.DoesNotExist:
         return HttpResponseNotFound("User not found")
 
-    # Get user's public activities (reports)
-    reports = Report.objects.filter(author=user, status="published", game__is_public=True).order_by(
-        "-published_at"
-    )[:20]
+    # Get user's public activities (reports). totalItems must count the whole
+    # collection, not the sliced page — .count() on a [:20] queryset caps at 20.
+    reports_qs = Report.objects.filter(author=user, status="published", game__is_public=True)
+    total = reports_qs.count()
+    reports = reports_qs.order_by("-published_at")[:20]
 
     items = [serialize_report(r) for r in reports]
 
@@ -232,7 +233,7 @@ def user_outbox(request: HttpRequest, username: str) -> HttpResponse:
             "@context": "https://www.w3.org/ns/activitystreams",
             "type": "OrderedCollection",
             "id": f"{user.actor_url}/outbox",
-            "totalItems": reports.count(),
+            "totalItems": total,
             "orderedItems": items,
         }
     )
@@ -296,7 +297,9 @@ def game_outbox(request: HttpRequest, game_id: str) -> HttpResponse:
     except Game.DoesNotExist:
         return HttpResponseNotFound("Game not found")
 
-    reports = game.reports.filter(status="published").order_by("-published_at")[:20]
+    reports_qs = game.reports.filter(status="published")
+    total = reports_qs.count()  # whole collection, not the sliced page
+    reports = reports_qs.order_by("-published_at")[:20]
     items = [serialize_report(r) for r in reports]
 
     return activitypub_response(
@@ -304,7 +307,7 @@ def game_outbox(request: HttpRequest, game_id: str) -> HttpResponse:
             "@context": "https://www.w3.org/ns/activitystreams",
             "type": "OrderedCollection",
             "id": f"{game.actor_url}/outbox",
-            "totalItems": reports.count(),
+            "totalItems": total,
             "orderedItems": items,
         }
     )
@@ -340,7 +343,9 @@ def character_outbox(request: HttpRequest, character_id: str) -> HttpResponse:
     except Character.DoesNotExist:
         return HttpResponseNotFound("Character not found")
 
-    quotes = character.quotes.filter(visibility="public").order_by("-created_at")[:20]
+    quotes_qs = character.quotes.filter(visibility="public")
+    total = quotes_qs.count()  # whole collection, not the sliced page
+    quotes = quotes_qs.order_by("-created_at")[:20]
     items = [serialize_quote(q) for q in quotes]
 
     return activitypub_response(
@@ -348,7 +353,7 @@ def character_outbox(request: HttpRequest, character_id: str) -> HttpResponse:
             "@context": "https://www.w3.org/ns/activitystreams",
             "type": "OrderedCollection",
             "id": f"{character.actor_url}/outbox",
-            "totalItems": quotes.count(),
+            "totalItems": total,
             "orderedItems": items,
         }
     )

@@ -1,0 +1,20 @@
+{
+  "_comment": "Reference config for humans/CI — lint-core.mjs derives its rules from ../components.json + ../tokens.json, NOT from this file. Profile: utility-first (Django templates + UnoCSS).",
+  "contractDir": "design",
+  "targets": ["templates/**/*.html"],
+  "_defaultRoots": ["templates"],
+  "_exclude": [
+    "templates/wireframes/",
+    "templates/500.html"
+  ],
+  "_excludeRationale": {
+    "templates/wireframes/": "Prototyping mockups, never served by Django — pre-manifest Tailwind default palettes (amber/green/blue/red). Design scaffolding, not production instances.",
+    "templates/500.html": "Standalone server-error page — must render when the static pipeline (and thus tokens.css) is down, so its inline hex is load-bearing correctness, not a token violation."
+  },
+  "severity": {
+    "unknownToken": "error",
+    "rawHexForbidden": "error",
+    "colorNamespace": "error",
+    "stateColourIcon": "pivot-only"
+  }
+}

@@ -54,7 +54,7 @@
         <div class="card card-body text-center">
             <span class="i-lucide-book-open text-2xl text-brand-primary mb-2 block"></span>
             <p class="text-2xl font-bold text-semantic-ink">{{ stats.reports|default:0 }}</p>
-            <p class="text-xs text-semantic-muted">{% trans "reports" %}</p>
+            <p class="text-xs text-semantic-muted">{% trans "scenes" %}</p>
         </div>
         <div class="card card-body text-center">
             <span class="i-lucide-user text-2xl text-brand-primary mb-2 block"></span>
@@ -84,7 +84,7 @@
             </div>
             <h3 class="font-semibold text-semantic-ink mb-2">{% trans "Publish your games" %}</h3>
             <p class="text-sm text-semantic-ink-secondary">
-                {% trans "Create reports of your RPG sessions. Mention your NPCs to make them discoverable." %}
+                {% trans "Create scenes from your RPG sessions. Mention your NPCs to make them discoverable." %}
             </p>
         </article>
 
@@ -184,7 +184,7 @@
         {% else %}
         <div class="text-center py-12 text-semantic-muted">
             <span class="i-game-icons-scroll-quill text-4xl block mx-auto mb-4 opacity-40" aria-hidden="true"></span>
-            <p>{% trans "No activity yet. Be the first to publish a report!" %}</p>
+            <p>{% trans "No activity yet. Be the first to publish a scene!" %}</p>
         </div>
         {% endif %}
     </div>

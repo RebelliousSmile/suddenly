@@ -212,7 +212,9 @@ def deliver_activity(
 
     try:
         headers = {
-            "Content-Type": "application/activity+json",
+            # POST-to-inbox requires the profiled ld+json content type (08-activitypub);
+            # Content-Type is not among the signed headers, so this is signature-safe.
+            "Content-Type": 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
             "Accept": "application/activity+json",
         }
 

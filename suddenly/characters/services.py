@@ -10,7 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.db.models.query import QuerySet
 from django.utils import timezone
 
@@ -24,6 +24,7 @@ from .models import (
     CharacterLink,
     CharacterLinkStatus,
     CharacterStatus,
+    Follow,
     LinkRequest,
     LinkRequestStatus,
     LinkType,
@@ -260,6 +261,7 @@ class LinkService:
             )
 
     @classmethod
+    @transaction.atomic
     def reject_request(cls, request: LinkRequest, response_message: str = "") -> LinkRequest:
         """
         Reject a link request.
@@ -281,6 +283,7 @@ class LinkService:
         return request
 
     @classmethod
+    @transaction.atomic
     def cancel_request(cls, request: LinkRequest) -> LinkRequest:
         """
         Cancel a pending or queued request (by requester).
@@ -299,6 +302,51 @@ class LinkService:
         request.save()
 
         return request
+
+    @classmethod
+    @transaction.atomic
+    def publish_sequence(cls, sequence: SharedSequence, actor: User) -> None:
+        """
+        Publish a shared sequence draft and notify both parties.
+
+        Character status and link activation already happen at acceptance
+        (see ``accept_request`` / DEC-035); publication finalizes the co-created
+        content and notifies the participants. Raises ``ValidationError`` if the
+        sequence is not a draft.
+        """
+        if sequence.status != SharedSequenceStatus.DRAFT:
+            raise ValidationError("Cette séquence n'est plus en brouillon")
+
+        sequence.status = SharedSequenceStatus.PUBLISHED
+        sequence.save(update_fields=["status", "updated_at"])
+
+        cls._notify_sequence_published(sequence, actor)
+
+    @staticmethod
+    def _notify_sequence_published(sequence: SharedSequence, actor: User) -> None:
+        """Notify both link participants (except the actor) that a sequence is published."""
+        link = sequence.link
+        requester = link.link_request.requester if link.link_request else None
+        creator = link.target.creator
+        recipients = {u for u in (requester, creator) if u is not None and u != actor}
+        if not recipients:
+            return
+
+        ct = ContentType.objects.get_for_model(SharedSequence)
+        message = (
+            f"La séquence « {sequence.title} » a été publiée"
+            if sequence.title
+            else "Une séquence partagée a été publiée"
+        )
+        for recipient in recipients:
+            Notification.objects.create(
+                recipient=recipient,
+                type=NotificationType.SHARED_SEQUENCE,
+                actor=actor,
+                target_content_type=ct,
+                target_object_id=sequence.pk,
+                message=message,
+            )
 
     @classmethod
     @transaction.atomic
@@ -462,6 +510,81 @@ def build_owned_pc_queryset(user: User) -> QuerySet[Character]:
     the GM-owned filter of ``report_compose`` (parties I own).
     """
     return Character.objects.filter(owner=user, status=CharacterStatus.PC)
+
+
+def suggested_characters_to_link(user: User, limit: int = 8) -> list[Character]:
+    """Candidates a new PC could claim/adopt/fork, blended by relevance.
+
+    A claim/adopt/fork always targets *another* player's character (you link your
+    PC to someone else's NPC), so candidates exclude anything the caller created
+    or owns, and anything remote (local linking only). Only linkable statuses
+    survive: NPC (claim/adopt/fork) or PC (fork only) — CLAIMED/ADOPTED/FORKED
+    expose no action, so they are dropped.
+
+    Sources are unioned in priority order and de-duplicated:
+      1. characters the user follows directly,
+      2. characters created/owned by accounts the user follows,
+      3. characters that have appeared in the user's own games (co-play),
+      4. most-recent linkable characters (filler).
+
+    Each returned Character carries a transient ``available_actions`` list (subset
+    of ``["claim", "adopt", "fork"]``) so the template renders only the actions
+    the link views will actually accept.
+    """
+    base = (
+        Character.objects.filter(
+            remote=False,
+            status__in=[CharacterStatus.NPC, CharacterStatus.PC],
+        )
+        .exclude(creator=user)
+        .exclude(owner=user)
+        .select_related("creator", "owner", "origin_game")
+        .prefetch_related("tags")
+        .order_by("-created_at")
+    )
+
+    char_ct = ContentType.objects.get_for_model(Character)
+    followed_char_ids = list(
+        Follow.objects.filter(follower=user, content_type=char_ct).values_list(
+            "object_id", flat=True
+        )
+    )
+
+    user_ct = ContentType.objects.get_for_model(User)
+    followed_user_ids = list(
+        Follow.objects.filter(follower=user, content_type=user_ct).values_list(
+            "object_id", flat=True
+        )
+    )
+
+    buckets: list[QuerySet[Character]] = [
+        base.filter(pk__in=followed_char_ids),
+        base.filter(Q(creator_id__in=followed_user_ids) | Q(owner_id__in=followed_user_ids)),
+        base.filter(appearances__report__game__owner=user).distinct(),
+        # Recent NPCs first (claim/adopt/fork all apply), then any linkable filler.
+        base.filter(status=CharacterStatus.NPC),
+        base,
+    ]
+
+    seen: set[Any] = set()
+    ordered: list[Character] = []
+    for bucket in buckets:
+        for character in bucket[: limit * 2]:
+            if character.pk in seen:
+                continue
+            seen.add(character.pk)
+            ordered.append(character)
+            if len(ordered) >= limit:
+                break
+        if len(ordered) >= limit:
+            break
+
+    for character in ordered:
+        character.available_actions = (
+            ["claim", "adopt", "fork"] if character.status == CharacterStatus.NPC else ["fork"]
+        )
+
+    return ordered
 
 
 def build_character_queryset(

@@ -12,14 +12,14 @@
             {% if item.type == 'promo' %}
                 {% include "feed/_promo_card.html" with character=item.obj %}
             {% else %}
-                {% include "feed/_report_card.html" with report=item.obj %}
+                {% include "feed/_scene_card.html" with report=item.obj %}
             {% endif %}
         {% endfor %}
     </div>
 {% elif reports %}
     <div class="space-y-4">
         {% for report in reports %}
-            {% include "feed/_report_card.html" with report=report %}
+            {% include "feed/_scene_card.html" with report=report %}
         {% endfor %}
     </div>
 {% elif is_empty %}

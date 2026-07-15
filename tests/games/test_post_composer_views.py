@@ -520,6 +520,52 @@ def test_composer_post_opens_scene(client: Client) -> None:
     assert Report.objects.filter(game=game, author=user).exists()
 
 
+@pytest.mark.django_db
+def test_composer_post_opens_scene_with_media(client: Client) -> None:
+    """Free-mode composer: a description opener may carry an image (rule 2e)."""
+    user = UserFactory()
+    game = GameFactory(owner=user)
+    pc = CharacterFactory(owner=user, status=CharacterStatus.PC, origin_game=game)
+
+    client.force_login(user)
+    resp = client.post(
+        reverse("games:composer"),
+        {
+            "mode": "add",
+            "game": str(game.pk),
+            "character": pc.slug,
+            "kind": RapportKind.DESCRIPTION,
+            "content": "Le vent tourne.",
+            "image": SimpleUploadedFile("s.png", _png_bytes(), content_type="image/png"),
+            "media_alt": "Ciel bas",
+        },
+    )
+    assert resp.status_code == 302
+    rapport = Rapport.objects.get(report__game=game)
+    assert RapportMedia.objects.get(rapport=rapport).alt == "Ciel bas"
+
+
+@pytest.mark.django_db
+def test_composer_change_personnage_recomputes_game_field(client: Client) -> None:
+    """Picking a personnage restricts the Partie options to its origin game
+    plus any game it is already cast into (rule 2b, corrected for free mode)."""
+    user = UserFactory()
+    origin = GameFactory(owner=user, title="Origine")
+    other = GameFactory(owner=UserFactory(), title="Ailleurs")
+    pc = CharacterFactory(owner=user, status=CharacterStatus.PC, origin_game=origin)
+
+    client.force_login(user)
+    resp = client.get(
+        reverse("games:composer"),
+        {"character": pc.slug, "region": "game_field"},
+        HTTP_HX_REQUEST="true",
+    )
+    assert resp.status_code == 200
+    body = resp.content.decode()
+    assert origin.title in body
+    assert other.title not in body
+
+
 # ---------------------------------------------------------------------------
 # + Nouveau PNJ — creates the Character AND the GameCast entry (rule 2d)
 # ---------------------------------------------------------------------------

@@ -468,6 +468,7 @@ Alpine.data('gameForm', () => ({
   known: [],
   nearDup: null,
   confirmed: false,
+  showSuggestions: false,
 
   init() {
     const data = document.getElementById('known-systems-data')
@@ -485,14 +486,29 @@ Alpine.data('gameForm', () => ({
     return this.$refs.systemInput ? this.$refs.systemInput.value : ''
   },
 
+  // Top-10 most-used systems (already ordered) matching the current input.
+  get filteredSuggestions() {
+    const query = this._normalize(this.systemValue.trim())
+    const pool = query
+      ? this.known.filter((label) => this._normalize(label).includes(query))
+      : this.known
+    return pool.slice(0, 10)
+  },
+
   pick(label) {
     if (this.$refs.systemInput) this.$refs.systemInput.value = label
     this.confirmed = false
     this.nearDup = null
+    this.showSuggestions = false
+  },
+
+  onFocus() {
+    this.showSuggestions = true
   },
 
   onInput() {
     this.confirmed = false
+    this.showSuggestions = true
     this.check()
   },
 

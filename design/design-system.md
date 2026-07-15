@@ -1,5 +1,5 @@
 ---
-version: 1.3.0
+version: 1.4.0
 status: figé
 source: app/templates/wireframes/maquette-v3.html (16 pages, extraction CSS)
 derived_by: design:define → destructure → adjust
@@ -242,6 +242,73 @@ section) est une piste ouverte, non arbitrée.
 ---
 
 ## 6. Provenance
+
+### v1.4.0 — 2026-07-15 — re-figeage : composer + édition de scène
+
+Deux wireframes (`aidd_docs/wireframes/suddenly-composer.html`, `suddenly-scene-edit.html`) — le
+**post composer** (rédaction d'un Rapport) et l'**édition de scène** (séquence réordonnable,
+clôture, partage). `01-arbitrate` : direction unique, `:root` identique dans les deux (consensus
+2/2). **~95 % confirme v1.3.0 sans le modifier** (crimson→`brand.primary`, violet→`brand.accent`,
+info→`semantic.info`, neon→`brand.signal`, indigo→`brand.identity`, success→`semantic.success`,
+tous les neutres → `semantic.*`).
+
+**Quatre décisions d'arbitrage** (gate humain, point de non-retour) :
+
+1. **Amber conservé** — le wireframe proposait `#d97706` (amber-600) ; on garde `semantic.warning
+   #b45309` (amber-700), meilleur contraste texte-sur-teinte et zéro churn. Les maquettes s'alignent.
+2. **Barre chrome nommée** — le bandeau supérieur sombre `#12121f` (persistant clair + dark) devient
+   `color.neutral.950` + `color.semantic.chrome`. Ajouté aux `backgrounds` de `app-header`
+   (+ modifier `app-header--chrome`).
+3. **Familles narratives nommées dans `domain.*`** — deux dimensions de couleur nouvelles, plutôt que
+   réutilisation anonyme :
+   - *kind de rapport* : `domain.kind-description`→info, `kind-action`→primary, `kind-discussion`→accent,
+     `kind-closure`→info (narration = sans couleur, neutre).
+   - *état de scène* : `domain.state-draft`→warning, `state-closed`→info, `state-released`→success.
+   - `domain.gone` (personnage parti de la scène) → muted.
+   La règle `state-colour-icon` est étendue à ces trois familles (couleur + icône/libellé, jamais seule).
+4. **Neutres dark raffinés** — `ink-secondary` et `muted` cessent d'être fondus sur un même gris :
+   `sepia.300 #a0a0a0 → #b8b0a8` (secondary) et nouveau `sepia.400 #8f857c` (muted).
+
+Hors périmètre : classes BEM des wireframes (`.castbox`, `.item`, `.statepill`, `.closure`,
+`.composer`…) **non figées** — mode `utility-first`, elles deviendront des utilitaires UnoCSS à
+l'implémentation (`diffuse`). Fonds d'avatar générés par `hue` (JS) et SVG placeholder = contenu
+procédural, pas des tokens.
+
+Réconciliation `02-freeze § 2bis` : 142 templates de production propres contre v1.4.0 (ajout de
+tokens additif → aucune divergence code→manifeste). **Suite requise** : régénérer
+`design/adapters/tokens.css` + `uno-tokens.mjs` (via `diffuse`) pour exposer les 11 nouveaux tokens
+comme variables CSS / thème UnoCSS avant de bâtir les écrans composer/scène.
+
+### v1.3.0 — 2026-07-15 — gates enforce câblés
+
+Le contrat (v1.3.0, mode `utility-first`) est désormais **verrouillé par un linter**, pas seulement
+décrit. `design:enforce` a posé :
+
+- **`design/lint/lint-core.mjs`** — le string-scanner portable (dérive ses règles de
+  `tokens.json` + `components.json`, aucune valeur codée en dur) + **`lint-files.mjs`**, wrapper
+  multi-fichiers pour pre-commit/CI. Cible : `templates/**/*.html`.
+- **Gate 0** (import `tokens.css`) — déjà câblé par `adjust` (vérifié : `main.js` importe
+  `design/adapters/tokens.css`).
+- **Gate 1** (règle de génération) — `.claude/rules/08-design/01-enforce.md` : namespaces couleur
+  fermés, hex brut interdit, `@container` et non `@media`.
+- **Gate 3** (pre-commit) — hook `design-lint` ajouté au framework `pre-commit` existant
+  (`.pre-commit-config.yaml`), et non un `scripts/hooks/pre-commit` concurrent. Blocage prouvé
+  end-to-end (`text-red-500` → commit refusé).
+
+**Exemptions sanctionnées** (contrat § `wireframes-out-of-scope`, + `design/lint/.lintrc.json`) :
+`templates/wireframes/**` (maquettes pré-manifeste, non servies) et `templates/500.html` (page
+d'erreur autonome dont le hex inline est load-bearing — `tokens.css` peut être indisponible au
+rendu). **142 templates de production propres, exit 0.**
+
+**Pivot (`04-pivot`) — dégradation raisonnée.** Stack détectée : JavaScript → `sc-js:design-bridge`
+(installé, v0.8.0). Mais sa réalisation `01-realize-lint` produit une **règle ESLint qui visite
+`className` dans `.jsx/.tsx/.vue`** — or le projet est **Django SSR + Alpine vanilla** : zéro fichier
+JSX/Vue, aucune config ESLint. Firer le pivot générerait un linter à **surface nulle** (l'anti-motif
+« 0 hit fallacieux » que le plugin design signale lui-même). La baseline reste donc l'enforcement
+actif pour les règles vérifiables par scan ; les 11 règles `pivot-only` (state-colour-icon,
+icon-accessible-name, tap-target…) portent sur le HTML des templates et resteraient hors de portée
+d'un AST JS de toute façon — elles demeurent des conventions documentées (Gate 1 + `mobile-first.md`),
+tenues par revue. À ré-jouer si le frontend migre vers Vue/React.
 
 ### v1.2.0 — 2026-07-14 — trois jeux d'icônes, trois rôles
 

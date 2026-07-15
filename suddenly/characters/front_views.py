@@ -17,7 +17,9 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_POST
 
+from suddenly.core.services import get_distinct_tag_names
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 from suddenly.games.models import Game
@@ -27,6 +29,7 @@ from .services import (
     build_character_queryset,
     build_transverse_actions_queryset,
     create_character_with_sheet,
+    suggested_characters_to_link,
 )
 
 # Payload bounds (characters:create) — reject absurdly large hidden-field
@@ -153,14 +156,9 @@ def character_list(request: HttpRequest) -> HttpResponse:
             .first()
         )
 
-    # Collect all unique tags from local characters for the filter bar
-    all_tags: list[str] = sorted(
-        set(
-            Character.objects.filter(remote=False, tags__isnull=False).values_list(
-                "tags__name", flat=True
-            )
-        )
-    )
+    # Distinct tags for the filter bar — cached + DB-distinct via the shared
+    # service (avoids the uncached full-scan + Python set() this used to do).
+    all_tags = get_distinct_tag_names(Character)
 
     return htmx_render(
         request,
@@ -371,21 +369,21 @@ def character_edit(request: AuthenticatedRequest, slug: str) -> HttpResponse:
     )
 
 
+@require_POST
 @login_required
 def character_delete(request: AuthenticatedRequest, slug: str) -> HttpResponse:
     """Delete a character (creator only)."""
     character = get_object_or_404(Character, slug=slug, creator=request.user)
-    if request.method == "POST":
-        character.delete()
+    character.delete()
     return redirect(reverse("characters:list"))
 
 
+@require_POST
 @login_required
 def character_delete_bulk(request: AuthenticatedRequest) -> HttpResponse:
     """Bulk delete characters (creator only)."""
-    if request.method == "POST":
-        slugs = request.POST.getlist("slugs")
-        Character.objects.filter(slug__in=slugs, creator=request.user).delete()
+    slugs = request.POST.getlist("slugs")
+    Character.objects.filter(slug__in=slugs, creator=request.user).delete()
     return redirect(reverse("characters:list"))
 
 
@@ -408,7 +406,15 @@ def character_create(request: AuthenticatedRequest) -> HttpResponse:
     games: QuerySet[Game] = Game.objects.filter(owner=request.user)
 
     if request.method != "POST":
-        return render(request, "characters/character_create.html", {"games": games})
+        return render(
+            request,
+            "characters/character_create.html",
+            {
+                "games": games,
+                "preselected_game": request.GET.get("game", ""),
+                "link_suggestions": suggested_characters_to_link(request.user),
+            },
+        )
 
     name = request.POST.get("name", "").strip()
     description = request.POST.get("description", "").strip()

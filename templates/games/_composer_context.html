@@ -12,8 +12,14 @@
 <div x-init="
   kind = [{% for value, label in kinds %}'{{ value }}'{% if not forloop.last %},{% endif %}{% endfor %}].includes(kind) ? kind : '{% if kinds %}{{ kinds.0.0 }}{% endif %}';
   {% if selected_actor %}actor = '{{ selected_actor }}'; actorLabel = '{{ selected_actor_label|escapejs }}';{% endif %}
+  {% if not is_gm and selected_character %}actor = '{{ selected_character.slug }}'; actorLabel = '{{ selected_character.name|escapejs }}';{% endif %}
 ">
 {% if game %}
+    {% if not report %}
+        <p class="text-xs text-semantic-muted mb-2">
+            {{ game.title }} · {% if is_gm %}{% trans "MJ" %}{% else %}{% trans "Joueur" %}{% endif %}
+        </p>
+    {% endif %}
     {# ── Nature (kind) ─────────────────────────────────────────────── #}
     <fieldset class="mb-4">
         <legend class="form-label">{% trans "Nature" %}</legend>
@@ -94,7 +100,7 @@
             <div class="inline-flex items-center gap-2 min-h-[44px] px-3 rounded-full border border-semantic-border bg-semantic-card-sunken text-sm"
                  title="{% trans "Vous publiez sous votre personnage." %}">
                 <span class="i-lucide-lock text-xs text-semantic-muted"></span>
-                <span>{{ own_pcs.first.name|default:_("Votre personnage") }}</span>
+                <span>{{ selected_character.name|default:_("Votre personnage") }}</span>
             </div>
         {% endif %}
     </div>

@@ -6,9 +6,9 @@
 {% block settings_content %}
         <h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "My data" %}</h1>
 
-        {% if import_success %}
-            <div class="mb-4 p-3 rounded-lg bg-semantic-success/10 text-semantic-success border border-semantic-success/30 text-sm">
-                {% blocktrans count counter=imported_count %}{{ counter }} account imported.{% plural %}{{ counter }} accounts imported.{% endblocktrans %}
+        {% if import_queued %}
+            <div class="mb-4 p-3 rounded-lg bg-semantic-info/10 text-semantic-info border border-semantic-info/30 text-sm">
+                {% blocktrans count counter=import_count %}{{ counter }} account queued for import.{% plural %}{{ counter }} accounts queued for import.{% endblocktrans %}
             </div>
         {% endif %}
 

@@ -19,7 +19,7 @@
         game: '{{ game.pk|default:'' }}',
         personnage: '{{ selected_character.slug|default:'' }}',
         kind: '{% if kinds %}{{ kinds.0.0 }}{% endif %}',
-        actor: '{% if is_gm %}{{ selected_actor }}{% else %}{{ own_pcs.first.slug|default:'' }}{% endif %}',
+        actor: '{% if is_gm %}{{ selected_actor }}{% else %}{{ selected_character.slug|default:'' }}{% endif %}',
         actorLabel: '{{ selected_actor_label|escapejs }}',
         body: '',
         availableKinds: [{% for value, label in kinds %}'{{ value }}'{% if not forloop.last %},{% endif %}{% endfor %}],
@@ -76,32 +76,20 @@
             <div class="grid gap-3 @sm:grid-cols-2 mb-4">
                 <div>
                     <label class="form-label" for="composer-personnage">{% trans "Personnage" %}</label>
-                    <select id="composer-personnage" name="character" class="form-input w-full" x-model="personnage">
+                    <select id="composer-personnage" name="character" class="form-input w-full"
+                            x-model="personnage"
+                            hx-get="{% url 'games:composer' %}"
+                            hx-trigger="change"
+                            hx-target="#composer-game-field"
+                            hx-swap="outerHTML"
+                            hx-vals='{"region": "game_field"}'>
                         <option value="">{% trans "— Choisir un personnage —" %}</option>
                         {% for c in personnages %}
                             <option value="{{ c.slug }}">{{ c.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <div>
-                    <label class="form-label" for="composer-game">{% trans "Partie" %}</label>
-                    <select id="composer-game" name="game" class="form-input w-full"
-                            x-model="game"
-                            hx-get="{% url 'games:composer' %}"
-                            hx-trigger="change"
-                            hx-target="#composer-context"
-                            hx-swap="innerHTML"
-                            hx-include="#composer-personnage"
-                            hx-vals='{"region": "context"}'>
-                        <option value="">{% trans "— Choisir une partie —" %}</option>
-                        {% for g in games %}
-                            <option value="{{ g.pk }}">{{ g.title }}</option>
-                        {% endfor %}
-                    </select>
-                    <p class="mt-1 text-xs text-semantic-muted">
-                        {% trans "N'importe quelle partie — la liste n'est pas filtrée par le personnage." %}
-                    </p>
-                </div>
+                {% include "games/_composer_game_field.html" %}
             </div>
         {% endif %}
 
@@ -125,14 +113,11 @@
                           class="form-input w-full"
                           x-model="body" @input="onInput()"
                           :class="{ 'italic font-serif text-semantic-ink-secondary': kind==='description', 'font-medium': kind==='action', 'font-serif text-lg': kind==='discussion' }"
-                          placeholder="{% trans "Écrivez le rapport…  (/desc, /act, /rep · « pour une réplique)" %}"></textarea>
+                          placeholder="{% trans "Écrivez le post…  (/desc, /act, /rep · « pour une réplique)" %}"></textarea>
             </div>
         </div>
 
         {# ── Média : description uniquement, une seule image (rule 2e) ── #}
-        {% comment %} Only in a scene (frozen): the feed's open_new_scene path doesn't carry
-           media. Disabled unless description, so no stale media leaks. {% endcomment %}
-        {% if frozen %}
         <div class="mt-3 space-y-2" x-show="kind === 'description'" x-cloak>
             <label class="rounded-full border border-dashed border-semantic-border p-3 text-xs text-semantic-muted flex items-center gap-2 cursor-pointer">
                 <span class="i-lucide-image text-sm"></span>
@@ -147,7 +132,6 @@
                    placeholder="{% trans "Tonalité : lourde, feutrée…" %}"
                    class="form-input w-full text-sm" :disabled="kind !== 'description'">
         </div>
-        {% endif %}
 
         {# ── Envoi — rien ne part sans partie ni perso (2a) ──────────── #}
         {% if frozen %}

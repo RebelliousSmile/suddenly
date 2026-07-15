@@ -47,9 +47,8 @@ from .models import (
 )
 from .rapport_forms import RapportForm
 from .services import (
-    available_kinds,
-    build_actor_pool,
-    build_game_cast,
+    build_composer_context,
+    build_composer_feed_context,
     build_game_queryset,
     close_scene,
     create_npc_in_cast,
@@ -65,9 +64,10 @@ from .services import (
 
 
 def _game_form_extra(known: list[str] | None = None) -> dict[str, object]:
-    """Shared game-form context: known systems + the top-10 suggestion pills."""
+    """Shared game-form context: known systems (most-used first), consumed
+    client-side by the gameForm Alpine component for the suggestion dropdown."""
     known = known_game_systems() if known is None else known
-    return {"system_known": known, "system_suggestions": known[:10]}
+    return {"system_known": known}
 
 
 @login_required
@@ -826,7 +826,7 @@ def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRes
             "scene_cast": scene_cast,
             # The unified post composer (same _composer.html as the feed), frozen
             # to this scene: game/personnage/language inherited, not editable.
-            **_composer_context(request.user, report=report),
+            **build_composer_context(request.user, report=report),
         },
     )
 
@@ -1427,7 +1427,7 @@ def scene_post_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> H
 
     if getattr(request, "htmx", False):
         # Inline: fresh composer (#composer) + OOB-append the new post to the fil.
-        ctx = _composer_context(request.user, report=report)
+        ctx = build_composer_context(request.user, report=report)
         ctx["new_rapport"] = rapport
         response = render(request, "games/_composer_after_post.html", ctx)
         # Canonical htmx client event → the overlay (if any) closes on it. More
@@ -1485,80 +1485,15 @@ def scene_open(request: AuthenticatedRequest, game_pk: str) -> HttpResponse:
     )
 
 
-def _composer_context(
-    user: User,
-    *,
-    report: Report | None = None,
-    game: Game | None = None,
-    character: Character | None = None,
-    selected_actor: str = "",
-    selected_actor_label: str = "",
-) -> dict[str, object]:
-    """Build the single source of truth the ``_composer.html`` partial consumes.
-
-    Frozen mode (``report`` given): game, personnage and language are inherited
-    from the scene — the header is a breadcrumb. Free mode (``report`` absent):
-    the header is two selectors and the caller supplies ``games``/``personnages``.
-
-    Either way the role-scoped, non-negotiable pieces are computed here:
-    ``is_gm`` (deduced), ``kinds`` (narration only for a GM) and the actor pool.
-    """
-    from suddenly.characters.models import Character, CharacterStatus
-
-    frozen = report is not None
-    if frozen and report is not None:
-        game = report.game
-
-    if game is not None:
-        is_gm = is_game_master(user, game)
-        kinds = available_kinds(user, game)
-        actors = build_actor_pool(user, game).select_related("origin_game").order_by("name")
-        cast_npcs = build_game_cast(game).filter(status=CharacterStatus.NPC)
-    else:
-        is_gm = False
-        kinds = []
-        actors = Character.objects.none()
-        cast_npcs = Character.objects.none()
-
-    own_pcs = Character.objects.filter(owner=user, status=CharacterStatus.PC).order_by("name")
-
-    # Reply targets (discussion) — the scene's own posts. Only in frozen mode:
-    # from the feed there is no scene yet to reply within.
-    reply_targets = (
-        report.rapports.select_related("actor").order_by("order", "created_at")
-        if report is not None
-        else Rapport.objects.none()
-    )
-
-    # Rule 2a: nothing leaves without a personnage AND a partie — drafts too.
-    # In frozen mode both are inherited from the scene, so sending is allowed.
-    can_send = frozen or (game is not None and character is not None)
-
-    return {
-        "report": report,
-        "frozen": frozen,
-        "game": game,
-        "is_gm": is_gm,
-        "kinds": kinds,
-        "actors": actors,
-        "cast_npcs": cast_npcs,
-        "own_pcs": own_pcs,
-        "reply_targets": reply_targets,
-        "selected_character": character,
-        "selected_actor": selected_actor,
-        "selected_actor_label": selected_actor_label,
-        "can_send": can_send,
-    }
-
-
 @login_required
 def composer(request: AuthenticatedRequest) -> HttpResponse:
     """The unified post composer, opened from the feed (no frozen scene).
 
-    Two selectors: PERSONNAGE then PARTIE (rule 2b). The game list is **not**
-    filtered by the chosen personnage. Choosing a game recomputes role, cast and
-    available kinds (rule 2c) — an HTMX GET with ``?region=context`` returns just
-    that recomputed region.
+    Two selectors: PERSONNAGE then PARTIE. Picking a personnage recomputes the
+    game list (origin game + games it is already cast into) — an HTMX GET with
+    ``?region=game_field`` returns just that select. Picking a game recomputes
+    role, cast and available kinds (rule 2c) — ``?region=context`` returns that
+    region.
 
     POST opens the scene via :func:`open_new_scene`; it is refused (422, explicit
     message) when either personnage or partie is missing — brouillon compris
@@ -1600,6 +1535,9 @@ def composer(request: AuthenticatedRequest) -> HttpResponse:
                 content=request.POST.get("content", "").strip(),
                 actor=actor,
                 status=status,
+                image=request.FILES.get("image"),
+                media_alt=request.POST.get("media_alt", "").strip(),
+                media_tone=request.POST.get("media_tone", "").strip(),
             )
         except ValidationError as exc:
             return HttpResponse("; ".join(exc.messages), status=422)
@@ -1607,14 +1545,17 @@ def composer(request: AuthenticatedRequest) -> HttpResponse:
             reverse("games:report_edit", kwargs={"game_pk": report.game.pk, "pk": report.pk})
         )
 
-    ctx = _composer_context(request.user, game=game, character=character)
-    ctx["games"] = build_game_queryset(request.user)
-    ctx["personnages"] = (
-        Character.objects.filter(models.Q(owner=request.user) | models.Q(creator=request.user))
-        .select_related("origin_game")
-        .order_by("name")
-        .distinct()
-    )
+    if getattr(request, "htmx", False) and request.GET.get("region") == "game_field":
+        return render(
+            request,
+            "games/_composer_game_field.html",
+            {
+                "games": build_game_queryset(request.user, character=character),
+                "reset_game": True,
+            },
+        )
+
+    ctx = build_composer_feed_context(request.user, game=game, character=character)
 
     if getattr(request, "htmx", False) and request.GET.get("region") == "context":
         return render(request, "games/_composer_context.html", ctx)
@@ -1660,7 +1601,7 @@ def cast_npc_create(request: AuthenticatedRequest, game_pk: str) -> HttpResponse
             author=request.user,
         )
 
-    ctx = _composer_context(
+    ctx = build_composer_context(
         request.user,
         report=report,
         game=game,

@@ -2117,10 +2117,18 @@ msgstr ""
 
 #: .\templates\users\settings_data.html:11
 #, python-format
-msgid "%(counter)s account imported."
-msgid_plural "%(counter)s accounts imported."
+msgid "%(counter)s account queued for import."
+msgid_plural "%(counter)s accounts queued for import."
 msgstr[0] ""
 msgstr[1] ""
+
+#: .\suddenly\users\settings_views.py:33
+msgid "Preferences saved."
+msgstr ""
+
+#: .\suddenly\users\settings_views.py:56
+msgid "Muses settings saved."
+msgstr ""
 
 #: .\templates\users\settings_data.html:17
 msgid "Import follows"

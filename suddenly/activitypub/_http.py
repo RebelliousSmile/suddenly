@@ -37,30 +37,28 @@ def _is_blocked_ip(ip: str) -> bool:
     )
 
 
-def fetch_ap_actor(url: str, *, timeout: int = 10) -> dict[str, Any] | None:
-    """
-    Fetch an ActivityPub actor JSON document with SSRF protection.
+def _validate_and_pin(url: str) -> tuple[str, dict[str, str], dict[str, Any]] | None:
+    """Validate a URL for SSRF safety and return connection details for a pinned GET.
 
-    Resolves the hostname once, blocks private/loopback/link-local addresses,
-    then connects directly to the validated IP so httpx cannot re-resolve the
-    name and land on a different (internal) address — closing the DNS-rebinding
-    TOCTOU window (SUD-F3). TLS SNI and certificate verification still use the
-    original hostname. Only http/https schemes are allowed.
-
-    Args:
-        url: The actor URL to fetch.
-        timeout: HTTP timeout in seconds (default 10).
+    Resolves the hostname once and blocks private/loopback/link-local addresses,
+    then produces a request URL that connects directly to the validated IP so
+    httpx cannot re-resolve the name and land on a different (internal) address —
+    closing the DNS-rebinding TOCTOU window (SUD-F3). TLS SNI and certificate
+    verification still use the original hostname. Only http/https schemes allowed.
 
     Returns:
-        The parsed actor dict on a 200 response, or None on any failure.
+        `None` if the request must be rejected outright (disallowed scheme, no
+        hostname, or a resolved IP is blocked).
+        Otherwise `(request_url, extra_headers, extensions)`. If the hostname did
+        not resolve, the tuple carries the original URL with no pinning — the
+        caller still attempts it, which simply fails to connect.
     """
-    import httpx
     from django.conf import settings
 
     parsed = urlparse(url)
     # https is mandatory in production; http is only tolerated where explicitly
     # allowed (dev/test) via AP_ALLOW_INSECURE_HTTP. Plain http otherwise lets a
-    # peer downgrade the fetch and strip TLS auth of the actor document.
+    # peer downgrade the fetch and strip TLS auth of the fetched document.
     allow_http = getattr(settings, "AP_ALLOW_INSECURE_HTTP", False)
     allowed_schemes = ("http", "https") if allow_http else ("https",)
     if parsed.scheme not in allowed_schemes:
@@ -85,18 +83,43 @@ def fetch_ap_actor(url: str, *, timeout: int = 10) -> dict[str, Any] | None:
         if pinned_ip is None:
             pinned_ip = ip
 
-    request_url = url
-    headers = {"Accept": "application/activity+json, application/ld+json"}
-    extensions: dict[str, Any] = {}
+    if pinned_ip is None:
+        # Unresolved hostname: no IP to pin. Attempt the original URL; it will
+        # fail to connect naturally. No SSRF risk since nothing resolved.
+        return (url, {}, {})
 
-    if pinned_ip is not None:
-        # Connect straight to the validated IP; keep the Host header and use the
-        # original hostname for TLS SNI + cert verification via httpx extensions.
-        ip_host = f"[{pinned_ip}]" if ":" in pinned_ip else pinned_ip
-        connect_netloc = f"{ip_host}:{parsed.port}" if parsed.port else ip_host
-        request_url = urlunparse(parsed._replace(netloc=connect_netloc))
-        headers["Host"] = f"{hostname}:{parsed.port}" if parsed.port else hostname
-        extensions["sni_hostname"] = hostname
+    # Connect straight to the validated IP; keep the Host header and use the
+    # original hostname for TLS SNI + cert verification via httpx extensions.
+    ip_host = f"[{pinned_ip}]" if ":" in pinned_ip else pinned_ip
+    connect_netloc = f"{ip_host}:{parsed.port}" if parsed.port else ip_host
+    request_url = urlunparse(parsed._replace(netloc=connect_netloc))
+    headers = {"Host": f"{hostname}:{parsed.port}" if parsed.port else hostname}
+    extensions: dict[str, Any] = {"sni_hostname": hostname}
+    return (request_url, headers, extensions)
+
+
+def fetch_ap_json(url: str, *, accept: str, timeout: int = 10) -> dict[str, Any] | None:
+    """Fetch a JSON document over HTTP(S) with SSRF protection.
+
+    Shared by ActivityPub actor fetches and WebFinger lookups. Every outbound
+    GET on a caller-influenced URL MUST go through this helper (or a wrapper),
+    never a raw `httpx.Client`, so the SSRF allow/deny + IP-pin logic applies.
+
+    Args:
+        url: The URL to fetch.
+        accept: The `Accept` header value (e.g. `application/jrd+json`).
+        timeout: HTTP timeout in seconds (default 10).
+
+    Returns:
+        The parsed dict on a 200 response, or None on rejection or any failure.
+    """
+    import httpx
+
+    pinned = _validate_and_pin(url)
+    if pinned is None:
+        return None
+    request_url, extra_headers, extensions = pinned
+    headers = {"Accept": accept, **extra_headers}
 
     try:
         # follow_redirects=False (explicit): a redirect would re-resolve to an
@@ -106,6 +129,19 @@ def fetch_ap_actor(url: str, *, timeout: int = 10) -> dict[str, Any] | None:
         if resp.status_code == 200:
             return resp.json()  # type: ignore[no-any-return]
     except Exception:
-        logger.warning("Failed to fetch actor %s", url, exc_info=True)
+        logger.warning("Failed to fetch %s", url, exc_info=True)
 
     return None
+
+
+def fetch_ap_actor(url: str, *, timeout: int = 10) -> dict[str, Any] | None:
+    """Fetch an ActivityPub actor JSON document with SSRF protection.
+
+    Thin wrapper over `fetch_ap_json` with the actor `Accept` header. Behavior is
+    unchanged from the previous standalone implementation.
+    """
+    return fetch_ap_json(
+        url,
+        accept="application/activity+json, application/ld+json",
+        timeout=timeout,
+    )

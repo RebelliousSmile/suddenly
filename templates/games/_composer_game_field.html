@@ -1,0 +1,25 @@
+{% load i18n %}
+<div id="composer-game-field"
+     x-init="
+        {% if reset_game %}game = '';{% endif %}
+        {% if games|length == 1 %}
+        $nextTick(() => { $refs.composerGame.value = '{{ games.0.pk }}'; htmx.process($refs.composerGame); $refs.composerGame.dispatchEvent(new Event('change', { bubbles: true })); });
+        {% endif %}
+     ">
+    <label class="form-label" for="composer-game">{% trans "Partie" %}</label>
+    <select id="composer-game" name="game" class="form-input w-full"
+            x-ref="composerGame"
+            x-model="game"
+            :disabled="!personnage"
+            hx-get="{% url 'games:composer' %}"
+            hx-trigger="change"
+            hx-target="#composer-context"
+            hx-swap="innerHTML"
+            hx-include="#composer-personnage"
+            hx-vals='{"region": "context"}'>
+        <option value="">{% trans "— Choisir une partie —" %}</option>
+        {% for g in games %}
+            <option value="{{ g.pk }}">{{ g.title }}</option>
+        {% endfor %}
+    </select>
+</div>

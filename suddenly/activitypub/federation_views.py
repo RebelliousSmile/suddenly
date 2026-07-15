@@ -175,7 +175,7 @@ def remote_follow_toggle(request: AuthenticatedRequest) -> HttpResponse:
 
 def _lookup_webfinger(address: str) -> list[dict[str, str]]:
     """Resolve user@instance via WebFinger."""
-    import httpx
+    from ._http import fetch_ap_json
 
     parts = address.split("@")
     if len(parts) != 2:
@@ -183,33 +183,28 @@ def _lookup_webfinger(address: str) -> list[dict[str, str]]:
 
     username, domain = parts
 
-    try:
-        url = f"https://{domain}/.well-known/webfinger?resource=acct:{address}"
-        with httpx.Client(timeout=10) as client:
-            resp = client.get(url, headers={"Accept": "application/jrd+json"})
+    # SSRF-safe fetch: the domain is user-supplied, so the WebFinger request must
+    # go through the same allow/deny + IP-pin guard as actor fetches — never a
+    # raw httpx.Client.
+    url = f"https://{domain}/.well-known/webfinger?resource=acct:{address}"
+    data = fetch_ap_json(url, accept="application/jrd+json")
+    if not data:
+        return []
 
-        if resp.status_code != 200:
-            return []
-
-        data = resp.json()
-        links = data.get("links", [])
-
-        for link in links:
-            if link.get("rel") == "self" and "activity" in link.get("type", ""):
-                actor_data = _fetch_actor(link["href"])
-                if actor_data:
-                    return [
-                        {
-                            "name": actor_data.get("name", username),
-                            "username": f"@{username}@{domain}",
-                            "ap_id": link["href"],
-                            "domain": domain,
-                            "summary": actor_data.get("summary", ""),
-                            "type": actor_data.get("type", "Person"),
-                        }
-                    ]
-    except Exception:
-        logger.warning("WebFinger lookup failed for %s", address, exc_info=True)
+    for link in data.get("links", []):
+        if link.get("rel") == "self" and "activity" in link.get("type", ""):
+            actor_data = _fetch_actor(link["href"])
+            if actor_data:
+                return [
+                    {
+                        "name": actor_data.get("name", username),
+                        "username": f"@{username}@{domain}",
+                        "ap_id": link["href"],
+                        "domain": domain,
+                        "summary": actor_data.get("summary", ""),
+                        "type": actor_data.get("type", "Person"),
+                    }
+                ]
 
     return []
 

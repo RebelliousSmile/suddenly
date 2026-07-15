@@ -13,7 +13,7 @@
                     {% trans "Root" %}
                 {% endif %}
             </h2>
-            <span class="text-xs text-semantic-muted">{{ rapports|length }} {% trans "rapports" %}</span>
+            <span class="text-xs text-semantic-muted">{{ rapports|length }} {% trans "posts" %}</span>
         </div>
 
         {% for rapport in rapports %}
@@ -22,7 +22,7 @@
 
     </div>
     {% empty %}
-        <p class="text-semantic-muted text-sm">{% trans "No rapports yet." %}</p>
+        <p class="text-semantic-muted text-sm">{% trans "No posts yet." %}</p>
     {% endfor %}
 
     {% if scenes %}

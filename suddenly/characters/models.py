@@ -453,7 +453,8 @@ class SharedSequence(BaseModel):
     Co-created content when a link is established.
 
     DA-3: Asynchronous editor for MVP (polling presence, pessimistic locking).
-    DA-2/ADR-011: Character status changes only when this is published.
+    Character status changes at link acceptance (DEC-035), not here; publication
+    (``LinkService.publish_sequence``) finalizes the content and notifies parties.
     """
 
     link = models.OneToOneField(

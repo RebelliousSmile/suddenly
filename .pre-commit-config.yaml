@@ -23,3 +23,11 @@ repos:
         args: [suddenly/]
         pass_filenames: false
         stages: [pre-push]
+
+      - id: design-lint
+        name: design system lint (tokens + colour namespaces)
+        entry: node design/lint/lint-files.mjs
+        language: system
+        files: ^templates/.*\.html$
+        exclude: ^templates/(wireframes/|500\.html$)
+        pass_filenames: true

@@ -2134,10 +2134,18 @@ msgstr "Mes données"
 
 #: .\templates\users\settings_data.html:11
 #, python-format
-msgid "%(counter)s account imported."
-msgid_plural "%(counter)s accounts imported."
-msgstr[0] "%(counter)s compte importé."
-msgstr[1] "%(counter)s comptes importés."
+msgid "%(counter)s account queued for import."
+msgid_plural "%(counter)s accounts queued for import."
+msgstr[0] "%(counter)s compte en file d'import."
+msgstr[1] "%(counter)s comptes en file d'import."
+
+#: .\suddenly\users\settings_views.py:33
+msgid "Preferences saved."
+msgstr "Préférences enregistrées."
+
+#: .\suddenly\users\settings_views.py:56
+msgid "Muses settings saved."
+msgstr "Paramètres Muses enregistrés."
 
 #: .\templates\users\settings_data.html:17
 msgid "Import follows"
@@ -2379,3 +2387,68 @@ msgstr "Vue grille"
 #: templates/characters/list.html
 msgid "List view"
 msgstr "Vue liste"
+
+# --- Vocabulary fix: report→scene / rapport→post (display) ---
+
+msgid "New scene"
+msgstr "Nouvelle scène"
+
+msgid "Add a post"
+msgstr "Ajouter un post"
+
+msgid "Write the post..."
+msgstr "Rédigez le post…"
+
+msgid "No posts yet."
+msgstr "Aucun post pour l'instant."
+
+msgid "Edit scene"
+msgstr "Modifier la scène"
+
+msgid "Scenes"
+msgstr "Scènes"
+
+msgid "This scene is released."
+msgstr "Cette scène est publiée."
+
+msgid "Scene"
+msgstr "Scène"
+
+msgid "Type @ to mention a character and link them to this scene."
+msgstr "Tapez @ pour mentionner un personnage et le lier à cette scène."
+
+msgid "No published scene."
+msgstr "Aucune scène publiée."
+
+msgid "published scenes"
+msgstr "scènes publiées"
+
+msgid "When authors release their scenes, they appear here."
+msgstr "Quand les auteurs publient leurs scènes, elles apparaissent ici."
+
+msgid "No published scenes yet."
+msgstr "Aucune scène publiée pour l'instant."
+
+msgid "scenes"
+msgstr "scènes"
+
+msgid "Create scenes from your RPG sessions. Mention your NPCs to make them discoverable."
+msgstr "Créez des scènes à partir de vos sessions de JdR. Mentionnez vos PNJ pour les rendre découvrables."
+
+msgid "No activity yet. Be the first to publish a scene!"
+msgstr "Aucune activité pour l'instant. Soyez le premier à publier une scène !"
+
+msgid "NPCs are created automatically when you mention them in a scene."
+msgstr "Les PNJ sont créés automatiquement quand vous les mentionnez dans une scène."
+
+msgid "No appearance in a scene."
+msgstr "Aucune apparition dans une scène."
+
+msgid "Posts"
+msgstr "Posts"
+
+msgid "posts"
+msgstr "posts"
+
+msgid "Read the full scene"
+msgstr "Lire la scène complète"

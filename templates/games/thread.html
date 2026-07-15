@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans "Thread" %} — {{ report.title|default:_("Report") }} — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Thread" %} — {{ report.title|default:_("Scene") }} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-8">
@@ -10,7 +10,7 @@
         <!-- Breadcrumb -->
         <p class="text-sm text-semantic-muted mb-4">
             <a href="{% url 'games:detail' pk=game.pk %}" class="link-muted">{{ game.title }}</a>
-            › <a href="{% url 'games:report_detail' game_pk=game.pk pk=report.pk %}" class="link-muted">{{ report.title|default:_("Report") }}</a>
+            › <a href="{% url 'games:report_detail' game_pk=game.pk pk=report.pk %}" class="link-muted">{{ report.title|default:_("Scene") }}</a>
             › {% trans "Thread" %}
         </p>
 

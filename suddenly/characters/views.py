@@ -9,7 +9,6 @@ from typing import Any
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import QuerySet
-from django.utils import timezone
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.request import Request
@@ -22,7 +21,6 @@ from suddenly.characters.models import (
     CharacterStatus,
     Follow,
     LinkRequest,
-    LinkRequestStatus,
     LinkType,
     Quote,
 )
@@ -85,7 +83,11 @@ class CharacterViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
         - limit: Max results (default 10)
         """
         query = request.query_params.get("q", "")
-        limit = int(request.query_params.get("limit", 10))
+        try:
+            limit = int(request.query_params.get("limit", 10))
+        except (TypeError, ValueError):
+            limit = 10
+        limit = max(1, min(limit, 50))  # clamp: never crash, never unbounded
 
         if len(query) < 2:
             return Response([])
@@ -252,18 +254,20 @@ class LinkRequestViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        if link_request.status != LinkRequestStatus.PENDING:
+        # Delegate to the service: it validates the PENDING state, resolves the
+        # request, and promotes the next queued request. Never mutate link state
+        # here — the queue invariant lives in LinkService (08-characters).
+        try:
+            LinkService.reject_request(
+                link_request, response_message=request.data.get("message", "")
+            )
+        except ValidationError as exc:
             return Response(
-                {"error": "This request is no longer pending."}, status=status.HTTP_400_BAD_REQUEST
+                {"error": exc.messages[0] if exc.messages else str(exc)},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
-        link_request.status = LinkRequestStatus.REJECTED
-        link_request.resolved_at = timezone.now()
-        link_request.response_message = request.data.get("message", "")
-        link_request.save()
-
-        # TODO: Send ActivityPub Reject(Offer) activity
-
+        link_request.refresh_from_db()
         serializer = LinkRequestSerializer(link_request)
         return Response(serializer.data)
 
@@ -281,15 +285,18 @@ class LinkRequestViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
                 {"error": "Only the requester can cancel."}, status=status.HTTP_403_FORBIDDEN
             )
 
-        if link_request.status != LinkRequestStatus.PENDING:
+        # Delegate to the service. cancel_request accepts both PENDING and QUEUED
+        # (a requester may withdraw a request while it waits in the queue) and
+        # promotes the next queued request when a PENDING one is cancelled.
+        try:
+            LinkService.cancel_request(link_request)
+        except ValidationError as exc:
             return Response(
-                {"error": "This request is no longer pending."}, status=status.HTTP_400_BAD_REQUEST
+                {"error": exc.messages[0] if exc.messages else str(exc)},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
-        link_request.status = LinkRequestStatus.CANCELLED
-        link_request.resolved_at = timezone.now()
-        link_request.save()
-
+        link_request.refresh_from_db()
         serializer = LinkRequestSerializer(link_request)
         return Response(serializer.data)
 

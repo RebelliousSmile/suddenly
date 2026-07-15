@@ -108,3 +108,57 @@ def test_feed_home_interleaves_promocards(client: Client, settings: Any) -> None
     assert response.status_code == 200
     feed_items = response.context["feed_items"]
     assert "promo" in _types(feed_items)  # short feed → at least one promo
+
+
+# ---------------------------------------------------------------------------
+# Composer sidebar — feed_home / feed_instance / feed_fediverse
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+def test_feed_home_sidebar_present(client: Client) -> None:
+    user = UserFactory()
+    client.force_login(user)
+    response = client.get(reverse("feed:home"))
+    assert response.status_code == 200
+    body = response.content.decode()
+    assert 'id="composer"' in body
+
+
+@pytest.mark.django_db
+def test_feed_instance_anonymous_no_sidebar(client: Client) -> None:
+    response = client.get(reverse("feed:instance"))
+    assert response.status_code == 200
+    body = response.content.decode()
+    assert 'id="composer"' not in body
+
+
+@pytest.mark.django_db
+def test_feed_instance_authenticated_has_sidebar(client: Client) -> None:
+    user = UserFactory()
+    client.force_login(user)
+    response = client.get(reverse("feed:instance"))
+    assert response.status_code == 200
+    body = response.content.decode()
+    assert 'id="composer"' in body
+
+
+@pytest.mark.django_db
+def test_feed_htmx_swap_no_sidebar(client: Client) -> None:
+    """A tab switch (HTMX) only swaps #feed-content — no composer context is built."""
+    user = UserFactory()
+    client.force_login(user)
+    response = client.get(reverse("feed:fediverse"), HTTP_HX_REQUEST="true")
+    assert response.status_code == 200
+    body = response.content.decode()
+    assert 'id="composer"' not in body
+    assert "games" not in response.context
+
+
+@pytest.mark.django_db
+def test_feed_mobile_entry_point(client: Client) -> None:
+    user = UserFactory()
+    client.force_login(user)
+    response = client.get(reverse("feed:home"))
+    body = response.content.decode()
+    assert reverse("games:composer") in body

@@ -63,10 +63,15 @@ class PreferencesForm(forms.ModelForm):  # type: ignore[type-arg]
             return [str(code).strip() for code in value if str(code).strip()]
 
         try:
-            result: list[str] = json.loads(value)
-            return result
+            parsed = json.loads(value)
         except (json.JSONDecodeError, TypeError):
             return [code.strip() for code in value.split(",") if code.strip()]
+
+        # Valid JSON but not a list (an object/scalar) → fall back to CSV parsing
+        # rather than returning a mistyped value.
+        if isinstance(parsed, list):
+            return [str(code).strip() for code in parsed if str(code).strip()]
+        return [code.strip() for code in value.split(",") if code.strip()]
 
 
 class MusesSettingsForm(forms.ModelForm):  # type: ignore[type-arg]
