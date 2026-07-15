@@ -89,8 +89,8 @@
                 </div>
             </form>
 
-            {# Muses opening suggestion (#127) — only while the page is blank #}
-            {% if not sequence.content %}
+            {# Muses opening suggestion (#127) — only while the page is blank, Muses on, credits left #}
+            {% if not sequence.content and user.muses_enabled and user.muses_credits %}
                 <button type="button" class="btn-secondary btn-sm mt-4"
                         hx-post="{% url 'characters:sequence_suggest_opening' pk=sequence.pk %}"
                         hx-target="#muses-suggestion-slot"

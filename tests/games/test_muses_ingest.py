@@ -27,7 +27,12 @@ def _mock_client(mocker: Any, *, enabled: bool = True) -> Any:
 
 
 def test_stores_summary_and_notifies_when_opted_in(mocker: Any) -> None:
-    report = ReportFactory(author__muses_post_ingest_optin=True, content="A scene.")
+    report = ReportFactory(
+        author__muses_enabled=True,
+        author__muses_post_ingest_optin=True,
+        author__muses_credits=5,
+        content="A scene.",
+    )
     inst = _mock_client(mocker)
     inst.analyze.side_effect = [
         {"summary": "A resolved tale."},
@@ -45,10 +50,13 @@ def test_stores_summary_and_notifies_when_opted_in(mocker: Any) -> None:
     assert "3 ancrage" in notif.message and "1 fort" in notif.message
     assert notif.target == report
     assert result == "done: notified"
+    # Two successful analyze calls → two credits spent (5 → 3).
+    report.author.refresh_from_db()
+    assert report.author.muses_credits == 3
 
 
 def test_noop_when_muses_disabled(mocker: Any) -> None:
-    report = ReportFactory(author__muses_post_ingest_optin=True)
+    report = ReportFactory(author__muses_enabled=True, author__muses_post_ingest_optin=True)
     inst = _mock_client(mocker, enabled=False)
 
     result = muses_post_ingest(str(report.id))
@@ -60,8 +68,32 @@ def test_noop_when_muses_disabled(mocker: Any) -> None:
     assert result == "skipped: muses disabled"
 
 
+def test_noop_when_muses_not_enabled_for_author(mocker: Any) -> None:
+    # Opted into the sub-feature but never flipped the master switch.
+    report = ReportFactory(author__muses_enabled=False, author__muses_post_ingest_optin=True)
+    inst = _mock_client(mocker)
+
+    result = muses_post_ingest(str(report.id))
+
+    inst.analyze.assert_not_called()
+    assert result == "skipped: muses not enabled for author"
+
+
+def test_noop_when_no_credits(mocker: Any) -> None:
+    # Enabled + opted in, but the balance is empty — the hub is never called.
+    report = ReportFactory(
+        author__muses_enabled=True, author__muses_post_ingest_optin=True, author__muses_credits=0
+    )
+    inst = _mock_client(mocker)
+
+    result = muses_post_ingest(str(report.id))
+
+    inst.analyze.assert_not_called()
+    assert result == "skipped: no credits"
+
+
 def test_noop_when_author_opted_out(mocker: Any) -> None:
-    report = ReportFactory(author__muses_post_ingest_optin=False)
+    report = ReportFactory(author__muses_enabled=True, author__muses_post_ingest_optin=False)
     inst = _mock_client(mocker)
 
     result = muses_post_ingest(str(report.id))
@@ -72,7 +104,9 @@ def test_noop_when_author_opted_out(mocker: Any) -> None:
 
 
 def test_degrades_when_hub_unavailable(mocker: Any) -> None:
-    report = ReportFactory(author__muses_post_ingest_optin=True)
+    report = ReportFactory(
+        author__muses_enabled=True, author__muses_post_ingest_optin=True, author__muses_credits=5
+    )
     inst = _mock_client(mocker)
     inst.analyze.side_effect = MusesUnavailable("hub down")
 
@@ -89,7 +123,12 @@ def test_ingest_endpoint_enqueues_assist(mocker: Any, api_client: Any, settings:
     from tests.factories import GameFactory
 
     settings.INGEST_TOKEN = "s3cr3t"
-    game = GameFactory(remote=False, owner__muses_post_ingest_optin=True)
+    game = GameFactory(
+        remote=False,
+        owner__muses_enabled=True,
+        owner__muses_post_ingest_optin=True,
+        owner__muses_credits=5,
+    )
     inst = _mock_client(mocker)
     inst.analyze.side_effect = [{"summary": "From import."}, {"links": []}]
 
@@ -109,7 +148,9 @@ def test_ingest_endpoint_enqueues_assist(mocker: Any, api_client: Any, settings:
 
 def test_partial_success_summary_only(mocker: Any) -> None:
     """Summary succeeds, links call fails: still store the summary and notify."""
-    report = ReportFactory(author__muses_post_ingest_optin=True)
+    report = ReportFactory(
+        author__muses_enabled=True, author__muses_post_ingest_optin=True, author__muses_credits=5
+    )
     inst = _mock_client(mocker)
     inst.analyze.side_effect = [{"summary": "Kept."}, MusesUnavailable("links down")]
 

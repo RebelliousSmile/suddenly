@@ -39,6 +39,11 @@ note when the hub is unavailable (#88).
                 </button>
             </div>
         </div>
+    {% elif no_credits %}
+        <p class="text-xs text-muted">
+            <span class="i-lucide-coins text-xs mr-1"></span>
+            {% trans "No Muses credits left — top up to use this feature." %}
+        </p>
     {% else %}
         <p class="text-xs text-muted">
             <span class="i-lucide-cloud-off text-xs mr-1"></span>

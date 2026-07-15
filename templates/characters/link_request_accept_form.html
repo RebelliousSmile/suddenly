@@ -14,8 +14,8 @@
             {% blocktrans with username=link_request.requester.username type=link_request.get_type_display name=link_request.target_character.name %}@{{ username }} wants to <strong>{{ type }}</strong> {{ name }}.{% endblocktrans %}
         </p>
 
-        {# Muses claim-coherence check (#128) — recipient, Claim only. Advisory. #}
-        {% if link_request.type == 'claim' %}
+        {# Muses claim-coherence check (#128) — recipient, Claim only, Muses on, credits left. Advisory. #}
+        {% if link_request.type == 'claim' and user.muses_enabled and user.muses_credits %}
             <div class="mb-4">
                 <button type="button" class="btn-secondary btn-sm"
                         hx-post="{% url 'characters:link_request_check_coherence' pk=link_request.id %}"

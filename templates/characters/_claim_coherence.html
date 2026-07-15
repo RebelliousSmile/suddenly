@@ -13,6 +13,11 @@ decides. Degrades to a discreet note when the hub is unavailable (#88).
         <p class="text-xs text-muted">
             {% trans "This Claim has no proposed character to compare — nothing to analyse." %}
         </p>
+    {% elif no_credits %}
+        <p class="text-xs text-muted">
+            <span class="i-lucide-coins text-xs mr-1"></span>
+            {% trans "No Muses credits left — top up to use this feature." %}
+        </p>
     {% elif analysis %}
         {% with p=analysis.plausibility %}
         <div class="mb-3">

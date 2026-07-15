@@ -53,10 +53,17 @@ def _url(seq: SharedSequence) -> str:
     return reverse("characters:sequence_suggest_opening", kwargs={"pk": seq.pk})
 
 
+def _activate(u: User, *, credits: int = 5) -> None:
+    u.muses_enabled = True
+    u.muses_credits = credits
+    u.save(update_fields=["muses_enabled", "muses_credits"])
+
+
 def test_suggestion_rendered_for_empty_draft(
     client: Client, mocker: Any, user: User, other_user: User, game: Game
 ) -> None:
     seq = _make_sequence(user, other_user, game)
+    _activate(user)
     cls = mocker.patch("suddenly.muses.client.MusesClient")
     cls.is_enabled.return_value = True
     cls.return_value.suggest.return_value = {"kind": "description", "text": "A dim crossroads inn."}
@@ -71,12 +78,16 @@ def test_suggestion_rendered_for_empty_draft(
     ctx = cls.return_value.suggest.call_args.args[0]
     assert len(ctx.characters) == 2
     assert ctx.link_type == LinkType.CLAIM
+    # One credit spent on the successful suggestion (5 → 4).
+    user.refresh_from_db()
+    assert user.muses_credits == 4
 
 
 def test_dialogue_downgraded_to_narration(
     client: Client, mocker: Any, user: User, other_user: User, game: Game
 ) -> None:
     seq = _make_sequence(user, other_user, game)
+    _activate(user)
     cls = mocker.patch("suddenly.muses.client.MusesClient")
     cls.is_enabled.return_value = True
     cls.return_value.suggest.return_value = {"kind": "dialogue", "text": "Hello there."}
@@ -106,6 +117,7 @@ def test_degraded_note_when_hub_unavailable(
     client: Client, mocker: Any, user: User, other_user: User, game: Game
 ) -> None:
     seq = _make_sequence(user, other_user, game)
+    _activate(user)
     cls = mocker.patch("suddenly.muses.client.MusesClient")
     cls.return_value.suggest.side_effect = MusesUnavailable("down")
     client.force_login(user)
@@ -114,6 +126,37 @@ def test_degraded_note_when_hub_unavailable(
 
     assert resp.status_code == 200
     assert "unavailable" in resp.content.decode().lower()
+
+
+def test_disabled_user_gets_unavailable(
+    client: Client, mocker: Any, user: User, other_user: User, game: Game
+) -> None:
+    # muses_enabled left False — the hub is never called.
+    seq = _make_sequence(user, other_user, game)
+    cls = mocker.patch("suddenly.muses.client.MusesClient")
+    client.force_login(user)
+
+    resp = client.post(_url(seq))
+
+    assert resp.status_code == 200
+    assert "unavailable" in resp.content.decode().lower()
+    cls.return_value.suggest.assert_not_called()
+
+
+def test_no_credits_shows_note_without_calling_hub(
+    client: Client, mocker: Any, user: User, other_user: User, game: Game
+) -> None:
+    seq = _make_sequence(user, other_user, game)
+    _activate(user, credits=0)  # enabled but empty balance
+    cls = mocker.patch("suddenly.muses.client.MusesClient")
+    cls.is_enabled.return_value = True
+    client.force_login(user)
+
+    resp = client.post(_url(seq))
+
+    assert resp.status_code == 200
+    assert "credit" in resp.content.decode().lower()
+    cls.return_value.suggest.assert_not_called()
 
 
 def test_non_participant_gets_404(

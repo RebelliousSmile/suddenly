@@ -27,6 +27,13 @@
                             {% trans "Preferences" %}
                         </a>
 
+                        <a href="{% url 'users:settings_muses' %}"
+                           class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm whitespace-nowrap lg:whitespace-normal transition-colors
+                                  {% if url_name == 'settings_muses' %}bg-surface text-primary font-medium{% else %}text-secondary hover:text-primary hover:bg-surface{% endif %}">
+                            <span class="i-lucide-sparkles text-sm flex-shrink-0"></span>
+                            {% trans "Muses" %}
+                        </a>
+
                         <a href="{% url 'users:settings_federation' %}"
                            class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm whitespace-nowrap lg:whitespace-normal transition-colors
                                   {% if url_name == 'settings_federation' %}bg-surface text-primary font-medium{% else %}text-secondary hover:text-primary hover:bg-surface{% endif %}">

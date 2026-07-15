@@ -57,11 +57,18 @@ def _url(lr: LinkRequest) -> str:
     return reverse("characters:link_request_check_coherence", kwargs={"pk": lr.pk})
 
 
+def _activate(u: User, *, credits: int = 5) -> None:
+    u.muses_enabled = True
+    u.muses_credits = credits
+    u.save(update_fields=["muses_enabled", "muses_credits"])
+
+
 def test_recipient_gets_analysis_panel(
     client: Client, mocker: Any, user: User, other_user: User, game: Game
 ) -> None:
     # recipient=user owns the NPC; requester=other_user
     lr = _make_claim(requester=other_user, recipient=user, game=game)
+    _activate(user)
     cls = mocker.patch("suddenly.muses.client.MusesClient")
     cls.return_value.analyze.return_value = {
         "compatibility": ["Both grim in tone."],
@@ -83,6 +90,40 @@ def test_recipient_gets_analysis_panel(
     assert kwargs["feature"] == "claim_coherence"
     assert [c.label for c in kwargs["corpora"]] == ["npc", "candidate_pc"]
     assert kwargs["extra"]["argument"] == "Mara was at the docks that night."
+    # One credit spent on the successful analysis (5 → 4).
+    user.refresh_from_db()
+    assert user.muses_credits == 4
+
+
+def test_no_credits_shows_note_without_calling_hub(
+    client: Client, mocker: Any, user: User, other_user: User, game: Game
+) -> None:
+    lr = _make_claim(requester=other_user, recipient=user, game=game)
+    _activate(user, credits=0)  # enabled but empty balance
+    cls = mocker.patch("suddenly.muses.client.MusesClient")
+    cls.is_enabled.return_value = True
+    client.force_login(user)
+
+    resp = client.post(_url(lr))
+
+    assert resp.status_code == 200
+    assert "credit" in resp.content.decode().lower()
+    cls.return_value.analyze.assert_not_called()
+
+
+def test_disabled_recipient_gets_unavailable(
+    client: Client, mocker: Any, user: User, other_user: User, game: Game
+) -> None:
+    # recipient owns the NPC but never enabled Muses — the hub is not called.
+    lr = _make_claim(requester=other_user, recipient=user, game=game)
+    cls = mocker.patch("suddenly.muses.client.MusesClient")
+    client.force_login(user)
+
+    resp = client.post(_url(lr))
+
+    assert resp.status_code == 200
+    assert "unavailable" in resp.content.decode().lower()
+    cls.return_value.analyze.assert_not_called()
 
 
 def test_non_recipient_gets_404(
@@ -121,6 +162,7 @@ def test_degraded_note_when_hub_unavailable(
     client: Client, mocker: Any, user: User, other_user: User, game: Game
 ) -> None:
     lr = _make_claim(requester=other_user, recipient=user, game=game)
+    _activate(user)
     cls = mocker.patch("suddenly.muses.client.MusesClient")
     cls.return_value.analyze.side_effect = MusesUnavailable("down")
     client.force_login(user)
@@ -135,6 +177,7 @@ def test_claim_without_candidate_shows_note(
     client: Client, mocker: Any, user: User, other_user: User, game: Game
 ) -> None:
     lr = _make_claim(requester=other_user, recipient=user, game=game, with_candidate=False)
+    _activate(user)
     cls = mocker.patch("suddenly.muses.client.MusesClient")
     client.force_login(user)
 

@@ -211,6 +211,7 @@ def link_request_check_coherence(request: HttpRequest, pk: str) -> HttpResponse:
     unavailable (#88).
     """
     from suddenly.muses.client import Corpus, MusesClient
+    from suddenly.muses.credits import debit, has_credits
     from suddenly.muses.exceptions import MusesError
 
     from .muses_context import axial_tags, corpus_content
@@ -225,15 +226,32 @@ def link_request_check_coherence(request: HttpRequest, pk: str) -> HttpResponse:
     if request.method != "POST":
         return redirect(reverse("characters:link_request_accept", kwargs={"pk": pk}))
 
+    def _panel(
+        analysis: dict[str, object] | None, *, no_candidate: bool = False, no_credits: bool = False
+    ) -> HttpResponse:
+        return render(
+            request,
+            "characters/_claim_coherence.html",
+            {
+                "link_request": lr,
+                "analysis": analysis,
+                "no_candidate": no_candidate,
+                "no_credits": no_credits,
+            },
+        )
+
+    # Gate: service must be active (per-user switch + instance hub)...
+    if not (getattr(request.user, "muses_enabled", False) and MusesClient.is_enabled()):
+        return _panel(None)
+    # ...and the account must have credits left.
+    if not has_credits(request.user):
+        return _panel(None, no_credits=True)
+
     npc = lr.target_character
     candidate = lr.proposed_character
     if candidate is None:
         # A Claim without a proposed PC has nothing to compare against.
-        return render(
-            request,
-            "characters/_claim_coherence.html",
-            {"link_request": lr, "analysis": None, "no_candidate": True},
-        )
+        return _panel(None, no_candidate=True)
 
     corpora = [
         Corpus(label="npc", content=corpus_content(npc), tags=axial_tags(npc)),
@@ -258,11 +276,11 @@ def link_request_check_coherence(request: HttpRequest, pk: str) -> HttpResponse:
     except MusesError:
         analysis = None  # degraded mode: render the discreet unavailable note
 
-    return render(
-        request,
-        "characters/_claim_coherence.html",
-        {"link_request": lr, "analysis": analysis, "no_candidate": False},
-    )
+    # Debit one credit only on a real analysis (never in degraded mode, #88).
+    if analysis is not None:
+        debit(request.user)
+
+    return _panel(analysis)
 
 
 @login_required

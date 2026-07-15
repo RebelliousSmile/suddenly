@@ -61,14 +61,16 @@ def _links_summary(links: list[dict[str, object]]) -> str:
 def muses_post_ingest(report_id: str) -> str:
     """After a successful ingestion, offer an editable summary + federated links.
 
-    Gated by ``SUDDENLY_MUSES_ENABLED`` *and* the author's opt-in. Each hub call
-    is guarded independently: one failing does not sink the other, and a fully
-    unavailable hub simply produces no assistance (no unit debited).
+    Gated by ``SUDDENLY_MUSES_ENABLED``, the author's opt-in *and* their credit
+    balance. Each hub call is guarded independently and only runs while credits
+    remain; one failing does not sink the other, and a fully unavailable hub
+    simply produces no assistance (no unit debited).
     """
     from django.contrib.contenttypes.models import ContentType
 
     from suddenly.core.models import Notification, NotificationType
     from suddenly.games.models import Report
+    from suddenly.muses.credits import debit, has_credits
 
     if not MusesClient.is_enabled():
         return "skipped: muses disabled"
@@ -79,33 +81,43 @@ def muses_post_ingest(report_id: str) -> str:
         return "skipped: report gone"
 
     author = report.author
-    if author is None or not getattr(author, "muses_post_ingest_optin", False):
+    if author is None or not getattr(author, "muses_enabled", False):
+        return "skipped: muses not enabled for author"
+    if not getattr(author, "muses_post_ingest_optin", False):
         return "skipped: author opted out"
+    if not has_credits(author):
+        return "skipped: no credits"
 
     client = MusesClient()
     corpus = _report_corpus(report)
     notification_bits: list[str] = []
 
     # 1) Summary (#83) — attached as an editable proposal, never auto-published.
-    try:
-        result = client.analyze(feature="summary", content=corpus.content, tags=corpus.tags)
-        summary = str(result.get("summary", "")).strip()
-        if summary:
-            report.muses_summary_proposal = summary
-            report.save(update_fields=["muses_summary_proposal"])
-            notification_bits.append("Un résumé éditable vous est proposé.")
-    except MusesError as exc:
-        logger.info("Muses summary skipped for report %s: %s", report_id, exc)
+    if has_credits(author):
+        try:
+            result = client.analyze(feature="summary", content=corpus.content, tags=corpus.tags)
+            summary = str(result.get("summary", "")).strip()
+            if summary:
+                report.muses_summary_proposal = summary
+                report.save(update_fields=["muses_summary_proposal"])
+                notification_bits.append("Un résumé éditable vous est proposé.")
+                debit(author)  # one credit per successful analyze
+        except MusesError as exc:
+            logger.info("Muses summary skipped for report %s: %s", report_id, exc)
 
     # 2) Federated links (#84) — classified fort / moyen / faible.
-    try:
-        result = client.analyze(feature="federated_links", content=corpus.content, tags=corpus.tags)
-        links = result.get("links") or []
-        summary_line = _links_summary(links if isinstance(links, list) else [])
-        if summary_line:
-            notification_bits.append(summary_line)
-    except MusesError as exc:
-        logger.info("Muses federated links skipped for report %s: %s", report_id, exc)
+    if has_credits(author):
+        try:
+            result = client.analyze(
+                feature="federated_links", content=corpus.content, tags=corpus.tags
+            )
+            links = result.get("links") or []
+            summary_line = _links_summary(links if isinstance(links, list) else [])
+            if summary_line:
+                notification_bits.append(summary_line)
+            debit(author)  # one credit per successful analyze
+        except MusesError as exc:
+            logger.info("Muses federated links skipped for report %s: %s", report_id, exc)
 
     if not notification_bits:
         return "done: no assistance produced"

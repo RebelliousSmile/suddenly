@@ -86,6 +86,7 @@ def sequence_suggest_opening(request: AuthenticatedRequest, pk: str) -> HttpResp
     "unavailable" note if the hub is disabled or unreachable (#88).
     """
     from suddenly.muses.client import MusesClient, SessionContext
+    from suddenly.muses.credits import debit, has_credits
     from suddenly.muses.exceptions import MusesError
 
     from .muses_context import anchor_reports, axial_tags, character_sheet
@@ -99,6 +100,21 @@ def sequence_suggest_opening(request: AuthenticatedRequest, pk: str) -> HttpResp
         or sequence.content.strip()
     ):
         return redirect(reverse("characters:sequence_edit", kwargs={"pk": pk}))
+
+    def _render(suggestion: dict[str, str] | None, *, no_credits: bool = False) -> HttpResponse:
+        return htmx_render(
+            request,
+            full_template="characters/_sequence_suggestion.html",
+            partial_template="characters/_sequence_suggestion.html",
+            context={"sequence": sequence, "suggestion": suggestion, "no_credits": no_credits},
+        )
+
+    # Gate: service must be active (per-user switch + instance hub)...
+    if not (getattr(request.user, "muses_enabled", False) and MusesClient.is_enabled()):
+        return _render(None)
+    # ...and the account must have credits left.
+    if not has_credits(request.user):
+        return _render(None, no_credits=True)
 
     source = sequence.link.source
     target = sequence.link.target
@@ -123,12 +139,11 @@ def sequence_suggest_opening(request: AuthenticatedRequest, pk: str) -> HttpResp
     except MusesError:
         suggestion = None  # degraded mode: render the discreet unavailable note
 
-    return htmx_render(
-        request,
-        full_template="characters/_sequence_suggestion.html",
-        partial_template="characters/_sequence_suggestion.html",
-        context={"sequence": sequence, "suggestion": suggestion},
-    )
+    # Debit one credit only on a real suggestion (never in degraded mode, #88).
+    if suggestion:
+        debit(request.user)
+
+    return _render(suggestion)
 
 
 @login_required

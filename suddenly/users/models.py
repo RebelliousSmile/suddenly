@@ -56,8 +56,21 @@ class User(AbstractUser):
         help_text=_("UI language. Empty = use instance default."),
     )
 
-    # Muses — opt-in to automatic post-ingestion assistance (#126). Default off:
-    # nothing is sent to the hub for imported reports unless the author asks.
+    # Muses — per-user master activation. Off by default: no Muses feature runs
+    # for this account until the user turns it on in the Muses settings tab.
+    muses_enabled = models.BooleanField(
+        default=False,
+        help_text=_("Enable Muses AI assistance for your account."),
+    )
+    # Muses credit balance (the "Muses" unit). Granted by the admin (#86);
+    # displayed as a counter in the Muses settings tab.
+    muses_credits = models.PositiveIntegerField(
+        default=0,
+        help_text=_("Available Muses credits."),
+    )
+    # Opt-in to automatic post-ingestion assistance (#126). Only meaningful when
+    # muses_enabled is on: nothing is sent to the hub for imported reports unless
+    # the author asks.
     muses_post_ingest_optin = models.BooleanField(
         default=False,
         help_text=_(
