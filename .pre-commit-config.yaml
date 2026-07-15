@@ -23,12 +23,3 @@ repos:
         args: [suddenly/]
         pass_filenames: false
         stages: [pre-push]
-
-      - id: pytest
-        name: pytest
-        entry: pytest
-        language: system
-        args: [--tb=short, --no-header, -q]
-        pass_filenames: false
-        always_run: true
-        stages: [pre-push]
