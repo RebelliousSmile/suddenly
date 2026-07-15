@@ -1,5 +1,5 @@
 /* GENERATED FROM design/tokens.json — DO NOT EDIT BY HAND.
-   Source of truth: design/tokens.json (v1.0.0). Regenerate after any token change.
+   Source of truth: design/tokens.json (v1.4.0). Regenerate after any token change.
 
    Each colour is emitted twice:
      --color-<path>      hex, for direct use
@@ -40,12 +40,16 @@
   --color-neutral-700-rgb: 85 85 85;
   --color-neutral-900: #1a1a2e;
   --color-neutral-900-rgb: 26 26 46;
+  --color-neutral-950: #12121f;
+  --color-neutral-950-rgb: 18 18 31;
 
   /* ---- color.sepia (dark theme ramp) ---- */
   --color-sepia-50: #f0f0f0;
   --color-sepia-50-rgb: 240 240 240;
-  --color-sepia-300: #a0a0a0;
-  --color-sepia-300-rgb: 160 160 160;
+  --color-sepia-300: #b8b0a8;
+  --color-sepia-300-rgb: 184 176 168;
+  --color-sepia-400: #8f857c;
+  --color-sepia-400-rgb: 143 133 124;
   --color-sepia-500: #3d2215;
   --color-sepia-500-rgb: 61 34 21;
   --color-sepia-600: #25150e;
@@ -84,6 +88,8 @@
   --color-semantic-danger-rgb: 153 27 27;
   --color-semantic-info: #0369a1;
   --color-semantic-info-rgb: 3 105 161;
+  --color-semantic-chrome: var(--color-neutral-950);
+  --color-semantic-chrome-rgb: var(--color-neutral-950-rgb);
 
   /* ---- color.ui — theme-switch iconography (sun / moon), not system colour ---- */
   --color-ui-sun: #fbbf24;
@@ -114,6 +120,22 @@
   --color-domain-oracle-rgb: var(--color-brand-accent-rgb);
   --color-domain-quoted: var(--color-brand-primary);
   --color-domain-quoted-rgb: var(--color-brand-primary-rgb);
+  --color-domain-gone: var(--color-semantic-muted);
+  --color-domain-gone-rgb: var(--color-semantic-muted-rgb);
+  --color-domain-kind-description: var(--color-semantic-info);
+  --color-domain-kind-description-rgb: var(--color-semantic-info-rgb);
+  --color-domain-kind-action: var(--color-brand-primary);
+  --color-domain-kind-action-rgb: var(--color-brand-primary-rgb);
+  --color-domain-kind-discussion: var(--color-brand-accent);
+  --color-domain-kind-discussion-rgb: var(--color-brand-accent-rgb);
+  --color-domain-kind-closure: var(--color-semantic-info);
+  --color-domain-kind-closure-rgb: var(--color-semantic-info-rgb);
+  --color-domain-state-draft: var(--color-semantic-warning);
+  --color-domain-state-draft-rgb: var(--color-semantic-warning-rgb);
+  --color-domain-state-closed: var(--color-semantic-info);
+  --color-domain-state-closed-rgb: var(--color-semantic-info-rgb);
+  --color-domain-state-released: var(--color-semantic-success);
+  --color-domain-state-released-rgb: var(--color-semantic-success-rgb);
 
   /* ---- font ---- */
   --font-sans: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -257,8 +279,8 @@
   --color-semantic-ink-rgb: var(--color-sepia-50-rgb);
   --color-semantic-ink-secondary: var(--color-sepia-300);
   --color-semantic-ink-secondary-rgb: var(--color-sepia-300-rgb);
-  --color-semantic-muted: var(--color-sepia-300);
-  --color-semantic-muted-rgb: var(--color-sepia-300-rgb);
+  --color-semantic-muted: var(--color-sepia-400);
+  --color-semantic-muted-rgb: var(--color-sepia-400-rgb);
   --color-semantic-success: #4ade80;
   --color-semantic-success-rgb: 74 222 128;
   --color-semantic-warning: #fbbf24;

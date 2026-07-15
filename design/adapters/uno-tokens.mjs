@@ -1,4 +1,4 @@
-// GENERATED FROM design/tokens.json (v1.0.0) — DO NOT EDIT BY HAND.
+// GENERATED FROM design/tokens.json (v1.4.0) — DO NOT EDIT BY HAND.
 //
 // UnoCSS theme adapter. The contract's reference adapters target Tailwind v4
 // (`@theme`) or v3 (`tailwind-tokens.cjs`); this project runs UnoCSS, so the
@@ -67,10 +67,12 @@ export const theme = {
       500: rgb('neutral-500'),
       700: rgb('neutral-700'),
       900: rgb('neutral-900'),
+      950: rgb('neutral-950'),
     },
     sepia: {
       50: rgb('sepia-50'),
       300: rgb('sepia-300'),
+      400: rgb('sepia-400'),
       500: rgb('sepia-500'),
       600: rgb('sepia-600'),
       700: rgb('sepia-700'),
@@ -95,6 +97,7 @@ export const theme = {
       warning: rgb('semantic-warning'),
       danger: rgb('semantic-danger'),
       info: rgb('semantic-info'),
+      chrome: rgb('semantic-chrome'),
     },
     // Iconographie du sélecteur de thème — pas une couleur du système.
     ui: {
@@ -117,6 +120,20 @@ export const theme = {
       forked: rgb('domain-forked'),
       oracle: rgb('domain-oracle'),
       quoted: rgb('domain-quoted'),
+      gone: rgb('domain-gone'),
+      // kind de rapport — la couleur double toujours l'icône de nature (state-colour-icon)
+      kind: {
+        description: rgb('domain-kind-description'),
+        action: rgb('domain-kind-action'),
+        discussion: rgb('domain-kind-discussion'),
+        closure: rgb('domain-kind-closure'),
+      },
+      // état de scène — la statepill porte toujours son libellé à côté de la couleur
+      state: {
+        draft: rgb('domain-state-draft'),
+        closed: rgb('domain-state-closed'),
+        released: rgb('domain-state-released'),
+      },
     },
   },
   fontFamily: {
