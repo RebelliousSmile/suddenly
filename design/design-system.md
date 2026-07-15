@@ -243,6 +243,37 @@ section) est une piste ouverte, non arbitrée.
 
 ## 6. Provenance
 
+### v1.3.0 — 2026-07-15 — gates enforce câblés
+
+Le contrat (v1.3.0, mode `utility-first`) est désormais **verrouillé par un linter**, pas seulement
+décrit. `design:enforce` a posé :
+
+- **`design/lint/lint-core.mjs`** — le string-scanner portable (dérive ses règles de
+  `tokens.json` + `components.json`, aucune valeur codée en dur) + **`lint-files.mjs`**, wrapper
+  multi-fichiers pour pre-commit/CI. Cible : `templates/**/*.html`.
+- **Gate 0** (import `tokens.css`) — déjà câblé par `adjust` (vérifié : `main.js` importe
+  `design/adapters/tokens.css`).
+- **Gate 1** (règle de génération) — `.claude/rules/08-design/01-enforce.md` : namespaces couleur
+  fermés, hex brut interdit, `@container` et non `@media`.
+- **Gate 3** (pre-commit) — hook `design-lint` ajouté au framework `pre-commit` existant
+  (`.pre-commit-config.yaml`), et non un `scripts/hooks/pre-commit` concurrent. Blocage prouvé
+  end-to-end (`text-red-500` → commit refusé).
+
+**Exemptions sanctionnées** (contrat § `wireframes-out-of-scope`, + `design/lint/.lintrc.json`) :
+`templates/wireframes/**` (maquettes pré-manifeste, non servies) et `templates/500.html` (page
+d'erreur autonome dont le hex inline est load-bearing — `tokens.css` peut être indisponible au
+rendu). **142 templates de production propres, exit 0.**
+
+**Pivot (`04-pivot`) — dégradation raisonnée.** Stack détectée : JavaScript → `sc-js:design-bridge`
+(installé, v0.8.0). Mais sa réalisation `01-realize-lint` produit une **règle ESLint qui visite
+`className` dans `.jsx/.tsx/.vue`** — or le projet est **Django SSR + Alpine vanilla** : zéro fichier
+JSX/Vue, aucune config ESLint. Firer le pivot générerait un linter à **surface nulle** (l'anti-motif
+« 0 hit fallacieux » que le plugin design signale lui-même). La baseline reste donc l'enforcement
+actif pour les règles vérifiables par scan ; les 11 règles `pivot-only` (state-colour-icon,
+icon-accessible-name, tap-target…) portent sur le HTML des templates et resteraient hors de portée
+d'un AST JS de toute façon — elles demeurent des conventions documentées (Gate 1 + `mobile-first.md`),
+tenues par revue. À ré-jouer si le frontend migre vers Vue/React.
+
 ### v1.2.0 — 2026-07-14 — trois jeux d'icônes, trois rôles
 
 `icon.library: lucide` (jeu unique) était **inapplicable** : le code charge trois collections, et
