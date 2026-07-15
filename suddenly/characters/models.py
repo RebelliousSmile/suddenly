@@ -590,6 +590,8 @@ class Action(BaseModel):
         indexes = [models.Index(fields=["trait_set"])]
 
     def __str__(self) -> str:
+        if self.trait_set is None:
+            return f"{self.name} → {self.character.name}"
         return f"{self.name} → {self.trait_set.label}"
 
 

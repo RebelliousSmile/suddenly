@@ -24,6 +24,7 @@ class TestTraitSet:
 
         action = Action.objects.create(
             trait_set=trait_set,
+            character=character,
             name="Foncer dans le tas",
             condition="Quand tu ignores le danger",
             outcome="Tu avances mais tu t'exposes",
@@ -82,28 +83,37 @@ class TestTrait:
 @pytest.mark.django_db
 class TestAction:
     def test_str(self) -> None:
-        ts = TraitSet.objects.create(character=CharacterFactory(), label="Moves")
-        action = Action.objects.create(trait_set=ts, name="Convaincre")
+        character = CharacterFactory()
+        ts = TraitSet.objects.create(character=character, label="Moves")
+        action = Action.objects.create(trait_set=ts, character=character, name="Convaincre")
         assert str(action) == "Convaincre → Moves"
 
+    def test_str_without_trait_set_falls_back_to_character(self) -> None:
+        """3: transverse actions (trait_set=None) never raise from __str__."""
+        character = CharacterFactory(name="Ariane")
+        action = Action.objects.create(trait_set=None, character=character, name="Bluffer")
+        assert str(action) == "Bluffer → Ariane"
+
     def test_multi_trait_action(self) -> None:
-        ts = TraitSet.objects.create(character=CharacterFactory())
+        character = CharacterFactory()
+        ts = TraitSet.objects.create(character=character)
         a = Trait.objects.create(trait_set=ts, name="A", value=1)
         b = Trait.objects.create(trait_set=ts, name="B")
-        action = Action.objects.create(trait_set=ts, name="Combo")
+        action = Action.objects.create(trait_set=ts, character=character, name="Combo")
         action.traits.set([a, b])
         assert action.traits.count() == 2
 
     def test_action_without_traits_is_allowed(self) -> None:
-        ts = TraitSet.objects.create(character=CharacterFactory())
-        action = Action.objects.create(trait_set=ts, name="Solo")
+        character = CharacterFactory()
+        ts = TraitSet.objects.create(character=character)
+        action = Action.objects.create(trait_set=ts, character=character, name="Solo")
         assert action.traits.count() == 0
 
     def test_cascade_delete_from_character(self) -> None:
         character = CharacterFactory()
         ts = TraitSet.objects.create(character=character)
         Trait.objects.create(trait_set=ts, name="X")
-        Action.objects.create(trait_set=ts, name="Y")
+        Action.objects.create(trait_set=ts, character=character, name="Y")
         character.delete()
         assert TraitSet.objects.count() == 0
         assert Trait.objects.count() == 0
