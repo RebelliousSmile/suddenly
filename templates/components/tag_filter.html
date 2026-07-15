@@ -26,8 +26,8 @@ Parameters:
             hx-get="{{ search_url }}"
             hx-target="{{ results_target }}"
             hx-include="{{ include_fields }}"
-            hx-vals='{"tag": "{{ tag }}"}'
-            @click="document.getElementById('tag-filter').value = '{{ tag }}'">
+            hx-vals='{"tag": "{{ tag|escapejs }}"}'
+            @click="document.getElementById('tag-filter').value = '{{ tag|escapejs }}'">
         {{ tag }}
     </button>
     {% endfor %}

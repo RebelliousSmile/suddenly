@@ -235,8 +235,6 @@ def character_edit(request: AuthenticatedRequest, slug: str) -> HttpResponse:
         character.description = request.POST.get("description", "").strip()
         character.sheet_url = request.POST.get("sheet_url", "").strip() or None
 
-        tags_raw = request.POST.get("tags", "").strip()
-
         if request.POST.get("avatar-clear"):
             if character.avatar:
                 character.avatar.delete(save=False)
@@ -247,9 +245,7 @@ def character_edit(request: AuthenticatedRequest, slug: str) -> HttpResponse:
         character.save(update_fields=["name", "description", "sheet_url", "avatar", "updated_at"])
         from suddenly.core.models import Tag
 
-        tag_names = [t.strip() for t in tags_raw.split(",") if t.strip()]
-        tag_objects = [Tag.objects.get_or_create(name=name)[0] for name in tag_names]
-        character.tags.set(tag_objects)
+        character.tags.set(Tag.resolve_names(request.POST.get("tags", "")))
         return redirect(reverse("characters:detail", kwargs={"slug": character.slug}))
 
     return htmx_render(
