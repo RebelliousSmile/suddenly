@@ -53,6 +53,12 @@ refactor(games): extract service layer
 test(characters): add contract tests for status transitions
 ```
 
+## Concurrent Claude Code sessions
+
+- Two sessions can work the same repo/branch at once — a plain `runserver` process is not proof of activity; a new commit or a file vanishing from `git status` between two consecutive checks is
+- `endtask`: if the branch to merge shows uncommitted changes appearing between checks (or unexpected new commits), stop before merge/push/branch-delete/changelog/tag/issue-close — commit + push + archive-plan only, leave the rest for a manual follow-up once the other session is confirmed done
+- To finish `endtask` without disturbing an active session's shared working directory, do the merge/tag/push in an isolated `git worktree` (not a checkout in the primary working directory) — `git branch -D` on the source branch will correctly fail if it is still checked out elsewhere, which is the expected safety net, not a bug
+
 ## Pull Requests
 
 - One PR = one coherent feature or fix

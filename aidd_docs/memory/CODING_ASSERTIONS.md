@@ -74,6 +74,7 @@
 - Federated content is never deleted — use `deleted_at` + `ActiveManager`
 - `select_related`/`prefetch_related` required on all paginated querysets
 - Max 10 SQL queries per page — verify with `django-debug-toolbar` in dev
+- Adding a required (`NOT NULL`) FK to an existing model: grep **every** `Model.objects.create(...)` call site project-wide before the finalizing migration — admin inlines (`save_formset`) and federation inbox handlers create objects outside the service layer and are easy to miss when a plan only lists service-layer callers
 
 ## Security Rules
 
