@@ -40,9 +40,14 @@ const presetSuddenly = () => ({
       mono: ['JetBrains Mono', 'Fira Code', 'ui-monospace', 'monospace'],
     },
 
-    // Espacements custom — hors contrat, à conserver
+    // Espacements custom — insets d'encoche (safe-area) sur les 4 côtés,
+    // pour les barres collantes et le contenu en bord d'écran (mobile #6/#7).
     spacing: {
-      safe: 'env(safe-area-inset-bottom)',
+      'safe': 'env(safe-area-inset-bottom)',
+      'safe-t': 'env(safe-area-inset-top)',
+      'safe-b': 'env(safe-area-inset-bottom)',
+      'safe-l': 'env(safe-area-inset-left)',
+      'safe-r': 'env(safe-area-inset-right)',
     },
 
     // Ombres : le contrat couvre card / card-hover.
@@ -64,6 +69,14 @@ const presetSuddenly = () => ({
     // « ceci a le focus » avec « ceci est l'action primaire ».
     'focus-ring': 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-semantic-focus focus-visible:ring-offset-2 focus-visible:ring-offset-semantic-background',
 
+    // Grilles fluides (mobile-first) — se replient sur la largeur réelle du
+    // conteneur plutôt que sur des breakpoints d'écran fixes, ce qui évite le
+    // débordement horizontal des cartes sur petits écrans (< 360px).
+    // grid-stats : bandes de compteurs (peu d'items → auto-fit remplit la largeur)
+    // grid-cards : listes de cartes personnage (largeur de carte stable → auto-fill)
+    'grid-stats': 'grid gap-4 grid-cols-[repeat(auto-fit,minmax(140px,1fr))]',
+    'grid-cards': 'grid gap-3 grid-cols-[repeat(auto-fill,minmax(150px,1fr))]',
+
     // Boutons
     'btn-primary': 'inline-flex items-center justify-center gap-2 bg-brand-primary text-white px-7 py-[13px] text-[15px] font-semibold rounded-lg transition-all duration-250 hover:bg-brand-primary-hover hover:-translate-y-0.5 hover:shadow-btn focus-ring disabled:opacity-50 disabled:cursor-not-allowed',
     'btn-secondary': 'inline-flex items-center justify-center gap-2 bg-transparent border border-semantic-border text-semantic-ink-secondary px-7 py-[13px] text-[15px] font-semibold rounded-lg transition-all duration-250 hover:border-brand-primary hover:text-brand-primary hover:-translate-y-0.5 focus-ring disabled:opacity-50 disabled:cursor-not-allowed',
@@ -71,6 +84,11 @@ const presetSuddenly = () => ({
     'btn-danger': 'inline-flex items-center justify-center gap-2 bg-semantic-danger text-white px-7 py-[13px] text-[15px] font-semibold rounded-lg transition-all duration-250 hover:bg-semantic-danger/90 focus-ring disabled:opacity-50 disabled:cursor-not-allowed',
     'btn-sm': 'px-3 py-1.5 text-sm',
     'btn-lg': 'px-6 py-3 text-lg',
+    // Cible tactile ≥ 44px pour les boutons d'action compacts sur mobile (#6).
+    'tap-target': 'min-h-11 min-w-11 inline-flex items-center justify-center',
+    // Barre d'action de l'éditeur (#7) : collante en bas sur mobile (avec
+    // safe-area), redevient inline à partir de sm.
+    'editor-actions': 'flex items-center gap-3 sticky bottom-0 -mx-4 px-4 py-3 bg-semantic-surface border-t border-semantic-border pb-safe z-sticky sm:static sm:mx-0 sm:px-0 sm:py-0 sm:bg-transparent sm:border-0',
 
     // Cards
     'card': 'bg-semantic-card border border-semantic-border rounded-xl p-6',

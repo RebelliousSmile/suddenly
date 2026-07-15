@@ -7,7 +7,7 @@ and partial HTML fragments for HTMX requests (detected via django-htmx).
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 from django.core.paginator import Paginator
 from django.http import HttpRequest, HttpResponse
@@ -19,19 +19,31 @@ from suddenly.core.services import (
     get_instance_stats,
     get_recent_public_reports,
 )
+from suddenly.core.types import AuthenticatedRequest
 
 
 def home(request: HttpRequest) -> HttpResponse:
-    """Home page — public vitrine.
-
-    "Ce qu'on y dit": a few promotable citations for anonymous visitors, taken
-    from the single double-locked queryset.
     """
+    Home page.
+
+    Mastodon-like behaviour (Front #1): a single canonical ``/`` URL with two
+    renders depending on the session. Authenticated users get their feed
+    (delegated to ``feed_home``, keeping ``/`` as the displayed URL); anonymous
+    visitors get the marketing vitrine enriched with instance stats (Front #2)
+    and a few promotable citations ("ce qu'on y dit") from the double-locked
+    queryset.
+    """
+    if request.user.is_authenticated:
+        from suddenly.core.feed_views import feed_home
+
+        return feed_home(cast(AuthenticatedRequest, request))
+
     return render(
         request,
         "core/home.html",
         {
             "recent_reports": get_recent_public_reports(),
+            "stats": get_instance_stats(),
             "instance_quotes": get_instance_quotes(3),
         },
     )

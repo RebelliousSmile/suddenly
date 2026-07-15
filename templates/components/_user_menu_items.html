@@ -1,0 +1,38 @@
+{% load i18n %}
+{% comment %}
+Account dropdown items (Front #5). Shared between the desktop and mobile
+navbars to avoid divergence. Badge counts (pending_requests_count,
+unread_notifications_count) are injected by the
+suddenly.core.context_processors.account_badges context processor.
+{% endcomment %}
+<a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
+    <span class="i-lucide-user mr-2"></span>{% trans "My profile" %}
+</a>
+<a href="{% url 'characters:gm_dashboard' %}" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
+    <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Dashboard" %}
+</a>
+<a href="{% url 'users:settings_data' %}" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
+    <span class="i-lucide-settings mr-2"></span>{% trans "Preferences" %}
+</a>
+{% if request.user.is_admin %}
+<a href="{% url 'gmh:dashboard' %}" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
+    <span class="i-lucide-shield mr-2"></span>{% trans "Admin" %}
+</a>
+{% endif %}
+<hr class="my-1 border-semantic-border">
+<a href="{% url 'characters:link_requests' %}" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
+    <span><span class="i-lucide-inbox mr-2"></span>{% trans "Requests" %}</span>
+    {% if pending_requests_count %}<span class="badge-primary">{{ pending_requests_count }}</span>{% endif %}
+</a>
+<a href="{% url 'feed:notifications' %}" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
+    <span><span class="i-lucide-bell mr-2"></span>{% trans "Notifications" %}</span>
+    {% if unread_notifications_count %}<span class="badge-primary">{{ unread_notifications_count }}</span>{% endif %}
+</a>
+<a href="#" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
+    <span><span class="i-lucide-gem mr-2"></span>{% trans "Stats & achievements" %}</span>
+    {% if new_stats_count %}<span class="badge-primary">{{ new_stats_count }}</span>{% endif %}
+</a>
+<hr class="my-1 border-semantic-border">
+<a href="{% url 'account_logout' %}" class="block px-4 py-3 text-sm text-semantic-danger hover:bg-semantic-danger/10">
+    <span class="i-lucide-log-out mr-2"></span>{% trans "Log out" %}
+</a>

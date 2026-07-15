@@ -59,9 +59,10 @@ def interleave_promos(reports: list[Any], npcs: list[Any], every: int) -> list[d
 def feed_home(request: AuthenticatedRequest) -> HttpResponse:
     """Feed — Abonnements tab (default). US-12, US-28."""
     from django.contrib.contenttypes.models import ContentType
+    from django.db.models import Prefetch
 
     from suddenly.characters.models import Character, Follow
-    from suddenly.games.models import Game
+    from suddenly.games.models import Game, Rapport
     from suddenly.users.models import User
 
     user = request.user
@@ -77,7 +78,9 @@ def feed_home(request: AuthenticatedRequest) -> HttpResponse:
         follower=user, content_type_id=game_ct_id
     ).values_list("object_id", flat=True)
 
-    # Published reports from followed users/games
+    # Published reports (scenes) from followed users/games. For the Friends tab
+    # (Front #9) we read them as a stream of interventions grouped by scene, so
+    # prefetch each scene's rapports (in reading order) to avoid N+1.
     reports = (
         Report.objects.filter(
             status=ReportStatus.PUBLISHED,
@@ -85,6 +88,12 @@ def feed_home(request: AuthenticatedRequest) -> HttpResponse:
         )
         .filter(Q(author_id__in=followed_user_ids) | Q(game_id__in=followed_game_ids))
         .select_related("game", "author")
+        .prefetch_related(
+            Prefetch(
+                "rapports",
+                queryset=Rapport.objects.select_related("actor").order_by("created_at"),
+            )
+        )
         .order_by("-published_at")[:20]
     )
 

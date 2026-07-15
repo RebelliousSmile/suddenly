@@ -1,0 +1,68 @@
+{# Partial: "Friends" feed — recent interventions grouped by scene (Front #9) #}
+{% load i18n %}
+
+{% if reports %}
+    <div class="space-y-4">
+        {% for report in reports %}
+            <article class="card card-body">
+                <!-- Scene header -->
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="avatar-md avatar-placeholder">
+                        <span class="i-lucide-user text-sm"></span>
+                    </span>
+                    <div class="flex-1 min-w-0">
+                        <span class="font-medium text-semantic-ink">@{{ report.author.username }}</span>
+                        <span class="text-semantic-muted text-sm mx-1">{% trans "in" %}</span>
+                        <a href="{% url 'games:detail' pk=report.game.pk %}"
+                           class="text-semantic-ink-secondary hover:text-brand-primary text-sm">{{ report.game.title }}</a>
+                    </div>
+                    {% if report.published_at %}
+                        <time class="text-xs text-semantic-muted flex-shrink-0">{{ report.published_at|timesince }}</time>
+                    {% endif %}
+                </div>
+
+                <a href="{% url 'games:report_thread' game_pk=report.game.pk pk=report.pk %}"
+                   class="block text-semantic-ink font-semibold hover:text-brand-primary mb-3">
+                    {{ report.title|default:_("Untitled") }}
+                </a>
+
+                {% if report.content_warning %}
+                    <div class="flex items-center gap-2 text-sm text-warning mb-2">
+                        <span class="i-lucide-alert-triangle text-xs"></span>{{ report.content_warning }}
+                    </div>
+                {% else %}
+                    <!-- Recent interventions (reading mode) -->
+                    <div class="space-y-3">
+                        {% for rapport in report.rapports.all|slice:":3" %}
+                            {% include "games/partials/rapport_read.html" %}
+                        {% empty %}
+                            <p class="text-sm text-semantic-ink-secondary whitespace-pre-line line-clamp-4">{{ report.content|truncatewords:50 }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <a href="{% url 'games:report_thread' game_pk=report.game.pk pk=report.pk %}"
+                   class="inline-flex items-center gap-1 text-sm link mt-3">
+                    {% trans "Read the full scene" %}<span class="i-lucide-arrow-right text-sm"></span>
+                </a>
+            </article>
+        {% endfor %}
+    </div>
+{% elif is_empty %}
+    <div class="text-center py-16">
+        <span class="i-lucide-users text-5xl text-semantic-muted mb-4 block"></span>
+        <h3 class="font-semibold text-semantic-ink mb-2">{% trans "Your feed is empty" %}</h3>
+        <p class="text-sm text-semantic-muted mb-4">
+            {% trans "Follow players or games to read their sessions here." %}
+        </p>
+        <div class="flex items-center justify-center gap-3">
+            <a href="{% url 'games:list' %}" class="btn-primary btn-sm">{% trans "Explore games" %}</a>
+            <a href="{% url 'characters:list' %}" class="btn-secondary btn-sm">{% trans "See characters" %}</a>
+        </div>
+    </div>
+{% else %}
+    <div class="text-center py-12">
+        <span class="i-game-icons-open-book text-4xl text-semantic-muted mb-4 block"></span>
+        <p class="text-semantic-muted">{% trans "No recent activity from your games yet." %}</p>
+    </div>
+{% endif %}

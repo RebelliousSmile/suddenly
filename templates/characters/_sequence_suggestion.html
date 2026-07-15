@@ -6,18 +6,18 @@ note when the hub is unavailable (#88).
 {% endcomment %}
 <div data-muses-suggestion class="mt-4">
     {% if suggestion %}
-        <div class="p-4 rounded-lg bg-card-dark border border-border">
+        <div class="p-4 rounded-lg bg-semantic-card-sunken border border-semantic-border">
             <div class="flex items-center gap-2 mb-2">
                 <span class="i-lucide-sparkles text-xs text-accent"></span>
-                <span class="text-xs font-semibold text-secondary uppercase tracking-wide">
+                <span class="text-xs font-semibold text-semantic-ink-secondary uppercase tracking-wide">
                     {% trans "Muses — opening suggestion" %}
                 </span>
-                <span class="badge bg-card text-muted border border-border text-[10px]">
+                <span class="badge bg-semantic-card text-semantic-muted border border-semantic-border text-[10px]">
                     {{ suggestion.kind }}
                 </span>
             </div>
-            <p id="muses-opening-text" class="prose-report text-sm text-secondary whitespace-pre-line">{{ suggestion.text }}</p>
-            <p class="text-xs text-muted mt-2">
+            <p id="muses-opening-text" class="prose-report text-sm text-semantic-ink-secondary whitespace-pre-line">{{ suggestion.text }}</p>
+            <p class="text-xs text-semantic-muted mt-2">
                 {% trans "A neutral proposal — it belongs to neither character. Nothing is inserted automatically." %}
             </p>
             <div class="flex flex-wrap items-center gap-2 mt-3">
@@ -40,12 +40,12 @@ note when the hub is unavailable (#88).
             </div>
         </div>
     {% elif no_credits %}
-        <p class="text-xs text-muted">
+        <p class="text-xs text-semantic-muted">
             <span class="i-lucide-coins text-xs mr-1"></span>
             {% trans "No Muses credits left — top up to use this feature." %}
         </p>
     {% else %}
-        <p class="text-xs text-muted">
+        <p class="text-xs text-semantic-muted">
             <span class="i-lucide-cloud-off text-xs mr-1"></span>
             {% trans "Muses is unavailable right now — try again later." %}
         </p>

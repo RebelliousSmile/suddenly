@@ -1584,6 +1584,18 @@ msgstr "Instance"
 msgid "Fediverse"
 msgstr "Fédivers"
 
+#: .\templates\feed\home.html:19
+msgid "Friends"
+msgstr "Amis"
+
+#: .\templates\feed\home.html:26
+msgid "Township"
+msgstr "Bourgade"
+
+#: .\templates\feed\home.html:33
+msgid "World"
+msgstr "Monde"
+
 #: .\templates\feed\home.html:41
 msgid "Available NPCs in your followed games"
 msgstr "PNJ disponibles dans vos parties suivies"

@@ -42,6 +42,34 @@
     </div>
 </section>
 
+<!-- Instance activity (Front #2) -->
+{% if stats %}
+<section class="container-app -mt-8 mb-4">
+    <div class="grid grid-cols-2 @sm:grid-cols-4 gap-4">
+        <div class="card card-body text-center">
+            <span class="i-lucide-users text-2xl text-brand-primary mb-2 block"></span>
+            <p class="text-2xl font-bold text-semantic-ink">{{ stats.users|default:0 }}</p>
+            <p class="text-xs text-semantic-muted">{% trans "players" %}</p>
+        </div>
+        <div class="card card-body text-center">
+            <span class="i-lucide-book-open text-2xl text-brand-primary mb-2 block"></span>
+            <p class="text-2xl font-bold text-semantic-ink">{{ stats.reports|default:0 }}</p>
+            <p class="text-xs text-semantic-muted">{% trans "reports" %}</p>
+        </div>
+        <div class="card card-body text-center">
+            <span class="i-lucide-user text-2xl text-brand-primary mb-2 block"></span>
+            <p class="text-2xl font-bold text-semantic-ink">{{ stats.characters|default:0 }}</p>
+            <p class="text-xs text-semantic-muted">{% trans "characters" %}</p>
+        </div>
+        <div class="card card-body text-center">
+            <span class="i-lucide-globe text-2xl text-brand-primary mb-2 block"></span>
+            <p class="text-2xl font-bold text-semantic-ink">{{ stats.instances|default:0 }}</p>
+            <p class="text-xs text-semantic-muted">{% trans "federated instances" %}</p>
+        </div>
+    </div>
+</section>
+{% endif %}
+
 <!-- Features -->
 <section class="py-16 container-app">
     <h2 class="text-2xl font-bold text-center text-semantic-ink mb-12">

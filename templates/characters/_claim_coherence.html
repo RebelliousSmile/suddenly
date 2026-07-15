@@ -6,40 +6,40 @@ decides. Degrades to a discreet note when the hub is unavailable (#88).
 <div class="card card-body">
     <div class="flex items-center gap-2 mb-3">
         <span class="i-lucide-scale text-sm text-accent"></span>
-        <h2 class="text-sm font-semibold text-primary">{% trans "Coherence analysis" %}</h2>
+        <h2 class="text-sm font-semibold text-semantic-ink">{% trans "Coherence analysis" %}</h2>
     </div>
 
     {% if no_candidate %}
-        <p class="text-xs text-muted">
+        <p class="text-xs text-semantic-muted">
             {% trans "This Claim has no proposed character to compare — nothing to analyse." %}
         </p>
     {% elif no_credits %}
-        <p class="text-xs text-muted">
+        <p class="text-xs text-semantic-muted">
             <span class="i-lucide-coins text-xs mr-1"></span>
             {% trans "No Muses credits left — top up to use this feature." %}
         </p>
     {% elif analysis %}
         {% with p=analysis.plausibility %}
         <div class="mb-3">
-            <span class="text-xs text-muted">{% trans "Overall plausibility" %}:</span>
+            <span class="text-xs text-semantic-muted">{% trans "Overall plausibility" %}:</span>
             {% if p == "strong" %}
                 <span class="badge bg-success/10 text-success border border-success/30">{% trans "strong" %}</span>
             {% elif p == "medium" %}
                 <span class="badge bg-info/10 text-info border border-info/30">{% trans "medium" %}</span>
             {% elif p == "weak" %}
-                <span class="badge bg-crimson/10 text-crimson border border-crimson/30">{% trans "weak" %}</span>
+                <span class="badge bg-brand-primary/10 text-brand-primary border border-brand-primary/30">{% trans "weak" %}</span>
             {% else %}
-                <span class="badge bg-card-dark text-muted border border-border">{{ p|default:"—" }}</span>
+                <span class="badge bg-semantic-card-sunken text-semantic-muted border border-semantic-border">{{ p|default:"—" }}</span>
             {% endif %}
         </div>
         {% endwith %}
 
         {% if analysis.compatibility %}
             <div class="mb-3">
-                <p class="text-xs font-semibold text-secondary mb-1">{% trans "Compatible points" %}</p>
+                <p class="text-xs font-semibold text-semantic-ink-secondary mb-1">{% trans "Compatible points" %}</p>
                 <ul class="space-y-1">
                     {% for point in analysis.compatibility %}
-                        <li class="text-xs text-secondary flex gap-1.5">
+                        <li class="text-xs text-semantic-ink-secondary flex gap-1.5">
                             <span class="i-lucide-check text-success text-xs mt-0.5"></span>{{ point }}
                         </li>
                     {% endfor %}
@@ -49,11 +49,11 @@ decides. Degrades to a discreet note when the hub is unavailable (#88).
 
         {% if analysis.incompatibility %}
             <div class="mb-3">
-                <p class="text-xs font-semibold text-secondary mb-1">{% trans "Points of friction" %}</p>
+                <p class="text-xs font-semibold text-semantic-ink-secondary mb-1">{% trans "Points of friction" %}</p>
                 <ul class="space-y-1">
                     {% for point in analysis.incompatibility %}
-                        <li class="text-xs text-secondary flex gap-1.5">
-                            <span class="i-lucide-alert-triangle text-crimson text-xs mt-0.5"></span>{{ point }}
+                        <li class="text-xs text-semantic-ink-secondary flex gap-1.5">
+                            <span class="i-lucide-alert-triangle text-brand-primary text-xs mt-0.5"></span>{{ point }}
                         </li>
                     {% endfor %}
                 </ul>
@@ -62,10 +62,10 @@ decides. Degrades to a discreet note when the hub is unavailable (#88).
 
         {% if analysis.harmonization %}
             <div class="mb-3">
-                <p class="text-xs font-semibold text-secondary mb-1">{% trans "To harmonise if accepted" %}</p>
+                <p class="text-xs font-semibold text-semantic-ink-secondary mb-1">{% trans "To harmonise if accepted" %}</p>
                 <ul class="space-y-1">
                     {% for point in analysis.harmonization %}
-                        <li class="text-xs text-secondary flex gap-1.5">
+                        <li class="text-xs text-semantic-ink-secondary flex gap-1.5">
                             <span class="i-lucide-wand-2 text-accent text-xs mt-0.5"></span>{{ point }}
                         </li>
                     {% endfor %}
@@ -73,12 +73,12 @@ decides. Degrades to a discreet note when the hub is unavailable (#88).
             </div>
         {% endif %}
 
-        <p class="text-xs text-muted border-t border-border pt-2 mt-2">
+        <p class="text-xs text-semantic-muted border-t border-semantic-border pt-2 mt-2">
             <span class="i-lucide-info text-xs mr-1"></span>
             {% trans "The decision is yours — this analysis is advisory and does not decide." %}
         </p>
     {% else %}
-        <p class="text-xs text-muted">
+        <p class="text-xs text-semantic-muted">
             <span class="i-lucide-cloud-off text-xs mr-1"></span>
             {% trans "Muses is unavailable right now — try again later." %}
         </p>
