@@ -78,6 +78,60 @@ def sequence_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
 
 
 @login_required
+def sequence_suggest_opening(request: AuthenticatedRequest, pk: str) -> HttpResponse:
+    """Suggest a neutral opening for an empty shared sequence (#127).
+
+    A third voice, belonging to neither player, to break the blank-page-for-two.
+    Returns an inline suggestion (never auto-inserted); degrades to a discreet
+    "unavailable" note if the hub is disabled or unreachable (#88).
+    """
+    from suddenly.muses.client import MusesClient, SessionContext
+    from suddenly.muses.exceptions import MusesError
+
+    from .muses_context import anchor_reports, axial_tags, character_sheet
+
+    sequence = _get_sequence_for_user(pk, request.user)
+
+    # Only offered while the sequence is an empty draft — the blank page.
+    if (
+        request.method != "POST"
+        or sequence.status != SharedSequenceStatus.DRAFT
+        or sequence.content.strip()
+    ):
+        return redirect(reverse("characters:sequence_edit", kwargs={"pk": pk}))
+
+    source = sequence.link.source
+    target = sequence.link.target
+    context = SessionContext(
+        characters=[character_sheet(source), character_sheet(target)],
+        link_type=sequence.link.type,
+        reports=anchor_reports(target),  # the NPC's anchor scene
+        tags=sorted(set(axial_tags(source)) | set(axial_tags(target))),
+    )
+
+    suggestion: dict[str, str] | None = None
+    try:
+        result = MusesClient().suggest(context, feature="opening")
+        kind = str(result.get("kind", "narration"))
+        text = str(result.get("text", "")).strip()
+        # The Muse never speaks for a character it does not control (#127):
+        # a dialogue answer is downgraded to narration for display.
+        if kind == "dialogue":
+            kind = "narration"
+        if text:
+            suggestion = {"kind": kind, "text": text}
+    except MusesError:
+        suggestion = None  # degraded mode: render the discreet unavailable note
+
+    return htmx_render(
+        request,
+        full_template="characters/_sequence_suggestion.html",
+        partial_template="characters/_sequence_suggestion.html",
+        context={"sequence": sequence, "suggestion": suggestion},
+    )
+
+
+@login_required
 def sequence_propose_publish(request: AuthenticatedRequest, pk: str) -> HttpResponse:
     """Propose publication of SharedSequence (US-19)."""
     sequence = _get_sequence_for_user(pk, request.user)

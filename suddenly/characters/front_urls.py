@@ -53,6 +53,11 @@ urlpatterns = [
         name="sequence_edit",
     ),
     path(
+        "sequences/<uuid:pk>/suggest-opening/",
+        sequence_views.sequence_suggest_opening,
+        name="sequence_suggest_opening",
+    ),
+    path(
         "sequences/<uuid:pk>/propose/",
         sequence_views.sequence_propose_publish,
         name="sequence_propose",

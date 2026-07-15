@@ -89,6 +89,18 @@
                 </div>
             </form>
 
+            {# Muses opening suggestion (#127) — only while the page is blank #}
+            {% if not sequence.content %}
+                <button type="button" class="btn-secondary btn-sm mt-4"
+                        hx-post="{% url 'characters:sequence_suggest_opening' pk=sequence.pk %}"
+                        hx-target="#muses-suggestion-slot"
+                        hx-swap="innerHTML">
+                    <span class="i-lucide-sparkles"></span>
+                    {% trans "Suggest an opening" %}
+                </button>
+                <div id="muses-suggestion-slot"></div>
+            {% endif %}
+
             {% if not sequence.publication_proposed_by %}
                 <form method="post" action="{% url 'characters:sequence_propose' pk=sequence.pk %}" class="mt-4">
                     {% csrf_token %}

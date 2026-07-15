@@ -1,0 +1,48 @@
+{% load i18n %}
+{% comment %}
+Inline Muses opening suggestion for an empty shared sequence (#127).
+Never auto-inserted — the player copies it in by hand. Degrades to a discreet
+note when the hub is unavailable (#88).
+{% endcomment %}
+<div data-muses-suggestion class="mt-4">
+    {% if suggestion %}
+        <div class="p-4 rounded-lg bg-card-dark border border-border">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="i-lucide-sparkles text-xs text-accent"></span>
+                <span class="text-xs font-semibold text-secondary uppercase tracking-wide">
+                    {% trans "Muses — opening suggestion" %}
+                </span>
+                <span class="badge bg-card text-muted border border-border text-[10px]">
+                    {{ suggestion.kind }}
+                </span>
+            </div>
+            <p id="muses-opening-text" class="prose-report text-sm text-secondary whitespace-pre-line">{{ suggestion.text }}</p>
+            <p class="text-xs text-muted mt-2">
+                {% trans "A neutral proposal — it belongs to neither character. Nothing is inserted automatically." %}
+            </p>
+            <div class="flex flex-wrap items-center gap-2 mt-3">
+                <button type="button" class="btn-primary btn-sm"
+                        onclick="(function(){var t=document.getElementById('content');if(t){t.value=document.getElementById('muses-opening-text').innerText;t.focus();}})()">
+                    <span class="i-lucide-corner-down-left"></span>
+                    {% trans "Insert into editor" %}
+                </button>
+                <button type="button" class="btn-secondary btn-sm"
+                        hx-post="{% url 'characters:sequence_suggest_opening' pk=sequence.pk %}"
+                        hx-target="closest [data-muses-suggestion]"
+                        hx-swap="outerHTML">
+                    <span class="i-lucide-refresh-cw"></span>
+                    {% trans "Regenerate" %}
+                </button>
+                <button type="button" class="btn-ghost btn-sm"
+                        onclick="this.closest('[data-muses-suggestion]').remove()">
+                    {% trans "Dismiss" %}
+                </button>
+            </div>
+        </div>
+    {% else %}
+        <p class="text-xs text-muted">
+            <span class="i-lucide-cloud-off text-xs mr-1"></span>
+            {% trans "Muses is unavailable right now — try again later." %}
+        </p>
+    {% endif %}
+</div>
