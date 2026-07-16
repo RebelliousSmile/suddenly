@@ -108,7 +108,7 @@
             </div>
             <div class="flex items-stretch gap-2">
                 <span class="w-1 rounded shrink-0"
-                      :class="{ 'bg-semantic-info/50': kind==='description', 'bg-brand-primary/60': kind==='action', 'bg-brand-accent/50': kind==='discussion', 'bg-transparent': kind==='narration' }"></span>
+                      :class="{ 'bg-domain-kind-description/50': kind==='description', 'bg-domain-kind-action/55': kind==='action', 'bg-domain-kind-discussion/50': kind==='discussion', 'bg-transparent': kind==='narration' }"></span>
                 <textarea id="composer-content" name="content" rows="4"
                           class="form-input w-full"
                           x-model="body" @input="onInput()"

@@ -27,7 +27,7 @@
             {% endwith %}
 
             <div class="flex items-center gap-2 mb-1">
-                <span class="badge text-xs {% if rapport.kind == 'closure' %}bg-semantic-info/15 text-semantic-info border border-semantic-info/30{% else %}bg-semantic-card-sunken text-semantic-muted border border-semantic-border{% endif %}">
+                <span class="badge text-xs {% if rapport.kind == 'closure' %}bg-domain-kind-closure/15 text-domain-kind-closure border border-domain-kind-closure/30{% else %}bg-semantic-card-sunken text-semantic-muted border border-semantic-border{% endif %}">
                     {% if rapport.kind == 'closure' %}<span class="i-lucide-check-check text-xs"></span> {% trans "Compte rendu" %}{% else %}{{ rapport.get_kind_display }}{% endif %}
                 </span>
                 {% if rapport.actor %}
@@ -38,7 +38,7 @@
                 {% endif %}
             </div>
             {% if rapport.kind == 'closure' %}
-                <div class="rounded-xl border border-semantic-info/30 bg-semantic-info/5 p-3">
+                <div class="rounded-xl border border-domain-kind-closure/30 bg-domain-kind-closure/5 p-3">
                     <p class="text-semantic-ink text-sm font-serif">{{ rapport.content }}</p>
                 </div>
             {% else %}

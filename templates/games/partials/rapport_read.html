@@ -18,7 +18,7 @@ the "Friends" feed of interventions (Front #9). No edit/reply controls here.
         </div>
     </div>
 {% else %}
-    <div class="border-l-2 border-semantic-border pl-3">
+    <div class="border-l-2 pl-3 {% if rapport.kind == 'action' %}border-domain-kind-action/40{% elif rapport.kind == 'description' %}border-domain-kind-description/40{% elif rapport.kind == 'closure' %}border-domain-kind-closure/40{% else %}border-semantic-border{% endif %}">
         <span class="block text-[10px] uppercase tracking-wider text-semantic-muted font-medium mb-0.5">
             {{ rapport.get_kind_display }}
         </span>
