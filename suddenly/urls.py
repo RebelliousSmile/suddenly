@@ -26,6 +26,7 @@ urlpatterns = [
     # Admin
     path("admin/", admin.site.urls),
     # Authentication (django-allauth)
+    path("accounts/fediverse/", include("suddenly.fediverse_auth.urls")),
     path("accounts/", include("allauth.urls")),
     # i18n language switcher (anonymous users)
     path("i18n/", include("django.conf.urls.i18n")),

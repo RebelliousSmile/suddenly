@@ -33,6 +33,7 @@ def site_settings(request: object) -> dict[str, object]:
         "SITE_DESCRIPTION": site_description,
         "DOMAIN": getattr(settings, "DOMAIN", "localhost"),
         "APP_VERSION": get_version(),
+        "FEDIVERSE_LOGIN_ENABLED": getattr(settings, "FEDIVERSE_LOGIN_ENABLED", False),
     }
 
 

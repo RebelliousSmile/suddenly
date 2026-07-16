@@ -87,6 +87,9 @@ class AuthRateLimitMiddleware:
     RATE_LIMITS: dict[str, tuple[int, int]] = {
         "/accounts/login/": (10, 60),  # 10 per 60s
         "/accounts/signup/": (5, 60),  # 5 per 60s
+        # Each POST here can trigger an outbound app registration to a
+        # user-supplied instance; cap it so it can't be used to spam instances.
+        "/accounts/fediverse/login/": (10, 60),  # 10 per 60s
     }
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
