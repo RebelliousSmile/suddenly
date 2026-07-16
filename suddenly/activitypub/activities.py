@@ -12,8 +12,6 @@ from typing import Any
 from django.conf import settings
 from django.utils import timezone
 
-from suddenly.activitypub.url_utils import absolute_media_url, media_type_for_file
-
 
 def get_context() -> list[str]:
     """Return the standard ActivityPub context."""
@@ -21,58 +19,6 @@ def get_context() -> list[str]:
         "https://www.w3.org/ns/activitystreams",
         "https://w3id.org/security/v1",
     ]
-
-
-def build_actor(user_or_game_or_character: Any) -> dict[str, Any]:
-    """
-    Build an ActivityPub actor object.
-
-    Works for User, Game, or Character models.
-    """
-    obj = user_or_game_or_character
-
-    actor: dict[str, Any] = {
-        "@context": get_context(),
-        "id": obj.actor_url,
-        "type": "Person",  # Could be customized per type
-        "preferredUsername": getattr(obj, "username", None) or str(obj.pk),
-        "inbox": f"{obj.actor_url}/inbox",
-        "outbox": f"{obj.actor_url}/outbox",
-        "followers": f"{obj.actor_url}/followers",
-        "following": f"{obj.actor_url}/following",
-    }
-
-    # Name
-    if hasattr(obj, "display_name") and obj.display_name:
-        actor["name"] = obj.display_name
-    elif hasattr(obj, "name"):
-        actor["name"] = obj.name
-    elif hasattr(obj, "title"):
-        actor["name"] = obj.title
-
-    # Summary/bio
-    if hasattr(obj, "bio") and obj.bio:
-        actor["summary"] = obj.bio
-    elif hasattr(obj, "description") and obj.description:
-        actor["summary"] = obj.description
-
-    # Avatar/icon
-    if hasattr(obj, "avatar") and obj.avatar:
-        actor["icon"] = {
-            "type": "Image",
-            "mediaType": media_type_for_file(obj.avatar),
-            "url": absolute_media_url(obj.avatar),
-        }
-
-    # Public key for HTTP signatures
-    if hasattr(obj, "public_key") and obj.public_key:
-        actor["publicKey"] = {
-            "id": f"{obj.actor_url}#main-key",
-            "owner": obj.actor_url,
-            "publicKeyPem": obj.public_key,
-        }
-
-    return actor
 
 
 def build_offer_activity(link_request: Any) -> dict[str, Any]:
