@@ -1,0 +1,124 @@
+{% load i18n %}
+{% comment %}
+Scene-level metadata form (title, cast widget, markdown content, content
+warning, session date, visibility) + save actions. Posts to the current URL
+(report_create or report_edit). Shared by both create (single column) and edit
+(collapsed "Paramètres de la scène"). Context: report, game, form_data,
+visibilities, cast_roles.
+{% endcomment %}
+<form method="post" class="space-y-6">
+    {% csrf_token %}
+
+    <div class="card card-body space-y-4">
+
+        <div>
+            <label for="title" class="form-label">
+                {% trans "Title" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
+            </label>
+            <input type="text" id="title" name="title"
+                   value="{{ form_data.title|default:report.title|default:'' }}"
+                   placeholder="{% trans "Session title..." %}"
+                   class="form-input">
+        </div>
+
+        {% if report %}
+            {% include "games/_cast_widget.html" with report=report game=game cast_roles=cast_roles %}
+        {% endif %}
+
+        <div x-data="markdownEditor('{{ form_data.content|default:report.content|default:''|escapejs }}')" class="relative"
+             {% if report %}data-cast-mention-url="{% url 'games:cast_mention_search' game_pk=game.pk pk=report.pk %}"{% endif %}>
+            <label for="content" class="form-label">{% trans "Content" %}</label>
+            <textarea id="content" name="content" rows="12"
+                      placeholder="{% trans "Tell your session... Type @ to mention a character." %}"></textarea>
+
+            <div x-show="showSuggestions" x-transition
+                 :style="dropdownStyle"
+                 class="dropdown-menu w-64">
+                <template x-for="(s, i) in suggestions" :key="s.id">
+                    <button @click="selectSuggestion(s)"
+                            :class="{'bg-semantic-card-sunken': i === selectedIndex}"
+                            class="w-full px-3 py-2 text-left text-sm hover:bg-semantic-card"
+                            x-text="s.name">
+                    </button>
+                </template>
+            </div>
+
+            <p class="form-help">
+                <span class="i-lucide-info text-xs mr-1"></span>
+                {% trans "Markdown supported. Type" %} <code class="bg-semantic-card px-1 rounded">@</code> {% trans "to mention." %}
+            </p>
+        </div>
+
+        <div>
+            <label for="content_warning" class="form-label">
+                {% trans "Content warning" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
+            </label>
+            <input type="text" id="content_warning" name="content_warning"
+                   value="{{ form_data.content_warning|default:report.content_warning|default:'' }}"
+                   placeholder="{% trans "e.g. Violence, dark themes" %}"
+                   class="form-input">
+            <p class="form-help">
+                {% trans "If filled, content will be hidden behind a 'Show' button." %}
+            </p>
+        </div>
+
+        <div>
+            <label class="label" for="id_session_date">{% trans "Date de session" %} <span class="text-semantic-muted text-sm">({% trans "optionnelle" %})</span></label>
+            <input type="date" id="id_session_date" name="session_date"
+                   value="{{ form_data.session_date|default:report.session_date|default:'' }}"
+                   class="input">
+        </div>
+
+        <div>
+            <label class="form-label">{% trans "Visibility" %}</label>
+            {% for value, label in visibilities %}
+                <label class="flex items-center gap-2 py-1">
+                    {% if form_data.visibility %}
+                        {% with selected=form_data.visibility %}
+                        <input type="radio" name="visibility" value="{{ value }}"
+                               {% if value == selected %}checked{% endif %}
+                               class="h-4 w-4 text-brand-primary focus:ring-brand-primary">
+                        {% endwith %}
+                    {% elif report %}
+                        <input type="radio" name="visibility" value="{{ value }}"
+                               {% if value == report.visibility %}checked{% endif %}
+                               class="h-4 w-4 text-brand-primary focus:ring-brand-primary">
+                    {% else %}
+                        <input type="radio" name="visibility" value="{{ value }}"
+                               {% if value == 'public' %}checked{% endif %}
+                               class="h-4 w-4 text-brand-primary focus:ring-brand-primary">
+                    {% endif %}
+                    <span class="text-sm">
+                        {% if value == 'public' %}<span class="i-lucide-globe text-xs"></span>{% endif %}
+                        {% if value == 'unlisted' %}<span class="i-lucide-unlock text-xs"></span>{% endif %}
+                        {% if value == 'followers' %}<span class="i-lucide-lock text-xs"></span>{% endif %}
+                        {{ label }}
+                    </span>
+                </label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="editor-actions">
+        {% if report and report.status == 'published' %}
+            <button type="submit" name="action" value="publish" class="btn-primary">
+                <span class="i-lucide-save"></span>
+                {% trans "Save" %}
+            </button>
+        {% else %}
+            <button type="submit" name="action" value="publish" class="btn-primary">
+                <span class="i-lucide-send"></span>
+                {% trans "Publish" %}
+            </button>
+            <button type="submit" name="action" value="draft" class="btn-secondary">
+                <span class="i-lucide-save"></span>
+                {% trans "Save draft" %}
+            </button>
+        {% endif %}
+        {% if report %}
+            <a href="{% url 'games:report_detail' game_pk=game.pk pk=report.pk %}" class="btn-ghost">{% trans "Cancel" %}</a>
+        {% else %}
+            <a href="{% url 'games:detail' pk=game.pk %}" class="btn-ghost">{% trans "Cancel" %}</a>
+        {% endif %}
+    </div>
+</form>

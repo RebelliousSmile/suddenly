@@ -5,7 +5,7 @@
 
 {% block content %}
 <section class="py-8">
-    <div class="container-app max-w-3xl">
+    <div class="container-app{% if not report %} max-w-3xl{% endif %}">
 
         <p class="text-sm text-semantic-muted mb-4">
             <a href="{% url 'games:detail' pk=game.pk %}" class="link-muted">{{ game.title }}</a>
@@ -46,214 +46,121 @@
             </div>
         {% endif %}
 
-        <form method="post" class="space-y-6">
-            {% csrf_token %}
-
-            <div class="card card-body space-y-4">
-
-                <div>
-                    <label for="title" class="form-label">
-                        {% trans "Title" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
-                    </label>
-                    <input type="text" id="title" name="title"
-                           value="{{ form_data.title|default:report.title|default:'' }}"
-                           placeholder="{% trans "Session title..." %}"
-                           class="form-input">
-                </div>
-
-                {% if report %}
-                    {% include "games/_cast_widget.html" with report=report game=game cast_roles=cast_roles %}
-                {% endif %}
-
-                <div x-data="markdownEditor('{{ form_data.content|default:report.content|default:''|escapejs }}')" class="relative"
-                     {% if report %}data-cast-mention-url="{% url 'games:cast_mention_search' game_pk=game.pk pk=report.pk %}"{% endif %}>
-                    <label for="content" class="form-label">{% trans "Content" %}</label>
-                    <textarea id="content" name="content" rows="12"
-                              placeholder="{% trans "Tell your session... Type @ to mention a character." %}"></textarea>
-
-                    <div x-show="showSuggestions" x-transition
-                         :style="dropdownStyle"
-                         class="dropdown-menu w-64">
-                        <template x-for="(s, i) in suggestions" :key="s.id">
-                            <button @click="selectSuggestion(s)"
-                                    :class="{'bg-semantic-card-sunken': i === selectedIndex}"
-                                    class="w-full px-3 py-2 text-left text-sm hover:bg-semantic-card"
-                                    x-text="s.name">
-                            </button>
-                        </template>
-                    </div>
-
-                    <p class="form-help">
-                        <span class="i-lucide-info text-xs mr-1"></span>
-                        {% trans "Markdown supported. Type" %} <code class="bg-semantic-card px-1 rounded">@</code> {% trans "to mention." %}
-                    </p>
-                </div>
-
-                <div>
-                    <label for="content_warning" class="form-label">
-                        {% trans "Content warning" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
-                    </label>
-                    <input type="text" id="content_warning" name="content_warning"
-                           value="{{ form_data.content_warning|default:report.content_warning|default:'' }}"
-                           placeholder="{% trans "e.g. Violence, dark themes" %}"
-                           class="form-input">
-                    <p class="form-help">
-                        {% trans "If filled, content will be hidden behind a 'Show' button." %}
-                    </p>
-                </div>
-
-                <div>
-                    <label class="label" for="id_session_date">{% trans "Date de session" %} <span class="text-semantic-muted text-sm">({% trans "optionnelle" %})</span></label>
-                    <input type="date" id="id_session_date" name="session_date"
-                           value="{{ form_data.session_date|default:report.session_date|default:'' }}"
-                           class="input">
-                </div>
-
-                <div>
-                    <label class="form-label">{% trans "Visibility" %}</label>
-                    {% for value, label in visibilities %}
-                        <label class="flex items-center gap-2 py-1">
-                            {% if form_data.visibility %}
-                                {% with selected=form_data.visibility %}
-                                <input type="radio" name="visibility" value="{{ value }}"
-                                       {% if value == selected %}checked{% endif %}
-                                       class="h-4 w-4 text-brand-primary focus:ring-brand-primary">
-                                {% endwith %}
-                            {% elif report %}
-                                <input type="radio" name="visibility" value="{{ value }}"
-                                       {% if value == report.visibility %}checked{% endif %}
-                                       class="h-4 w-4 text-brand-primary focus:ring-brand-primary">
-                            {% else %}
-                                <input type="radio" name="visibility" value="{{ value }}"
-                                       {% if value == 'public' %}checked{% endif %}
-                                       class="h-4 w-4 text-brand-primary focus:ring-brand-primary">
-                            {% endif %}
-                            <span class="text-sm">
-                                {% if value == 'public' %}<span class="i-lucide-globe text-xs"></span>{% endif %}
-                                {% if value == 'unlisted' %}<span class="i-lucide-unlock text-xs"></span>{% endif %}
-                                {% if value == 'followers' %}<span class="i-lucide-lock text-xs"></span>{% endif %}
-                                {{ label }}
-                            </span>
-                        </label>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div class="editor-actions">
-                {% if report and report.status == 'published' %}
-                    <button type="submit" name="action" value="publish" class="btn-primary">
-                        <span class="i-lucide-save"></span>
-                        {% trans "Save" %}
-                    </button>
-                {% else %}
-                    <button type="submit" name="action" value="publish" class="btn-primary">
-                        <span class="i-lucide-send"></span>
-                        {% trans "Publish" %}
-                    </button>
-                    <button type="submit" name="action" value="draft" class="btn-secondary">
-                        <span class="i-lucide-save"></span>
-                        {% trans "Save draft" %}
-                    </button>
-                {% endif %}
-                {% if report %}
-                    <a href="{% url 'games:report_detail' game_pk=game.pk pk=report.pk %}" class="btn-ghost">{% trans "Cancel" %}</a>
-                {% else %}
-                    <a href="{% url 'games:detail' pk=game.pk %}" class="btn-ghost">{% trans "Cancel" %}</a>
-                {% endif %}
-            </div>
-        </form>
-
         {% if report %}
-            {# Casting escamotable de la scène (maquette). #}
-            <div class="mt-8">
-                {% include "games/_cast_box.html" %}
-            </div>
+            {# Édition d'une scène existante : même disposition que la home —
+               composer (appelé tel quel, frozen) à gauche, l'édition de la scène
+               (fil + état + paramètres) à la place des feeds. #}
+            <div class="@lg:flex @lg:gap-8">
 
-            {# Dock d'état de la scène — draft → closed → released (maquette). #}
-            <div class="card card-body mb-4" x-data="{ closeForm: false }">
-                <div class="flex items-center justify-between gap-3 flex-wrap">
-                    <div class="flex items-center gap-2 min-w-0">
-                        {% if not report.is_published %}
-                            <span class="badge bg-domain-state-draft/15 text-domain-state-draft border border-domain-state-draft/30">
-                                <span class="i-lucide-pencil text-xs"></span> {% trans "Brouillon" %}
-                            </span>
-                            <span class="text-xs text-semantic-muted">{% trans "Scène en jeu — éditable." %}</span>
-                        {% elif report.is_released %}
-                            <span class="badge bg-domain-state-released/15 text-domain-state-released border border-domain-state-released/30">
-                                <span class="i-lucide-book-open text-xs"></span> {% trans "Partagée" %}
-                            </span>
-                            <span class="text-xs text-semantic-muted">{% trans "Compte rendu partagé." %}</span>
-                        {% else %}
-                            <span class="badge bg-domain-state-closed/15 text-domain-state-closed border border-domain-state-closed/30">
-                                <span class="i-lucide-check text-xs"></span> {% trans "Fermée" %}
-                            </span>
-                            <span class="text-xs text-semantic-muted">{% trans "Compte rendu prêt. Rien n'est encore partagé." %}</span>
-                        {% endif %}
-                    </div>
+                <aside class="flex-shrink-0 @lg:w-80 @lg:sticky @lg:top-4 mb-6 @lg:mb-0">
+                    <h2 class="text-sm font-semibold text-semantic-ink-secondary uppercase tracking-wide mb-3">
+                        {% trans "Ajouter un post" %}
+                    </h2>
+                    {% include "games/_composer.html" %}
+                </aside>
 
-                    <div class="flex items-center gap-2 shrink-0">
-                        {% if not report.is_published %}
-                            <button type="button" @click="closeForm = !closeForm" class="btn-primary btn-sm">
-                                <span class="i-lucide-check-check text-xs"></span> {% trans "Fermer la scène" %}
-                            </button>
-                        {% elif not report.is_released %}
-                            <form method="post" action="{% url 'games:scene_reopen' game_pk=game.pk pk=report.pk %}">
-                                {% csrf_token %}
-                                <button type="submit" class="btn-ghost btn-sm">{% trans "Rouvrir" %}</button>
-                            </form>
-                            <form method="post" action="{% url 'games:report_release' game_pk=game.pk pk=report.pk %}">
-                                {% csrf_token %}
-                                <button type="submit" class="btn-primary btn-sm">
-                                    <span class="i-lucide-send text-xs"></span> {% trans "Partager" %}
-                                </button>
-                            </form>
-                        {% else %}
-                            {% if not report.ap_id %}
-                                <form method="post" action="{% url 'games:report_release' game_pk=game.pk pk=report.pk %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn-ghost btn-sm">{% trans "Refermer le mur" %}</button>
-                                </form>
-                            {% endif %}
-                            <a href="{% url 'games:report_detail' game_pk=game.pk pk=report.pk %}" class="btn-secondary btn-sm">
-                                {% trans "Voir la scène" %} →
-                            </a>
-                        {% endif %}
-                    </div>
-                </div>
+                <main class="flex-1 min-w-0 max-w-2xl space-y-6">
 
-                {% if not report.is_published %}
-                    {# Fermer : rédige (optionnellement) le compte rendu de clôture. #}
-                    <form x-show="closeForm" x-cloak method="post"
-                          action="{% url 'games:scene_close' game_pk=game.pk pk=report.pk %}"
-                          class="mt-3 space-y-2">
-                        {% csrf_token %}
-                        <textarea name="closure" rows="3" class="form-input w-full"
-                                  placeholder="{% trans "Le compte rendu de clôture (optionnel)…" %}"></textarea>
-                        <div class="flex flex-wrap gap-2">
-                            <button type="submit" name="mode" value="close" class="btn-primary btn-sm">
-                                {% trans "Fermer seulement" %}
-                            </button>
-                            <button type="submit" name="mode" value="release" class="btn-secondary btn-sm">
-                                {% trans "Fermer et partager" %}
-                            </button>
+                    {# Casting escamotable de la scène (maquette). #}
+                    {% include "games/_cast_box.html" %}
+
+                    {# Dock d'état de la scène — draft → closed → released (maquette). #}
+                    <div class="card card-body" x-data="{ closeForm: false }">
+                        <div class="flex items-center justify-between gap-3 flex-wrap">
+                            <div class="flex items-center gap-2 min-w-0">
+                                {% if not report.is_published %}
+                                    <span class="badge bg-domain-state-draft/15 text-domain-state-draft border border-domain-state-draft/30">
+                                        <span class="i-lucide-pencil text-xs"></span> {% trans "Brouillon" %}
+                                    </span>
+                                    <span class="text-xs text-semantic-muted">{% trans "Scène en jeu — éditable." %}</span>
+                                {% elif report.is_released %}
+                                    <span class="badge bg-domain-state-released/15 text-domain-state-released border border-domain-state-released/30">
+                                        <span class="i-lucide-book-open text-xs"></span> {% trans "Partagée" %}
+                                    </span>
+                                    <span class="text-xs text-semantic-muted">{% trans "Compte rendu partagé." %}</span>
+                                {% else %}
+                                    <span class="badge bg-domain-state-closed/15 text-domain-state-closed border border-domain-state-closed/30">
+                                        <span class="i-lucide-check text-xs"></span> {% trans "Fermée" %}
+                                    </span>
+                                    <span class="text-xs text-semantic-muted">{% trans "Compte rendu prêt. Rien n'est encore partagé." %}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="flex items-center gap-2 shrink-0">
+                                {% if not report.is_published %}
+                                    <button type="button" @click="closeForm = !closeForm" class="btn-primary btn-sm">
+                                        <span class="i-lucide-check-check text-xs"></span> {% trans "Fermer la scène" %}
+                                    </button>
+                                {% elif not report.is_released %}
+                                    <form method="post" action="{% url 'games:scene_reopen' game_pk=game.pk pk=report.pk %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-ghost btn-sm">{% trans "Rouvrir" %}</button>
+                                    </form>
+                                    <form method="post" action="{% url 'games:report_release' game_pk=game.pk pk=report.pk %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-primary btn-sm">
+                                            <span class="i-lucide-send text-xs"></span> {% trans "Partager" %}
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    {% if not report.ap_id %}
+                                        <form method="post" action="{% url 'games:report_release' game_pk=game.pk pk=report.pk %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn-ghost btn-sm">{% trans "Refermer le mur" %}</button>
+                                        </form>
+                                    {% endif %}
+                                    <a href="{% url 'games:report_detail' game_pk=game.pk pk=report.pk %}" class="btn-secondary btn-sm">
+                                        {% trans "Voir la scène" %} →
+                                    </a>
+                                {% endif %}
+                            </div>
                         </div>
-                    </form>
-                {% endif %}
-            </div>
 
-            {% comment %} Le fil de la scène. "Ajouter un post" opens the full-screen composer
-               overlay (maquette); posting appends to #rapports-list in place and
-               closes the overlay — no reload. Same _composer.html, frozen. {% endcomment %}
-            <div class="mt-4">
-                <div class="flex items-center justify-between mb-3">
-                    <h2 class="text-heading">{% trans "Le fil de la scène" %}</h2>
-                    {% include "games/_composer_overlay.html" %}
-                </div>
+                        {% if not report.is_published %}
+                            {# Fermer : rédige (optionnellement) le compte rendu de clôture. #}
+                            <form x-show="closeForm" x-cloak method="post"
+                                  action="{% url 'games:scene_close' game_pk=game.pk pk=report.pk %}"
+                                  class="mt-3 space-y-2">
+                                {% csrf_token %}
+                                <textarea name="closure" rows="3" class="form-input w-full"
+                                          placeholder="{% trans "Le compte rendu de clôture (optionnel)…" %}"></textarea>
+                                <div class="flex flex-wrap gap-2">
+                                    <button type="submit" name="mode" value="close" class="btn-primary btn-sm">
+                                        {% trans "Fermer seulement" %}
+                                    </button>
+                                    <button type="submit" name="mode" value="release" class="btn-secondary btn-sm">
+                                        {% trans "Fermer et partager" %}
+                                    </button>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </div>
 
-                <div id="rapports-list" class="space-y-2">
-                    {% include "games/partials/_rapports_list.html" %}
-                </div>
+                    {# Le fil de la scène — les posts. On ajoute via le composer de gauche
+                       (post inline OOB dans #rapports-list, sans reload). #}
+                    <div>
+                        <h2 class="text-heading mb-3">{% trans "Le fil de la scène" %}</h2>
+                        <div id="rapports-list" class="space-y-2">
+                            {% include "games/partials/_rapports_list.html" %}
+                        </div>
+                    </div>
+
+                    {# Paramètres de la scène — repliés par défaut (le contenu vit dans le fil). #}
+                    <details class="card card-body">
+                        <summary class="cursor-pointer text-heading list-none flex items-center gap-2">
+                            <span class="i-lucide-settings-2 text-sm text-semantic-muted"></span>
+                            {% trans "Paramètres de la scène" %}
+                        </summary>
+                        <div class="mt-4">
+                            {% include "games/partials/_report_meta_form.html" %}
+                        </div>
+                    </details>
+
+                </main>
             </div>
+        {% else %}
+            {# Création d'une scène : formulaire simple, mono-colonne. #}
+            {% include "games/partials/_report_meta_form.html" %}
         {% endif %}
     </div>
 </section>
