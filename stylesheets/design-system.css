@@ -1,0 +1,547 @@
+/* ================================================================
+   Suddenly — Design System preview classes (MkDocs only)
+   Hex values hardcoded — no CSS variables, MkDocs has no Suddenly toggle
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   Wrappers light / dark
+   ---------------------------------------------------------------- */
+.sd-light {
+  background: #faf9f6;
+  border: 1px solid #d4cfe8;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.sd-dark {
+  background: #0a0a0a;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.sd-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.sd-light .sd-label { color: #8a8aaa; }
+.sd-dark  .sd-label { color: #606060; }
+
+.sd-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* ----------------------------------------------------------------
+   Color swatches
+   ---------------------------------------------------------------- */
+.sd-swatch {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.sd-swatch-color {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.08);
+  display: block;
+}
+
+.sd-swatch-name {
+  font-size: 0.65rem;
+  font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+  color: #8a8aaa;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* ----------------------------------------------------------------
+   Typography previews
+   ---------------------------------------------------------------- */
+.sd-typo-sample {
+  margin-bottom: 0.5rem;
+}
+
+.sd-h1 { font-family: 'Fraunces', Georgia, serif; font-size: 2.25rem; font-weight: 600; line-height: 1.2; margin: 0 0 0.25rem; }
+.sd-h2 { font-family: 'Fraunces', Georgia, serif; font-size: 1.6rem;  font-weight: 600; line-height: 1.3; margin: 0 0 0.25rem; }
+.sd-h3 { font-family: 'Fraunces', Georgia, serif; font-size: 1.25rem; font-weight: 600; line-height: 1.4; margin: 0 0 0.25rem; }
+.sd-h4 { font-family: 'Inter', sans-serif; font-size: 1rem;    font-weight: 600; line-height: 1.4; margin: 0 0 0.25rem; }
+.sd-h5 { font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 600; line-height: 1.4; margin: 0 0 0.25rem; }
+.sd-h6 { font-family: 'Inter', sans-serif; font-size: 0.8rem;   font-weight: 600; line-height: 1.4; margin: 0 0 0.25rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.sd-light .sd-h1, .sd-light .sd-h2, .sd-light .sd-h3,
+.sd-light .sd-h4, .sd-light .sd-h5, .sd-light .sd-h6 { color: #1a1a2e; }
+.sd-dark  .sd-h1, .sd-dark  .sd-h2, .sd-dark  .sd-h3,
+.sd-dark  .sd-h4, .sd-dark  .sd-h5, .sd-dark  .sd-h6 { color: #f0f0f0; }
+
+.sd-body    { font-family: 'Inter', sans-serif; font-size: 1rem; line-height: 1.6; margin: 0; }
+.sd-small   { font-family: 'Inter', sans-serif; font-size: 0.875rem; line-height: 1.5; margin: 0; }
+.sd-caption { font-family: 'Inter', sans-serif; font-size: 0.75rem; line-height: 1.4; margin: 0; }
+.sd-overline { font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #e03558; margin: 0; }
+.sd-prose   { font-family: 'Fraunces', Georgia, serif; font-size: 1.1rem; line-height: 1.7; margin: 0; }
+.sd-prose-em { font-family: 'Fraunces', Georgia, serif; font-size: 1.1rem; font-style: italic; line-height: 1.7; margin: 0; }
+.sd-mono    { font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; line-height: 1.5; margin: 0; }
+
+.sd-light .sd-body,    .sd-light .sd-small    { color: #1a1a2e; }
+.sd-light .sd-caption                         { color: #4a4a6a; }
+.sd-light .sd-prose,   .sd-light .sd-prose-em { color: #1a1a2e; }
+.sd-light .sd-mono                            { color: #4a4a6a; }
+
+.sd-dark  .sd-body,    .sd-dark  .sd-small    { color: #f0f0f0; }
+.sd-dark  .sd-caption                         { color: #a0a0a0; }
+.sd-dark  .sd-prose,   .sd-dark  .sd-prose-em { color: #f0f0f0; }
+.sd-dark  .sd-mono                            { color: #a0a0a0; }
+
+/* ----------------------------------------------------------------
+   Buttons
+   ---------------------------------------------------------------- */
+.sd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.sd-btn-primary   { background: #e03558; color: #ffffff; }
+.sd-btn-secondary { background: transparent; border: 1px solid #d4cfe8; color: #4a4a6a; }
+.sd-btn-ghost     { background: transparent; color: #4a4a6a; padding: 0.5rem; }
+.sd-btn-danger    { background: #dc2626; color: #ffffff; }
+.sd-btn-sm        { padding: 0.375rem 0.875rem; font-size: 0.8125rem; }
+.sd-btn-lg        { padding: 0.875rem 2rem;   font-size: 1.0625rem; }
+
+.sd-dark .sd-btn-secondary { border-color: #2a2a2a; color: #a0a0a0; }
+.sd-dark .sd-btn-ghost     { color: #a0a0a0; }
+
+/* ----------------------------------------------------------------
+   Badges
+   ---------------------------------------------------------------- */
+.sd-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  border: 1px solid transparent;
+}
+
+.sd-badge-available { background: rgba(22,163,74,0.1);   color: #16a34a; border-color: rgba(22,163,74,0.3);   }
+.sd-badge-claimed   { background: rgba(224,53,88,0.1);   color: #e03558; border-color: rgba(224,53,88,0.3);   }
+.sd-badge-adopted   { background: rgba(99,102,241,0.1);  color: #6366f1; border-color: rgba(99,102,241,0.3);  }
+.sd-badge-forked    { background: rgba(217,119,6,0.1);   color: #d97706; border-color: rgba(217,119,6,0.3);   }
+.sd-badge-pc        { background: rgba(14,165,233,0.15); color: #0ea5e9; border-color: rgba(14,165,233,0.25); }
+.sd-badge-pending   { background: rgba(138,138,170,0.1); color: #8a8aaa; border-color: rgba(138,138,170,0.3); }
+.sd-badge-rejected  { background: rgba(220,38,38,0.1);   color: #dc2626; border-color: rgba(220,38,38,0.3);   }
+
+/* ----------------------------------------------------------------
+   Inputs
+   ---------------------------------------------------------------- */
+.sd-input {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: 12px;
+  border: 1px solid #d4cfe8;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+  max-width: 280px;
+}
+
+.sd-light .sd-input { background: #ffffff; color: #1a1a2e; }
+.sd-dark  .sd-input { background: #1a1a1a; color: #f0f0f0; border-color: #2a2a2a; }
+
+.sd-input:focus { border-color: #e03558; box-shadow: 0 0 0 3px rgba(224,53,88,0.15); }
+
+/* ----------------------------------------------------------------
+   Cards
+   ---------------------------------------------------------------- */
+.sd-card {
+  border-radius: 1rem;
+  padding: 1.25rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.sd-light .sd-card { background: #ffffff; border: 1px solid #d4cfe8; box-shadow: 0 2px 16px rgba(0,0,0,0.07); }
+.sd-dark  .sd-card { background: #1a1a1a; border: 1px solid #2a2a2a; box-shadow: 0 0 24px rgba(224,53,88,0.12), 0 2px 8px rgba(0,0,0,0.4); }
+
+.sd-light .sd-card-title { color: #1a1a2e; font-weight: 600; margin: 0 0 0.375rem; }
+.sd-dark  .sd-card-title { color: #f0f0f0; font-weight: 600; margin: 0 0 0.375rem; }
+
+.sd-light .sd-card-body { color: #4a4a6a; font-size: 0.875rem; margin: 0; }
+.sd-dark  .sd-card-body { color: #a0a0a0; font-size: 0.875rem; margin: 0; }
+
+/* ----------------------------------------------------------------
+   Links
+   ---------------------------------------------------------------- */
+.sd-link       { color: #e03558; text-decoration: none; font-family: 'Inter', sans-serif; }
+.sd-link:hover { text-decoration: underline; color: #c82a4a; }
+.sd-link-muted { color: #8a8aaa; text-decoration: none; font-family: 'Inter', sans-serif; }
+
+/* ----------------------------------------------------------------
+   Theme toggle (preview only)
+   ---------------------------------------------------------------- */
+.sd-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 3.5rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  padding: 0 0.25rem;
+  cursor: pointer;
+}
+
+.sd-light .sd-toggle { background: #f0ede8; border: 1px solid #d4cfe8; }
+.sd-dark  .sd-toggle { background: #1a1a1a; border: 1px solid #2a2a2a; }
+
+.sd-toggle-knob {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+  transition: transform 0.3s;
+}
+
+.sd-light .sd-toggle-knob { background: #f59e0b; transform: translateX(1.75rem); }
+.sd-dark  .sd-toggle-knob { background: #e03558; transform: translateX(0); }
+
+/* ----------------------------------------------------------------
+   Avatars
+   ---------------------------------------------------------------- */
+.sd-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.sd-avatar-sm { width: 32px; height: 32px; }
+.sd-avatar-md { width: 40px; height: 40px; }
+.sd-avatar-lg { width: 48px; height: 48px; }
+.sd-avatar-xl { width: 64px; height: 64px; }
+
+.sd-avatar-placeholder {
+  background: #f0ede8;
+  border: 1px solid #d4cfe8;
+  color: #8a8aaa;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Stacked avatar group */
+.sd-stack {
+  display: flex;
+  align-items: center;
+}
+
+.sd-stack .sd-avatar {
+  margin-left: -8px;
+  outline: 2px solid #ffffff;
+}
+
+.sd-stack .sd-avatar:first-child { margin-left: 0; }
+
+.sd-stack-overflow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  background: #f5f2ec;
+  border: 1px solid #d4cfe8;
+  color: #4a4a6a;
+  font-size: 0.7rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  margin-left: -8px;
+  outline: 2px solid #ffffff;
+}
+
+/* ----------------------------------------------------------------
+   Grids & Lists
+   ---------------------------------------------------------------- */
+.sd-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.sd-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.625rem;
+}
+
+.sd-stack-y {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Empty state */
+.sd-empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sd-empty-icon {
+  font-size: 2.25rem;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.sd-empty-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  margin: 0;
+  color: #1a1a2e;
+}
+
+.sd-empty-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  margin: 0;
+  color: #8a8aaa;
+  max-width: 28rem;
+}
+
+/* ----------------------------------------------------------------
+   Forms
+   ---------------------------------------------------------------- */
+.sd-form-label {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #4a4a6a;
+  margin-bottom: 0.375rem;
+}
+
+.sd-form-help {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  color: #8a8aaa;
+  margin: 0.25rem 0 0;
+}
+
+.sd-form-error {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  color: #dc2626;
+  margin: 0.25rem 0 0;
+}
+
+.sd-input-error {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.sd-checkbox {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 4px;
+  border: 1px solid #d4cfe8;
+  accent-color: #e03558;
+  flex-shrink: 0;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+/* File upload dropzone */
+.sd-dropzone {
+  border: 2px dashed #d4cfe8;
+  border-radius: 12px;
+  padding: 2rem 1rem;
+  text-align: center;
+  background: #ffffff;
+  color: #4a4a6a;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.15s;
+}
+
+.sd-dropzone:hover {
+  border-color: #e03558;
+}
+
+/* Error banner */
+.sd-error-banner {
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  color: #dc2626;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+}
+
+/* ----------------------------------------------------------------
+   Lucide icons (via CDN — createIcons() in icons.js)
+   ---------------------------------------------------------------- */
+i[data-lucide] {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+i[data-lucide] svg {
+  display: block;
+}
+
+/* Size variants */
+.sd-icon-sm i[data-lucide] svg  { width: 16px; height: 16px; }
+.sd-icon-md i[data-lucide] svg  { width: 20px; height: 20px; }
+.sd-icon-lg i[data-lucide] svg  { width: 32px; height: 32px; }
+.sd-icon-xl i[data-lucide] svg  { width: 40px; height: 40px; }
+
+/* Empty state icon */
+.sd-empty-icon i[data-lucide] svg {
+  width: 40px;
+  height: 40px;
+}
+
+.sd-light .sd-empty-icon i[data-lucide] svg { stroke: #8a8aaa; }
+.sd-dark  .sd-empty-icon i[data-lucide] svg { stroke: #606060; }
+
+/* Dropzone upload icon */
+.sd-dropzone i[data-lucide] svg {
+  width: 32px;
+  height: 32px;
+  stroke: #8a8aaa;
+  margin: 0 auto 0.5rem;
+  display: block;
+}
+
+/* Icon catalog grid */
+.sd-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.5rem;
+}
+
+.sd-icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.625rem 0.25rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.sd-light .sd-icon-item:hover { background: #f0ede8; border-color: #d4cfe8; }
+.sd-dark  .sd-icon-item:hover { background: #1a1a1a; border-color: #2a2a2a; }
+
+.sd-icon-item i[data-lucide] svg {
+  width: 22px;
+  height: 22px;
+}
+
+.sd-light .sd-icon-item i[data-lucide] svg { stroke: #1a1a2e; }
+.sd-dark  .sd-icon-item i[data-lucide] svg { stroke: #f0f0f0; }
+
+.sd-icon-item .sd-icon-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  text-align: center;
+  line-height: 1.3;
+  word-break: break-all;
+}
+
+.sd-light .sd-icon-item .sd-icon-name { color: #8a8aaa; }
+.sd-dark  .sd-icon-item .sd-icon-name { color: #606060; }
+
+/* Accent icon colors for semantic usage */
+.sd-icon-crimson i[data-lucide] svg { stroke: #e03558; }
+.sd-icon-neon    i[data-lucide] svg { stroke: #00e676; }
+.sd-icon-muted   i[data-lucide] svg { stroke: #8a8aaa; }
+
+/* ----------------------------------------------------------------
+   Settings navigation
+   ---------------------------------------------------------------- */
+.sd-settings-link {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8125rem;
+  text-decoration: none;
+  transition: background 0.12s, color 0.12s;
+  color: #4a4a6a;
+}
+
+.sd-settings-link:hover {
+  background: #f0ede8;
+  color: #1a1a2e;
+  text-decoration: none;
+}
+
+.sd-settings-active {
+  background: #f0ede8;
+  color: #1a1a2e;
+  font-weight: 500;
+}
+
+.sd-settings-link.sd-dark { color: #a0a0a0; }
+.sd-settings-link.sd-dark:hover { background: #222222; color: #f0f0f0; }
+.sd-settings-active.sd-dark { background: #222222; color: #f0f0f0; }
+
+/* ----------------------------------------------------------------
+   Separator label between light/dark sections
+   ---------------------------------------------------------------- */
+.sd-vs {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.5rem 0;
+  color: #8a8aaa;
+  font-size: 0.75rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sd-vs::before, .sd-vs::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #d4cfe8;
+}

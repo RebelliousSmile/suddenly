@@ -1,0 +1,255 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ================================================================
+   Suddenly — MkDocs Material theme overrides
+   Aligns with the project light palette (uno.config.js :root tokens)
+   ================================================================ */
+
+:root,
+[data-md-color-scheme="default"] {
+  /* Backgrounds */
+  --md-default-bg-color: #faf9f6;
+  --md-default-bg-color--light: #f0ede8;
+  --md-default-bg-color--lighter: #f0ede8;
+  --md-default-bg-color--lightest: #faf9f6;
+
+  /* Text */
+  --md-default-fg-color: #1a1a2e;
+  --md-default-fg-color--light: #4a4a6a;
+  --md-default-fg-color--lighter: #8a8aaa;
+  --md-default-fg-color--lightest: #d4cfe8;
+
+  /* Primary (header, links) — crimson */
+  --md-primary-fg-color: #e03558;
+  --md-primary-fg-color--light: #f5c0cb;
+  --md-primary-fg-color--dark: #c82a4a;
+  --md-primary-bg-color: #ffffff;
+  --md-primary-bg-color--light: #faf9f6;
+
+  /* Accent (hover, focus) */
+  --md-accent-fg-color: #e03558;
+  --md-accent-fg-color--transparent: rgba(224, 53, 88, 0.1);
+  --md-accent-bg-color: #ffffff;
+
+  /* Code */
+  --md-code-bg-color: #f0ede8;
+  --md-code-fg-color: #1a1a2e;
+
+  /* Borders / shadows */
+  --md-typeset-table-color: #d4cfe8;
+  --md-shadow-z1: 0 2px 16px rgba(0, 0, 0, 0.07);
+  --md-shadow-z2: 0 4px 24px rgba(0, 0, 0, 0.12);
+  --md-shadow-z3: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+/* ----------------------------------------------------------------
+   Typography
+   ---------------------------------------------------------------- */
+body,
+.md-typeset {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.md-typeset h1 { font-size: 2.25rem; line-height: 1.2; }
+.md-typeset h2 { font-size: 1.6rem;  line-height: 1.3; }
+.md-typeset h3 { font-size: 1.25rem; line-height: 1.4; }
+
+.md-typeset code,
+.md-typeset pre {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.875em;
+}
+
+/* ----------------------------------------------------------------
+   Header
+   ---------------------------------------------------------------- */
+.md-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #d4cfe8;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+}
+
+.md-header__title,
+.md-header__topic {
+  color: #1a1a2e;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+}
+
+.md-header__button.md-logo img {
+  filter: none;
+}
+
+/* Nav links in header */
+.md-tabs__link {
+  color: #4a4a6a;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.md-tabs__link:hover,
+.md-tabs__link--active {
+  color: #e03558;
+}
+
+.md-tabs {
+  background-color: #f0ede8;
+  border-bottom: 1px solid #d4cfe8;
+}
+
+/* ----------------------------------------------------------------
+   Sidebar
+   ---------------------------------------------------------------- */
+.md-nav__title {
+  color: #1a1a2e;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+}
+
+.md-nav__link {
+  color: #4a4a6a;
+}
+
+.md-nav__link:hover,
+.md-nav__link--active {
+  color: #e03558;
+}
+
+.md-nav__link--active {
+  font-weight: 600;
+}
+
+/* ----------------------------------------------------------------
+   Search
+   ---------------------------------------------------------------- */
+.md-search__form {
+  background-color: #f0ede8;
+  border: 1px solid #d4cfe8;
+  border-radius: 8px;
+}
+
+.md-search__input {
+  color: #1a1a2e;
+  font-family: 'Inter', sans-serif;
+}
+
+.md-search__input::placeholder {
+  color: #8a8aaa;
+}
+
+/* ----------------------------------------------------------------
+   Content area
+   ---------------------------------------------------------------- */
+.md-main {
+  background-color: #faf9f6;
+}
+
+.md-content {
+  background-color: #faf9f6;
+}
+
+.md-typeset a {
+  color: #e03558;
+  text-decoration: none;
+}
+
+.md-typeset a:hover {
+  text-decoration: underline;
+  color: #c82a4a;
+}
+
+.md-typeset blockquote {
+  border-left-color: #e03558;
+  background-color: rgba(224, 53, 88, 0.05);
+  border-radius: 0 8px 8px 0;
+  padding: 0.75rem 1rem;
+}
+
+.md-typeset blockquote p {
+  color: #4a4a6a;
+  font-style: normal;
+}
+
+/* Tables */
+.md-typeset table:not([class]) th {
+  background-color: #f0ede8;
+  color: #1a1a2e;
+  font-weight: 600;
+  border-bottom: 2px solid #d4cfe8;
+}
+
+.md-typeset table:not([class]) td {
+  border-bottom: 1px solid #d4cfe8;
+}
+
+/* ----------------------------------------------------------------
+   Admonitions
+   ---------------------------------------------------------------- */
+.md-typeset .admonition,
+.md-typeset details {
+  border-radius: 8px;
+  border-left-width: 3px;
+}
+
+/* ----------------------------------------------------------------
+   Footer
+   ---------------------------------------------------------------- */
+.md-footer {
+  background-color: #1a1a2e;
+  color: #8a8aaa;
+}
+
+.md-footer-meta {
+  background-color: #1a1a2e;
+}
+
+.md-footer__link {
+  color: #8a8aaa;
+}
+
+.md-footer__link:hover {
+  color: #e03558;
+}
+
+/* ----------------------------------------------------------------
+   Table of contents
+   ---------------------------------------------------------------- */
+.md-nav--secondary .md-nav__link {
+  color: #8a8aaa;
+  font-size: 0.8rem;
+}
+
+.md-nav--secondary .md-nav__link:hover,
+.md-nav--secondary .md-nav__link--active {
+  color: #e03558;
+}
+
+/* ----------------------------------------------------------------
+   Scrollbar
+   ---------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0ede8;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d4cfe8;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #e03558;
+}
