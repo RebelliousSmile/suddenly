@@ -232,11 +232,13 @@ class Report(BaseModel):
             # XOR local/remote: a fiction link is either a hard FK (local) or a
             # soft IRI (remote), never both. When ingestion resolves an IRI to a
             # known Report it MUST clear the IRI (the FK is the link).
-            models.CheckConstraint(
+            # `check=` (Django 5.0) vs `condition=` (5.1): django-stubs versions disagree,
+            # so suppress call-arg and self-suppress when the ignore is unused (cross-version).
+            models.CheckConstraint(  # type: ignore[call-arg, unused-ignore]
                 name="report_previous_local_xor_remote",
                 check=~models.Q(previous_report__isnull=False, previous_report_iri__gt=""),
             ),
-            models.CheckConstraint(
+            models.CheckConstraint(  # type: ignore[call-arg, unused-ignore]
                 name="report_anchor_local_xor_remote",
                 check=~models.Q(temporal_anchor__isnull=False, temporal_anchor_iri__gt=""),
             ),
