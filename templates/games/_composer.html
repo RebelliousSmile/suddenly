@@ -179,8 +179,7 @@
                 {% endif %}
                 <span class="text-xs text-semantic-muted tabular-nums px-1" x-text="body.length"></span>
 
-                {# bouton d'envoi split : action principale + caret (options).
-                   En mode édition : « Enregistrer » seul, pas d'options d'envoi. #}
+                {# bouton d'envoi split : action + caret ; en mode édition « Enregistrer » seul, sans options. #}
                 <div class="inline-flex items-stretch rounded-btn overflow-hidden">
                     {% if edit_rapport %}
                         <button type="button" class="btn-primary rounded-none" :disabled="!canSend"

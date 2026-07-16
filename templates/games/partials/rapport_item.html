@@ -126,8 +126,7 @@
                     </button>
                 </span>
             {% endif %}
-            {# Once released (and possibly federated), the scene is frozen: no edit
-               or delete — deletion would desync remote instances. #}
+            {# Once released (possibly federated) the scene is frozen: no edit/delete — would desync remotes. #}
             {% if not rapport.report.is_released %}
                 {# Éditer rouvre le composer (sidebar) hydraté en mode édition. #}
                 <button hx-get="{% url 'games:rapport_edit' rapport.report.game.pk rapport.report.pk rapport.pk %}"

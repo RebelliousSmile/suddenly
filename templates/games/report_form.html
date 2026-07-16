@@ -47,9 +47,9 @@
         {% endif %}
 
         {% if report %}
-            {# Édition d'une scène existante : même disposition que la home —
+            {% comment %}Édition d'une scène existante : même disposition que la home —
                composer (appelé tel quel, frozen) à gauche, l'édition de la scène
-               (fil + état + paramètres) à la place des feeds. #}
+               (fil + état + paramètres) à la place des feeds.{% endcomment %}
             <div class="@lg:flex @lg:gap-8">
 
                 <aside class="flex-shrink-0 @lg:w-80 @lg:sticky @lg:top-4 mb-6 @lg:mb-0">
@@ -136,8 +136,7 @@
                         {% endif %}
                     </div>
 
-                    {# Le fil de la scène — les posts. On ajoute via le composer de gauche
-                       (post inline OOB dans #rapports-list, sans reload). #}
+                    {# Le fil de la scène — on ajoute via le composer de gauche (OOB, sans reload). #}
                     <div>
                         <h2 class="text-heading mb-3">{% trans "Le fil de la scène" %}</h2>
                         <div id="rapports-list" class="space-y-2">

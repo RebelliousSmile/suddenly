@@ -222,9 +222,9 @@
         <p class="text-semantic-ink-secondary mb-6">
             {% blocktrans %}{{ SITE_NAME }} uses <strong>ActivityPub</strong> to connect to other instances and the rest of the Fediverse. Follow players from Mastodon, BookWyrm or any compatible platform.{% endblocktrans %}
         </p>
-        {# Logos de plateformes fédérées : icônes SIGNIFIANTES (elles remplacent un nom),
+        {% comment %}Logos de plateformes fédérées : icônes SIGNIFIANTES (elles remplacent un nom),
            donc role="img" + aria-label. BookWyrm n'existe pas dans simple-icons — d'où
-           l'usage d'un glyphe game-icons en substitut de logo. #}
+           l'usage d'un glyphe game-icons en substitut de logo.{% endcomment %}
         <div class="flex flex-wrap justify-center gap-4 text-semantic-muted">
             <span class="i-simple-icons-mastodon text-2xl hover:text-brand-accent transition-colors"
                   role="img" aria-label="Mastodon"></span>
