@@ -105,9 +105,7 @@ def login(request: HttpRequest) -> HttpResponse:
         # "connect" when a logged-in user is linking another identity.
         "action": "connect" if request.user.is_authenticated else "login",
     }
-    return redirect(
-        client.build_authorize_url(instance, app.client_id, _callback_url(), state)
-    )
+    return redirect(client.build_authorize_url(instance, app.client_id, _callback_url(), state))
 
 
 @require_http_methods(["GET"])
@@ -156,8 +154,7 @@ def callback(request: HttpRequest) -> HttpResponse:
         services.link_existing_user(request.user, instance, account)
         messages.success(
             request,
-            _("Compte @%(acct)s lié avec succès.")
-            % {"acct": services._handle(account, instance)},
+            _("Compte @%(acct)s lié avec succès.") % {"acct": services._handle(account, instance)},
         )
         return redirect(flow["next"])
 
@@ -174,8 +171,7 @@ def callback(request: HttpRequest) -> HttpResponse:
         messages.error(request, _("Les inscriptions sont actuellement fermées sur cette instance."))
         return redirect("account_login")
 
-    user.backend = _MODEL_BACKEND
-    auth_login(request, user)
+    auth_login(request, user, backend=_MODEL_BACKEND)
     if created:
         messages.success(request, _("Bienvenue ! Votre compte a été créé via le Fediverse."))
     return redirect(flow["next"])
