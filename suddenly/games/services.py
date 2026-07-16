@@ -6,6 +6,7 @@ Shared queryset builders and business logic for the games domain.
 
 from __future__ import annotations
 
+import datetime
 import re
 import unicodedata
 from typing import TYPE_CHECKING, Any
@@ -32,6 +33,7 @@ from .models import (
     Report,
     ReportCast,
     ReportStatus,
+    ReportTemporalKind,
 )
 
 if TYPE_CHECKING:
@@ -627,3 +629,161 @@ def near_duplicate_system(
         if ratio > best_ratio:
             best, best_ratio = label, ratio
     return best if best_ratio >= threshold else None
+
+
+# ---------------------------------------------------------------------------
+# Fiction order — reading chain (previous_report) + chronology (temporal_*).
+#
+# The fiction order is explicit and distinct from Meta.ordering
+# (session_date / published_at / created_at). Source of truth: the self-FK
+# ``previous_report``. It is a forest (branching allowed), not a total order —
+# so it lives ONLY here, never in a manager or Meta.ordering. All the logic the
+# model must not hold (invariants, reading, mutation) is in this section.
+# ---------------------------------------------------------------------------
+
+# Guard against a cycle in corrupted pre-constraint data: bound the upward walk.
+_MAX_FICTION_CHAIN_DEPTH = 10_000
+
+
+def validate_fiction_links(report: Report) -> None:
+    """Validate the fiction-order invariants on ``report``; raise ``ValidationError``.
+
+    Kept in the service (never the model) so it can be reused from ``clean``/forms.
+    ``temporal_anchor`` is NOT traversed by :func:`fiction_thread`, so a deep anchor
+    cycle is never fatal to rendering — only anchor self-reference is blocked here
+    (deep anchor cycles are data hygiene, out of the hard-invariant scope).
+    """
+    # 1. No self-reference on either axis.
+    if report.previous_report_id is not None and report.previous_report_id == report.pk:
+        raise ValidationError({"previous_report": "A report cannot precede itself."})
+    if report.temporal_anchor_id is not None and report.temporal_anchor_id == report.pk:
+        raise ValidationError({"temporal_anchor": "A report cannot anchor to itself."})
+
+    # 2. XOR local/remote — app-level echo of the CheckConstraint, with a message.
+    if report.previous_report_id is not None and report.previous_report_iri:
+        raise ValidationError(
+            {"previous_report_iri": "Set either previous_report or previous_report_iri, not both."}
+        )
+    if report.temporal_anchor_id is not None and report.temporal_anchor_iri:
+        raise ValidationError(
+            {"temporal_anchor_iri": "Set either temporal_anchor or temporal_anchor_iri, not both."}
+        )
+
+    # 3. Same game on both local axes.
+    previous = report.previous_report
+    if previous is not None and previous.game_id != report.game_id:
+        raise ValidationError(
+            {"previous_report": "The previous report must belong to the same game."}
+        )
+    anchor = report.temporal_anchor
+    if anchor is not None and anchor.game_id != report.game_id:
+        raise ValidationError(
+            {"temporal_anchor": "The temporal anchor must belong to the same game."}
+        )
+
+    # 4. temporal_kind NORMAL ⟺ no anchor and no label (bidirectional).
+    has_anchor = report.temporal_anchor_id is not None or bool(report.temporal_anchor_iri)
+    has_label = bool(report.temporal_label)
+    if report.temporal_kind == ReportTemporalKind.NORMAL and (has_anchor or has_label):
+        raise ValidationError(
+            {"temporal_kind": "A normal scene carries no temporal anchor or label."}
+        )
+
+    # 5. No cycle in the previous_report chain (bounded upward walk).
+    if report.previous_report_id is not None:
+        seen: set[Any] = {report.pk}
+        current: Report | None = report.previous_report
+        depth = 0
+        while current is not None:
+            depth += 1
+            if depth > _MAX_FICTION_CHAIN_DEPTH:
+                raise ValidationError(
+                    {"previous_report": "The fiction chain is too deep (possible cycle)."}
+                )
+            if current.pk in seen:
+                raise ValidationError(
+                    {"previous_report": "This link would create a cycle in the fiction order."}
+                )
+            seen.add(current.pk)
+            current = current.previous_report
+
+
+def _fiction_sort_key(report: Report) -> tuple[int, bool, datetime.date, datetime.datetime]:
+    """Order siblings mainline-first: branch_order, then session_date (nulls last),
+    then created_at."""
+    return (
+        report.branch_order,
+        report.session_date is None,
+        report.session_date or datetime.date.min,
+        report.created_at,
+    )
+
+
+def fiction_thread(game: Game) -> list[Report]:
+    """Return ``game``'s reports in fiction (reading) order, mainline-first.
+
+    Roots = reports with no predecessor at all (``previous_report`` AND
+    ``previous_report_iri`` both null). Children are visited depth-first, sorted by
+    :func:`_fiction_sort_key`, so the mainline comes first and branches follow.
+    Flashbacks/flashforwards appear at their chain position (they carry a
+    ``previous_report``), exposed via ``temporal_kind`` / ``temporal_label``.
+
+    The whole forest is loaded in a bounded number of queries
+    (``select_related("author")`` + ``prefetch_related("next_reports")``); the
+    adjacency is then built in memory from ``previous_report_id`` and walked with a
+    DFS — so the query cost is independent of the tree depth or size. Building the
+    adjacency from the flat list (not the reverse relation) keeps every visited node
+    a single, prefetched instance, avoiding an N+1 on ``next_reports``.
+    """
+    reports = list(game.reports.select_related("author").prefetch_related("next_reports"))
+
+    children: dict[Any, list[Report]] = {}
+    roots: list[Report] = []
+    for report in reports:
+        if report.previous_report_id is None and not report.previous_report_iri:
+            roots.append(report)
+        if report.previous_report_id is not None:
+            children.setdefault(report.previous_report_id, []).append(report)
+
+    roots.sort(key=_fiction_sort_key)
+
+    ordered: list[Report] = []
+    visited: set[Any] = set()
+
+    def visit(node: Report) -> None:
+        if node.pk in visited:  # defensive: a cycle in corrupt data must not loop
+            return
+        visited.add(node.pk)
+        ordered.append(node)
+        for child in sorted(children.get(node.pk, []), key=_fiction_sort_key):
+            visit(child)
+
+    for root in roots:
+        visit(root)
+    return ordered
+
+
+def fiction_continuations(report: Report) -> list[Report]:
+    """Direct continuations of ``report`` (its ``next_reports``), mainline-first.
+
+    Same sort as :func:`fiction_thread` sibling ordering (branch_order, session_date,
+    created_at): the mainline comes first, branches after. Feeds the closing
+    « Next → » partial; the template stores no id.
+    """
+    return sorted(report.next_reports.all(), key=_fiction_sort_key)
+
+
+@transaction.atomic
+def set_previous(report: Report, new_previous: Report | None) -> None:
+    """Set ``report.previous_report`` to ``new_previous`` after validating invariants.
+
+    Rewrites exactly one edge. Branching is allowed, so no sibling is reparented and
+    ``branch_order`` is untouched (explicit branch ordering is a separate gesture).
+    Validation runs BEFORE writing: on failure nothing is persisted. Setting a local
+    predecessor clears any ``previous_report_iri`` — the FK IS the link (XOR).
+    """
+    report.previous_report = new_previous
+    if new_previous is not None:
+        report.previous_report_iri = None
+    validate_fiction_links(report)
+    report.save(update_fields=["previous_report", "previous_report_iri", "updated_at"])

@@ -1,0 +1,28 @@
+{% load i18n %}
+{% comment %}
+Fiction-order closing link — "Next →". Renders the continuations (next_reports)
+mainline-first, then branches. The list is prepared by the view
+(services.fiction_continuations); the partial stores no id, it renders the link.
+Self-guards: renders nothing when the scene has no continuation.
+{% endcomment %}
+{% if fiction_next %}
+<div class="card card-body mb-6 text-sm" data-fiction="next">
+    <div class="flex items-center gap-2 mb-2 text-semantic-muted">
+        <span class="i-lucide-arrow-right text-xs" aria-hidden="true"></span>
+        <span class="font-medium">{% trans "Next" %}</span>
+    </div>
+    <ul class="space-y-1">
+        {% for next in fiction_next %}
+            <li class="flex flex-wrap items-center gap-2">
+                <a href="{% url 'games:report_detail' game_pk=next.game_id pk=next.pk %}"
+                   class="link-muted">{{ next.title|default:_("Untitled scene") }}</a>
+                {% if forloop.first %}
+                    <span class="text-xs text-semantic-muted">{% trans "mainline" %}</span>
+                {% else %}
+                    <span class="text-xs text-semantic-muted" data-fiction-branch="1">{% trans "branch" %}</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}

@@ -36,4 +36,5 @@ Suddenly runs on any server with Python and PostgreSQL — no Docker required.
 ## Contributing
 
 - [Adding a translation](translations.md)
+- [Fiction order of scenes](fiction-order.md) — reading chain, flashbacks, and how the link federates
 - [GitHub repository](https://github.com/RebelliousSmile/suddenly)

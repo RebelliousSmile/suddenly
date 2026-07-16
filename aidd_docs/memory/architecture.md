@@ -207,3 +207,14 @@ C4Context
 - `Rapport` model — structured segment within a Report; types: DESCRIPTION / ACTION / DISCUSSION / NARRATION
 - `RapportLink` model — directed link between Rapport segments (local or remote IRI)
 - `RapportMarker` model — structural events: START / END / CHARACTER_APPEARS / CHARACTER_LEAVES / ORACLE
+
+## Report fiction order (normative)
+
+- Source of truth for reading order = `Report.previous_report` (self-FK, `SET_NULL`, reverse `next_reports`) — a forest, not a total order
+- **Never** sort the fiction order in a manager or `Meta.ordering` — `Report.Meta.ordering` stays for admin/flat lists only; fiction order lives **only** in `games.services.fiction_thread(game)` (mainline-first DFS)
+- **No business logic in the model** — invariants/reading/mutation in `games/services.py`: `validate_fiction_links`, `fiction_thread`, `fiction_continuations`, `set_previous`
+- Chronology axis = `temporal_kind` (`ReportTemporalKind`) + `temporal_anchor`/`temporal_anchor_iri` + `temporal_label`; orthogonal to reading order (a flashback stays in the chain)
+- **Never** let a hard FK cross federation: the link travels as a **soft IRI** (`suddenly:previousReport` / `suddenly:temporalAnchor`) emitted by `serialize_report`, ingested by `inbox._handle_create_report`
+- XOR local/remote enforced by `CheckConstraint` (`report_previous_local_xor_remote`, `report_anchor_local_xor_remote`): on reception, linking the FK **requires** clearing the matching IRI
+- Reception is idempotent by `ap_id` (business dedup in the handler, on top of `ProcessedActivity` transport dedup)
+- Human design doc: `docs/fiction-order.md`

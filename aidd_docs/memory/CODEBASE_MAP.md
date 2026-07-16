@@ -38,6 +38,7 @@ flowchart TD
             GR["Rapport — structured segment of Report (kind: DESCRIPTION/ACTION/DISCUSSION/NARRATION)"]
             GRL["RapportLink — parent link between Rapport segments (local FK or remote IRI)"]
             GRM["RapportMarker — structural marker (START/END/CHARACTER_APPEARS/CHARACTER_LEAVES/ORACLE)"]
+            GFO["Report fiction order — previous_report/next_reports (self-FK), temporal_kind/temporal_anchor/temporal_label; ReportTemporalKind"]
         end
         subgraph "characters/"
             CH["Character (tags M2M) · Quote · CharacterAppearance"]
@@ -93,6 +94,15 @@ flowchart TD
 | `suddenly/core/notification_signals.py` | Notification wiring | Yes |
 | `suddenly/core/feed_views.py` | Feed aggregation | Yes |
 | `suddenly/games/services.py` | Composer context (public) + protagonist pool | Yes |
+
+## Fiction order (Report reading chain + chronology)
+
+- `games/models.py` : `Report.previous_report`/`next_reports` (self-FK `SET_NULL`), `previous_report_iri`, `branch_order`, `temporal_kind`, `temporal_anchor`/`temporal_anchor_iri`, `temporal_label` ; enum `ReportTemporalKind` ; 2 `CheckConstraint` XOR (`report_previous_local_xor_remote`, `report_anchor_local_xor_remote`)
+- `games/services.py` : `validate_fiction_links(report)`, `fiction_thread(game)` (DFS mainline-first, borné), `fiction_continuations(report)`, `set_previous(report, new_previous)`
+- `activitypub/serializers.py` : `serialize_report` émet les IRI mous `previousReport`/`temporalKind`/`temporalAnchor`/`temporalLabel` (4 termes ajoutés à `AP_CONTEXT`) ; helper `_report_link_iri`
+- `activitypub/inbox.py` : `handle_create` route `Article` → `_handle_create_report` (ingestion idempotente) ; `_resolve_fiction_links`, `_read_ap_term`, `_infer_visibility`
+- Templates : `games/_fiction_previously.html` (« ← Précédemment »), `games/_fiction_next.html` (« Suite → ») ; câblés dans `report_detail.html` via `front_views.report_detail`
+- Doc humaine : `docs/fiction-order.md`
 
 ## Composer & feed services
 

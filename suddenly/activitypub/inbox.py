@@ -316,7 +316,8 @@ def handle_create(activity: dict[str, Any], actor_type: str, actor_identifier: s
     """
     Handle incoming Create activity.
 
-    Supports Create(Character) — persists a remote Character to DB.
+    Supports Create(Character) — persists a remote Character to DB — and
+    Create(Article) — persists a remote Report (scene) with its fiction-order links.
     Other object types are logged and ignored for now.
     """
     obj = activity.get("object", {})
@@ -328,6 +329,8 @@ def handle_create(activity: dict[str, Any], actor_type: str, actor_identifier: s
 
     if obj_type == "Character":
         _handle_create_character(activity, obj)
+    elif obj_type == "Article":
+        _handle_create_report(activity, obj)
 
 
 def _handle_create_character(activity: dict[str, Any], obj: dict[str, Any]) -> None:
@@ -375,6 +378,146 @@ def _handle_create_character(activity: dict[str, Any], obj: dict[str, Any]) -> N
 
     # Narrative meta-model extension (issue F) — tolerant: absent block is fine.
     _ingest_trait_sets(character, obj)
+
+
+def _read_ap_term(obj: dict[str, Any], term: str) -> str | None:
+    """Read a Suddenly extension term, tolerating the compact and expanded forms.
+
+    ``previousReport`` is emitted compact (the ``@context`` maps it to
+    ``suddenly:previousReport``); a stricter peer may deliver it expanded. Mirrors
+    the fallback in :func:`_ingest_trait_sets`. Non-string / empty → ``None``.
+    """
+    value = obj.get(term)
+    if value is None:
+        value = obj.get(f"suddenly:{term}")
+    return value if isinstance(value, str) and value else None
+
+
+def _resolve_fiction_links(report: Any, obj: dict[str, Any]) -> None:
+    """Resolve the incoming fiction-order block onto a freshly ingested Report.
+
+    Tolerant and deferred (fiction-order spec): read ``previousReport`` /
+    ``temporalAnchor`` soft IRIs — if an IRI matches a Report already known by
+    ``ap_id``, wire the FK **and clear the IRI** (XOR CheckConstraint); otherwise
+    store the IRI alone (resolved later when the anchor scene arrives). Absent block
+    is a no-op; malformed terms are ignored.
+    """
+    from suddenly.games.models import Report, ReportTemporalKind
+
+    update_fields: list[str] = []
+
+    previous_iri = _read_ap_term(obj, "previousReport")
+    if previous_iri:
+        match = Report.objects.filter(ap_id=previous_iri).first()
+        if match is not None:
+            report.previous_report = match
+            report.previous_report_iri = None
+        else:
+            report.previous_report_iri = previous_iri[:500]
+        update_fields += ["previous_report", "previous_report_iri"]
+
+    anchor_iri = _read_ap_term(obj, "temporalAnchor")
+    if anchor_iri:
+        match = Report.objects.filter(ap_id=anchor_iri).first()
+        if match is not None:
+            report.temporal_anchor = match
+            report.temporal_anchor_iri = None
+        else:
+            report.temporal_anchor_iri = anchor_iri[:500]
+        update_fields += ["temporal_anchor", "temporal_anchor_iri"]
+
+    temporal_kind = _read_ap_term(obj, "temporalKind")
+    if temporal_kind in (ReportTemporalKind.FLASHBACK, ReportTemporalKind.FLASHFORWARD):
+        report.temporal_kind = temporal_kind
+        update_fields.append("temporal_kind")
+
+    temporal_label = _read_ap_term(obj, "temporalLabel")
+    if temporal_label:
+        report.temporal_label = temporal_label[:120]
+        update_fields.append("temporal_label")
+
+    if update_fields:
+        report.save(update_fields=[*update_fields, "updated_at"])
+
+
+def _infer_visibility(obj: dict[str, Any]) -> str:
+    """Infer a Report visibility from AS2 ``to``/``cc`` addressing (default public)."""
+    from suddenly.games.models import ReportVisibility
+
+    public = "https://www.w3.org/ns/activitystreams#Public"
+    to = obj.get("to") or []
+    cc = obj.get("cc") or []
+    to = [to] if isinstance(to, str) else list(to)
+    cc = [cc] if isinstance(cc, str) else list(cc)
+    if public in to:
+        return ReportVisibility.PUBLIC
+    if public in cc:
+        return ReportVisibility.UNLISTED
+    if to:  # addressed to followers only, Public nowhere
+        return ReportVisibility.FOLLOWERS
+    return ReportVisibility.PUBLIC
+
+
+def _handle_create_report(activity: dict[str, Any], obj: dict[str, Any]) -> None:
+    """Persist an incoming remote Report (AP ``Article``), with its fiction links.
+
+    Calqued on :func:`_handle_create_character`: idempotent by ``ap_id`` (a double
+    POST creates exactly one Report), remote author via ``get_or_create_remote_user``,
+    remote Game via the Article ``context``. The fiction-order block is resolved by
+    :func:`_resolve_fiction_links` (soft IRI → FK when the anchor is already known).
+    """
+    from urllib.parse import urlparse
+
+    from django.utils.dateparse import parse_datetime
+
+    from suddenly.games.models import Game, Report, ReportStatus
+
+    ap_id = obj.get("id")
+    if not ap_id:
+        return
+
+    # Idempotence (business dedup by ap_id — transport dedup is ProcessedActivity).
+    if Report.objects.filter(ap_id=ap_id).exists():
+        return
+
+    actor_url = activity.get("actor") or obj.get("attributedTo") or ""
+    if not actor_url:
+        return
+    result = get_or_create_remote_user(actor_url)
+    if result is None:
+        return
+    remote_user, _ = result
+
+    # Remote Game via the Article's context IRI; fall back to a per-domain game.
+    game_iri = obj.get("context")
+    if isinstance(game_iri, str) and game_iri:
+        game, _ = Game.objects.get_or_create(
+            ap_id=game_iri,
+            defaults={"title": "Remote game", "owner": remote_user, "remote": True},
+        )
+    else:
+        domain = urlparse(actor_url).netloc or "unknown"
+        game, _ = Game.objects.get_or_create(
+            ap_id=f"https://{domain}",
+            defaults={"title": f"Remote: {domain}", "owner": remote_user, "remote": True},
+        )
+
+    published_raw = obj.get("published")
+    published_at = parse_datetime(published_raw) if isinstance(published_raw, str) else None
+
+    report = Report.objects.create(
+        game=game,
+        author=remote_user,
+        title=str(obj.get("name") or "")[:200],
+        content=str(obj.get("content") or ""),
+        status=ReportStatus.PUBLISHED,
+        visibility=_infer_visibility(obj),
+        published_at=published_at,
+        remote=True,
+        ap_id=ap_id,
+    )
+
+    _resolve_fiction_links(report, obj)
 
 
 def _ingest_trait_sets(character: Any, obj: dict[str, Any]) -> None:

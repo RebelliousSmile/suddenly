@@ -55,6 +55,7 @@ from .services import (
     close_scene,
     create_npc_in_cast,
     create_scene_post,
+    fiction_continuations,
     is_game_master,
     known_game_systems,
     move_rapport,
@@ -486,9 +487,10 @@ def game_create(request: AuthenticatedRequest) -> HttpResponse:
 def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
     """Report detail page (US-04)."""
     report = get_object_or_404(
-        Report.objects.select_related("game", "author").prefetch_related(
+        Report.objects.select_related("game", "author", "previous_report").prefetch_related(
             "rapports__parent_links",
             "rapports__parent_links__parent_rapport",
+            "next_reports",
         ),
         pk=pk,
         game_id=game_pk,
@@ -533,6 +535,12 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
     if not is_author:
         rapports = rapports.filter(status=RapportStatus.PUBLISHED)
 
+    # Fiction order: continuations for the closing « Next → » link. Uses the
+    # prefetched next_reports (no extra query per item). The opening « Previously »
+    # link reads report.previous_report (select_related above); both partials
+    # self-guard and store no id.
+    fiction_next = fiction_continuations(report)
+
     return htmx_render(
         request,
         full_template="games/report_detail.html",
@@ -547,6 +555,7 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
             "manage_quotes": manage_quotes,
             "quote_characters": quote_characters,
             "rapports": rapports,
+            "fiction_next": fiction_next,
         },
     )
 

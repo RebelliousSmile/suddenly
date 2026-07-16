@@ -50,9 +50,28 @@ AP_CONTEXT: list[str | dict[str, str]] = [
         "note": "suddenly:note",
         "condition": "suddenly:condition",
         "outcome": "suddenly:outcome",
+        # Fiction order extension. The reading link and the chronology label travel
+        # as SOFT IRIs — no hard FK crosses federation. A peer ignoring this
+        # vocabulary drops the block without breaking the AP Article body.
+        "previousReport": "suddenly:previousReport",
+        "temporalKind": "suddenly:temporalKind",
+        "temporalAnchor": "suddenly:temporalAnchor",
+        "temporalLabel": "suddenly:temporalLabel",
         "sensitive": "https://www.w3.org/ns/activitystreams#sensitive",
     },
 ]
+
+
+def _report_link_iri(linked_report: Any, fallback_iri: str | None) -> str | None:
+    """Resolve a fiction link to an IRI (soft federation).
+
+    A local/remote linked Report is emitted by its ``ap_id`` (remote) or canonical
+    local URL; when only the soft IRI is known (unresolved remote predecessor), that
+    IRI is emitted as-is. Returns ``None`` when there is no link at all.
+    """
+    if linked_report is not None:
+        return linked_report.ap_id or f"https://{settings.DOMAIN}/reports/{linked_report.pk}"
+    return fallback_iri or None
 
 
 def serialize_trait_sets(character: Any) -> list[dict[str, Any]]:
@@ -275,6 +294,24 @@ def serialize_report(report: Any) -> dict[str, Any]:
 
     if mentions:
         data["tag"] = mentions
+
+    # Fiction order (soft IRI — no hard FK crosses federation). Keys omitted when
+    # the report is unchained / chronologically normal, so a plain scene stays a
+    # plain AP Article.
+    linked_previous = report.previous_report if report.previous_report_id else None
+    previous_iri = _report_link_iri(linked_previous, report.previous_report_iri)
+    if previous_iri:
+        data["previousReport"] = previous_iri
+
+    temporal_kind = getattr(report, "temporal_kind", "normal")
+    if temporal_kind and temporal_kind != "normal":
+        data["temporalKind"] = temporal_kind
+        linked_anchor = report.temporal_anchor if report.temporal_anchor_id else None
+        anchor_iri = _report_link_iri(linked_anchor, report.temporal_anchor_iri)
+        if anchor_iri:
+            data["temporalAnchor"] = anchor_iri
+        if report.temporal_label:
+            data["temporalLabel"] = report.temporal_label
 
     return data
 

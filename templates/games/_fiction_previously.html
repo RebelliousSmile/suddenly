@@ -1,0 +1,30 @@
+{% load i18n %}
+{% comment %}
+Fiction-order opening link — "← Previously". The data lives on Report; this
+partial renders the link, it stores no id. Self-guards: renders nothing when the
+scene has no predecessor (previous_report FK nor previous_report_iri).
+{% endcomment %}
+{% if report.previous_report or report.previous_report_iri %}
+<div class="card card-body mb-6 text-sm" data-fiction="previously">
+    <div class="flex flex-wrap items-center gap-2 text-semantic-muted">
+        <span class="i-lucide-arrow-left text-xs" aria-hidden="true"></span>
+        {% if report.previous_report %}
+            <a href="{% url 'games:report_detail' game_pk=report.game_id pk=report.previous_report.pk %}"
+               class="link-muted">
+                {% blocktrans with title=report.previous_report.title|default:_("Untitled scene") %}Previously: {{ title }}{% endblocktrans %}
+            </a>
+        {% else %}
+            <span>{% trans "Previously in the fiction" %}</span>
+        {% endif %}
+        {% if report.temporal_kind and report.temporal_kind != 'normal' %}
+            <span class="badge bg-semantic-card-sunken text-semantic-muted border border-semantic-border"
+                  data-fiction-temporal="{{ report.temporal_kind }}">
+                <span class="i-lucide-history text-xs" aria-hidden="true"></span>
+                {% if report.temporal_kind == 'flashback' %}{% trans "Flashback" %}
+                {% elif report.temporal_kind == 'flashforward' %}{% trans "Flashforward" %}{% endif %}
+                {% if report.temporal_label %}· {{ report.temporal_label }}{% endif %}
+            </span>
+        {% endif %}
+    </div>
+</div>
+{% endif %}

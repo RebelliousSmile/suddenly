@@ -102,6 +102,19 @@ class ReportQuerySet(models.QuerySet["Report"]):
         )
 
 
+class ReportTemporalKind(models.TextChoices):
+    """Chronological label of a scene relative to its ``temporal_anchor``.
+
+    Orthogonal to the reading order (``previous_report``): a flashback/flashforward
+    stays *in* the reading chain, it is only tagged as anterior/posterior in the
+    fiction's internal chronology.
+    """
+
+    NORMAL = "normal", _("Normal")
+    FLASHBACK = "flashback", _("Flashback")
+    FLASHFORWARD = "flashforward", _("Flashforward")
+
+
 class Report(BaseModel):
     """
     A Report is a narrative account added to a Game.
@@ -160,6 +173,42 @@ class Report(BaseModel):
     remote = models.BooleanField(default=False)
     ap_id = models.URLField(blank=True, null=True, unique=True)
 
+    # --- Fiction order (reading axis) ---------------------------------------
+    # Explicit fiction order, distinct from published_at/created_at/session_date.
+    # Source of truth: the self-FK ``previous_report``. Its reverse
+    # ``next_reports`` yields continuations → free branching (tree/forest). No
+    # business logic lives here — the invariants, reading and mutation live in
+    # ``games/services.py`` (fiction_thread / set_previous / validate_fiction_links).
+    # A hard FK never crosses federation: the remote link travels as a soft IRI
+    # (``previous_report_iri``), and the CheckConstraint below forbids both at once.
+    previous_report = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="next_reports",
+    )
+    previous_report_iri = models.URLField(max_length=500, null=True, blank=True)
+    branch_order = models.PositiveIntegerField(default=0)
+
+    # --- Chronology (temporal axis) -----------------------------------------
+    # A flashback/flashforward stays in the reading chain; these fields only tag
+    # its position in the fiction's internal chronology relative to an anchor.
+    temporal_kind = models.CharField(
+        max_length=20,
+        choices=ReportTemporalKind.choices,
+        default=ReportTemporalKind.NORMAL,
+    )
+    temporal_anchor = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="temporal_referrers",
+    )
+    temporal_anchor_iri = models.URLField(max_length=500, null=True, blank=True)
+    temporal_label = models.CharField(max_length=120, blank=True)
+
     # Muses — editable summary proposal attached at ingestion (#126). Held here
     # as a proposal, never auto-published: the author edits it into `content`
     # (or a Rapport) if they want it. Empty means "no proposal / not run".
@@ -178,6 +227,19 @@ class Report(BaseModel):
         indexes = [
             models.Index(fields=["game", "published_at"]),
             models.Index(fields=["status"]),
+        ]
+        constraints = [
+            # XOR local/remote: a fiction link is either a hard FK (local) or a
+            # soft IRI (remote), never both. When ingestion resolves an IRI to a
+            # known Report it MUST clear the IRI (the FK is the link).
+            models.CheckConstraint(
+                name="report_previous_local_xor_remote",
+                check=~models.Q(previous_report__isnull=False, previous_report_iri__gt=""),
+            ),
+            models.CheckConstraint(
+                name="report_anchor_local_xor_remote",
+                check=~models.Q(temporal_anchor__isnull=False, temporal_anchor_iri__gt=""),
+            ),
         ]
 
     def __str__(self) -> str:

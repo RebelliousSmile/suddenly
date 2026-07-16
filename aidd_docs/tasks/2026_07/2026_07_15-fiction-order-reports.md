@@ -9,9 +9,13 @@ objective: >
   DOCUMENTATION de ce point structurant (design doc humaine + mémoire normative + carte du code).
 success_condition: >
   cd app && python manage.py makemigrations --check --dry-run
-  && pytest tests/games/test_fiction_order.py tests/activitypub/test_fiction_federation.py tests/activitypub -q
+  && pytest tests/games/test_fiction_order.py tests/activitypub/test_fiction_federation.py tests/activitypub -q --no-cov
   && ruff check suddenly
   && mypy suddenly/games/models.py suddenly/games/services.py suddenly/activitypub/serializers.py suddenly/activitypub/inbox.py suddenly/activitypub/activities.py
+  # 🤖 Ajout de --no-cov : pyproject addopts impose --cov-fail-under=50 sur TOUTE la suite.
+  # Un run ciblé (ces 2 fichiers + tests/activitypub) couvre ~43% de suddenly/ et ferait
+  # échouer la gate coverage pour une raison sans rapport avec l'acceptation. La gate 50%
+  # reste enforced par `make check` / CI sur la suite complète.
 plan_kind: simple
 confidence: 9
 iteration: 1
