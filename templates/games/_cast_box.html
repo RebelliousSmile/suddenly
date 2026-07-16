@@ -18,7 +18,7 @@
         <span class="ml-auto flex items-center" x-show="!open">
             {% for c in scene_cast|slice:":5" %}
                 <span class="w-6 h-6 -ml-1.5 first:ml-0 rounded-full border-2 border-semantic-card overflow-hidden inline-flex items-center justify-center text-xs
-                             {% if c.status == 'npc' %}bg-semantic-warning/20 text-semantic-warning{% else %}bg-domain-pc/20 text-domain-pc{% endif %}">
+                             {% if c.has_left %}bg-domain-gone/20 text-domain-gone opacity-60{% elif c.status == 'npc' %}bg-domain-npc/20 text-domain-npc{% else %}bg-domain-pc/20 text-domain-pc{% endif %}">
                     {% if c.avatar %}<img src="{{ c.avatar.url }}" alt="" class="w-full h-full object-cover">{% else %}{{ c.name|first }}{% endif %}
                 </span>
             {% endfor %}
@@ -30,9 +30,9 @@
 
     <div x-show="open" x-cloak class="px-2 pb-2">
         {% for c in scene_cast %}
-            <div class="flex items-center gap-3 px-2 py-2 rounded-btn hover:bg-semantic-card-sunken min-h-[44px]">
+            <div class="flex items-center gap-3 px-2 py-2 rounded-btn hover:bg-semantic-card-sunken min-h-[44px]{% if c.has_left %} opacity-70{% endif %}">
                 <span class="w-8 h-8 rounded-full border-2 overflow-hidden inline-flex items-center justify-center text-sm shrink-0
-                             {% if c.status == 'npc' %}border-semantic-warning/60 bg-semantic-warning/10 text-semantic-warning{% else %}border-domain-pc/60 bg-domain-pc/10 text-domain-pc{% endif %}">
+                             {% if c.has_left %}border-domain-gone/60 bg-domain-gone/10 text-domain-gone{% elif c.status == 'npc' %}border-domain-npc/60 bg-domain-npc/10 text-domain-npc{% else %}border-domain-pc/60 bg-domain-pc/10 text-domain-pc{% endif %}">
                     {% if c.avatar %}<img src="{{ c.avatar.url }}" alt="" class="w-full h-full object-cover">{% else %}{{ c.name|first }}{% endif %}
                 </span>
                 <span class="flex flex-col min-w-0">
@@ -42,6 +42,7 @@
                     <span class="text-xs text-semantic-muted">
                         {% if c.status == 'npc' %}{% trans "PNJ" %}{% else %}{% trans "PJ" %}{% endif %}
                         · {% blocktrans with game=c.origin_game.title %}né dans {{ game }}{% endblocktrans %}
+                        {% if c.has_left %}<span class="inline-flex items-center gap-0.5 ml-1 text-domain-gone"><span class="i-lucide-log-out text-[10px]"></span>{% trans "parti" %}</span>{% endif %}
                     </span>
                 </span>
             </div>

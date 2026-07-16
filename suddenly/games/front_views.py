@@ -33,8 +33,10 @@ if TYPE_CHECKING:
 
 from .marker_forms import RapportMarkerForm
 from .models import (
+    CHARACTER_MARKER_KINDS,
     CastRole,
     Game,
+    MarkerKind,
     Rapport,
     RapportLink,
     RapportMarker,
@@ -808,9 +810,12 @@ def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRes
 
     cast_ids = set(report.cast.filter(character__isnull=False).values_list("character", flat=True))
     cast_ids |= set(report.rapports.filter(actor__isnull=False).values_list("actor", flat=True))
-    scene_cast = (
+    gone_ids = _scene_departures(report)
+    scene_cast = list(
         Character.objects.filter(pk__in=cast_ids).select_related("origin_game").order_by("name")
     )
+    for character in scene_cast:
+        character.has_left = str(character.pk) in gone_ids
 
     return htmx_render(
         request,
@@ -1678,6 +1683,28 @@ def _scene_rapports(report: Report) -> models.QuerySet[Rapport]:
     return report.rapports.select_related("actor").prefetch_related(
         "parent_links__parent_rapport", "markers__character", "media"
     )
+
+
+def _scene_departures(report: Report) -> set[str]:
+    """Character ids currently 'gone' from the scene.
+
+    A character has left when their last entrance/exit marker in narrative
+    order (rapport sequence, then creation) is CHARACTER_LEAVES; a later
+    CHARACTER_APPEARS brings them back. Values-only read — no model overhead.
+    """
+    last_kind: dict[str, str] = {}
+    markers = (
+        RapportMarker.objects.filter(
+            rapport__report=report,
+            kind__in=CHARACTER_MARKER_KINDS,
+            character__isnull=False,
+        )
+        .order_by("rapport__order", "rapport__created_at", "created_at")
+        .values_list("character_id", "kind")
+    )
+    for character_id, kind in markers:
+        last_kind[str(character_id)] = kind
+    return {cid for cid, kind in last_kind.items() if kind == MarkerKind.CHARACTER_LEAVES}
 
 
 @require_POST
