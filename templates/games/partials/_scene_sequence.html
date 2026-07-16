@@ -1,0 +1,21 @@
+{% load i18n %}
+{% comment %}
+The scene as an ordered, read-only sequence of posts. Each Rapport may be
+preceded by structural markers (rendered as dividers). Falls back to the scalar
+report content for ingested/legacy scenes that carry no posts.
+Context: rapports (ordered queryset), report.
+{% endcomment %}
+{% for rapport in rapports %}
+    {% for marker in rapport.markers.all %}
+        {% include "games/partials/_marker_divider.html" %}
+    {% endfor %}
+    <div>
+        {% include "games/partials/rapport_content.html" %}
+    </div>
+{% empty %}
+    {% if report.content %}
+        <div class="prose-report">{{ report.content|linebreaksbr }}</div>
+    {% else %}
+        <p class="text-sm text-semantic-muted italic">{% trans "Aucun post dans cette scène pour l'instant." %}</p>
+    {% endif %}
+{% endfor %}

@@ -1,0 +1,18 @@
+{% load i18n %}
+{% comment %}
+Role-tinted character avatar (thick border + status dot), faithful to the scene
+wireframe: the neutral surface carries the initial/photo; the narrative role is
+read only from the border + dot, never the fill. Remote (federated) characters
+get a dashed border. A missing character reads as "gone".
+Context: character, size ("sm" | "md", default "md").
+{% endcomment %}
+{% with st=character.status %}
+<span class="relative inline-flex shrink-0" aria-hidden="true">
+    <span class="{% if size == 'sm' %}w-7 h-7 text-xs{% else %}w-9 h-9 text-sm{% endif %} rounded-full border-2 overflow-hidden inline-flex items-center justify-center bg-semantic-surface font-semibold
+                 {% if not character %}border-domain-gone/60 text-domain-gone{% elif character.remote %}border-domain-remote/70 border-dashed text-domain-remote{% elif st == 'npc' %}border-domain-npc/70 text-domain-npc{% else %}border-domain-pc/70 text-domain-pc{% endif %}">
+        {% if character.avatar %}<img src="{{ character.avatar.url }}" alt="" class="w-full h-full object-cover">{% else %}{{ character.name|first|default:"?" }}{% endif %}
+    </span>
+    <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-semantic-card
+                 {% if not character %}bg-domain-gone{% elif character.remote %}bg-domain-remote{% elif st == 'npc' %}bg-domain-npc{% else %}bg-domain-pc{% endif %}"></span>
+</span>
+{% endwith %}

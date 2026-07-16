@@ -1,0 +1,74 @@
+{% load i18n utils %}
+{% comment %}
+Read-only, kind-typed rendering of ONE Rapport's content — the shared surface
+used by the scene reader (report_detail) and, wrapped with affordances, the
+editor. No controls here. Faithful to the scene wireframe:
+  narration   → plain body copy (the récit's voice, no actor)
+  description → italic serif on a tinted rail; may carry one ambience image
+  action      → crimson "›" prefix, medium weight (a concrete gesture)
+  discussion  → role-tinted avatar + attributed serif dialogue
+  closure     → bordered "compte rendu · clôture" box
+A reply line is shown above when the rapport answers a local post or a remote IRI.
+Context: rapport.
+{% endcomment %}
+
+{% with parent_links=rapport.parent_links.all %}
+    {% if parent_links %}
+        {% for link in parent_links %}
+            <p class="flex items-center gap-1.5 text-xs text-semantic-muted mb-1.5">
+                <span class="i-lucide-corner-down-right text-xs" aria-hidden="true"></span>
+                {% if link.parent_rapport %}
+                    {% trans "en réponse à" %}
+                    <span class="font-medium text-semantic-ink-secondary">{{ link.parent_rapport.actor.name|default:link.parent_rapport.get_kind_display }}</span>
+                {% else %}
+                    {% trans "en réponse à" %}
+                    <span class="font-mono text-domain-remote">{{ link.parent_iri|domain_from_url }}</span>
+                    <span class="i-lucide-globe text-xs" aria-hidden="true"></span>
+                {% endif %}
+            </p>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% if rapport.kind == 'discussion' %}
+    <div class="flex items-center gap-2 mb-1">
+        {% include "games/partials/_actor_avatar.html" with character=rapport.actor size="md" %}
+        <span class="text-sm font-semibold text-semantic-ink">
+            {{ rapport.actor.name|default:_("Personnage supprimé") }}
+            {% if rapport.actor.remote %}<span class="text-[10px] uppercase tracking-wider text-semantic-muted font-normal ml-1">{% trans "fédéré" %}</span>
+            {% elif rapport.actor.status == 'npc' %}<span class="text-[10px] uppercase tracking-wider text-semantic-muted font-normal ml-1">{% trans "PNJ" %}</span>{% endif %}
+        </span>
+    </div>
+    <p class="font-serif text-[19px] leading-relaxed text-semantic-ink whitespace-pre-line">{{ rapport.content }}</p>
+
+{% elif rapport.kind == 'closure' %}
+    <div class="rounded-xl border border-domain-kind-closure/30 bg-domain-kind-closure/5 p-4">
+        <div class="flex items-center gap-2 mb-2 text-[11px] font-bold uppercase tracking-wider text-domain-kind-closure">
+            <span class="i-lucide-check-check text-xs" aria-hidden="true"></span>{% trans "Compte rendu · clôture" %}
+        </div>
+        <p class="font-serif text-[17px] leading-relaxed text-semantic-ink whitespace-pre-line">{{ rapport.content }}</p>
+    </div>
+
+{% elif rapport.kind == 'description' %}
+    <div class="border-l-2 border-domain-kind-description/35 pl-3.5">
+        <p class="font-serif italic text-[17px] leading-relaxed text-semantic-ink-secondary whitespace-pre-line">{{ rapport.content }}</p>
+    </div>
+    {% with media=rapport.media %}
+        {% if media %}
+            <figure class="mt-2.5 inline-block max-w-[260px]">
+                <img src="{{ media.image.url }}" alt="{{ media.alt }}"
+                     class="w-full h-auto rounded-xl border border-semantic-border">
+                {% if media.alt %}<figcaption class="mt-1 text-xs text-semantic-muted">{{ media.alt }}{% if media.tone %} · <em>{{ media.tone }}</em>{% endif %}</figcaption>{% endif %}
+            </figure>
+        {% endif %}
+    {% endwith %}
+
+{% elif rapport.kind == 'action' %}
+    <p class="relative pl-[22px] font-medium text-[16.5px] leading-relaxed text-semantic-ink whitespace-pre-line">
+        <span class="absolute left-0 top-0 text-domain-kind-action font-bold text-xl leading-none" aria-hidden="true">›</span>
+        {{ rapport.content }}
+    </p>
+
+{% else %}
+    <p class="text-[17px] leading-relaxed text-semantic-ink whitespace-pre-line">{{ rapport.content }}</p>
+{% endif %}

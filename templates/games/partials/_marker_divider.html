@@ -1,0 +1,23 @@
+{% load i18n %}
+{% comment %}
+Structural marker rendered as a wireframe divider (line · label · line): scene
+bookends, character entrances/exits, oracle beats. Colour reads the marker kind.
+Context: marker.
+{% endcomment %}
+{% with k=marker.kind %}
+<div class="flex items-center gap-2.5 my-1.5" role="separator"
+     aria-label="{% if k == 'oracle' %}{% trans 'Oracle' %}{% elif k == 'character_appears' %}{% blocktrans with name=marker.character.name %}{{ name }} entre{% endblocktrans %}{% elif k == 'character_leaves' %}{% blocktrans with name=marker.character.name %}{{ name }} part{% endblocktrans %}{% elif k == 'start' %}{% trans 'Début de scène' %}{% elif k == 'end' %}{% trans 'Fin de scène' %}{% else %}{{ marker.get_kind_display }}{% endif %}">
+    <span class="flex-1 h-px {% if k == 'oracle' %}bg-domain-oracle/30{% elif k == 'character_appears' %}bg-semantic-success/30{% else %}bg-semantic-border{% endif %}"></span>
+    <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider whitespace-nowrap
+                 {% if k == 'oracle' %}text-domain-oracle{% elif k == 'character_appears' %}text-semantic-success{% else %}text-semantic-muted{% endif %}">
+        <span class="{% if k == 'oracle' %}i-lucide-sparkles{% elif k == 'character_appears' %}i-lucide-log-in{% elif k == 'character_leaves' %}i-lucide-log-out{% elif k == 'start' %}i-lucide-dices{% elif k == 'end' %}i-lucide-flag{% else %}i-lucide-bookmark{% endif %} text-xs" aria-hidden="true"></span>
+        {% if k == 'oracle' %}{% trans "Oracle · l'inattendu" %}
+        {% elif k == 'character_appears' %}{% blocktrans with name=marker.character.name %}{{ name }} entre{% endblocktrans %}
+        {% elif k == 'character_leaves' %}{% blocktrans with name=marker.character.name %}{{ name }} part{% endblocktrans %}
+        {% elif k == 'start' %}{% trans "Début de scène" %}
+        {% elif k == 'end' %}{% trans "Fin de scène" %}
+        {% else %}{{ marker.get_kind_display }}{% endif %}
+    </span>
+    <span class="flex-1 h-px {% if k == 'oracle' %}bg-domain-oracle/30{% elif k == 'character_appears' %}bg-semantic-success/30{% else %}bg-semantic-border{% endif %}"></span>
+</div>
+{% endwith %}

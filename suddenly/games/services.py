@@ -15,7 +15,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import Count, Q
+from django.db.models import Count, F, Q
 from django.db.models.query import QuerySet
 from django.utils import timezone
 
@@ -102,6 +102,21 @@ def is_game_master(user: User, game: Game) -> bool:
     sends the role. Mirrors the ``is_owner`` check used in ``game_detail``.
     """
     return game.owner_id == user.pk
+
+
+def can_edit_scene(user: AbstractBaseUser | AnonymousUser, report: Report) -> bool:
+    """Who may edit a scene: its author or the game's GM (owner).
+
+    The single authority for scene-editing rights (decision: author OR
+    game.owner). Also gates who reads a scene still behind the wall — an editor
+    sees their in-progress scene, everyone else waits for release. Mirrors
+    ``is_game_master`` (``game.owner_id``) but takes the possibly-anonymous
+    ``request.user`` directly. Accessing ``report.game`` costs one query when it
+    is not already loaded; callers on hot paths select_related it.
+    """
+    if not user.is_authenticated:
+        return False
+    return bool(report.author_id == user.pk or report.game.owner_id == user.pk)
 
 
 def build_actor_pool(user: User, game: Game) -> QuerySet[Character]:
@@ -212,6 +227,18 @@ def build_composer_context(
     # In frozen mode both are inherited from the scene, so sending is allowed.
     can_send = frozen or (game is not None and character is not None)
 
+    # Free mode only: preview the game's last published scene (D1=B) below the
+    # composer, with a link that opens the editor when the viewer authored it,
+    # or the read view otherwise (D2). Absent in frozen mode and without a game.
+    last_scene: Report | None = None
+    last_scene_rapports: list[Rapport] = []
+    last_scene_can_edit = False
+    if not frozen and game is not None:
+        last_scene = latest_published_scene(game)
+        if last_scene is not None:
+            last_scene_rapports = latest_scene_rapports(last_scene)
+            last_scene_can_edit = last_scene.author_id == user.id
+
     return {
         "report": report,
         "frozen": frozen,
@@ -226,7 +253,33 @@ def build_composer_context(
         "selected_actor": selected_actor,
         "selected_actor_label": selected_actor_label,
         "can_send": can_send,
+        "last_scene": last_scene,
+        "last_scene_rapports": last_scene_rapports,
+        "last_scene_can_edit": last_scene_can_edit,
     }
+
+
+def latest_published_scene(game: Game) -> Report | None:
+    """The game's most recently published scene, any author (composer D1=B).
+
+    Read-only narrative context for the free-mode composer: the last scene the
+    network has seen in this game, newest first. Draft scenes stay invisible.
+    """
+    return (
+        game.reports.filter(status=ReportStatus.PUBLISHED)
+        .select_related("author", "game")
+        .order_by(F("published_at").desc(nulls_last=True), "-created_at")
+        .first()
+    )
+
+
+def latest_scene_rapports(report: Report, limit: int = 3) -> list[Rapport]:
+    """The scene's last published posts, newest first, bounded (compact preview)."""
+    return list(
+        report.rapports.filter(status=RapportStatus.PUBLISHED)
+        .select_related("actor")
+        .order_by("-order", "-created_at")[:limit]
+    )
 
 
 def build_composer_feed_context(

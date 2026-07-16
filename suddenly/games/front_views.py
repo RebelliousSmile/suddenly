@@ -50,6 +50,7 @@ from .services import (
     build_composer_context,
     build_composer_feed_context,
     build_game_queryset,
+    can_edit_scene,
     close_scene,
     create_npc_in_cast,
     create_scene_post,
@@ -497,9 +498,9 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
     # Wall check (SUD-V2): a report must be BOTH published (federation axis)
     # AND released (liberation axis) to be visible to the public. A report that
     # is published but not yet released is still a game in progress behind the
-    # wall — only its author may read it.
+    # wall — only its editors (author or GM) may read it.
     if report.status != ReportStatus.PUBLISHED or not report.is_released:
-        if not request.user.is_authenticated or request.user != report.author:
+        if not can_edit_scene(request.user, report):
             raise Http404
 
     from suddenly.characters.models import Character, Quote
@@ -512,10 +513,11 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
     # Public "Citations retenues": the double lock, never re-expressed here.
     quotes = Quote.objects.promotable().filter(report=report).order_by("-created_at")[:5]
 
-    # Draft rapports are private to their author: the author manages them here
-    # (edit/publish), but the public thread of a released report shows only
-    # published rapports (per-rapport wall, decision #1 option A).
+    # Draft rapports are private to their editors: an editor (author or GM)
+    # manages them here (edit/publish), but the public thread of a released
+    # report shows only published rapports (per-rapport wall, decision #1 A).
     is_author = request.user.is_authenticated and request.user == report.author
+    can_edit = can_edit_scene(request.user, report)
 
     # §5: the author marks a réplique as citation. They manage every quote of
     # this report (regardless of the wall), and pick a speaker among its cast.
@@ -528,10 +530,12 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
         ).distinct()
 
     rapports = report.rapports.select_related("actor").prefetch_related(
-        "parent_links__parent_rapport", "markers__character"
+        "parent_links__parent_rapport", "markers__character", "media"
     )
-    if not is_author:
+    if not can_edit:
         rapports = rapports.filter(status=RapportStatus.PUBLISHED)
+
+    scene_cast = _scene_cast(report)
 
     # Fiction order: continuations for the closing « Next → » link. Uses the
     # prefetched next_reports (no extra query per item). The opening « Previously »
@@ -550,6 +554,8 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
             "cast_fallback": cast_fallback,
             "quotes": quotes,
             "is_author": is_author,
+            "can_edit": can_edit,
+            "scene_cast": scene_cast,
             "manage_quotes": manage_quotes,
             "quote_characters": quote_characters,
             "rapports": rapports,
@@ -628,13 +634,14 @@ def report_create(request: AuthenticatedRequest, game_pk: str) -> HttpResponse:
 
 @login_required
 def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:
-    """Edit an existing report (author only)."""
+    """Edit an existing scene (author or GM — cf. can_edit_scene)."""
     report = get_object_or_404(
         Report.objects.select_related("game").prefetch_related("cast__character"),
         pk=pk,
         game_id=game_pk,
-        author=request.user,
     )
+    if not can_edit_scene(request.user, report):
+        raise Http404
 
     if request.method == "POST":
         content = request.POST.get("content", "").strip()
@@ -691,18 +698,7 @@ def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRes
 
     # The scene cast (collapsible box): characters brought in by ReportCast plus
     # anyone who has actually spoken/acted (rapport actors).
-    from suddenly.characters.models import Character
-
-    cast_ids = set(report.cast.filter(character__isnull=False).values_list("character", flat=True))
-    cast_ids |= set(report.rapports.filter(actor__isnull=False).values_list("actor", flat=True))
-    gone_ids = _scene_departures(report)
-    scene_cast = list(
-        Character.objects.filter(pk__in=cast_ids).select_related("origin_game").order_by("name")
-    )
-    for character in scene_cast:
-        # Transient view-model attribute read by templates/games/_cast_box.html;
-        # setattr keeps mypy from flagging an attribute the model does not declare.
-        setattr(character, "has_left", str(character.pk) in gone_ids)
+    scene_cast = _scene_cast(report)
 
     return htmx_render(
         request,
@@ -716,6 +712,7 @@ def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRes
             "form_data": {},
             "rapports": rapports,
             "scene_cast": scene_cast,
+            "can_edit": True,
             # The unified post composer (same _composer.html as the feed), frozen
             # to this scene: game/personnage/language inherited, not editable.
             **build_composer_context(request.user, report=report),
@@ -1438,7 +1435,7 @@ def composer(request: AuthenticatedRequest) -> HttpResponse:
         )
 
     if getattr(request, "htmx", False) and request.GET.get("region") == "game_field":
-        return render(
+        resp = render(
             request,
             "games/_composer_game_field.html",
             {
@@ -1446,11 +1443,15 @@ def composer(request: AuthenticatedRequest) -> HttpResponse:
                 "reset_game": True,
             },
         )
+        # Personnage change resets the game → clear the stale last-scene preview
+        # out-of-band, parity with the region=context refresh below.
+        resp.write('<div id="composer-last-scene" hx-swap-oob="true"></div>')
+        return resp
 
     ctx = build_composer_feed_context(request.user, game=game, character=character)
 
     if getattr(request, "htmx", False) and request.GET.get("region") == "context":
-        return render(request, "games/_composer_context.html", ctx)
+        return render(request, "games/_composer_context_swap.html", ctx)
 
     return htmx_render(
         request,
@@ -1592,6 +1593,28 @@ def _scene_departures(report: Report) -> set[str]:
     for character_id, kind in markers:
         last_kind[str(character_id)] = kind
     return {cid for cid, kind in last_kind.items() if kind == MarkerKind.CHARACTER_LEAVES}
+
+
+def _scene_cast(report: Report) -> list[Character]:
+    """The scene's cast for the collapsible box (_cast_box.html): characters
+    brought in by ReportCast plus anyone who has spoken/acted, each flagged with
+    the transient view-model attribute ``has_left`` from entrance/exit markers.
+
+    Shared by the reader (report_detail) and the editor (report_edit).
+    """
+    from suddenly.characters.models import Character
+
+    cast_ids = set(report.cast.filter(character__isnull=False).values_list("character", flat=True))
+    cast_ids |= set(report.rapports.filter(actor__isnull=False).values_list("actor", flat=True))
+    gone_ids = _scene_departures(report)
+    scene_cast = list(
+        Character.objects.filter(pk__in=cast_ids).select_related("origin_game").order_by("name")
+    )
+    for character in scene_cast:
+        # Transient view-model attribute; setattr keeps mypy from flagging an
+        # attribute the model does not declare.
+        setattr(character, "has_left", str(character.pk) in gone_ids)
+    return scene_cast
 
 
 @require_POST
