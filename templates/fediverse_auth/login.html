@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans "Connexion via le Fediverse" %} — {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Sign in via the Fediverse" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <section class="py-12">
     <div class="container-app max-w-md">
         <h1 class="text-3xl font-bold text-semantic-ink mb-2 text-center">
-            {% trans "Se connecter avec le Fediverse" %}
+            {% trans "Sign in with the Fediverse" %}
         </h1>
         <p class="text-center text-sm text-semantic-muted mb-8">
-            {% trans "Utilisez votre compte Mastodon (ou Pleroma, Akkoma, GoToSocial, Pixelfed)." %}
+            {% trans "Use your Mastodon account (or Pleroma, Akkoma, GoToSocial, Pixelfed)." %}
         </p>
 
         <form method="post" action="{% url 'fediverse_auth:login' %}">
@@ -20,7 +20,7 @@
 
                 <div>
                     <label for="id_instance" class="form-label">
-                        {% trans "Votre instance" %}
+                        {% trans "Your instance" %}
                     </label>
                     <input type="text"
                            id="id_instance"
@@ -34,7 +34,7 @@
                            spellcheck="false"
                            class="form-input">
                     <p class="form-help">
-                        {% trans "Saisissez le domaine de votre instance ou votre identifiant (ex. @vous@mastodon.social)." %}
+                        {% trans "Enter your instance domain or your handle (e.g. @you@mastodon.social)." %}
                     </p>
                 </div>
 
@@ -42,14 +42,14 @@
 
             <div class="mt-6">
                 <button type="submit" class="btn-primary w-full">
-                    {% trans "Continuer" %}
+                    {% trans "Continue" %}
                 </button>
             </div>
         </form>
 
         <div class="mt-6 text-center text-sm text-semantic-ink-secondary">
             <a href="{% url 'account_login' %}" class="link">
-                {% trans "Retour à la connexion" %}
+                {% trans "Back to sign in" %}
             </a>
         </div>
     </div>

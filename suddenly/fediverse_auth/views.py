@@ -73,7 +73,7 @@ def login(request: HttpRequest) -> HttpResponse:
     try:
         instance = services.normalize_instance(request.POST.get("instance", ""))
     except services.InvalidInstanceError:
-        messages.error(request, _("Adresse d'instance invalide. Exemple : mastodon.social"))
+        messages.error(request, _("Invalid instance address. Example: mastodon.social"))
         return render(
             request,
             "fediverse_auth/login.html",
@@ -87,7 +87,7 @@ def login(request: HttpRequest) -> HttpResponse:
         logger.info("Fediverse app registration failed for %s: %s", instance, exc)
         messages.error(
             request,
-            _("Impossible de se connecter à %(instance)s. Vérifiez l'adresse et réessayez.")
+            _("Could not connect to %(instance)s. Check the address and try again.")
             % {"instance": instance},
         )
         return render(
@@ -116,22 +116,22 @@ def callback(request: HttpRequest) -> HttpResponse:
 
     flow = request.session.pop(_SESSION_KEY, None)
     if not flow:
-        messages.error(request, _("Session de connexion expirée. Veuillez réessayer."))
+        messages.error(request, _("Sign-in session expired. Please try again."))
         return redirect("account_login")
 
     # CSRF: the state we generated must match the one echoed back.
     if not request.GET.get("state") or request.GET.get("state") != flow.get("state"):
-        messages.error(request, _("Échec de la vérification de sécurité. Veuillez réessayer."))
+        messages.error(request, _("Security check failed. Please try again."))
         return redirect("account_login")
 
     if request.GET.get("error"):
-        messages.error(request, _("Connexion annulée."))
+        messages.error(request, _("Sign-in cancelled."))
         return redirect("account_login")
 
     code = request.GET.get("code")
     instance = flow["instance"]
     if not code:
-        messages.error(request, _("Réponse invalide de l'instance. Veuillez réessayer."))
+        messages.error(request, _("Invalid response from the instance. Please try again."))
         return redirect("account_login")
 
     try:
@@ -142,11 +142,11 @@ def callback(request: HttpRequest) -> HttpResponse:
         account = client.verify_credentials(instance, access_token)
     except (FediverseApp.DoesNotExist, client.FediverseClientError) as exc:
         logger.info("Fediverse callback failed for %s: %s", instance, exc)
-        messages.error(request, _("La connexion via le Fediverse a échoué. Veuillez réessayer."))
+        messages.error(request, _("Fediverse sign-in failed. Please try again."))
         return redirect("account_login")
 
     if not account.get("id"):
-        messages.error(request, _("L'instance n'a pas renvoyé de compte valide."))
+        messages.error(request, _("The instance did not return a valid account."))
         return redirect("account_login")
 
     # Connect flow: attach the identity to the already-authenticated user.
@@ -154,7 +154,8 @@ def callback(request: HttpRequest) -> HttpResponse:
         services.link_existing_user(request.user, instance, account)
         messages.success(
             request,
-            _("Compte @%(acct)s lié avec succès.") % {"acct": services._handle(account, instance)},
+            _("Account @%(acct)s linked successfully.")
+            % {"acct": services._handle(account, instance)},
         )
         return redirect(flow["next"])
 
@@ -168,10 +169,10 @@ def callback(request: HttpRequest) -> HttpResponse:
             instance, account, registrations_open=registrations_open
         )
     except PermissionError:
-        messages.error(request, _("Les inscriptions sont actuellement fermées sur cette instance."))
+        messages.error(request, _("Registrations are currently closed on this instance."))
         return redirect("account_login")
 
     auth_login(request, user, backend=_MODEL_BACKEND)
     if created:
-        messages.success(request, _("Bienvenue ! Votre compte a été créé via le Fediverse."))
+        messages.success(request, _("Welcome! Your account was created via the Fediverse."))
     return redirect(flow["next"])

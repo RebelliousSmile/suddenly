@@ -36,8 +36,10 @@ class FediverseClientError(Exception):
 
 
 def _base_url(instance: str) -> str:
-    scheme = "http" if getattr(settings, "AP_ALLOW_INSECURE_HTTP", False) else "https"
-    return f"{scheme}://{instance}"
+    # Always https: real instances 301-redirect http→https and we never follow
+    # redirects. AP_ALLOW_INSECURE_HTTP only governs what _validate_and_pin
+    # tolerates for inbound-supplied URLs — it must not downgrade our own calls.
+    return f"https://{instance}"
 
 
 def _post(
@@ -53,9 +55,7 @@ def _post(
     req_headers = {"Accept": "application/json", **extra_headers, **(headers or {})}
     try:
         with httpx.Client(timeout=10, follow_redirects=False) as client:
-            resp = client.post(
-                request_url, data=data, headers=req_headers, extensions=extensions
-            )
+            resp = client.post(request_url, data=data, headers=req_headers, extensions=extensions)
     except Exception as exc:  # noqa: BLE001 — surface as a domain error
         raise FediverseClientError(f"Request to {url} failed: {exc}") from exc
     if resp.status_code != 200:
@@ -93,8 +93,15 @@ def detect_software(instance: str) -> str:
     try:
         index = _get(f"{_base_url(instance)}/.well-known/nodeinfo")
         links = index.get("links", []) if isinstance(index, dict) else []
+        # Standard rel is "http://nodeinfo.diaspora.software/ns/schema/<version>".
         href = next(
-            (link["href"] for link in links if str(link.get("rel", "")).endswith("nodeinfo/2.0")),
+            (
+                link["href"]
+                for link in links
+                if str(link.get("rel", "")).startswith(
+                    "http://nodeinfo.diaspora.software/ns/schema/"
+                )
+            ),
             None,
         )
         if not href:
@@ -121,9 +128,7 @@ def register_app(instance: str, redirect_uri: str) -> dict[str, str]:
     return {"client_id": str(client_id), "client_secret": str(client_secret)}
 
 
-def build_authorize_url(
-    instance: str, client_id: str, redirect_uri: str, state: str
-) -> str:
+def build_authorize_url(instance: str, client_id: str, redirect_uri: str, state: str) -> str:
     """Build the browser redirect URL to the instance's consent screen."""
     query = urlencode(
         {

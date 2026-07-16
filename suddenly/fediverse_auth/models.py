@@ -16,8 +16,10 @@ from __future__ import annotations
 from django.conf import settings
 from django.db import models
 
+from suddenly.core.models import BaseModel
 
-class FediverseApp(models.Model):
+
+class FediverseApp(BaseModel):
     """A cached OAuth client registered with a single remote instance."""
 
     # Normalized host, e.g. "mastodon.social" (no scheme, no trailing slash).
@@ -30,7 +32,6 @@ class FediverseApp(models.Model):
     # The redirect URI registered with the instance. Stored so the exact same
     # value is replayed at the authorize + token steps (Mastodon requires a match).
     redirect_uri = models.URLField()
-    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = "Fediverse app"
@@ -40,7 +41,7 @@ class FediverseApp(models.Model):
         return f"{self.software or 'app'}@{self.instance}"
 
 
-class FediverseAccount(models.Model):
+class FediverseAccount(BaseModel):
     """A remote fediverse identity linked to a local account."""
 
     user = models.ForeignKey(
@@ -55,7 +56,6 @@ class FediverseAccount(models.Model):
     acct = models.CharField(max_length=512)
     url = models.URLField(blank=True, default="")
     extra_data = models.JSONField(default=dict, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
     last_login_at = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -63,9 +63,7 @@ class FediverseAccount(models.Model):
         verbose_name_plural = "Fediverse accounts"
         # A remote identity (instance + remote id) maps to exactly one local user.
         constraints = [
-            models.UniqueConstraint(
-                fields=["instance", "uid"], name="unique_fediverse_identity"
-            )
+            models.UniqueConstraint(fields=["instance", "uid"], name="unique_fediverse_identity")
         ]
 
     def __str__(self) -> str:

@@ -15,6 +15,43 @@ from suddenly.users.models import User
 from tests.factories import CharacterFactory, GameFactory, ReportFactory, UserFactory
 
 
+def pytest_configure(config: Any) -> None:
+    """Terminate stale connections to the test database before setup.
+
+    Postgres refuses to drop a database while sessions are attached. A pytest
+    process killed mid-run can leave a connection on ``test_<name>``; the next
+    run then fails at DB creation ("database is being accessed by other
+    users" / DuplicateDatabase) on every db-marked test. Best effort — never
+    blocks the run.
+    """
+    try:
+        import django
+
+        django.setup()
+
+        import psycopg
+        from django.conf import settings as dj_settings
+
+        db = dj_settings.DATABASES["default"]
+        test_name = (db.get("TEST") or {}).get("NAME") or f"test_{db['NAME']}"
+        with psycopg.connect(
+            dbname=db["NAME"],
+            user=db["USER"],
+            password=db["PASSWORD"],
+            host=db["HOST"],
+            port=db["PORT"],
+            autocommit=True,
+            connect_timeout=5,
+        ) as conn:
+            conn.execute(
+                "SELECT pg_terminate_backend(pid) FROM pg_stat_activity"
+                " WHERE datname = %s AND pid <> pg_backend_pid()",
+                (test_name,),
+            )
+    except Exception:  # noqa: BLE001 — diagnostics only, the run must go on
+        pass
+
+
 @pytest.fixture(autouse=True)
 def _celery_eager(settings: Any) -> None:
     """Force Celery to execute tasks synchronously during tests."""

@@ -3,12 +3,12 @@
 <div class="mt-6">
     <div class="flex items-center gap-3 text-xs text-semantic-muted mb-4">
         <span class="h-px flex-1 bg-semantic-border"></span>
-        {% trans "ou" %}
+        {% trans "or" %}
         <span class="h-px flex-1 bg-semantic-border"></span>
     </div>
     <a href="{% url 'fediverse_auth:login' %}{% if next %}?next={{ next|urlencode }}{% endif %}"
        class="btn-secondary w-full inline-flex items-center justify-center gap-2">
-        {% trans "Se connecter avec le Fediverse" %}
+        {% trans "Sign in with the Fediverse" %}
     </a>
 </div>
 {% endif %}

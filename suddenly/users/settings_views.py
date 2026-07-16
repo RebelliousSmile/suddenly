@@ -73,8 +73,14 @@ def settings_muses(request: AuthenticatedRequest) -> HttpResponse:
 
 @login_required
 def settings_federation(request: AuthenticatedRequest) -> HttpResponse:
-    """Federation settings: AP identity, followed instances, blocked instances."""
-    return render(request, "users/settings_federation.html")
+    """Federation settings: AP identity, linked fediverse logins, data export."""
+    from suddenly.fediverse_auth.models import FediverseAccount
+
+    return render(
+        request,
+        "users/settings_federation.html",
+        {"fediverse_accounts": FediverseAccount.objects.filter(user=request.user).order_by("acct")},
+    )
 
 
 @login_required

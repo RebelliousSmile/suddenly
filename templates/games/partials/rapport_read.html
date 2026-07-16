@@ -1,27 +1,42 @@
 {% load i18n %}
 {% comment %}
-Read-only reading rendering of a single Rapport (Front #8): the text is the
-body copy; the kind is a discreet register. DISCUSSION renders as attributed
-dialogue (it always carries a Character actor). Shared by the scene thread and
-the "Friends" feed of interventions (Front #9). No edit/reply controls here.
+Read-only reading rendering of a single Rapport (Front #8) at FEED scale: the
+rap engine's registers (maquette "fil" sizes — one step below the scene reader
+rapport_content.html), no kind label — the typography IS the register:
+  narration   → plain body copy (the récit's voice, no actor)
+  description → italic serif (Fraunces) on a tinted rail
+  action      → crimson "›" prefix, medium weight (a concrete gesture)
+  discussion  → role-tinted avatar + attributed serif dialogue
+  closure     → bordered "compte rendu · clôture" box, compact
+Shared by the scene thread and the "Friends" feed of interventions (Front #9).
+No edit/reply controls here.
 {% endcomment %}
 {% if rapport.kind == 'discussion' %}
     <div class="flex items-start gap-3">
-        <span class="avatar-placeholder avatar-sm shrink-0 mt-0.5">
-            <span class="i-lucide-user text-sm"></span>
-        </span>
+        {% include "games/partials/_actor_avatar.html" with character=rapport.actor size="sm" %}
         <div class="flex-1 min-w-0">
             <p class="text-sm font-semibold text-semantic-ink">
-                {% if rapport.actor %}{{ rapport.actor.name }}{% else %}{% trans "Unknown" %}{% endif %}
+                {{ rapport.actor.name|default:_("Personnage supprimé") }}
+                {% if rapport.actor.remote %}<span class="text-[10px] uppercase tracking-wider text-semantic-muted font-normal ml-1">{% trans "fédéré" %}</span>
+                {% elif rapport.actor.status == 'npc' %}<span class="text-[10px] uppercase tracking-wider text-semantic-muted font-normal ml-1">{% trans "PNJ" %}</span>{% endif %}
             </p>
-            <p class="text-semantic-ink text-[15px] leading-relaxed whitespace-pre-line">{{ rapport.content }}</p>
+            <p class="font-serif text-lg leading-normal text-semantic-ink whitespace-pre-line">{{ rapport.content }}</p>
         </div>
     </div>
-{% else %}
-    <div class="border-l-2 pl-3 {% if rapport.kind == 'action' %}border-domain-kind-action/40{% elif rapport.kind == 'description' %}border-domain-kind-description/40{% elif rapport.kind == 'closure' %}border-domain-kind-closure/40{% else %}border-semantic-border{% endif %}">
-        <span class="block text-[10px] uppercase tracking-wider text-semantic-muted font-medium mb-0.5">
-            {{ rapport.get_kind_display }}
-        </span>
-        <p class="text-semantic-ink text-[15px] leading-relaxed whitespace-pre-line">{{ rapport.content }}</p>
+{% elif rapport.kind == 'description' %}
+    <div class="border-l-2 border-domain-kind-description/35 pl-3.5">
+        <p class="font-serif italic text-base leading-[1.7] text-semantic-ink-secondary whitespace-pre-line">{{ rapport.content }}</p>
     </div>
+{% elif rapport.kind == 'action' %}
+    {# span et contenu sur la même ligne : whitespace-pre-line préserverait la newline inter-balises #}
+    <p class="relative pl-[22px] font-medium text-[15.5px] leading-relaxed text-semantic-ink whitespace-pre-line"><span class="absolute left-0 top-0 text-domain-kind-action font-bold text-xl leading-none" aria-hidden="true">›</span>{{ rapport.content }}</p>
+{% elif rapport.kind == 'closure' %}
+    <div class="rounded-xl border border-domain-kind-closure/30 bg-domain-kind-closure/5 p-3">
+        <div class="flex items-center gap-2 mb-1.5 text-[10px] font-bold uppercase tracking-wider text-domain-kind-closure">
+            <span class="i-lucide-check-check text-xs" aria-hidden="true"></span>{% trans "Compte rendu · clôture" %}
+        </div>
+        <p class="font-serif text-base leading-[1.7] text-semantic-ink whitespace-pre-line">{{ rapport.content }}</p>
+    </div>
+{% else %}
+    <p class="text-base leading-[1.7] text-semantic-ink whitespace-pre-line">{{ rapport.content }}</p>
 {% endif %}

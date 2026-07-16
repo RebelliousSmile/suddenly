@@ -11,6 +11,29 @@
             <p class="text-sm text-semantic-ink-secondary mb-2">@{{ user.username }}@{{ DOMAIN }}</p>
         </div>
 
+        {% if FEDIVERSE_LOGIN_ENABLED %}
+        <div class="card card-body mb-6">
+            <h2 class="text-heading mb-3">{% trans "Fediverse login" %}</h2>
+            {% if fediverse_accounts %}
+            <ul class="space-y-2 mb-3">
+                {% for fa in fediverse_accounts %}
+                <li class="text-sm text-semantic-ink-secondary">
+                    <span class="i-lucide-link text-sm" aria-hidden="true"></span>
+                    @{{ fa.acct }}
+                </li>
+                {% endfor %}
+            </ul>
+            <p class="form-help mb-3">{% trans "You can sign in to this account with any linked identity." %}</p>
+            {% else %}
+            <p class="text-sm text-semantic-ink-secondary mb-3">{% trans "No linked Fediverse account yet. Link one to sign in with Mastodon." %}</p>
+            {% endif %}
+            <a href="{% url 'fediverse_auth:login' %}?next={% url 'users:settings_federation' %}" class="btn-secondary btn-sm">
+                <span class="i-lucide-link text-sm" aria-hidden="true"></span>
+                {% trans "Link a Fediverse account" %}
+            </a>
+        </div>
+        {% endif %}
+
         <div class="card card-body">
             <h2 class="text-heading mb-3">{% trans "Data" %}</h2>
             <div class="space-y-3">

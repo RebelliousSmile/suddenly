@@ -49,8 +49,7 @@ class TestLoginView:
         c = Client()
         r = c.post(reverse("fediverse_auth:login"), {"instance": "mastodon.social"})
         assert r.status_code == 302
-        # dev tolerates http; production would force https (see _base_url).
-        assert "mastodon.social/oauth/authorize?" in r["Location"]
+        assert "https://mastodon.social/oauth/authorize?" in r["Location"]
         flow = c.session["fediverse_oauth"]
         assert flow["instance"] == "mastodon.social"
         assert flow["action"] == "login"

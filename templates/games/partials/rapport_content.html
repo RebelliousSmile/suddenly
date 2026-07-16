@@ -64,10 +64,8 @@ Context: rapport.
     {% endwith %}
 
 {% elif rapport.kind == 'action' %}
-    <p class="relative pl-[22px] font-medium text-[16.5px] leading-relaxed text-semantic-ink whitespace-pre-line">
-        <span class="absolute left-0 top-0 text-domain-kind-action font-bold text-xl leading-none" aria-hidden="true">›</span>
-        {{ rapport.content }}
-    </p>
+    {# span et contenu sur la même ligne : whitespace-pre-line préserverait la newline inter-balises #}
+    <p class="relative pl-[22px] font-medium text-[16.5px] leading-relaxed text-semantic-ink whitespace-pre-line"><span class="absolute left-0 top-0 text-domain-kind-action font-bold text-xl leading-none" aria-hidden="true">›</span>{{ rapport.content }}</p>
 
 {% else %}
     <p class="text-[17px] leading-relaxed text-semantic-ink whitespace-pre-line">{{ rapport.content }}</p>
