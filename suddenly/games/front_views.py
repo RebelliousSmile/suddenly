@@ -824,7 +824,9 @@ def report_edit(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRes
         Character.objects.filter(pk__in=cast_ids).select_related("origin_game").order_by("name")
     )
     for character in scene_cast:
-        character.has_left = str(character.pk) in gone_ids
+        # Transient view-model attribute read by templates/games/_cast_box.html;
+        # setattr keeps mypy from flagging an attribute the model does not declare.
+        setattr(character, "has_left", str(character.pk) in gone_ids)
 
     return htmx_render(
         request,
