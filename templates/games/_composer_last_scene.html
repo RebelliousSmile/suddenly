@@ -1,0 +1,30 @@
+{% load i18n %}
+{% comment %}
+  Free-mode composer only: a compact preview of the game's last published scene
+  (D1=B — any author), newest posts first, bounded to a few. The link opens the
+  scene editor when the viewer authored it (report_edit is author-only), or the
+  read view otherwise (D2). Rendered below the composer form, inside #composer,
+  and refreshed out-of-band when the game changes. Never in frozen mode.
+{% endcomment %}
+{% if last_scene %}
+<div class="card card-body mt-3">
+    <div class="flex items-center justify-between gap-2 mb-2">
+        <h3 class="text-xs font-semibold uppercase tracking-wide text-semantic-muted">{% trans "Dernière scène" %}</h3>
+        <a href="{% if last_scene_can_edit %}{% url 'games:report_edit' game.pk last_scene.pk %}{% else %}{% url 'games:report_detail' game.pk last_scene.pk %}{% endif %}"
+           class="inline-flex items-center gap-1 min-h-[44px] px-1 text-sm text-brand-primary">
+            <span class="{% if last_scene_can_edit %}i-lucide-pencil{% else %}i-lucide-book-open{% endif %} text-xs" aria-hidden="true"></span>
+            {% if last_scene_can_edit %}{% trans "Ouvrir l'éditeur de scène" %}{% else %}{% trans "Lire la scène" %}{% endif %}
+        </a>
+    </div>
+    <p class="text-sm font-medium text-semantic-ink mb-2">{{ last_scene.title|default:_("Scène sans titre") }}</p>
+    {% if last_scene_rapports %}
+        <div class="space-y-2">
+            {% include "games/partials/_scene_excerpt.html" with rapports=last_scene_rapports %}
+        </div>
+    {% else %}
+        <p class="text-xs text-semantic-muted">{% trans "Aucun post publié dans cette scène." %}</p>
+    {% endif %}
+</div>
+{% elif game %}
+<p class="mt-3 text-xs text-semantic-muted">{% trans "Aucune scène publiée dans cette partie pour l'instant." %}</p>
+{% endif %}

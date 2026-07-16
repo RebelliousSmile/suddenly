@@ -6,11 +6,13 @@ transactional gestures (create_scene_post / open_new_scene).
 
 from __future__ import annotations
 
+import datetime
 import io
 
 import pytest
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.utils import timezone
 
 from suddenly.characters.models import (
     CharacterAppearance,
@@ -31,16 +33,25 @@ from suddenly.games.models import (
 from suddenly.games.services import (
     available_kinds,
     build_actor_pool,
+    build_composer_context,
     build_composer_feed_context,
     build_game_queryset,
     build_protagonist_pool,
     create_npc_in_cast,
     create_scene_post,
     is_game_master,
+    latest_published_scene,
+    latest_scene_rapports,
     open_new_scene,
     validate_actor_for_role,
 )
-from tests.factories import CharacterFactory, GameFactory, ReportFactory, UserFactory
+from tests.factories import (
+    CharacterFactory,
+    GameFactory,
+    RapportFactory,
+    ReportFactory,
+    UserFactory,
+)
 
 
 def _png_bytes() -> bytes:
@@ -519,3 +530,125 @@ def test_build_composer_feed_context_games_filtered_once_character_picked() -> N
 
     assert origin in ctx["games"]
     assert unrelated not in ctx["games"]
+
+
+# ---------------------------------------------------------------------------
+# Last-scene preview under the free-mode composer (D1=B: last published scene of
+# the game, any author; the link edits when the viewer authored it, reads else).
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+def test_latest_published_scene_returns_most_recent_published_any_author() -> None:
+    gm = UserFactory()
+    other = UserFactory()
+    game = GameFactory(owner=gm)
+    now = timezone.now()
+    ReportFactory(game=game, author=gm, status=ReportStatus.DRAFT)  # drafts excluded
+    older = ReportFactory(
+        game=game,
+        author=gm,
+        status=ReportStatus.PUBLISHED,
+        published_at=now - datetime.timedelta(days=2),
+    )
+    newer = ReportFactory(
+        game=game,
+        author=other,
+        status=ReportStatus.PUBLISHED,
+        published_at=now - datetime.timedelta(hours=1),
+    )
+
+    result = latest_published_scene(game)
+
+    assert result == newer
+    assert result != older
+
+
+@pytest.mark.django_db
+def test_latest_published_scene_none_when_only_drafts() -> None:
+    game = GameFactory(owner=UserFactory())
+    ReportFactory(game=game, status=ReportStatus.DRAFT)
+
+    assert latest_published_scene(game) is None
+
+
+@pytest.mark.django_db
+def test_latest_published_scene_ignores_other_games() -> None:
+    game = GameFactory(owner=UserFactory())
+    other_game = GameFactory(owner=UserFactory())
+    ReportFactory(game=other_game, status=ReportStatus.PUBLISHED, published_at=timezone.now())
+
+    assert latest_published_scene(game) is None
+
+
+@pytest.mark.django_db
+def test_latest_scene_rapports_anti_chrono_and_bounded() -> None:
+    scene = ReportFactory(status=ReportStatus.PUBLISHED)
+    for i in range(5):
+        RapportFactory(report=scene, order=i, status=RapportStatus.PUBLISHED)
+
+    rapports = latest_scene_rapports(scene, limit=3)
+
+    assert len(rapports) == 3  # bounded
+    assert [r.order for r in rapports] == [4, 3, 2]  # newest first (-order)
+
+
+@pytest.mark.django_db
+def test_latest_scene_rapports_excludes_drafts() -> None:
+    scene = ReportFactory(status=ReportStatus.PUBLISHED)
+    published = RapportFactory(report=scene, order=0, status=RapportStatus.PUBLISHED)
+    RapportFactory(report=scene, order=1, status=RapportStatus.DRAFT)
+
+    rapports = latest_scene_rapports(scene)
+
+    assert rapports == [published]
+
+
+@pytest.mark.django_db
+def test_feed_context_injects_last_scene_editable_for_author() -> None:
+    """Free mode with a game: the author of the last published scene gets it back
+    with ``last_scene_can_edit`` true (the link will open the editor, D2)."""
+    gm = UserFactory()
+    game = GameFactory(owner=gm)
+    pc = CharacterFactory(owner=gm, status=CharacterStatus.PC, origin_game=game)
+    scene = ReportFactory(
+        game=game, author=gm, status=ReportStatus.PUBLISHED, published_at=timezone.now()
+    )
+    RapportFactory(report=scene, order=0, status=RapportStatus.PUBLISHED)
+
+    ctx = build_composer_feed_context(gm, game=game, character=pc)
+
+    assert ctx["last_scene"] == scene
+    assert list(ctx["last_scene_rapports"])
+    assert ctx["last_scene_can_edit"] is True
+
+
+@pytest.mark.django_db
+def test_feed_context_last_scene_not_editable_for_non_author() -> None:
+    """A viewer who did not author the last scene gets it read-only (D2 → read)."""
+    author = UserFactory()
+    viewer = UserFactory()
+    game = GameFactory(owner=author)
+    pc = CharacterFactory(owner=viewer, status=CharacterStatus.PC, origin_game=game)
+    ReportFactory(
+        game=game, author=author, status=ReportStatus.PUBLISHED, published_at=timezone.now()
+    )
+
+    ctx = build_composer_feed_context(viewer, game=game, character=pc)
+
+    assert ctx["last_scene"] is not None
+    assert ctx["last_scene_can_edit"] is False
+
+
+@pytest.mark.django_db
+def test_frozen_context_has_no_last_scene() -> None:
+    """Frozen mode (a scene is set) never carries the last-scene preview."""
+    gm = UserFactory()
+    game = GameFactory(owner=gm)
+    report = ReportFactory(game=game, author=gm, status=ReportStatus.PUBLISHED)
+
+    ctx = build_composer_context(gm, report=report)
+
+    assert ctx["last_scene"] is None
+    assert list(ctx["last_scene_rapports"]) == []
+    assert ctx["last_scene_can_edit"] is False

@@ -1,0 +1,10 @@
+{% comment %}
+  Shared excerpt of a scene's posts: an optional "earlier posts folded" marker,
+  then each post rendered by rapport_read.html (the DRY per-post unit). The
+  caller passes `rapports` already in display order (chrono or anti-chrono) and,
+  optionally, `earlier_count` (how many posts are folded away — the "···" shows
+  only when > 0). Empty state, container spacing and surrounding chrome stay with
+  the caller, so feed cards and the composer preview share the loop, not the skin.
+{% endcomment %}
+{% if earlier_count > 0 %}<div class="text-xs text-semantic-muted" aria-hidden="true">···</div>{% endif %}
+{% for rapport in rapports %}{% include "games/partials/rapport_read.html" %}{% endfor %}

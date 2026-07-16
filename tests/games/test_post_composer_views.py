@@ -26,7 +26,13 @@ from suddenly.games.models import (
     ReportStatus,
     ReportVisibility,
 )
-from tests.factories import CharacterFactory, GameFactory, ReportFactory, UserFactory
+from tests.factories import (
+    CharacterFactory,
+    GameFactory,
+    RapportFactory,
+    ReportFactory,
+    UserFactory,
+)
 
 
 def _png_bytes() -> bytes:
@@ -475,14 +481,15 @@ def test_composer_change_game_recomputes_kinds(client: Client) -> None:
         url, {"game": str(my_game.pk), "region": "context"}, HTTP_HX_REQUEST="true"
     )
     assert resp_gm.status_code == 200
-    assert b'value="narration"' in resp_gm.content
+    # Kinds render as bottom-sheet options (setKind('<value>')), not <option>s.
+    assert b"setKind('narration')" in resp_gm.content
 
     resp_player = client.get(
         url, {"game": str(other_game.pk), "region": "context"}, HTTP_HX_REQUEST="true"
     )
     assert resp_player.status_code == 200
-    assert b'value="narration"' not in resp_player.content
-    assert b'value="action"' in resp_player.content
+    assert b"setKind('narration')" not in resp_player.content
+    assert b"setKind('action')" in resp_player.content
 
 
 @pytest.mark.django_db
@@ -670,3 +677,117 @@ def test_draft_rapport_visible_to_author_in_detail(client: Client) -> None:
 
     assert resp.status_code == 200
     assert b"DRAFT-BEAT" in resp.content
+
+
+# ---------------------------------------------------------------------------
+# Free-mode composer: last-scene preview (D1=B) refreshed out-of-band on
+# ?region=context, with an editor link for the author (D2) or a read link else.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+def test_composer_region_context_returns_last_scene_oob_editable(client: Client) -> None:
+    """The author of the game's last published scene gets it back as an OOB swap
+    with a link to the scene editor."""
+    user = UserFactory()
+    game = GameFactory(owner=user)
+    pc = CharacterFactory(owner=user, status=CharacterStatus.PC, origin_game=game)
+    scene = ReportFactory(
+        game=game, author=user, status=ReportStatus.PUBLISHED, published_at=timezone.now()
+    )
+    RapportFactory(report=scene, order=0, status=RapportStatus.PUBLISHED)
+
+    client.force_login(user)
+    resp = client.get(
+        reverse("games:composer"),
+        {"region": "context", "character": pc.slug, "game": str(game.pk)},
+        HTTP_HX_REQUEST="true",
+    )
+
+    assert resp.status_code == 200
+    assert b'id="composer-last-scene"' in resp.content
+    assert b"hx-swap-oob" in resp.content
+    edit_url = reverse("games:report_edit", kwargs={"game_pk": game.pk, "pk": scene.pk})
+    assert edit_url.encode() in resp.content
+
+
+@pytest.mark.django_db
+def test_composer_region_context_last_scene_read_link_for_non_author(client: Client) -> None:
+    """A viewer who did not author the last scene gets a read link, not the editor
+    (report_edit is author-only — D2)."""
+    author = UserFactory()
+    viewer = UserFactory()
+    game = GameFactory(owner=author)
+    pc = CharacterFactory(owner=viewer, status=CharacterStatus.PC, origin_game=game)
+    scene = ReportFactory(
+        game=game, author=author, status=ReportStatus.PUBLISHED, published_at=timezone.now()
+    )
+    RapportFactory(report=scene, order=0, status=RapportStatus.PUBLISHED)
+
+    client.force_login(viewer)
+    resp = client.get(
+        reverse("games:composer"),
+        {"region": "context", "character": pc.slug, "game": str(game.pk)},
+        HTTP_HX_REQUEST="true",
+    )
+
+    assert resp.status_code == 200
+    detail_url = reverse("games:report_detail", kwargs={"game_pk": game.pk, "pk": scene.pk})
+    edit_url = reverse("games:report_edit", kwargs={"game_pk": game.pk, "pk": scene.pk})
+    assert detail_url.encode() in resp.content
+    assert edit_url.encode() not in resp.content  # never the editor for a non-author
+
+
+@pytest.mark.django_db
+def test_composer_region_context_empty_state_without_published_scene(client: Client) -> None:
+    """A game with no published scene: the OOB target is present but shows the
+    discreet empty note, no scene link."""
+    user = UserFactory()
+    game = GameFactory(owner=user)
+    pc = CharacterFactory(owner=user, status=CharacterStatus.PC, origin_game=game)
+    ReportFactory(game=game, author=user, status=ReportStatus.DRAFT)  # draft only
+
+    client.force_login(user)
+    resp = client.get(
+        reverse("games:composer"),
+        {"region": "context", "character": pc.slug, "game": str(game.pk)},
+        HTTP_HX_REQUEST="true",
+    )
+
+    assert resp.status_code == 200
+    assert b'id="composer-last-scene"' in resp.content
+    assert "Aucune scène".encode() in resp.content
+
+
+@pytest.mark.django_db
+def test_frozen_composer_never_renders_last_scene_card(client: Client) -> None:
+    """The last-scene preview is free-mode only: adding a post to a scene returns a
+    fresh composer that never carries the card, even when the game has one."""
+    user = UserFactory()
+    game = GameFactory(owner=user)
+    report = ReportFactory(game=game, author=user)
+    published = ReportFactory(
+        game=game, author=user, status=ReportStatus.PUBLISHED, published_at=timezone.now()
+    )
+    RapportFactory(report=published, order=0, status=RapportStatus.PUBLISHED)
+
+    client.force_login(user)
+    url = reverse("games:scene_post_create", kwargs={"game_pk": game.pk, "pk": report.pk})
+    resp = client.post(
+        url,
+        {"mode": "add_continue", "kind": RapportKind.NARRATION, "content": "Beat."},
+        HTTP_HX_REQUEST="true",
+    )
+
+    assert resp.status_code == 200
+    assert b'id="composer"' in resp.content
+    assert "Dernière scène".encode() not in resp.content
+
+
+@pytest.mark.django_db
+def test_composer_requires_login(client: Client) -> None:
+    """The composer is authenticated-only — anonymous requests redirect to login."""
+    resp = client.get(reverse("games:composer"))
+
+    assert resp.status_code == 302
+    assert "/accounts/login/" in resp["Location"]

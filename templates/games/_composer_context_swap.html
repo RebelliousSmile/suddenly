@@ -1,0 +1,10 @@
+{% comment %}
+  HTMX response for the free-mode composer's ?region=context (game changed):
+  the recomputed context region (the primary swap target #composer-context)
+  plus an out-of-band refresh of the last-scene preview, which sits below the
+  form and so is outside the primary target (rule: htmx-patterns, OOB swap).
+  Gated {% templatetag openblock %} if not frozen {% templatetag closeblock %}
+  so the block never leaks into frozen mode.
+{% endcomment %}
+{% include "games/_composer_context.html" %}
+<div id="composer-last-scene" hx-swap-oob="true">{% if not frozen %}{% include "games/_composer_last_scene.html" %}{% endif %}</div>

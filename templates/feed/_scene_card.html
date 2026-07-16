@@ -26,15 +26,12 @@
             </div>
         {% else %}
             <div class="space-y-3">
-                {# Earlier posts folded away — the excerpt shows the most recent ones. #}
-                {% if report.rapports.all|length > 3 %}
-                    <div class="text-xs text-semantic-muted" aria-hidden="true">···</div>
-                {% endif %}
-                {% for rapport in report.rapports.all|slice:"-3:" %}
-                    {% include "games/partials/rapport_read.html" %}
-                {% empty %}
+                {# Last posts, in fiction order; earlier ones folded behind "···". #}
+                {% if report.rapports.all %}
+                    {% include "games/partials/_scene_excerpt.html" with rapports=report.rapports.all|slice:"-3:" earlier_count=report.rapports.all|length|add:"-3" %}
+                {% else %}
                     <p class="text-sm text-semantic-ink-secondary line-clamp-3">{{ report.content|truncatewords:40 }}</p>
-                {% endfor %}
+                {% endif %}
             </div>
         {% endif %}
     </div>
