@@ -22,10 +22,10 @@
         isGm: {{ is_gm|yesno:'true,false' }},
         game: '{{ game.pk|default:'' }}',
         personnage: '{{ selected_character.slug|default:'' }}',
-        kind: '{% if kinds %}{{ kinds.0.0 }}{% endif %}',
+        kind: '{% if edit_rapport %}{{ edit_rapport.kind }}{% elif kinds %}{{ kinds.0.0 }}{% endif %}',
         actor: '{% if is_gm %}{{ selected_actor }}{% else %}{{ selected_character.slug|default:'' }}{% endif %}',
         actorLabel: '{{ selected_actor_label|escapejs }}',
-        body: '',
+        body: '{% if edit_rapport %}{{ edit_rapport.content|escapejs }}{% endif %}',
         mediaName: '', mediaPreview: '',
         replyScope: 'none',
         sheet: '',
@@ -69,7 +69,7 @@
      @keydown.window="onKeydown($event)">
 
     <form method="post" enctype="multipart/form-data"
-          action="{% if frozen %}{% url 'games:scene_post_create' report.game.pk report.pk %}{% else %}{% url 'games:composer' %}{% endif %}"
+          action="{% if edit_rapport %}{% url 'games:rapport_edit' report.game.pk report.pk edit_rapport.pk %}{% elif frozen %}{% url 'games:scene_post_create' report.game.pk report.pk %}{% else %}{% url 'games:composer' %}{% endif %}"
           class="flex flex-col flex-1 min-h-0">
         {% csrf_token %}
         {# Kind soumis avec le form (sans ce champ : POST 422). Acteur : cf. #composer-context. #}
@@ -78,6 +78,7 @@
         {# ── En-tête (ctx-head) : fil d'Ariane (scène) ou sélecteurs (feed) ── #}
         {% if frozen %}
             <p class="text-sm text-semantic-muted px-1 pb-2 shrink-0">
+                {% if edit_rapport %}<span class="inline-flex items-center gap-1 font-semibold text-semantic-ink-secondary"><span class="i-lucide-pencil text-xs" aria-hidden="true"></span>{% trans "Modification d'un post" %}</span> · {% endif %}
                 {% blocktrans with title=report.game.title %}dans <strong class="text-semantic-ink-secondary">{{ title }}</strong>{% endblocktrans %}
                 {% if selected_character %}· {{ selected_character.name }}{% endif %}
                 · {% if is_gm %}{% trans "MJ" %}{% else %}{% trans "Joueur" %}{% endif %}
@@ -168,11 +169,28 @@
 
                 {# compteur + envoi : groupe insécable, poussé à droite, qui wrap d'un bloc #}
                 <div class="ml-auto flex items-center gap-1 shrink-0">
+                {% if edit_rapport %}
+                    <button type="button" class="btn-ghost btn-sm"
+                            hx-get="{% url 'games:rapport_edit' report.game.pk report.pk edit_rapport.pk %}"
+                            hx-vals='{"cancel": "1"}'
+                            hx-target="#composer" hx-swap="outerHTML">
+                        {% trans "Annuler" %}
+                    </button>
+                {% endif %}
                 <span class="text-xs text-semantic-muted tabular-nums px-1" x-text="body.length"></span>
 
-                {# bouton d'envoi split : action principale + caret (options) #}
+                {# bouton d'envoi split : action principale + caret (options).
+                   En mode édition : « Enregistrer » seul, pas d'options d'envoi. #}
                 <div class="inline-flex items-stretch rounded-btn overflow-hidden">
-                    {% if frozen %}
+                    {% if edit_rapport %}
+                        <button type="button" class="btn-primary rounded-none" :disabled="!canSend"
+                                hx-post="{% url 'games:rapport_edit' report.game.pk report.pk edit_rapport.pk %}"
+                                hx-include="closest form"
+                                hx-target="#composer" hx-swap="outerHTML">
+                            <span class="i-lucide-check text-xs" aria-hidden="true"></span>
+                            {% trans "Enregistrer" %}
+                        </button>
+                    {% elif frozen %}
                         <button type="button" class="btn-primary rounded-none" :disabled="!canSend"
                                 hx-post="{% url 'games:scene_post_create' report.game.pk report.pk %}"
                                 hx-include="closest form" hx-vals='{"mode": "add"}'
@@ -187,11 +205,13 @@
                             {% trans "Publier" %}
                         </button>
                     {% endif %}
+                    {% if not edit_rapport %}
                     <button type="button" class="btn-primary rounded-none px-2 border-l border-white/20"
                             :disabled="!canSend" @click="openSheet('send')"
                             aria-label="{% trans "Options d'envoi" %}">
                         <span class="i-lucide-chevron-up text-xs" aria-hidden="true"></span>
                     </button>
+                    {% endif %}
                 </div>
                 </div>
             </div>

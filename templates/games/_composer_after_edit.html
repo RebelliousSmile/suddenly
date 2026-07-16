@@ -1,0 +1,9 @@
+{% comment %}
+  Response after saving a post edit from the sidebar composer (edit mode).
+  Main swap: a fresh add-mode composer replaces #composer. Out-of-band: the
+  edited Rapport's card is replaced in place in the fil.
+{% endcomment %}
+{% include "games/_composer.html" %}
+<div hx-swap-oob="outerHTML:#rapport-{{ edited_rapport.pk }}">
+    {% include "games/partials/rapport_item.html" with rapport=edited_rapport %}
+</div>

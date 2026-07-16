@@ -188,6 +188,7 @@ def build_composer_context(
     character: Character | None = None,
     selected_actor: str = "",
     selected_actor_label: str = "",
+    edit_rapport: Rapport | None = None,
 ) -> dict[str, object]:
     """Build the single source of truth the ``_composer.html`` partial consumes.
 
@@ -201,6 +202,12 @@ def build_composer_context(
     frozen = report is not None
     if frozen and report is not None:
         game = report.game
+
+    # Edit mode: the sidebar composer reopens hydrated on an existing post
+    # (kind/body via the template, actor chip preselected here).
+    if edit_rapport is not None and edit_rapport.actor is not None:
+        selected_actor = edit_rapport.actor.slug
+        selected_actor_label = edit_rapport.actor.name
 
     if game is not None:
         is_gm = is_game_master(user, game)
@@ -256,6 +263,7 @@ def build_composer_context(
         "last_scene": last_scene,
         "last_scene_rapports": last_scene_rapports,
         "last_scene_can_edit": last_scene_can_edit,
+        "edit_rapport": edit_rapport,
     }
 
 
@@ -421,6 +429,34 @@ def create_scene_post(
         link.save()
 
     _attach_rapport_media(rapport, kind, image, media_alt, media_tone)
+    return rapport
+
+
+@transaction.atomic
+def update_scene_post(
+    *,
+    rapport: Rapport,
+    kind: str,
+    content: str,
+    actor: Character | None = None,
+) -> Rapport:
+    """Edit one Rapport in place — the composer's edit mode.
+
+    Mirrors :func:`create_scene_post`'s validation: ``actor`` is revalidated
+    against the writer's role vivier and ``Rapport.clean`` enforces the
+    actor⟺kind rule. Sequence position, status, media and reply links are NOT
+    touched here — they have their own endpoints.
+    """
+    report = rapport.report
+    validate_actor_for_role(report.author, report.game, actor)
+    rapport.kind = kind
+    rapport.content = content
+    rapport.actor = actor
+    rapport.full_clean(exclude=["report"])
+    rapport.save(update_fields=["kind", "content", "actor", "updated_at"])
+    # Voicing a character in a game brings them into its cast (rule 2d).
+    if actor is not None:
+        add_to_cast(report.game, actor, report.author)
     return rapport
 
 

@@ -62,6 +62,7 @@ from .services import (
     open_new_scene,
     publish_report,
     reopen_scene,
+    update_scene_post,
 )
 
 
@@ -969,6 +970,9 @@ def rapport_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> Http
 def rapport_edit(
     request: AuthenticatedRequest, game_pk: str, pk: str, rapport_pk: str
 ) -> HttpResponse:
+    """Edit one post. HTMX = the sidebar composer reopens hydrated (edit mode);
+    plain requests keep the standalone RapportForm page as a fallback."""
+    from django.core.exceptions import ValidationError
     from django.shortcuts import render as _render
     from django.template.loader import render_to_string
 
@@ -980,7 +984,27 @@ def rapport_edit(
     )
     if rapport.report.author != request.user:
         return HttpResponseForbidden()
+
     if request.method == "POST":
+        if getattr(request, "htmx", False):
+            # Composer edit flow — same field contract as scene_post_create
+            # (kind, content, actor as slug). Media/replies keep their own
+            # endpoints on the card.
+            actor = _resolve_actor(request)
+            try:
+                update_scene_post(
+                    rapport=rapport,
+                    kind=request.POST.get("kind", ""),
+                    content=request.POST.get("content", "").strip(),
+                    actor=actor,
+                )
+            except ValidationError as exc:
+                return HttpResponse("; ".join(exc.messages), status=422)
+            # Fresh add-mode composer (main swap) + the updated card OOB.
+            ctx = build_composer_context(request.user, report=rapport.report)
+            ctx["edited_rapport"] = rapport
+            return render(request, "games/_composer_after_edit.html", ctx)
+
         form = RapportForm(request.POST, instance=rapport, game=rapport.report.game)
         form.full_clean()
         if form.is_valid():
@@ -995,13 +1019,17 @@ def rapport_edit(
             {"form": form, "report": rapport.report},
             status=422,
         )
+
+    if getattr(request, "htmx", False):
+        # The sidebar composer, hydrated for edit — or fresh again on cancel.
+        if request.GET.get("cancel"):
+            ctx = build_composer_context(request.user, report=rapport.report)
+        else:
+            ctx = build_composer_context(request.user, report=rapport.report, edit_rapport=rapport)
+        return render(request, "games/_composer.html", ctx)
+
     form = RapportForm(instance=rapport, game=rapport.report.game)
-    return htmx_render(
-        request,
-        full_template="games/rapport_form.html",
-        partial_template="games/rapport_form.html",
-        context={"form": form, "report": rapport.report},
-    )
+    return _render(request, "games/rapport_form.html", {"form": form, "report": rapport.report})
 
 
 @login_required
