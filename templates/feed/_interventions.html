@@ -21,7 +21,7 @@
                     {% endif %}
                 </div>
 
-                <a href="{% url 'games:report_thread' game_pk=report.game.pk pk=report.pk %}"
+                <a href="{% url 'games:report_detail' game_pk=report.game.pk pk=report.pk %}"
                    class="block text-semantic-ink font-semibold hover:text-brand-primary mb-3">
                     {{ report.title|default:_("Untitled") }}
                 </a>
@@ -41,7 +41,7 @@
                     </div>
                 {% endif %}
 
-                <a href="{% url 'games:report_thread' game_pk=report.game.pk pk=report.pk %}"
+                <a href="{% url 'games:report_detail' game_pk=report.game.pk pk=report.pk %}"
                    class="inline-flex items-center gap-1 text-sm link mt-3">
                     {% trans "Read the full scene" %}<span class="i-lucide-arrow-right text-sm"></span>
                 </a>

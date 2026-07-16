@@ -12,6 +12,7 @@ import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client
 from django.urls import reverse
+from django.utils import timezone
 
 from suddenly.characters.models import CharacterStatus
 from suddenly.games.models import (
@@ -612,12 +613,18 @@ def test_cast_npc_create_forbidden_for_non_gm(client: Client) -> None:
 
 
 @pytest.mark.django_db
-def test_draft_rapport_hidden_from_thread_for_non_author(client: Client) -> None:
+def test_draft_rapport_hidden_from_detail_for_non_author(client: Client) -> None:
     author = UserFactory()
     reader = UserFactory()
     game = GameFactory(owner=author)
+    # Released so the non-author passes the wall (SUD-V2); the per-rapport draft
+    # wall is what we assert here, independently of the scene-level wall.
     report = ReportFactory(
-        game=game, author=author, status=ReportStatus.PUBLISHED, visibility=ReportVisibility.PUBLIC
+        game=game,
+        author=author,
+        status=ReportStatus.PUBLISHED,
+        visibility=ReportVisibility.PUBLIC,
+        released_at=timezone.now(),
     )
     Rapport.objects.create(
         report=report,
@@ -633,7 +640,7 @@ def test_draft_rapport_hidden_from_thread_for_non_author(client: Client) -> None
     )
 
     client.force_login(reader)
-    url = reverse("games:report_thread", kwargs={"game_pk": game.pk, "pk": report.pk})
+    url = reverse("games:report_detail", kwargs={"game_pk": game.pk, "pk": report.pk})
     resp = client.get(url)
 
     assert resp.status_code == 200
@@ -642,9 +649,11 @@ def test_draft_rapport_hidden_from_thread_for_non_author(client: Client) -> None
 
 
 @pytest.mark.django_db
-def test_draft_rapport_visible_to_author_in_thread(client: Client) -> None:
+def test_draft_rapport_visible_to_author_in_detail(client: Client) -> None:
     author = UserFactory()
     game = GameFactory(owner=author)
+    # Unreleased: the author still reads their own in-progress scene (bypasses
+    # the wall) and sees their own draft rapports.
     report = ReportFactory(
         game=game, author=author, status=ReportStatus.PUBLISHED, visibility=ReportVisibility.PUBLIC
     )
@@ -656,7 +665,7 @@ def test_draft_rapport_visible_to_author_in_thread(client: Client) -> None:
     )
 
     client.force_login(author)
-    url = reverse("games:report_thread", kwargs={"game_pk": game.pk, "pk": report.pk})
+    url = reverse("games:report_detail", kwargs={"game_pk": game.pk, "pk": report.pk})
     resp = client.get(url)
 
     assert resp.status_code == 200

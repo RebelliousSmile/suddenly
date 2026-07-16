@@ -60,7 +60,7 @@ class TestSceneThreadReading:
         report = _scene_with_rapports(user, game)
         client.force_login(user)
 
-        url = reverse("games:report_thread", kwargs={"game_pk": game.pk, "pk": report.pk})
+        url = reverse("games:report_detail", kwargs={"game_pk": game.pk, "pk": report.pk})
         resp = client.get(url)
 
         assert resp.status_code == 200

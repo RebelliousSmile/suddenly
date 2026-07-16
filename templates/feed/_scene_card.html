@@ -10,7 +10,7 @@
             <a href="{% url 'games:detail' pk=report.game.pk %}"
                class="font-medium text-semantic-ink hover:text-brand-primary truncate">{{ report.game.title }}</a>
             <span class="text-semantic-muted">›</span>
-            <a href="{% url 'games:report_thread' game_pk=report.game.pk pk=report.pk %}"
+            <a href="{% url 'games:report_detail' game_pk=report.game.pk pk=report.pk %}"
                class="text-semantic-ink-secondary hover:text-brand-primary truncate">{{ report.title|default:_("Untitled") }}</a>
             {% if report.published_at %}
                 <time class="text-xs text-semantic-muted ml-auto flex-shrink-0">{{ report.published_at|timesince }}</time>
@@ -40,7 +40,7 @@
     </div>
 
     <div class="card-footer flex items-center gap-4">
-        <a href="{% url 'games:report_thread' game_pk=report.game.pk pk=report.pk %}"
+        <a href="{% url 'games:report_detail' game_pk=report.game.pk pk=report.pk %}"
            class="inline-flex items-center gap-1 text-sm text-brand-primary hover:underline">
             {% trans "Read the full scene" %}<span class="i-lucide-arrow-right text-sm"></span>
         </a>
