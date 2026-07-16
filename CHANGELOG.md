@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Connexion** — « Se connecter avec le Fediverse » : authentification OAuth2
+  avec un compte Mastodon (et tout serveur compatible : Pleroma, Akkoma,
+  GoToSocial, Pixelfed). Les applications OAuth sont enregistrées à la volée par
+  instance — aucune configuration d'identifiants côté admin. Boutons ajoutés sur
+  les pages de connexion et d'inscription ; création de compte local à la
+  première connexion (jamais rattachée par e-mail, pour éviter tout détournement
+  de compte). Réglable via `FEDIVERSE_LOGIN_ENABLED`.
+
+### Fixed
+- **Récupération de mot de passe** — le flux « Mot de passe oublié ? » est
+  vérifié de bout en bout. En production, un avertissement est désormais journalisé
+  au démarrage lorsque `EMAIL_HOST` n'est pas configuré : sans SMTP, les e-mails
+  (dont le lien de réinitialisation) étaient silencieusement ignorés.
+
 ## [0.6.0] - 2026-07-15
 
 ### Added

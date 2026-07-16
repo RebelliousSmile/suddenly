@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "suddenly.activitypub",
     "suddenly.docs",
     "suddenly.muses",
+    "suddenly.fediverse_auth",
 ]
 
 MIDDLEWARE = [
@@ -104,6 +105,20 @@ ACCOUNT_EMAIL_VERIFICATION = "optional"
 ACCOUNT_ADAPTER = "suddenly.users.adapters.SuddenlyAccountAdapter"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
+
+# =================================================================
+# FEDIVERSE LOGIN ("Se connecter avec le Fediverse")
+# =================================================================
+
+# Master switch for the "Sign in with Mastodon" flow. When on, the login and
+# signup pages show a "Se connecter avec le Fediverse" button. The flow works
+# with any Mastodon-API-compatible server (Mastodon, Pleroma, Akkoma,
+# GoToSocial, Pixelfed) — apps are registered per-instance on demand, so no
+# admin credential setup is required. It does need a correct public AP_BASE_URL
+# so the instance can redirect back to this server's callback.
+FEDIVERSE_LOGIN_ENABLED = os.environ.get("FEDIVERSE_LOGIN_ENABLED", "1") == "1"
+# Client name shown to users on the remote instance's consent screen.
+FEDIVERSE_APP_NAME = os.environ.get("FEDIVERSE_APP_NAME", SITE_NAME)
 
 # =================================================================
 # INTERNATIONALIZATION

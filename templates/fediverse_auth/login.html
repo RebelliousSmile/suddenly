@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Connexion via le Fediverse" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-12">
+    <div class="container-app max-w-md">
+        <h1 class="text-3xl font-bold text-semantic-ink mb-2 text-center">
+            {% trans "Se connecter avec le Fediverse" %}
+        </h1>
+        <p class="text-center text-sm text-semantic-muted mb-8">
+            {% trans "Utilisez votre compte Mastodon (ou Pleroma, Akkoma, GoToSocial, Pixelfed)." %}
+        </p>
+
+        <form method="post" action="{% url 'fediverse_auth:login' %}">
+            {% csrf_token %}
+            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+            <div class="card card-body space-y-6">
+
+                <div>
+                    <label for="id_instance" class="form-label">
+                        {% trans "Votre instance" %}
+                    </label>
+                    <input type="text"
+                           id="id_instance"
+                           name="instance"
+                           value="{{ instance|default:'' }}"
+                           placeholder="mastodon.social"
+                           required
+                           autofocus
+                           autocapitalize="none"
+                           autocorrect="off"
+                           spellcheck="false"
+                           class="form-input">
+                    <p class="form-help">
+                        {% trans "Saisissez le domaine de votre instance ou votre identifiant (ex. @vous@mastodon.social)." %}
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="mt-6">
+                <button type="submit" class="btn-primary w-full">
+                    {% trans "Continuer" %}
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-6 text-center text-sm text-semantic-ink-secondary">
+            <a href="{% url 'account_login' %}" class="link">
+                {% trans "Retour à la connexion" %}
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

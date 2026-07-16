@@ -98,7 +98,13 @@ if AWS_STORAGE_BUCKET_NAME:
 # ActivityPub base URL
 AP_BASE_URL = f"https://{DOMAIN}"
 
-# Email — SMTP if configured, silent dummy otherwise (verification is optional)
+# Email — SMTP if configured, silent dummy otherwise.
+# NOTE: email verification is optional, but PASSWORD RECOVERY depends on this.
+# Without EMAIL_HOST the dummy backend silently discards every message, so the
+# "Mot de passe oublié ?" reset link is never delivered and users with a lost
+# password (and no linked fediverse account) cannot get back in. We keep booting
+# so a fresh instance isn't bricked, but log a loud warning so the operator knows
+# recovery emails are dead until SMTP is set.
 _email_host = os.environ.get("EMAIL_HOST")
 if _email_host:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -110,6 +116,12 @@ if _email_host:
     DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", f"no-reply@{DOMAIN}")
 else:
     EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
+    import logging as _logging
+
+    _logging.getLogger("suddenly").warning(
+        "EMAIL_HOST is not set: outgoing emails (including password-reset links) "
+        "are discarded. Password recovery will NOT work until SMTP is configured."
+    )
 
 # Security headers
 SECURE_BROWSER_XSS_FILTER = True
