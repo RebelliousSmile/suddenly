@@ -1016,6 +1016,10 @@ def rapport_delete(
     )
     if rapport.report.author != request.user:
         return HttpResponseForbidden()
+    # Federation caution: a released scene has crossed the wall and may be
+    # federated — its posts are frozen; a local hard-delete would desync remotes.
+    if rapport.report.is_released:
+        return HttpResponseForbidden()
     if request.method == "POST":
         rapport.delete()
     return HttpResponse("")

@@ -101,18 +101,6 @@
                 </div>
             {% endif %}
 
-            {# Scene markers rendered as a structural frieze rather than scattered badges #}
-            <div class="flex flex-wrap items-center gap-1.5 mt-3{% if not rapport.markers.all %} hidden{% endif %}">
-                <span class="i-lucide-flag text-xs text-semantic-muted shrink-0" title="{% trans 'Scene markers' %}"></span>
-                <span id="markers-{{ rapport.pk }}" class="flex flex-wrap gap-1.5">
-                    {% for marker in rapport.markers.all %}
-                        {% include "games/partials/marker_badge.html" %}
-                    {% endfor %}
-                </span>
-            </div>
-
-            <div id="marker-form-{{ rapport.pk }}" class="mt-2"></div>
-
             {% if remote_parent_error %}
                 <div class="mt-2 p-2 rounded bg-semantic-danger/10 text-semantic-danger border border-semantic-danger/30 text-xs">
                     {{ remote_parent_error }}
@@ -138,37 +126,23 @@
                     </button>
                 </span>
             {% endif %}
-            {% if request.user.is_authenticated %}
-                <button hx-get="{% url 'games:rapport_reply' rapport.report.game.pk rapport.report.pk rapport.pk %}"
-                        hx-target="#reply-form-slot-{{ rapport.pk }}"
+            {# Once released (and possibly federated), the scene is frozen: no edit
+               or delete — deletion would desync remote instances. #}
+            {% if not rapport.report.is_released %}
+                <button hx-get="{% url 'games:rapport_edit' rapport.report.game.pk rapport.report.pk rapport.pk %}"
+                        hx-target="#rapport-{{ rapport.pk }}"
                         hx-swap="outerHTML"
-                        class="btn-ghost btn-sm text-semantic-muted"
-                        title="{% trans "Reply" %}">
-                    <span class="i-lucide-corner-down-right text-xs"></span>
+                        class="btn-ghost btn-sm" aria-label="{% trans 'Edit' %}" title="{% trans 'Éditer' %}">
+                    <span class="i-lucide-pencil text-xs" aria-hidden="true"></span>
+                </button>
+                <button hx-post="{% url 'games:rapport_delete' rapport.report.game.pk rapport.report.pk rapport.pk %}"
+                        hx-target="#rapport-{{ rapport.pk }}"
+                        hx-swap="outerHTML"
+                        hx-confirm="{% trans "Supprimer ce post ?" %}"
+                        class="btn-ghost btn-sm text-semantic-danger hover:bg-semantic-danger/10" aria-label="{% trans 'Delete' %}" title="{% trans 'Supprimer' %}">
+                    <span class="i-lucide-trash-2 text-xs" aria-hidden="true"></span>
                 </button>
             {% endif %}
-            {% if request.user == rapport.report.author %}
-                <button hx-get="{% url 'games:marker_create' rapport.report.game.pk rapport.report.pk rapport.pk %}"
-                        hx-target="#marker-form-{{ rapport.pk }}"
-                        hx-swap="innerHTML"
-                        class="btn-ghost btn-sm text-semantic-muted"
-                        title="{% trans "Add a marker" %}">
-                    <span class="i-lucide-bookmark-plus text-xs"></span>
-                </button>
-            {% endif %}
-            <button hx-get="{% url 'games:rapport_edit' rapport.report.game.pk rapport.report.pk rapport.pk %}"
-                    hx-target="#rapport-{{ rapport.pk }}"
-                    hx-swap="outerHTML"
-                    class="btn-ghost btn-sm" aria-label="{% trans 'Edit' %}">
-                <span class="i-lucide-pencil text-xs" aria-hidden="true"></span>
-            </button>
-            <button hx-post="{% url 'games:rapport_delete' rapport.report.game.pk rapport.report.pk rapport.pk %}"
-                    hx-target="#rapport-{{ rapport.pk }}"
-                    hx-swap="outerHTML"
-                    hx-confirm="{% trans "Delete this entry?" %}"
-                    class="btn-ghost btn-sm text-semantic-danger hover:bg-semantic-danger/10" aria-label="{% trans 'Delete' %}">
-                <span class="i-lucide-trash-2 text-xs" aria-hidden="true"></span>
-            </button>
         </div>
     </div>
 
@@ -203,4 +177,3 @@
         </div>
     {% endif %}
 </div>
-<div id="reply-form-slot-{{ rapport.pk }}"></div>
