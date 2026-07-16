@@ -14,6 +14,8 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+from suddenly.core import views as core_views
+
 
 def health_check(request: HttpRequest) -> JsonResponse:
     """Health check endpoint for Docker/load balancers."""
@@ -28,8 +30,9 @@ urlpatterns = [
     # Authentication (django-allauth)
     path("accounts/fediverse/", include("suddenly.fediverse_auth.urls")),
     path("accounts/", include("allauth.urls")),
-    # i18n language switcher (anonymous users)
-    path("i18n/", include("django.conf.urls.i18n")),
+    # i18n language switcher — wraps Django's set_language so the choice also
+    # persists to interface_language for authenticated users.
+    path("i18n/setlang/", core_views.switch_language, name="set_language"),
     # API Documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="api-schema"), name="api-docs"),

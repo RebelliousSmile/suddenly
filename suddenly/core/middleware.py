@@ -7,6 +7,7 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable
 
+from django.conf import settings
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
 from django.utils import translation
 
@@ -30,6 +31,12 @@ class InstanceLanguageMiddleware:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
+        # An explicit visitor choice (the /i18n/ switcher cookie, honoured by
+        # LocaleMiddleware just before us) wins over the instance default —
+        # this middleware only supplies the *default*, it must not clobber it.
+        if settings.LANGUAGE_COOKIE_NAME in request.COOKIES:
+            return self.get_response(request)
+
         activated = False
         try:
             from suddenly.core.models import InstanceSettings  # local import avoids circular deps

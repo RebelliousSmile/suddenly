@@ -22,6 +22,29 @@ from suddenly.core.services import (
 from suddenly.core.types import AuthenticatedRequest
 
 
+def switch_language(request: HttpRequest) -> HttpResponse:
+    """Django's ``set_language`` + persistence for authenticated users.
+
+    The switcher cookie is honoured by LocaleMiddleware and respected by
+    InstanceLanguageMiddleware (which only supplies the instance *default*).
+    For an authenticated user the choice is also saved to
+    ``interface_language`` so UserLanguageMiddleware applies it from the very
+    next request — otherwise the stored preference would silently override
+    every switch.
+    """
+    from django.conf import settings
+    from django.views.i18n import set_language as django_set_language
+
+    response = django_set_language(request)
+    user = request.user
+    if request.method == "POST" and user.is_authenticated:
+        lang = request.POST.get("language", "")
+        if lang in dict(settings.LANGUAGES):
+            user.interface_language = lang
+            user.save(update_fields=["interface_language"])
+    return response
+
+
 def home(request: HttpRequest) -> HttpResponse:
     """
     Home page.

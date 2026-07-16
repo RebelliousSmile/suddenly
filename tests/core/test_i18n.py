@@ -79,3 +79,52 @@ class TestHomepageLocale:
         content = response.content.decode()
         # The French translation for "Welcome to" is "Bienvenue sur"
         assert "Bienvenue" in content or "personnages" in content or "joueurs" in content
+
+
+@pytest.mark.django_db
+class TestLanguageSwitcher:
+    """/i18n/setlang/ must actually change the UI language.
+
+    Precedence: user preference > explicit switcher cookie > instance default.
+    InstanceLanguageMiddleware only supplies the *default* — it must not
+    clobber an explicit cookie; for authenticated users the switcher persists
+    the choice to ``interface_language`` (otherwise the stored preference
+    silently overrides every switch).
+    """
+
+    def _set_instance_language(self, lang: str) -> None:
+        from suddenly.core.models import InstanceSettings
+
+        instance = InstanceSettings.get()
+        instance.language = lang
+        instance.save(update_fields=["language"])
+
+    def test_instance_default_applies_without_cookie(self) -> None:
+        self._set_instance_language("en")
+        client = Client()
+        resp = client.get("/")
+        assert 'lang="en"' in resp.content.decode()
+
+    def test_cookie_choice_wins_over_instance_default(self) -> None:
+        self._set_instance_language("en")
+        client = Client()
+        resp = client.post("/i18n/setlang/", {"language": "fr", "next": "/"})
+        assert resp.status_code == 302
+        resp = client.get("/")
+        assert 'lang="fr"' in resp.content.decode()
+
+    def test_switch_persists_for_authenticated_user(self) -> None:
+        from tests.factories import UserFactory
+
+        user = UserFactory(interface_language="en")
+        client = Client()
+        client.force_login(user)
+
+        resp = client.post("/i18n/setlang/", {"language": "fr", "next": "/"})
+
+        assert resp.status_code == 302
+        user.refresh_from_db()
+        assert user.interface_language == "fr"
+        # The very next page renders in French (UserLanguageMiddleware).
+        resp = client.get("/")
+        assert 'lang="fr"' in resp.content.decode()
