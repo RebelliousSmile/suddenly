@@ -6,8 +6,8 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any
-from unittest.mock import patch
 
+from suddenly import __version__
 from suddenly.core.version import get_available_languages, get_version
 
 
@@ -20,17 +20,11 @@ class TestGetVersion:
         assert isinstance(result, str)
         assert len(result) > 0
 
-    def test_returns_pyproject_version(self) -> None:
-        result = get_version()
-        assert result == "0.1.0"
-
-    def test_fallback_on_package_not_found(self) -> None:
-        from importlib.metadata import PackageNotFoundError
-
-        with patch("suddenly.core.version.version", side_effect=PackageNotFoundError):
-            get_version.cache_clear()
-            result = get_version()
-        assert result == "0.0.0-dev"
+    def test_matches_version_constant(self) -> None:
+        # Single source of truth: get_version() reflects suddenly.__version__
+        # (a committed constant), never package metadata — so it stays correct
+        # on a bare git pull, and this test never breaks on a version bump.
+        assert get_version() == __version__
 
 
 class TestGetAvailableLanguages:

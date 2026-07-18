@@ -5,18 +5,23 @@ Version and available languages helpers.
 from __future__ import annotations
 
 import functools
-from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 
 from django.conf import settings
 
+from suddenly import __version__
+
 
 @functools.cache
 def get_version() -> str:
-    try:
-        return version("suddenly")
-    except PackageNotFoundError:
-        return "0.0.0-dev"
+    """Return the software version.
+
+    Reads the committed ``suddenly.__version__`` constant (single source of
+    truth) at runtime — never ``importlib.metadata`` nor git tags, so a fresh
+    ``git pull`` reports the right version without any reinstall or build step.
+    Mirrors BookWyrm's ``VERSION`` file and Mastodon's ``version.rb``.
+    """
+    return __version__
 
 
 @functools.cache

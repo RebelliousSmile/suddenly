@@ -5,9 +5,15 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 include = ["suddenly*", "config*"]
 
+# Single source of truth: the version comes from suddenly.__version__ (a
+# committed constant). pyproject never carries a hardcoded version, so build
+# metadata and runtime (get_version) can never diverge.
+[tool.setuptools.dynamic]
+version = { attr = "suddenly.__version__" }
+
 [project]
 name = "suddenly"
-version = "0.7.0"
+dynamic = ["version"]
 description = "Réseau fédéré de fiction partagée"
 requires-python = ">=3.11"
 
