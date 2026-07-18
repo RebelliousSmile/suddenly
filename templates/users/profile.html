@@ -115,9 +115,18 @@
 </section>
 
 <!-- Characters -->
+{% if games or characters %}
 <section class="py-8">
     <div class="container-app">
-        <h2 class="text-heading text-xl mb-6">{% trans "Characters" %}</h2>
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-heading text-xl">{% trans "Characters" %}</h2>
+            {% if user == profile_user and games %}
+                <a href="{% url 'characters:create' %}" class="btn-primary btn-sm">
+                    <span class="i-lucide-plus"></span>
+                    {% trans "New character" %}
+                </a>
+            {% endif %}
+        </div>
 
         {% if characters %}
             <div class="grid grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 gap-3">
@@ -147,4 +156,5 @@
         {% endif %}
     </div>
 </section>
+{% endif %}
 {% endblock %}
