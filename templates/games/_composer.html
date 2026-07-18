@@ -21,7 +21,9 @@
         frozen: {{ frozen|yesno:'true,false' }},
         isGm: {{ is_gm|yesno:'true,false' }},
         game: '{{ game.pk|default:'' }}',
+        gameLabel: '{{ game.title|escapejs }}',
         personnage: '{{ selected_character.slug|default:'' }}',
+        personnageLabel: '{{ selected_character.name|escapejs }}',
         kind: '{% if edit_rapport %}{{ edit_rapport.kind }}{% elif kinds %}{{ kinds.0.0 }}{% endif %}',
         actor: '{% if is_gm %}{{ selected_actor }}{% else %}{{ selected_character.slug|default:'' }}{% endif %}',
         actorLabel: '{{ selected_actor_label|escapejs }}',
@@ -30,6 +32,13 @@
         replyScope: 'none',
         sheet: '',
         availableKinds: [{% for value, label in kinds %}'{{ value }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        placeholders: {
+            narration: '{% filter escapejs %}{% trans "Quoi de neuf dans la scène ?" %}{% endfilter %}',
+            description: '{% filter escapejs %}{% trans "Le décor, l'ambiance…" %}{% endfilter %}',
+            action: '{% filter escapejs %}{% trans "Ce que quelqu'un fait…" %}{% endfilter %}',
+            discussion: '{% filter escapejs %}{% trans "« … »" %}{% endfilter %}',
+        },
+        get placeholder() { return this.placeholders[this.kind] || this.placeholders.narration; },
         get actorForbidden() { return this.kind === 'narration'; },
         get needsActor() { return this.kind === 'action' || this.kind === 'discussion'; },
         get canSend() {
@@ -84,27 +93,95 @@
                 · {% if is_gm %}{% trans "MJ" %}{% else %}{% trans "Joueur" %}{% endif %}
                 {% if report.language %}· <span class="uppercase">{{ report.language }}</span>{% endif %}
             </p>
-        {% else %}
-            <div class="grid gap-2 @sm:grid-cols-2 pb-3 shrink-0">
-                <div>
-                    <label class="form-label" for="composer-personnage">{% trans "Personnage" %}</label>
-                    <select id="composer-personnage" name="character" class="form-input w-full"
-                            x-model="personnage"
-                            hx-get="{% url 'games:composer' %}"
-                            hx-trigger="change"
-                            hx-target="#composer-game-field"
-                            hx-swap="outerHTML"
-                            hx-vals='{"region": "game_field"}'>
-                        <option value="">{% trans "— Choisir un personnage —" %}</option>
-                        {% for c in personnages %}
-                            <option value="{{ c.slug }}">{{ c.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+        {% elif personnages %}
+            {% comment %} Sélecteurs — pick pills (maquette) : le texte du bouton EST le
+               label, pas de <label> au-dessus. Personnage puis partie, séparés par
+               « · ». Chacun ouvre une bottom-sheet, jamais un dropdown natif. {% endcomment %}
+            <div class="flex items-center gap-2 flex-wrap pb-3 shrink-0">
+                <button type="button" @click="openSheet('personnage')"
+                        class="inline-flex items-center gap-2 min-h-[36px] px-3 rounded-btn border text-sm font-semibold max-w-full"
+                        :class="personnage ? 'border-brand-primary/45 bg-brand-primary/5 text-semantic-ink' : 'border-brand-primary/55 border-dashed text-brand-primary'">
+                    <span class="i-lucide-user text-sm shrink-0" aria-hidden="true"></span>
+                    <span class="truncate" x-text="personnageLabel || '{% trans "Choisir un personnage" %}'"></span>
+                    <span class="i-lucide-chevron-up text-xs opacity-60 shrink-0" aria-hidden="true"></span>
+                </button>
+                <span class="text-semantic-border shrink-0" aria-hidden="true">·</span>
                 {% include "games/_composer_game_field.html" %}
+            </div>
+            {% comment %} Valeurs soumises avec le POST (les pills n'ont pas de name).
+               Le champ personnage est aussi la source hx-include des boutons de partie. {% endcomment %}
+            <input type="hidden" name="character" id="composer-character-input" :value="personnage">
+            <input type="hidden" name="game" id="composer-game-input" :value="game">
+
+            {# ── SHEET : sous quel personnage — vivier de protagonistes ──────── #}
+            <div x-show="sheet === 'personnage'" x-cloak @keydown.escape.window="closeSheet()"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="translate-y-full" x-transition:enter-end="translate-y-0"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="translate-y-0" x-transition:leave-end="translate-y-full"
+                 class="fixed inset-x-0 bottom-0 z-modal card rounded-t-2xl shadow-lg max-h-[82vh] overflow-y-auto px-3"
+                 style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
+                <div class="w-9 h-1 rounded bg-semantic-border mx-auto my-2"></div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-semantic-muted px-1.5 pt-0.5 pb-2">{% trans "Sous quel personnage" %}</p>
+
+                {# dictsortreversed sur status : 'pc' avant 'npc' + groupes consécutifs pour regroup. #}
+                {% regroup personnages|dictsortreversed:"status" by status as personnage_groups %}
+                {% for group in personnage_groups %}
+                    <p class="text-[10px] font-bold uppercase tracking-wide text-semantic-muted px-2.5 pt-2.5 pb-1 flex items-center gap-1.5">
+                        {% if group.grouper == 'pc' %}<span class="i-lucide-user text-xs" aria-hidden="true"></span>{% trans "Vos personnages" %}{% else %}<span class="i-lucide-users text-xs" aria-hidden="true"></span>{% trans "PNJ" %}{% endif %}
+                    </p>
+                    {% for c in group.list %}
+                        <button type="button"
+                                @click="personnage = '{{ c.slug }}'; personnageLabel = '{{ c.name|escapejs }}'; game = ''; gameLabel = ''; closeSheet()"
+                                hx-get="{% url 'games:composer' %}?region=game_field&amp;character={{ c.slug }}"
+                                hx-target="#composer-game-field" hx-swap="outerHTML"
+                                class="flex items-center gap-3 w-full text-left rounded-btn px-2.5 py-3 min-h-[44px] hover:bg-semantic-card-sunken"
+                                :class="personnage === '{{ c.slug }}' && 'bg-brand-primary/5'">
+                            {% if c.status == 'pc' %}
+                                <span class="w-6 h-6 rounded-full border border-domain-pc/55 bg-domain-pc/10 text-domain-pc inline-flex items-center justify-center text-xs shrink-0">{{ c.name|first }}</span>
+                            {% else %}
+                                <span class="w-6 h-6 rounded-full border border-domain-npc/55 bg-domain-npc/10 text-domain-npc inline-flex items-center justify-center text-xs shrink-0">{{ c.name|first }}</span>
+                            {% endif %}
+                            <span class="flex flex-col min-w-0">
+                                <span class="text-sm font-medium text-semantic-ink truncate">{{ c.name }}
+                                    {% if c.status == 'pc' %}<span class="ml-1 text-[10px] uppercase tracking-wide font-semibold text-domain-pc bg-domain-pc/12 rounded-full px-1.5 py-0.5">{% trans "PJ" %}</span>{% else %}<span class="ml-1 text-[10px] uppercase tracking-wide font-semibold text-domain-npc bg-domain-npc/14 rounded-full px-1.5 py-0.5">{% trans "PNJ" %}</span>{% endif %}
+                                </span>
+                                {% if c.origin_game %}<span class="text-xs text-semantic-muted truncate">{% blocktrans with title=c.origin_game.title %}né dans {{ title }}{% endblocktrans %}</span>{% endif %}
+                            </span>
+                        </button>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% else %}
+            {# Aucun protagoniste à incarner — on propose d'en reprendre un ou d'en créer un. #}
+            <div class="text-center px-2 py-6 shrink-0">
+                <span class="i-lucide-user-plus text-2xl text-semantic-muted block mx-auto mb-2" aria-hidden="true"></span>
+                <p class="text-sm font-semibold text-semantic-ink">{% trans "Aucun personnage à incarner" %}</p>
+                <p class="text-xs text-semantic-muted mt-1 mb-4">{% trans "Pour écrire, reprenez un personnage existant ou créez le vôtre." %}</p>
+                <div class="flex flex-col gap-2">
+                    <a href="{% url 'characters:create' %}" class="btn-primary btn-sm w-full justify-center">
+                        <span class="i-lucide-plus text-xs" aria-hidden="true"></span>
+                        {% trans "Créer un personnage" %}
+                    </a>
+                    <a href="{% url 'characters:list' %}" class="btn-ghost btn-sm w-full justify-center">
+                        {% trans "Reprendre un personnage existant" %}
+                    </a>
+                </div>
             </div>
         {% endif %}
 
+        {% comment %} Surface d'écriture : révélée seulement quand un personnage ET
+          une partie sont choisis (règle 2a) — en mode scène elle est toujours là.
+          Avant, un court fil d'aide oriente vers les deux choix. En free mode sans
+          protagoniste, tout ce bloc disparaît (empty-state affiché plus haut). {% endcomment %}
+        {% if frozen or personnages %}
+        {% if not frozen %}
+        <div class="px-1 pb-3 text-sm text-semantic-muted shrink-0" x-show="!(personnage && game)" x-cloak>
+            <span x-show="!personnage">{% trans "Choisissez un personnage pour commencer à écrire." %}</span>
+            <span x-show="personnage && !game" x-cloak>{% trans "Choisissez une partie pour continuer." %}</span>
+        </div>
+        {% endif %}
+        <div class="flex flex-col flex-1 min-h-0" x-show="frozen || (personnage && game)" x-cloak>
         {# ── STAGE : écriture plein cadre, rail teinté par le kind ──────── #}
         <div class="flex items-stretch gap-2 flex-1 min-h-0 px-1">
             <span class="w-1 rounded shrink-0"
@@ -113,7 +190,7 @@
                       class="flex-1 min-h-[160px] w-full bg-transparent border-none outline-none resize-none p-1 text-lg leading-relaxed text-semantic-ink"
                       x-model="body" @input="onInput()"
                       :class="{ 'italic font-serif text-semantic-ink-secondary': kind==='description', 'font-medium': kind==='action', 'font-serif': kind==='discussion' }"
-                      placeholder="{% trans "Écrivez le post…  (/desc, /act, /rep · « pour une réplique)" %}"></textarea>
+                      placeholder="{% trans "Quoi de neuf dans la scène ?" %}" :placeholder="placeholder"></textarea>
         </div>
 
         {# ── DOCK ────────────────────────────────────────────────────────── #}
@@ -224,6 +301,8 @@
                 </span>
             </div>
         </div>
+        </div>{# /surface d'écriture révélée #}
+        {% endif %}{# frozen or personnages #}
 
         {% comment %} Voile + sheets statiques (média · envoi). Les sheets
           kind/actor/reply vivent dans #composer-context. Fixés au bas du

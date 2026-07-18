@@ -1,25 +1,58 @@
 {% load i18n %}
-<div id="composer-game-field"
+{% comment %}
+  The composer's PARTIE picker (free mode). A pick pill (maquette) that opens a
+  bottom-sheet, never a native dropdown. Server-refreshed via ?region=game_field
+  when the personnage changes: the game list is scoped to that character, so the
+  whole div is swapped (outerHTML) and its x-init re-clamps the game state.
+
+  Picking a game fires ?region=context (recomputes kinds/actor pool) into
+  #composer-context, carrying the chosen character via hx-include on the hidden
+  personnage input.
+{% endcomment %}
+<div id="composer-game-field" class="min-w-0"
      x-init="
-        {% if reset_game %}game = '';{% endif %}
+        {% if reset_game %}game = ''; gameLabel = '';{% endif %}
         {% if games|length == 1 %}
-        $nextTick(() => { $refs.composerGame.value = '{{ games.0.pk }}'; htmx.process($refs.composerGame); $refs.composerGame.dispatchEvent(new Event('change', { bubbles: true })); });
+        if (personnage) {
+            game = '{{ games.0.pk }}'; gameLabel = '{% filter escapejs %}{{ games.0.title }}{% endfilter %}';
+            $nextTick(() => { htmx.ajax('GET', '{% url 'games:composer' %}?region=context&game={{ games.0.pk }}', { target: '#composer-context', swap: 'innerHTML', values: { character: personnage } }); });
+        }
         {% endif %}
      ">
-    <label class="form-label" for="composer-game">{% trans "Partie" %}</label>
-    <select id="composer-game" name="game" class="form-input w-full"
-            x-ref="composerGame"
-            x-model="game"
-            :disabled="!personnage"
-            hx-get="{% url 'games:composer' %}"
-            hx-trigger="change"
-            hx-target="#composer-context"
-            hx-swap="innerHTML"
-            hx-include="#composer-personnage"
-            hx-vals='{"region": "context"}'>
-        <option value="">{% trans "— Choisir une partie —" %}</option>
+    <button type="button" @click="openSheet('partie')" :disabled="!personnage"
+            class="inline-flex items-center gap-2 min-h-[36px] px-3 rounded-btn border text-sm font-semibold max-w-full disabled:opacity-45 disabled:cursor-not-allowed"
+            :class="game ? 'border-brand-primary/45 bg-brand-primary/5 text-semantic-ink' : (personnage ? 'border-brand-primary/55 border-dashed text-brand-primary' : 'border-semantic-border text-semantic-muted')">
+        <span class="i-lucide-book-open text-sm shrink-0" aria-hidden="true"></span>
+        <span class="truncate" x-text="gameLabel || '{% trans "Choisir une partie" %}'"></span>
+        <span class="i-lucide-chevron-up text-xs opacity-60 shrink-0" aria-hidden="true"></span>
+    </button>
+
+    {# ── SHEET : dans quelle partie — liste scoped au personnage choisi ──── #}
+    <div x-show="sheet === 'partie'" x-cloak @keydown.escape.window="closeSheet()"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="translate-y-full" x-transition:enter-end="translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="translate-y-0" x-transition:leave-end="translate-y-full"
+         class="fixed inset-x-0 bottom-0 z-modal card rounded-t-2xl shadow-lg max-h-[82vh] overflow-y-auto px-3"
+         style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
+        <div class="w-9 h-1 rounded bg-semantic-border mx-auto my-2"></div>
+        <p class="text-xs font-semibold uppercase tracking-wide text-semantic-muted px-1.5 pt-0.5 pb-2">{% trans "Dans quelle partie" %}</p>
         {% for g in games %}
-            <option value="{{ g.pk }}">{{ g.title }}</option>
+            <button type="button"
+                    @click="game = '{{ g.pk }}'; gameLabel = '{% filter escapejs %}{{ g.title }}{% endfilter %}'; closeSheet()"
+                    hx-get="{% url 'games:composer' %}?region=context&amp;game={{ g.pk }}"
+                    hx-include="#composer-character-input"
+                    hx-target="#composer-context" hx-swap="innerHTML"
+                    class="flex items-start gap-3 w-full text-left rounded-btn px-2.5 py-3 min-h-[44px] hover:bg-semantic-card-sunken"
+                    :class="game === '{{ g.pk }}' && 'bg-brand-primary/5'">
+                <span class="i-lucide-book-open text-lg mt-0.5 shrink-0 text-semantic-muted" aria-hidden="true"></span>
+                <span class="flex flex-col min-w-0">
+                    <span class="text-sm font-semibold text-semantic-ink truncate">{{ g.title }}</span>
+                    <span class="text-xs text-semantic-muted">{% if g.owner_id == request.user.pk %}{% trans "Vous y êtes MJ" %}{% else %}{% trans "Vous y jouez" %}{% endif %}</span>
+                </span>
+            </button>
+        {% empty %}
+            <p class="text-xs text-semantic-muted px-2.5 py-3">{% trans "Ce personnage n'a encore aucune partie où écrire." %}</p>
         {% endfor %}
-    </select>
+    </div>
 </div>
