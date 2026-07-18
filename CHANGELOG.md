@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-07-18
+
 ### Added
 - **Connexion** — « Se connecter avec le Fediverse » : authentification OAuth2
   avec un compte Mastodon (et tout serveur compatible : Pleroma, Akkoma,
@@ -15,8 +17,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   les pages de connexion et d'inscription ; création de compte local à la
   première connexion (jamais rattachée par e-mail, pour éviter tout détournement
   de compte). Réglable via `FEDIVERSE_LOGIN_ENABLED`.
+- **Composer & éditeur de scène** — composer de post persistant en sidebar sur
+  l'éditeur de scène (mise en page « accueil » : composer à gauche, fil à
+  droite), avec bottom-sheets de sélection (personnage / partie) sur mobile et la
+  dernière scène affichée sous le composer. Le bouton « Éditer » rouvre le
+  composer en mode édition. Placeholder épuré, gating et états vides propres du
+  feed.
+- **Lecteur de scène** — lecteur de scène dédié avec gating d'édition
+  auteur | MJ.
+- **Parties** — ordre de fiction explicite pour les scènes ; signalement des
+  personnages ayant quitté une scène dans le casting.
+- **Personnages** — bouton « Nouveau personnage » sur le profil, affiché dès
+  qu'au moins une partie existe ; la section personnages est masquée tant
+  qu'aucune partie n'existe, pour éviter un cul-de-sac de création (un personnage
+  requiert une partie d'origine qu'on possède).
+
+### Changed
+- **Lecture de scène** — suppression de la vue fil groupée/flux ; la lecture est
+  fusionnée dans `report_detail`.
+- **Éditeur de scène** — actions de post allégées et suppression compatible
+  fédération.
 
 ### Fixed
+- **Langue** — le sélecteur de langue change réellement la langue de l'interface.
+- **Parties** — les commentaires Django `{# #}` sont mono-ligne uniquement : du
+  texte littéral fuitait dans l'UI.
 - **Récupération de mot de passe** — le flux « Mot de passe oublié ? » est
   vérifié de bout en bout. En production, un avertissement est désormais journalisé
   au démarrage lorsque `EMAIL_HOST` n'est pas configuré : sans SMTP, les e-mails
