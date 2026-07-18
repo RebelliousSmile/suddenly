@@ -79,7 +79,7 @@
 
     <form method="post" enctype="multipart/form-data"
           action="{% if edit_rapport %}{% url 'games:rapport_edit' report.game.pk report.pk edit_rapport.pk %}{% elif frozen %}{% url 'games:scene_post_create' report.game.pk report.pk %}{% else %}{% url 'games:composer' %}{% endif %}"
-          class="flex flex-col flex-1 min-h-0">
+          class="flex flex-col flex-1 min-h-0 @lg:relative">
         {% csrf_token %}
         {# Kind soumis avec le form (sans ce champ : POST 422). Acteur : cf. #composer-context. #}
         <input type="hidden" name="kind" :value="kind">
@@ -114,12 +114,12 @@
             <input type="hidden" name="game" id="composer-game-input" :value="game">
 
             {# ── SHEET : sous quel personnage — vivier de protagonistes ──────── #}
-            <div x-show="sheet === 'personnage'" x-cloak @keydown.escape.window="closeSheet()"
+            <div x-show="sheet === 'personnage'" role="dialog" aria-modal="true" aria-label="{% trans "Choisir un personnage" %}" x-cloak @keydown.escape.window="closeSheet()"
                  x-transition:enter="transition ease-out duration-200"
                  x-transition:enter-start="translate-y-full" x-transition:enter-end="translate-y-0"
                  x-transition:leave="transition ease-in duration-150"
                  x-transition:leave-start="translate-y-0" x-transition:leave-end="translate-y-full"
-                 class="fixed inset-x-0 bottom-0 z-modal card rounded-t-2xl shadow-lg max-h-[82vh] overflow-y-auto px-3"
+                 class="{% if frozen %}pick-sheet-fixed{% else %}pick-sheet{% endif %}"
                  style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
                 <div class="w-9 h-1 rounded bg-semantic-border mx-auto my-2"></div>
                 <p class="text-xs font-semibold uppercase tracking-wide text-semantic-muted px-1.5 pt-0.5 pb-2">{% trans "Sous quel personnage" %}</p>
@@ -315,12 +315,12 @@
              class="fixed inset-0 z-overlay bg-semantic-ink/35"></div>
 
         {# SHEET : média de la description #}
-        <div x-show="sheet === 'media'" x-cloak @keydown.escape.window="closeSheet()"
+        <div x-show="sheet === 'media'" role="dialog" aria-modal="true" aria-label="{% trans "Média de la description" %}" x-cloak @keydown.escape.window="closeSheet()"
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="translate-y-full" x-transition:enter-end="translate-y-0"
              x-transition:leave="transition ease-in duration-150"
              x-transition:leave-start="translate-y-0" x-transition:leave-end="translate-y-full"
-             class="fixed inset-x-0 bottom-0 z-modal card rounded-t-2xl shadow-lg max-h-[82vh] overflow-y-auto px-3"
+             class="{% if frozen %}pick-sheet-fixed{% else %}pick-sheet{% endif %}"
              style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
             <div class="w-9 h-1 rounded bg-semantic-border mx-auto my-2"></div>
             <p class="text-xs font-semibold uppercase tracking-wide text-semantic-muted px-1.5 pt-0.5 pb-2">{% trans "Média de la description" %}</p>
@@ -345,12 +345,12 @@
         </div>
 
         {# SHEET : options d'envoi (le caret) #}
-        <div x-show="sheet === 'send'" x-cloak @keydown.escape.window="closeSheet()"
+        <div x-show="sheet === 'send'" role="dialog" aria-modal="true" aria-label="{% trans "Options d'envoi" %}" x-cloak @keydown.escape.window="closeSheet()"
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="translate-y-full" x-transition:enter-end="translate-y-0"
              x-transition:leave="transition ease-in duration-150"
              x-transition:leave-start="translate-y-0" x-transition:leave-end="translate-y-full"
-             class="fixed inset-x-0 bottom-0 z-modal card rounded-t-2xl shadow-lg max-h-[82vh] overflow-y-auto px-3"
+             class="{% if frozen %}pick-sheet-fixed{% else %}pick-sheet{% endif %}"
              style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
             <div class="w-9 h-1 rounded bg-semantic-border mx-auto my-2"></div>
             <p class="text-xs font-semibold uppercase tracking-wide text-semantic-muted px-1.5 pt-0.5 pb-2">{% trans "Après ce post" %}</p>

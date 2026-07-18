@@ -1,6 +1,6 @@
 {
   "$schema": "design/references/manifest-schema#",
-  "$version": "1.4.0",
+  "$version": "1.5.0",
   "mode": "utility-first",
   "usage": {
     "rawHexForbidden": true,
@@ -422,6 +422,25 @@
       "a11y": {
         "role": "button",
         "requires": ["aria-label"]
+      }
+    },
+    "pick-sheet": {
+      "base": "pick-sheet",
+      "elements": {
+        "handle": "pick-sheet__handle",
+        "title": "pick-sheet__title",
+        "option": "pick-sheet__option",
+        "scrim": "pick-sheet__scrim"
+      },
+      "modifiers": {
+        "fixed": "pick-sheet-fixed"
+      },
+      "backgrounds": [
+        "color.semantic.card"
+      ],
+      "a11y": {
+        "role": "dialog",
+        "requires": ["aria-modal", "aria-label"]
       }
     }
   }

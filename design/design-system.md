@@ -118,7 +118,7 @@ règle est portée par l'adapter, pas laissée à chaque composant.
 
 ## 2. Inventaire des composants
 
-Les 17 composants ci-dessous ont une entrée dans `design/components.json` (couche 2), qui est
+Les 18 composants ci-dessous ont une entrée dans `design/components.json` (couche 2), qui est
 la source fermée et vérifiable. Cette section en donne l'intention ; elle ne la contredit
 jamais.
 
@@ -126,6 +126,17 @@ jamais.
 `nav-drawer` (tiroir mobile sous 768px, `role="dialog"` + `aria-modal`), `icon-btn` (cible 44px,
 `aria-label` obligatoire), `dropdown` (menu utilisateur, `aria-expanded`), `actionbar` (barre
 d'action basse mobile, respect de `env(safe-area-inset-bottom)`).
+
+**Overlays de choix** — `pick-sheet` est la modale par défaut pour choisir **un élément dans une
+liste** : bottom-sheet plein écran en mobile, panneau ancré au déclencheur à partir de `@lg`
+(paire mobile→desktop sanctionnée « bottom sheet → side panel »). Sa largeur n'est pas intrinsèque
+— elle épouse la colonne du conteneur positionné qui l'ancre (dans le composer : la largeur de la
+sidebar). Anatomie : `__handle` (poignée de glisser), `__title`, `__option`, `__scrim` (le voile).
+`role="dialog"` + `aria-modal` + `aria-label` obligatoires ; variante `pick-sheet-fixed` pour les
+contextes où le panneau doit rester collé au bas du viewport (scène figée, aucun conteneur de
+scroll ne peut le clipper). Distinct du `modal` centré (confirmation / formulaire bloquant), qui
+reste un idiome à part. Implémentation de référence : les 7 sheets du composer (personnage,
+partie, nature, acteur, réponse, média, envoi).
 
 **Identité** — `avatar` en trois tailles (34 / 44 / 64 px). L'anneau encode le statut du
 personnage par la couleur **et par le style de trait** (`border.style.*`) : la couleur seule ne
@@ -242,6 +253,29 @@ section) est une piste ouverte, non arbitrée.
 ---
 
 ## 6. Provenance
+
+### v1.5.0 — 2026-07-18 — re-figeage : promotion du `pick-sheet`
+
+Delta purement **additif** (bump minor). Le composer utilisait déjà un shortcut UnoCSS
+`composer-sheet`/`composer-sheet-fixed` (bottom-sheet mobile → panneau ancré desktop) pour ses 7
+modales de choix. Le nom mentait sur sa généralité : la « largeur sidebar » n'est pas intrinsèque,
+elle émerge de `@lg:absolute` s'ancrant au `<form>` positionné (colonne étroite). Promotion en
+composant de contrat pour en faire **la modale par défaut de choix d'un élément dans une liste** :
+
+1. **Renommage** `composer-sheet`(`-fixed`) → `pick-sheet`(`-fixed`) — nom générique et non couplé
+   au plumbing du composer. 7 usages migrés (`_composer.html`, `_composer_context.html`,
+   `_composer_game_field.html`).
+2. **a11y ajoutée** — chaque racine de sheet reçoit `role="dialog"` + `aria-modal="true"` +
+   `aria-label` (aligné sur le contrat frère `nav-drawer`). Échappement (`@keydown.escape`) et
+   clic-voile pour fermer préexistaient. Réserve connue : pas de focus-trap — promesse imparfaite,
+   identique à `nav-drawer`, à durcir si un audit clavier l'exige.
+3. **Entrée manifeste** — `pick-sheet` ajouté à `components.json` (mode `utility-first`), anatomie
+   documentaire `__handle`/`__title`/`__option`/`__scrim`, modifier `fixed`, `backgrounds:
+   [semantic.card]`, contrat a11y. Distinct du `modal` centré (confirmation / formulaire bloquant),
+   idiome conservé à part.
+
+Hors périmètre : aucun token modifié, aucune valeur visuelle touchée — le rendu est identique
+avant/après. Le focus-trap n'est pas figé (piste ouverte).
 
 ### v1.4.0 — 2026-07-15 — re-figeage : composer + édition de scène
 

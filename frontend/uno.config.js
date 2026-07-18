@@ -154,6 +154,16 @@ const presetSuddenly = () => ({
 
     // Prose (pour les reports)
     'prose-report': 'prose max-w-none',
+
+    // pick-sheet — modale de choix d'un élément dans une liste (contrat : components.json).
+    // Paire mobile→desktop sanctionnée : bottom-sheet plein écran → panneau ancré au déclencheur.
+    // `-fixed` : collée au bas du viewport, pleine largeur — le mode scène
+    // (frozen) en dépend, aucun conteneur de scroll ne peut la clipper.
+    // Défaut (feed) : identique en mobile ; à partir de @lg (sidebar visible)
+    // elle devient un panneau ancré au <form> (@lg:relative) → largeur = colonne
+    // du composer = sidebar, ancré en haut, jamais pleine largeur d'écran.
+    'pick-sheet-fixed': 'fixed inset-x-0 bottom-0 z-modal card rounded-t-2xl shadow-lg max-h-[82vh] overflow-y-auto px-3',
+    'pick-sheet': 'pick-sheet-fixed @lg:absolute @lg:top-0 @lg:bottom-auto @lg:rounded-2xl',
   },
 })
 
