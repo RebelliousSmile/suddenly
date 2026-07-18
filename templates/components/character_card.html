@@ -36,10 +36,18 @@
                             {% trans "Available" %}
                         </span>
                     {% elif character.status == 'pc' %}
-                        <span class="badge-pc">
-                            <span class="i-lucide-star text-xs"></span>
-                            PC
-                        </span>
+                        {% if character.parent_id %}
+                            {# A fork is a PC derived from another character (parent set) #}
+                            <span class="badge-forked">
+                                <span class="i-lucide-git-branch text-xs"></span>
+                                {% trans "Forked" %}
+                            </span>
+                        {% else %}
+                            <span class="badge-pc">
+                                <span class="i-lucide-star text-xs"></span>
+                                PC
+                            </span>
+                        {% endif %}
                     {% elif character.status == 'claimed' %}
                         <span class="badge-claimed">
                             <span class="i-lucide-git-merge text-xs"></span>
@@ -49,11 +57,6 @@
                         <span class="badge-adopted">
                             <span class="i-lucide-user-check text-xs"></span>
                             {% trans "Adopted" %}
-                        </span>
-                    {% elif character.status == 'forked' %}
-                        <span class="badge-forked">
-                            <span class="i-lucide-git-branch text-xs"></span>
-                            {% trans "Forked" %}
                         </span>
                     {% endif %}
                 </div>

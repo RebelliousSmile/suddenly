@@ -238,7 +238,14 @@ def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
     game = get_object_or_404(Game.objects.select_related("owner").filter(visibility), pk=pk)
 
     reports = game.reports.filter(status=ReportStatus.PUBLISHED).select_related("author")[:20]
-    characters = game.characters.select_related("creator", "owner").order_by("-created_at")[:12]
+    # Roster = characters *homed* in this game (origin_game). Exclude forks:
+    # a fork inherits its parent's origin_game (its AP home) but originated
+    # elsewhere, created by another player — it does not belong to this roster.
+    characters = (
+        game.characters.filter(parent__isnull=True)
+        .select_related("creator", "owner")
+        .order_by("-created_at")[:12]
+    )
 
     is_following = False
     if request.user.is_authenticated and request.user != game.owner:
@@ -911,7 +918,7 @@ def game_delete(request: AuthenticatedRequest, pk: str) -> HttpResponse:
     """Delete a game (owner only, no PCs inside)."""
     game = get_object_or_404(Game, pk=pk, owner=request.user)
     if request.method == "POST":
-        pc_statuses = ["pc", "claimed", "adopted", "forked"]
+        pc_statuses = ["pc", "claimed", "adopted"]
         if game.characters.filter(status__in=pc_statuses).exists():
             return redirect(reverse("games:detail", kwargs={"pk": game.pk}))
         game.delete()
@@ -922,7 +929,7 @@ def game_delete(request: AuthenticatedRequest, pk: str) -> HttpResponse:
 def game_delete_bulk(request: AuthenticatedRequest) -> HttpResponse:
     """Bulk delete games (owner only, no PCs inside)."""
     if request.method == "POST":
-        pc_statuses = ["pc", "claimed", "adopted", "forked"]
+        pc_statuses = ["pc", "claimed", "adopted"]
         pks = request.POST.getlist("pks")
         for game in Game.objects.filter(pk__in=pks, owner=request.user):
             if not game.characters.filter(status__in=pc_statuses).exists():

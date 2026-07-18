@@ -69,7 +69,7 @@ erDiagram
 ```
 NPC → CLAIMED  (retcon: NPC was already the requester's PC from the start)
 NPC → ADOPTED  (adoption: NPC becomes requester's new PC)
-NPC → FORKED   (derivation: new PC linked to NPC, NPC preserved)
+Fork           (derivation: creates a new PC with parent=NPC; NPC stays NPC — no FORKED status)
 ```
 
 ## Key Fields by Model
@@ -79,7 +79,7 @@ NPC → FORKED   (derivation: new PC linked to NPC, NPC preserved)
 | User | users | Person | `username`, `ap_id`, `inbox`, `outbox`, `local`, `public_key`, `preferred_languages` |
 | Game | games | Group | `title`, `owner`, `is_public`, `ap_id`, `local` |
 | Report | games | Article | `content` (Markdown), `game`, `author`, `status` (DRAFT/PUBLISHED), `language`, `content_warning` (CharField 500 optional), `visibility` (PUBLIC/UNLISTED/FOLLOWERS), `session_date` (DateField optional) |
-| Character | characters | Person | `name`, `status` (NPC/PC/CLAIMED/ADOPTED/FORKED), `owner`, `creator`, `origin_game`, `parent` |
+| Character | characters | Person | `name`, `status` (NPC/PC/CLAIMED/ADOPTED), `owner`, `creator`, `origin_game`, `parent` (fork lineage) |
 | Quote | characters | Note | `content`, `character`, `visibility` (EPHEMERAL/PRIVATE/PUBLIC), `language` |
 | CharacterAppearance | characters | — | `character`, `report`, `role` (MAIN/SUPPORTING/MENTIONED) |
 | ReportCast | games | — | `report`, `character` (nullable), `new_character_name`, `role` |

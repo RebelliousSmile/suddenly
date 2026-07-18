@@ -93,7 +93,7 @@
 
 - Business logic that can be wrong (services, validators)
 - Edge cases and expected errors (NPC already claimed, expired signature…)
-- State transitions: NPC → CLAIMED / ADOPTED / FORKED
+- State transitions: NPC → CLAIMED / ADOPTED (Fork keeps target NPC; new PC has `parent` set)
 - Cryptographic signatures: valid, invalid, expired, missing header
 
 ### What NOT to test

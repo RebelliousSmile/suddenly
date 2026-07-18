@@ -106,7 +106,7 @@
 
 | Property | Description |
 |----------|-------------|
-| `suddenly:status` | Character status (NPC/PC/CLAIMED/ADOPTED/FORKED) |
+| `suddenly:status` | Character status (NPC/PC/CLAIMED/ADOPTED) |
 | `suddenly:originGame` | Character's origin game |
 | `suddenly:creator` | Original creator |
 | `suddenly:appearances` | Appearances in reports |

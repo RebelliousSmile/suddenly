@@ -119,12 +119,6 @@ class TestCharacterModel:
         )
         assert adopted.is_available is False
 
-    def test_forked_is_not_available(self, db: Any, user: User, game: Game) -> None:
-        forked = Character.objects.create(
-            name="Forked", status=CharacterStatus.FORKED, creator=user, origin_game=game
-        )
-        assert forked.is_available is False
-
 
 class TestQuoteModel:
     """Tests for Quote model."""

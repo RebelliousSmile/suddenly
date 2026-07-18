@@ -132,5 +132,5 @@ journey
 ```
 NPC → CLAIMED  (retcon: NPC was already the requester's PC from the start)
 NPC → ADOPTED  (adoption: NPC becomes requester's new PC)
-NPC → FORKED   (derivation: new PC linked to NPC, NPC preserved)
+Fork           (derivation: creates a new PC with parent=NPC; NPC stays NPC — no FORKED status)
 ```

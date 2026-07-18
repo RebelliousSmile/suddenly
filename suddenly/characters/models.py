@@ -26,7 +26,6 @@ class CharacterStatus(models.TextChoices):
     PC = "pc", _("PC")
     CLAIMED = "claimed", _("Claimed")
     ADOPTED = "adopted", _("Adopted")
-    FORKED = "forked", _("Forked")
 
 
 class Character(BaseModel):

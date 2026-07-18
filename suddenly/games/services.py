@@ -68,7 +68,10 @@ def build_game_queryset(
                 filter=Q(characters__status__in=["claimed", "adopted"]),
                 distinct=True,
             ),
-            char_forked=Count("characters", filter=Q(characters__status="forked"), distinct=True),
+            # A fork is a PC with a parent (no dedicated status); count by lineage.
+            char_forked=Count(
+                "characters", filter=Q(characters__parent__isnull=False), distinct=True
+            ),
         )
         .order_by("-updated_at")
     )

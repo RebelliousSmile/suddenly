@@ -2,19 +2,26 @@
 
 | Type | Signification | Résultat | PNJ original |
 |------|--------------|----------|--------------|
-| **Claim** | "Ce PNJ était mon PJ depuis le début" — rétcon | PNJ remplacé par le PJ existant | Remplacé |
-| **Adopt** | "Je reprends ce PNJ comme mon PJ" — transfert | PNJ devient le PJ du demandeur | Transféré |
-| **Fork** | "Mon PJ est inspiré de ce PNJ" — dérivation | Nouveau PJ lié, PNJ reste intact | Conservé |
+| **Claim** | "Ce PNJ était mon PJ depuis le début" — rétcon | Le PJ existant devient canon ; les deux persos **coexistent** | Statut → `CLAIMED` (non supprimé) |
+| **Adopt** | "Je reprends ce PNJ comme mon PJ" — transfert | Le PNJ (même objet) devient le PJ du demandeur | Statut → `ADOPTED`, `owner` transféré |
+| **Fork** | "Mon PJ est inspiré de ce PNJ" — dérivation | Nouveau PJ (`status=PC`, `parent=PNJ`), PNJ intact | Reste `NPC` (disponible) |
 
 ## Statuts Character
 
 ```mermaid
 stateDiagram-v2
     [*] --> NPC : Créé dans un CR
-    NPC --> CLAIMED : Claim accepté (PNJ remplacé)
-    NPC --> ADOPTED : Adopt accepté (PNJ transféré)
-    NPC --> FORKED : Fork accepté (PNJ conservé)
+    NPC --> CLAIMED : Claim accepté (statut ; coexiste avec le PJ)
+    NPC --> ADOPTED : Adopt accepté (owner transféré)
+    note right of NPC
+        Fork accepté → le PNJ reste NPC (disponible).
+        Un nouveau PJ (status=PC, parent=PNJ) est créé.
+        Il n'existe pas de statut FORKED.
+    end note
 ```
+
+> Le fork ne consomme pas le PNJ : un même PNJ peut être forké plusieurs fois
+> et rester réclamable/adoptable. La lignée est portée par `Character.parent`.
 
 ## Flow Adopt
 
@@ -68,5 +75,5 @@ sequenceDiagram
 2. Initiateur rédige sa partie (Markdown)
 3. Accepteur complète la scène
 4. Les deux valident → publication sur les deux instances
-5. SharedSequence visible dans les deux parties concernées
+5. SharedSequence rattachée au `CharacterLink` (pas de FK vers Game) — visible par les deux joueurs liés
 ```

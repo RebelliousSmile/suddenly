@@ -518,7 +518,7 @@ def suggested_characters_to_link(user: User, limit: int = 8) -> list[Character]:
     A claim/adopt/fork always targets *another* player's character (you link your
     PC to someone else's NPC), so candidates exclude anything the caller created
     or owns, and anything remote (local linking only). Only linkable statuses
-    survive: NPC (claim/adopt/fork) or PC (fork only) — CLAIMED/ADOPTED/FORKED
+    survive: NPC (claim/adopt/fork) or PC (fork only) — CLAIMED/ADOPTED
     expose no action, so they are dropped.
 
     Sources are unioned in priority order and de-duplicated:
