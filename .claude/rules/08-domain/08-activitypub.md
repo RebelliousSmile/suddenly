@@ -82,6 +82,17 @@ paths:
 - `totalItems` counts the full collection, never the sliced page — count on the base queryset before pagination
   **Why:** a page-length `totalItems` misreports the collection size to remote crawlers and breaks paging.
 
+## Offer federation — canonical format (DEC-038)
+
+- Canonical Offer = `serializers.serialize_link_request` — the single wire format
+- `object.type` = `suddenly:Claim` / `suddenly:Adopt` / `suddenly:Fork`; target NPC in top-level `target`; message in `object.content`; proposed PC in `object.proposedCharacter`
+- Receive only via `inbox.py::handle_offer` — never reintroduce the `Relationship` form
+- Resolve a target/proposed character with `_resolve_character_by_actor_url` (remote `ap_id`, else parse the local URL); unknown remote proposed PC → `get_or_create_remote_character` (fetch via `fetch_ap_json`, SSRF-safe)
+- Correlate a federated Accept/Reject by `LinkRequest.origin_offer_id` (the requester's Offer `id`), never by the local PK — set at receipt in `handle_offer`, read in `send_accept_activity`/`send_reject_activity`
+- Requester-side state after Accept is rebuilt by `LinkService.reconstruct_remote_accept` (CharacterLink + SharedSequence + notification), idempotent on replay — never call `accept_request` on the requester side
+- Accepting a CLAIM with an unresolved `proposed_character` raises `ValidationError` (never let `CharacterLink.source` IntegrityError surface)
+- Inbox dispatch lives in `inbox.py` only — `tasks.py` has no incoming-activity handlers
+
 ## Cross-instance request timeouts
 
 - Cross-instance link requests expire after 30 days (fixed at MVP)

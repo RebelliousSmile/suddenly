@@ -6,176 +6,12 @@ from __future__ import annotations
 
 import logging
 from datetime import timedelta
-from typing import Any, Protocol
+from typing import Any
 
 from celery import shared_task
 from django.utils import timezone
 
 logger = logging.getLogger(__name__)
-
-
-# =================================================================
-# Incoming activities processing
-# =================================================================
-
-
-@shared_task(bind=True, max_retries=3)  # type: ignore[untyped-decorator]
-def process_incoming_activity(
-    self: Any,
-    user_id: str | None,
-    activity: dict[str, Any],
-    game_id: str | None = None,
-    character_id: str | None = None,
-) -> None:
-    """
-    Process an incoming ActivityPub activity.
-    """
-    try:
-        activity_type = activity.get("type")
-
-        handlers: dict[str, _ActivityHandler] = {
-            "Follow": handle_follow,
-            "Undo": handle_undo,
-            "Create": handle_create,
-            "Update": handle_update,
-            "Delete": handle_delete,
-            "Accept": handle_accept,
-            "Reject": handle_reject,
-            "Offer": handle_offer,
-        }
-
-        handler = handlers.get(activity_type)  # type: ignore[arg-type]
-        if handler:
-            handler(activity, user_id, game_id, character_id)
-        else:
-            logger.warning(f"Unknown activity type: {activity_type}")
-
-    except Exception as e:
-        logger.exception(f"Error processing activity: {e}")
-        raise self.retry(exc=e, countdown=2**self.request.retries * 60)
-
-
-class _ActivityHandler(Protocol):
-    def __call__(
-        self,
-        activity: dict[str, Any],
-        user_id: str | None,
-        game_id: str | None,
-        character_id: str | None,
-    ) -> None: ...
-
-
-def handle_follow(
-    activity: dict[str, Any],
-    user_id: str | None,
-    game_id: str | None,
-    character_id: str | None,
-) -> None:
-    """Handle incoming Follow activity."""
-    from django.contrib.contenttypes.models import ContentType
-
-    from suddenly.characters.models import Character, Follow
-    from suddenly.games.models import Game
-    from suddenly.users.models import User
-
-    actor_url = activity.get("actor")
-    follower = get_or_create_remote_user(actor_url)
-    if not follower:
-        return
-
-    target_obj: User | Game | Character | None = None
-    content_type: ContentType | None = None
-
-    if user_id:
-        target_obj = User.objects.filter(id=user_id).first()
-        content_type = ContentType.objects.get_for_model(User)
-    elif game_id:
-        target_obj = Game.objects.filter(id=game_id).first()
-        content_type = ContentType.objects.get_for_model(Game)
-    elif character_id:
-        target_obj = Character.objects.filter(id=character_id).first()
-        content_type = ContentType.objects.get_for_model(Character)
-
-    if not target_obj:
-        return
-
-    Follow.objects.get_or_create(
-        follower=follower,
-        content_type=content_type,
-        object_id=target_obj.id,
-        defaults={"remote": True, "ap_id": activity.get("id")},
-    )
-
-    send_accept_follow.delay(str(target_obj.id), type(target_obj).__name__, activity)
-
-
-def handle_undo(
-    activity: dict[str, Any],
-    user_id: str | None,
-    game_id: str | None,
-    character_id: str | None,
-) -> None:
-    """Handle Undo activity."""
-    obj = activity.get("object", {})
-    if obj.get("type") == "Follow":
-        from suddenly.characters.models import Follow
-
-        Follow.objects.filter(ap_id=obj.get("id")).delete()
-
-
-def handle_create(
-    activity: dict[str, Any],
-    user_id: str | None,
-    game_id: str | None,
-    character_id: str | None,
-) -> None:
-    logger.info(f"Received Create: {activity.get('object', {}).get('type')}")
-
-
-def handle_update(
-    activity: dict[str, Any],
-    user_id: str | None,
-    game_id: str | None,
-    character_id: str | None,
-) -> None:
-    logger.info("Received Update")
-
-
-def handle_delete(
-    activity: dict[str, Any],
-    user_id: str | None,
-    game_id: str | None,
-    character_id: str | None,
-) -> None:
-    logger.info("Received Delete")
-
-
-def handle_accept(
-    activity: dict[str, Any],
-    user_id: str | None,
-    game_id: str | None,
-    character_id: str | None,
-) -> None:
-    logger.info("Received Accept")
-
-
-def handle_reject(
-    activity: dict[str, Any],
-    user_id: str | None,
-    game_id: str | None,
-    character_id: str | None,
-) -> None:
-    logger.info("Received Reject")
-
-
-def handle_offer(
-    activity: dict[str, Any],
-    user_id: str | None,
-    game_id: str | None,
-    character_id: str | None,
-) -> None:
-    """Handle Offer (link requests from remote)."""
-    logger.info("Received Offer")
 
 
 # =================================================================
@@ -514,7 +350,11 @@ def send_accept_activity(link_request_id: str) -> None:
     if not request:
         return
 
-    offer = serialize_link_request(request)
+    # DEC-038 Part 1: for a request of remote origin, the Accept must reference
+    # the requester's ORIGINAL Offer id (a string) — not this instance's local
+    # PK, which the requester does not know. Locally-created requests keep the
+    # full serialized Offer object.
+    offer: dict[str, Any] | str = request.origin_offer_id or serialize_link_request(request)
     creator = request.target_character.creator
     accept = create_accept_activity(creator, offer)
 
@@ -545,7 +385,9 @@ def send_reject_activity(link_request_id: str) -> None:
     if not request:
         return
 
-    offer = serialize_link_request(request)
+    # DEC-038 Part 1: mirror send_accept_activity — reference the requester's
+    # original Offer id for remote-origin requests.
+    offer: dict[str, Any] | str = request.origin_offer_id or serialize_link_request(request)
     creator = request.target_character.creator
     reject = create_reject_activity(creator, offer)
 

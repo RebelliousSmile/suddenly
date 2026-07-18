@@ -105,7 +105,12 @@ def link_request_post_save(sender: type[Any], instance: Any, created: bool, **kw
         # New request - send Offer
         _safe_delay(send_offer_activity, str(instance.id))
     else:
-        # Status change - check if accepted or rejected
+        # Status change — only a REMOTE requester needs an Accept/Reject delivered
+        # back. A local requester's status flip comes from reconstruct_remote_accept
+        # (DEC-038 Part 2), which already rebuilt its state; emitting here would only
+        # enqueue a task that send_accept_activity immediately skips.
+        if not instance.requester.remote:
+            return
         if instance.status == LinkRequestStatus.ACCEPTED:
             _safe_delay(send_accept_activity, str(instance.id))
         elif instance.status == LinkRequestStatus.REJECTED:

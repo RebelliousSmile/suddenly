@@ -697,3 +697,390 @@ class TestInboxRateLimit:
         response = process_inbox(request, actor_type="user", actor_identifier=user.username)
 
         assert response.status_code == 403
+
+
+class TestLinkOfferFederation:
+    """Inbound Offer (claim/adopt/fork) reconstruction from the emitted format."""
+
+    pytestmark = pytest.mark.django_db
+
+    @staticmethod
+    def _remote_requester() -> User:
+        from tests.factories import UserFactory
+
+        return cast(
+            User,
+            UserFactory(
+                username="bob@remote.social",
+                email="bob@remote.social",
+                remote=True,
+                ap_id="https://remote.social/users/bob",
+                inbox_url="https://remote.social/users/bob/inbox",
+            ),
+        )
+
+    def test_serialized_claim_offer_round_trips_into_a_link_request(
+        self, character: Character, user: User
+    ) -> None:
+        """
+        The Offer we emit (``serialize_link_request``) must be ingestible by the
+        inbox handler that receives it. This is the regression guard against the
+        two federation code paths silently diverging again: emit-then-ingest,
+        assert the link request is rebuilt with the right type, actors and PC.
+        """
+        from suddenly.activitypub.inbox import handle_offer
+        from suddenly.activitypub.serializers import serialize_link_request
+        from suddenly.characters.models import LinkRequest, LinkRequestStatus, LinkType
+        from tests.factories import CharacterFactory
+
+        bob = self._remote_requester()
+        # Bob's proposed PC — remote from this instance's point of view
+        viktor = CharacterFactory(
+            name="Viktor",
+            status="pc",
+            owner=bob,
+            creator=bob,
+            remote=True,
+            ap_id="https://remote.social/characters/viktor",
+        )
+
+        # Build the sender-side request, serialize it exactly as it goes on the wire
+        sender_side = LinkRequest.objects.create(
+            type=LinkType.CLAIM,
+            requester=bob,
+            target_character=character,
+            proposed_character=viktor,
+            message="Le Corbeau, c'était Viktor infiltré",
+        )
+        offer = serialize_link_request(sender_side)
+        sender_side.delete()  # simulate crossing to the receiving instance
+        assert LinkRequest.objects.count() == 0
+
+        # The receiving instance ingests the very same JSON
+        handle_offer(offer, "user", user.username)
+
+        created = LinkRequest.objects.get()
+        assert created.type == LinkType.CLAIM
+        assert created.requester == bob
+        assert created.target_character == character
+        assert created.proposed_character == viktor
+        assert created.message == "Le Corbeau, c'était Viktor infiltré"
+        assert created.status == LinkRequestStatus.PENDING
+
+    def test_offer_with_unknown_object_type_is_ignored(
+        self, character: Character, user: User
+    ) -> None:
+        from suddenly.activitypub.inbox import handle_offer
+        from suddenly.characters.models import LinkRequest
+
+        bob = self._remote_requester()
+        offer = {
+            "type": "Offer",
+            "actor": bob.actor_url,
+            "target": character.actor_url,
+            "object": {"type": "suddenly:Bogus", "content": "nope"},
+        }
+
+        handle_offer(offer, "user", user.username)
+
+        assert LinkRequest.objects.count() == 0
+
+    # ------------------------------------------------------------------
+    # DEC-038 Part 1 — Offer id correlation (round-trip id → Accept)
+    # ------------------------------------------------------------------
+
+    def test_inbound_offer_stores_origin_offer_id(self, character: Character, user: User) -> None:
+        """handle_offer persists the inbound Offer id for later Accept correlation."""
+        from suddenly.activitypub.inbox import handle_offer
+        from suddenly.characters.models import LinkRequest
+
+        bob = self._remote_requester()
+        offer = {
+            "type": "Offer",
+            "id": "https://remote.social/link-requests/abc-123",
+            "actor": bob.actor_url,
+            "target": character.actor_url,
+            "object": {"type": "suddenly:Adopt", "content": "reprise"},
+        }
+
+        handle_offer(offer, "user", user.username)
+
+        created = LinkRequest.objects.get()
+        assert created.origin_offer_id == "https://remote.social/link-requests/abc-123"
+
+    def test_remote_origin_accept_references_origin_offer_id(
+        self, character: Character, user: User, mocker: Any
+    ) -> None:
+        """A request of remote origin emits an Accept whose object is that origin id."""
+        from suddenly.activitypub.tasks import send_accept_activity
+        from suddenly.characters.models import LinkRequest, LinkRequestStatus, LinkType
+
+        bob = self._remote_requester()
+        origin_id = "https://remote.social/link-requests/abc-123"
+        lr = LinkRequest.objects.create(
+            type=LinkType.ADOPT,
+            requester=bob,
+            target_character=character,
+            message="reprise",
+            status=LinkRequestStatus.PENDING,
+            origin_offer_id=origin_id,
+        )
+
+        deliver = mocker.patch("suddenly.activitypub.tasks.deliver_activity")
+
+        send_accept_activity(str(lr.pk))
+
+        assert deliver.delay.called
+        sent_activity = deliver.delay.call_args.args[0]
+        assert sent_activity["object"] == origin_id
+
+    def test_locally_created_request_accept_keeps_serialized_offer(
+        self, character: Character, user: User, mocker: Any
+    ) -> None:
+        """Without origin_offer_id, the Accept still carries the full Offer object."""
+        from suddenly.activitypub.tasks import send_accept_activity
+        from suddenly.characters.models import LinkRequest, LinkRequestStatus, LinkType
+
+        bob = self._remote_requester()
+        lr = LinkRequest.objects.create(
+            type=LinkType.ADOPT,
+            requester=bob,
+            target_character=character,
+            message="reprise",
+            status=LinkRequestStatus.PENDING,
+        )
+
+        deliver = mocker.patch("suddenly.activitypub.tasks.deliver_activity")
+
+        send_accept_activity(str(lr.pk))
+
+        assert deliver.delay.called
+        sent_activity = deliver.delay.call_args.args[0]
+        assert isinstance(sent_activity["object"], dict)
+        assert sent_activity["object"]["type"] == "Offer"
+
+    # ------------------------------------------------------------------
+    # DEC-038 Part 2 — State reconstruction on the requester side
+    # ------------------------------------------------------------------
+
+    def test_federated_accept_reconstructs_state_and_is_idempotent(
+        self, character: Character, user: User, mocker: Any
+    ) -> None:
+        """An inbound Accept rebuilds link + sequence + notification, replay-safe."""
+        from suddenly.activitypub.inbox import handle_accept
+        from suddenly.characters.models import (
+            CharacterLink,
+            LinkRequest,
+            LinkRequestStatus,
+            LinkType,
+            SharedSequence,
+        )
+        from suddenly.core.models import Notification, NotificationType
+        from tests.factories import CharacterFactory
+
+        # Suppress signal-triggered task dispatches (Offer/Accept emission).
+        mocker.patch("suddenly.activitypub.signals._safe_delay")
+
+        bob = self._remote_requester()
+        # The requester (local) targets a remote NPC mirror on the accepting side.
+        target_mirror = CharacterFactory(
+            name="Le Corbeau",
+            status="npc",
+            creator=bob,
+            remote=True,
+            ap_id="https://remote.social/characters/corbeau",
+        )
+        lr = LinkRequest.objects.create(
+            type=LinkType.ADOPT,
+            requester=user,
+            target_character=target_mirror,
+            message="Je le reprends",
+            status=LinkRequestStatus.PENDING,
+        )
+
+        accept = {
+            "type": "Accept",
+            "actor": "https://remote.social/users/bob",
+            "object": f"https://remote.social/link-requests/{lr.pk}",
+            "summary": "Adoption acceptée",
+        }
+
+        handle_accept(accept, "user", user.username)
+
+        lr.refresh_from_db()
+        assert lr.status == LinkRequestStatus.ACCEPTED
+        assert lr.response_message == "Adoption acceptée"
+
+        link = CharacterLink.objects.get(link_request=lr)
+        assert link.type == LinkType.ADOPT
+        assert SharedSequence.objects.filter(link=link).exists()
+        assert Notification.objects.filter(
+            recipient=user, type=NotificationType.LINK_ACCEPTED
+        ).exists()
+
+        # Replay (retry / duplicate Accept) must not duplicate anything.
+        handle_accept(accept, "user", user.username)
+        assert CharacterLink.objects.filter(link_request=lr).count() == 1
+        assert (
+            Notification.objects.filter(recipient=user, type=NotificationType.LINK_ACCEPTED).count()
+            == 1
+        )
+
+    # ------------------------------------------------------------------
+    # DEC-038 Part 3 — Remote proposed-character resolution
+    # ------------------------------------------------------------------
+
+    def test_offer_fetches_unknown_remote_proposed_character(
+        self, character: Character, user: User, mocker: Any
+    ) -> None:
+        """An unknown proposedCharacter is fetched and mirrored locally."""
+        from suddenly.activitypub.inbox import handle_offer
+        from suddenly.characters.models import LinkRequest
+
+        bob = self._remote_requester()
+        proposed_url = "https://remote.social/characters/viktor"
+
+        mocker.patch(
+            "suddenly.activitypub._http.fetch_ap_actor",
+            return_value={
+                "type": "Person",
+                "name": "Viktor",
+                "summary": "infiltré",
+                "creator": bob.ap_id,
+            },
+        )
+
+        offer = {
+            "type": "Offer",
+            "id": "https://remote.social/link-requests/xyz",
+            "actor": bob.actor_url,
+            "target": character.actor_url,
+            "object": {
+                "type": "suddenly:Claim",
+                "content": "c'était Viktor",
+                "proposedCharacter": proposed_url,
+            },
+        }
+
+        handle_offer(offer, "user", user.username)
+
+        created = LinkRequest.objects.get()
+        assert created.proposed_character is not None
+        pc = created.proposed_character
+        assert pc.remote is True
+        assert pc.ap_id == proposed_url
+        assert pc.origin_game is not None
+
+    def test_offer_with_unresolvable_proposed_character_degrades_to_null(
+        self, character: Character, user: User, mocker: Any
+    ) -> None:
+        """A failed fetch leaves proposed_character null but still records the request."""
+        from suddenly.activitypub.inbox import handle_offer
+        from suddenly.characters.models import LinkRequest
+
+        bob = self._remote_requester()
+
+        mocker.patch("suddenly.activitypub._http.fetch_ap_actor", return_value=None)
+
+        offer = {
+            "type": "Offer",
+            "id": "https://remote.social/link-requests/xyz",
+            "actor": bob.actor_url,
+            "target": character.actor_url,
+            "object": {
+                "type": "suddenly:Claim",
+                "content": "c'était Viktor",
+                "proposedCharacter": "https://remote.social/characters/ghost",
+            },
+        }
+
+        handle_offer(offer, "user", user.username)
+
+        created = LinkRequest.objects.get()
+        assert created.proposed_character is None
+
+    def test_proposed_character_without_author_does_not_mint_user_from_game(
+        self, character: Character, user: User, mocker: Any
+    ) -> None:
+        """A fetched Character actor exposing only `attributedTo` (its origin Game,
+        never the author) must not be mistaken for its creator — otherwise we mint a
+        bogus remote User from a Group actor URL. proposedCharacter degrades to null.
+        """
+        from suddenly.activitypub.inbox import handle_offer
+        from suddenly.characters.models import LinkRequest
+        from suddenly.users.models import User as UserModel
+
+        bob = self._remote_requester()
+        game_url = "https://remote.social/games/some-campaign"
+
+        # No `creator`/`owner` — only `attributedTo`, which for a Character is the Game.
+        mocker.patch(
+            "suddenly.activitypub._http.fetch_ap_actor",
+            return_value={"type": "Person", "name": "Ghost", "attributedTo": game_url},
+        )
+
+        offer = {
+            "type": "Offer",
+            "id": "https://remote.social/link-requests/no-author",
+            "actor": bob.actor_url,
+            "target": character.actor_url,
+            "object": {
+                "type": "suddenly:Claim",
+                "content": "auteur absent",
+                "proposedCharacter": "https://remote.social/characters/ghost",
+            },
+        }
+
+        handle_offer(offer, "user", user.username)
+
+        created = LinkRequest.objects.get()
+        assert created.proposed_character is None
+        assert not UserModel.objects.filter(ap_id=game_url).exists()
+
+    def test_remote_adopt_accept_leaves_mirror_owner_untouched(
+        self, character: Character, user: User, mocker: Any
+    ) -> None:
+        """Requester-side ADOPT reconstruction must not locally reassign the remote
+        mirror's owner/status: the accepting instance is authoritative and propagates
+        the change via Update, not a local mutation (DEC-038 Part 2 design lock).
+        """
+        from suddenly.activitypub.inbox import handle_accept
+        from suddenly.characters.models import (
+            CharacterLink,
+            LinkRequest,
+            LinkRequestStatus,
+            LinkType,
+        )
+        from tests.factories import CharacterFactory
+
+        mocker.patch("suddenly.activitypub.signals._safe_delay")
+
+        bob = self._remote_requester()
+        target_mirror = CharacterFactory(
+            name="Le Corbeau",
+            status="npc",
+            creator=bob,
+            remote=True,
+            ap_id="https://remote.social/characters/corbeau2",
+        )
+        lr = LinkRequest.objects.create(
+            type=LinkType.ADOPT,
+            requester=user,
+            target_character=target_mirror,
+            message="Je le reprends",
+            status=LinkRequestStatus.PENDING,
+        )
+
+        accept = {
+            "type": "Accept",
+            "actor": "https://remote.social/users/bob",
+            "object": f"https://remote.social/link-requests/{lr.pk}",
+            "summary": "ok",
+        }
+        handle_accept(accept, "user", user.username)
+
+        # Link is built for provenance, but the mirror itself is not mutated locally.
+        assert CharacterLink.objects.filter(link_request=lr, type=LinkType.ADOPT).exists()
+        target_mirror.refresh_from_db()
+        assert target_mirror.owner != user
+        assert target_mirror.status == "npc"

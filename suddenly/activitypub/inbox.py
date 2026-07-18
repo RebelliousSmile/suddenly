@@ -9,6 +9,7 @@ import logging
 from typing import Any, Protocol
 from urllib.parse import urlparse
 
+from django.conf import settings
 from django.http import (
     HttpRequest,
     HttpResponse,
@@ -697,57 +698,166 @@ def _handle_delete_by_url(ap_id: str, actor_url: str) -> None:
         logger.info(f"Deleted remote User {ap_id}")
 
 
+def _resolve_character_by_actor_url(actor_url: str | None) -> Any:
+    """
+    Resolve a Character from its ActivityPub actor URL.
+
+    Remote characters are matched on their stored ``ap_id``. Local characters
+    expose a computed actor URL (``{AP_BASE_URL}/characters/{pk}``) and store no
+    ``ap_id``, so they are resolved by parsing the trailing primary key.
+    """
+    from django.core.exceptions import ValidationError
+
+    from suddenly.characters.models import Character
+
+    if not actor_url:
+        return None
+
+    remote = Character.objects.filter(ap_id=actor_url).first()
+    if remote:
+        return remote
+
+    prefix = f"{settings.AP_BASE_URL}/characters/"
+    if actor_url.startswith(prefix):
+        pk = actor_url[len(prefix) :].strip("/")
+        try:
+            return Character.objects.filter(pk=pk, remote=False).first()
+        except (ValueError, ValidationError):
+            return None
+    return None
+
+
 def handle_offer(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
-    Handle Offer activity (claim/adopt/fork request from remote user).
+    Handle Offer activity (claim/adopt/fork request from a remote user).
+
+    Parses the canonical Suddenly Offer emitted by
+    ``serializers.serialize_link_request``:
+    - ``object.type`` = ``suddenly:Claim`` / ``suddenly:Adopt`` / ``suddenly:Fork``
+    - target NPC actor URL in the top-level ``target``
+    - proposed PC actor URL in ``object.proposedCharacter`` (Claim only)
+    - narrative message in ``object.content``
     """
-    from suddenly.characters.models import Character, LinkRequest, LinkType
+    from suddenly.characters.models import LinkRequest, LinkRequestStatus, LinkType
 
     actor_url = activity.get("actor")
-    obj = activity.get("object", {})
-
-    if obj.get("type") != "Relationship":
+    obj = activity.get("object")
+    if not actor_url or not isinstance(obj, dict):
         return
 
-    relationship = obj.get("relationship")
-    target_url = obj.get("object")  # The NPC being claimed
-
-    # Map relationship to LinkType
     link_type = {
-        "claim": LinkType.CLAIM,
-        "adopt": LinkType.ADOPT,
-        "fork": LinkType.FORK,
-    }.get(relationship)
-
+        "suddenly:Claim": LinkType.CLAIM,
+        "suddenly:Adopt": LinkType.ADOPT,
+        "suddenly:Fork": LinkType.FORK,
+    }.get(obj.get("type", ""))
     if not link_type:
         return
 
-    # Get remote requester
-    if not actor_url:
-        return
+    # Resolve the remote requester (may fetch the actor if unknown)
     result = get_or_create_remote_user(actor_url)
     if result is None:
         return
     requester, _ = result
 
-    # Find local target character
-    target_character = Character.objects.filter(
-        ap_id=target_url,
-        remote=False,
-    ).first()
-
-    if not target_character:
+    # The targeted NPC is local on this instance (top-level `target`)
+    target_character = _resolve_character_by_actor_url(activity.get("target"))
+    if target_character is None or target_character.remote:
         return
 
-    # Create link request
+    # A Claim carries the proposed PC (remote here) — resolve locally first, then
+    # fall back to fetching the remote actor (DEC-038 Part 3). A CLAIM whose
+    # proposed PC stays null would crash at acceptance on the non-null
+    # CharacterLink.source, so resolving it here is a hard prerequisite for CLAIM.
+    proposed_url = obj.get("proposedCharacter")
+    proposed_character = _resolve_character_by_actor_url(proposed_url)
+    if proposed_character is None and isinstance(proposed_url, str) and proposed_url:
+        proposed_character = get_or_create_remote_character(proposed_url)
+
+    # Preserve the one-PENDING-at-a-time invariant (mirrors LinkService.create_request)
+    has_pending = LinkRequest.objects.filter(
+        target_character=target_character, status=LinkRequestStatus.PENDING
+    ).exists()
+    status = LinkRequestStatus.QUEUED if has_pending else LinkRequestStatus.PENDING
+
     LinkRequest.objects.create(
         type=link_type,
         requester=requester,
         target_character=target_character,
-        message=activity.get("summary", ""),
+        proposed_character=proposed_character,
+        message=obj.get("content", ""),
+        status=status,
+        # Correlate a future Accept back to the requester's own LinkRequest (Part 1).
+        origin_offer_id=activity.get("id") or None,
     )
 
-    logger.info(f"Created LinkRequest: {link_type} for {target_character.name}")
+    logger.info("Created LinkRequest: %s for %s", link_type, target_character.name)
+
+
+def get_or_create_remote_character(actor_url: str) -> Any:
+    """Resolve a remote Character actor URL to a local mirror, fetching if unknown.
+
+    Used when an inbound Offer's ``proposedCharacter`` points at a Character this
+    instance has never seen (DEC-038 Part 3). Mirrors the synthesis done in
+    :func:`_handle_create_character`: a per-domain remote ``Game`` provides the
+    non-null ``origin_game`` (08-characters), the actor's ``creator``/``owner``
+    resolves the remote author. Tolerant: any fetch failure returns ``None`` so
+    the caller degrades to a null proposed PC rather than dropping the Offer.
+
+    The remote GET goes through ``fetch_ap_actor`` → ``fetch_ap_json`` (SSRF
+    hardening, ap-pivots §9) — never raw httpx.
+    """
+    from urllib.parse import urlparse
+
+    from suddenly.characters.models import Character, CharacterStatus
+    from suddenly.games.models import Game
+
+    from ._http import fetch_ap_actor
+
+    if not actor_url:
+        return None
+
+    existing = Character.objects.filter(ap_id=actor_url).first()
+    if existing:
+        return existing
+
+    data = fetch_ap_actor(actor_url)
+    if data is None:
+        return None
+
+    # The character actor advertises its author via `creator` (see
+    # serialize_character). `owner` is the PC's player when set. NOT `attributedTo`:
+    # for a Character that field is the origin Game actor URL, never the author —
+    # feeding it to get_or_create_remote_user would mint a bogus User from a Group.
+    creator_url = data.get("creator") or data.get("owner")
+    if not isinstance(creator_url, str) or not creator_url:
+        return None
+    result = get_or_create_remote_user(creator_url)
+    if result is None:
+        return None
+    remote_user, _ = result
+
+    domain = urlparse(actor_url).netloc or "unknown"
+    origin_game, _ = Game.objects.get_or_create(
+        ap_id=f"https://{domain}",
+        defaults={
+            "title": f"Remote: {domain}",
+            "owner": remote_user,
+            "remote": True,
+        },
+    )
+
+    character, _ = Character.objects.get_or_create(
+        ap_id=actor_url,
+        defaults={
+            "name": data.get("name", "Unknown"),
+            "description": data.get("summary", ""),
+            "status": CharacterStatus.NPC,
+            "creator": remote_user,
+            "origin_game": origin_game,
+            "remote": True,
+        },
+    )
+    return character
 
 
 def _extract_link_request_id(offer_id: str) -> str | None:
@@ -765,27 +875,48 @@ def _extract_link_request_id(offer_id: str) -> str | None:
     return None
 
 
+def _offer_id_from_activity(activity: dict[str, Any]) -> str | None:
+    """Extract the Offer id an Accept/Reject references.
+
+    The canonical Accept carries ``object`` as the string ``origin_offer_id`` of
+    the requester's own Offer (DEC-038 Part 1). By robustness we also tolerate an
+    embedded dict, reading its ``id`` before parsing (a raw ``str(dict)`` would
+    yield a noisy Python repr from which no valid PK can be extracted).
+    """
+    offer_id = activity.get("object")
+    if isinstance(offer_id, dict):
+        offer_id = offer_id.get("id")
+    if not isinstance(offer_id, str) or not offer_id:
+        return None
+    return offer_id
+
+
 def handle_accept(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
     Handle Accept activity (our offer was accepted).
-    """
-    from suddenly.characters.models import LinkRequest, LinkRequestStatus
 
-    # The 'object' should be our original Offer activity ID
-    offer_id = activity.get("object")
+    Correlates the Accept back to our own LinkRequest by the Offer id (Part 1),
+    then replays the full state reconstruction on the requester side —
+    CharacterLink, SharedSequence, status, notification (Part 2) — via
+    ``LinkService.reconstruct_remote_accept`` (idempotent on replay).
+    """
+    from suddenly.characters.models import LinkRequest
+    from suddenly.characters.services import LinkService
+
+    offer_id = _offer_id_from_activity(activity)
     if not offer_id:
         return
 
-    request_id = _extract_link_request_id(str(offer_id))
-    if request_id:
-        try:
-            link_request = LinkRequest.objects.get(id=request_id)
-            link_request.status = LinkRequestStatus.ACCEPTED
-            link_request.response_message = activity.get("summary", "")
-            link_request.save()
-            logger.info(f"LinkRequest {request_id} accepted")
-        except (LinkRequest.DoesNotExist, ValueError):
-            pass
+    request_id = _extract_link_request_id(offer_id)
+    if not request_id:
+        return
+    try:
+        link_request = LinkRequest.objects.get(id=request_id)
+    except (LinkRequest.DoesNotExist, ValueError):
+        return
+
+    LinkService.reconstruct_remote_accept(link_request, activity.get("summary", ""))
+    logger.info("LinkRequest %s accepted (remote)", request_id)
 
 
 def handle_reject(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
@@ -794,11 +925,11 @@ def handle_reject(activity: dict[str, Any], actor_type: str, actor_identifier: s
     """
     from suddenly.characters.models import LinkRequest, LinkRequestStatus
 
-    offer_id = activity.get("object")
+    offer_id = _offer_id_from_activity(activity)
     if not offer_id:
         return
 
-    request_id = _extract_link_request_id(str(offer_id))
+    request_id = _extract_link_request_id(offer_id)
     if request_id:
         try:
             link_request = LinkRequest.objects.get(id=request_id)

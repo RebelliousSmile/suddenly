@@ -155,7 +155,15 @@ class LinkService:
         # Determine source character
         source: Character
         if request.type == LinkType.CLAIM:
-            source = request.proposed_character  # type: ignore[assignment]
+            # Anti-crash net (DEC-038 Part 3): CharacterLink.source is non-null.
+            # A cross-instance CLAIM whose remote proposed PC could not be resolved
+            # (fetch failed) would raise IntegrityError here — reject explicitly
+            # instead of letting the DB error surface.
+            if request.proposed_character is None:
+                raise ValidationError(
+                    "Impossible d'accepter ce claim : le PJ proposé n'a pas pu être résolu"
+                )
+            source = request.proposed_character
         elif request.type == LinkType.ADOPT:
             # Create new PC from NPC for adopter
             source = request.target_character
@@ -217,6 +225,85 @@ class LinkService:
 
         # TODO: Send ActivityPub Accept activity
         # TODO: Notify both parties
+
+        return link
+
+    @classmethod
+    @transaction.atomic
+    def reconstruct_remote_accept(
+        cls, request: LinkRequest, response_message: str = ""
+    ) -> CharacterLink | None:
+        """Rebuild link state on the REQUESTER side when a remote Accept arrives.
+
+        Counterpart to :meth:`accept_request` seen from the other end of the
+        federation loop (DEC-038 Part 2). Here the ``requester`` is local and the
+        ``target_character`` is a remote mirror of the authoritative object on the
+        accepting instance, so this method deliberately does NOT reuse
+        ``accept_request`` (opposite perspective, would re-emit an Accept and
+        double side-effects). It creates the ``CharacterLink`` + draft
+        ``SharedSequence``, flips the request to ACCEPTED and notifies the
+        requester.
+
+        The remote ``target_character`` status is intentionally left untouched:
+        it is a mirror whose authoritative status lives on the accepting instance
+        and reaches us through ``Update`` activities, not through a local
+        transition. FORK is the exception that creates a genuinely new local PC.
+
+        Idempotent: a replay (retry/duplicate Accept) that finds the request
+        already ACCEPTED with its link built returns that link without redoing
+        any work.
+        """
+        existing = CharacterLink.objects.filter(link_request=request).first()
+        if request.status == LinkRequestStatus.ACCEPTED and existing is not None:
+            return existing
+
+        source: Character
+        if request.type == LinkType.CLAIM:
+            # On the requester side the proposed PC is LOCAL (created when the
+            # player launched the claim) — non-null, no degradation needed here.
+            source = request.proposed_character  # type: ignore[assignment]
+        elif request.type == LinkType.ADOPT:
+            # Adoption is represented by a link onto the (remote) mirror without
+            # mutating its owner/status — the mirror follows the remote object.
+            source = request.target_character
+        elif request.type == LinkType.FORK:
+            source = Character.objects.create(
+                name=f"{request.target_character.name} (fork)",
+                description=request.target_character.description,
+                status=CharacterStatus.PC,
+                owner=request.requester,
+                creator=request.requester,
+                origin_game=request.target_character.origin_game,
+                parent=request.target_character,
+            )
+        else:
+            raise ValidationError(f"Type inconnu: {request.type}")
+
+        request.status = LinkRequestStatus.ACCEPTED
+        request.response_message = response_message
+        request.resolved_at = timezone.now()
+        # The post_save signal fires send_accept_activity, but it delivers only to
+        # a REMOTE requester; here the requester is local, so no Accept is re-emitted
+        # (no federation loop). Save normally so the signal path stays exercised.
+        request.save()
+
+        link = CharacterLink.objects.create(
+            type=request.type,
+            source=source,
+            target=request.target_character,
+            link_request=request,
+        )
+
+        SharedSequence.objects.create(
+            link=link,
+            title=f"Séquence: {source.name} ↔ {request.target_character.name}",
+            content="",
+        )
+
+        # The requester notification is emitted by ``core.notify_on_link_request``
+        # (post_save on LinkRequest → LINK_ACCEPTED for the requester) when the
+        # status flips above — no explicit Notification needed here, and creating
+        # one would duplicate it.
 
         return link
 

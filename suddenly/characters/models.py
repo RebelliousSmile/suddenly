@@ -381,6 +381,13 @@ class LinkRequest(BaseModel):
         max_length=20, choices=LinkRequestStatus.choices, default=LinkRequestStatus.PENDING
     )
 
+    # Federation correlation (DEC-038): the `id` of the inbound Offer, stored
+    # only on requests of remote origin. Lets the accepting instance emit an
+    # Accept referencing the requester's original Offer id (not this local PK),
+    # so `handle_accept` on the requester side resolves its own LinkRequest.
+    # `null` for locally-created requests. `max_length=500` per 08-activitypub.
+    origin_offer_id = models.URLField(max_length=500, blank=True, null=True)
+
     # Messages
     message = models.TextField(help_text="Explanation of the request")
     response_message = models.TextField(blank=True)
