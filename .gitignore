@@ -128,26 +128,11 @@ yarn-error.log*
 worktrees/
 .aidd/
 .vscode/
-aidd_docs/templates/*
-!aidd_docs/templates/custom/
-.claude/*
-!.claude/commands/
-.claude/commands/*
-!.claude/commands/custom/
-!.claude/rules/
-.claude/rules/*
-!.claude/rules/custom/
-!.claude/agents/
-.claude/agents/*
-!.claude/agents/custom-*
-!.claude/skills/
-.claude/skills/*
-!.claude/skills/custom/
-.github/*
-!.github/workflows/
 CLAUDE.md
 AGENTS.md
-CONTRIBUTING.md
 # </AIDD>
 =42.0
 .aidd/cache/
+
+# tests
+.playwright-mcp/
