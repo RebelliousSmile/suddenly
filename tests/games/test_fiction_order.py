@@ -254,7 +254,9 @@ class TestTemplateRender:
         html = render_to_string("games/_fiction_next.html", {"fiction_next": [mainline, branch]})
         assert 'data-fiction="next"' in html
         assert "Mainline scene" in html and "Branch scene" in html
-        assert html.index("mainline") < html.index("branch")
+        # Order is what matters here; assert on the titles (data, not the
+        # translated "mainline"/"branch" labels which vary by active language).
+        assert html.index("Mainline scene") < html.index("Branch scene")
 
     def test_render_next_absent_without_continuations(self) -> None:
         html = render_to_string("games/_fiction_next.html", {"fiction_next": []})

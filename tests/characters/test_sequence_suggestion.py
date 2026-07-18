@@ -25,6 +25,19 @@ from suddenly.users.models import User
 pytestmark = pytest.mark.django_db
 
 
+@pytest.fixture(autouse=True)
+def _english_ui(settings: Any) -> None:
+    """Render the UI in English so assertions match the English msgids.
+
+    The app defaults to French (``LANGUAGE_CODE = "fr"``) and
+    ``InstanceLanguageMiddleware`` activates the instance language on every
+    request. Pinning ``LANGUAGE_CODE`` forces the lazily-created
+    ``InstanceSettings`` singleton to English, keeping these behavioural
+    assertions matched to the stable source strings rather than translations.
+    """
+    settings.LANGUAGE_CODE = "en"
+
+
 def _make_sequence(
     user: User, other_user: User, game: Game, *, content: str = ""
 ) -> SharedSequence:
