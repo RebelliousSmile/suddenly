@@ -1,0 +1,23 @@
+{# Partial: like button state (swapped by HTMX). #138 #}
+{% load i18n %}
+{% if liked %}
+    <button hx-post="{% url 'feed:like' %}"
+            hx-vals='{"report_id": "{{ report.pk }}"}'
+            hx-target="this"
+            hx-swap="outerHTML"
+            class="btn-ghost btn-sm tap-target text-brand-primary"
+            aria-pressed="true"
+            aria-label="{% trans 'Remove like from this scene' %}">
+        <span class="i-lucide-heart text-sm" aria-hidden="true"></span>
+    </button>
+{% else %}
+    <button hx-post="{% url 'feed:like' %}"
+            hx-vals='{"report_id": "{{ report.pk }}"}'
+            hx-target="this"
+            hx-swap="outerHTML"
+            class="btn-ghost btn-sm tap-target"
+            aria-pressed="false"
+            aria-label="{% trans 'Like this scene' %}">
+        <span class="i-lucide-heart text-sm" aria-hidden="true"></span>
+    </button>
+{% endif %}

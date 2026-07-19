@@ -253,6 +253,35 @@ class Report(BaseModel):
         return self.released_at is not None
 
 
+class Like(BaseModel):
+    """A user's like on a published scene (Report). #138.
+
+    Persistence only — no denormalized counter at MVP: the button shows a heart,
+    no number. The ``liked`` state is read on the feed via an ``Exists``
+    annotation (never a per-card query), and a ``Count`` stays addable later
+    without a migration. Uniqueness ``(user, report)`` makes the toggle
+    idempotent; the DB constraint is the safety net against a fast double-click
+    racing two concurrent creates.
+    """
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="likes"
+    )
+    report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name="likes")
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(fields=["user", "report"], name="unique_user_report_like"),
+        ]
+        indexes = [
+            models.Index(fields=["report"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.user} ♥ {self.report}"
+
+
 class CastRole(models.TextChoices):
     """Role of a character in the cast."""
 

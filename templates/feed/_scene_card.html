@@ -42,10 +42,8 @@
             {% trans "Read the full scene" %}<span class="i-lucide-arrow-right text-sm"></span>
         </a>
         <div class="ml-auto flex items-center gap-2 text-semantic-muted">
-            {# Like: static placeholder — backend not implemented yet. #}
-            <button class="btn-ghost btn-sm" aria-label="{% trans 'Like' %}">
-                <span class="i-lucide-heart text-sm" aria-hidden="true"></span>
-            </button>
+            {# Like (toggle, #138): wired via feed:like. `liked` annotated on the feed queryset. #}
+            {% include "feed/_like_button.html" with report=report liked=report.liked %}
             {# Recommend (boost / AP Announce, US-28): wired via feed:recommend. #}
             {% include "feed/_recommend_button.html" with report=report %}
         </div>

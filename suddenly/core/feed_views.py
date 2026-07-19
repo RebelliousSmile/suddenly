@@ -12,13 +12,15 @@ from typing import Any
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
-from django.http import HttpRequest, HttpResponse
+from django.core.exceptions import ValidationError
+from django.db.models import Exists, OuterRef, Q
+from django.http import HttpRequest, HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
+from django.views.decorators.http import require_POST
 
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
-from suddenly.games.models import Report, ReportStatus
+from suddenly.games.models import Like, Report, ReportStatus
 from suddenly.games.services import build_composer_feed_context
 
 
@@ -108,6 +110,9 @@ def feed_home(request: AuthenticatedRequest) -> HttpResponse:
                 queryset=Rapport.objects.select_related("actor").order_by("created_at"),
             )
         )
+        # `liked` state via a correlated subquery — one extra JOIN for the whole
+        # page, never one query per card (#138). Feed is login-gated here.
+        .annotate(liked=Exists(Like.objects.filter(report=OuterRef("pk"), user=user)))
         .order_by("-published_at")[:20]
     )
 
@@ -147,7 +152,7 @@ def feed_instance(request: HttpRequest) -> HttpResponse:
 
     from suddenly.games.models import Rapport
 
-    reports = (
+    reports_qs = (
         Report.objects.filter(
             status=ReportStatus.PUBLISHED,
             visibility="public",
@@ -160,8 +165,14 @@ def feed_instance(request: HttpRequest) -> HttpResponse:
                 queryset=Rapport.objects.select_related("actor").order_by("created_at"),
             )
         )
-        .order_by("-published_at")[:20]
     )
+    # Instance is anonymous-accessible: only annotate `liked` for a logged-in
+    # visitor. Anonymous → no annotation, template reads a falsy `report.liked`.
+    if request.user.is_authenticated:
+        reports_qs = reports_qs.annotate(
+            liked=Exists(Like.objects.filter(report=OuterRef("pk"), user=request.user))
+        )
+    reports = reports_qs.order_by("-published_at")[:20]
 
     return htmx_render(
         request,
@@ -181,7 +192,7 @@ def feed_fediverse(request: HttpRequest) -> HttpResponse:
 
     from suddenly.games.models import Rapport
 
-    reports = (
+    reports_qs = (
         Report.objects.filter(
             status=ReportStatus.PUBLISHED,
             visibility="public",
@@ -194,8 +205,13 @@ def feed_fediverse(request: HttpRequest) -> HttpResponse:
                 queryset=Rapport.objects.select_related("actor").order_by("created_at"),
             )
         )
-        .order_by("-published_at")[:20]
     )
+    # Fediverse is anonymous-accessible: annotate `liked` only when logged in.
+    if request.user.is_authenticated:
+        reports_qs = reports_qs.annotate(
+            liked=Exists(Like.objects.filter(report=OuterRef("pk"), user=request.user))
+        )
+    reports = reports_qs.order_by("-published_at")[:20]
 
     return htmx_render(
         request,
@@ -234,6 +250,45 @@ def recommend_report(request: HttpRequest) -> HttpResponse:
         "feed/_recommend_button.html",
         {"report": report, "recommended": True},
     )
+
+
+@require_POST
+@login_required
+def like_report(request: AuthenticatedRequest) -> HttpResponse:
+    """Toggle a like on a published scene. #138. HTMX POST → button partial.
+
+    ``@require_POST`` above ``@login_required`` (project rule): a GET must never
+    mutate — a browser prefetch or ``<img>`` could otherwise phantom-like. The
+    toggle is idempotent by existence; ``unique_user_report_like`` guards a
+    concurrent double-click at the DB level.
+    """
+    report_id = request.POST.get("report_id", "")
+    try:
+        report = Report.objects.filter(pk=report_id, status=ReportStatus.PUBLISHED).first()
+    except (ValidationError, ValueError):
+        report = None
+    if not report:
+        # 404 leaves the button untouched — HTMX only swaps 2xx responses.
+        return HttpResponseNotFound()
+
+    like = Like.objects.filter(user=request.user, report=report).first()
+    if like:
+        like.delete()
+        liked = False
+    else:
+        Like.objects.create(user=request.user, report=report)
+        liked = True
+
+    # Federate to the remote scene's actor — directed AP Like / Undo(Like),
+    # never a followers broadcast (#138 part 2). Local scenes emit nothing.
+    if report.remote and report.ap_id:
+        from suddenly.activitypub.signals import _safe_delay
+        from suddenly.activitypub.tasks import send_like_activity, send_undo_like_activity
+
+        task = send_like_activity if liked else send_undo_like_activity
+        _safe_delay(task, str(request.user.pk), str(report.pk))
+
+    return render(request, "feed/_like_button.html", {"report": report, "liked": liked})
 
 
 def explore(request: HttpRequest) -> HttpResponse:

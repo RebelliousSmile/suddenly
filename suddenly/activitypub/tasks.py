@@ -374,6 +374,87 @@ def send_announce_activity(user_id: str, report_id: str) -> None:
     broadcast_activity.delay(activity, str(user.pk), "User")
 
 
+def _like_activity_id(domain: str, username: str, report_pk: Any) -> str:
+    """Deterministic AP ``id`` for a user's Like of a report (#138).
+
+    Stable by construction so ``Undo(Like)`` can reference the exact same ``id``
+    the receiver saw on the original ``Like`` — the risk-register requirement
+    against uncorrelated Like/Undo pairs on the remote side.
+    """
+    return f"https://{domain}/users/{username}/like/{report_pk}"
+
+
+@shared_task  # type: ignore[untyped-decorator]
+def send_like_activity(user_id: str, report_id: str) -> None:
+    """Send a directed AP ``Like`` to a remote scene's actor. #138 part 2.
+
+    Directed to the remote author's inbox (not a followers broadcast like
+    ``Announce``): a Like is a private engagement signal to the object's owner.
+    No-op on a local scene — local likes stay local.
+    """
+    from django.conf import settings as django_settings
+
+    from suddenly.games.models import Report
+    from suddenly.users.models import User
+
+    from ._http import sign_and_deliver
+
+    user = User.objects.filter(pk=user_id).first()
+    report = Report.objects.filter(pk=report_id).select_related("author").first()
+    if not user or not report or not report.remote or not report.ap_id:
+        return
+
+    domain = django_settings.DOMAIN
+    activity: dict[str, Any] = {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "type": "Like",
+        "id": _like_activity_id(domain, user.username, report.pk),
+        "actor": user.actor_url,
+        "object": report.ap_id,
+        "published": timezone.now().isoformat(),
+    }
+
+    sign_and_deliver(activity, report.author.actor_inbox, signer=user)
+
+
+@shared_task  # type: ignore[untyped-decorator]
+def send_undo_like_activity(user_id: str, report_id: str) -> None:
+    """Send a directed AP ``Undo(Like)`` to a remote scene's actor. #138 part 2.
+
+    Wraps the same ``Like`` object (identical ``id``) inside an ``Undo`` so the
+    remote side correlates it with the original Like. No-op on a local scene.
+    """
+    from django.conf import settings as django_settings
+
+    from suddenly.games.models import Report
+    from suddenly.users.models import User
+
+    from ._http import sign_and_deliver
+
+    user = User.objects.filter(pk=user_id).first()
+    report = Report.objects.filter(pk=report_id).select_related("author").first()
+    if not user or not report or not report.remote or not report.ap_id:
+        return
+
+    domain = django_settings.DOMAIN
+    like_id = _like_activity_id(domain, user.username, report.pk)
+    activity: dict[str, Any] = {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "type": "Undo",
+        "id": f"{like_id}/undo",
+        "actor": user.actor_url,
+        "object": {
+            "type": "Like",
+            "id": like_id,
+            "actor": user.actor_url,
+            "object": report.ap_id,
+        },
+        "published": timezone.now().isoformat(),
+    }
+
+    sign_and_deliver(activity, report.author.actor_inbox, signer=user)
+
+
 @shared_task  # type: ignore[untyped-decorator]
 def cleanup_expired_quotes() -> None:
     """Delete expired ephemeral quotes."""
