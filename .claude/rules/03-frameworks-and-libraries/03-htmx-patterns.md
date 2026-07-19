@@ -25,8 +25,10 @@ Pour toute action HTMX qui modifie l'état d'un item dans une liste :
 
 ## Endpoints HTMX state-mutating
 
-- Toujours décorer avec `@require_POST` (avant `@login_required`) les vues qui mutent l'état : create, delete, update
+- Toujours décorer avec `@require_POST` (avant `@login_required`) les vues **mutateur pur** : delete, ou create dont le GET ne sert pas de formulaire
 - Un GET ne doit jamais supprimer ou modifier des données — un `<img>` ou un prefetch navigateur peut déclencher le GET
+- **Exception — endpoint double GET/POST** : une vue create qui sert AUSSI son formulaire inline en GET (`hx-get` charge le form, `hx-post` soumet — ex. `marker_create`) garde le garde interne `if request.method == "POST":` ; `@require_POST` casserait le chargement du formulaire
+- Sur un mutateur pur, le garde interne devient mort une fois `@require_POST` posé — le retirer (le décorateur garantit déjà POST)
 - Les vues HTMX front (`front_views.py`) retournent du HTML (partials), jamais du JSON — pour les typeahead aussi
 
 ## Injection de valeurs dans un contexte JS

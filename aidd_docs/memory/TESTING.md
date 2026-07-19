@@ -65,6 +65,19 @@ Test files in `tests/`:
 - Must patch BOTH `settings` AND `celery_app.conf` — settings alone is insufficient (Celery reads config at import time)
 - `CELERY_TASK_ALWAYS_EAGER` must be unconditional in `development.py` (not inside `if REDIS_URL`)
 
+## Concurrent test runs — isolated test DB
+
+- The default test DB is `test_suddenly` — SHARED across every `pytest` process on the machine
+- A second Claude session (or parallel `pytest`) running at the same time clobbers it mid-run → spurious errors: `column "…" does not exist`, `relation "users_user" does not exist`
+- These failures are infra noise, NOT regressions — do not chase them in the code
+- To prove no-regression while another run may be active, use a DEDICATED test DB via `DATABASE_URL`:
+  ```bash
+  export DATABASE_URL="postgres://suddenly:suddenly@localhost:5432/suddenly_p6"
+  # → test DB becomes test_suddenly_p6, isolated from the shared one
+  ```
+- Subset run flags (skip coverage/cache): `--no-cov -o addopts='' -p no:cacheprovider --create-db`
+- Call `venv/Scripts/python.exe` directly — `rtk` cannot wrap the venv python
+
 ## Mocking and Stubbing
 
 - `pytest-mock`: use `mocker` fixture
