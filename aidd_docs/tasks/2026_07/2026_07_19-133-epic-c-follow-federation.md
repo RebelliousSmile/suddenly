@@ -157,7 +157,7 @@ flowchart TD
 #### Acceptance criteria
 
 - [x] `python manage.py makemigrations --check --dry-run` : aucune migration manquante après commit.
-- [ ] Un `Accept` entrant enveloppant un `Follow` (matché par `ap_id`) passe le `Follow` local de `accepted=False` à `True`.
+- [x] Un `Accept` entrant enveloppant un `Follow` (matché par `ap_id`) passe le `Follow` local de `accepted=False` à `True`.
 - [ ] Un `Reject` entrant enveloppant un `Follow` supprime le `Follow` optimiste.
 - [ ] Un `Accept` d'`Offer` (Claim/Adopt/Fork) suit toujours le chemin `LinkRequest` inchangé (non-régression DEC-038).
 
@@ -244,11 +244,17 @@ flowchart TD
 
 <!-- 🤖 entrées pendant l'implémentation -->
 
+🤖 Phase 1, Task 6 (règle DRY) : la logique de confirmation/annulation (`_handle_accept_follow`/`_handle_reject_follow`) reste dans `inbox.py`, pas déplacée vers `characters/services.py`. Chaque helper n'a qu'un seul appelant réel (`handle_accept`/`handle_reject` respectivement) — la règle des trois occurrences (`dry-refactor.md`) ne s'applique pas. La duplication d'extraction/résolution entre les deux helpers a quand même été factorisée dans `_follow_ap_id_from_activity`/`_resolve_outbound_follow` (2 appelants, bloc substantiel), par prudence DRY locale au fichier.
+
+🤖 Phase 1, Task 4 (DEC-C2, fallback) : le plan dit « fallback `(actor, object=our actor_url)` » — formulation ambiguë (une chaîne littérale à comparer n'a pas de sens ici, puisque `object` porte l'id du `Follow` distant, pas notre `actor_url`). Interprété et implémenté comme : si l'`ap_id` du `Follow` ne matche rien, résoudre l'expéditeur de l'Accept/Reject (`activity["actor"]`) vers un `User` distant connu, puis matcher notre `Follow` sortant (`remote=False`) pointant vers ce `User`. Couvre le cas d'un pair qui renvoie un `object` ne portant pas l'id exact de notre `Follow`.
+
 ## Log
 
 <!-- APPEND ONLY -->
 
 🤖 2026-07-19 — Phase 1, critère 1 : `Follow.accepted = BooleanField(default=True, db_index=True)` ajouté (`characters/models.py`) + migration `0019_follow_accepted` (AddField, additive). `makemigrations --check --dry-run` confirmé propre.
+
+🤖 2026-07-19 — Phase 1, critère 2 : `remote_follow_toggle` crée le `Follow` sortant avec `accepted=False` (`federation_views.py`) ; `handle_accept` discrimine Follow vs Offer (`_follow_ap_id_from_activity`, `_resolve_outbound_follow`, `_handle_accept_follow`) sans toucher au chemin `LinkRequest`. Tests : `tests/activitypub/test_follow_federation.py::TestAcceptFollow` (4 tests — dict/string object, fallback par actor, aucun match).
 
 ## Validation flow demonstration
 
