@@ -41,6 +41,11 @@
                             </a>
                         {% elif user.is_authenticated %}
                             {% include "components/follow_button.html" with target=profile_user target_type="user" is_following=is_following %}
+                            <a href="{% url 'core:report_user' username=profile_user.username %}"
+                               class="btn-ghost btn-sm text-semantic-muted"
+                               title="{% trans "Report this user" %}">
+                                <span class="i-lucide-flag"></span>
+                            </a>
                         {% endif %}
                     </div>
                 </div>

@@ -26,4 +26,20 @@ urlpatterns = [
         admin_views.admin_user_suspend,
         name="user_suspend",
     ),
+    path(
+        "users/<uuid:pk>/unblock/",
+        admin_views.admin_user_unblock,
+        name="user_unblock",
+    ),
+    path("reports/", admin_views.admin_reports, name="reports"),
+    path(
+        "reports/<uuid:pk>/dismiss/",
+        admin_views.admin_report_dismiss,
+        name="report_dismiss",
+    ),
+    path(
+        "reports/<uuid:pk>/block/",
+        admin_views.admin_user_block,
+        name="user_block",
+    ),
 ]

@@ -17,4 +17,5 @@ urlpatterns = [
     path("confidentialite/", views.privacy, name="privacy"),
     path("applications/", views.apps, name="apps"),
     path("raccourcis/", views.shortcuts, name="shortcuts"),
+    path("signaler/<str:username>/", views.report_user, name="report_user"),
 ]
