@@ -16,6 +16,15 @@
                     <p class="text-xs text-semantic-muted">{% blocktrans with date=u.date_joined|timesince %}Joined {{ date }}{% endblocktrans %}</p>
                 </div>
                 <div class="flex items-center gap-2">
+                    {% if u.is_blocked %}
+                        <span class="badge bg-semantic-danger/15 text-semantic-danger text-xs">{% trans "Blocked" %}</span>
+                        <form method="post" action="{% url 'gmh:user_unblock' pk=u.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-ghost btn-sm">
+                                {% trans "Unblock" %}
+                            </button>
+                        </form>
+                    {% endif %}
                     {% if u.is_active %}
                         <span class="badge-available text-xs">{% trans "Active" %}</span>
                         {% if u != user %}

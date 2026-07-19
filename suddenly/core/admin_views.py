@@ -12,10 +12,12 @@ from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.views.decorators.http import require_POST
 
 from suddenly.activitypub.models import FederatedServer, ServerStatus
 from suddenly.core.decorators import admin_required
 from suddenly.core.models import InstanceSettings
+from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 from suddenly.users.models import User
 
@@ -108,6 +110,79 @@ def admin_user_suspend(request: HttpRequest, pk: str) -> HttpResponse:
     if request.method == "POST" and target != request.user:
         target.is_active = False
         target.save(update_fields=["is_active"])
+
+    return redirect(reverse("gmh:users"))
+
+
+@admin_required
+def admin_reports(request: HttpRequest) -> HttpResponse:
+    """Moderation queue — pending user reports (#136, DEC-F4)."""
+    from suddenly.core.models import UserReport, UserReportStatus
+
+    reports = (
+        UserReport.objects.filter(status=UserReportStatus.PENDING)
+        .select_related("reporter", "reported_user")
+        .order_by("-created_at")
+    )
+
+    return htmx_render(
+        request,
+        full_template="gmh/reports.html",
+        partial_template="gmh/reports.html",
+        context={"reports": reports},
+    )
+
+
+@require_POST
+@admin_required
+def admin_report_dismiss(request: AuthenticatedRequest, pk: str) -> HttpResponse:
+    """Dismiss a pending report without blocking the reported user (#136, DEC-F4)."""
+    from django.utils import timezone
+
+    from suddenly.core.models import UserReport, UserReportStatus
+
+    report = get_object_or_404(UserReport, pk=pk, status=UserReportStatus.PENDING)
+    report.status = UserReportStatus.DISMISSED
+    report.handled_by = request.user
+    report.handled_at = timezone.now()
+    report.save(update_fields=["status", "handled_by", "handled_at", "updated_at"])
+
+    return redirect(reverse("gmh:reports"))
+
+
+@require_POST
+@admin_required
+def admin_user_block(request: AuthenticatedRequest, pk: str) -> HttpResponse:
+    """Block the reported user of a pending report and resolve it (#136, DEC-F4).
+
+    ``pk`` is the ``UserReport`` primary key (not the user's) — the block
+    action always originates from a specific report in the queue, and
+    resolving that report atomically with the ban is the whole point of
+    ``block_user(..., report=...)`` (DEC-F3).
+    """
+    from suddenly.core.models import UserReport, UserReportStatus
+    from suddenly.core.moderation import block_user
+
+    report = get_object_or_404(UserReport, pk=pk, status=UserReportStatus.PENDING)
+    block_user(report.reported_user, by=request.user, report=report)
+
+    return redirect(reverse("gmh:reports"))
+
+
+@require_POST
+@admin_required
+def admin_user_unblock(request: HttpRequest, pk: str) -> HttpResponse:
+    """Lift the instance-interaction ban on a user (#136, DEC-F4 — reversibility).
+
+    ``pk`` is the ``User`` primary key — unblocking is not tied to any
+    specific report (a user may accumulate several resolved reports), so it
+    lives alongside ``admin_user_suspend`` on the users list rather than on
+    the reports queue.
+    """
+    from suddenly.core.moderation import unblock_user
+
+    target = get_object_or_404(User, pk=pk, remote=False)
+    unblock_user(target)
 
     return redirect(reverse("gmh:users"))
 

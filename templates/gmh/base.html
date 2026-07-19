@@ -35,9 +35,16 @@
 
                 <a href="{% url 'gmh:users' %}"
                    class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
-                          {% if request.resolver_match.url_name == 'users' or request.resolver_match.url_name == 'user_suspend' %}text-semantic-ink font-semibold bg-semantic-card-sunken{% else %}text-semantic-ink-secondary hover:text-semantic-ink hover:bg-semantic-card-sunken{% endif %}">
+                          {% if request.resolver_match.url_name == 'users' or request.resolver_match.url_name == 'user_suspend' or request.resolver_match.url_name == 'user_unblock' %}text-semantic-ink font-semibold bg-semantic-card-sunken{% else %}text-semantic-ink-secondary hover:text-semantic-ink hover:bg-semantic-card-sunken{% endif %}">
                     <span class="i-lucide-users text-base"></span>
                     {% trans "Users" %}
+                </a>
+
+                <a href="{% url 'gmh:reports' %}"
+                   class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
+                          {% if request.resolver_match.url_name == 'reports' or request.resolver_match.url_name == 'report_dismiss' or request.resolver_match.url_name == 'user_block' %}text-semantic-ink font-semibold bg-semantic-card-sunken{% else %}text-semantic-ink-secondary hover:text-semantic-ink hover:bg-semantic-card-sunken{% endif %}">
+                    <span class="i-lucide-flag text-base"></span>
+                    {% trans "Reports" %}
                 </a>
             </nav>
         </aside>

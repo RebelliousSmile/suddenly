@@ -9,9 +9,12 @@ from __future__ import annotations
 
 from typing import Any, cast
 
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.translation import gettext_lazy as _
 
 from suddenly.core.services import (
     get_distinct_tag_names,
@@ -162,6 +165,55 @@ def directory(request: HttpRequest) -> HttpResponse:
         request,
         "core/directory.html",
         {"page_obj": page_obj, "total": paginator.count},
+    )
+
+
+@login_required
+def report_user(request: HttpRequest, username: str) -> HttpResponse:
+    """Report a user to instance admins (#136, DEC-F1).
+
+    GET renders the "Report this user" form; POST files the signalement via
+    ``core.moderation.create_user_report``. Self-report is rejected as a
+    form error rather than a hard 400, since a user can always reach their
+    own profile URL directly. Mirrors the GET/POST-in-one-view pattern used
+    by ``instance_settings`` (form re-render + ``messages`` on error,
+    redirect on success) rather than the HTMX 3-template inline pattern,
+    since this is a standalone navigation target, not a list-item action.
+    """
+    from suddenly.core.models import ReportCategory
+    from suddenly.core.moderation import create_user_report
+    from suddenly.users.models import User
+
+    reported_user = get_object_or_404(User, username=username)
+
+    if request.method == "POST":
+        category = request.POST.get("category", "")
+        comment = request.POST.get("comment", "").strip()
+        valid_categories = {choice for choice, _label in ReportCategory.choices}
+
+        if category not in valid_categories:
+            messages.error(request, _("Please select a reason."))
+        else:
+            try:
+                create_user_report(
+                    reporter=cast(AuthenticatedRequest, request).user,
+                    reported_user=reported_user,
+                    category=category,
+                    comment=comment,
+                )
+            except ValueError:
+                messages.error(request, _("You cannot report yourself."))
+            else:
+                messages.success(request, _("Report submitted. An admin will review it."))
+                return redirect(reported_user.get_absolute_url())
+
+    return render(
+        request,
+        "core/report_user_form.html",
+        {
+            "reported_user": reported_user,
+            "categories": ReportCategory.choices,
+        },
     )
 
 
