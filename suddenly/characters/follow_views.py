@@ -47,6 +47,14 @@ def follow_toggle(request: AuthenticatedRequest) -> HttpResponse:
 
         return HttpResponseBadRequest("Cannot follow yourself")
 
+    # Instance-wide ban (#136, DEC-F3) — blocked actors cannot follow or be followed
+    from django.http import HttpResponseForbidden
+
+    from suddenly.core.moderation import is_blocked
+
+    if is_blocked(request.user) or (target_type == "user" and is_blocked(target)):
+        return HttpResponseForbidden("Blocked users cannot follow")
+
     ct = ContentType.objects.get_for_model(model_cls)
 
     # Toggle

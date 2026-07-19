@@ -231,6 +231,13 @@ def handle_follow(activity: dict[str, Any], actor_type: str, actor_identifier: s
         return
     follower, _ = result
 
+    # Instance-wide ban (#136, DEC-F3) — best-effort drop, no Accept, no 500
+    from suddenly.core.moderation import is_blocked
+
+    if is_blocked(follower):
+        logger.info("Dropped inbound Follow from blocked user %s", follower.username)
+        return
+
     # Determine content type for the target
     try:
         content_type = content_type_for_actor(actor_type)
