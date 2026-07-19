@@ -3596,3 +3596,59 @@ msgstr ""
 #: .\templates\users\settings_preferences.html:81
 msgid "Current background"
 msgstr ""
+
+#: .\suddenly\core\views.py:187
+msgid "Please select a reason."
+msgstr ""
+
+#: .\suddenly\core\views.py:197
+msgid "You cannot report yourself."
+msgstr ""
+
+#: .\suddenly\core\views.py:199
+msgid "Report submitted. An admin will review it."
+msgstr ""
+
+#: .\templates\core\report_user_form.html:4
+#: .\templates\core\report_user_form.html:10
+#, python-format
+msgid "Report @%(username)s"
+msgstr ""
+
+#: .\templates\core\report_user_form.html:13
+msgid "This report is sent privately to instance admins. The reported user is never notified."
+msgstr ""
+
+#: .\templates\core\report_user_form.html:27
+msgid "Select a reason"
+msgstr ""
+
+#: .\templates\core\report_user_form.html:36
+msgid "Additional context (optional)"
+msgstr ""
+
+#: .\templates\core\report_user_form.html:47
+msgid "Submit report"
+msgstr ""
+
+#: .\templates\users\profile.html:46
+msgid "Report this user"
+msgstr ""
+
+#: .\templates\gmh\reports.html:4 .\templates\gmh\reports.html:7
+msgid "Reports"
+msgstr ""
+
+#: .\templates\gmh\reports.html:16
+#, python-format
+msgid "@%(reporter)s reported @%(reported)s"
+msgstr ""
+
+#: .\templates\gmh\reports.html:37
+#, python-format
+msgid "Block @%(username)s?"
+msgstr ""
+
+#: .\templates\gmh\reports.html:47
+msgid "No pending reports."
+msgstr ""
