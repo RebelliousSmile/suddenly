@@ -39,6 +39,12 @@ RUN npm run build
 FROM base AS builder
 
 COPY pyproject.toml .
+# The dynamic version (`attr = "suddenly.__version__"`) forces setuptools to read
+# suddenly/__init__.py while building the wheel metadata. Copy just that file so
+# the version resolves; the full source arrives later via `COPY . .` in `final`.
+# Keeping it to __init__.py preserves the dependency-install cache: this layer
+# only busts on a version bump, not on every code change.
+COPY suddenly/__init__.py ./suddenly/__init__.py
 RUN pip install --prefix=/install ".[federation]"
 
 # -------------------------------------------------------------------
