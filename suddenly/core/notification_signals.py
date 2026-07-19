@@ -106,7 +106,7 @@ def notify_admins_on_user_report(sender: type, instance: Any, created: bool, **k
     from suddenly.users.models import User
 
     report_ct = ContentType.objects.get_for_model(instance)
-    admins = User.objects.filter(is_admin=True, remote=False)
+    admins = User.objects.filter(is_admin=True, remote=False).exclude(pk=instance.reported_user_id)
     for admin in admins:
         Notification.objects.create(
             recipient=admin,
