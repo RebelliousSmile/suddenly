@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Feed** — bouton « J'aime » sur les scènes publiées : bascule instantanée
+  (HTMX), état persistant par utilisateur ; aimer une scène distante émet un
+  `Like` ActivityPub dirigé vers l'auteur, le retrait émet `Undo(Like)` (#138).
+
 ## [0.8.0] - 2026-07-19
 
 ### Added
