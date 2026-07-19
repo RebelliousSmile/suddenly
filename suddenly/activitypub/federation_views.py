@@ -78,7 +78,8 @@ def remote_profile(request: HttpRequest) -> HttpResponse:
         )
 
     domain = urlparse(ap_id).hostname or ""
-    target_type = _resolve_remote_actor_type(ap_id, actor_data)
+    is_suddenly = _is_suddenly_actor(ap_id)
+    target_type = _resolve_remote_actor_type(ap_id, actor_data, is_suddenly=is_suddenly)
 
     is_following = False
     if request.user.is_authenticated:
@@ -96,6 +97,17 @@ def remote_profile(request: HttpRequest) -> HttpResponse:
                 object_id=remote_user.pk,
             ).exists()
 
+    # Profile enrichment (DEC-C5, Phase 4): parties/personnages/activité for a
+    # Suddenly actor, résumé + activité récente only otherwise. Any fetch
+    # failure inside must never surface as a 500 — degrade to empty sections.
+    collections: dict[str, list[dict[str, Any]]] = {"activity": [], "games": [], "characters": []}
+    try:
+        from .follow_federation import fetch_remote_actor_collections
+
+        collections = fetch_remote_actor_collections(actor_data, is_suddenly=is_suddenly)
+    except Exception:
+        logger.warning("Remote profile enrichment failed for %s", ap_id, exc_info=True)
+
     return htmx_render(
         request,
         full_template="federation/remote_profile.html",
@@ -106,11 +118,26 @@ def remote_profile(request: HttpRequest) -> HttpResponse:
             "ap_id": ap_id,
             "target_type": target_type,
             "is_following": is_following,
+            "is_suddenly": is_suddenly,
+            "activity": collections["activity"],
+            "remote_games": collections["games"],
+            "remote_characters": collections["characters"],
         },
     )
 
 
-def _resolve_remote_actor_type(ap_id: str, actor_data: dict[str, Any]) -> str:
+def _is_suddenly_actor(ap_id: str) -> bool:
+    """True if the actor's home instance is a known Suddenly instance (NodeInfo-detected)."""
+    from .models import FederatedServer
+
+    domain = urlparse(ap_id).netloc
+    server = FederatedServer.objects.filter(server_name=domain).first()
+    return server is not None and server.is_suddenly_instance()
+
+
+def _resolve_remote_actor_type(
+    ap_id: str, actor_data: dict[str, Any], *, is_suddenly: bool | None = None
+) -> str:
     """Classify a fetched remote actor as "user"/"character"/"game" (DEC-C4).
 
     Discriminator: AS2 ``type: "Group"`` -> Game; ``type: "Person"`` with a
@@ -121,13 +148,12 @@ def _resolve_remote_actor_type(ap_id: str, actor_data: dict[str, Any]) -> str:
     (``FederatedServer.is_suddenly_instance()``) — an actor from an unknown
     or explicitly non-Suddenly instance always resolves to "user"
     (Person-only), so a Mastodon actor never 500s even if its JSON happens to
-    carry an unrelated "status" field.
+    carry an unrelated "status" field. `is_suddenly` may be passed in by a
+    caller that already computed it (`_is_suddenly_actor`), to avoid a
+    duplicate `FederatedServer` lookup.
     """
-    from .models import FederatedServer
-
-    domain = urlparse(ap_id).netloc
-    server = FederatedServer.objects.filter(server_name=domain).first()
-    is_suddenly = server is not None and server.is_suddenly_instance()
+    if is_suddenly is None:
+        is_suddenly = _is_suddenly_actor(ap_id)
 
     if not is_suddenly:
         return "user"
