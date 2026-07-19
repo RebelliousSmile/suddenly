@@ -73,6 +73,10 @@
                     </a>
                 {% endif %}
             {% endif %}
+
+            {% if user.is_authenticated and user != character.creator and user != character.owner %}
+                {% include "components/follow_button.html" with target=character target_type="character" is_following=is_following %}
+            {% endif %}
         </div>
 
         <!-- Description -->
