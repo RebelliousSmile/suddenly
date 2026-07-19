@@ -159,6 +159,7 @@ def remote_follow_toggle(request: AuthenticatedRequest) -> HttpResponse:
             object_id=remote_user.pk,
             remote=False,
             ap_id=follow_ap_id,
+            accepted=False,
         )
         send_follow_activity.delay(str(request.user.pk), ap_id, follow_ap_id)
         is_following = True

@@ -962,9 +962,97 @@ def _resolve_authorized_link_request(
     return link_request
 
 
+def _follow_ap_id_from_activity(activity: dict[str, Any]) -> tuple[str | None, bool]:
+    """Extract the echoed Follow ``ap_id`` from an inbound Accept/Reject ``object``.
+
+    Returns ``(ap_id, is_follow_shaped)``. ``is_follow_shaped`` is ``True``
+    only when the object unambiguously identifies a Follow (a dict with
+    ``type: "Follow"``) — this tells the caller (``handle_accept``/
+    ``handle_reject``) not to fall through to the Offer/LinkRequest path even
+    if no local row ends up matching. A bare string ``object`` is ambiguous —
+    the canonical Offer/LinkRequest Accept also carries a bare string
+    ``object`` (its ``origin_offer_id``, DEC-038) — so ``is_follow_shaped`` is
+    ``False`` for that case and the caller falls through to the Offer path
+    whenever no Follow row matches the string (see ``_resolve_outbound_follow``).
+    """
+    obj = activity.get("object")
+    if isinstance(obj, dict):
+        if obj.get("type") != "Follow":
+            return None, False
+        follow_id = obj.get("id")
+        return (follow_id if isinstance(follow_id, str) and follow_id else None), True
+    if isinstance(obj, str) and obj:
+        return obj, False
+    return None, False
+
+
+def _resolve_outbound_follow(activity: dict[str, Any], follow_ap_id: str | None) -> Any | None:
+    """Resolve our outbound ``Follow`` row an Accept/Reject(Follow) references.
+
+    Primary: match by ``ap_id`` (DEC-C2) — the id we minted in
+    ``remote_follow_toggle``/``send_follow_activity`` and that a conformant
+    peer echoes back in the Accept/Reject. Fallback: resolve the Accept/
+    Reject's sender (``activity["actor"]``) to a known local remote User, and
+    match our outbound (``remote=False``), still-unconfirmed-or-any Follow
+    pointing at them — covers peers that echo back something other than the
+    Follow's own id.
+    """
+    from django.contrib.contenttypes.models import ContentType
+
+    from suddenly.characters.models import Follow
+    from suddenly.users.models import User
+
+    if follow_ap_id:
+        follow = Follow.objects.filter(ap_id=follow_ap_id, remote=False).first()
+        if follow:
+            return follow
+
+    remote_actor_url = activity.get("actor")
+    if not remote_actor_url:
+        return None
+    remote_user = get_remote_user(remote_actor_url)
+    if not remote_user:
+        return None
+    user_ct = ContentType.objects.get_for_model(User)
+    return Follow.objects.filter(
+        content_type=user_ct, object_id=remote_user.pk, remote=False
+    ).first()
+
+
+def _handle_accept_follow(activity: dict[str, Any]) -> bool:
+    """Confirm an outbound Follow the remote actor accepted (DEC-C1/C2, criterion 2).
+
+    Flips the matched local ``Follow.accepted`` from ``False`` to ``True``.
+    Returns ``True`` when the ``object`` was Follow-shaped or a Follow row
+    was actually matched — signalling ``handle_accept`` to stop (do not fall
+    through to the Offer/LinkRequest path). Returns ``False`` when nothing
+    ties this Accept to a Follow, so ``handle_accept`` can still try the
+    Offer path unchanged (non-regression, DEC-038).
+    """
+    follow_ap_id, is_follow_shaped = _follow_ap_id_from_activity(activity)
+    if follow_ap_id is None and not is_follow_shaped:
+        return False
+
+    follow = _resolve_outbound_follow(activity, follow_ap_id)
+    if follow is None:
+        return is_follow_shaped
+
+    if not follow.accepted:
+        follow.accepted = True
+        follow.save(update_fields=["accepted", "updated_at"])
+    logger.info("Follow %s confirmed via Accept from %s", follow.pk, activity.get("actor"))
+    return True
+
+
 def handle_accept(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
-    Handle Accept activity (our offer was accepted).
+    Handle Accept activity (our offer was accepted, or our Follow was accepted).
+
+    Discriminates the wrapped ``object`` first (DEC-C2): a Follow-shaped
+    object is routed to ``_handle_accept_follow`` and returns immediately —
+    the Offer/LinkRequest lookup below is never attempted in that case, so a
+    genuine Accept(Offer) always reaches it unchanged (non-regression,
+    DEC-038, criterion 4).
 
     Correlates the Accept back to our own LinkRequest by the Offer id (Part 1),
     then replays the full state reconstruction on the requester side —
@@ -972,6 +1060,9 @@ def handle_accept(activity: dict[str, Any], actor_type: str, actor_identifier: s
     ``LinkService.reconstruct_remote_accept`` (idempotent on replay).
     """
     from suddenly.characters.services import LinkService
+
+    if _handle_accept_follow(activity):
+        return
 
     link_request = _resolve_authorized_link_request(activity, activity_label="Accept")
     if link_request is None:
