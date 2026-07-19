@@ -159,7 +159,7 @@ flowchart TD
 - [x] `python manage.py makemigrations --check --dry-run` : aucune migration manquante après commit.
 - [x] Un `Accept` entrant enveloppant un `Follow` (matché par `ap_id`) passe le `Follow` local de `accepted=False` à `True`.
 - [x] Un `Reject` entrant enveloppant un `Follow` supprime le `Follow` optimiste.
-- [ ] Un `Accept` d'`Offer` (Claim/Adopt/Fork) suit toujours le chemin `LinkRequest` inchangé (non-régression DEC-038).
+- [x] Un `Accept` d'`Offer` (Claim/Adopt/Fork) suit toujours le chemin `LinkRequest` inchangé (non-régression DEC-038).
 
 ### Phase 2 : Boutons follow sur les 3 acteurs (locaux ET distants)
 
@@ -248,6 +248,8 @@ flowchart TD
 
 🤖 Phase 1, Task 4 (DEC-C2, fallback) : le plan dit « fallback `(actor, object=our actor_url)` » — formulation ambiguë (une chaîne littérale à comparer n'a pas de sens ici, puisque `object` porte l'id du `Follow` distant, pas notre `actor_url`). Interprété et implémenté comme : si l'`ap_id` du `Follow` ne matche rien, résoudre l'expéditeur de l'Accept/Reject (`activity["actor"]`) vers un `User` distant connu, puis matcher notre `Follow` sortant (`remote=False`) pointant vers ce `User`. Couvre le cas d'un pair qui renvoie un `object` ne portant pas l'id exact de notre `Follow`.
 
+🤖 Phase 1, Task 7 : le signal `notify_on_follow` (`suddenly/core/notification_signals.py`, `post_save` sur `characters.Follow`) existait déjà et couvre intégralement ce critère (notification `NEW_FOLLOWER` sur tout nouveau `Follow` ciblant un `User`) — aucun code ajouté.
+
 ## Log
 
 <!-- APPEND ONLY -->
@@ -257,6 +259,8 @@ flowchart TD
 🤖 2026-07-19 — Phase 1, critère 2 : `remote_follow_toggle` crée le `Follow` sortant avec `accepted=False` (`federation_views.py`) ; `handle_accept` discrimine Follow vs Offer (`_follow_ap_id_from_activity`, `_resolve_outbound_follow`, `_handle_accept_follow`) sans toucher au chemin `LinkRequest`. Tests : `tests/activitypub/test_follow_federation.py::TestAcceptFollow` (4 tests — dict/string object, fallback par actor, aucun match).
 
 🤖 2026-07-19 — Phase 1, critère 3 : `handle_reject` discrimine Follow vs Offer (même logique que `handle_accept`, DEC-C2/C3) et route vers `_handle_reject_follow`, qui supprime le `Follow` optimiste sortant correspondant. Tests : `tests/activitypub/test_follow_federation.py::TestRejectFollow` (2 tests — dict/string object).
+
+🤖 2026-07-19 — Phase 1 complète (critère 4) : `TestAcceptOfferNonRegression` prouve qu'un `Accept(Offer)` (Claim/Adopt/Fork) suit toujours `LinkService.reconstruct_remote_accept` via `_resolve_authorized_link_request`, y compris en présence d'un `Follow` sortant non lié (pas de faux-positif sur un `object` bare-string). Phase 1 terminée : `Follow.accepted` (migration `0019_follow_accepted`), `remote_follow_toggle` crée le `Follow` sortant avec `accepted=False`, `handle_accept`/`handle_reject` discriminent Follow vs Offer sans régression du chemin `LinkRequest` (DEC-038). Tests : `tests/activitypub/test_follow_federation.py` (8 tests, 3 classes) — couvre les 4 critères d'acceptation. `make check` cible `suddenly/` uniquement pour mypy (`tests/` hors périmètre, cohérent avec les fichiers de test existants du repo).
 
 ## Validation flow demonstration
 

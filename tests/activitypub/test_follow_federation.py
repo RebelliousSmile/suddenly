@@ -1,13 +1,13 @@
 """
 Tests for the Follow federation lifecycle (Epic C, #133).
 
-Covers Phase 1 acceptance criterion 2: an inbound Accept(Follow) confirms our
-outbound Follow (DEC-C1/C2). Reject(Follow) and the Accept(Offer) non-regression
-coverage land in follow-up commits of the same phase.
-
-Criterion 1 (`makemigrations --check --dry-run` clean after adding
-`Follow.accepted`) is a CI/manual check, not a pytest assertion — verified
-out-of-band.
+Covers all 4 Phase 1 acceptance criteria:
+1. `makemigrations --check --dry-run` clean after adding `Follow.accepted`
+   (CI/manual check, not a pytest assertion — verified out-of-band).
+2. An inbound Accept(Follow) confirms our outbound Follow (DEC-C1/C2).
+3. An inbound Reject(Follow) deletes the optimistic outbound Follow (DEC-C3).
+4. An inbound Accept(Offer) still follows the LinkRequest path unchanged
+   (non-regression, DEC-038).
 """
 
 from __future__ import annotations
@@ -18,7 +18,15 @@ import pytest
 from django.contrib.contenttypes.models import ContentType
 
 from suddenly.activitypub.inbox import handle_accept, handle_reject
-from suddenly.characters.models import Follow
+from suddenly.characters.models import (
+    Character,
+    CharacterStatus,
+    Follow,
+    LinkRequest,
+    LinkRequestStatus,
+    LinkType,
+)
+from suddenly.games.models import Game
 from suddenly.users.models import User
 from tests.factories import UserFactory
 
@@ -155,3 +163,85 @@ class TestRejectFollow:
         )
 
         assert not Follow.objects.filter(ap_id=follow_ap_id).exists()
+
+
+@pytest.mark.django_db
+class TestAcceptOfferNonRegression:
+    """Criterion 4: Accept(Offer)/LinkRequest path unaffected by Follow discrimination."""
+
+    def _make_remote_offer_setup(self) -> tuple[LinkRequest, str, str]:
+        """Requester is local; target NPC + its controller live on the peer instance."""
+        requester = UserFactory()
+        peer_owner_actor_url = "https://peer.example/users/gm"
+        peer_owner = _make_remote_user(peer_owner_actor_url)
+        peer_game = Game.objects.create(
+            title="Remote Game",
+            owner=peer_owner,
+            remote=True,
+            ap_id="https://peer.example/games/remote",
+        )
+        target_character = Character.objects.create(
+            name="Aria",
+            status=CharacterStatus.NPC,
+            creator=peer_owner,
+            owner=peer_owner,
+            origin_game=peer_game,
+            remote=True,
+            ap_id="https://peer.example/characters/aria",
+        )
+        link_request = LinkRequest.objects.create(
+            type=LinkType.ADOPT,
+            requester=requester,
+            target_character=target_character,
+            status=LinkRequestStatus.PENDING,
+            message="Please let me adopt Aria.",
+        )
+        offer_id = f"https://testserver/link-requests/{link_request.pk}"
+        return link_request, offer_id, peer_owner_actor_url
+
+    def test_accept_offer_still_reconstructs_link_request(self, db: Any, mocker: Any) -> None:
+        link_request, offer_id, peer_owner_actor_url = self._make_remote_offer_setup()
+
+        reconstruct = mocker.patch(
+            "suddenly.characters.services.LinkService.reconstruct_remote_accept"
+        )
+
+        handle_accept(
+            {"type": "Accept", "actor": peer_owner_actor_url, "object": offer_id, "summary": ""},
+            actor_type="user",
+            actor_identifier=link_request.requester.username,
+        )
+
+        reconstruct.assert_called_once()
+        called_request = reconstruct.call_args[0][0]
+        assert called_request.pk == link_request.pk
+        # The Follow path must not have been touched — no Follow was created or matched.
+        assert Follow.objects.count() == 0
+
+    def test_accept_offer_not_swallowed_by_follow_ambiguous_string_match(
+        self, db: Any, mocker: Any
+    ) -> None:
+        """A bare-string Offer id must never spuriously match an unrelated outbound Follow."""
+        follower = UserFactory()
+        remote_actor_url = "https://peer.example/users/frank"
+        remote_user = _make_remote_user(remote_actor_url)
+        unrelated_follow_ap_id = (
+            f"https://testserver/users/{follower.username}/follows/{remote_user.pk}"
+        )
+        _make_outbound_follow(follower, remote_user, unrelated_follow_ap_id, accepted=False)
+
+        link_request, offer_id, peer_owner_actor_url = self._make_remote_offer_setup()
+
+        reconstruct = mocker.patch(
+            "suddenly.characters.services.LinkService.reconstruct_remote_accept"
+        )
+
+        handle_accept(
+            {"type": "Accept", "actor": peer_owner_actor_url, "object": offer_id, "summary": ""},
+            actor_type="user",
+            actor_identifier=link_request.requester.username,
+        )
+
+        reconstruct.assert_called_once()
+        # The unrelated Follow must remain untouched (still unaccepted).
+        assert Follow.objects.get(ap_id=unrelated_follow_ap_id).accepted is False
