@@ -1,0 +1,17 @@
+{% load i18n %}
+{% if offer.status == 'resolved' %}
+    <p class="text-sm text-semantic-success">
+        <span class="i-lucide-check-circle text-xs mr-1" aria-hidden="true"></span>
+        {% trans "This offer has been resolved — a response was accepted." %}
+    </p>
+{% elif offer.status == 'expired' %}
+    <p class="text-sm text-semantic-muted">
+        <span class="i-lucide-clock text-xs mr-1" aria-hidden="true"></span>
+        {% trans "This offer has expired." %}
+    </p>
+{% else %}
+    <p class="text-sm text-semantic-muted">
+        <span class="i-lucide-x-circle text-xs mr-1" aria-hidden="true"></span>
+        {% trans "This offer was cancelled." %}
+    </p>
+{% endif %}

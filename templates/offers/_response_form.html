@@ -1,0 +1,38 @@
+{% load i18n %}
+{% if my_response %}
+    <div class="text-sm text-semantic-ink-secondary">
+        <p class="mb-2">
+            <span class="i-lucide-check text-xs mr-1" aria-hidden="true"></span>
+            {% trans "You already responded:" %}
+        </p>
+        <p class="italic text-semantic-muted mb-3">&ldquo;{{ my_response.content }}&rdquo;</p>
+        {% if my_response.status == 'pending' %}
+            <form hx-post="{% url 'offers:respond' pk=offer.id %}"
+                  hx-target="#offer-panel-{{ offer.id }}"
+                  hx-swap="outerHTML"
+                  class="space-y-3">
+                {% csrf_token %}
+                <textarea name="content" rows="3" class="form-input">{{ my_response.content }}</textarea>
+                <button type="submit" class="btn-secondary btn-sm">{% trans "Update response" %}</button>
+            </form>
+        {% else %}
+            <span class="badge {% if my_response.status == 'accepted' %}badge-success{% else %}badge-muted{% endif %}">
+                {{ my_response.get_status_display }}
+            </span>
+        {% endif %}
+    </div>
+{% else %}
+    <form hx-post="{% url 'offers:respond' pk=offer.id %}"
+          hx-target="#offer-panel-{{ offer.id }}"
+          hx-swap="outerHTML"
+          class="space-y-3">
+        {% csrf_token %}
+        <textarea name="content" rows="3" required
+                  placeholder="{% trans 'Propose a narrative continuation…' %}"
+                  class="form-input"></textarea>
+        <button type="submit" class="btn-primary btn-sm">
+            <span class="i-lucide-send text-xs" aria-hidden="true"></span>
+            {% trans "Respond" %}
+        </button>
+    </form>
+{% endif %}

@@ -1,0 +1,16 @@
+{% load i18n %}
+{% if offer %}
+<div id="offer-panel-{{ offer.id }}" class="card card-body mb-6">
+    <h2 class="text-heading mb-3">
+        <span class="i-lucide-users text-sm mr-1" aria-hidden="true"></span>
+        {% trans "Offer to the community" %}
+    </h2>
+    {% if is_resolved %}
+        {% include "offers/_offer_resolved.html" %}
+    {% elif is_emitter %}
+        {% include "offers/_response_list.html" %}
+    {% else %}
+        {% include "offers/_response_form.html" %}
+    {% endif %}
+</div>
+{% endif %}

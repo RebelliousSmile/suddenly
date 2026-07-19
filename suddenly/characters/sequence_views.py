@@ -54,6 +54,18 @@ def sequence_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
     """SharedSequence editor (US-18)."""
     sequence = _get_sequence_for_user(pk, request.user)
 
+    # A blank DRAFT sequence gets a social Offer (sequence_opening) addressed
+    # to the current viewer's followers, to help propose an opening (Epic B,
+    # #132). Idempotent: returns the existing open offer once one exists.
+    offer = None
+    if sequence.status == SharedSequenceStatus.DRAFT and not sequence.content.strip():
+        from suddenly.offers.models import OfferKind
+        from suddenly.offers.services import OfferService
+
+        offer = OfferService.open_offer(
+            kind=OfferKind.SEQUENCE_OPENING, carrier=sequence, emitter=request.user
+        )
+
     if request.method == "POST":
         title = request.POST.get("title", "").strip()
         content = request.POST.get("content", "").strip()
@@ -70,14 +82,14 @@ def sequence_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
             request,
             full_template="characters/sequence_edit.html",
             partial_template="characters/sequence_edit.html",
-            context={"sequence": sequence, "saved": True},
+            context={"sequence": sequence, "saved": True, "offer": offer},
         )
 
     return htmx_render(
         request,
         full_template="characters/sequence_edit.html",
         partial_template="characters/sequence_edit.html",
-        context={"sequence": sequence},
+        context={"sequence": sequence, "offer": offer},
     )
 
 

@@ -167,6 +167,13 @@ class IngestReportView(APIView):  # type: ignore[misc]
                     status=RapportStatus.PUBLISHED,
                 )
 
+        # Re-open a social Offer on the imported scene, addressed to the
+        # author's followers (Epic B, #132 — replaces the retired Muses hook).
+        from suddenly.offers.models import OfferKind
+        from suddenly.offers.services import OfferService
+
+        OfferService.open_offer(kind=OfferKind.SUMMARY, carrier=report, emitter=report.author)
+
         report_url = f"{settings.AP_BASE_URL}/reports/{report.id}"
 
         return Response(
