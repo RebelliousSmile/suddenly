@@ -1307,6 +1307,10 @@ class TestRemoteFollowToggle:
 
         with (
             patch(
+                "suddenly.activitypub._http.fetch_ap_actor",
+                return_value={"type": "Person", "id": remote_actor_url},
+            ),
+            patch(
                 "suddenly.activitypub.tasks.get_or_create_remote_user",
                 return_value=remote_user,
             ),
@@ -1368,6 +1372,10 @@ class TestRemoteFollowToggle:
 
         with (
             patch(
+                "suddenly.activitypub._http.fetch_ap_actor",
+                return_value={"type": "Person", "id": remote_actor_url},
+            ),
+            patch(
                 "suddenly.activitypub.tasks.get_or_create_remote_user",
                 return_value=remote_user,
             ),
@@ -1424,6 +1432,10 @@ class TestRemoteFollowToggle:
         client.force_login(local_user_with_key)
 
         with (
+            patch(
+                "suddenly.activitypub._http.fetch_ap_actor",
+                return_value={"type": "Person", "id": remote_actor_url},
+            ),
             patch(
                 "suddenly.activitypub.tasks.get_or_create_remote_user",
                 return_value=remote_user,
@@ -1490,6 +1502,10 @@ class TestRemoteFollowToggle:
 
         with (
             patch(
+                "suddenly.activitypub._http.fetch_ap_actor",
+                return_value={"type": "Person", "id": remote_actor_url},
+            ),
+            patch(
                 "suddenly.activitypub.tasks.get_or_create_remote_user",
                 return_value=remote_user,
             ),
@@ -1549,6 +1565,10 @@ class TestRemoteFollowToggle:
 
         with (
             patch(
+                "suddenly.activitypub._http.fetch_ap_actor",
+                return_value={"type": "Person", "id": remote_actor_url},
+            ),
+            patch(
                 "suddenly.activitypub.tasks.get_or_create_remote_user",
                 return_value=remote_user,
             ),
@@ -1603,6 +1623,10 @@ class TestRemoteFollowToggle:
 
         with (
             patch(
+                "suddenly.activitypub._http.fetch_ap_actor",
+                return_value={"type": "Person", "id": remote_actor_url},
+            ),
+            patch(
                 "suddenly.activitypub.tasks.get_or_create_remote_user",
                 return_value=remote_user,
             ),
@@ -1650,6 +1674,10 @@ class TestRemoteFollowToggle:
         client.force_login(local_user_with_key)
 
         with (
+            patch(
+                "suddenly.activitypub._http.fetch_ap_actor",
+                return_value={"type": "Person", "id": remote_actor_url},
+            ),
             patch(
                 "suddenly.activitypub.tasks.get_or_create_remote_user",
                 return_value=remote_user,
