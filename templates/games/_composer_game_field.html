@@ -9,18 +9,19 @@
   #composer-context, carrying the chosen character via hx-include on the hidden
   personnage input.
 {% endcomment %}
-<div id="composer-game-field" class="min-w-0"
+<div id="composer-game-field" class="flex-auto min-w-0"
      x-init="
         {% if reset_game %}game = ''; gameLabel = '';{% endif %}
         {% if games|length == 1 %}
         if (personnage) {
             game = '{{ games.0.pk }}'; gameLabel = '{% filter escapejs %}{{ games.0.title }}{% endfilter %}';
+            isGm = {% if games.0.owner_id == request.user.pk %}true{% else %}false{% endif %};
             $nextTick(() => { htmx.ajax('GET', '{% url 'games:composer' %}?region=context&game={{ games.0.pk }}', { target: '#composer-context', swap: 'innerHTML', values: { character: personnage } }); });
         }
         {% endif %}
      ">
     <button type="button" @click="openSheet('partie')" :disabled="!personnage"
-            class="inline-flex items-center gap-2 min-h-[36px] px-3 rounded-btn border text-sm font-semibold max-w-full disabled:opacity-45 disabled:cursor-not-allowed"
+            class="inline-flex items-center gap-2 min-h-[36px] px-3 rounded-btn border text-sm font-semibold w-full disabled:opacity-45 disabled:cursor-not-allowed"
             :class="game ? 'border-brand-primary/45 bg-brand-primary/5 text-semantic-ink' : (personnage ? 'border-brand-primary/55 border-dashed text-brand-primary' : 'border-semantic-border text-semantic-muted')">
         <span class="i-lucide-book-open text-sm shrink-0" aria-hidden="true"></span>
         <span class="truncate" x-text="gameLabel || '{% trans "Choisir une partie" %}'"></span>
@@ -39,7 +40,7 @@
         <p class="text-xs font-semibold uppercase tracking-wide text-semantic-muted px-1.5 pt-0.5 pb-2">{% trans "Dans quelle partie" %}</p>
         {% for g in games %}
             <button type="button"
-                    @click="game = '{{ g.pk }}'; gameLabel = '{% filter escapejs %}{{ g.title }}{% endfilter %}'; closeSheet()"
+                    @click="game = '{{ g.pk }}'; gameLabel = '{% filter escapejs %}{{ g.title }}{% endfilter %}'; isGm = {% if g.owner_id == request.user.pk %}true{% else %}false{% endif %}; closeSheet()"
                     hx-get="{% url 'games:composer' %}?region=context&amp;game={{ g.pk }}"
                     hx-include="#composer-character-input"
                     hx-target="#composer-context" hx-swap="innerHTML"

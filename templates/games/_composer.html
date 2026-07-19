@@ -97,9 +97,12 @@
             {% comment %} Sélecteurs — pick pills (maquette) : le texte du bouton EST le
                label, pas de <label> au-dessus. Personnage puis partie, séparés par
                « · ». Chacun ouvre une bottom-sheet, jamais un dropdown natif. {% endcomment %}
-            <div class="flex items-center gap-2 flex-wrap pb-3 shrink-0">
+            {% comment %} Row de contexte (maquette ctx-head) : [PJ] · [partie] [rôle],
+               une seule ligne. Le PJ peut rétrécir (flex-initial), la partie prend la
+               place restante et tronque (flex-auto), le badge de rôle reste entier. {% endcomment %}
+            <div class="flex items-center gap-2 pb-3 shrink-0">
                 <button type="button" @click="openSheet('personnage')"
-                        class="inline-flex items-center gap-2 min-h-[36px] px-3 rounded-btn border text-sm font-semibold max-w-full"
+                        class="inline-flex items-center gap-2 min-h-[36px] px-3 rounded-btn border text-sm font-semibold flex-initial min-w-0"
                         :class="personnage ? 'border-brand-primary/45 bg-brand-primary/5 text-semantic-ink' : 'border-brand-primary/55 border-dashed text-brand-primary'">
                     <span class="i-lucide-user text-sm shrink-0" aria-hidden="true"></span>
                     <span class="truncate" x-text="personnageLabel || '{% trans "Choisir un personnage" %}'"></span>
@@ -107,6 +110,14 @@
                 </button>
                 <span class="text-semantic-border shrink-0" aria-hidden="true">·</span>
                 {% include "games/_composer_game_field.html" %}
+
+                {# Badge de rôle — déduit de la propriété de la partie (isGm). #}
+                <span x-show="game" x-cloak
+                      class="shrink-0 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide rounded-btn px-2 py-1"
+                      :class="isGm ? 'text-domain-npc bg-domain-npc/15' : 'text-domain-pc bg-domain-pc/12'">
+                    <span class="text-[11px]" :class="isGm ? 'i-lucide-users' : 'i-lucide-user'" aria-hidden="true"></span>
+                    <span x-text="isGm ? '{% trans "MJ" %}' : '{% trans "Joueur" %}'"></span>
+                </span>
             </div>
             {% comment %} Valeurs soumises avec le POST (les pills n'ont pas de name).
                Le champ personnage est aussi la source hx-include des boutons de partie. {% endcomment %}

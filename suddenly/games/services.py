@@ -158,10 +158,23 @@ def build_protagonist_pool(user: User) -> QuerySet[Character]:
     never rejects a legitimately-offered choice. A character merely *created*
     (not owned) by the user, or owned but not ``pc`` (adopted, claimed, forked),
     is deliberately excluded — it cannot open a scene.
+
+    A character with **no writable game at all** is also excluded (shouldn't
+    happen — a PC is born in a game — but a null ``origin_game`` with no casting
+    would otherwise be offered only to hit an empty partie list). "Writable game"
+    mirrors :func:`build_game_queryset` exactly: visible to the user (public &
+    non-remote, or owned) — as the character's origin game or a game it is cast
+    into. Mastered NPCs are always cast into a game the user owns, so that leg
+    already guarantees one.
     """
-    own_pcs = Q(owner=user, status=CharacterStatus.PC)
+    visible_games = Game.objects.filter(
+        Q(is_public=True, remote=False) | Q(owner=user, remote=False)
+    ).values("pk")
+    own_playable_pcs = Q(owner=user, status=CharacterStatus.PC) & (
+        Q(origin_game__in=visible_games) | Q(castings__game__in=visible_games)
+    )
     mastered_npcs = Q(status=CharacterStatus.NPC, castings__game__owner=user)
-    return Character.objects.filter(own_pcs | mastered_npcs).distinct()
+    return Character.objects.filter(own_playable_pcs | mastered_npcs).distinct()
 
 
 def available_kinds(user: User, game: Game) -> list[tuple[str, Any]]:

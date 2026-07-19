@@ -150,6 +150,32 @@ def test_protagonist_pool_excludes_non_pc_and_creator_only() -> None:
 
 
 @pytest.mark.django_db
+def test_protagonist_pool_excludes_pc_with_no_writable_game() -> None:
+    """A PC with no game the user can write in is not offered (empty pick sheet).
+
+    Shouldn't happen — a PC is born in a game — but an own PC whose only game is
+    another player's private game (invisible → not writable) with no casting
+    would otherwise be listed only to hit an empty partie list. Mirrors the
+    "Ce personnage n'a encore aucune partie où écrire" dead end.
+    """
+    user = UserFactory()
+    private_foreign_game = GameFactory(owner=UserFactory(), is_public=False)
+
+    # Own PC born in a game the user cannot see/write, with no casting → excluded.
+    CharacterFactory(owner=user, status=CharacterStatus.PC, origin_game=private_foreign_game)
+
+    # Same PC, but cast into a public game → writable there → offered.
+    public_game = GameFactory(is_public=True)
+    castable = CharacterFactory(
+        owner=user, status=CharacterStatus.PC, origin_game=private_foreign_game
+    )
+    GameCast.objects.create(game=public_game, character=castable, added_by=user)
+
+    pks = set(build_protagonist_pool(user).values_list("pk", flat=True))
+    assert pks == {castable.pk}
+
+
+@pytest.mark.django_db
 def test_actor_pool_gm_own_pcs_and_cast_npcs() -> None:
     """A GM voices their own PCs ∪ the NPCs in the game's cast (GameCast)."""
     gm = UserFactory()
