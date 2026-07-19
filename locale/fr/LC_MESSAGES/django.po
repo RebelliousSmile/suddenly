@@ -3416,17 +3416,17 @@ msgstr "Quand les auteurs publient leurs scènes, elles apparaissent ici."
 msgid "Story"
 msgstr "Story"
 
-#: .\templates\stories\detail.html:19
+#: .\templates\stories\detail.html:39
 #, python-format
-msgid "%(counter)s report · readable by all"
-msgid_plural "%(counter)s reports · readable by all"
-msgstr[0] "%(counter)s compte rendu · lisible par tous"
-msgstr[1] "%(counter)s comptes rendus · lisible par tous"
+msgid "%(counter)s scene · readable by all"
+msgid_plural "%(counter)s scenes · readable by all"
+msgstr[0] "%(counter)s scène · lisible par tous"
+msgstr[1] "%(counter)s scènes · lisible par tous"
 
-#: .\templates\stories\detail.html:27
+#: .\templates\stories\detail.html:59 .\templates\stories\_reading_nav.html:33
 #, python-format
-msgid "Report %(n)s"
-msgstr "Compte rendu %(n)s"
+msgid "Scene %(n)s"
+msgstr "Scène %(n)s"
 
 #: .\templates\stories\detail.html:75
 msgid "All stories"

@@ -1,0 +1,41 @@
+{% comment %}
+Rail de navigation des scènes d'une histoire (SUD-V3, #156).
+
+Une entrée par Report libéré. La sélection est purement client-side (Alpine) :
+`current` porte le pk de la scène affichée dans la colonne de lecture. Aucune
+valeur Django n'est interpolée dans une string Alpine — le pk transite par
+`data-report` + `$el.dataset.report` (03-alpine-patterns.md).
+
+Desktop : colonne sticky. Mobile : bande horizontale scrollable (même patron
+que settings_base.html). État actif = fond + poids + aria-current (jamais
+couleur seule).
+
+Contexte attendu : `reports` (itérable de Report).
+{% endcomment %}
+{% load i18n %}
+<nav aria-label="{% trans "Scenes" %}">
+    <div class="flex @lg:flex-col gap-0.5 overflow-x-auto pb-2 @lg:pb-0
+                border-b border-semantic-border @lg:border-0 @lg:sticky @lg:top-4">
+        {% for report in reports %}
+            <button type="button"
+                    data-report="{{ report.pk }}"
+                    @click="current = $el.dataset.report; scrollToReading()"
+                    :aria-current="current === $el.dataset.report ? 'true' : 'false'"
+                    class="flex items-start gap-2.5 w-full text-left px-3 py-2.5 rounded-lg
+                           min-h-[44px] whitespace-nowrap @lg:whitespace-normal transition-colors"
+                    :class="current === $el.dataset.report
+                            ? 'bg-semantic-surface text-semantic-ink font-semibold'
+                            : 'text-semantic-ink-secondary hover:text-semantic-ink hover:bg-semantic-surface'">
+                <span class="i-lucide-book-open text-sm flex-shrink-0 mt-0.5" aria-hidden="true"></span>
+                <span class="min-w-0">
+                    <span class="block text-[13px] leading-snug">{% blocktrans with n=forloop.counter %}Scene {{ n }}{% endblocktrans %}{% if report.title %} · {{ report.title }}{% endif %}</span>
+                    {% if report.session_date %}
+                        <span class="block text-[11px] text-semantic-muted mt-0.5">{{ report.session_date|date:"d/m/Y" }}</span>
+                    {% elif report.released_at %}
+                        <span class="block text-[11px] text-semantic-muted mt-0.5">{{ report.released_at|date:"d/m/Y" }}</span>
+                    {% endif %}
+                </span>
+            </button>
+        {% endfor %}
+    </div>
+</nav>

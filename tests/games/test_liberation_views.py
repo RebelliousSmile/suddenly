@@ -176,6 +176,39 @@ def test_story_detail_404_when_no_released_content(client: Client) -> None:
 
 
 @pytest.mark.django_db
+def test_story_detail_lists_each_released_scene(client: Client) -> None:
+    """#156 — the left rail lists one entry per released scene (title + data-report)."""
+    author = UserFactory()
+    game = GameFactory(owner=author)
+    first = _published(game, author, released=True, title="Opening Scene")
+    second = _published(game, author, released=True, title="Second Scene")
+
+    response = client.get(reverse("games:story_detail", kwargs={"pk": str(game.pk)}))
+    assert response.status_code == 200
+    body = response.content.decode()
+    # Every released scene is addressable in the rail / reading column.
+    assert body.count(f'data-report="{first.pk}"') >= 1
+    assert body.count(f'data-report="{second.pk}"') >= 1
+    assert "Opening Scene" in body
+    assert "Second Scene" in body
+
+
+@pytest.mark.django_db
+def test_story_detail_first_scene_is_initial(client: Client) -> None:
+    """#156 — the initially displayed scene is the first of the ordered reports."""
+    author = UserFactory()
+    game = GameFactory(owner=author)
+    _published(game, author, released=True, title="A Scene")
+    _published(game, author, released=True, title="B Scene")
+
+    response = client.get(reverse("games:story_detail", kwargs={"pk": str(game.pk)}))
+    assert response.status_code == 200
+    reports = list(response.context["reports"])
+    # data-initial drives the Alpine `current` selection at load.
+    assert f'data-initial="{reports[0].pk}"' in response.content.decode()
+
+
+@pytest.mark.django_db
 def test_story_detail_excludes_non_public_released(client: Client) -> None:
     """A released report that is not PUBLIC must not surface in a story."""
     author = UserFactory()
