@@ -61,6 +61,7 @@ urlpatterns = [
     path("<uuid:pk>/", front_views.game_detail, name="detail"),
     path("<uuid:pk>/edit/", front_views.game_edit, name="edit"),
     path("<uuid:pk>/delete/", front_views.game_delete, name="delete"),
+    path("<uuid:pk>/close/", front_views.game_close, name="game_close"),
     path("<uuid:game_pk>/reports/<uuid:pk>/", front_views.report_detail, name="report_detail"),
     path(
         "<uuid:game_pk>/reports/<uuid:pk>/release/",

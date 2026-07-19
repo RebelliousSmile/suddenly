@@ -7,17 +7,18 @@ from __future__ import annotations
 import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, HttpRequest, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_POST
 
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
 from ._view_helpers import _game_form_extra, _released_reports, _render_game_form
 from .models import Game, Report, ReportStatus
-from .services import build_game_queryset, known_game_systems, near_duplicate_system
+from .services import build_game_queryset, close_game, known_game_systems, near_duplicate_system
 
 
 def game_list(request: HttpRequest) -> HttpResponse:
@@ -333,6 +334,23 @@ def game_delete(request: AuthenticatedRequest, pk: str) -> HttpResponse:
             return redirect(reverse("games:detail", kwargs={"pk": game.pk}))
         game.delete()
     return redirect(reverse("games:list"))
+
+
+@require_POST
+@login_required
+def game_close(request: AuthenticatedRequest, pk: str) -> HttpResponse:
+    """Close a game (GM only) — terminal lifecycle action (DEC-D7, epic D, #134).
+
+    Idempotent (``close_game`` no-ops if already closed). Non-owner requests
+    get a bare 403, not a 404 — closing is a real action a non-GM might
+    reasonably attempt against a game they can see, unlike delete/edit which
+    are scoped out of existence for them via ``get_object_or_404(..., owner=)``.
+    """
+    game = get_object_or_404(Game, pk=pk)
+    if game.owner_id != request.user.pk:
+        return HttpResponseForbidden()
+    close_game(game=game, user=request.user)
+    return redirect(reverse("games:detail", kwargs={"pk": game.pk}))
 
 
 @login_required

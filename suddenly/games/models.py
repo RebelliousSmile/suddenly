@@ -50,6 +50,18 @@ class Game(BaseModel):
     # Timeline
     started_at = models.DateField(null=True, blank=True)
 
+    # Lifecycle — set by the GM's "close the game" action (Epic D, #134).
+    completed_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        db_index=True,
+        help_text=(
+            "Set once, by close_game(). Once set, every report of this game is "
+            "treated as released, regardless of its own released_at (SUD-V1 — see "
+            "wall_open_q())."
+        ),
+    )
+
     class Meta:
         ordering = ["-updated_at"]
         indexes = [
@@ -86,6 +98,23 @@ class ReportVisibility(models.TextChoices):
     FOLLOWERS = "followers", _("Followers only")
 
 
+def wall_open_q(prefix: str = "") -> Q:
+    """The temporal-wall disjunct, shared by every "is this report released?"
+    check in the codebase (rule of three — DEC-D6, Epic D #134).
+
+    A report crosses the wall either on its own (``released_at`` set) or
+    because its game was closed (``game.completed_at`` set) — closing a game
+    treats every one of its reports as released, regardless of their own
+    ``released_at``. ``prefix`` lets callers span a relation (e.g.
+    ``wall_open_q("report__")`` from a queryset rooted on a different model).
+    Retro-compatible: ``completed_at`` defaults to ``NULL`` on all existing
+    rows, so the added disjunct is empty until a game is actually closed.
+    """
+    return Q(**{f"{prefix}released_at__isnull": False}) | Q(
+        **{f"{prefix}game__completed_at__isnull": False}
+    )
+
+
 class ReportQuerySet(models.QuerySet["Report"]):
     """Querysets for Report. The liberation ("wall") filter lives here and
     nowhere else (SUD-V1) — two canonical variants, never re-expressed inline:
@@ -103,24 +132,24 @@ class ReportQuerySet(models.QuerySet["Report"]):
         changes. For listings that must also surface remote content, use
         ``feed_visible()`` (federation axis ≠ liberation axis)."""
         return self.filter(
-            released_at__isnull=False,
             status=ReportStatus.PUBLISHED,
             visibility=ReportVisibility.PUBLIC,
-        )
+        ).filter(wall_open_q())
 
     def feed_visible(self) -> "ReportQuerySet":
         """Published + public reports listable in a reading feed.
 
         The temporal wall is a *local* concept (liberation axis): a local report
-        must have crossed it (``released_at`` set) to appear. A remote report is
-        already gated by its origin instance before federation (federation axis),
-        so it passes on ``status``/``visibility`` alone — the local ``released_at``
-        is never populated on ingest and must not filter remote content out.
+        must have crossed it (``released_at`` set, or its game closed) to appear.
+        A remote report is already gated by its origin instance before
+        federation (federation axis), so it passes on ``status``/``visibility``
+        alone — the local ``released_at``/``completed_at`` are never populated
+        on ingest and must not filter remote content out.
         """
         return self.filter(
             status=ReportStatus.PUBLISHED,
             visibility=ReportVisibility.PUBLIC,
-        ).filter(Q(remote=True) | Q(released_at__isnull=False))
+        ).filter(Q(remote=True) | wall_open_q())
 
     def most_liked(self) -> "ReportQuerySet":
         """Wall-visible scenes ranked by total like count (all-time), hottest first.

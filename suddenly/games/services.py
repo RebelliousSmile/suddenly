@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Any
 
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import AnonymousUser
-from django.core.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 from django.db.models import Count, F, Q
 from django.db.models.query import QuerySet
@@ -678,6 +678,33 @@ def reopen_scene(*, report: Report) -> Report:
     report.released_at = None
     report.save(update_fields=["status", "released_at", "updated_at"])
     return report
+
+
+@transaction.atomic
+def close_game(*, game: Game, user: User) -> Game:
+    """Close a game: the GM-only, terminal lifecycle action (DEC-D7, Epic D #134).
+
+    Idempotent — closing an already-closed game is a no-op, not an error, so a
+    network retry or double click is harmless. Once ``completed_at`` is set,
+    every report of this game is treated as released regardless of its own
+    ``released_at`` (``wall_open_q()``), and the cast auto-follows are
+    recomputed: any AUTO follow only justified by this game's membership stops
+    being justified the moment the game is no longer active (see
+    ``active_comembership_exists`` in ``games/cast_follow.py``) — a game
+    closure is teardown's other trigger besides a cast entry removal.
+    """
+    if not is_game_master(user, game):
+        raise PermissionDenied("Only the game's GM can close it.")
+    if game.completed_at is not None:
+        return game
+
+    game.completed_at = timezone.now()
+    game.save(update_fields=["completed_at", "updated_at"])
+
+    from suddenly.games.cast_follow import teardown_cast_follows_for_game
+
+    teardown_cast_follows_for_game(game)
+    return game
 
 
 @transaction.atomic

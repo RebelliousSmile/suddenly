@@ -63,6 +63,28 @@ def follow_toggle(request: AuthenticatedRequest) -> HttpResponse:
     ).first()
 
     if existing:
+        # DEC-D5 (Epic D, #134): unfollow is locked between two co-members of an
+        # active game (AUTO or MANUAL alike) — the recourse while locked is a
+        # report (epic F, out of scope), not an unfollow. Reuses the same
+        # `active_comembership_exists` pivot as the teardown (DEC-D4), so the
+        # lock and the auto-follow lifecycle always agree on "active".
+        if target_type == "user":
+            from typing import cast
+
+            from suddenly.games.cast_follow import active_comembership_exists
+            from suddenly.users.models import User
+
+            if active_comembership_exists(request.user, cast(User, target)):
+                return render(
+                    request,
+                    "components/follow_button.html",
+                    {
+                        "target": target,
+                        "target_type": target_type,
+                        "is_following": True,
+                        "locked": True,
+                    },
+                )
         existing.delete()
         is_following = False
     else:
