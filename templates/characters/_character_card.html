@@ -5,14 +5,7 @@
 {% endcomment %}
 <div class="p-4 border-b border-semantic-border">
     <div class="flex items-start gap-3">
-        {% if character.avatar %}
-            <img src="{{ character.avatar.url }}" alt=""
-                 class="w-11 h-11 rounded-full object-cover shrink-0 border border-semantic-border">
-        {% else %}
-            <span class="w-11 h-11 rounded-full shrink-0 flex items-center justify-center bg-semantic-card-sunken border border-semantic-border text-semantic-muted">
-                <span class="i-lucide-user"></span>
-            </span>
-        {% endif %}
+        {% include "characters/partials/_avatar.html" with entity=character alt="" img_class="w-11 h-11 rounded-full object-cover shrink-0 border border-semantic-border" placeholder_class="w-11 h-11 rounded-full shrink-0 flex items-center justify-center bg-semantic-card-sunken border border-semantic-border text-semantic-muted" icon_class="i-lucide-user" %}
         <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 flex-wrap">
                 <span class="font-semibold text-semantic-ink text-sm">{{ character.name }}</span>
@@ -43,18 +36,7 @@
 
 <div class="p-3 flex items-center gap-2">
     {% if character.is_available %}
-        <a href="{% url 'characters:link_request_form' slug=character.slug link_type='claim' %}"
-           class="inline-flex items-center gap-1 bg-semantic-info/10 text-semantic-info border border-semantic-info/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-semantic-info/20">
-            <span class="i-lucide-link text-xs"></span>{% trans "Claim" %}
-        </a>
-        <a href="{% url 'characters:link_request_form' slug=character.slug link_type='adopt' %}"
-           class="inline-flex items-center gap-1 bg-semantic-success/10 text-semantic-success border border-semantic-success/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-semantic-success/20">
-            <span class="i-lucide-user-check text-xs"></span>{% trans "Adopt" %}
-        </a>
-        <a href="{% url 'characters:link_request_form' slug=character.slug link_type='fork' %}"
-           class="inline-flex items-center gap-1 bg-brand-accent/10 text-brand-accent border border-brand-accent/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-brand-accent/20">
-            <span class="i-lucide-git-fork text-xs"></span>{% trans "Fork" %}
-        </a>
+        {% include "characters/partials/_claim_adopt_fork_actions.html" with slug=character.slug variant="chip" %}
     {% endif %}
     <a href="{% url 'characters:detail' slug=character.slug %}"
        class="ml-auto text-xs link-muted inline-flex items-center gap-1">

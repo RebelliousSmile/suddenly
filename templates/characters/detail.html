@@ -9,13 +9,7 @@
 
         <!-- Header -->
         <div class="flex flex-col @sm:flex-row items-start gap-6 mb-8">
-            {% if character.avatar %}
-                <img src="{{ character.avatar.url }}" alt="{{ character.name }}" class="avatar-xl">
-            {% else %}
-                <span class="avatar-xl avatar-placeholder">
-                    <span class="i-lucide-user text-2xl"></span>
-                </span>
-            {% endif %}
+            {% include "characters/partials/_avatar.html" with entity=character alt=character.name img_class="avatar-xl" placeholder_class="avatar-xl avatar-placeholder" icon_class="i-lucide-user text-2xl" %}
 
             <div class="flex-1">
                 <div class="flex items-center gap-3 mb-2">

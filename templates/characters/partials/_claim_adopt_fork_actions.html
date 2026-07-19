@@ -1,0 +1,63 @@
+{% load i18n %}
+{% comment %}
+Claim/Adopt/Fork action trio — single source across the "chip" (character hover
+card, list result cards), "promo" (feed promo card) and "suggest" (link
+suggestions) visual registers. Each variant reproduces its surface's exact
+pre-extraction markup (classes, icons, HTMX/link targets).
+
+Params:
+  slug     — character slug for the link_request_form URLs.
+  variant  — "chip" | "promo" | "suggest".
+  actions  — restricts which of claim/adopt/fork render. Membership is tested
+             with `in` (a plain string like "fork" works as a single-action
+             filter; a list works for a full available_actions subset).
+             "chip"/"promo": omit to render all three (default). "suggest":
+             always pass the caller's available_actions explicitly — an empty
+             list renders nothing, matching the per-action gates it replaces.
+{% endcomment %}
+{% if variant == "promo" %}
+    {% if not actions or "claim" in actions %}
+        <a href="{% url 'characters:link_request_form' slug=slug link_type='claim' %}"
+           class="btn-primary btn-sm">{% trans "Claim" %}</a>
+    {% endif %}
+    {% if not actions or "adopt" in actions %}
+        <a href="{% url 'characters:link_request_form' slug=slug link_type='adopt' %}"
+           class="btn-secondary btn-sm">{% trans "Adopt" %}</a>
+    {% endif %}
+    {% if not actions or "fork" in actions %}
+        <a href="{% url 'characters:link_request_form' slug=slug link_type='fork' %}"
+           class="btn-ghost btn-sm">{% trans "Fork" %}</a>
+    {% endif %}
+{% elif variant == "suggest" %}
+    {% if "claim" in actions %}
+        <a href="{% url 'characters:link_request_form' slug=slug link_type='claim' %}"
+           class="btn-secondary btn-sm">{% trans "Claim" %}</a>
+    {% endif %}
+    {% if "adopt" in actions %}
+        <a href="{% url 'characters:link_request_form' slug=slug link_type='adopt' %}"
+           class="btn-secondary btn-sm">{% trans "Adopt" %}</a>
+    {% endif %}
+    {% if "fork" in actions %}
+        <a href="{% url 'characters:link_request_form' slug=slug link_type='fork' %}"
+           class="btn-secondary btn-sm">{% trans "Fork" %}</a>
+    {% endif %}
+{% else %}
+    {% if not actions or "claim" in actions %}
+        <a href="{% url 'characters:link_request_form' slug=slug link_type='claim' %}"
+           class="inline-flex items-center gap-1 bg-semantic-info/10 text-semantic-info border border-semantic-info/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-semantic-info/20">
+            <span class="i-lucide-link text-xs"></span>{% trans "Claim" %}
+        </a>
+    {% endif %}
+    {% if not actions or "adopt" in actions %}
+        <a href="{% url 'characters:link_request_form' slug=slug link_type='adopt' %}"
+           class="inline-flex items-center gap-1 bg-semantic-success/10 text-semantic-success border border-semantic-success/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-semantic-success/20">
+            <span class="i-lucide-user-check text-xs"></span>{% trans "Adopt" %}
+        </a>
+    {% endif %}
+    {% if not actions or "fork" in actions %}
+        <a href="{% url 'characters:link_request_form' slug=slug link_type='fork' %}"
+           class="inline-flex items-center gap-1 bg-brand-accent/10 text-brand-accent border border-brand-accent/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-brand-accent/20">
+            <span class="i-lucide-git-fork text-xs"></span>{% trans "Fork" %}
+        </a>
+    {% endif %}
+{% endif %}

@@ -1,0 +1,28 @@
+{% comment %}
+Avatar-or-placeholder — single source for the "photo, else icon placeholder"
+motif repeated across character/feed surfaces. Tolerant partial: every class,
+the icon, the alt text and the placeholder wrapper tag are pass-through params
+so each caller reproduces its own pre-extraction markup exactly.
+
+Params:
+  entity              — object exposing `.avatar` (ImageFieldFile) and `.name`.
+  alt                 — alt text for the <img> (often "" or entity.name).
+  img_class           — classes for the <img> element.
+  placeholder_class   — classes for the placeholder wrapper.
+  placeholder_tag     — "span" (default) or "div", wrapper tag when no avatar.
+  icon_class          — classes for the inner icon <span> (incl. i-lucide-*).
+  icon_aria_hidden    — when truthy, adds aria-hidden="true" on the icon <span>.
+{% endcomment %}
+{% if entity.avatar %}
+    <img src="{{ entity.avatar.url }}" alt="{{ alt }}" class="{{ img_class }}">
+{% else %}
+    {% if placeholder_tag == "div" %}
+        <div class="{{ placeholder_class }}">
+            <span class="{{ icon_class }}"{% if icon_aria_hidden %} aria-hidden="true"{% endif %}></span>
+        </div>
+    {% else %}
+        <span class="{{ placeholder_class }}">
+            <span class="{{ icon_class }}"{% if icon_aria_hidden %} aria-hidden="true"{% endif %}></span>
+        </span>
+    {% endif %}
+{% endif %}

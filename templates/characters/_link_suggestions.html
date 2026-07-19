@@ -19,13 +19,7 @@ services.suggested_characters_to_link; only accepted actions are rendered.
                 <div class="flex items-start gap-3">
                     {# Redundant with the name/View links below — decorative for AT (no empty link). #}
                     <a href="{% url 'characters:detail' slug=c.slug %}" class="shrink-0" aria-hidden="true" tabindex="-1">
-                        {% if c.avatar %}
-                            <img src="{{ c.avatar.url }}" alt="" class="avatar-md">
-                        {% else %}
-                            <span class="avatar-md bg-semantic-card-sunken flex items-center justify-center text-semantic-muted">
-                                <span class="i-lucide-user" aria-hidden="true"></span>
-                            </span>
-                        {% endif %}
+                        {% include "characters/partials/_avatar.html" with entity=c alt="" img_class="avatar-md" placeholder_class="avatar-md bg-semantic-card-sunken flex items-center justify-center text-semantic-muted" icon_class="i-lucide-user" icon_aria_hidden=True %}
                     </a>
                     <div class="min-w-0 flex-1">
                         <a href="{% url 'characters:detail' slug=c.slug %}"
@@ -49,18 +43,7 @@ services.suggested_characters_to_link; only accepted actions are rendered.
                 {% endif %}
 
                 <div class="flex flex-wrap items-center gap-2 pt-1">
-                    {% if 'claim' in c.available_actions %}
-                        <a href="{% url 'characters:link_request_form' slug=c.slug link_type='claim' %}"
-                           class="btn-secondary btn-sm">{% trans "Claim" %}</a>
-                    {% endif %}
-                    {% if 'adopt' in c.available_actions %}
-                        <a href="{% url 'characters:link_request_form' slug=c.slug link_type='adopt' %}"
-                           class="btn-secondary btn-sm">{% trans "Adopt" %}</a>
-                    {% endif %}
-                    {% if 'fork' in c.available_actions %}
-                        <a href="{% url 'characters:link_request_form' slug=c.slug link_type='fork' %}"
-                           class="btn-secondary btn-sm">{% trans "Fork" %}</a>
-                    {% endif %}
+                    {% include "characters/partials/_claim_adopt_fork_actions.html" with slug=c.slug variant="suggest" actions=c.available_actions %}
                     <a href="{% url 'characters:detail' slug=c.slug %}"
                        class="link-muted text-xs ml-auto whitespace-nowrap">
                         {% trans "View" %} <span class="i-lucide-arrow-right text-xs" aria-hidden="true"></span>

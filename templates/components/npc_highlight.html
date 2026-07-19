@@ -11,13 +11,7 @@
 
 <div class="border border-semantic-warning/50 rounded-xl p-3 bg-semantic-warning/10 hover:shadow-card-hover transition-shadow">
     <div class="flex items-center gap-2 mb-1">
-        {% if character.avatar %}
-            <img src="{{ character.avatar.url }}" alt="{{ character.name }}" class="avatar-sm">
-        {% else %}
-            <div class="avatar-sm avatar-placeholder bg-semantic-warning/15 text-semantic-warning">
-                <span class="i-lucide-sparkles text-xs"></span>
-            </div>
-        {% endif %}
+        {% include "characters/partials/_avatar.html" with entity=character alt=character.name img_class="avatar-sm" placeholder_class="avatar-sm avatar-placeholder bg-semantic-warning/15 text-semantic-warning" placeholder_tag="div" icon_class="i-lucide-sparkles text-xs" %}
         <p class="font-medium text-sm text-semantic-ink truncate">{{ character.name }}</p>
     </div>
     <p class="text-xs text-semantic-muted mb-2 truncate">{{ character.origin_game.title }}</p>

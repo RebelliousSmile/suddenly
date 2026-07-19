@@ -15,13 +15,7 @@
             {% trans "Available to play" %}
         </p>
         <div class="flex items-center gap-3 mb-3">
-            {% if character.avatar %}
-                <img src="{{ character.avatar.url }}" alt="{{ character.name }}" class="avatar-md">
-            {% else %}
-                <span class="avatar-md avatar-placeholder">
-                    <span class="i-lucide-user text-sm"></span>
-                </span>
-            {% endif %}
+            {% include "characters/partials/_avatar.html" with entity=character alt=character.name img_class="avatar-md" placeholder_class="avatar-md avatar-placeholder" icon_class="i-lucide-user text-sm" %}
             <div class="min-w-0">
                 <a href="{% url 'characters:detail' slug=character.slug %}"
                    class="font-semibold text-semantic-ink hover:text-brand-primary">
@@ -36,12 +30,7 @@
             <p class="text-sm text-semantic-ink-secondary line-clamp-2 mb-3">{{ character.description }}</p>
         {% endif %}
         <div class="flex flex-wrap items-center gap-2">
-            <a href="{% url 'characters:link_request_form' slug=character.slug link_type='claim' %}"
-               class="btn-primary btn-sm">{% trans "Claim" %}</a>
-            <a href="{% url 'characters:link_request_form' slug=character.slug link_type='adopt' %}"
-               class="btn-secondary btn-sm">{% trans "Adopt" %}</a>
-            <a href="{% url 'characters:link_request_form' slug=character.slug link_type='fork' %}"
-               class="btn-ghost btn-sm">{% trans "Fork" %}</a>
+            {% include "characters/partials/_claim_adopt_fork_actions.html" with slug=character.slug variant="promo" %}
         </div>
     </div>
 </article>

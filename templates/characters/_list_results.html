@@ -84,23 +84,9 @@
                         {# Actions #}
                         <div class="flex items-center flex-wrap gap-2 pt-2 border-t border-semantic-border/60">
                             {% if character.is_available and user.is_authenticated and user != character.creator %}
-                                <a href="{% url 'characters:link_request_form' slug=character.slug link_type='claim' %}"
-                                   class="inline-flex items-center gap-1 bg-semantic-info/10 text-semantic-info border border-semantic-info/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-semantic-info/20">
-                                    <span class="i-lucide-link text-xs"></span>{% trans "Claim" %}
-                                </a>
-                                <a href="{% url 'characters:link_request_form' slug=character.slug link_type='adopt' %}"
-                                   class="inline-flex items-center gap-1 bg-semantic-success/10 text-semantic-success border border-semantic-success/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-semantic-success/20">
-                                    <span class="i-lucide-user-check text-xs"></span>{% trans "Adopt" %}
-                                </a>
-                                <a href="{% url 'characters:link_request_form' slug=character.slug link_type='fork' %}"
-                                   class="inline-flex items-center gap-1 bg-brand-accent/10 text-brand-accent border border-brand-accent/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-brand-accent/20">
-                                    <span class="i-lucide-git-fork text-xs"></span>{% trans "Fork" %}
-                                </a>
+                                {% include "characters/partials/_claim_adopt_fork_actions.html" with slug=character.slug variant="chip" %}
                             {% elif character.status == 'pc' and user.is_authenticated and user != character.owner %}
-                                <a href="{% url 'characters:link_request_form' slug=character.slug link_type='fork' %}"
-                                   class="inline-flex items-center gap-1 bg-brand-accent/10 text-brand-accent border border-brand-accent/30 rounded-lg px-2.5 py-1 text-xs font-medium hover:bg-brand-accent/20">
-                                    <span class="i-lucide-git-fork text-xs"></span>{% trans "Fork" %}
-                                </a>
+                                {% include "characters/partials/_claim_adopt_fork_actions.html" with slug=character.slug variant="chip" actions="fork" %}
                             {% endif %}
 
                             {% if user == character.creator %}
