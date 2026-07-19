@@ -54,14 +54,14 @@
 
                 <!-- Followers / Following counts -->
                 <div class="flex items-center gap-4 text-sm">
-                    <span>
+                    <a href="{% url 'users:followers' username=profile_user.username %}" class="hover:underline">
                         <strong>{{ followers_count|default:0 }}</strong>
                         <span class="text-semantic-muted">{% blocktrans count counter=followers_count|default:0 %}follower{% plural %}followers{% endblocktrans %}</span>
-                    </span>
-                    <span>
+                    </a>
+                    <a href="{% url 'users:following' username=profile_user.username %}" class="hover:underline">
                         <strong>{{ following_count|default:0 }}</strong>
                         <span class="text-semantic-muted">{% blocktrans count counter=following_count|default:0 %}following{% plural %}following{% endblocktrans %}</span>
-                    </span>
+                    </a>
                 </div>
             </div>
         </div>

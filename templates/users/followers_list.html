@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% blocktrans with name=profile_user.get_display_name %}Followers of {{ name }}{% endblocktrans %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+    <section class="py-8">
+        <div class="container-app max-w-2xl">
+            <a href="{% url 'users:profile' username=profile_user.username %}"
+               class="inline-flex items-center gap-1 text-sm text-semantic-muted hover:text-semantic-ink mb-4">
+                <span class="i-lucide-arrow-left text-xs"></span>
+                {% trans "Back to profile" %}
+            </a>
+
+            <h1 class="text-2xl font-bold text-semantic-ink mb-6">
+                {% blocktrans with name=profile_user.get_display_name %}Followers of {{ name }}{% endblocktrans %}
+            </h1>
+
+            <div id="followers-list" class="space-y-3">
+                {% include "users/_followers_page.html" %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
