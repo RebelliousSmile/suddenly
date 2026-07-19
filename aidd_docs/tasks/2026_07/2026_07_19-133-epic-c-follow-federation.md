@@ -158,7 +158,7 @@ flowchart TD
 
 - [x] `python manage.py makemigrations --check --dry-run` : aucune migration manquante après commit.
 - [x] Un `Accept` entrant enveloppant un `Follow` (matché par `ap_id`) passe le `Follow` local de `accepted=False` à `True`.
-- [ ] Un `Reject` entrant enveloppant un `Follow` supprime le `Follow` optimiste.
+- [x] Un `Reject` entrant enveloppant un `Follow` supprime le `Follow` optimiste.
 - [ ] Un `Accept` d'`Offer` (Claim/Adopt/Fork) suit toujours le chemin `LinkRequest` inchangé (non-régression DEC-038).
 
 ### Phase 2 : Boutons follow sur les 3 acteurs (locaux ET distants)
@@ -255,6 +255,8 @@ flowchart TD
 🤖 2026-07-19 — Phase 1, critère 1 : `Follow.accepted = BooleanField(default=True, db_index=True)` ajouté (`characters/models.py`) + migration `0019_follow_accepted` (AddField, additive). `makemigrations --check --dry-run` confirmé propre.
 
 🤖 2026-07-19 — Phase 1, critère 2 : `remote_follow_toggle` crée le `Follow` sortant avec `accepted=False` (`federation_views.py`) ; `handle_accept` discrimine Follow vs Offer (`_follow_ap_id_from_activity`, `_resolve_outbound_follow`, `_handle_accept_follow`) sans toucher au chemin `LinkRequest`. Tests : `tests/activitypub/test_follow_federation.py::TestAcceptFollow` (4 tests — dict/string object, fallback par actor, aucun match).
+
+🤖 2026-07-19 — Phase 1, critère 3 : `handle_reject` discrimine Follow vs Offer (même logique que `handle_accept`, DEC-C2/C3) et route vers `_handle_reject_follow`, qui supprime le `Follow` optimiste sortant correspondant. Tests : `tests/activitypub/test_follow_federation.py::TestRejectFollow` (2 tests — dict/string object).
 
 ## Validation flow demonstration
 

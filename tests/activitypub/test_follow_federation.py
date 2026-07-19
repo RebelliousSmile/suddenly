@@ -17,7 +17,7 @@ from typing import Any
 import pytest
 from django.contrib.contenttypes.models import ContentType
 
-from suddenly.activitypub.inbox import handle_accept
+from suddenly.activitypub.inbox import handle_accept, handle_reject
 from suddenly.characters.models import Follow
 from suddenly.users.models import User
 from tests.factories import UserFactory
@@ -116,3 +116,42 @@ class TestAcceptFollow:
         )
         # No assertion target other than "did not raise" — nothing was created.
         assert Follow.objects.count() == 0
+
+
+@pytest.mark.django_db
+class TestRejectFollow:
+    """Criterion 3: Reject(Follow) deletes the optimistic outbound Follow."""
+
+    def test_reject_follow_by_dict_object_deletes_follow(self, db: Any) -> None:
+        follower = UserFactory()
+        remote_actor_url = "https://peer.example/users/dave"
+        remote_user = _make_remote_user(remote_actor_url)
+        follow_ap_id = f"https://testserver/users/{follower.username}/follows/{remote_user.pk}"
+        _make_outbound_follow(follower, remote_user, follow_ap_id, accepted=False)
+
+        handle_reject(
+            {
+                "type": "Reject",
+                "actor": remote_actor_url,
+                "object": {"type": "Follow", "id": follow_ap_id},
+            },
+            actor_type="user",
+            actor_identifier=follower.username,
+        )
+
+        assert not Follow.objects.filter(ap_id=follow_ap_id).exists()
+
+    def test_reject_follow_by_bare_string_object_deletes_follow(self, db: Any) -> None:
+        follower = UserFactory()
+        remote_actor_url = "https://peer.example/users/erin"
+        remote_user = _make_remote_user(remote_actor_url)
+        follow_ap_id = f"https://testserver/users/{follower.username}/follows/{remote_user.pk}"
+        _make_outbound_follow(follower, remote_user, follow_ap_id, accepted=False)
+
+        handle_reject(
+            {"type": "Reject", "actor": remote_actor_url, "object": follow_ap_id},
+            actor_type="user",
+            actor_identifier=follower.username,
+        )
+
+        assert not Follow.objects.filter(ap_id=follow_ap_id).exists()
