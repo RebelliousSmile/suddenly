@@ -2,7 +2,7 @@
 {% comment %}
 Account dropdown items (Front #5). Shared between the desktop and mobile
 navbars to avoid divergence. Badge counts (pending_requests_count,
-unread_notifications_count) are injected by the
+unread_notifications_count, unread_messages_count) are injected by the
 suddenly.core.context_processors.account_badges context processor.
 {% endcomment %}
 <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
@@ -27,6 +27,10 @@ suddenly.core.context_processors.account_badges context processor.
 <a href="{% url 'feed:notifications' %}" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
     <span><span class="i-lucide-bell mr-2"></span>{% trans "Notifications" %}</span>
     {% if unread_notifications_count %}<span class="badge-primary">{{ unread_notifications_count }}</span>{% endif %}
+</a>
+<a href="{% url 'messaging:inbox' %}" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
+    <span><span class="i-lucide-mail mr-2"></span>{% trans "Messages" %}</span>
+    {% if unread_messages_count %}<span class="badge-primary">{{ unread_messages_count }}</span>{% endif %}
 </a>
 <a href="#" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
     <span><span class="i-lucide-gem mr-2"></span>{% trans "Stats & achievements" %}</span>

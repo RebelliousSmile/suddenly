@@ -268,6 +268,15 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
     # self-guard and store no id.
     fiction_next = fiction_continuations(report)
 
+    # Direct-message entry point (Epic E, #135, DEC-E7) — read-only, gated by
+    # mutuality; never writes a Follow. Targets the scene's author.
+    dm_recipient = None
+    if request.user.is_authenticated and request.user != report.author:
+        from suddenly.characters.models import Follow
+
+        if Follow.objects.are_mutual(request.user, report.author):
+            dm_recipient = report.author
+
     return htmx_render(
         request,
         full_template="games/report_detail.html",
@@ -285,6 +294,7 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
             "quote_characters": quote_characters,
             "rapports": rapports,
             "fiction_next": fiction_next,
+            "dm_recipient": dm_recipient,
         },
     )
 

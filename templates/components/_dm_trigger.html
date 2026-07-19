@@ -1,0 +1,21 @@
+{% comment %}
+  Direct-message trigger (Epic E, #135, DEC-E7).
+
+  Usage:
+    {% include "components/_dm_trigger.html" with recipient=dm_recipient %}
+
+  Props:
+    recipient — User instance, already mutuality-filtered by the calling view
+                (character.owner / game.owner / report.author, gated by
+                Follow.objects.are_mutual against request.user). Renders
+                nothing if omitted/None — read-only entry point, no follow
+                write happens here.
+{% endcomment %}
+{% load i18n %}
+
+{% if recipient %}
+    <a href="{% url 'messaging:compose' %}?to={{ recipient.pk }}" class="btn-secondary btn-sm">
+        <span class="i-lucide-mail text-sm"></span>
+        {% trans "Message privé" %}
+    </a>
+{% endif %}

@@ -67,7 +67,7 @@
                                         <span class="i-lucide-user text-sm"></span>
                                     </span>
                                 {% endif %}
-                                {% if pending_requests_count or unread_notifications_count or new_stats_count %}
+                                {% if pending_requests_count or unread_notifications_count or unread_messages_count or new_stats_count %}
                                     <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-brand-primary border-2 border-semantic-surface"></span>
                                 {% endif %}
                             </button>
@@ -154,7 +154,7 @@
                                     <span class="i-lucide-user text-sm"></span>
                                 </span>
                             {% endif %}
-                            {% if pending_requests_count or unread_notifications_count or new_stats_count %}
+                            {% if pending_requests_count or unread_notifications_count or unread_messages_count or new_stats_count %}
                                 <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-brand-primary border-2 border-semantic-surface"></span>
                             {% endif %}
                         </button>

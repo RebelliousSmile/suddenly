@@ -268,6 +268,21 @@ def character_detail(request: HttpRequest, slug: str) -> HttpResponse:
         ).exists()
     context["is_following"] = is_following
 
+    # Direct-message entry point (Epic E, #135, DEC-E7) — read-only, gated by
+    # mutuality; never writes a Follow. Targets the character's owner (the
+    # player controlling it), not the creator.
+    dm_recipient = None
+    if (
+        request.user.is_authenticated
+        and character.owner is not None
+        and request.user != character.owner
+    ):
+        from .models import Follow
+
+        if Follow.objects.are_mutual(request.user, character.owner):
+            dm_recipient = character.owner
+    context["dm_recipient"] = dm_recipient
+
     return htmx_render(
         request,
         full_template="characters/detail.html",

@@ -1,0 +1,18 @@
+{% comment %}
+  Message bubbles for a conversation thread (Epic E, #135). ``messages`` is the
+  conversation's DirectMessage queryset, ordered chronologically.
+{% endcomment %}
+{% load i18n %}
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="flex flex-col {% if message.sender_id == request.user.pk %}items-end{% else %}items-start{% endif %}">
+            <div class="max-w-[75%] rounded-2xl px-4 py-2 text-sm {% if message.sender_id == request.user.pk %}bg-brand-primary text-white{% else %}bg-semantic-card text-semantic-ink{% endif %}">
+                {{ message.body|linebreaksbr }}
+            </div>
+            <span class="text-xs text-semantic-muted mt-1">{{ message.created_at|timesince }}</span>
+        </div>
+    {% endfor %}
+{% else %}
+    <p class="text-sm text-semantic-muted text-center py-6">{% trans "Aucun message pour l’instant." %}</p>
+{% endif %}

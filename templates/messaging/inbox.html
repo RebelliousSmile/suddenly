@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Messages" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-2xl">
+        <h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "Messages" %}</h1>
+        <div id="conversation-list">
+            {% include "messaging/_conversation_list.html" %}
+        </div>
+    </div>
+</section>
+{% endblock %}

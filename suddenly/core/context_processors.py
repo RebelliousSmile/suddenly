@@ -51,6 +51,7 @@ def account_badges(request: object) -> dict[str, object]:
 
     from suddenly.characters.models import LinkRequest, LinkRequestStatus
     from suddenly.core.models import Notification
+    from suddenly.messaging.services import MessageService
 
     return {
         "pending_requests_count": LinkRequest.objects.filter(
@@ -59,4 +60,5 @@ def account_badges(request: object) -> dict[str, object]:
         "unread_notifications_count": Notification.objects.filter(
             recipient=user, is_read=False
         ).count(),
+        "unread_messages_count": MessageService.unread_count(user),
     }

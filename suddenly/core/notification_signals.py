@@ -164,3 +164,27 @@ def _track_usage_and_prompt(user: Any) -> None:
                 f"Si la plateforme vous est utile, pensez à soutenir l'instance."
             ),
         )
+
+
+@receiver(post_save, sender="messaging.DirectMessage")
+def notify_on_direct_message(sender: type, instance: Any, created: bool, **kwargs: Any) -> None:
+    """Notify the other participant when a direct message is created (DEC-E6).
+
+    Fires for both a local outbound send and a mirrored inbound (federated)
+    message — both create a local ``DirectMessage`` row, so this single
+    signal covers local + federated (DEC-E6's stated intent).
+    """
+    if not created:
+        return
+
+    from suddenly.core.models import Notification, NotificationType
+    from suddenly.messaging.services import MessageService
+
+    recipient = MessageService.other_participant(instance.conversation, instance.sender)
+    Notification.objects.create(
+        recipient=recipient,
+        type=NotificationType.DIRECT_MESSAGE,
+        actor=instance.sender,
+        target=instance.conversation,
+        message=f"@{instance.sender.username} vous a envoyé un message",
+    )

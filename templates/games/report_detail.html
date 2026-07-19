@@ -47,6 +47,7 @@
             {% if report.published_at %}<span>· {% blocktrans with date=report.published_at|timesince %}publié il y a {{ date }}{% endblocktrans %}</span>{% endif %}
             {% if report.language %}<span class="uppercase tracking-wide">· {{ report.language }}</span>{% endif %}
             {% if report.visibility == 'unlisted' %}<span>· {% trans "Non listé" %}</span>{% elif report.visibility == 'followers' %}<span>· {% trans "Abonnés" %}</span>{% endif %}
+            {% if dm_recipient %}<span>· {% include "components/_dm_trigger.html" with recipient=dm_recipient %}</span>{% endif %}
         </p>
 
         {# ── casting escamotable ─────────────────────────────────────────── #}
