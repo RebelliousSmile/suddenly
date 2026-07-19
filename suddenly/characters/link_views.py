@@ -195,10 +195,21 @@ def link_request_accept(request: HttpRequest, pk: str) -> HttpResponse:
             )
         return render(request, "characters/link_request_accepted.html", {"link_request": lr})
 
-    if getattr(request, "htmx", False):
-        return render(request, "characters/_accept_form.html", {"link_request": lr})
+    # Open a social Offer (link_analysis) addressed to the reviewer's
+    # followers, to help decide on this claim/adopt/fork (Epic B, #132).
+    from suddenly.offers.models import OfferKind
+    from suddenly.offers.services import OfferService
 
-    return render(request, "characters/link_request_accept_form.html", {"link_request": lr})
+    offer = OfferService.open_offer(kind=OfferKind.LINK_ANALYSIS, carrier=lr, emitter=request.user)
+
+    if getattr(request, "htmx", False):
+        return render(request, "characters/_accept_form.html", {"link_request": lr, "offer": offer})
+
+    return render(
+        request,
+        "characters/link_request_accept_form.html",
+        {"link_request": lr, "offer": offer},
+    )
 
 
 @login_required
