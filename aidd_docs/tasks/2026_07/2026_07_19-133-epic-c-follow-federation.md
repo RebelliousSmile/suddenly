@@ -176,7 +176,7 @@ flowchart TD
 #### Acceptance criteria
 
 - [x] Le profil d'un Character local affiche un bouton Suivre/Ne plus suivre fonctionnel (toggle HTMX, pas d'auto-follow).
-- [ ] Les 3 profils locaux (User/Character/Game) exposent un bouton follow ; les mutations sont en POST (`@require_POST`).
+- [x] Les 3 profils locaux (User/Character/Game) exposent un bouton follow ; les mutations sont en POST (`@require_POST`).
 - [ ] Suivre un Character/Game distant Suddenly crée un `Follow` polymorphe ; un acteur Mastodon reste Person-only (pas de 500).
 
 ### Phase 3 : Collections followers/following (AP) + listes HTML
@@ -263,6 +263,8 @@ flowchart TD
 🤖 2026-07-19 — Phase 1 complète (critère 4) : `TestAcceptOfferNonRegression` prouve qu'un `Accept(Offer)` (Claim/Adopt/Fork) suit toujours `LinkService.reconstruct_remote_accept` via `_resolve_authorized_link_request`, y compris en présence d'un `Follow` sortant non lié (pas de faux-positif sur un `object` bare-string). Phase 1 terminée : `Follow.accepted` (migration `0019_follow_accepted`), `remote_follow_toggle` crée le `Follow` sortant avec `accepted=False`, `handle_accept`/`handle_reject` discriminent Follow vs Offer sans régression du chemin `LinkRequest` (DEC-038). Tests : `tests/activitypub/test_follow_federation.py` (8 tests, 3 classes) — couvre les 4 critères d'acceptation. `make check` cible `suddenly/` uniquement pour mypy (`tests/` hors périmètre, cohérent avec les fichiers de test existants du repo).
 
 🤖 2026-07-19 — Phase 2, critère 1 : `character_detail` (`characters/front_views.py`) calcule `is_following` (authentifié, et ni créateur ni owner — garde double car `Character` a deux rôles propriétaires potentiels, contrairement à `Game`/`User`). `templates/characters/detail.html` inclut `components/follow_button.html` (`target=character target_type="character"`), gardé par le même couple de conditions côté template. Découverte : `follow_views.follow_toggle` gérait déjà génériquement User/Game/Character via `actor_model_for` (`core/utils.py`) — aucune nouvelle logique de toggle nécessaire, seul le branchement UI manquait. Vérifié par un smoke test pytest temporaire (rendu du bouton pour un non-owner, absence + `is_following=False` pour le créateur), supprimé après validation — la couverture pytest permanente de ce critère est consolidée dans `tests/activitypub/test_follow_ui.py` (Phase 5, Task 2 du plan).
+
+🤖 2026-07-19 — Phase 2, critère 2 : `follow_toggle` (`characters/follow_views.py`) passe à `@require_POST` (avant `@login_required`), le garde-méthode manuel (`HttpResponseNotAllowed`) retiré — conforme `03-htmx-patterns.md`. La vue restant générique (`actor_model_for`), ce seul changement couvre les 3 acteurs locaux (User/Character/Game). Vérifié par un smoke test pytest temporaire (GET → 405 ; POST toggle Character et Game), supprimé après validation — couverture permanente consolidée dans `tests/activitypub/test_follow_ui.py` (Phase 5).
 
 ## Validation flow demonstration
 
