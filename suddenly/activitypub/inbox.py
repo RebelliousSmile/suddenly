@@ -1072,13 +1072,40 @@ def handle_accept(activity: dict[str, Any], actor_type: str, actor_identifier: s
     logger.info("LinkRequest %s accepted (remote)", link_request.id)
 
 
+def _handle_reject_follow(activity: dict[str, Any]) -> bool:
+    """Delete the optimistic outbound Follow after a remote Reject (DEC-C3, criterion 3).
+
+    Same discrimination/correlation as ``_handle_accept_follow``; on match,
+    deletes the local ``Follow`` row instead of confirming it.
+    """
+    follow_ap_id, is_follow_shaped = _follow_ap_id_from_activity(activity)
+    if follow_ap_id is None and not is_follow_shaped:
+        return False
+
+    follow = _resolve_outbound_follow(activity, follow_ap_id)
+    if follow is None:
+        return is_follow_shaped
+
+    follow_pk = follow.pk
+    follow.delete()
+    logger.info("Follow %s removed via Reject from %s", follow_pk, activity.get("actor"))
+    return True
+
+
 def handle_reject(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
-    Handle Reject activity (our offer was rejected).
+    Handle Reject activity (our offer was rejected, or our Follow was rejected).
+
+    Same Follow/Offer discrimination as ``handle_accept`` (DEC-C2/C3) — a
+    Follow-shaped object is routed to ``_handle_reject_follow`` and returns
+    immediately, never touching the LinkRequest path (non-regression).
     """
     from django.db import transaction
 
     from suddenly.characters.models import LinkRequest, LinkRequestStatus
+
+    if _handle_reject_follow(activity):
+        return
 
     try:
         with transaction.atomic():
