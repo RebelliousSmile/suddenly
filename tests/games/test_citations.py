@@ -134,22 +134,10 @@ def test_constraint_ephemeral_with_expiry_ok() -> None:
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.django_db
-def test_citations_wall_200_without_session(client: Client) -> None:
-    resp = client.get(reverse("core:quotes"))
-    assert resp.status_code == 200
-
-
-@pytest.mark.django_db
-def test_citations_wall_shows_only_promotable(client: Client) -> None:
-    good = _quote(_released_report(), text="PROMOTABLE-LINE")
-    hidden = _quote(_unreleased_report(), text="WALLED-LINE")
-    _quote(_released_report(), visibility=QuoteVisibility.PRIVATE, text="PRIVATE-LINE")
-
-    resp = client.get(reverse("core:quotes"))
-    assert good.content.encode() in resp.content
-    assert hidden.content.encode() not in resp.content
-    assert b"PRIVATE-LINE" not in resp.content
+# The public citations wall (/citations, core:quotes) was recycled into the
+# most-liked-scenes wall (#146). Its route-level tests move to
+# tests/core/test_popular_scenes.py; the Quote model + promotable() lock stay
+# covered by the constraint tests above and the home vitrine test below.
 
 
 @pytest.mark.django_db

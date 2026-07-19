@@ -1,0 +1,15 @@
+{% comment %} Popular-scenes batch (#146): scene cards + infinite-scroll sentinel.
+
+   Rendered inside `core/popular_scenes.html` for page 1, and returned alone on
+   an HTMX `?page=N` request. The sentinel carries `hx-swap="outerHTML"`, so it
+   replaces itself with the next batch and the next sentinel; it is simply absent
+   when `has_next` is false, so the scroll stops on its own. {% endcomment %}
+{% load i18n %}
+{% for report in scenes %}
+    {% include "feed/_scene_card.html" with report=report liked=report.liked %}
+{% endfor %}
+{% if page_obj.has_next %}
+    <div hx-get="?page={{ page_obj.next_page_number }}"
+         hx-trigger="revealed"
+         hx-swap="outerHTML"></div>
+{% endif %}

@@ -47,11 +47,11 @@
                     <a href="{% url 'games:stories' %}" data-shortcut="g s" class="text-semantic-ink-secondary hover:text-semantic-ink transition-colors">
                         {% trans "Stories" %}
                     </a>
-                    <a href="{% url 'core:quotes' %}" data-shortcut="g c" class="text-semantic-ink-secondary hover:text-semantic-ink transition-colors">
-                        {% trans "Quotes" %}
+                    <a href="{% url 'core:popular_scenes' %}" data-shortcut="g p" class="text-semantic-ink-secondary hover:text-semantic-ink transition-colors">
+                        {% trans "Popular" %}
                     </a>
                     <a href="https://suddenly.social" class="text-semantic-ink-secondary hover:text-semantic-ink transition-colors">
-                        {% trans "The project" %}
+                        {% trans "Features" %}
                     </a>
 
                     {% if user.is_authenticated %}
@@ -224,8 +224,8 @@
             <div class="container-app py-4 space-y-2">
                 <a href="{% url 'core:home' %}" class="block py-2 text-semantic-ink-secondary">{% trans "Home" %}</a>
                 <a href="{% url 'games:stories' %}" class="block py-2 text-semantic-ink-secondary">{% trans "Stories" %}</a>
-                <a href="{% url 'core:quotes' %}" class="block py-2 text-semantic-ink-secondary">{% trans "Quotes" %}</a>
-                <a href="https://suddenly.social" class="block py-2 text-semantic-ink-secondary">{% trans "The project" %}</a>
+                <a href="{% url 'core:popular_scenes' %}" class="block py-2 text-semantic-ink-secondary">{% trans "Popular" %}</a>
+                <a href="https://suddenly.social" class="block py-2 text-semantic-ink-secondary">{% trans "Features" %}</a>
                 {% if not user.is_authenticated %}
                 <hr class="my-2 border-semantic-border">
                 <!-- Theme toggle mobile (authenticated users get this from the account dropdown) -->

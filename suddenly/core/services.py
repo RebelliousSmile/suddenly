@@ -11,7 +11,13 @@ from django.core.cache import cache
 from suddenly.games.models import Report, ReportStatus
 
 if TYPE_CHECKING:
+    from django.contrib.auth.models import AnonymousUser
+    from django.core.paginator import Page
+
     from suddenly.characters.models import Quote
+    from suddenly.users.models import User
+
+POPULAR_SCENES_PER_PAGE = 20
 
 EXPLORER_TAGS_TTL = 300
 INSTANCE_STATS_TTL = 600
@@ -51,6 +57,36 @@ def get_instance_quotes(limit: int = 3) -> list[Quote]:
     from suddenly.characters.models import Quote
 
     return list(Quote.objects.promotable().order_by("-created_at")[:limit])
+
+
+def popular_scenes_page(
+    page_number: str | int | None, *, user: User | AnonymousUser
+) -> Page[Report]:
+    """One page of the most-liked released scenes (#146), ready for the wall.
+
+    Ranking lives in ``Report.objects.most_liked()`` (wall filter + like count +
+    ``like_count >= 1``); this only adds the per-card fetch shape. ``rapports``
+    are prefetched (the scene card reads them) and ``liked`` is annotated only
+    for an authenticated visitor — anonymous cards read a falsy ``report.liked``.
+    """
+    from django.core.paginator import Paginator
+    from django.db.models import Exists, OuterRef, Prefetch
+
+    from suddenly.games.models import Like, Rapport
+
+    qs = (
+        Report.objects.most_liked()
+        .select_related("game", "author")
+        .prefetch_related(
+            Prefetch(
+                "rapports",
+                queryset=Rapport.objects.select_related("actor").order_by("created_at"),
+            )
+        )
+    )
+    if user.is_authenticated:
+        qs = qs.annotate(liked=Exists(Like.objects.filter(report=OuterRef("pk"), user=user)))
+    return Paginator(qs, POPULAR_SCENES_PER_PAGE).get_page(page_number)
 
 
 def get_distinct_tag_names(model_cls: type[Any]) -> list[str]:

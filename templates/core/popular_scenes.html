@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Popular scenes" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-2xl">
+
+        <header class="mb-6">
+            <h1 class="text-2xl font-bold text-semantic-ink">{% trans "Popular scenes" %}</h1>
+            <p class="text-sm text-semantic-muted mt-1">
+                {% trans "The most liked scenes, once released." %}
+            </p>
+        </header>
+
+        {% if scenes %}
+            {# The sentinel (last child of this container) replaces itself with the
+               next batch + a fresh sentinel — the list stays inside this wrapper. #}
+            <div class="space-y-4">
+                {% include "core/_popular_scenes_items.html" %}
+            </div>
+        {% else %}
+            <div class="card card-body text-center text-semantic-muted">
+                {% trans "No popular scene yet." %}
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

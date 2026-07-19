@@ -3668,8 +3668,8 @@ msgid "Current background"
 msgstr "Fond actuel"
 
 #: templates/base.html
-msgid "The project"
-msgstr "Le projet"
+msgid "Features"
+msgstr "Fonctionnalités"
 
 #: templates/core/directory.html
 msgid "No members to display yet."
@@ -3775,8 +3775,8 @@ msgid "Go to Stories"
 msgstr "Aller aux histoires"
 
 #: templates/core/shortcuts.html
-msgid "Go to Quotes"
-msgstr "Aller aux citations"
+msgid "Go to Popular"
+msgstr "Aller aux populaires"
 
 #: templates/core/shortcuts.html
 msgid "Open this shortcuts page"
@@ -3788,6 +3788,22 @@ msgid "%(counter)s member on this instance."
 msgid_plural "%(counter)s members on this instance."
 msgstr[0] "%(counter)s membre sur cette instance."
 msgstr[1] "%(counter)s membres sur cette instance."
+
+#: .\templates\base.html
+msgid "Popular"
+msgstr "Populaires"
+
+#: .\templates\core\popular_scenes.html .\templates\core\home.html
+msgid "Popular scenes"
+msgstr "Scènes populaires"
+
+#: .\templates\core\popular_scenes.html
+msgid "The most liked scenes, once released."
+msgstr "Les scènes les plus aimées, une fois libérées."
+
+#: .\templates\core\popular_scenes.html
+msgid "No popular scene yet."
+msgstr "Aucune scène populaire pour l'instant."
 
 #~ msgid "published reports"
 #~ msgstr "comptes-rendus publiés"

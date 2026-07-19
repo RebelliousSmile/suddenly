@@ -12,6 +12,7 @@ from django.db import IntegrityError, connection, transaction
 from django.test import Client
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
+from django.utils import timezone
 
 from suddenly.games.models import Game, Like, Rapport, RapportKind, Report, ReportStatus
 from suddenly.users.models import User
@@ -30,7 +31,11 @@ def _isolated_env(settings: Any) -> Any:
 
 
 def _published(author: User, game: Game, title: str = "Scene") -> Report:
-    """A published, public, local scene — the shape the feeds surface."""
+    """A released, public, local scene — the shape the feeds surface.
+
+    ``released_at`` is required: since the feeds gate on ``feed_visible()``, a
+    local report must have crossed the temporal wall to be listed at all.
+    """
     return Report.objects.create(
         title=title,
         content="Scene body.",
@@ -39,6 +44,7 @@ def _published(author: User, game: Game, title: str = "Scene") -> Report:
         status=ReportStatus.PUBLISHED,
         visibility="public",
         remote=False,
+        released_at=timezone.now(),
     )
 
 

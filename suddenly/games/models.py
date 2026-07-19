@@ -5,7 +5,7 @@ Game and Report models for Suddenly.
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.utils.translation import gettext_lazy as _
 
 from suddenly.core.models import BaseModel
@@ -88,13 +88,20 @@ class ReportVisibility(models.TextChoices):
 
 class ReportQuerySet(models.QuerySet["Report"]):
     """Querysets for Report. The liberation ("wall") filter lives here and
-    nowhere else (SUD-V1): a report crosses the wall when ``released_at`` is set,
-    and only a released + published + public report is a public story."""
+    nowhere else (SUD-V1) — two canonical variants, never re-expressed inline:
+
+    - ``released()``: strict, local-only (``released_at`` required). End-to-end
+      reading, Stories, single-story aggregation (SUD-V3).
+    - ``feed_visible()``: listings/feeds, remote-tolerant. Any listing of reports.
+
+    A report crosses the local wall when ``released_at`` is set; only a released
+    + published + public report is a public story."""
 
     def released(self) -> "ReportQuerySet":
-        """Reports that have crossed the temporal wall — the single released
-        filter of the codebase. If liberation ever moves to the Game level, only
-        this method changes."""
+        """Reports that have crossed the temporal wall — the strict, local-only
+        wall filter. If liberation ever moves to the Game level, only this method
+        changes. For listings that must also surface remote content, use
+        ``feed_visible()`` (federation axis ≠ liberation axis)."""
         return self.filter(
             released_at__isnull=False,
             status=ReportStatus.PUBLISHED,
@@ -114,6 +121,25 @@ class ReportQuerySet(models.QuerySet["Report"]):
             status=ReportStatus.PUBLISHED,
             visibility=ReportVisibility.PUBLIC,
         ).filter(Q(remote=True) | Q(released_at__isnull=False))
+
+    def most_liked(self) -> "ReportQuerySet":
+        """Wall-visible scenes ranked by total like count (all-time), hottest first.
+
+        Substitute surface for the retired citations wall (#146). This is a public
+        *listing*, so it builds on ``feed_visible()`` — not ``released()`` — to stay
+        remote-tolerant: a liked *remote* scene (federation axis) must surface here,
+        and ``released()`` would wrongly drop it (remote reports never get a local
+        ``released_at``). The wall filter stays centralized (SUD-V1), never
+        re-expressed inline. Scenes with zero likes are excluded — an empty ranking
+        is not a ranking. ``published_at`` breaks ties so the order is deterministic
+        under equal like counts.
+        """
+        return (
+            self.feed_visible()
+            .annotate(like_count=Count("likes"))
+            .filter(like_count__gte=1)
+            .order_by("-like_count", "-published_at")
+        )
 
 
 class ReportTemporalKind(models.TextChoices):

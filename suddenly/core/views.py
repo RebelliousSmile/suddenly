@@ -72,19 +72,27 @@ def home(request: HttpRequest) -> HttpResponse:
     )
 
 
-def quotes(request: HttpRequest) -> HttpResponse:
-    """Public wall of citations (/citations) — no authentication (prompt §4.2).
+def popular_scenes(request: HttpRequest) -> HttpResponse:
+    """Public wall of the most-liked released scenes (/populaires) — no auth.
 
-    Every card is promotable: released report AND public, non-expired quote. The
-    view never re-expresses the wall — it starts from ``promotable()``.
+    Substitute for the retired citations wall (#146): ranks released scenes by
+    total likes (all-time). The wall filter stays in ``most_liked()`` — this view
+    never re-expresses it. Infinite scroll: an HTMX ``?page=N`` request (fired by
+    the sentinel) returns the items partial alone, which swaps itself for the
+    next batch + a fresh sentinel.
     """
-    from suddenly.characters.models import Quote
+    from suddenly.core.services import popular_scenes_page
 
-    page_obj = Paginator(Quote.objects.promotable(), 24).get_page(request.GET.get("page"))
+    page_obj = popular_scenes_page(request.GET.get("page"), user=request.user)
+    template = (
+        "core/_popular_scenes_items.html"
+        if getattr(request, "htmx", False)
+        else "core/popular_scenes.html"
+    )
     return render(
         request,
-        "core/quotes.html",
-        {"page_obj": page_obj, "quotes": page_obj.object_list},
+        template,
+        {"page_obj": page_obj, "scenes": page_obj.object_list},
     )
 
 
