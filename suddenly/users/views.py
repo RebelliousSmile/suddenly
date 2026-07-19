@@ -4,10 +4,12 @@ from __future__ import annotations
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
+from django.core.paginator import Paginator
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.views.decorators.http import require_GET
 from django.views.generic import DetailView, UpdateView
 
 from .forms import ProfileForm
@@ -79,6 +81,55 @@ def _get_follow_stats(profile_user: User, request_user: User | AnonymousUser) ->
         "following_count": Follow.objects.filter(follower=profile_user).count(),
         "is_following": is_following,
     }
+
+
+@require_GET
+def followers_list(request: HttpRequest, username: str) -> HttpResponse:
+    """Paginated HTML list of a user's followers (Phase 3, epic C #133)."""
+    from suddenly.characters.models import Follow
+    from suddenly.core.views import htmx_render
+
+    profile_user = get_object_or_404(User, username=username, is_active=True)
+
+    from django.contrib.contenttypes.models import ContentType
+
+    user_ct = ContentType.objects.get_for_model(User)
+    follows = Follow.objects.filter(content_type=user_ct, object_id=profile_user.id).select_related(
+        "follower"
+    )
+
+    page_obj = Paginator(follows, 20).get_page(request.GET.get("page"))
+
+    return htmx_render(
+        request,
+        full_template="users/followers_list.html",
+        partial_template="users/_followers_page.html",
+        context={"profile_user": profile_user, "page_obj": page_obj},
+    )
+
+
+@require_GET
+def following_list(request: HttpRequest, username: str) -> HttpResponse:
+    """Paginated HTML list of who a user follows — polymorphic target (Phase 3, epic C #133)."""
+    from suddenly.characters.models import Follow
+    from suddenly.core.views import htmx_render
+
+    profile_user = get_object_or_404(User, username=username, is_active=True)
+
+    follows = (
+        Follow.objects.filter(follower=profile_user)
+        .select_related("content_type")
+        .prefetch_related("target")
+    )
+
+    page_obj = Paginator(follows, 20).get_page(request.GET.get("page"))
+
+    return htmx_render(
+        request,
+        full_template="users/following_list.html",
+        partial_template="users/_following_page.html",
+        context={"profile_user": profile_user, "page_obj": page_obj},
+    )
 
 
 class ProfileEditView(LoginRequiredMixin, UpdateView):  # type: ignore[type-arg]

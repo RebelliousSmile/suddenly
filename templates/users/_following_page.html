@@ -1,0 +1,57 @@
+{% load i18n %}
+{% for follow in page_obj %}
+    {% with target=follow.target model=follow.content_type.model %}
+        {% if target %}
+            <div class="card card-body flex items-center gap-3">
+                {% if model == "user" %}
+                    {% url 'users:profile' username=target.username as target_url %}
+                {% elif model == "character" %}
+                    {% url 'characters:detail' slug=target.slug as target_url %}
+                {% elif model == "game" %}
+                    {% url 'games:detail' pk=target.pk as target_url %}
+                {% endif %}
+                <a href="{{ target_url }}" class="shrink-0">
+                    {% if model == "game" %}
+                        {% if target.cover %}
+                            <img src="{{ target.cover.url }}" alt="" class="avatar-md">
+                        {% else %}
+                            <span class="avatar-md avatar-placeholder">
+                                <span class="i-lucide-book-open text-sm"></span>
+                            </span>
+                        {% endif %}
+                    {% else %}
+                        {% if target.avatar %}
+                            <img src="{{ target.avatar.url }}" alt="" class="avatar-md">
+                        {% else %}
+                            <span class="avatar-md avatar-placeholder">
+                                <span class="i-lucide-user text-sm"></span>
+                            </span>
+                        {% endif %}
+                    {% endif %}
+                </a>
+                <div class="min-w-0 flex-1">
+                    <a href="{{ target_url }}"
+                       class="font-medium text-sm text-semantic-ink hover:underline block truncate">
+                        {% if model == "user" %}{{ target.get_display_name }}
+                        {% elif model == "character" %}{{ target.name }}
+                        {% elif model == "game" %}{{ target.title }}
+                        {% endif %}
+                    </a>
+                    <span class="text-xs text-semantic-muted">
+                        {% if model == "user" %}{% trans "Account" %}
+                        {% elif model == "character" %}{% trans "Character" %}
+                        {% elif model == "game" %}{% trans "Game" %}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        {% endif %}
+    {% endwith %}
+{% empty %}
+    <p class="text-sm text-semantic-muted">{% trans "Not following anyone yet." %}</p>
+{% endfor %}
+{% if page_obj.has_next %}
+    <div hx-get="?page={{ page_obj.next_page_number }}"
+         hx-trigger="revealed"
+         hx-swap="outerHTML"></div>
+{% endif %}
