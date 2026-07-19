@@ -16,7 +16,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from suddenly.core.models import BaseModel
-from suddenly.games.models import Game, Report
+from suddenly.games.models import Game, Report, wall_open_q
 
 
 class CharacterStatus(models.TextChoices):
@@ -187,15 +187,15 @@ class QuoteQuerySet(models.QuerySet["Quote"]):
     def promotable(self) -> QuoteQuerySet:
         """Citations remontables sur les surfaces publiques.
 
-        Double verrou, orthogonal (SUD-V1): ``report`` libéré (mur temporel) ET
+        Double verrou, orthogonal (SUD-V1): ``report`` libéré (mur temporel, y
+        compris via la clôture de partie — DEC-D6/wall_open_q, Epic D #134) ET
         ``quote`` publique et non expirée (choix éditorial). Toute surface
         publique part d'ici — aucune vue, aucun template ne refiltre la
-        libération. Si le mur remonte au niveau Game, seule cette méthode change
-        (``report__game__released_at__isnull=False``).
+        libération.
         """
         return (
             self.filter(visibility=QuoteVisibility.PUBLIC)
-            .filter(report__released_at__isnull=False)
+            .filter(wall_open_q("report__"))
             .exclude(expires_at__lte=timezone.now())
             .select_related("character", "report", "report__game")
         )

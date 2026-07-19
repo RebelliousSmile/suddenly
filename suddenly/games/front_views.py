@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from .composer_views import cast_npc_create, composer
 from .game_views import (
+    game_close,
     game_create,
     game_delete,
     game_delete_bulk,
@@ -60,6 +61,7 @@ __all__ = [
     "cast_npc_create",
     "cast_remove",
     "composer",
+    "game_close",
     "game_create",
     "game_delete",
     "game_delete_bulk",

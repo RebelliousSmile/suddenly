@@ -98,6 +98,23 @@ class ReportVisibility(models.TextChoices):
     FOLLOWERS = "followers", _("Followers only")
 
 
+def wall_open_q(prefix: str = "") -> Q:
+    """The temporal-wall disjunct, shared by every "is this report released?"
+    check in the codebase (rule of three — DEC-D6, Epic D #134).
+
+    A report crosses the wall either on its own (``released_at`` set) or
+    because its game was closed (``game.completed_at`` set) — closing a game
+    treats every one of its reports as released, regardless of their own
+    ``released_at``. ``prefix`` lets callers span a relation (e.g.
+    ``wall_open_q("report__")`` from a queryset rooted on a different model).
+    Retro-compatible: ``completed_at`` defaults to ``NULL`` on all existing
+    rows, so the added disjunct is empty until a game is actually closed.
+    """
+    return Q(**{f"{prefix}released_at__isnull": False}) | Q(
+        **{f"{prefix}game__completed_at__isnull": False}
+    )
+
+
 class ReportQuerySet(models.QuerySet["Report"]):
     """Querysets for Report. The liberation ("wall") filter lives here and
     nowhere else (SUD-V1): a report crosses the wall when ``released_at`` is set,
@@ -108,24 +125,24 @@ class ReportQuerySet(models.QuerySet["Report"]):
         filter of the codebase. If liberation ever moves to the Game level, only
         this method changes."""
         return self.filter(
-            released_at__isnull=False,
             status=ReportStatus.PUBLISHED,
             visibility=ReportVisibility.PUBLIC,
-        )
+        ).filter(wall_open_q())
 
     def feed_visible(self) -> "ReportQuerySet":
         """Published + public reports listable in a reading feed.
 
         The temporal wall is a *local* concept (liberation axis): a local report
-        must have crossed it (``released_at`` set) to appear. A remote report is
-        already gated by its origin instance before federation (federation axis),
-        so it passes on ``status``/``visibility`` alone — the local ``released_at``
-        is never populated on ingest and must not filter remote content out.
+        must have crossed it (``released_at`` set, or its game closed) to appear.
+        A remote report is already gated by its origin instance before
+        federation (federation axis), so it passes on ``status``/``visibility``
+        alone — the local ``released_at``/``completed_at`` are never populated
+        on ingest and must not filter remote content out.
         """
         return self.filter(
             status=ReportStatus.PUBLISHED,
             visibility=ReportVisibility.PUBLIC,
-        ).filter(Q(remote=True) | Q(released_at__isnull=False))
+        ).filter(Q(remote=True) | wall_open_q())
 
 
 class ReportTemporalKind(models.TextChoices):

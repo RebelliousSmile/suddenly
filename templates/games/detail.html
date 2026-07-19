@@ -37,10 +37,22 @@
             {% endif %}
 
             {% if is_owner %}
-                <div class="mt-4">
+                <div class="mt-4 flex items-center gap-2">
                     <a href="{% url 'games:edit' pk=game.pk %}" class="btn-secondary btn-sm">
                         <span class="i-lucide-edit"></span> {% trans "Edit" %}
                     </a>
+                    {% if game.completed_at %}
+                        <span class="btn-secondary btn-sm cursor-default opacity-70">
+                            <span class="i-lucide-check-circle"></span> {% trans "Partie clôturée" %}
+                        </span>
+                    {% else %}
+                        <form method="post" action="{% url 'games:game_close' pk=game.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-secondary btn-sm">
+                                <span class="i-lucide-flag"></span> {% trans "Clore la partie" %}
+                            </button>
+                        </form>
+                    {% endif %}
                 </div>
             {% endif %}
 
