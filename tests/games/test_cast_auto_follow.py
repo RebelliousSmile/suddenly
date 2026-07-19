@@ -16,9 +16,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from django.contrib.contenttypes.models import ContentType
-
 import pytest
+from django.contrib.contenttypes.models import ContentType
 
 from suddenly.characters.models import Follow
 from suddenly.games.models import GameCast

@@ -11,12 +11,11 @@ GM-only (403 otherwise) and idempotent.
 
 from __future__ import annotations
 
+import pytest
 from django.core.exceptions import PermissionDenied
 from django.test import Client
 from django.urls import reverse
 from django.utils import timezone
-
-import pytest
 
 from suddenly.characters.models import Quote, QuoteVisibility
 from suddenly.games.models import Report, ReportStatus, ReportVisibility

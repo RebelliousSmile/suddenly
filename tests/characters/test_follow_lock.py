@@ -12,11 +12,10 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
 from django.contrib.contenttypes.models import ContentType
 from django.test import Client
 from django.urls import reverse
-
-import pytest
 
 from suddenly.characters.models import Follow
 from suddenly.games.models import GameCast
@@ -55,7 +54,9 @@ def test_unfollow_refused_between_active_co_members(client: Client) -> None:
 
     assert response.status_code == 200
     assert b"Verrouill" in response.content
-    follow = Follow.objects.filter(follower=player, content_type=_user_ct(), object_id=gm.pk).first()
+    follow = Follow.objects.filter(
+        follower=player, content_type=_user_ct(), object_id=gm.pk
+    ).first()
     assert follow is not None  # still there — not deleted
 
 
@@ -70,7 +71,9 @@ def test_unfollow_allowed_once_game_closed(client: Client) -> None:
     response = _toggle(client, gm)
 
     assert response.status_code == 200
-    follow = Follow.objects.filter(follower=player, content_type=_user_ct(), object_id=gm.pk).first()
+    follow = Follow.objects.filter(
+        follower=player, content_type=_user_ct(), object_id=gm.pk
+    ).first()
     assert follow is None  # unfollow went through
 
 
@@ -87,7 +90,9 @@ def test_unfollow_lock_also_freezes_a_manual_follow(client: Client) -> None:
     response = _toggle(client, gm)
 
     assert response.status_code == 200
-    follow = Follow.objects.filter(follower=player, content_type=_user_ct(), object_id=gm.pk).first()
+    follow = Follow.objects.filter(
+        follower=player, content_type=_user_ct(), object_id=gm.pk
+    ).first()
     assert follow is not None
     assert follow.auto is False  # untouched, still MANUAL
 
@@ -103,7 +108,9 @@ def test_manual_follow_survives_teardown_after_cast_removal() -> None:
 
     GameCast.objects.get(game=game).delete()
 
-    follow = Follow.objects.filter(follower=player, content_type=_user_ct(), object_id=gm.pk).first()
+    follow = Follow.objects.filter(
+        follower=player, content_type=_user_ct(), object_id=gm.pk
+    ).first()
     assert follow is not None
     assert follow.auto is False
 
@@ -120,7 +127,9 @@ def test_unfollow_between_non_co_members_is_not_locked(client: Client) -> None:
     response = _toggle(client, b)
 
     assert response.status_code == 200
-    assert Follow.objects.filter(follower=a, content_type=_user_ct(), object_id=b.pk).first() is None
+    assert (
+        Follow.objects.filter(follower=a, content_type=_user_ct(), object_id=b.pk).first() is None
+    )
 
 
 @pytest.mark.django_db
@@ -136,6 +145,4 @@ def test_follow_itself_stays_permitted_between_active_co_members(client: Client)
     response = _toggle(client, player)
 
     assert response.status_code == 200
-    assert Follow.objects.filter(
-        follower=gm, content_type=_user_ct(), object_id=player.pk
-    ).exists()
+    assert Follow.objects.filter(follower=gm, content_type=_user_ct(), object_id=player.pk).exists()
