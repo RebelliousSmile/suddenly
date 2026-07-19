@@ -24,15 +24,16 @@ from tests.factories import CharacterFactory, GameFactory, ReportFactory, UserFa
 
 
 def _published_unreleased(game: object, author: object, **kwargs: object) -> Report:
-    return ReportFactory(
-        game=game,
-        author=author,
-        status=ReportStatus.PUBLISHED,
-        visibility=ReportVisibility.PUBLIC,
-        published_at=timezone.now(),
-        released_at=None,
-        **kwargs,
-    )
+    fields: dict[str, object] = {
+        "game": game,
+        "author": author,
+        "status": ReportStatus.PUBLISHED,
+        "visibility": ReportVisibility.PUBLIC,
+        "published_at": timezone.now(),
+        "released_at": None,
+    }
+    fields.update(kwargs)  # a caller may override released_at (retro-compat case)
+    return ReportFactory(**fields)
 
 
 # ---------------------------------------------------------------------------

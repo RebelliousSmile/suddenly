@@ -65,6 +65,12 @@ def test_unfollow_allowed_once_game_closed(client: Client) -> None:
     gm, player, game = _make_co_members()
     from suddenly.games.services import close_game
 
+    # DEC-D5: an AUTO follow is torn down when the game closes, so the follow
+    # that must "still be there after close" (and then be unfollowable) is a
+    # MANUAL one — teardown never touches auto=False.
+    Follow.objects.filter(follower=player, content_type=_user_ct(), object_id=gm.pk).update(
+        auto=False
+    )
     close_game(game=game, user=gm)
 
     client.force_login(player)

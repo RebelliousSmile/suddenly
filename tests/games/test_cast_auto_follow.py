@@ -168,7 +168,12 @@ def test_cast_remove_preserves_manual_follow_between_same_pair() -> None:
     game = GameFactory(owner=gm)
     pc = CharacterFactory(status="pc", owner=player, creator=player, origin_game=game)
     cast_row = GameCast.objects.create(game=game, character=pc, added_by=gm)
-    Follow.objects.create(follower=player, content_type=_user_ct(), object_id=gm.pk, auto=False)
+    # The cast sync already created player -> gm as an AUTO follow; the unique
+    # (follower, content_type, object_id) constraint forbids a second row, so
+    # turn that very follow MANUAL rather than creating a duplicate.
+    Follow.objects.filter(follower=player, content_type=_user_ct(), object_id=gm.pk).update(
+        auto=False
+    )
 
     cast_row.delete()
 
