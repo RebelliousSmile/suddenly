@@ -31,3 +31,11 @@ paths:
 - Use `pytest-mock` (`mocker` fixture), not `unittest.mock` directly
 - Mock external calls (HTTP, Celery tasks) — never hit network in tests
 - Django test DB is allowed — no need to mock ORM
+
+## Local run gotchas (Windows + PostgreSQL)
+
+- Coverage `addopts` in `pyproject.toml` enforce `--cov-fail-under=50` — a subset run fails on coverage, not on assertions
+- Bypass for subset runs: `pytest <targets> --no-cov -o addopts=''`
+- Threaded concurrency tests (`transaction=True`, real threads holding a connection) leave a session open; `--create-db` then errors at teardown: `OperationalError: database "test_suddenly" is being accessed by other users`
+- The teardown lock cascades `ERROR` onto every later test in the batch (even untouched classes) and blocks the next `--create-db` — a lingering-session artifact, not a code regression
+- Verify concurrency-adjacent modules by running them **isolated** (single test / single class) — batch ERRORs there are environmental, confirmed by a stashed baseline erroring equally or worse
