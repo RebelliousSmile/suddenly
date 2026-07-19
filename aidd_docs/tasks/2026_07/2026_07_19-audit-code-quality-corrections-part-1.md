@@ -72,8 +72,8 @@ created_at: "2026-07-19T00:05:20Z"
 
 #### Acceptance criteria
 
-- [ ] Grep shows no inline `{"user": ..., "character": ...}` actor map outside `core/utils.py`.
-- [ ] `mypy suddenly/` exits 0; tests green.
+- [x] Grep shows no inline `{"user": ..., "character": ...}` actor map outside `core/utils.py`.
+- [x] `mypy suddenly/` exits 0; tests green.
 
 ### Phase 2: sign_and_deliver + single remote-user source
 
@@ -110,9 +110,17 @@ created_at: "2026-07-19T00:05:20Z"
 
 <!-- 🤖 entries during implementation -->
 
+- 🤖 Phase 1: `get_local_actor` was folded into `core/utils.py` as specified, but its call sites were **not** individually rewired to lazy/local imports — `inbox.py` keeps a single top-level `from suddenly.core.utils import get_local_actor` import and its former local definition (bottom of file) was deleted outright. Behavior-identical (same lookup logic, `remote=False` filter preserved), just a lower-friction import strategy than per-site lazy imports.
+- 🤖 Phase 1: `follow_views.py::follow_toggle` resolves the model via `actor_model_for(target_type)` but then computes `ContentType.objects.get_for_model(model_cls)` directly rather than calling `content_type_for_actor(target_type)` a second time — avoids a redundant type-key resolution for a value already in hand. Still single-sourced (the underlying key→model map exists nowhere else).
+- 🤖 Phase 1: `inbox.py::handle_undo`'s original guard was `if model_class: ...` (silent no-op on an unrecognized type, since nothing followed the block). Replaced with `try: content_type_for_actor(...) except ValueError: return` — behaviorally identical (function simply ends either way), but now raises-then-catches instead of falsy-checking, matching the new helper's contract.
+- 🤖 Phase 1: mypy strict flagged `ActorModel.objects` / `Model.objects` as invalid on the `type[models.Model]` return of `actor_model_for` (django-stubs does not expose `.objects` on the abstract base). Fixed by using `._default_manager` at the two call sites in `tasks.py` (`broadcast_activity`, `send_accept_follow`) — same pattern already used inside `get_local_actor` itself. No behavior change: `_default_manager` and `.objects` resolve to the same manager for these concrete models.
+- 🤖 Phase 1: added `tests/core/test_utils.py` (not explicitly named as a new file in "Files to create," but required by task 3 "Unit-test each supported key + unknown-key error"). Covers `actor_model_for`/`content_type_for_actor` casing-insensitivity + unknown-key `ValueError`, plus `get_local_actor` (local/remote filtering, missing row, unknown type) since it was folded into the same helper group this phase.
+
 ## Log
 
 <!-- APPEND ONLY -->
+
+- 2026-07-19: Phase 1 complete. `ruff check suddenly/activitypub suddenly/characters suddenly/core` clean; `mypy suddenly/` clean (113 files, 0 errors); `pytest tests/test_activitypub.py tests/test_federation.py tests/characters tests/core/test_utils.py -q --no-cov -o addopts=''` → 187 passed, 3 skipped (baseline was 169 passed/3 skipped; +18 from the new test file, 0 regressions). Grep confirms the only remaining `"user": User` / `"game": Game` style map lives in `core/utils.py:74-75` (the canonical one). Phases 2 and 3 not started this pass.
 
 ## Validation flow demonstration
 

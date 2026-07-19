@@ -94,65 +94,43 @@ def deliver_activity(
 @shared_task  # type: ignore[untyped-decorator]
 def broadcast_activity(activity: dict[str, Any], actor_id: str, actor_type: str) -> None:
     """Broadcast an activity to all followers."""
-    from django.contrib.contenttypes.models import ContentType
-
     from suddenly.characters.models import Follow
+    from suddenly.core.utils import actor_model_for, content_type_for_actor
 
-    model_map: dict[str, tuple[str, str]] = {
-        "User": ("users", "user"),
-        "Game": ("games", "game"),
-        "Character": ("characters", "character"),
-    }
+    from ._http import sign_and_deliver
 
-    result = model_map.get(actor_type)
-    if not result:
+    try:
+        content_type = content_type_for_actor(actor_type)
+        ActorModel = actor_model_for(actor_type)  # noqa: N806
+    except ValueError:
         return
-
-    app_label, model_name = result
-
-    content_type = ContentType.objects.get(app_label=app_label, model=model_name)
 
     followers = Follow.objects.filter(content_type=content_type, object_id=actor_id).select_related(
         "follower"
     )
 
-    # Get actor's signing key
-    from suddenly.characters.models import Character
-    from suddenly.games.models import Game
-    from suddenly.users.models import User
-
-    actor_models: dict[str, Any] = {"User": User, "Game": Game, "Character": Character}
-    ActorModel = actor_models.get(actor_type)  # noqa: N806
-    actor_obj = ActorModel.objects.filter(pk=actor_id).first() if ActorModel else None
-    key_id, private_key = get_actor_signing_keys(actor_obj) if actor_obj else (None, None)
+    actor_obj = ActorModel._default_manager.filter(pk=actor_id).first()
 
     inboxes = {f.follower.inbox_url for f in followers if f.follower.inbox_url}
 
     for inbox_url in inboxes:
-        deliver_activity.delay(
-            activity, inbox_url, actor_key_id=key_id, private_key_pem=private_key
-        )
+        sign_and_deliver(activity, inbox_url, signer=actor_obj)
 
 
 @shared_task  # type: ignore[untyped-decorator]
 def send_accept_follow(target_id: str, target_type: str, follow_activity: dict[str, Any]) -> None:
     """Send Accept for a follow request."""
-    from suddenly.characters.models import Character
-    from suddenly.games.models import Game
+    from suddenly.core.utils import actor_model_for
     from suddenly.users.models import User
 
     from .serializers import create_accept_activity
 
-    models_map: dict[str, Any] = {
-        "User": User,
-        "Game": Game,
-        "Character": Character,
-    }
-    Model = models_map.get(target_type)  # noqa: N806
-    if not Model:
+    try:
+        Model = actor_model_for(target_type)  # noqa: N806
+    except ValueError:
         return
 
-    target = Model.objects.filter(id=target_id).first()
+    target = Model._default_manager.filter(id=target_id).first()
     if not target:
         return
 
@@ -231,6 +209,7 @@ def send_offer_activity(link_request_id: str) -> None:
     """Send Offer activity for a link request."""
     from suddenly.characters.models import LinkRequest
 
+    from ._http import sign_and_deliver
     from .serializers import serialize_link_request
 
     request = (
@@ -247,13 +226,7 @@ def send_offer_activity(link_request_id: str) -> None:
     # Send to target character's creator
     creator = request.target_character.creator
     if creator and creator.remote and creator.inbox_url:
-        key_id, private_key = get_actor_signing_keys(request.requester)
-        deliver_activity.delay(
-            activity,
-            creator.inbox_url,
-            actor_key_id=key_id,
-            private_key_pem=private_key,
-        )
+        sign_and_deliver(activity, creator.inbox_url, signer=request.requester)
 
 
 @shared_task  # type: ignore[untyped-decorator]
@@ -267,6 +240,7 @@ def send_follow_activity(
     """
     from suddenly.users.models import User
 
+    from ._http import sign_and_deliver
     from .serializers import create_follow_activity
 
     user = User.objects.filter(pk=user_id).first()
@@ -278,14 +252,7 @@ def send_follow_activity(
         return
 
     activity = create_follow_activity(user, target_actor_url, follow_ap_id)
-    key_id, private_key = get_actor_signing_keys(user)
-
-    deliver_activity.delay(
-        activity=activity,
-        inbox_url=remote_user.inbox_url,
-        actor_key_id=key_id,
-        private_key_pem=private_key,
-    )
+    sign_and_deliver(activity, remote_user.inbox_url, signer=user)
 
 
 @shared_task  # type: ignore[untyped-decorator]
@@ -301,6 +268,7 @@ def send_undo_follow_activity(user_id: str, target_actor_url: str) -> None:
     from suddenly.characters.models import Follow
     from suddenly.users.models import User
 
+    from ._http import sign_and_deliver
     from .serializers import create_undo_follow_activity
 
     user = User.objects.filter(pk=user_id).first()
@@ -322,14 +290,7 @@ def send_undo_follow_activity(user_id: str, target_actor_url: str) -> None:
         return
 
     activity = create_undo_follow_activity(user, follow.ap_id, target_actor_url)
-    key_id, private_key = get_actor_signing_keys(user)
-
-    deliver_activity.delay(
-        activity=activity,
-        inbox_url=remote_user.inbox_url,
-        actor_key_id=key_id,
-        private_key_pem=private_key,
-    )
+    sign_and_deliver(activity, remote_user.inbox_url, signer=user)
 
     follow.delete()
 
@@ -488,41 +449,21 @@ def get_actor_signing_keys(actor: Any) -> tuple[str | None, str | None]:
 
 
 def get_or_create_remote_user(actor_url: str | None) -> Any:
-    """Get or create a remote user."""
-    from suddenly.users.models import User
+    """Get or create a remote user.
 
-    from ._http import fetch_ap_actor
+    Thin wrapper over the canonical `_http.get_or_create_remote_user` (audit
+    row 4) — unwraps its `(user, created)` tuple to a plain object/`None`
+    return, since callers here (and existing tests, which patch this exact
+    module attribute with `return_value=<bare User instance>`) expect that
+    contract rather than the tuple.
+    """
+    from ._http import get_or_create_remote_user as _get_or_create_remote_user
 
-    if not actor_url:
+    result = _get_or_create_remote_user(actor_url)
+    if result is None:
         return None
-
-    user = User.objects.filter(ap_id=actor_url).first()
-    if user:
-        return user
-
-    data = fetch_ap_actor(actor_url)
-    if data is None:
-        return None
-
-    try:
-        from urllib.parse import urlparse
-
-        domain = urlparse(actor_url).netloc
-        username = data.get("preferredUsername", "unknown")
-
-        return User.objects.create(
-            username=f"{username}@{domain}"[:150],
-            remote=True,
-            ap_id=actor_url,
-            inbox_url=data.get("inbox"),
-            outbox_url=data.get("outbox"),
-            display_name=data.get("name", username)[:100],
-            bio=data.get("summary", ""),
-            public_key=data.get("publicKey", {}).get("publicKeyPem", ""),
-        )
-    except Exception as e:
-        logger.exception(f"Error creating remote user: {e}")
-        return None
+    user, _created = result
+    return user
 
 
 def update_remote_user(actor_url: str, data: dict[str, Any]) -> None:

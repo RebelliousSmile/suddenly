@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404, render
 
 from suddenly.core.types import AuthenticatedRequest
 
-from .models import Character, Follow
+from .models import Follow
 
 
 @login_required
@@ -33,12 +33,11 @@ def follow_toggle(request: AuthenticatedRequest) -> HttpResponse:
         return HttpResponseBadRequest("Missing target_type or target_id")
 
     # Resolve target
-    from suddenly.games.models import Game
-    from suddenly.users.models import User
+    from suddenly.core.utils import actor_model_for
 
-    model_map = {"user": User, "game": Game, "character": Character}
-    model_cls = model_map.get(target_type)
-    if not model_cls:
+    try:
+        model_cls = actor_model_for(target_type)
+    except ValueError:
         from django.http import HttpResponseBadRequest
 
         return HttpResponseBadRequest("Invalid target_type")

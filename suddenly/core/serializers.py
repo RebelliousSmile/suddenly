@@ -393,19 +393,11 @@ class FollowCreateSerializer(serializers.Serializer):  # type: ignore[misc]
     target_id = serializers.UUIDField()
 
     def validate(self, data: dict[str, Any]) -> dict[str, Any]:
-        from django.contrib.contenttypes.models import ContentType
-
-        model_map = {
-            "user": "users.user",
-            "character": "characters.character",
-            "game": "games.game",
-        }
-
-        app_label, model = model_map[data["target_type"]].split(".")
+        from suddenly.core.utils import content_type_for_actor
 
         try:
-            content_type = ContentType.objects.get(app_label=app_label, model=model)
-        except ContentType.DoesNotExist:
+            content_type = content_type_for_actor(data["target_type"])
+        except ValueError:
             raise serializers.ValidationError(f"Invalid target type: {data['target_type']}")
 
         # Check target exists

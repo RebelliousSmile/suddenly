@@ -346,8 +346,6 @@ class FollowViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
     @action(detail=False, methods=["post"])  # type: ignore[untyped-decorator]
     def toggle(self, request: Request, **kwargs: Any) -> Response:
         """Toggle follow status for a target."""
-        from django.contrib.contenttypes.models import ContentType
-
         target_type = request.data.get("target_type")
         target_id = request.data.get("target_id")
 
@@ -357,19 +355,14 @@ class FollowViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
             )
 
         # Map target_type to content type
-        model_map = {
-            "user": ("users", "user"),
-            "character": ("characters", "character"),
-            "game": ("games", "game"),
-        }
+        from suddenly.core.utils import content_type_for_actor
 
-        if target_type not in model_map:
+        try:
+            content_type = content_type_for_actor(target_type)
+        except ValueError:
             return Response(
                 {"error": f"Invalid target_type: {target_type}"}, status=status.HTTP_400_BAD_REQUEST
             )
-
-        app_label, model = model_map[target_type]
-        content_type = ContentType.objects.get(app_label=app_label, model=model)
 
         follow = Follow.objects.filter(
             follower=request.user, content_type=content_type, object_id=target_id

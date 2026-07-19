@@ -145,3 +145,94 @@ def fetch_ap_actor(url: str, *, timeout: int = 10) -> dict[str, Any] | None:
         accept="application/activity+json, application/ld+json",
         timeout=timeout,
     )
+
+
+# =================================================================
+# Signed delivery (audit rows 2, 24)
+# =================================================================
+#
+# Single source for the "sign with the local actor's key, then enqueue
+# delivery" pair, previously hand-rolled at every outbound call site
+# (`get_actor_signing_keys(signer)` immediately followed by
+# `deliver_activity.delay(...)`). `tasks` is imported lazily — `tasks.py`
+# imports `get_or_create_remote_user` from this module, so a top-level import
+# here would be circular.
+
+
+def sign_and_deliver(activity: dict[str, Any], inbox_url: str | None, *, signer: Any) -> None:
+    """Sign `activity` with `signer`'s local keys and enqueue delivery to `inbox_url`.
+
+    `signer` is the local actor (User/Game/Character) whose private key signs the
+    request — see `tasks.get_actor_signing_keys`, which already tolerates `None`
+    or a remote actor (returns `(None, None)`, an unsigned/dev-mode delivery).
+    No-ops when `inbox_url` is falsy; callers keep their own eligibility guard
+    (e.g. "only if the recipient is remote") before calling this.
+
+    `deliver_activity.delay()` is always called with all-keyword arguments — some
+    tests assert on kwargs-only mock calls.
+    """
+    from .tasks import deliver_activity, get_actor_signing_keys
+
+    if not inbox_url:
+        return
+
+    actor_key_id, private_key_pem = get_actor_signing_keys(signer)
+    deliver_activity.delay(
+        activity=activity,
+        inbox_url=inbox_url,
+        actor_key_id=actor_key_id,
+        private_key_pem=private_key_pem,
+    )
+
+
+def get_or_create_remote_user(actor_url: str | None) -> tuple[Any, bool] | None:
+    """Return a remote User by actor URL, fetching from the remote server if unknown.
+
+    Single source for remote-user ingest (audit row 4) — previously duplicated in
+    `inbox.py` and `tasks.py` with divergent behavior (`create` vs
+    `update_or_create`, `remote=True` filter present/absent, truncation
+    present/absent). Canonical form, per the plan's risk register:
+
+    - DB-first lookup filtered on `remote=True` (fast path — avoids an HTTP
+      round-trip during tests and when the actor was already resolved during
+      signature verification).
+    - `update_or_create` keyed on `ap_id` (idempotent re-ingest: a second
+      Follow/Create/Offer from the same actor updates the existing row instead
+      of raising a duplicate-key error).
+    - `username`/`display_name` truncated to the model's `max_length` (150/100)
+      so an unusually long remote handle can't raise a `DataError` on save.
+
+    Returns:
+        `(user, created)` on success, `None` if `actor_url` is falsy or the
+        actor cannot be resolved (fetch failure).
+    """
+    from suddenly.users.models import User
+
+    if not actor_url:
+        return None
+
+    existing = User.objects.filter(ap_id=actor_url, remote=True).first()
+    if existing:
+        return existing, False
+
+    actor_data = fetch_ap_actor(actor_url)
+    if actor_data is None:
+        return None
+
+    username = actor_data.get("preferredUsername", actor_url.split("/")[-1])
+    domain = actor_url.split("/")[2]
+
+    user, created = User.objects.update_or_create(
+        ap_id=actor_url,
+        defaults={
+            "username": f"{username}@{domain}"[:150],
+            "display_name": actor_data.get("name", username)[:100],
+            "bio": actor_data.get("summary", ""),
+            "remote": True,
+            "inbox_url": actor_data.get("inbox"),
+            "outbox_url": actor_data.get("outbox"),
+            "public_key": actor_data.get("publicKey", {}).get("publicKeyPem", ""),
+        },
+    )
+
+    return user, created

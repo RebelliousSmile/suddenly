@@ -21,6 +21,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django_ratelimit.core import is_ratelimited
 
+from suddenly.core.utils import get_local_actor
+
+from ._http import get_or_create_remote_user, sign_and_deliver
 from .models import FederatedServer
 from .signatures import verify_signature
 
@@ -215,11 +218,8 @@ def handle_follow(activity: dict[str, Any], actor_type: str, actor_identifier: s
 
     Create a Follow record and optionally auto-accept.
     """
-    from django.contrib.contenttypes.models import ContentType
-
-    from suddenly.characters.models import Character, Follow
-    from suddenly.games.models import Game
-    from suddenly.users.models import User
+    from suddenly.characters.models import Follow
+    from suddenly.core.utils import content_type_for_actor
 
     follower_id = activity.get("actor")
     if not follower_id:
@@ -232,17 +232,10 @@ def handle_follow(activity: dict[str, Any], actor_type: str, actor_identifier: s
     follower, _ = result
 
     # Determine content type for the target
-    content_type_map: dict[str, type[User | Game | Character]] = {
-        "user": User,
-        "game": Game,
-        "character": Character,
-    }
-
-    model_class = content_type_map.get(actor_type)
-    if not model_class:
+    try:
+        content_type = content_type_for_actor(actor_type)
+    except ValueError:
         return
-
-    content_type = ContentType.objects.get_for_model(model_class)
 
     # Get target
     target = get_local_actor(actor_type, actor_identifier)
@@ -258,7 +251,6 @@ def handle_follow(activity: dict[str, Any], actor_type: str, actor_identifier: s
 
     # Send Accept activity
     from .activities import get_context
-    from .tasks import deliver_activity, get_actor_signing_keys
 
     accept_activity: dict[str, Any] = {
         "@context": get_context(),
@@ -267,25 +259,15 @@ def handle_follow(activity: dict[str, Any], actor_type: str, actor_identifier: s
         "object": activity,
     }
 
-    actor_key_id, private_key_pem = get_actor_signing_keys(target)
-
-    deliver_activity.delay(
-        activity=accept_activity,
-        inbox_url=follower.inbox_url,
-        actor_key_id=actor_key_id,
-        private_key_pem=private_key_pem,
-    )
+    sign_and_deliver(accept_activity, follower.inbox_url, signer=target)
 
 
 def handle_undo(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
     Handle Undo activity (e.g., unfollow).
     """
-    from django.contrib.contenttypes.models import ContentType
-
-    from suddenly.characters.models import Character, Follow
-    from suddenly.games.models import Game
-    from suddenly.users.models import User
+    from suddenly.characters.models import Follow
+    from suddenly.core.utils import content_type_for_actor
 
     inner = activity.get("object", {})
     inner_type = inner.get("type") if isinstance(inner, dict) else None
@@ -298,19 +280,15 @@ def handle_undo(activity: dict[str, Any], actor_type: str, actor_identifier: str
             target = get_local_actor(actor_type, actor_identifier)
             if target:
                 # Get content type for the target model
-                content_type_map: dict[str, type[User | Game | Character]] = {
-                    "user": User,
-                    "game": Game,
-                    "character": Character,
-                }
-                model_class = content_type_map.get(actor_type)
-                if model_class:
-                    content_type = ContentType.objects.get_for_model(model_class)
-                    Follow.objects.filter(
-                        follower=follower,
-                        content_type=content_type,
-                        object_id=target.pk,
-                    ).delete()
+                try:
+                    content_type = content_type_for_actor(actor_type)
+                except ValueError:
+                    return
+                Follow.objects.filter(
+                    follower=follower,
+                    content_type=content_type,
+                    object_id=target.pk,
+                ).delete()
 
 
 def handle_create(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
@@ -1005,49 +983,11 @@ def handle_reject(activity: dict[str, Any], actor_type: str, actor_identifier: s
 # =================================================================
 # Helper functions
 # =================================================================
-
-
-def get_or_create_remote_user(
-    actor_url: str,
-) -> tuple[Any, bool] | None:
-    """
-    Return a remote User by actor URL, fetching from the remote server if not
-    already in DB.
-
-    Returns (user, created) on success, None if the actor cannot be resolved.
-    The DB is checked first to avoid unnecessary HTTP requests during tests and
-    when the actor was already fetched during signature verification.
-    """
-    from suddenly.users.models import User
-
-    from ._http import fetch_ap_actor
-
-    # Fast path: actor already known
-    existing = User.objects.filter(ap_id=actor_url, remote=True).first()
-    if existing:
-        return existing, False
-
-    # Slow path: fetch from remote
-    actor_data = fetch_ap_actor(actor_url)
-    if actor_data is None:
-        return None
-
-    username = actor_data.get("preferredUsername", actor_url.split("/")[-1])
-
-    user, created = User.objects.update_or_create(
-        ap_id=actor_url,
-        defaults={
-            "username": f"{username}@{actor_url.split('/')[2]}",
-            "display_name": actor_data.get("name", username),
-            "bio": actor_data.get("summary", ""),
-            "remote": True,
-            "inbox_url": actor_data.get("inbox"),
-            "outbox_url": actor_data.get("outbox"),
-            "public_key": actor_data.get("publicKey", {}).get("publicKeyPem", ""),
-        },
-    )
-
-    return user, created
+#
+# `get_or_create_remote_user` is imported from `._http` at module top (audit
+# row 4, single source) — kept as a module-level name here (not a local
+# import inside each call site) so `mocker.patch("suddenly.activitypub.inbox.
+# get_or_create_remote_user", ...)` in existing tests keeps working unchanged.
 
 
 def get_remote_user(actor_url: str) -> Any:
@@ -1057,20 +997,3 @@ def get_remote_user(actor_url: str) -> Any:
     from suddenly.users.models import User
 
     return User.objects.filter(ap_id=actor_url, remote=True).first()
-
-
-def get_local_actor(actor_type: str, identifier: str) -> Any:
-    """
-    Get a local actor (user, game, or character) by identifier.
-    """
-    from suddenly.characters.models import Character
-    from suddenly.games.models import Game
-    from suddenly.users.models import User
-
-    if actor_type == "user":
-        return User.objects.filter(username=identifier, remote=False).first()
-    elif actor_type == "game":
-        return Game.objects.filter(id=identifier, remote=False).first()
-    elif actor_type == "character":
-        return Character.objects.filter(id=identifier, remote=False).first()
-    return None
