@@ -5,6 +5,8 @@ and quotes (DA-1).
 
 from __future__ import annotations
 
+from uuid import UUID
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
@@ -40,6 +42,40 @@ from .services import (
 
 # Public "Citations retenues" visibilities the author may choose from.
 _QUOTE_VISIBILITIES = frozenset({"public", "private"})
+
+
+def _rapport_item_response(
+    request: AuthenticatedRequest,
+    rapport_pk: UUID | str,
+    *,
+    status: int = 200,
+    extra_context: dict[str, object] | None = None,
+) -> HttpResponse:
+    """Re-fetch a rapport with its full render graph and return its feed-item partial.
+
+    Single source for the refetch→render-item sequence shared by ``rapport_reply``
+    and ``rapport_add_remote_parent`` (success + error re-render). The prefetch/
+    select set matches what ``games/partials/rapport_item.html`` reads (parent
+    links + their rapports, markers + characters, report/author/actor).
+    ``marker_create`` keeps its own lighter refetch — it needs only markers.
+    """
+    from django.template.loader import render_to_string
+
+    rapport = (
+        Rapport.objects.prefetch_related(
+            "parent_links",
+            "parent_links__parent_rapport",
+            "markers",
+            "markers__character",
+        )
+        .select_related("report__game", "report__author", "actor")
+        .get(pk=rapport_pk)
+    )
+    context: dict[str, object] = {"rapport": rapport, "report": rapport.report}
+    if extra_context:
+        context.update(extra_context)
+    html = render_to_string("games/partials/rapport_item.html", context, request=request)
+    return HttpResponse(html, status=status)
 
 
 @login_required
@@ -144,6 +180,7 @@ def rapport_edit(
     return _render(request, "games/rapport_form.html", {"form": form, "report": rapport.report})
 
 
+@require_POST
 @login_required
 def rapport_delete(
     request: AuthenticatedRequest, game_pk: str, pk: str, rapport_pk: str
@@ -160,8 +197,7 @@ def rapport_delete(
     # federated — its posts are frozen; a local hard-delete would desync remotes.
     if rapport.report.is_released:
         return HttpResponseForbidden()
-    if request.method == "POST":
-        rapport.delete()
+    rapport.delete()
     return HttpResponse("")
 
 
@@ -213,6 +249,7 @@ def marker_create(
     )
 
 
+@require_POST
 @login_required
 def marker_delete(
     request: AuthenticatedRequest,
@@ -230,8 +267,7 @@ def marker_delete(
     )
     if (forbidden := _forbid_non_author(marker.rapport.report, request)) is not None:
         return forbidden
-    if request.method == "POST":
-        marker.delete()
+    marker.delete()
     return HttpResponse("")
 
 
@@ -241,7 +277,6 @@ def rapport_reply(
 ) -> HttpResponse:
     """Reply to a Rapport by creating a child Rapport with a local RapportLink parent."""
     from django.shortcuts import render as _render
-    from django.template.loader import render_to_string
 
     rapport = get_object_or_404(
         Rapport.objects.select_related("report__game", "report__author"),
@@ -269,23 +304,7 @@ def rapport_reply(
             link.full_clean()
             link.save()
 
-            child_rapport_refreshed = (
-                Rapport.objects.prefetch_related(
-                    "parent_links",
-                    "parent_links__parent_rapport",
-                    "markers",
-                    "markers__character",
-                )
-                .select_related("report__game", "report__author", "actor")
-                .get(pk=child_rapport.pk)
-            )
-
-            html = render_to_string(
-                "games/partials/rapport_item.html",
-                {"rapport": child_rapport_refreshed, "report": child_rapport_refreshed.report},
-                request=request,
-            )
-            return HttpResponse(html)
+            return _rapport_item_response(request, child_rapport.pk)
 
         return _render(
             request,
@@ -310,7 +329,6 @@ def rapport_add_remote_parent(
     """Add a remote ActivityPub IRI as a parent of a Rapport (author only, POST-only)."""
     from django.core.exceptions import ValidationError
     from django.core.validators import URLValidator
-    from django.template.loader import render_to_string
 
     if request.method != "POST":
         from django.http import HttpResponseNotAllowed
@@ -333,47 +351,18 @@ def rapport_add_remote_parent(
     try:
         validate_url(parent_iri)
     except ValidationError:
-        rapport_refreshed = (
-            Rapport.objects.prefetch_related(
-                "parent_links",
-                "parent_links__parent_rapport",
-                "markers",
-                "markers__character",
-            )
-            .select_related("report__game", "report__author", "actor")
-            .get(pk=rapport.pk)
+        return _rapport_item_response(
+            request,
+            rapport.pk,
+            status=422,
+            extra_context={"remote_parent_error": _("Please enter a valid URL.")},
         )
-        html = render_to_string(
-            "games/partials/rapport_item.html",
-            {
-                "rapport": rapport_refreshed,
-                "report": rapport_refreshed.report,
-                "remote_parent_error": _("Please enter a valid URL."),
-            },
-            request=request,
-        )
-        return HttpResponse(html, status=422)
 
     link = RapportLink(rapport=rapport, parent_iri=parent_iri)
     link.full_clean()
     link.save()
 
-    rapport_refreshed = (
-        Rapport.objects.prefetch_related(
-            "parent_links",
-            "parent_links__parent_rapport",
-            "markers",
-            "markers__character",
-        )
-        .select_related("report__game", "report__author", "actor")
-        .get(pk=rapport.pk)
-    )
-    html = render_to_string(
-        "games/partials/rapport_item.html",
-        {"rapport": rapport_refreshed, "report": rapport_refreshed.report},
-        request=request,
-    )
-    return HttpResponse(html)
+    return _rapport_item_response(request, rapport.pk)
 
 
 @require_POST
