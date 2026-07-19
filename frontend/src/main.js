@@ -664,6 +664,59 @@ Alpine.data('characterCreate', () => ({
 }))
 
 // =================================================================
+// Raccourcis clavier globaux
+// =================================================================
+// Déclarés sur les éléments via data-shortcut="g h" (les URLs restent côté
+// Django, source unique de vérité). Une valeur avec espace = séquence de
+// touches (dans l'ordre) ; un seul token = raccourci une touche (ex. "?").
+// Ignorés pendant la saisie dans un champ. La page /raccourcis/ documente
+// exactement les mêmes combos.
+function initShortcuts() {
+  const map = new Map()  // "g h" -> href
+  document.querySelectorAll('[data-shortcut]').forEach((el) => {
+    const combo = (el.dataset.shortcut || '').trim().toLowerCase()
+    const href = el.getAttribute('href')
+    if (combo && href) map.set(combo, href)
+  })
+  if (map.size === 0) return
+
+  const isTyping = (el) =>
+    !!el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA'
+      || el.isContentEditable
+      || (typeof el.closest === 'function' && !!el.closest('.CodeMirror')))
+
+  let prefix = ''
+  let prefixTimer = null
+  const resetPrefix = () => { prefix = ''; clearTimeout(prefixTimer) }
+
+  window.addEventListener('keydown', (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return
+    if (isTyping(e.target)) return
+
+    const key = e.key.toLowerCase()
+
+    // Séquence à deux touches (prefixe + touche courante) prioritaire.
+    if (prefix) {
+      const combo = `${prefix} ${key}`
+      resetPrefix()
+      if (map.has(combo)) { e.preventDefault(); window.location.href = map.get(combo); return }
+    }
+
+    // Raccourci une touche (ex. "?").
+    if (map.has(key)) { e.preventDefault(); window.location.href = map.get(key); return }
+
+    // Sinon : cette touche ouvre-t-elle une séquence connue ?
+    const isPrefix = [...map.keys()].some((k) => k.startsWith(`${key} `))
+    if (isPrefix) {
+      prefix = key
+      clearTimeout(prefixTimer)
+      prefixTimer = setTimeout(resetPrefix, 1200)
+    }
+  })
+}
+initShortcuts()
+
+// =================================================================
 // Initialisation
 // =================================================================
 

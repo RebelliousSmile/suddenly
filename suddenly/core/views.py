@@ -139,6 +139,39 @@ def about(request: HttpRequest) -> HttpResponse:
     return render(request, "core/about.html", {"stats": get_instance_stats()})
 
 
+def directory(request: HttpRequest) -> HttpResponse:
+    """Public profile directory — local, active members of this instance.
+
+    Remote (federated) accounts are excluded: they are discovered through
+    federation, not listed as members here.
+    """
+    from suddenly.users.models import User
+
+    members = User.objects.filter(remote=False, is_active=True).order_by("display_name", "username")
+    paginator = Paginator(members, 24)
+    page_obj = paginator.get_page(request.GET.get("page"))
+    return render(
+        request,
+        "core/directory.html",
+        {"page_obj": page_obj, "total": paginator.count},
+    )
+
+
+def privacy(request: HttpRequest) -> HttpResponse:
+    """Privacy policy — static content page."""
+    return render(request, "core/privacy.html")
+
+
+def apps(request: HttpRequest) -> HttpResponse:
+    """Compatible applications — static content page for the Fediverse."""
+    return render(request, "core/apps.html")
+
+
+def shortcuts(request: HttpRequest) -> HttpResponse:
+    """Keyboard shortcuts reference — mirrors the global handler in main.js."""
+    return render(request, "core/shortcuts.html")
+
+
 def htmx_render(
     request: HttpRequest,
     full_template: str,

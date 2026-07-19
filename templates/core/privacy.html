@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Privacy policy" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-3xl">
+
+        <h1 class="text-2xl font-bold text-semantic-ink mb-2">{% trans "Privacy policy" %}</h1>
+        <p class="text-sm text-semantic-muted mb-6">
+            {% blocktrans with host=request.get_host %}Applies to the {{ host }} instance.{% endblocktrans %}
+        </p>
+
+        <div class="card card-body mb-6 border-semantic-warning/30 bg-semantic-warning/10">
+            <p class="text-sm text-semantic-ink-secondary flex items-start gap-2">
+                <span class="i-lucide-info text-semantic-warning shrink-0 mt-0.5" aria-hidden="true"></span>
+                <span>{% trans "This is a baseline policy for a self-hosted instance. The operator should review and adapt it to their jurisdiction before relying on it." %}</span>
+            </p>
+        </div>
+
+        <div class="space-y-6 text-semantic-ink-secondary leading-relaxed">
+            <div>
+                <h2 class="text-heading text-semantic-ink mb-2">{% trans "Data we collect" %}</h2>
+                <p>{% trans "When you create an account we store your username, email address, and any profile details you provide (display name, bio, avatar). Content you publish — scenes, characters, quotes — is stored so the instance can display and federate it." %}</p>
+            </div>
+
+            <div>
+                <h2 class="text-heading text-semantic-ink mb-2">{% trans "Federation and public content" %}</h2>
+                <p>{% blocktrans %}This service uses <strong>ActivityPub</strong>. Public content and profiles are, by design, shared with other federated instances that follow or interact with them. Once content leaves this instance, it may be cached or copied on servers we do not control. Consider anything public to be effectively permanent.{% endblocktrans %}</p>
+            </div>
+
+            <div>
+                <h2 class="text-heading text-semantic-ink mb-2">{% trans "Cookies" %}</h2>
+                <p>{% trans "We use strictly functional cookies for authentication (keeping you logged in), CSRF protection, and remembering your language and theme preferences. We do not use advertising or third-party tracking cookies." %}</p>
+            </div>
+
+            <div>
+                <h2 class="text-heading text-semantic-ink mb-2">{% trans "Your rights" %}</h2>
+                <p>{% trans "You can edit or delete your profile and content at any time from your account settings, and export your data (games, characters, follows). Deleting content sends removal requests across the federation, though remote caches may take time to clear." %}</p>
+            </div>
+
+            <div>
+                <h2 class="text-heading text-semantic-ink mb-2">{% trans "Contact" %}</h2>
+                {% url 'core:about' as about_url %}
+                <p>{% blocktrans %}For any question about your data, contact the operator of this instance. Details are on the <a href="{{ about_url }}" class="link">About</a> page.{% endblocktrans %}</p>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

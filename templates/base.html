@@ -27,7 +27,7 @@
 
     {% block extra_head %}{% endblock %}
 </head>
-<body class="h-full font-sans antialiased">
+<body class="min-h-full flex flex-col font-sans antialiased">
 
     <!-- Header -->
     <header class="bg-semantic-surface border-b border-semantic-border sticky top-0 z-sticky pt-safe-t">
@@ -41,14 +41,17 @@
 
                 <!-- Navigation desktop -->
                 <div class="hidden @md:flex items-center gap-6">
-                    <a href="{% url 'core:home' %}" class="text-semantic-ink-secondary hover:text-semantic-ink transition-colors">
+                    <a href="{% url 'core:home' %}" data-shortcut="g h" class="text-semantic-ink-secondary hover:text-semantic-ink transition-colors">
                         {% trans "Home" %}
                     </a>
-                    <a href="{% url 'games:stories' %}" class="text-semantic-ink-secondary hover:text-semantic-ink transition-colors">
+                    <a href="{% url 'games:stories' %}" data-shortcut="g s" class="text-semantic-ink-secondary hover:text-semantic-ink transition-colors">
                         {% trans "Stories" %}
                     </a>
-                    <a href="{% url 'core:quotes' %}" class="text-semantic-ink-secondary hover:text-semantic-ink transition-colors">
+                    <a href="{% url 'core:quotes' %}" data-shortcut="g c" class="text-semantic-ink-secondary hover:text-semantic-ink transition-colors">
                         {% trans "Quotes" %}
+                    </a>
+                    <a href="https://suddenly.social" class="text-semantic-ink-secondary hover:text-semantic-ink transition-colors">
+                        {% trans "The project" %}
                     </a>
 
                     {% if user.is_authenticated %}
@@ -222,6 +225,7 @@
                 <a href="{% url 'core:home' %}" class="block py-2 text-semantic-ink-secondary">{% trans "Home" %}</a>
                 <a href="{% url 'games:stories' %}" class="block py-2 text-semantic-ink-secondary">{% trans "Stories" %}</a>
                 <a href="{% url 'core:quotes' %}" class="block py-2 text-semantic-ink-secondary">{% trans "Quotes" %}</a>
+                <a href="https://suddenly.social" class="block py-2 text-semantic-ink-secondary">{% trans "The project" %}</a>
                 {% if not user.is_authenticated %}
                 <hr class="my-2 border-semantic-border">
                 <!-- Theme toggle mobile (authenticated users get this from the account dropdown) -->
@@ -286,14 +290,14 @@
                     <p class="text-semantic-muted">
                         <span class="font-medium text-semantic-ink-secondary">{{ request.get_host }} :</span>
                         <a href="{% url 'core:about' %}" class="text-semantic-muted hover:text-semantic-ink mx-2">{% trans "About" %}</a>·
-                        <a href="#" class="text-semantic-muted hover:text-semantic-ink mx-2">{% trans "Profile directory" %}</a>·
-                        <a href="#" class="text-semantic-muted hover:text-semantic-ink ml-2">{% trans "Privacy policy" %}</a>
+                        <a href="{% url 'core:directory' %}" class="text-semantic-muted hover:text-semantic-ink mx-2">{% trans "Profile directory" %}</a>·
+                        <a href="{% url 'core:privacy' %}" class="text-semantic-muted hover:text-semantic-ink ml-2">{% trans "Privacy policy" %}</a>
                     </p>
                     <p class="text-semantic-muted">
                         <span class="font-medium text-semantic-ink-secondary">{{ SITE_NAME }} :</span>
                         <a href="{% url 'core:about' %}" class="text-semantic-muted hover:text-semantic-ink mx-2">{% trans "About" %}</a>·
-                        <a href="#" class="text-semantic-muted hover:text-semantic-ink mx-2">{% trans "Apps" %}</a>·
-                        <a href="#" class="text-semantic-muted hover:text-semantic-ink mx-2">{% trans "Keyboard shortcuts" %}</a>·
+                        <a href="{% url 'core:apps' %}" class="text-semantic-muted hover:text-semantic-ink mx-2">{% trans "Apps" %}</a>·
+                        <a href="{% url 'core:shortcuts' %}" data-shortcut="?" class="text-semantic-muted hover:text-semantic-ink mx-2">{% trans "Keyboard shortcuts" %}</a>·
                         <a href="https://github.com/RebelliousSmile/suddenly" class="text-semantic-muted hover:text-semantic-ink mx-2">{% trans "View source code" %}</a>·
                         <span class="ml-2">v{{ APP_VERSION }}</span>
                     </p>

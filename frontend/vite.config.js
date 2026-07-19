@@ -17,8 +17,8 @@ export default defineConfig({
         main: resolve(__dirname, 'src/main.js'),
       },
       output: {
-        // Noms de fichiers prévisibles pour Django
-        entryFileNames: 'js/[name].js',
+        // Hash sur l'entry aussi → cache-busting (le manifest résout le nom)
+        entryFileNames: 'js/[name]-[hash].js',
         chunkFileNames: 'js/[name]-[hash].js',
         assetFileNames: (assetInfo) => {
           if (assetInfo.name?.endsWith('.css')) {

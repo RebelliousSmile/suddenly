@@ -7,7 +7,8 @@ paths:
 
 # Public discovery navigation
 
-- Primary nav (desktop + mobile) = **Home · Stories · Quotes** (v3 menu)
+- Primary nav (desktop + mobile) = **Home · Stories · Quotes · The project** (v3 menu)
+- "The project" = external link to `https://suddenly.social` (marketing/feature site)
 - Never add Explorer (`/explore/`) or Jouer (`/feed/`) to the primary nav — dropped in v3
 - Public discovery surfaces = `games:stories` + `games:quotes_wall` (public read, no auth)
 - Account links (profile, my games, logout) stay in the usermenu auth block

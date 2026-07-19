@@ -3667,6 +3667,128 @@ msgstr "Image de fond par défaut des personnages"
 msgid "Current background"
 msgstr "Fond actuel"
 
+#: templates/base.html
+msgid "The project"
+msgstr "Le projet"
+
+#: templates/core/directory.html
+msgid "No members to display yet."
+msgstr "Aucun membre à afficher pour l'instant."
+
+#: templates/core/privacy.html
+#, python-format
+msgid "Applies to the %(host)s instance."
+msgstr "S'applique à l'instance %(host)s."
+
+#: templates/core/privacy.html
+msgid "This is a baseline policy for a self-hosted instance. The operator should review and adapt it to their jurisdiction before relying on it."
+msgstr "Ceci est une politique de base pour une instance auto-hébergée. L'opérateur doit la relire et l'adapter à sa juridiction avant de s'y fier."
+
+#: templates/core/privacy.html
+msgid "Data we collect"
+msgstr "Données que nous collectons"
+
+#: templates/core/privacy.html
+msgid "When you create an account we store your username, email address, and any profile details you provide (display name, bio, avatar). Content you publish — scenes, characters, quotes — is stored so the instance can display and federate it."
+msgstr "Lorsque vous créez un compte, nous stockons votre nom d'utilisateur, votre adresse e-mail et les informations de profil que vous fournissez (nom affiché, bio, avatar). Le contenu que vous publiez — scènes, personnages, citations — est stocké afin que l'instance puisse l'afficher et le fédérer."
+
+#: templates/core/privacy.html
+msgid "Federation and public content"
+msgstr "Fédération et contenu public"
+
+#: templates/core/privacy.html
+msgid "This service uses <strong>ActivityPub</strong>. Public content and profiles are, by design, shared with other federated instances that follow or interact with them. Once content leaves this instance, it may be cached or copied on servers we do not control. Consider anything public to be effectively permanent."
+msgstr "Ce service utilise <strong>ActivityPub</strong>. Le contenu public et les profils sont, par conception, partagés avec les autres instances fédérées qui les suivent ou interagissent avec eux. Une fois le contenu sorti de cette instance, il peut être mis en cache ou copié sur des serveurs que nous ne contrôlons pas. Considérez tout contenu public comme durablement permanent."
+
+#: templates/core/privacy.html
+msgid "Cookies"
+msgstr "Cookies"
+
+#: templates/core/privacy.html
+msgid "We use strictly functional cookies for authentication (keeping you logged in), CSRF protection, and remembering your language and theme preferences. We do not use advertising or third-party tracking cookies."
+msgstr "Nous utilisons uniquement des cookies strictement fonctionnels pour l'authentification (vous garder connecté), la protection CSRF et la mémorisation de vos préférences de langue et de thème. Nous n'utilisons aucun cookie publicitaire ni de traçage tiers."
+
+#: templates/core/privacy.html
+msgid "Your rights"
+msgstr "Vos droits"
+
+#: templates/core/privacy.html
+msgid "You can edit or delete your profile and content at any time from your account settings, and export your data (games, characters, follows). Deleting content sends removal requests across the federation, though remote caches may take time to clear."
+msgstr "Vous pouvez modifier ou supprimer votre profil et votre contenu à tout moment depuis les paramètres de votre compte, et exporter vos données (parties, personnages, abonnements). La suppression de contenu envoie des demandes de retrait à travers la fédération, mais les caches distants peuvent mettre du temps à se vider."
+
+#: templates/core/privacy.html
+#, python-format
+msgid "For any question about your data, contact the operator of this instance. Details are on the <a href=\"%(about_url)s\" class=\"link\">About</a> page."
+msgstr "Pour toute question concernant vos données, contactez l'opérateur de cette instance. Les détails figurent sur la page <a href=\"%(about_url)s\" class=\"link\">À propos</a>."
+
+#: templates/core/apps.html
+#, python-format
+msgid "%(name)s is a web application — it runs in any modern browser, on desktop and mobile, with no install required. Because it federates over ActivityPub, you can also follow and interact with it from other Fediverse clients."
+msgstr "%(name)s est une application web — elle fonctionne dans tout navigateur moderne, sur ordinateur et mobile, sans installation. Comme elle se fédère via ActivityPub, vous pouvez aussi la suivre et interagir avec elle depuis d'autres clients du Fédivers."
+
+#: templates/core/apps.html
+msgid "Web app"
+msgstr "Application web"
+
+#: templates/core/apps.html
+msgid "Publish scenes, manage your characters, and browse the network directly here. Add the site to your home screen for an app-like experience."
+msgstr "Publiez des scènes, gérez vos personnages et parcourez le réseau directement ici. Ajoutez le site à votre écran d'accueil pour une expérience proche d'une application."
+
+#: templates/core/apps.html
+msgid "Open the web app"
+msgstr "Ouvrir l'application web"
+
+#: templates/core/apps.html
+msgid "Compatible Fediverse clients"
+msgstr "Clients du Fédivers compatibles"
+
+#: templates/core/apps.html
+msgid "Follow players and characters from any ActivityPub-compatible platform:"
+msgstr "Suivez des joueurs et des personnages depuis n'importe quelle plateforme compatible ActivityPub :"
+
+#: templates/core/apps.html
+msgid "Microblogging — follow accounts and see their public activity."
+msgstr "Microblogage — suivez des comptes et voyez leur activité publique."
+
+#: templates/core/apps.html
+msgid "Reading and reviews — federates with shared-fiction content."
+msgstr "Lecture et critiques — se fédère avec le contenu de fiction partagée."
+
+#: templates/core/apps.html
+msgid "Any ActivityPub app"
+msgstr "Toute application ActivityPub"
+
+#: templates/core/apps.html
+msgid "Search a profile by its @handle from your platform of choice."
+msgstr "Recherchez un profil par son @identifiant depuis la plateforme de votre choix."
+
+#: templates/core/shortcuts.html
+msgid "Press these keys from anywhere on the site (except while typing in a field). For a two-key sequence, press the keys one after the other."
+msgstr "Appuyez sur ces touches depuis n'importe quelle page du site (sauf pendant la saisie dans un champ). Pour une séquence à deux touches, appuyez sur les touches l'une après l'autre."
+
+#: templates/core/shortcuts.html
+msgid "Go to Home"
+msgstr "Aller à l'accueil"
+
+#: templates/core/shortcuts.html
+msgid "Go to Stories"
+msgstr "Aller aux histoires"
+
+#: templates/core/shortcuts.html
+msgid "Go to Quotes"
+msgstr "Aller aux citations"
+
+#: templates/core/shortcuts.html
+msgid "Open this shortcuts page"
+msgstr "Ouvrir cette page de raccourcis"
+
+#: templates/core/directory.html
+#, python-format
+msgid "%(counter)s member on this instance."
+msgid_plural "%(counter)s members on this instance."
+msgstr[0] "%(counter)s membre sur cette instance."
+msgstr[1] "%(counter)s membres sur cette instance."
+
 #~ msgid "published reports"
 #~ msgstr "comptes-rendus publiés"
 

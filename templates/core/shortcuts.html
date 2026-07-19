@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Keyboard shortcuts" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-2xl">
+
+        <h1 class="text-2xl font-bold text-semantic-ink mb-2">{% trans "Keyboard shortcuts" %}</h1>
+        <p class="text-semantic-ink-secondary mb-8">
+            {% trans "Press these keys from anywhere on the site (except while typing in a field). For a two-key sequence, press the keys one after the other." %}
+        </p>
+
+        <div class="card overflow-hidden">
+            <h2 class="text-heading text-semantic-ink px-6 pt-5 pb-2">{% trans "Navigation" %}</h2>
+            <ul role="list" class="divide-y divide-semantic-border list-none">
+                <li class="flex items-center justify-between gap-4 px-6 py-3">
+                    <span class="text-semantic-ink-secondary">{% trans "Go to Home" %}</span>
+                    <span class="flex items-center gap-1 shrink-0">
+                        <kbd class="inline-flex items-center justify-center px-2 py-1 text-sm text-semantic-ink bg-semantic-card border border-semantic-border rounded">G</kbd>
+                        <kbd class="inline-flex items-center justify-center px-2 py-1 text-sm text-semantic-ink bg-semantic-card border border-semantic-border rounded">H</kbd>
+                    </span>
+                </li>
+                <li class="flex items-center justify-between gap-4 px-6 py-3">
+                    <span class="text-semantic-ink-secondary">{% trans "Go to Stories" %}</span>
+                    <span class="flex items-center gap-1 shrink-0">
+                        <kbd class="inline-flex items-center justify-center px-2 py-1 text-sm text-semantic-ink bg-semantic-card border border-semantic-border rounded">G</kbd>
+                        <kbd class="inline-flex items-center justify-center px-2 py-1 text-sm text-semantic-ink bg-semantic-card border border-semantic-border rounded">S</kbd>
+                    </span>
+                </li>
+                <li class="flex items-center justify-between gap-4 px-6 py-3">
+                    <span class="text-semantic-ink-secondary">{% trans "Go to Quotes" %}</span>
+                    <span class="flex items-center gap-1 shrink-0">
+                        <kbd class="inline-flex items-center justify-center px-2 py-1 text-sm text-semantic-ink bg-semantic-card border border-semantic-border rounded">G</kbd>
+                        <kbd class="inline-flex items-center justify-center px-2 py-1 text-sm text-semantic-ink bg-semantic-card border border-semantic-border rounded">C</kbd>
+                    </span>
+                </li>
+                <li class="flex items-center justify-between gap-4 px-6 py-3">
+                    <span class="text-semantic-ink-secondary">{% trans "Open this shortcuts page" %}</span>
+                    <span class="flex items-center gap-1 shrink-0">
+                        <kbd class="inline-flex items-center justify-center px-2 py-1 text-sm text-semantic-ink bg-semantic-card border border-semantic-border rounded">?</kbd>
+                    </span>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Apps" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-3xl">
+
+        <h1 class="text-2xl font-bold text-semantic-ink mb-2">{% trans "Apps" %}</h1>
+        <p class="text-semantic-ink-secondary mb-8">
+            {% blocktrans with name=SITE_NAME %}{{ name }} is a web application — it runs in any modern browser, on desktop and mobile, with no install required. Because it federates over ActivityPub, you can also follow and interact with it from other Fediverse clients.{% endblocktrans %}
+        </p>
+
+        <div class="card card-body mb-6">
+            <h2 class="text-heading text-semantic-ink mb-2 flex items-center gap-2">
+                <span class="i-lucide-globe text-brand-primary" aria-hidden="true"></span>
+                {% trans "Web app" %}
+            </h2>
+            <p class="text-semantic-ink-secondary mb-4">
+                {% trans "Publish scenes, manage your characters, and browse the network directly here. Add the site to your home screen for an app-like experience." %}
+            </p>
+            <a href="{% url 'core:home' %}" class="btn-primary">{% trans "Open the web app" %}</a>
+        </div>
+
+        <h2 class="text-heading text-semantic-ink mb-3">{% trans "Compatible Fediverse clients" %}</h2>
+        <p class="text-semantic-ink-secondary mb-4">
+            {% trans "Follow players and characters from any ActivityPub-compatible platform:" %}
+        </p>
+        <ul class="grid @sm:grid-cols-2 gap-4 list-none" role="list">
+            <li class="card card-body flex items-start gap-3">
+                <span class="i-simple-icons-mastodon text-2xl text-brand-primary shrink-0" role="img" aria-label="Mastodon"></span>
+                <span>
+                    <span class="block font-medium text-semantic-ink">Mastodon</span>
+                    <span class="block text-sm text-semantic-ink-secondary">{% trans "Microblogging — follow accounts and see their public activity." %}</span>
+                </span>
+            </li>
+            <li class="card card-body flex items-start gap-3">
+                <span class="i-game-icons-open-book text-2xl text-brand-primary shrink-0" role="img" aria-label="BookWyrm"></span>
+                <span>
+                    <span class="block font-medium text-semantic-ink">BookWyrm</span>
+                    <span class="block text-sm text-semantic-ink-secondary">{% trans "Reading and reviews — federates with shared-fiction content." %}</span>
+                </span>
+            </li>
+            <li class="card card-body flex items-start gap-3">
+                <span class="i-simple-icons-activitypub text-2xl text-brand-primary shrink-0" role="img" aria-label="ActivityPub"></span>
+                <span>
+                    <span class="block font-medium text-semantic-ink">{% trans "Any ActivityPub app" %}</span>
+                    <span class="block text-sm text-semantic-ink-secondary">{% trans "Search a profile by its @handle from your platform of choice." %}</span>
+                </span>
+            </li>
+        </ul>
+
+    </div>
+</section>
+{% endblock %}
