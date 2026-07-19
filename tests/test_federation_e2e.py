@@ -246,15 +246,15 @@ class TestFollowIncoming:
         assert follow_exists, "Follow record must be created"
 
         # 3. deliver_activity.delay must have been called with signing keys
-        assert (
-            len(captured_delay_calls) == 1
-        ), f"deliver_activity.delay must be called exactly once, got {len(captured_delay_calls)}"
+        assert len(captured_delay_calls) == 1, (
+            f"deliver_activity.delay must be called exactly once, got {len(captured_delay_calls)}"
+        )
 
         call_kwargs = captured_delay_calls[0]
 
-        assert (
-            "actor_key_id" in call_kwargs
-        ), "deliver_activity.delay must receive actor_key_id — Accept would be unsigned without it"
+        assert "actor_key_id" in call_kwargs, (
+            "deliver_activity.delay must receive actor_key_id — Accept would be unsigned without it"
+        )
         assert call_kwargs["actor_key_id"] is not None, "actor_key_id must not be None"
         assert "private_key_pem" in call_kwargs, (
             "deliver_activity.delay must receive private_key_pem"
@@ -346,40 +346,40 @@ class TestFollowOutgoing:
         send_follow_activity(str(local_federation_user.pk), peer_actor)
 
         # 1. deliver_activity.delay must have been called exactly once
-        assert (
-            len(captured_delay_calls) == 1
-        ), f"deliver_activity.delay must be called exactly once, got {len(captured_delay_calls)}"
+        assert len(captured_delay_calls) == 1, (
+            f"deliver_activity.delay must be called exactly once, got {len(captured_delay_calls)}"
+        )
 
         call_kwargs = captured_delay_calls[0]
 
         # 2. Delivered activity must be of type Follow
         activity = call_kwargs.get("activity", {})
-        assert (
-            activity.get("type") == "Follow"
-        ), f"Activity must be Follow, got {activity.get('type')}"
+        assert activity.get("type") == "Follow", (
+            f"Activity must be Follow, got {activity.get('type')}"
+        )
 
         # 3. Actor must be the local user
-        assert (
-            activity.get("actor") == local_federation_user.actor_url
-        ), f"Follow actor must be {local_federation_user.actor_url}, got {activity.get('actor')}"
+        assert activity.get("actor") == local_federation_user.actor_url, (
+            f"Follow actor must be {local_federation_user.actor_url}, got {activity.get('actor')}"
+        )
 
         # 4. Object must be the remote actor
-        assert (
-            activity.get("object") == peer_actor
-        ), f"Follow object must be {peer_actor}, got {activity.get('object')}"
+        assert activity.get("object") == peer_actor, (
+            f"Follow object must be {peer_actor}, got {activity.get('object')}"
+        )
 
         # 5. Inbox URL must be the remote actor's inbox
-        assert (
-            call_kwargs.get("inbox_url") == remote_inbox
-        ), f"inbox_url must be {remote_inbox}, got {call_kwargs.get('inbox_url')}"
+        assert call_kwargs.get("inbox_url") == remote_inbox, (
+            f"inbox_url must be {remote_inbox}, got {call_kwargs.get('inbox_url')}"
+        )
 
         # 6. Signing keys must be present and correct
-        assert (
-            call_kwargs.get("actor_key_id") == f"{local_federation_user.actor_url}#main-key"
-        ), "actor_key_id must be the local user's key id"
-        assert (
-            call_kwargs.get("private_key_pem") == local_federation_user.private_key
-        ), "private_key_pem must be the local user's private key"
+        assert call_kwargs.get("actor_key_id") == f"{local_federation_user.actor_url}#main-key", (
+            "actor_key_id must be the local user's key id"
+        )
+        assert call_kwargs.get("private_key_pem") == local_federation_user.private_key, (
+            "private_key_pem must be the local user's private key"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -499,9 +499,9 @@ class TestUnfollowIncoming:
 
         assert response.status_code == 202, f"Expected 202, got {response.status_code}"
 
-        assert not Follow.objects.filter(
-            pk=follow.pk
-        ).exists(), "Follow record must be deleted after receiving Undo(Follow)"
+        assert not Follow.objects.filter(pk=follow.pk).exists(), (
+            "Follow record must be deleted after receiving Undo(Follow)"
+        )
 
 
 @pytest.mark.django_db
@@ -576,45 +576,45 @@ class TestUnfollowOutgoing:
         send_undo_follow_activity(str(local_federation_user.pk), peer_actor)
 
         # 1. deliver_activity.delay must be called exactly once
-        assert (
-            len(captured_delay_calls) == 1
-        ), f"deliver_activity.delay must be called once, got {len(captured_delay_calls)}"
+        assert len(captured_delay_calls) == 1, (
+            f"deliver_activity.delay must be called once, got {len(captured_delay_calls)}"
+        )
 
         call_kwargs = captured_delay_calls[0]
 
         # 2. Activity must be Undo wrapping a Follow
         activity = call_kwargs.get("activity", {})
-        assert (
-            activity.get("type") == "Undo"
-        ), f"Activity type must be Undo, got {activity.get('type')}"
+        assert activity.get("type") == "Undo", (
+            f"Activity type must be Undo, got {activity.get('type')}"
+        )
         inner = activity.get("object", {})
         assert inner.get("type") == "Follow", f"Undo object must be Follow, got {inner.get('type')}"
-        assert (
-            inner.get("id") == follow_ap_id
-        ), f"Undo object id must match Follow ap_id {follow_ap_id}, got {inner.get('id')}"
+        assert inner.get("id") == follow_ap_id, (
+            f"Undo object id must match Follow ap_id {follow_ap_id}, got {inner.get('id')}"
+        )
 
         # 3. Actor must be the local user
-        assert (
-            activity.get("actor") == local_federation_user.actor_url
-        ), f"Undo actor must be {local_federation_user.actor_url}"
+        assert activity.get("actor") == local_federation_user.actor_url, (
+            f"Undo actor must be {local_federation_user.actor_url}"
+        )
 
         # 4. Delivery target must be remote inbox
-        assert (
-            call_kwargs.get("inbox_url") == remote_inbox
-        ), f"inbox_url must be {remote_inbox}, got {call_kwargs.get('inbox_url')}"
+        assert call_kwargs.get("inbox_url") == remote_inbox, (
+            f"inbox_url must be {remote_inbox}, got {call_kwargs.get('inbox_url')}"
+        )
 
         # 5. Signing keys must be present and correct
-        assert (
-            call_kwargs.get("actor_key_id") == f"{local_federation_user.actor_url}#main-key"
-        ), "actor_key_id must be the local user's key id"
-        assert (
-            call_kwargs.get("private_key_pem") == local_federation_user.private_key
-        ), "private_key_pem must be the local user's private key"
+        assert call_kwargs.get("actor_key_id") == f"{local_federation_user.actor_url}#main-key", (
+            "actor_key_id must be the local user's key id"
+        )
+        assert call_kwargs.get("private_key_pem") == local_federation_user.private_key, (
+            "private_key_pem must be the local user's private key"
+        )
 
         # 6. Follow record must be deleted after sending Undo
-        assert not Follow.objects.filter(
-            ap_id=follow_ap_id
-        ).exists(), "Follow record must be deleted after send_undo_follow_activity"
+        assert not Follow.objects.filter(ap_id=follow_ap_id).exists(), (
+            "Follow record must be deleted after send_undo_follow_activity"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -776,18 +776,18 @@ class TestOfferIncoming:
             type=LinkType.ADOPT,
         ).first()
 
-        assert (
-            lr is not None
-        ), "A LinkRequest must be created in DB when an Offer(Relationship{adopt}) is received"
-        assert (
-            lr.status == LinkRequestStatus.PENDING
-        ), f"LinkRequest status must be PENDING, got {lr.status}"
-        assert (
-            lr.requester.ap_id == remote_requester_url
-        ), f"Requester ap_id must be {remote_requester_url}, got {lr.requester.ap_id}"
-        assert (
-            lr.message == "I'd love to adopt Luna"
-        ), "LinkRequest message must match activity summary"
+        assert lr is not None, (
+            "A LinkRequest must be created in DB when an Offer(Relationship{adopt}) is received"
+        )
+        assert lr.status == LinkRequestStatus.PENDING, (
+            f"LinkRequest status must be PENDING, got {lr.status}"
+        )
+        assert lr.requester.ap_id == remote_requester_url, (
+            f"Requester ap_id must be {remote_requester_url}, got {lr.requester.ap_id}"
+        )
+        assert lr.message == "I'd love to adopt Luna", (
+            "LinkRequest message must match activity summary"
+        )
 
 
 @pytest.mark.django_db
@@ -883,9 +883,9 @@ class TestAcceptIncoming:
             f"Bug: handle_accept looks for '/activities/offer/' in offer URL but "
             f"serialize_link_request generates '/link-requests/{{pk}}'."
         )
-        assert (
-            lr.response_message == "Adoption accepted, welcome Luna!"
-        ), "response_message must be set from activity summary"
+        assert lr.response_message == "Adoption accepted, welcome Luna!", (
+            "response_message must be set from activity summary"
+        )
 
 
 @pytest.mark.django_db
@@ -970,9 +970,9 @@ class TestRejectIncoming:
             f"Bug: handle_reject looks for '/activities/offer/' in offer URL but "
             f"serialize_link_request generates '/link-requests/{{pk}}'."
         )
-        assert (
-            lr.response_message == "Not compatible with our game, sorry."
-        ), "response_message must be set from activity summary"
+        assert lr.response_message == "Not compatible with our game, sorry.", (
+            "response_message must be set from activity summary"
+        )
 
 
 @pytest.mark.django_db
@@ -1042,14 +1042,14 @@ class TestOfferOutgoing:
 
         # 2. Activity must be Offer
         activity = call_kwargs.get("activity", {})
-        assert (
-            activity.get("type") == "Offer"
-        ), f"Activity must be Offer, got {activity.get('type')}"
+        assert activity.get("type") == "Offer", (
+            f"Activity must be Offer, got {activity.get('type')}"
+        )
 
         # 3. Delivery target must be remote creator's inbox
-        assert (
-            call_kwargs.get("inbox_url") == remote_creator.inbox_url
-        ), f"inbox_url must be {remote_creator.inbox_url}, got {call_kwargs.get('inbox_url')}"
+        assert call_kwargs.get("inbox_url") == remote_creator.inbox_url, (
+            f"inbox_url must be {remote_creator.inbox_url}, got {call_kwargs.get('inbox_url')}"
+        )
 
         # 4. Signing keys must be present and correct
         assert "actor_key_id" in call_kwargs, (
@@ -1058,15 +1058,15 @@ class TestOfferOutgoing:
             " Bug: send_offer_activity calls deliver_activity.delay(activity, creator.inbox_url)"
             " without passing actor_key_id or private_key_pem."
         )
-        assert (
-            call_kwargs["actor_key_id"] == f"{requester.actor_url}#main-key"
-        ), f"actor_key_id must be requester's key id, got {call_kwargs.get('actor_key_id')}"
-        assert (
-            "private_key_pem" in call_kwargs
-        ), "deliver_activity.delay must receive private_key_pem"
-        assert (
-            call_kwargs["private_key_pem"] == requester.private_key
-        ), "private_key_pem must be requester's private key"
+        assert call_kwargs["actor_key_id"] == f"{requester.actor_url}#main-key", (
+            f"actor_key_id must be requester's key id, got {call_kwargs.get('actor_key_id')}"
+        )
+        assert "private_key_pem" in call_kwargs, (
+            "deliver_activity.delay must receive private_key_pem"
+        )
+        assert call_kwargs["private_key_pem"] == requester.private_key, (
+            "private_key_pem must be requester's private key"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -1239,9 +1239,9 @@ class TestUpdateIncoming:
             f"Character name must be 'Aria Updated' after Update, got '{character.name}'. "
             "Current stub only logs — no record is updated."
         )
-        assert (
-            character.description == "A legendary bard"
-        ), f"Character description must be 'A legendary bard', got '{character.description}'"
+        assert character.description == "A legendary bard", (
+            f"Character description must be 'A legendary bard', got '{character.description}'"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -1333,9 +1333,9 @@ class TestRemoteFollowToggle:
             f"https://{settings.DOMAIN}/users/{local_user_with_key.username}"
             f"/follows/{remote_user.pk}"
         )
-        assert (
-            follow.ap_id == expected_ap_id
-        ), f"Follow ap_id must be {expected_ap_id}, got {follow.ap_id}"
+        assert follow.ap_id == expected_ap_id, (
+            f"Follow ap_id must be {expected_ap_id}, got {follow.ap_id}"
+        )
 
     def test_follow_enqueues_send_follow_activity(
         self,
@@ -1381,17 +1381,17 @@ class TestRemoteFollowToggle:
             )
 
         assert response.status_code == 200
-        assert (
-            len(captured_delay_calls) == 1
-        ), f"send_follow_activity.delay must be called once, got {len(captured_delay_calls)}"
+        assert len(captured_delay_calls) == 1, (
+            f"send_follow_activity.delay must be called once, got {len(captured_delay_calls)}"
+        )
 
         args, kwargs = captured_delay_calls[0]
         # Called as send_follow_activity.delay(user_id, ap_id, follow_ap_id)
         list(args) + [kwargs.get(k) for k in ("user_id", "ap_id", "follow_ap_id") if k in kwargs]
         positional = list(args)
-        assert positional[0] == str(
-            local_user_with_key.pk
-        ), f"First arg must be user_id={local_user_with_key.pk}"
+        assert positional[0] == str(local_user_with_key.pk), (
+            f"First arg must be user_id={local_user_with_key.pk}"
+        )
         assert positional[1] == remote_actor_url, f"Second arg must be ap_id={remote_actor_url}"
         expected_ap_id = (
             f"https://{settings.DOMAIN}/users/{local_user_with_key.username}"
@@ -1438,9 +1438,9 @@ class TestRemoteFollowToggle:
             )
 
         assert response.status_code == 200
-        assert (
-            response.context["is_following"] is True
-        ), "Context is_following must be True after follow"
+        assert response.context["is_following"] is True, (
+            "Context is_following must be True after follow"
+        )
 
     # ------------------------------------------------------------------
     # Unfollow (existing Follow record present)
@@ -1502,9 +1502,9 @@ class TestRemoteFollowToggle:
             )
 
         assert response.status_code == 200
-        assert (
-            len(captured_delay_calls) == 1
-        ), f"send_undo_follow_activity.delay must be called once, got {len(captured_delay_calls)}"
+        assert len(captured_delay_calls) == 1, (
+            f"send_undo_follow_activity.delay must be called once, got {len(captured_delay_calls)}"
+        )
         args, kwargs = captured_delay_calls[0]
         positional = list(args)
         assert positional[0] == str(local_user_with_key.pk), "First arg must be user_id"
@@ -1561,9 +1561,9 @@ class TestRemoteFollowToggle:
             )
 
         assert response.status_code == 200
-        assert Follow.objects.filter(
-            pk=follow_pk
-        ).exists(), "View must NOT delete the Follow record — deletion belongs to the Celery task"
+        assert Follow.objects.filter(pk=follow_pk).exists(), (
+            "View must NOT delete the Follow record — deletion belongs to the Celery task"
+        )
 
     def test_unfollow_returns_is_following_false(
         self,
@@ -1615,9 +1615,9 @@ class TestRemoteFollowToggle:
             )
 
         assert response.status_code == 200
-        assert (
-            response.context["is_following"] is False
-        ), "Context is_following must be False after unfollow"
+        assert response.context["is_following"] is False, (
+            "Context is_following must be False after unfollow"
+        )
 
     # ------------------------------------------------------------------
     # action= field mismatch — view decides by DB state, not POST field
@@ -1739,9 +1739,9 @@ class TestRemoteFollowToggle:
         )
 
         assert response.status_code == 302
-        assert (
-            "/accounts/login/" in response["Location"] or "/login" in response["Location"]
-        ), f"Redirect must point to login, got {response['Location']}"
+        assert "/accounts/login/" in response["Location"] or "/login" in response["Location"], (
+            f"Redirect must point to login, got {response['Location']}"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -1862,9 +1862,9 @@ class TestRemoteProfileIsFollowing:
 
         assert response.status_code == 200
         assert len(captured_contexts) == 1, "htmx_render must be called once"
-        assert (
-            captured_contexts[0]["is_following"] is True
-        ), "is_following must be True when user has an existing Follow for this remote actor"
+        assert captured_contexts[0]["is_following"] is True, (
+            "is_following must be True when user has an existing Follow for this remote actor"
+        )
 
     def test_authenticated_user_not_following_sees_is_following_false(
         self,
@@ -1910,9 +1910,9 @@ class TestRemoteProfileIsFollowing:
 
         assert response.status_code == 200
         assert len(captured_contexts) == 1, "htmx_render must be called once"
-        assert (
-            captured_contexts[0]["is_following"] is False
-        ), "is_following must be False when user has no Follow for this remote actor"
+        assert captured_contexts[0]["is_following"] is False, (
+            "is_following must be False when user has no Follow for this remote actor"
+        )
 
     def test_unauthenticated_user_sees_is_following_false(
         self,
@@ -1946,9 +1946,9 @@ class TestRemoteProfileIsFollowing:
 
         assert response.status_code == 200
         assert len(captured_contexts) == 1, "htmx_render must be called once"
-        assert (
-            captured_contexts[0]["is_following"] is False
-        ), "is_following must be False for unauthenticated users"
+        assert captured_contexts[0]["is_following"] is False, (
+            "is_following must be False for unauthenticated users"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -1970,9 +1970,9 @@ class TestCreateFollowActivityId:
 
         activity = create_follow_activity(actor, target, activity_id)
 
-        assert (
-            activity.get("id") == activity_id
-        ), f"activity['id'] must be {activity_id}, got {activity.get('id')}"
+        assert activity.get("id") == activity_id, (
+            f"activity['id'] must be {activity_id}, got {activity.get('id')}"
+        )
 
     def test_without_activity_id_omits_id_field(self) -> None:
         """When activity_id is None, 'id' must be absent from the activity."""
@@ -1984,9 +1984,9 @@ class TestCreateFollowActivityId:
 
         activity = create_follow_activity(actor, target, None)
 
-        assert (
-            "id" not in activity
-        ), f"'id' key must be absent when activity_id is None, got {activity.get('id')}"
+        assert "id" not in activity, (
+            f"'id' key must be absent when activity_id is None, got {activity.get('id')}"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -2047,14 +2047,14 @@ class TestFollowOutgoingActivityId:
 
         send_follow_activity(str(local_federation_user.pk), peer_actor, follow_ap_id)
 
-        assert (
-            len(captured_delay_calls) == 1
-        ), f"deliver_activity.delay must be called once, got {len(captured_delay_calls)}"
+        assert len(captured_delay_calls) == 1, (
+            f"deliver_activity.delay must be called once, got {len(captured_delay_calls)}"
+        )
 
         activity = captured_delay_calls[0].get("activity", {})
-        assert (
-            activity.get("id") == follow_ap_id
-        ), f"Delivered Follow activity must contain id={follow_ap_id}, got id={activity.get('id')}"
+        assert activity.get("id") == follow_ap_id, (
+            f"Delivered Follow activity must contain id={follow_ap_id}, got id={activity.get('id')}"
+        )
 
 
 # ---------------------------------------------------------------------------

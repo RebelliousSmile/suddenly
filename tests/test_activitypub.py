@@ -338,9 +338,9 @@ class TestHTTPSignatures:
         request = RequestFactory().post("/inbox")
         result = verify_signature(request)
 
-        assert isinstance(
-            result, tuple
-        ), "verify_signature must return (bool, str), not a plain bool"
+        assert isinstance(result, tuple), (
+            "verify_signature must return (bool, str), not a plain bool"
+        )
         is_valid, _ = result
         assert is_valid is False
 
