@@ -630,6 +630,16 @@ class Follow(BaseModel):
     remote = models.BooleanField(default=False)
     ap_id = models.URLField(blank=True, null=True, unique=True)
     accepted = models.BooleanField(default=True, db_index=True)
+    auto = models.BooleanField(
+        default=False,
+        db_index=True,
+        help_text=(
+            "AUTO = created by the cast auto-follow sync (Epic D, #134): a shared "
+            "GameCast/GM membership justifies it, and it is recomputed away when "
+            "that membership ends. MANUEL (default False) = created by the follow "
+            "button — always survives cast teardown."
+        ),
+    )
 
     class Meta:
         unique_together = ["follower", "content_type", "object_id"]

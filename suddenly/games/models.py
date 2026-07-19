@@ -50,6 +50,18 @@ class Game(BaseModel):
     # Timeline
     started_at = models.DateField(null=True, blank=True)
 
+    # Lifecycle — set by the GM's "close the game" action (Epic D, #134).
+    completed_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        db_index=True,
+        help_text=(
+            "Set once, by close_game(). Once set, every report of this game is "
+            "treated as released, regardless of its own released_at (SUD-V1 — see "
+            "wall_open_q())."
+        ),
+    )
+
     class Meta:
         ordering = ["-updated_at"]
         indexes = [
