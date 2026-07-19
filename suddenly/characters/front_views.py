@@ -250,6 +250,24 @@ def character_detail(request: HttpRequest, slug: str) -> HttpResponse:
             source=character, status=CharacterLinkStatus.ACTIVE
         ).first()
 
+    # Follow state (Epic C, #133) — guarded so the creator/owner never sees
+    # a follow button on their own character (self-follow, matching the
+    # Game/User detail views' pattern).
+    is_following = False
+    if request.user.is_authenticated and request.user not in (
+        character.creator,
+        character.owner,
+    ):
+        from django.contrib.contenttypes.models import ContentType
+
+        from .models import Follow
+
+        ct = ContentType.objects.get_for_model(Character)
+        is_following = Follow.objects.filter(
+            follower=request.user, content_type=ct, object_id=character.pk
+        ).exists()
+    context["is_following"] = is_following
+
     return htmx_render(
         request,
         full_template="characters/detail.html",
