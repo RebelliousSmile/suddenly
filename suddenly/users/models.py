@@ -59,6 +59,22 @@ class User(AbstractUser):
     # Admin
     is_admin = models.BooleanField(default=False)
 
+    # Instance-wide interaction ban (#136, DEC-F2). Distinct from `is_active`
+    # (login suspension, US-25) and from `UserBlock` (peer-to-peer block,
+    # US-33). Gates interactions for local AND remote users — a remote user
+    # never logs in, so only this flag can stop their federated interactions.
+    # `blocked_by_admin` (not `blocked_by`): `UserBlock.blocked` already
+    # reserves the `blocked_by` reverse accessor name on User (E302/E303).
+    is_blocked = models.BooleanField(default=False, db_index=True)
+    blocked_at = models.DateTimeField(null=True, blank=True)
+    blocked_by_admin = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+
     # ActivityPub
     remote = models.BooleanField(default=False, db_index=True, help_text="True if federated user")
     ap_id = models.URLField(blank=True, null=True, unique=True)  # unique already implies index

@@ -49,6 +49,7 @@ class NotificationType(models.TextChoices):
     NEW_FOLLOWER = "new_follower", "Nouveau follower"
     SHARED_SEQUENCE = "shared_sequence", "Séquence Partagée"
     REVOCATION = "revocation", "Lien révoqué"
+    MODERATION_REPORT = "moderation_report", "Nouveau signalement à traiter"
 
 
 class Notification(BaseModel):
@@ -192,6 +193,73 @@ class ContentReport(BaseModel):
 
     def __str__(self) -> str:
         return f"{self.category}: {self.reporter}"
+
+
+class UserReportStatus(models.TextChoices):
+    """Status of a user report through the moderation queue (#136)."""
+
+    PENDING = "pending", "En attente"
+    RESOLVED = "resolved", "Résolu"
+    DISMISSED = "dismissed", "Ignoré"
+
+
+class UserReport(BaseModel):
+    """Report of a *user* to instance admins (#136, DEC-F1).
+
+    Distinct from ``ContentReport`` (US-27), which targets a single piece of
+    content via one GFK: this model targets a person and carries a separate,
+    optional context GFK (a scene, a character, or — once epic E/#135 lands —
+    a direct message). No business logic here — see ``core.moderation``.
+    """
+
+    reporter = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="user_reports_made",
+    )
+    reported_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="user_reports_received",
+    )
+    category = models.CharField(max_length=20, choices=ReportCategory.choices)
+    comment = models.TextField(blank=True)
+
+    # Optional polymorphic context: a scene (games.Report), a character
+    # (characters.Character), or — once epic E lands — a direct message.
+    # Resolved at runtime; this GFK does not couple UserReport to epic E code.
+    context_content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    context_object_id = models.UUIDField(null=True, blank=True)
+    context = GenericForeignKey("context_content_type", "context_object_id")
+
+    status = models.CharField(
+        max_length=20,
+        choices=UserReportStatus.choices,
+        default=UserReportStatus.PENDING,
+    )
+    handled_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+    handled_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["status", "-created_at"]),
+            models.Index(fields=["reported_user", "status"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.category}: {self.reported_user} ({self.status})"
 
 
 class UserBlock(BaseModel):
