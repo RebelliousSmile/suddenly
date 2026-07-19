@@ -629,6 +629,7 @@ class Follow(BaseModel):
     # ActivityPub
     remote = models.BooleanField(default=False)
     ap_id = models.URLField(blank=True, null=True, unique=True)
+    accepted = models.BooleanField(default=True, db_index=True)
 
     class Meta:
         unique_together = ["follower", "content_type", "object_id"]
