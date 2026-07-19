@@ -85,6 +85,39 @@ def notify_on_follow(sender: type, instance: Any, created: bool, **kwargs: Any) 
     )
 
 
+@receiver(
+    post_save,
+    sender="core.UserReport",
+    dispatch_uid="suddenly.notifications.notify_admins_on_user_report",
+)
+def notify_admins_on_user_report(sender: type, instance: Any, created: bool, **kwargs: Any) -> None:
+    """Notify every local admin when a signalement is filed (#136, DEC-F5).
+
+    Targets exclusively ``is_admin=True, remote=False`` — ``reported_user``
+    is never notified (DEC-F6, critère 4: the reported user must not learn
+    they were signalé).
+    """
+    if not created:
+        return
+
+    from django.contrib.contenttypes.models import ContentType
+
+    from suddenly.core.models import Notification, NotificationType
+    from suddenly.users.models import User
+
+    report_ct = ContentType.objects.get_for_model(instance)
+    admins = User.objects.filter(is_admin=True, remote=False)
+    for admin in admins:
+        Notification.objects.create(
+            recipient=admin,
+            type=NotificationType.MODERATION_REPORT,
+            actor=instance.reporter,
+            target_content_type=report_ct,
+            target_object_id=instance.pk,
+            message=(f"@{instance.reporter.username} a signalé @{instance.reported_user.username}"),
+        )
+
+
 @receiver(post_save, sender="games.Report")
 def notify_on_report_published(sender: type, instance: Any, created: bool, **kwargs: Any) -> None:
     """Create notifications when a report is published."""
