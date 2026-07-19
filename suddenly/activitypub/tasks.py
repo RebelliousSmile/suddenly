@@ -5,6 +5,7 @@ Celery tasks for ActivityPub federation.
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from datetime import timedelta
 from typing import Any
 
@@ -295,12 +296,24 @@ def send_undo_follow_activity(user_id: str, target_actor_url: str) -> None:
     follow.delete()
 
 
-@shared_task  # type: ignore[untyped-decorator]
-def send_accept_activity(link_request_id: str) -> None:
-    """Send Accept activity for an accepted link request."""
+def _send_link_response(
+    link_request_id: str, build_activity: Callable[[Any, dict[str, Any] | str], dict[str, Any]]
+) -> None:
+    """Fetch the LinkRequest, build the response activity, sign and deliver it.
+
+    Single source for the Accept/Reject link-response pair (audit rows 6, 26)
+    — `send_accept_activity`/`send_reject_activity` differ only in which
+    serializer builds the activity (`create_accept_activity` vs
+    `create_reject_activity`). Preserves DEC-038 Part 1 exactly: for a request
+    of remote origin, the response must reference the requester's ORIGINAL
+    Offer id (a string) — not this instance's local PK, which the requester
+    does not know. Locally-created requests keep the full serialized Offer
+    object.
+    """
     from suddenly.characters.models import LinkRequest
 
-    from .serializers import create_accept_activity, serialize_link_request
+    from ._http import sign_and_deliver
+    from .serializers import serialize_link_request
 
     request = (
         LinkRequest.objects.filter(id=link_request_id)
@@ -311,56 +324,29 @@ def send_accept_activity(link_request_id: str) -> None:
     if not request:
         return
 
-    # DEC-038 Part 1: for a request of remote origin, the Accept must reference
-    # the requester's ORIGINAL Offer id (a string) — not this instance's local
-    # PK, which the requester does not know. Locally-created requests keep the
-    # full serialized Offer object.
     offer: dict[str, Any] | str = request.origin_offer_id or serialize_link_request(request)
     creator = request.target_character.creator
-    accept = create_accept_activity(creator, offer)
+    activity = build_activity(creator, offer)
 
     # Send to requester
     if request.requester.remote and request.requester.inbox_url:
-        key_id, private_key = get_actor_signing_keys(creator)
-        deliver_activity.delay(
-            accept,
-            request.requester.inbox_url,
-            actor_key_id=key_id,
-            private_key_pem=private_key,
-        )
+        sign_and_deliver(activity, request.requester.inbox_url, signer=creator)
+
+
+@shared_task  # type: ignore[untyped-decorator]
+def send_accept_activity(link_request_id: str) -> None:
+    """Send Accept activity for an accepted link request."""
+    from .serializers import create_accept_activity
+
+    _send_link_response(link_request_id, create_accept_activity)
 
 
 @shared_task  # type: ignore[untyped-decorator]
 def send_reject_activity(link_request_id: str) -> None:
     """Send Reject activity for a rejected link request."""
-    from suddenly.characters.models import LinkRequest
+    from .serializers import create_reject_activity
 
-    from .serializers import create_reject_activity, serialize_link_request
-
-    request = (
-        LinkRequest.objects.filter(id=link_request_id)
-        .select_related("requester", "target_character", "target_character__creator")
-        .first()
-    )
-
-    if not request:
-        return
-
-    # DEC-038 Part 1: mirror send_accept_activity — reference the requester's
-    # original Offer id for remote-origin requests.
-    offer: dict[str, Any] | str = request.origin_offer_id or serialize_link_request(request)
-    creator = request.target_character.creator
-    reject = create_reject_activity(creator, offer)
-
-    # Send to requester
-    if request.requester.remote and request.requester.inbox_url:
-        key_id, private_key = get_actor_signing_keys(creator)
-        deliver_activity.delay(
-            reject,
-            request.requester.inbox_url,
-            actor_key_id=key_id,
-            private_key_pem=private_key,
-        )
+    _send_link_response(link_request_id, create_reject_activity)
 
 
 # =================================================================

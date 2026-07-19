@@ -810,7 +810,10 @@ class TestLinkOfferFederation:
         send_accept_activity(str(lr.pk))
 
         assert deliver.delay.called
-        sent_activity = deliver.delay.call_args.args[0]
+        # sign_and_deliver calls deliver_activity.delay(...) with all-keyword
+        # arguments (activity=, inbox_url=, actor_key_id=, private_key_pem=) —
+        # see suddenly/activitypub/_http.py::sign_and_deliver.
+        sent_activity = deliver.delay.call_args.kwargs["activity"]
         assert sent_activity["object"] == origin_id
 
     def test_locally_created_request_accept_keeps_serialized_offer(
@@ -834,7 +837,10 @@ class TestLinkOfferFederation:
         send_accept_activity(str(lr.pk))
 
         assert deliver.delay.called
-        sent_activity = deliver.delay.call_args.args[0]
+        # sign_and_deliver calls deliver_activity.delay(...) with all-keyword
+        # arguments (activity=, inbox_url=, actor_key_id=, private_key_pem=) —
+        # see suddenly/activitypub/_http.py::sign_and_deliver.
+        sent_activity = deliver.delay.call_args.kwargs["activity"]
         assert isinstance(sent_activity["object"], dict)
         assert sent_activity["object"]["type"] == "Offer"
 

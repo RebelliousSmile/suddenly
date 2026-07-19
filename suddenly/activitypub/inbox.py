@@ -312,12 +312,38 @@ def handle_create(activity: dict[str, Any], actor_type: str, actor_identifier: s
         _handle_create_report(activity, obj)
 
 
+def _get_or_create_remote_game(domain: str, owner: Any) -> Any:
+    """Get or create the per-domain placeholder remote Game for `domain`.
+
+    Single source for the "one remote Game per origin instance" synthesis
+    (audit row 5), previously hand-rolled at three sites: here, the domain
+    fallback branch of :func:`_handle_create_report`, and
+    :func:`get_or_create_remote_character`. Keyed by ``ap_id=https://{domain}``.
+
+    NOT used by :func:`_handle_create_report`'s context-IRI branch — when the
+    incoming ``Article`` carries an explicit ``context`` IRI, that IRI (not the
+    domain) is the ``Game.ap_id`` key, and the title is a fixed ``"Remote
+    game"`` rather than ``f"Remote: {domain}"``. That branch resolves a
+    specific remote Game the peer already identified; this helper synthesizes
+    a per-domain placeholder when no such identity is known. Different key
+    namespace, not a duplicate.
+    """
+    from suddenly.games.models import Game
+
+    game, _ = Game.objects.get_or_create(
+        ap_id=f"https://{domain}",
+        defaults={
+            "title": f"Remote: {domain}",
+            "owner": owner,
+            "remote": True,
+        },
+    )
+    return game
+
+
 def _handle_create_character(activity: dict[str, Any], obj: dict[str, Any]) -> None:
     """Persist an incoming remote Character."""
-    from urllib.parse import urlparse
-
     from suddenly.characters.models import Character, CharacterStatus
-    from suddenly.games.models import Game
 
     actor_url = activity.get("actor", "")
     ap_id = obj.get("id")
@@ -336,14 +362,7 @@ def _handle_create_character(activity: dict[str, Any], obj: dict[str, Any]) -> N
 
     # Get or create a remote Game representing the origin instance
     domain = urlparse(actor_url).netloc or "unknown"
-    origin_game, _ = Game.objects.get_or_create(
-        ap_id=f"https://{domain}",
-        defaults={
-            "title": f"Remote: {domain}",
-            "owner": remote_user,
-            "remote": True,
-        },
-    )
+    origin_game = _get_or_create_remote_game(domain, remote_user)
 
     character = Character.objects.create(
         name=obj.get("name", "Unknown"),
@@ -445,8 +464,6 @@ def _handle_create_report(activity: dict[str, Any], obj: dict[str, Any]) -> None
     remote Game via the Article ``context``. The fiction-order block is resolved by
     :func:`_resolve_fiction_links` (soft IRI → FK when the anchor is already known).
     """
-    from urllib.parse import urlparse
-
     from django.utils.dateparse import parse_datetime
 
     from suddenly.games.models import Game, Report, ReportStatus
@@ -476,10 +493,7 @@ def _handle_create_report(activity: dict[str, Any], obj: dict[str, Any]) -> None
         )
     else:
         domain = urlparse(actor_url).netloc or "unknown"
-        game, _ = Game.objects.get_or_create(
-            ap_id=f"https://{domain}",
-            defaults={"title": f"Remote: {domain}", "owner": remote_user, "remote": True},
-        )
+        game = _get_or_create_remote_game(domain, remote_user)
 
     published_raw = obj.get("published")
     published_at = parse_datetime(published_raw) if isinstance(published_raw, str) else None
@@ -793,10 +807,7 @@ def get_or_create_remote_character(actor_url: str) -> Any:
     The remote GET goes through ``fetch_ap_actor`` → ``fetch_ap_json`` (SSRF
     hardening, ap-pivots §9) — never raw httpx.
     """
-    from urllib.parse import urlparse
-
     from suddenly.characters.models import Character, CharacterStatus
-    from suddenly.games.models import Game
 
     from ._http import fetch_ap_actor
 
@@ -824,14 +835,7 @@ def get_or_create_remote_character(actor_url: str) -> Any:
     remote_user, _ = result
 
     domain = urlparse(actor_url).netloc or "unknown"
-    origin_game, _ = Game.objects.get_or_create(
-        ap_id=f"https://{domain}",
-        defaults={
-            "title": f"Remote: {domain}",
-            "owner": remote_user,
-            "remote": True,
-        },
-    )
+    origin_game = _get_or_create_remote_game(domain, remote_user)
 
     character, _ = Character.objects.get_or_create(
         ap_id=actor_url,
@@ -910,6 +914,54 @@ def _remote_response_authorized(actor_url: str | None, link_request: Any) -> boo
     return actor_host in allowed_hosts
 
 
+def _resolve_authorized_link_request(
+    activity: dict[str, Any], *, activity_label: str, for_update: bool = False
+) -> Any | None:
+    """Resolve + authorize the origin LinkRequest for an inbound Accept/Reject.
+
+    Single source for the `handle_accept`/`handle_reject` guard sequence (audit
+    row 6): extract the Offer id the activity references, resolve the local
+    ``LinkRequest``, and reject a forged response whose actor isn't controlled
+    by the request's target instance (``_remote_response_authorized``). Returns
+    ``None`` on any failure (missing/unparseable offer id, unknown request,
+    unauthorized actor) — callers just return in that case, matching the
+    pre-extraction control flow exactly.
+
+    ``for_update=True`` locks the row (DEC-035) — used by ``handle_reject``,
+    which mutates the request directly inside this same call's transaction.
+    ``handle_accept`` fetches unlocked because the actual mutation is
+    delegated to ``LinkService.reconstruct_remote_accept``, which locks
+    internally. This asymmetry is intentional, not an oversight (see
+    `.claude/rules/08-domain/08-activitypub.md` DEC-038/DEC-035 notes).
+    """
+    from suddenly.characters.models import LinkRequest
+
+    offer_id = _offer_id_from_activity(activity)
+    if not offer_id:
+        return None
+
+    request_id = _extract_link_request_id(offer_id)
+    if not request_id:
+        return None
+
+    try:
+        queryset = LinkRequest.objects.select_for_update() if for_update else LinkRequest.objects
+        link_request = queryset.get(id=request_id)
+    except (LinkRequest.DoesNotExist, ValueError):
+        return None
+
+    if not _remote_response_authorized(activity.get("actor"), link_request):
+        logger.warning(
+            "Rejected forged %s for LinkRequest %s: actor %s not from target instance",
+            activity_label,
+            request_id,
+            activity.get("actor"),
+        )
+        return None
+
+    return link_request
+
+
 def handle_accept(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
     Handle Accept activity (our offer was accepted).
@@ -919,31 +971,14 @@ def handle_accept(activity: dict[str, Any], actor_type: str, actor_identifier: s
     CharacterLink, SharedSequence, status, notification (Part 2) — via
     ``LinkService.reconstruct_remote_accept`` (idempotent on replay).
     """
-    from suddenly.characters.models import LinkRequest
     from suddenly.characters.services import LinkService
 
-    offer_id = _offer_id_from_activity(activity)
-    if not offer_id:
-        return
-
-    request_id = _extract_link_request_id(offer_id)
-    if not request_id:
-        return
-    try:
-        link_request = LinkRequest.objects.get(id=request_id)
-    except (LinkRequest.DoesNotExist, ValueError):
-        return
-
-    if not _remote_response_authorized(activity.get("actor"), link_request):
-        logger.warning(
-            "Rejected forged Accept for LinkRequest %s: actor %s not from target instance",
-            request_id,
-            activity.get("actor"),
-        )
+    link_request = _resolve_authorized_link_request(activity, activity_label="Accept")
+    if link_request is None:
         return
 
     LinkService.reconstruct_remote_accept(link_request, activity.get("summary", ""))
-    logger.info("LinkRequest %s accepted (remote)", request_id)
+    logger.info("LinkRequest %s accepted (remote)", link_request.id)
 
 
 def handle_reject(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
@@ -954,28 +989,18 @@ def handle_reject(activity: dict[str, Any], actor_type: str, actor_identifier: s
 
     from suddenly.characters.models import LinkRequest, LinkRequestStatus
 
-    offer_id = _offer_id_from_activity(activity)
-    if not offer_id:
-        return
-
-    request_id = _extract_link_request_id(offer_id)
-    if not request_id:
-        return
     try:
         with transaction.atomic():
             # Lock the row (DEC-035) so a concurrent/duplicate Reject serializes.
-            link_request = LinkRequest.objects.select_for_update().get(id=request_id)
-            if not _remote_response_authorized(activity.get("actor"), link_request):
-                logger.warning(
-                    "Rejected forged Reject for LinkRequest %s: actor %s not from target instance",
-                    request_id,
-                    activity.get("actor"),
-                )
+            link_request = _resolve_authorized_link_request(
+                activity, activity_label="Reject", for_update=True
+            )
+            if link_request is None:
                 return
             link_request.status = LinkRequestStatus.REJECTED
             link_request.response_message = activity.get("summary", "")
             link_request.save()
-            logger.info("LinkRequest %s rejected (remote)", request_id)
+            logger.info("LinkRequest %s rejected (remote)", link_request.id)
     except (LinkRequest.DoesNotExist, ValueError):
         pass
 

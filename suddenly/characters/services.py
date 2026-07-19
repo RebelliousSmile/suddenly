@@ -169,15 +169,7 @@ class LinkService:
             source = request.target_character
         elif request.type == LinkType.FORK:
             # Create a new character as fork
-            source = Character.objects.create(
-                name=f"{request.target_character.name} (fork)",
-                description=request.target_character.description,
-                status=CharacterStatus.PC,
-                owner=request.requester,
-                creator=request.requester,
-                origin_game=request.target_character.origin_game,
-                parent=request.target_character,
-            )
+            source = cls._create_fork_character(request)
         else:
             raise ValidationError(f"Type inconnu: {request.type}")
 
@@ -280,15 +272,7 @@ class LinkService:
             # mutating its owner/status — the mirror follows the remote object.
             source = request.target_character
         elif request.type == LinkType.FORK:
-            source = Character.objects.create(
-                name=f"{request.target_character.name} (fork)",
-                description=request.target_character.description,
-                status=CharacterStatus.PC,
-                owner=request.requester,
-                creator=request.requester,
-                origin_game=request.target_character.origin_game,
-                parent=request.target_character,
-            )
+            source = cls._create_fork_character(request)
         else:
             raise ValidationError(f"Type inconnu: {request.type}")
 
@@ -319,6 +303,26 @@ class LinkService:
         # one would duplicate it.
 
         return link
+
+    @staticmethod
+    def _create_fork_character(request: LinkRequest) -> Character:
+        """Create the new forked PC for a FORK link request.
+
+        Single source for the fork-create block duplicated in
+        :meth:`accept_request` and :meth:`reconstruct_remote_accept` (audit
+        row 24) — both perspectives (accepting instance / requester instance)
+        create an identical new local PC linked to the target via ``parent``,
+        inheriting the target's ``origin_game`` (its AP federation home).
+        """
+        return Character.objects.create(
+            name=f"{request.target_character.name} (fork)",
+            description=request.target_character.description,
+            status=CharacterStatus.PC,
+            owner=request.requester,
+            creator=request.requester,
+            origin_game=request.target_character.origin_game,
+            parent=request.target_character,
+        )
 
     @staticmethod
     def get_queue_position(request: LinkRequest) -> int | None:
