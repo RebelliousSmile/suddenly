@@ -1,5 +1,5 @@
 {% load i18n %}
-<div x-data="{ kind: '{{ form.kind.value|default:'' }}' }">
+<div x-data="{ kind: '{{ form.kind.value|default:'' }}', character: '{{ form.character.value|default:'' }}' }">
     {% if form.non_field_errors %}
         <div class="mb-3 p-3 rounded-lg bg-semantic-danger/10 text-semantic-danger border border-semantic-danger/30 text-sm">
             {% for error in form.non_field_errors %}{{ error }}{% endfor %}
@@ -18,7 +18,7 @@
                     <label class="flex items-center gap-2 cursor-pointer">
                         <input type="radio" name="kind" value="{{ value }}"
                                {% if form.kind.value == value %}checked{% endif %}
-                               @change="kind = '{{ value }}'"
+                               @change="kind = '{{ value }}'; if (kind !== 'character_appears' && kind !== 'character_leaves') character = ''"
                                class="h-4 w-4 text-brand-primary focus:ring-brand-primary">
                         <span class="text-sm">{{ label }}</span>
                     </label>
@@ -32,7 +32,7 @@
         <div x-show="kind === 'character_appears' || kind === 'character_leaves'">
             <label for="id_character" class="form-label">{% trans "Character" %}</label>
             {% if form.character.field.queryset.exists %}
-                <select id="id_character" name="character" class="form-input w-full">
+                <select id="id_character" name="character" x-model="character" class="form-input w-full">
                     <option value="">{% trans "— Select a character —" %}</option>
                     {% for character in form.character.field.queryset %}
                         <option value="{{ character.pk }}"
@@ -55,14 +55,14 @@
         </div>
 
         <div class="flex items-center gap-3">
-            <button type="submit" class="btn-primary btn-sm">
+            <button type="submit" class="btn-primary btn-sm"
+                    :disabled="(kind === 'character_appears' || kind === 'character_leaves') && !character"
+                    :class="{ 'opacity-50 cursor-not-allowed': (kind === 'character_appears' || kind === 'character_leaves') && !character }">
                 <span class="i-lucide-plus text-xs"></span>
                 {% trans "Add marker" %}
             </button>
             <button type="button"
-                    hx-get=""
-                    hx-target="#marker-form-{{ rapport.pk }}"
-                    hx-swap="innerHTML"
+                    @click="markerForm = false"
                     class="btn-ghost btn-sm">
                 {% trans "Cancel" %}
             </button>

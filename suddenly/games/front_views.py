@@ -61,6 +61,7 @@ from .services import (
     near_duplicate_system,
     open_new_scene,
     publish_report,
+    record_appearance_from_marker,
     reopen_scene,
     update_scene_post,
 )
@@ -750,6 +751,11 @@ def cast_add(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRespon
     if not character_slug and not new_name:
         return HttpResponse("At least one of character or new NPC name is required.", status=400)
 
+    # Only the game master may introduce a brand-new NPC. Adding an existing
+    # character to the cast stays open to the scene author.
+    if new_name and not character and not is_game_master(request.user, report.game):
+        return HttpResponseForbidden("Only the game master can create a new NPC.")
+
     if role not in CastRole.values:
         role = CastRole.MENTIONED
 
@@ -1081,6 +1087,8 @@ def marker_create(
             marker = form.save(commit=False)
             marker.rapport = rapport
             marker.save()
+            # A character entrance also records a durable CharacterAppearance.
+            record_appearance_from_marker(marker)
             rapport_refreshed = get_object_or_404(
                 Rapport.objects.prefetch_related("markers", "markers__character"),
                 pk=rapport_pk,

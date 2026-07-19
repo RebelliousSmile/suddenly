@@ -5,7 +5,7 @@ paths:
 
 # Characters domain rules
 
-- Character statuses: NPC, PC, CLAIMED, ADOPTED, FORKED
+- Character statuses: NPC, PC, CLAIMED, ADOPTED (no `FORKED` — a fork leaves the original NPC)
 - Link types: Claim (retcon, NPC replaced), Adopt (NPC becomes my PC), Fork (new PC linked)
 - Claim requires narrative coherence (the PC could have been there at that moment)
 - Adopt forbidden if NPC already claimed or adopted
@@ -52,6 +52,24 @@ paths:
 - Game roster display ("characters of this game") → `origin_game` reverse is correct — swapping to `castings` hides standalone-created PCs (regression)
 - CLAIM/ADOPT/FORK create **no** `GameCast` and **no** `CharacterAppearance` — only `origin_game` provenance moves
 
+## NPC creation — game master only
+
+- Creating a **brand-new** NPC is reserved to the game master (`is_game_master`, i.e. `game.owner`)
+- Gated at both write paths: `cast_add` (HTMX) and the `report-cast` DRF action — the `new_character_name` branch
+- Adding an **existing** character to a report cast stays open to the scene author
+- The composer "+ Nouveau PNJ" (`create_npc_in_cast`) is already GM-only
+- Players never create NPCs — they CLAIM / ADOPT / FORK existing ones
+  **Why:** the NPC pool is the GM's authorial surface; players interact with it through link requests, not creation.
+
+## Scene markers → CharacterAppearance
+
+- `RapportMarker` kinds `CHARACTER_APPEARS` / `CHARACTER_LEAVES` require a linked character (`CHARACTER_MARKER_KINDS`)
+- `CHARACTER_APPEARS` records a durable `CharacterAppearance` via `record_appearance_from_marker` (`games/services.py`), called from `marker_create`
+- Idempotent (`get_or_create` on unique `(character, report)`); role defaults to `SUPPORTING`, an existing role (e.g. `MAIN`) is preserved
+- `CHARACTER_LEAVES` records **no** appearance — presence is durable; present/gone display comes from `_scene_departures`, never from deleting the appearance
+- Markers are posted per-Rapport from `rapport_item.html` ("+ Marqueur", gated on scene author + not released); form loads via `hx-get marker_create`
+- `marker_create` / `marker_delete` gate on the scene **author** (not GM) — an existing character entering/leaving is authorial narration
+
 ## `origin_game` is load-bearing for ActivityPub — keep non-null
 
 - `attributedTo` of the Character actor = `character.origin_game.actor_url` (`activitypub/serializers.py`)
@@ -67,7 +85,6 @@ paths:
 
 ## Doc/code divergences (aidd_docs/memory/external/claim-adopt-fork.md)
 
-- `FORKED` status = **dead enum** — `CharacterStatus.FORKED` defined (`models.py`) but never assigned; FORK leaves original `NPC`
-  - Doc state diagram claims `NPC → FORKED`; code does `pass`
+- No `FORKED` status — the enum value was removed (commit `8b092de`); FORK leaves the original `NPC` untouched, lineage carried by `source.parent`
 - Claim doc says "PNJ remplacé/Remplacé" — code keeps both characters (target → `CLAIMED`, no deletion/merge)
 - Doc "SharedSequence visible dans les deux parties" — `SharedSequence` has **no game FK** (linked only to `CharacterLink`)

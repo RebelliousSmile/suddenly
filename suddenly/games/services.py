@@ -19,15 +19,22 @@ from django.db.models import Count, F, Q
 from django.db.models.query import QuerySet
 from django.utils import timezone
 
-from suddenly.characters.models import Character, CharacterAppearance, CharacterStatus
+from suddenly.characters.models import (
+    AppearanceRole,
+    Character,
+    CharacterAppearance,
+    CharacterStatus,
+)
 
 from .models import (
     CastRole,
     Game,
     GameCast,
+    MarkerKind,
     Rapport,
     RapportKind,
     RapportLink,
+    RapportMarker,
     RapportMedia,
     RapportStatus,
     Report,
@@ -591,6 +598,30 @@ def publish_report(report: Report, user: User) -> Report:
     report.save(update_fields=["status", "published_at", "updated_at"])
 
     return report
+
+
+def record_appearance_from_marker(marker: RapportMarker) -> CharacterAppearance | None:
+    """A ``CHARACTER_APPEARS`` marker records the character's presence in the scene.
+
+    Bridges the narrative layer (entrance/exit markers) to the model layer
+    (:class:`CharacterAppearance`), so "make an existing NPC enter the scene"
+    produces the same durable presence record as a cast-driven publication.
+
+    Idempotent: appearance is unique per ``(character, report)`` — an existing
+    entry (e.g. a ``MAIN`` role from publication) is left untouched. Only
+    ``CHARACTER_APPEARS`` records; ``CHARACTER_LEAVES`` does not remove the
+    appearance — appearing in a scene is a durable fact, orthogonal to the
+    character having since left. Returns the appearance, or ``None`` when the
+    marker is not a character entrance.
+    """
+    if marker.kind != MarkerKind.CHARACTER_APPEARS or marker.character is None:
+        return None
+    appearance, _ = CharacterAppearance.objects.get_or_create(
+        character=marker.character,
+        report=marker.rapport.report,
+        defaults={"role": AppearanceRole.SUPPORTING},
+    )
+    return appearance
 
 
 # ---------------------------------------------------------------------------

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Parties** — pose de marqueurs narratifs d'entrée/sortie de personnage sur
+  les posts d'une scène (bouton « + Marqueur », réservé à l'auteur tant que la
+  scène n'est pas libérée) ; faire entrer un personnage existant l'enregistre
+  comme apparition durable de la scène (`CharacterAppearance`).
+
+### Changed
+- **Personnages** — la création d'un nouveau PNJ est réservée au MJ ; l'ajout
+  d'un personnage existant au casting d'une scène reste ouvert à l'auteur.
+
 ## [0.7.0] - 2026-07-18
 
 ### Added

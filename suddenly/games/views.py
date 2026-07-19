@@ -23,7 +23,7 @@ from suddenly.core.serializers import (
     ReportSerializer,
 )
 from suddenly.games.models import Game, Report, ReportVisibility
-from suddenly.games.services import publish_report
+from suddenly.games.services import is_game_master, publish_report
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):  # type: ignore[misc]
@@ -181,6 +181,14 @@ class ReportViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
         if report.author != request.user:
             return Response(
                 {"error": "Only the author can modify cast"}, status=status.HTTP_403_FORBIDDEN
+            )
+
+        # `character` is read-only here, so any POST creates a brand-new NPC —
+        # reserved to the game master (an existing NPC is added via the composer).
+        if request.data.get("new_character_name") and not is_game_master(request.user, report.game):
+            return Response(
+                {"error": "Only the game master can create a new NPC"},
+                status=status.HTTP_403_FORBIDDEN,
             )
 
         serializer = ReportCastSerializer(data=request.data)

@@ -176,4 +176,32 @@
             </form>
         </div>
     {% endif %}
+
+    {# Marqueurs de scène — entrée/sortie de personnages existants. Posé par
+       l'auteur tant que la scène n'est pas libérée ; les badges restent
+       visibles en lecture. Le POST du formulaire (marker_form.html) rerend
+       cette carte via #rapport-<pk>, badge inclus. #}
+    {% with scene_markers=rapport.markers.all %}
+        {% if scene_markers or request.user == rapport.report.author %}
+            <div x-data="{ markerForm: false }" class="mt-2 flex flex-wrap items-center gap-1.5">
+                {% for marker in scene_markers %}
+                    {% include "games/partials/marker_badge.html" %}
+                {% endfor %}
+                {% if request.user == rapport.report.author and not rapport.report.is_released %}
+                    {# hx-get charge marker_form.html rendu par la vue (qui fournit `form`) ;
+                       Alpine ouvre le conteneur. Le formulaire poste vers #rapport-<pk>. #}
+                    <button type="button"
+                            @click="markerForm = true"
+                            hx-get="{% url 'games:marker_create' rapport.report.game.pk rapport.report.pk rapport.pk %}"
+                            hx-target="#marker-form-{{ rapport.pk }}"
+                            hx-swap="innerHTML"
+                            class="btn-ghost btn-sm text-semantic-muted text-xs">
+                        <span class="i-lucide-flag text-xs" aria-hidden="true"></span>
+                        {% trans "+ Marqueur" %}
+                    </button>
+                    <div x-show="markerForm" x-cloak id="marker-form-{{ rapport.pk }}" class="basis-full mt-2"></div>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endwith %}
 </div>
