@@ -12,6 +12,7 @@ from suddenly.core.models import (
     Tag,
     UserBlock,
     UserMute,
+    UserReport,
     UserUsageStats,
 )
 
@@ -46,6 +47,23 @@ class TagAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
 class NotificationPreferenceAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
     list_display = ["user", "email_link_request", "email_new_report"]
     search_fields = ["user__username"]
+
+
+@admin.register(UserReport)
+class UserReportAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
+    """Secondary consultation surface for UserReport (#136, DEC-F4).
+
+    Primary moderation flow lives in the ``gmh:`` admin surface
+    (core.admin_views.admin_reports) — this registration is read-only-ish
+    consultation, cheap to add, consistent with ContentReport.
+    """
+
+    list_display = ["category", "reporter", "reported_user", "status", "created_at"]
+    list_filter = ["category", "status", "created_at"]
+    search_fields = ["reporter__username", "reported_user__username", "comment"]
+    raw_id_fields = ["reporter", "reported_user", "handled_by"]
+    readonly_fields = ["created_at", "updated_at"]
+    ordering = ["-created_at"]
 
 
 @admin.register(UserBlock)
