@@ -209,15 +209,6 @@ class Report(BaseModel):
     temporal_anchor_iri = models.URLField(max_length=500, null=True, blank=True)
     temporal_label = models.CharField(max_length=120, blank=True)
 
-    # Muses — editable summary proposal attached at ingestion (#126). Held here
-    # as a proposal, never auto-published: the author edits it into `content`
-    # (or a Rapport) if they want it. Empty means "no proposal / not run".
-    muses_summary_proposal = models.TextField(
-        blank=True,
-        default="",
-        help_text="Draft summary proposed by Muses on import — a proposal, never published as-is.",
-    )
-
     class Meta:
         ordering = [
             models.F("session_date").asc(nulls_last=True),
