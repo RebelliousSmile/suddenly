@@ -72,14 +72,3 @@ class PreferencesForm(forms.ModelForm):  # type: ignore[type-arg]
         if isinstance(parsed, list):
             return [str(code).strip() for code in parsed if str(code).strip()]
         return [code.strip() for code in value.split(",") if code.strip()]
-
-
-class MusesSettingsForm(forms.ModelForm):  # type: ignore[type-arg]
-    """Muses activation and per-feature opt-ins (credits are read-only, not here)."""
-
-    class Meta:
-        model = User
-        fields = [
-            "muses_enabled",
-            "muses_post_ingest_optin",
-        ]

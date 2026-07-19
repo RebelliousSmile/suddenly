@@ -49,7 +49,6 @@ class NotificationType(models.TextChoices):
     NEW_FOLLOWER = "new_follower", "Nouveau follower"
     SHARED_SEQUENCE = "shared_sequence", "Séquence Partagée"
     REVOCATION = "revocation", "Lien révoqué"
-    MUSES_SUGGESTION = "muses_suggestion", "Suggestion Muses"
 
 
 class Notification(BaseModel):

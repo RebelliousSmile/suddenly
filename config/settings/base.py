@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     "suddenly.characters",
     "suddenly.activitypub",
     "suddenly.docs",
-    "suddenly.muses",
     "suddenly.fediverse_auth",
 ]
 
@@ -176,6 +175,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "suddenly.activitypub.tasks.refresh_remote_actors",
         "schedule": 86400,
     },
+    "expire-stale-link-requests": {
+        "task": "suddenly.activitypub.tasks.expire_stale_link_requests",
+        "schedule": 86400,
+    },
 }
 
 # =================================================================
@@ -289,21 +292,6 @@ AP_ALLOW_INSECURE_HTTP = os.environ.get("AP_ALLOW_INSECURE_HTTP", "0") == "1"
 # Shared secret for the choix-narratifs → Suddenly ingest endpoint.
 # Set via environment variable; leave empty to disable the endpoint.
 INGEST_TOKEN = os.environ.get("INGEST_TOKEN", "")
-
-# =================================================================
-# MUSES (AI hub)
-# =================================================================
-
-# Client seam to the suddenly-muses hub (#76). All Muses features degrade
-# cleanly when the hub is disabled or unreachable (#88), so leaving this off
-# is a fully supported deployment — features simply don't appear / no-op.
-SUDDENLY_MUSES_ENABLED = os.environ.get("SUDDENLY_MUSES_ENABLED", "0") == "1"
-# Base URL of the hub (production: https://muse.suddenly.social).
-SUDDENLY_MUSES_URL = os.environ.get("SUDDENLY_MUSES_URL", "")
-# Bearer token issued by the hub for this instance.
-SUDDENLY_MUSES_API_KEY = os.environ.get("SUDDENLY_MUSES_API_KEY", "")
-# Per-request timeout (seconds) for hub calls.
-SUDDENLY_MUSES_TIMEOUT = float(os.environ.get("SUDDENLY_MUSES_TIMEOUT", "30"))
 
 # =================================================================
 # FEED

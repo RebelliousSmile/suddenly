@@ -30,11 +30,6 @@ urlpatterns = [
         name="link_request_accept",
     ),
     path(
-        "requests/<uuid:pk>/check-coherence/",
-        link_views.link_request_check_coherence,
-        name="link_request_check_coherence",
-    ),
-    path(
         "requests/<uuid:pk>/reject/",
         link_views.link_request_reject,
         name="link_request_reject",
@@ -56,11 +51,6 @@ urlpatterns = [
         "sequences/<uuid:pk>/",
         sequence_views.sequence_edit,
         name="sequence_edit",
-    ),
-    path(
-        "sequences/<uuid:pk>/suggest-opening/",
-        sequence_views.sequence_suggest_opening,
-        name="sequence_suggest_opening",
     ),
     path(
         "sequences/<uuid:pk>/propose/",
