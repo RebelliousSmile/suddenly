@@ -846,9 +846,65 @@ def get_or_create_remote_character(actor_url: str) -> Any:
             "creator": remote_user,
             "origin_game": origin_game,
             "remote": True,
+            "inbox_url": data.get("inbox"),
+            "outbox_url": data.get("outbox"),
+            "public_key": data.get("publicKey", {}).get("publicKeyPem", ""),
         },
     )
     return character
+
+
+def get_or_create_remote_game(actor_url: str) -> Any:
+    """Resolve a remote Game actor URL to a local mirror, fetching if unknown.
+
+    Used to follow a remote Suddenly Game actor directly (DEC-C4, Epic C #133) —
+    distinct from the private per-domain placeholder synthesized by
+    ``_get_or_create_remote_game(domain, owner)`` for a Character's
+    ``origin_game``. This resolves the *actual* remote Game actor by its own
+    ``ap_id``. Tolerant: any fetch failure returns ``None`` so the caller can
+    degrade gracefully rather than 500.
+
+    The remote GET goes through ``fetch_ap_actor`` -> ``fetch_ap_json`` (SSRF
+    hardening, ap-pivots §9) — never raw httpx.
+    """
+    from suddenly.games.models import Game
+
+    from ._http import fetch_ap_actor
+
+    if not actor_url:
+        return None
+
+    existing = Game.objects.filter(ap_id=actor_url).first()
+    if existing:
+        return existing
+
+    data = fetch_ap_actor(actor_url)
+    if data is None:
+        return None
+
+    # `attributedTo` carries the Game's owner actor URL (see serialize_game) —
+    # a required, non-nullable FK on Game, so it must resolve before create.
+    owner_url = data.get("attributedTo")
+    if not isinstance(owner_url, str) or not owner_url:
+        return None
+    result = get_or_create_remote_user(owner_url)
+    if result is None:
+        return None
+    remote_owner, _ = result
+
+    game, _ = Game.objects.get_or_create(
+        ap_id=actor_url,
+        defaults={
+            "title": data.get("name", "Unknown"),
+            "description": data.get("summary", ""),
+            "owner": remote_owner,
+            "remote": True,
+            "inbox_url": data.get("inbox"),
+            "outbox_url": data.get("outbox"),
+            "public_key": data.get("publicKey", {}).get("publicKeyPem", ""),
+        },
+    )
+    return game
 
 
 def _extract_link_request_id(offer_id: str) -> str | None:

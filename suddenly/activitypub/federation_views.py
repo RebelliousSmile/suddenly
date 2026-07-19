@@ -78,6 +78,7 @@ def remote_profile(request: HttpRequest) -> HttpResponse:
         )
 
     domain = urlparse(ap_id).hostname or ""
+    target_type = _resolve_remote_actor_type(ap_id, actor_data)
 
     is_following = False
     if request.user.is_authenticated:
@@ -103,14 +104,52 @@ def remote_profile(request: HttpRequest) -> HttpResponse:
             "actor": actor_data,
             "domain": domain,
             "ap_id": ap_id,
+            "target_type": target_type,
             "is_following": is_following,
         },
     )
 
 
+def _resolve_remote_actor_type(ap_id: str, actor_data: dict[str, Any]) -> str:
+    """Classify a fetched remote actor as "user"/"character"/"game" (DEC-C4).
+
+    Discriminator: AS2 ``type: "Group"`` -> Game; ``type: "Person"`` with a
+    ``status`` key (unconditionally emitted by ``serialize_character``,
+    namespaced ``suddenly:status`` in ``AP_CONTEXT``, never present on
+    ``serialize_user``) -> Character. Both are additionally gated on the
+    actor's home instance being a KNOWN Suddenly instance
+    (``FederatedServer.is_suddenly_instance()``) — an actor from an unknown
+    or explicitly non-Suddenly instance always resolves to "user"
+    (Person-only), so a Mastodon actor never 500s even if its JSON happens to
+    carry an unrelated "status" field.
+    """
+    from .models import FederatedServer
+
+    domain = urlparse(ap_id).netloc
+    server = FederatedServer.objects.filter(server_name=domain).first()
+    is_suddenly = server is not None and server.is_suddenly_instance()
+
+    if not is_suddenly:
+        return "user"
+
+    actor_kind = actor_data.get("type")
+    if actor_kind == "Group":
+        return "game"
+    if actor_kind == "Person" and "status" in actor_data:
+        return "character"
+    return "user"
+
+
 @login_required
 def remote_follow_toggle(request: AuthenticatedRequest) -> HttpResponse:
-    """Toggle follow on a remote ActivityPub actor. HTMX POST."""
+    """Toggle follow on a remote ActivityPub actor. HTMX POST.
+
+    Follow target is polymorphic (DEC-C4, Epic C #133): a remote actor is
+    classified via ``_resolve_remote_actor_type`` before resolution, so
+    following a remote Suddenly Character or Game actor creates a Follow
+    against that target — not always a User. A non-Suddenly actor (Mastodon)
+    always resolves to "user" and never 500s.
+    """
     if request.method != "POST":
         from django.http import HttpResponseNotAllowed
 
@@ -123,51 +162,65 @@ def remote_follow_toggle(request: AuthenticatedRequest) -> HttpResponse:
         return HttpResponseBadRequest("Missing ap_id")
 
     from django.conf import settings
-    from django.contrib.contenttypes.models import ContentType
+    from django.http import HttpResponseBadRequest
     from django.shortcuts import render
 
+    from suddenly.activitypub.inbox import (
+        get_or_create_remote_character,
+        get_or_create_remote_game,
+    )
     from suddenly.activitypub.tasks import (
         get_or_create_remote_user,
         send_follow_activity,
         send_undo_follow_activity,
     )
     from suddenly.characters.models import Follow
-    from suddenly.users.models import User as UserModel
+    from suddenly.core.utils import content_type_for_actor
 
-    remote_user = get_or_create_remote_user(ap_id)
-    if not remote_user:
-        from django.http import HttpResponseBadRequest
-
+    actor_data = _fetch_actor(ap_id)
+    if not actor_data:
         return HttpResponseBadRequest("Could not resolve remote actor")
 
-    ct = ContentType.objects.get_for_model(UserModel)
+    target_type = _resolve_remote_actor_type(ap_id, actor_data)
+
+    if target_type == "character":
+        remote_target = get_or_create_remote_character(ap_id)
+    elif target_type == "game":
+        remote_target = get_or_create_remote_game(ap_id)
+    else:
+        remote_target = get_or_create_remote_user(ap_id)
+
+    if not remote_target:
+        return HttpResponseBadRequest("Could not resolve remote actor")
+
+    ct = content_type_for_actor(target_type)
     existing = Follow.objects.filter(
         follower=request.user,
         content_type=ct,
-        object_id=remote_user.pk,
+        object_id=remote_target.pk,
     ).first()
 
     if existing:
-        send_undo_follow_activity.delay(str(request.user.pk), ap_id)
+        send_undo_follow_activity.delay(str(request.user.pk), ap_id, target_type)
         is_following = False
     else:
         domain = settings.DOMAIN
-        follow_ap_id = f"https://{domain}/users/{request.user.username}/follows/{remote_user.pk}"
+        follow_ap_id = f"https://{domain}/users/{request.user.username}/follows/{remote_target.pk}"
         Follow.objects.create(
             follower=request.user,
             content_type=ct,
-            object_id=remote_user.pk,
+            object_id=remote_target.pk,
             remote=False,
             ap_id=follow_ap_id,
             accepted=False,
         )
-        send_follow_activity.delay(str(request.user.pk), ap_id, follow_ap_id)
+        send_follow_activity.delay(str(request.user.pk), ap_id, follow_ap_id, target_type)
         is_following = True
 
     return render(
         request,
         "components/remote_follow_button.html",
-        {"ap_id": ap_id, "is_following": is_following},
+        {"ap_id": ap_id, "target_type": target_type, "is_following": is_following},
     )
 
 
