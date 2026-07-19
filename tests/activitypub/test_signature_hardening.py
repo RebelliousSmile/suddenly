@@ -24,7 +24,11 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from django.test import RequestFactory
 
-from suddenly.activitypub.signatures import generate_key_pair, verify_signature
+from suddenly.activitypub.signatures import (
+    _verify_with_key,
+    generate_key_pair,
+    verify_signature,
+)
 
 # verify_signature reads PublicKeyCache before hitting the network mock.
 pytestmark = pytest.mark.django_db
@@ -249,3 +253,27 @@ class TestAcceptedAlgorithms:
         is_valid, reason = verify_signature(request)
         assert is_valid is False
         assert reason == "Unsupported algorithm: hmac-sha256"
+
+
+class TestVerifyWithKeyMalformed:
+    """_verify_with_key returns False on malformed crypto input — never raises.
+
+    The narrowed except set (InvalidSignature, ValueError, TypeError,
+    binascii.Error) must still swallow every malformed-input path so a bad
+    inbound signature yields False, not a 500.
+    """
+
+    def test_non_base64_signature_returns_false(self, keys: tuple[str, str]) -> None:
+        """A signature that is not valid base64 → False (binascii.Error), not raise."""
+        _private_pem, public_pem = keys
+        assert _verify_with_key(public_pem, "!!!not-base64!!!", "signing-string") is False
+
+    def test_valid_base64_garbage_signature_returns_false(self, keys: tuple[str, str]) -> None:
+        """Well-formed base64 but not a real signature → False (InvalidSignature)."""
+        _private_pem, public_pem = keys
+        garbage = base64.b64encode(b"not-a-real-signature").decode()
+        assert _verify_with_key(public_pem, garbage, "signing-string") is False
+
+    def test_malformed_public_key_returns_false(self) -> None:
+        """A non-PEM public key → False (ValueError), not raise."""
+        assert _verify_with_key("-----NOT A KEY-----", "AAAA", "signing-string") is False

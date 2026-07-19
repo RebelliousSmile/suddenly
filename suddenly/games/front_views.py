@@ -1216,6 +1216,7 @@ def rapport_add_remote_parent(
     request: AuthenticatedRequest, game_pk: str, pk: str, rapport_pk: str
 ) -> HttpResponse:
     """Add a remote ActivityPub IRI as a parent of a Rapport (author only, POST-only)."""
+    from django.core.exceptions import ValidationError
     from django.core.validators import URLValidator
     from django.template.loader import render_to_string
 
@@ -1239,7 +1240,7 @@ def rapport_add_remote_parent(
 
     try:
         validate_url(parent_iri)
-    except Exception:
+    except ValidationError:
         rapport_refreshed = (
             Rapport.objects.prefetch_related(
                 "parent_links",

@@ -196,8 +196,8 @@ def process_inbox(request: HttpRequest, actor_type: str, actor_identifier: str) 
     if handler:
         try:
             handler(activity, actor_type, actor_identifier)
-        except Exception as e:
-            logger.error(f"Error handling {activity_type}: {e}")
+        except Exception:
+            logger.exception("Error handling %s", activity_type)
             # Still return 202 - we received it, processing failed
     else:
         logger.warning(f"Unknown activity type: {activity_type}")

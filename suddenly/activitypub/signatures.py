@@ -8,12 +8,14 @@ requests and verifying incoming ones.
 from __future__ import annotations
 
 import base64
+import binascii
 import hashlib
 import hmac
 import logging
 from datetime import UTC, datetime
 from urllib.parse import urlparse
 
+from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
@@ -210,7 +212,7 @@ def _verify_with_key(public_key_pem: str, signature_b64: str, signing_string: st
             hashes.SHA256(),
         )
         return True
-    except Exception:
+    except (InvalidSignature, ValueError, TypeError, binascii.Error):
         return False
 
 

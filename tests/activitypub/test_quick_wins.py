@@ -172,6 +172,44 @@ class TestInboxIdempotency:
 
 
 @pytest.mark.django_db
+class TestInboxDispatchObservability:
+    """A handler failing inside dispatch is logged with its stack and still 202."""
+
+    def test_handler_exception_logs_stack_and_returns_202(
+        self, client: Client, user: User, mocker: Any
+    ) -> None:
+        """A raising handler → logger.exception (stack) and an unchanged 202."""
+        mocker.patch(
+            "suddenly.activitypub.inbox.verify_signature",
+            return_value=(True, "https://remote.example/actor#main-key"),
+        )
+        mocker.patch("suddenly.activitypub.inbox._check_rate_limit", return_value=False)
+        mocker.patch("suddenly.activitypub.inbox.get_or_create_remote_user", return_value=None)
+        mocker.patch(
+            "suddenly.activitypub.inbox.handle_follow",
+            side_effect=RuntimeError("handler boom"),
+        )
+        spy_exception = mocker.patch("suddenly.activitypub.inbox.logger.exception")
+
+        activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "Follow",
+            "id": "https://remote.example/activities/dispatch-boom",
+            "actor": "https://remote.example/actor",
+        }
+
+        response = client.post(
+            f"/users/{user.username}/inbox",
+            data=json.dumps(activity),
+            content_type="application/activity+json",
+            HTTP_SIGNATURE='keyId="https://remote.example/actor#main-key"',
+        )
+
+        assert response.status_code == 202
+        spy_exception.assert_called_once()
+
+
+@pytest.mark.django_db
 class TestOfferSuddenlyOnlyGuard:
     """send_offer_activity must not deliver Claim/Adopt/Fork Offers to a known
     non-Suddenly instance (08-activitypub.md "Never send Suddenly-only

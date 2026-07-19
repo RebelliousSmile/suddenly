@@ -44,10 +44,10 @@ The audit flags symbols/rules that are either dead OR unfinished features. Each 
 
 | #   | Plan | File | Status | Validated |
 | --- | ---- | ---- | ------ | --------- |
-| 1 | Single-source the federation core | `./2026_07_19-audit-code-quality-corrections-part-1.md` | pending | [ ] |
-| 2 | Purge dead code + dead templates | `./2026_07_19-audit-code-quality-corrections-part-2.md` | blocked | [ ] |
-| 3 | Inbox dispatch observability + narrow swallowed excepts (behavior-preserving only; retry/dead-letter spun out) | `./2026_07_19-audit-code-quality-corrections-part-3.md` | blocked | [ ] |
-| 4 | Factor ownership + form handling | `./2026_07_19-audit-code-quality-corrections-part-4.md` | blocked | [ ] |
+| 1 | Single-source the federation core | `./2026_07_19-audit-code-quality-corrections-part-1.md` | done | [x] |
+| 2 | Purge dead code + dead templates | `./2026_07_19-audit-code-quality-corrections-part-2.md` | done | [x] |
+| 3 | Inbox dispatch observability + narrow swallowed excepts (behavior-preserving only; retry/dead-letter spun out) | `./2026_07_19-audit-code-quality-corrections-part-3.md` | done | [x] |
+| 4 | Factor ownership + form handling | `./2026_07_19-audit-code-quality-corrections-part-4.md` | pending | [ ] |
 | 5 | Deduplicate templates | `./2026_07_19-audit-code-quality-corrections-part-5.md` | blocked | [ ] |
 | 6 | Split `games/front_views.py` monolith | `./2026_07_19-audit-code-quality-corrections-part-6.md` | blocked | [ ] |
 
