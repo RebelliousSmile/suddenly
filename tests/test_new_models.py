@@ -257,7 +257,8 @@ class TestNotification:
 
     def test_all_notification_types(self) -> None:
         # MUSES_SUGGESTION retiré avec l'épique A (#131) → 11 - 1 = 10
-        assert len(NotificationType.choices) == 10
+        # +MODERATION_REPORT ajouté avec l'épique F (#136) → 10 + 1 = 11
+        assert len(NotificationType.choices) == 11
 
     def test_notification_ordering(self, user: User) -> None:
         """Notifications are ordered by -created_at."""
