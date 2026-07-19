@@ -508,6 +508,136 @@ class TestCancelRequest:
 
 
 # ---------------------------------------------------------------------------
+# expire_stale_requests
+# ---------------------------------------------------------------------------
+
+
+def _backdate(request: LinkRequest, days: int) -> None:
+    """Backdate ``created_at`` past the expiry cutoff (auto_now_add bypass)."""
+    from datetime import timedelta
+
+    from django.utils import timezone
+
+    LinkRequest.objects.filter(pk=request.pk).update(
+        created_at=timezone.now() - timedelta(days=days)
+    )
+
+
+class TestExpireStaleRequests:
+    def test_expires_stale_cross_instance_via_origin_offer_id(
+        self, db: Any, other_user: User, character: Character
+    ) -> None:
+        request = _make_pending(other_user, character)
+        LinkRequest.objects.filter(pk=request.pk).update(
+            origin_offer_id="https://remote.example/activities/offer/1"
+        )
+        _backdate(request, days=31)
+
+        count = LinkService.expire_stale_requests()
+
+        request.refresh_from_db()
+        assert count == 1
+        assert request.status == LinkRequestStatus.EXPIRED
+        assert request.resolved_at is not None
+
+    def test_expires_stale_via_remote_requester(
+        self, db: Any, other_user: User, character: Character
+    ) -> None:
+        other_user.remote = True
+        other_user.save(update_fields=["remote"])
+        request = _make_pending(other_user, character)
+        _backdate(request, days=31)
+
+        LinkService.expire_stale_requests()
+
+        request.refresh_from_db()
+        assert request.status == LinkRequestStatus.EXPIRED
+
+    def test_expires_stale_via_remote_target_character(
+        self, db: Any, other_user: User, character: Character
+    ) -> None:
+        character.remote = True
+        character.ap_id = "https://remote.example/characters/npc"
+        character.save(update_fields=["remote", "ap_id"])
+        request = _make_pending(other_user, character)
+        _backdate(request, days=31)
+
+        LinkService.expire_stale_requests()
+
+        request.refresh_from_db()
+        assert request.status == LinkRequestStatus.EXPIRED
+
+    def test_local_only_request_never_expires(
+        self, db: Any, other_user: User, character: Character
+    ) -> None:
+        """A purely local request (no cross-instance signal) is left PENDING."""
+        request = _make_pending(other_user, character)
+        _backdate(request, days=365)
+
+        count = LinkService.expire_stale_requests()
+
+        request.refresh_from_db()
+        assert count == 0
+        assert request.status == LinkRequestStatus.PENDING
+
+    def test_recent_cross_instance_request_not_expired(
+        self, db: Any, other_user: User, character: Character
+    ) -> None:
+        other_user.remote = True
+        other_user.save(update_fields=["remote"])
+        request = _make_pending(other_user, character)
+        # No backdate — created just now, well within the 30-day cutoff.
+
+        count = LinkService.expire_stale_requests()
+
+        request.refresh_from_db()
+        assert count == 0
+        assert request.status == LinkRequestStatus.PENDING
+
+    def test_expiry_notifies_requester(
+        self, db: Any, other_user: User, character: Character
+    ) -> None:
+        other_user.remote = True
+        other_user.save(update_fields=["remote"])
+        request = _make_pending(other_user, character)
+        _backdate(request, days=31)
+
+        LinkService.expire_stale_requests()
+
+        note = Notification.objects.get(
+            type=NotificationType.LINK_REJECTED, target_object_id=request.pk
+        )
+        assert note.recipient == other_user
+        assert character.name in note.message
+
+    def test_expiry_promotes_next_queued(
+        self, db: Any, user: User, other_user: User, character: Character
+    ) -> None:
+        other_user.remote = True
+        other_user.save(update_fields=["remote"])
+        pending = _make_pending(other_user, character)
+        _backdate(pending, days=31)
+        queued = _make_queued(user, character)
+
+        LinkService.expire_stale_requests()
+
+        queued.refresh_from_db()
+        assert queued.status == LinkRequestStatus.PENDING
+
+    def test_custom_cutoff_days(self, db: Any, other_user: User, character: Character) -> None:
+        other_user.remote = True
+        other_user.save(update_fields=["remote"])
+        request = _make_pending(other_user, character)
+        _backdate(request, days=8)
+
+        count = LinkService.expire_stale_requests(cutoff_days=7)
+
+        request.refresh_from_db()
+        assert count == 1
+        assert request.status == LinkRequestStatus.EXPIRED
+
+
+# ---------------------------------------------------------------------------
 # get_queue_position
 # ---------------------------------------------------------------------------
 

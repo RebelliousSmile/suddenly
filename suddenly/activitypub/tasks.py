@@ -119,37 +119,6 @@ def broadcast_activity(activity: dict[str, Any], actor_id: str, actor_type: str)
 
 
 @shared_task  # type: ignore[untyped-decorator]
-def send_accept_follow(target_id: str, target_type: str, follow_activity: dict[str, Any]) -> None:
-    """Send Accept for a follow request."""
-    from suddenly.core.utils import actor_model_for
-    from suddenly.users.models import User
-
-    from .serializers import create_accept_activity
-
-    try:
-        Model = actor_model_for(target_type)  # noqa: N806
-    except ValueError:
-        return
-
-    target = Model._default_manager.filter(id=target_id).first()
-    if not target:
-        return
-
-    accept = create_accept_activity(target, follow_activity)
-
-    actor_url = follow_activity.get("actor")
-    remote_user = User.objects.filter(ap_id=actor_url).first()
-    if remote_user and remote_user.inbox_url:
-        key_id, private_key = get_actor_signing_keys(target)
-        deliver_activity.delay(
-            accept,
-            remote_user.inbox_url,
-            actor_key_id=key_id,
-            private_key_pem=private_key,
-        )
-
-
-@shared_task  # type: ignore[untyped-decorator]
 def send_create_activity(object_type: str, object_id: str) -> None:
     """
     Send a Create activity for new content.
@@ -208,9 +177,12 @@ def send_create_activity(object_type: str, object_id: str) -> None:
 @shared_task  # type: ignore[untyped-decorator]
 def send_offer_activity(link_request_id: str) -> None:
     """Send Offer activity for a link request."""
+    from urllib.parse import urlparse
+
     from suddenly.characters.models import LinkRequest
 
     from ._http import sign_and_deliver
+    from .models import FederatedServer
     from .serializers import serialize_link_request
 
     request = (
@@ -226,8 +198,26 @@ def send_offer_activity(link_request_id: str) -> None:
 
     # Send to target character's creator
     creator = request.target_character.creator
-    if creator and creator.remote and creator.inbox_url:
-        sign_and_deliver(activity, creator.inbox_url, signer=request.requester)
+    if not (creator and creator.remote and creator.inbox_url):
+        return
+
+    # Suddenly-only guard: Claim/Adopt/Fork Offers carry Suddenly-specific
+    # AS2 extensions (suddenly:* namespace, DEC-038) a non-Suddenly instance
+    # cannot interpret (08-activitypub.md "Never send Suddenly-only
+    # activities to non-Suddenly instances"). Resolve the target inbox's
+    # FederatedServer by domain (same lookup as inbox.py's rate limiter) and
+    # skip only when it is a KNOWN non-Suddenly instance. An instance with
+    # no FederatedServer row (never NodeInfo-probed) is NOT blocked here —
+    # blocking on "unknown" would prevent first contact with any instance
+    # entirely, since a FederatedServer row only exists after a prior
+    # WebFinger/NodeInfo discovery.
+    domain = urlparse(creator.inbox_url).netloc
+    server = FederatedServer.objects.filter(server_name=domain).first()
+    if server is not None and not server.is_suddenly_instance():
+        logger.info("Skipping Offer delivery to non-Suddenly instance: %s", domain)
+        return
+
+    sign_and_deliver(activity, creator.inbox_url, signer=request.requester)
 
 
 @shared_task  # type: ignore[untyped-decorator]
@@ -392,6 +382,22 @@ def cleanup_expired_quotes() -> None:
     Quote.objects.filter(
         visibility=QuoteVisibility.EPHEMERAL, expires_at__lt=timezone.now()
     ).delete()
+
+
+@shared_task  # type: ignore[untyped-decorator]
+def expire_stale_link_requests() -> None:
+    """
+    Expire stale cross-instance PENDING link requests (idempotent, daily).
+
+    Thin wrapper: the state transition, the cross-instance predicate, and
+    the requester notification all live in
+    ``LinkService.expire_stale_requests`` (08-characters.md: all link
+    state changes go through ``LinkService``, never inline in a task).
+    Scheduled in ``CELERY_BEAT_SCHEDULE``.
+    """
+    from suddenly.characters.services import LinkService
+
+    LinkService.expire_stale_requests()
 
 
 @shared_task  # type: ignore[untyped-decorator]

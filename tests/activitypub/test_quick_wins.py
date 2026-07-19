@@ -172,47 +172,94 @@ class TestInboxIdempotency:
 
 
 @pytest.mark.django_db
-class TestSignedAcceptDelivery:
-    """send_accept_follow must deliver a signed Accept (non-None key id)."""
+class TestOfferSuddenlyOnlyGuard:
+    """send_offer_activity must not deliver Claim/Adopt/Fork Offers to a known
+    non-Suddenly instance (08-activitypub.md "Never send Suddenly-only
+    activities to non-Suddenly instances"), but must still deliver to an
+    unresolved/unknown instance (no prior NodeInfo discovery) to preserve
+    first-contact delivery.
+    """
 
-    def test_accept_delivery_carries_actor_key_id(self, mocker: Any, settings: Any) -> None:
-        """deliver_activity.delay is called with a non-None actor_key_id."""
-        from suddenly.activitypub.signatures import generate_key_pair
-        from suddenly.activitypub.tasks import send_accept_follow
-
-        settings.DOMAIN = "test.social"
-        settings.AP_BASE_URL = "https://test.social"
-
-        private_pem, public_pem = generate_key_pair()
-        target = User.objects.create(
-            username="local",
-            email="local@test.social",
-            private_key=private_pem,
-            public_key=public_pem,
+    def _make_link_request(self, settings: Any, inbox_url: str) -> Any:
+        """Build a PENDING LinkRequest whose target NPC's creator is remote."""
+        from suddenly.characters.models import (
+            Character,
+            CharacterStatus,
+            LinkRequest,
+            LinkRequestStatus,
+            LinkType,
         )
-        User.objects.create(
-            username="alice@remote.example",
+        from suddenly.games.models import Game
+
+        settings.DOMAIN = "local.suddenly.test"
+        settings.AP_BASE_URL = "https://local.suddenly.test"
+
+        remote_creator = User.objects.create(
+            username="remote_creator@somewhere.example",
             remote=True,
-            ap_id="https://remote.example/actor",
-            inbox_url="https://remote.example/actor/inbox",
+            ap_id="https://somewhere.example/users/remote_creator",
+            inbox_url=inbox_url,
+        )
+        owner = User.objects.create(username="local_owner", remote=False)
+        game = Game.objects.create(title="Test Game", owner=owner)
+        character = Character.objects.create(
+            name="Luna",
+            status=CharacterStatus.NPC,
+            creator=remote_creator,
+            origin_game=game,
+            ap_id="https://local.suddenly.test/characters/luna",
+        )
+        requester = User.objects.create(username="local_requester", remote=False)
+
+        return LinkRequest.objects.create(
+            type=LinkType.ADOPT,
+            requester=requester,
+            target_character=character,
+            message="Please adopt",
+            status=LinkRequestStatus.PENDING,
         )
 
-        follow_activity: dict[str, Any] = {
-            "@context": "https://www.w3.org/ns/activitystreams",
-            "type": "Follow",
-            "id": "https://remote.example/activities/1",
-            "actor": "https://remote.example/actor",
-            "object": target.actor_url,
-        }
+    def test_skips_known_non_suddenly_instance(self, mocker: Any, settings: Any) -> None:
+        """A known Mastodon instance (application_type != 'suddenly') is skipped."""
+        from suddenly.activitypub.models import FederatedServer
+        from suddenly.activitypub.tasks import send_offer_activity
 
+        mocker.patch("suddenly.activitypub.signals._safe_delay")
+        lr = self._make_link_request(settings, "https://mastodon.example/users/bob/inbox")
+        FederatedServer.objects.create(server_name="mastodon.example", application_type="mastodon")
         mock_delay = mocker.patch("suddenly.activitypub.tasks.deliver_activity.delay")
 
-        send_accept_follow.apply(args=[str(target.id), "User", follow_activity])
+        send_offer_activity(str(lr.pk))
+
+        mock_delay.assert_not_called()
+
+    def test_delivers_to_known_suddenly_instance(self, mocker: Any, settings: Any) -> None:
+        """A known Suddenly instance receives the Offer."""
+        from suddenly.activitypub.models import FederatedServer
+        from suddenly.activitypub.tasks import send_offer_activity
+
+        mocker.patch("suddenly.activitypub.signals._safe_delay")
+        lr = self._make_link_request(settings, "https://sibling.suddenly.test/users/bob/inbox")
+        FederatedServer.objects.create(
+            server_name="sibling.suddenly.test", application_type="suddenly"
+        )
+        mock_delay = mocker.patch("suddenly.activitypub.tasks.deliver_activity.delay")
+
+        send_offer_activity(str(lr.pk))
 
         mock_delay.assert_called_once()
-        _, kwargs = mock_delay.call_args
-        assert kwargs["actor_key_id"] is not None
-        assert kwargs["actor_key_id"] == f"{target.actor_url}#main-key"
+
+    def test_delivers_to_unknown_instance(self, mocker: Any, settings: Any) -> None:
+        """No FederatedServer row (never NodeInfo-probed) — first contact is allowed."""
+        from suddenly.activitypub.tasks import send_offer_activity
+
+        mocker.patch("suddenly.activitypub.signals._safe_delay")
+        lr = self._make_link_request(settings, "https://unknown.example/users/bob/inbox")
+        mock_delay = mocker.patch("suddenly.activitypub.tasks.deliver_activity.delay")
+
+        send_offer_activity(str(lr.pk))
+
+        mock_delay.assert_called_once()
 
 
 class TestDeliveryRetryPolicy:

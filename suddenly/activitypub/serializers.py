@@ -405,16 +405,6 @@ def create_create_activity(actor: Any, obj: dict[str, Any] | str) -> dict[str, A
     return create_activity("Create", actor, obj)
 
 
-def create_update_activity(actor: Any, obj: dict[str, Any] | str) -> dict[str, Any]:
-    """Create an Update activity."""
-    return create_activity("Update", actor, obj)
-
-
-def create_delete_activity(actor: Any, obj_id: str) -> dict[str, Any]:
-    """Create a Delete activity."""
-    return create_activity("Delete", actor, {"type": "Tombstone", "id": obj_id})
-
-
 def create_follow_activity(
     actor: Any, target: str, activity_id: str | None = None
 ) -> dict[str, Any]:
@@ -448,8 +438,3 @@ def create_undo_follow_activity(actor: Any, follow_ap_id: str, target: str) -> d
         "object": target,
     }
     return create_activity("Undo", actor, inner_follow)
-
-
-def create_offer_activity(actor: Any, link_request: Any) -> dict[str, Any]:
-    """Create an Offer activity for link requests."""
-    return serialize_link_request(link_request)

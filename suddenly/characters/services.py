@@ -4,6 +4,7 @@ Character services — link workflows and queryset builders.
 
 from __future__ import annotations
 
+from datetime import timedelta
 from typing import Any
 
 from django.contrib.contenttypes.models import ContentType
@@ -33,6 +34,9 @@ from .models import (
     Trait,
     TraitSet,
 )
+
+# Cross-instance link requests stuck PENDING beyond this expire (08-activitypub.md).
+LINK_REQUEST_EXPIRY_DAYS = 30
 
 
 class LinkService:
@@ -406,6 +410,74 @@ class LinkService:
         request.save()
 
         return request
+
+    @classmethod
+    @transaction.atomic
+    def expire_stale_requests(cls, cutoff_days: int = LINK_REQUEST_EXPIRY_DAYS) -> int:
+        """
+        Expire stale cross-instance PENDING requests and notify their requester.
+
+        Cross-instance predicate (08-activitypub.md "Cross-instance request
+        timeouts"): a request is cross-instance if it arrived via an inbound
+        Offer (``origin_offer_id`` set, DEC-038) OR either party is remote
+        (``requester.remote`` / ``target_character.remote`` — a local
+        requester can target a mirrored remote character too). Purely local
+        requests never expire — there is no async-federation-latency reason
+        for them to go stale.
+
+        Row-locked per request (DEC-035) so a concurrent accept/reject/cancel
+        on the same request cannot race with expiry. Promotes the next
+        QUEUED request, same as reject/cancel.
+        """
+        cutoff = timezone.now() - timedelta(days=cutoff_days)
+        candidate_ids = list(
+            LinkRequest.objects.filter(
+                status=LinkRequestStatus.PENDING,
+                created_at__lt=cutoff,
+            )
+            .filter(
+                Q(origin_offer_id__isnull=False)
+                | Q(requester__remote=True)
+                | Q(target_character__remote=True)
+            )
+            .values_list("pk", flat=True)
+        )
+
+        expired_count = 0
+        for request_id in candidate_ids:
+            request = (
+                LinkRequest.objects.select_for_update()
+                .select_related("requester", "target_character__creator")
+                .filter(pk=request_id)
+                .first()
+            )
+            if request is None or request.status != LinkRequestStatus.PENDING:
+                continue
+
+            target_character = request.target_character
+
+            request.status = LinkRequestStatus.EXPIRED
+            request.resolved_at = timezone.now()
+            request.save(update_fields=["status", "resolved_at", "updated_at"])
+
+            Notification.objects.create(
+                recipient=request.requester,
+                # No dedicated NotificationType.LINK_EXPIRED — reusing
+                # LINK_REJECTED (closest semantic: this request will not be
+                # answered). notification_item.html renders it correctly.
+                type=NotificationType.LINK_REJECTED,
+                target_content_type=ContentType.objects.get_for_model(LinkRequest),
+                target_object_id=request.pk,
+                message=(
+                    f"Votre demande sur {target_character.name} a expiré"
+                    f" faute de réponse ({cutoff_days} jours)"
+                ),
+            )
+
+            cls._promote_next_queued(target_character)
+            expired_count += 1
+
+        return expired_count
 
     @classmethod
     @transaction.atomic

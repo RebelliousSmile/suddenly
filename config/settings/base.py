@@ -176,6 +176,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "suddenly.activitypub.tasks.refresh_remote_actors",
         "schedule": 86400,
     },
+    "expire-stale-link-requests": {
+        "task": "suddenly.activitypub.tasks.expire_stale_link_requests",
+        "schedule": 86400,
+    },
 }
 
 # =================================================================

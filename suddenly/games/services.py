@@ -25,6 +25,7 @@ from suddenly.characters.models import (
     CharacterAppearance,
     CharacterStatus,
 )
+from suddenly.characters.services import build_owned_pc_queryset
 
 from .models import (
     CastRole,
@@ -142,11 +143,11 @@ def build_actor_pool(user: User, game: Game) -> QuerySet[Character]:
     The server revalidates every submitted ``actor`` against this queryset, so a
     locked client chip is a convenience, not the enforcement.
     """
-    owned_pcs = Q(owner=user, status=CharacterStatus.PC)
+    owned_pcs = build_owned_pc_queryset(user)
     if is_game_master(user, game):
-        cast_npcs = Q(status=CharacterStatus.NPC, castings__game=game)
-        return Character.objects.filter(owned_pcs | cast_npcs).distinct()
-    return Character.objects.filter(owned_pcs)
+        cast_npcs = Character.objects.filter(status=CharacterStatus.NPC, castings__game=game)
+        return (owned_pcs | cast_npcs).distinct()
+    return owned_pcs
 
 
 def build_protagonist_pool(user: User) -> QuerySet[Character]:
@@ -177,11 +178,11 @@ def build_protagonist_pool(user: User) -> QuerySet[Character]:
     visible_games = Game.objects.filter(
         Q(is_public=True, remote=False) | Q(owner=user, remote=False)
     ).values("pk")
-    own_playable_pcs = Q(owner=user, status=CharacterStatus.PC) & (
+    own_playable_pcs = build_owned_pc_queryset(user).filter(
         Q(origin_game__in=visible_games) | Q(castings__game__in=visible_games)
     )
-    mastered_npcs = Q(status=CharacterStatus.NPC, castings__game__owner=user)
-    return Character.objects.filter(own_playable_pcs | mastered_npcs).distinct()
+    mastered_npcs = Character.objects.filter(status=CharacterStatus.NPC, castings__game__owner=user)
+    return (own_playable_pcs | mastered_npcs).distinct()
 
 
 def available_kinds(user: User, game: Game) -> list[tuple[str, Any]]:
@@ -243,7 +244,7 @@ def build_composer_context(
         actors = Character.objects.none()
         cast_npcs = Character.objects.none()
 
-    own_pcs = Character.objects.filter(owner=user, status=CharacterStatus.PC).order_by("name")
+    own_pcs = build_owned_pc_queryset(user).order_by("name")
 
     # Reply targets (discussion) — the scene's own posts. Only in frozen mode:
     # from the feed there is no scene yet to reply within.
