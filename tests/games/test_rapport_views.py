@@ -80,6 +80,41 @@ def test_rapport_create_non_author_forbidden(client: Client) -> None:
     assert response.status_code == 403
 
 
+@pytest.mark.django_db
+def test_rapport_edit_non_author_forbidden(client: Client) -> None:
+    """POST rapport_edit as a non-author → 403 (centralized scene-author gate)."""
+    author = UserFactory()
+    intruder = UserFactory()
+    game = GameFactory(owner=author)
+    report = ReportFactory(game=game, author=author)
+    rapport = Rapport.objects.create(report=report, kind=RapportKind.NARRATION, content="Mine.")
+
+    client.force_login(intruder)
+    url = _rapport_edit_url(game.pk, report.pk, rapport.pk)
+    response = client.post(url, data={"kind": RapportKind.NARRATION, "content": "Hijack."})
+
+    assert response.status_code == 403
+    rapport.refresh_from_db()
+    assert rapport.content == "Mine."
+
+
+@pytest.mark.django_db
+def test_rapport_delete_non_author_forbidden(client: Client) -> None:
+    """POST rapport_delete as a non-author → 403, the rapport survives."""
+    author = UserFactory()
+    intruder = UserFactory()
+    game = GameFactory(owner=author)
+    report = ReportFactory(game=game, author=author)
+    rapport = Rapport.objects.create(report=report, kind=RapportKind.ACTION, content="Mine.")
+
+    client.force_login(intruder)
+    url = _rapport_delete_url(game.pk, report.pk, rapport.pk)
+    response = client.post(url)
+
+    assert response.status_code == 403
+    assert Rapport.objects.filter(pk=rapport.pk).exists()
+
+
 # ---------------------------------------------------------------------------
 # Successful create
 # ---------------------------------------------------------------------------

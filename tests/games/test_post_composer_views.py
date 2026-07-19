@@ -451,6 +451,29 @@ def test_media_remove(client: Client) -> None:
     assert not RapportMedia.objects.filter(rapport=rapport).exists()
 
 
+@pytest.mark.django_db
+def test_media_remove_non_author_forbidden(client: Client) -> None:
+    """POST rapport_media_remove as a non-author → 403, the media survives."""
+    author = UserFactory()
+    intruder = UserFactory()
+    game = GameFactory(owner=author)
+    report = ReportFactory(game=game, author=author)
+    rapport = Rapport.objects.create(report=report, kind=RapportKind.DESCRIPTION, content="Room.")
+    RapportMedia.objects.create(
+        rapport=rapport, image=SimpleUploadedFile("a.png", _png_bytes()), alt="x"
+    )
+
+    client.force_login(intruder)
+    url = reverse(
+        "games:rapport_media_remove",
+        kwargs={"game_pk": game.pk, "pk": report.pk, "rapport_pk": rapport.pk},
+    )
+    resp = client.post(url)
+
+    assert resp.status_code == 403
+    assert RapportMedia.objects.filter(rapport=rapport).exists()
+
+
 # ---------------------------------------------------------------------------
 # Unified composer (feed) — selectors, recompute, blocked send (rules 2a/2b/2c)
 # ---------------------------------------------------------------------------

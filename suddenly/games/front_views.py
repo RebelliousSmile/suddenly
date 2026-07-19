@@ -74,6 +74,55 @@ def _game_form_extra(known: list[str] | None = None) -> dict[str, object]:
     return {"system_known": known}
 
 
+def _forbid_non_author(
+    report: Report | None, request: AuthenticatedRequest
+) -> HttpResponseForbidden | None:
+    """Single source of the scene-author gate.
+
+    Returns a bare ``HttpResponseForbidden`` (empty body, as the inline checks
+    did) when ``report`` is missing or the caller is not its author, else
+    ``None``. A ``None`` report yields 403 — mirrors ``quote_delete``'s guard.
+    """
+    if report is None or report.author != request.user:
+        return HttpResponseForbidden()
+    return None
+
+
+def _render_game_form(
+    request: AuthenticatedRequest,
+    *,
+    game: Game | None,
+    is_public_checked: bool,
+    form_data: object,
+    error: object = None,
+    system_warning: object = None,
+    extra: dict[str, object] | None = None,
+) -> HttpResponse:
+    """Single re-render of ``games/game_form.html`` for create + edit.
+
+    ``error`` and ``system_warning`` are added to the context only when given,
+    reproducing each prior per-branch context byte-for-byte. ``extra`` overrides
+    the default ``_game_form_extra()`` (used for the near-duplicate system path
+    that passes the already-computed known list).
+    """
+    context: dict[str, object] = {
+        "game": game,
+        "is_public_checked": is_public_checked,
+        "form_data": form_data,
+        **(_game_form_extra() if extra is None else extra),
+    }
+    if error is not None:
+        context["error"] = error
+    if system_warning is not None:
+        context["system_warning"] = system_warning
+    return htmx_render(
+        request,
+        full_template="games/game_form.html",
+        partial_template="games/game_form.html",
+        context=context,
+    )
+
+
 @login_required
 def report_compose(request: AuthenticatedRequest) -> HttpResponse:
     """Quick compose page for a new report, linked to a character's game."""
@@ -430,17 +479,12 @@ def game_create(request: AuthenticatedRequest) -> HttpResponse:
         game_system_text = request.POST.get("game_system", "").strip()
 
         if not title:
-            return htmx_render(
+            return _render_game_form(
                 request,
-                full_template="games/game_form.html",
-                partial_template="games/game_form.html",
-                context={
-                    "game": None,
-                    "error": _("Title is required."),
-                    "form_data": request.POST,
-                    "is_public_checked": request.POST.get("is_public") == "on",
-                    **_game_form_extra(),
-                },
+                game=None,
+                is_public_checked=is_public,
+                form_data=request.POST,
+                error=_("Title is required."),
             )
 
         # Near-duplicate game_system guard — force a confirmation when the entered
@@ -450,17 +494,13 @@ def game_create(request: AuthenticatedRequest) -> HttpResponse:
         if request.POST.get("system_confirmed") != "1":
             system_warning = near_duplicate_system(game_system_text, known)
             if system_warning:
-                return htmx_render(
+                return _render_game_form(
                     request,
-                    full_template="games/game_form.html",
-                    partial_template="games/game_form.html",
-                    context={
-                        "game": None,
-                        "form_data": request.POST,
-                        "is_public_checked": is_public,
-                        "system_warning": system_warning,
-                        **_game_form_extra(known),
-                    },
+                    game=None,
+                    is_public_checked=is_public,
+                    form_data=request.POST,
+                    system_warning=system_warning,
+                    extra=_game_form_extra(known),
                 )
 
         started_at_raw = request.POST.get("started_at", "").strip()
@@ -484,12 +524,7 @@ def game_create(request: AuthenticatedRequest) -> HttpResponse:
         game.tags.set(Tag.resolve_names(request.POST.get("tags", "")))
         return redirect(reverse("games:detail", kwargs={"pk": game.pk}))
 
-    return htmx_render(
-        request,
-        full_template="games/game_form.html",
-        partial_template="games/game_form.html",
-        context={"game": None, "is_public_checked": True, "form_data": {}, **_game_form_extra()},
-    )
+    return _render_game_form(request, game=None, is_public_checked=True, form_data={})
 
 
 def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
@@ -837,17 +872,12 @@ def game_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
     if request.method == "POST":
         title = request.POST.get("title", "").strip()
         if not title:
-            return htmx_render(
+            return _render_game_form(
                 request,
-                full_template="games/game_form.html",
-                partial_template="games/game_form.html",
-                context={
-                    "game": game,
-                    "error": _("Title is required."),
-                    "form_data": request.POST,
-                    "is_public_checked": is_public_checked,
-                    **_game_form_extra(),
-                },
+                game=game,
+                is_public_checked=is_public_checked,
+                form_data=request.POST,
+                error=_("Title is required."),
             )
 
         game_system_text = request.POST.get("game_system", "").strip()
@@ -855,17 +885,13 @@ def game_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
         if request.POST.get("system_confirmed") != "1":
             system_warning = near_duplicate_system(game_system_text, known)
             if system_warning:
-                return htmx_render(
+                return _render_game_form(
                     request,
-                    full_template="games/game_form.html",
-                    partial_template="games/game_form.html",
-                    context={
-                        "game": game,
-                        "form_data": request.POST,
-                        "is_public_checked": is_public_checked,
-                        "system_warning": system_warning,
-                        **_game_form_extra(known),
-                    },
+                    game=game,
+                    is_public_checked=is_public_checked,
+                    form_data=request.POST,
+                    system_warning=system_warning,
+                    extra=_game_form_extra(known),
                 )
 
         game.title = title
@@ -906,17 +932,7 @@ def game_edit(request: AuthenticatedRequest, pk: str) -> HttpResponse:
 
         return redirect(reverse("games:detail", kwargs={"pk": game.pk}))
 
-    return htmx_render(
-        request,
-        full_template="games/game_form.html",
-        partial_template="games/game_form.html",
-        context={
-            "game": game,
-            "is_public_checked": game.is_public,
-            "form_data": {},
-            **_game_form_extra(),
-        },
-    )
+    return _render_game_form(request, game=game, is_public_checked=game.is_public, form_data={})
 
 
 @login_required
@@ -949,8 +965,8 @@ def rapport_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> Http
     from django.template.loader import render_to_string
 
     report = get_object_or_404(Report.objects.select_related("game"), pk=pk, game__pk=game_pk)
-    if report.author != request.user:
-        return HttpResponseForbidden()
+    if (forbidden := _forbid_non_author(report, request)) is not None:
+        return forbidden
     if request.method == "POST":
         form = RapportForm(request.POST, game=report.game)
         form.full_clean()
@@ -995,8 +1011,8 @@ def rapport_edit(
         report__pk=pk,
         report__game__pk=game_pk,
     )
-    if rapport.report.author != request.user:
-        return HttpResponseForbidden()
+    if (forbidden := _forbid_non_author(rapport.report, request)) is not None:
+        return forbidden
 
     if request.method == "POST":
         if getattr(request, "htmx", False):
@@ -1055,8 +1071,8 @@ def rapport_delete(
         report__pk=pk,
         report__game__pk=game_pk,
     )
-    if rapport.report.author != request.user:
-        return HttpResponseForbidden()
+    if (forbidden := _forbid_non_author(rapport.report, request)) is not None:
+        return forbidden
     # Federation caution: a released scene has crossed the wall and may be
     # federated — its posts are frozen; a local hard-delete would desync remotes.
     if rapport.report.is_released:
@@ -1079,8 +1095,8 @@ def marker_create(
         report__pk=pk,
         report__game__pk=game_pk,
     )
-    if rapport.report.author != request.user:
-        return HttpResponseForbidden()
+    if (forbidden := _forbid_non_author(rapport.report, request)) is not None:
+        return forbidden
     if request.method == "POST":
         form = RapportMarkerForm(request.POST, game=rapport.report.game)
         if form.is_valid():
@@ -1129,8 +1145,8 @@ def marker_delete(
         rapport__report__pk=pk,
         rapport__report__game__pk=game_pk,
     )
-    if marker.rapport.report.author != request.user:
-        return HttpResponseForbidden()
+    if (forbidden := _forbid_non_author(marker.rapport.report, request)) is not None:
+        return forbidden
     if request.method == "POST":
         marker.delete()
     return HttpResponse("")
@@ -1232,8 +1248,8 @@ def rapport_add_remote_parent(
         report__game__pk=game_pk,
     )
 
-    if rapport.report.author != request.user:
-        return HttpResponseForbidden()
+    if (forbidden := _forbid_non_author(rapport.report, request)) is not None:
+        return forbidden
 
     parent_iri = request.POST.get("parent_iri", "").strip()
     validate_url = URLValidator()
@@ -1330,8 +1346,8 @@ def scene_post_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> H
     from django.core.exceptions import ValidationError
 
     report = get_object_or_404(Report.objects.select_related("game"), pk=pk, game__pk=game_pk)
-    if report.author != request.user:
-        return HttpResponseForbidden()
+    if (forbidden := _forbid_non_author(report, request)) is not None:
+        return forbidden
 
     mode = request.POST.get("mode", "add")
     if mode not in _POST_MODES:
@@ -1552,10 +1568,13 @@ def cast_npc_create(request: AuthenticatedRequest, game_pk: str) -> HttpResponse
     return render(request, "games/_composer_context.html", ctx)
 
 
-def _get_authored_rapport(
+def _get_scene_rapport(
     request: AuthenticatedRequest, game_pk: str, pk: str, rapport_pk: str
 ) -> Rapport:
-    """Fetch a rapport whose scene the caller authored, or raise 404."""
+    """Fetch a rapport within the given scene/game, or raise 404.
+
+    Does **not** check authorship — callers gate with ``_forbid_non_author``.
+    """
     return get_object_or_404(
         Rapport.objects.select_related("report__game", "report__author"),
         pk=rapport_pk,
@@ -1577,9 +1596,9 @@ def rapport_media_add(
     """
     from django.core.exceptions import ValidationError
 
-    rapport = _get_authored_rapport(request, game_pk, pk, rapport_pk)
-    if rapport.report.author != request.user:
-        return HttpResponseForbidden()
+    rapport = _get_scene_rapport(request, game_pk, pk, rapport_pk)
+    if (forbidden := _forbid_non_author(rapport.report, request)) is not None:
+        return forbidden
 
     image = request.FILES.get("image")
     if not image:
@@ -1605,9 +1624,9 @@ def rapport_media_remove(
     request: AuthenticatedRequest, game_pk: str, pk: str, rapport_pk: str
 ) -> HttpResponse:
     """Remove the image of a rapport (author only). Idempotent."""
-    rapport = _get_authored_rapport(request, game_pk, pk, rapport_pk)
-    if rapport.report.author != request.user:
-        return HttpResponseForbidden()
+    rapport = _get_scene_rapport(request, game_pk, pk, rapport_pk)
+    if (forbidden := _forbid_non_author(rapport.report, request)) is not None:
+        return forbidden
     RapportMedia.objects.filter(rapport=rapport).delete()
     if getattr(request, "htmx", False):
         return render(request, "games/partials/rapport_item.html", {"rapport": rapport})
@@ -1675,9 +1694,9 @@ def rapport_move(
     Returns the re-rendered fil (#rapports-list) so the swap shows at once. The
     sequence is frozen once the scene has crossed the wall.
     """
-    rapport = _get_authored_rapport(request, game_pk, pk, rapport_pk)
-    if rapport.report.author != request.user:
-        return HttpResponseForbidden()
+    rapport = _get_scene_rapport(request, game_pk, pk, rapport_pk)
+    if (forbidden := _forbid_non_author(rapport.report, request)) is not None:
+        return forbidden
     if rapport.report.is_released:
         return HttpResponse("The sequence is frozen once the scene is shared.", status=400)
 
@@ -1712,8 +1731,8 @@ def quote_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRe
     from suddenly.characters.models import Character, Quote, QuoteVisibility
 
     report = get_object_or_404(Report.objects.select_related("game"), pk=pk, game__pk=game_pk)
-    if report.author != request.user:
-        return HttpResponseForbidden()
+    if (forbidden := _forbid_non_author(report, request)) is not None:
+        return forbidden
 
     content = request.POST.get("content", "").strip()
     if len(content) < 2:
@@ -1749,7 +1768,7 @@ def quote_delete(
         report__pk=pk,
         report__game__pk=game_pk,
     )
-    if quote.report is None or quote.report.author != request.user:
-        return HttpResponseForbidden()
+    if (forbidden := _forbid_non_author(quote.report, request)) is not None:
+        return forbidden
     quote.delete()
     return HttpResponse(status=204)

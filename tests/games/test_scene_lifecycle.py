@@ -206,6 +206,26 @@ def test_rapport_move_endpoint_reorders(client: Client) -> None:
 
 
 @pytest.mark.django_db
+def test_rapport_move_non_author_forbidden(client: Client) -> None:
+    """POST rapport_move as a non-author → 403, the order is untouched."""
+    author = UserFactory()
+    intruder = UserFactory()
+    game = GameFactory(owner=author)
+    report = ReportFactory(game=game, author=author, status=ReportStatus.DRAFT)
+    a, b = _beats(report, 2)
+
+    client.force_login(intruder)
+    url = reverse(
+        "games:rapport_move",
+        kwargs={"game_pk": game.pk, "pk": report.pk, "rapport_pk": b.pk},
+    )
+    resp = client.post(url, {"direction": "up"}, HTTP_HX_REQUEST="true")
+
+    assert resp.status_code == 403
+    assert list(report.rapports.values_list("content", flat=True)) == ["beat-0", "beat-1"]
+
+
+@pytest.mark.django_db
 def test_rapport_move_frozen_when_released(client: Client) -> None:
     from django.utils import timezone as tz
 

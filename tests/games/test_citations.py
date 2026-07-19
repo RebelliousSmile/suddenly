@@ -290,3 +290,22 @@ def test_quote_delete_by_author(client: Client) -> None:
     resp = client.post(url)
     assert resp.status_code == 204
     assert not Quote.objects.filter(pk=quote.pk).exists()
+
+
+@pytest.mark.django_db
+def test_quote_delete_non_author_forbidden(client: Client) -> None:
+    """POST quote_delete as a non-author → 403, the quote survives."""
+    author = UserFactory()
+    intruder = UserFactory()
+    report = _released_report(author=author)
+    quote = _quote(report)
+
+    client.force_login(intruder)
+    url = reverse(
+        "games:quote_delete",
+        kwargs={"game_pk": report.game.pk, "pk": report.pk, "quote_pk": quote.pk},
+    )
+    resp = client.post(url)
+
+    assert resp.status_code == 403
+    assert Quote.objects.filter(pk=quote.pk).exists()
