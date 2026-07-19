@@ -5,4 +5,4 @@
 # metadata). Feeds both the UI footer and NodeInfo `software.version`, so the
 # federation can list instances with their version. Bumped once per release by
 # the maintainer; volunteers deploying the project never manage it by hand.
-__version__ = "0.7.0"
+__version__ = "0.8.0"

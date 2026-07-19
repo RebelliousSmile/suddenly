@@ -7,15 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-07-19
+
 ### Added
 - **Parties** — pose de marqueurs narratifs d'entrée/sortie de personnage sur
   les posts d'une scène (bouton « + Marqueur », réservé à l'auteur tant que la
   scène n'est pas libérée) ; faire entrer un personnage existant l'enregistre
   comme apparition durable de la scène (`CharacterAppearance`).
+- **Fédération** — boucle Claim/Adopt/Fork inter-instances complète : les liens
+  de personnages se propagent et se résolvent d'un serveur à l'autre (DEC-038).
+- **Feed** — bouton « Recommander » (boost / `Announce` ActivityPub) câblé sur
+  les scènes.
 
 ### Changed
 - **Personnages** — la création d'un nouveau PNJ est réservée au MJ ; l'ajout
   d'un personnage existant au casting d'une scène reste ouvert à l'auteur.
+- **Composer** — le pool de personnages est limité aux PJ jouables.
+- **Qualité interne** — audit code-quality : mise en source unique des helpers de
+  livraison et de liens, découpage du monolithe `front_views` en modules domaine,
+  centralisation des gardes d'auteur/casting (sans changement fonctionnel).
+
+### Removed
+- **Muses** — retrait de l'intégration IA Muses (epic A).
+
+### Fixed
+- **Fédération** — durcissement de la gestion fédérée des `Accept`/`Reject`.
 
 ## [0.7.0] - 2026-07-18
 
