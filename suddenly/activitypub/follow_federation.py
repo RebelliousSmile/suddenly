@@ -108,7 +108,7 @@ def _summarize_activity_item(item: dict[str, Any]) -> dict[str, Any] | None:
     return {
         "title": item.get("name", ""),
         "content": item.get("content") or item.get("summary") or "",
-        "url": item.get("url") or item.get("id", ""),
+        "url": _safe_url(item.get("url")) or _safe_url(item.get("id")) or "",
         "published": item.get("published", ""),
     }
 
@@ -133,7 +133,10 @@ def _extract_character_mentions(items: list[dict[str, Any]]) -> list[dict[str, A
             if not isinstance(href, str) or not href or href in seen_hrefs:
                 continue
             seen_hrefs.add(href)
-            entries.append({"name": tag.get("name") or href, "url": href})
+            safe_href = _safe_url(href)
+            if safe_href is None:
+                continue
+            entries.append({"name": tag.get("name") or safe_href, "url": safe_href})
             if len(entries) >= MAX_CHARACTERS:
                 return entries
 
@@ -148,8 +151,34 @@ def _fetch_actor_summary(iri: str) -> dict[str, Any] | None:
     if not isinstance(data, dict):
         return None
 
-    name = data.get("name") or data.get("preferredUsername") or iri
-    return {"name": name, "url": iri, "summary": data.get("summary", "")}
+    safe_iri = _safe_url(iri)
+    if safe_iri is None:
+        return None
+
+    name = data.get("name") or data.get("preferredUsername") or safe_iri
+    return {"name": name, "url": safe_iri, "summary": data.get("summary", "")}
+
+
+def _safe_url(url: Any) -> str | None:
+    """Return `url` unchanged if it is a string with an http/https scheme, else None.
+
+    Remote outbox item bodies (`url`/`id`/Mention `href`) are attacker-
+    controlled and are never re-validated by the SSRF-safe fetch layer — they
+    are display data, not fetch targets. Django's autoescape only neutralizes
+    HTML metacharacters, not URL schemes, so a bare `javascript:` value would
+    otherwise render verbatim into an `<a href>` (reflected XSS, review
+    blocker, epic C #133). Every url surfaced to a template must pass through
+    here first.
+    """
+    from urllib.parse import urlsplit
+
+    if not isinstance(url, str) or not url:
+        return None
+    try:
+        scheme = urlsplit(url).scheme.lower()
+    except ValueError:
+        return None
+    return url if scheme in ("http", "https") else None
 
 
 def _unique_ordered(values: Iterable[Any]) -> list[str]:

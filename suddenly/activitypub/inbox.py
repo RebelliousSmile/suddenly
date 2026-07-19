@@ -1042,16 +1042,27 @@ def _follow_ap_id_from_activity(activity: dict[str, Any]) -> tuple[str | None, b
     return None, False
 
 
-def _resolve_outbound_follow(activity: dict[str, Any], follow_ap_id: str | None) -> Any | None:
+def _resolve_outbound_follow(
+    activity: dict[str, Any], follow_ap_id: str | None, is_follow_shaped: bool
+) -> Any | None:
     """Resolve our outbound ``Follow`` row an Accept/Reject(Follow) references.
 
     Primary: match by ``ap_id`` (DEC-C2) — the id we minted in
     ``remote_follow_toggle``/``send_follow_activity`` and that a conformant
-    peer echoes back in the Accept/Reject. Fallback: resolve the Accept/
-    Reject's sender (``activity["actor"]``) to a known local remote User, and
-    match our outbound (``remote=False``), still-unconfirmed-or-any Follow
-    pointing at them — covers peers that echo back something other than the
-    Follow's own id.
+    peer echoes back in the Accept/Reject. Fallback (actor-scoped, no
+    ``ap_id`` match): resolve the Accept/Reject's sender (``activity["actor"]``)
+    to a known local remote User, and match our outbound (``remote=False``)
+    Follow pointing at them — covers peers that echo back something other
+    than the Follow's own id.
+
+    The actor fallback only runs when ``is_follow_shaped`` is ``True`` (the
+    ``object`` was an unambiguous ``{"type": "Follow", ...}`` dict). A bare
+    string ``object`` is ambiguous with the Offer/LinkRequest Accept's
+    ``origin_offer_id`` (DEC-038) — resolving it by actor alone would let an
+    ``Accept(Offer)`` from an actor we also happen to follow get swallowed by
+    an unrelated Follow row. For that case only the exact ``ap_id`` match
+    above is trusted; no match here means "not a Follow", letting the caller
+    fall through to the Offer path.
     """
     from django.contrib.contenttypes.models import ContentType
 
@@ -1062,6 +1073,9 @@ def _resolve_outbound_follow(activity: dict[str, Any], follow_ap_id: str | None)
         follow = Follow.objects.filter(ap_id=follow_ap_id, remote=False).first()
         if follow:
             return follow
+
+    if not is_follow_shaped:
+        return None
 
     remote_actor_url = activity.get("actor")
     if not remote_actor_url:
@@ -1089,7 +1103,7 @@ def _handle_accept_follow(activity: dict[str, Any]) -> bool:
     if follow_ap_id is None and not is_follow_shaped:
         return False
 
-    follow = _resolve_outbound_follow(activity, follow_ap_id)
+    follow = _resolve_outbound_follow(activity, follow_ap_id, is_follow_shaped)
     if follow is None:
         return is_follow_shaped
 
@@ -1138,7 +1152,7 @@ def _handle_reject_follow(activity: dict[str, Any]) -> bool:
     if follow_ap_id is None and not is_follow_shaped:
         return False
 
-    follow = _resolve_outbound_follow(activity, follow_ap_id)
+    follow = _resolve_outbound_follow(activity, follow_ap_id, is_follow_shaped)
     if follow is None:
         return is_follow_shaped
 
