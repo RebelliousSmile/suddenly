@@ -345,6 +345,54 @@ def serialize_quote(quote: Any) -> dict[str, Any]:
     return data
 
 
+def serialize_direct_message(dm: Any) -> dict[str, Any]:
+    """Serialize a DirectMessage to a full AP ``Create(Note)`` envelope (DEC-E3).
+
+    Strict Direct addressing: ``to`` is exactly the recipient's actor IRI,
+    ``cc`` is empty, ``Public`` never appears, and the recipient is also
+    carried as a ``Mention`` tag (Mastodon-compatible DM shape). Unlike
+    :func:`serialize_report`/:func:`serialize_quote` (which return only the
+    inner object, wrapped by :func:`create_activity` at the call site), this
+    returns the full ``Create`` envelope directly — DEC-E3 requires ``to``/
+    ``cc`` repeated at both the ``Note`` and the ``Create`` level, which
+    :func:`create_activity` does not support.
+    """
+    from suddenly.messaging.services import MessageService
+
+    recipient = MessageService.other_participant(dm.conversation, dm.sender)
+    note_url = f"https://{settings.DOMAIN}/dm/{dm.pk}"
+    to = [recipient.actor_url]
+    published = dm.created_at.isoformat()
+
+    note: dict[str, Any] = {
+        "type": "Note",
+        "id": dm.ap_id or note_url,
+        "attributedTo": dm.sender.actor_url,
+        "content": dm.body,
+        "to": to,
+        "cc": [],
+        "tag": [
+            {
+                "type": "Mention",
+                "href": recipient.actor_url,
+                "name": f"@{recipient.username}",
+            }
+        ],
+        "published": published,
+    }
+
+    return {
+        "@context": AP_CONTEXT,
+        "type": "Create",
+        "id": f"{note_url}/activity",
+        "actor": dm.sender.actor_url,
+        "object": note,
+        "to": to,
+        "cc": [],
+        "published": published,
+    }
+
+
 def serialize_link_request(link_request: Any) -> dict[str, Any]:
     """Serialize a LinkRequest to ActivityPub Offer."""
     request_url = f"https://{settings.DOMAIN}/link-requests/{link_request.pk}"

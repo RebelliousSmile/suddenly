@@ -54,6 +54,7 @@ urlpatterns = [
     path("characters/", include("suddenly.characters.front_urls")),
     path("games/", include("suddenly.games.front_urls")),
     path("offers/", include("suddenly.offers.urls")),
+    path("messages/", include("suddenly.messaging.urls")),
     # Docs
     path("docs/", include("suddenly.docs.urls")),
     # Main app

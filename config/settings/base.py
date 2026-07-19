@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "suddenly.docs",
     "suddenly.fediverse_auth",
     "suddenly.offers",
+    "suddenly.messaging",
 ]
 
 MIDDLEWARE = [

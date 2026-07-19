@@ -117,6 +117,16 @@ def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
             follower=request.user, content_type=ct, object_id=game.pk
         ).exists()
 
+    # Direct-message entry point (Epic E, #135, DEC-E7) — read-only, gated by
+    # mutuality; never writes a Follow. Targets the game's owner (the GM).
+    dm_recipient = None
+    if (
+        request.user.is_authenticated
+        and request.user != game.owner
+        and Follow.objects.are_mutual(request.user, game.owner)
+    ):
+        dm_recipient = game.owner
+
     return htmx_render(
         request,
         full_template="games/detail.html",
@@ -127,6 +137,7 @@ def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
             "characters": characters,
             "is_owner": request.user == game.owner if request.user.is_authenticated else False,
             "is_following": is_following,
+            "dm_recipient": dm_recipient,
         },
     )
 

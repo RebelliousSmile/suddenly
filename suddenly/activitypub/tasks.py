@@ -490,6 +490,33 @@ def send_undo_like_activity(user_id: str, report_id: str) -> None:
 
 
 @shared_task  # type: ignore[untyped-decorator]
+def send_direct_message_activity(dm_id: str) -> None:
+    """Send a directed AP ``Create(Note)`` for an outbound local DirectMessage (DEC-E3).
+
+    Mirrors :func:`send_like_activity`'s directed-delivery pattern (no
+    followers broadcast — a DM is addressed to exactly one inbox). No-op if
+    the message is itself a federation mirror (``remote=True`` — nothing to
+    send back) or if the recipient is local-only (nothing to federate).
+    """
+    from suddenly.messaging.models import DirectMessage
+    from suddenly.messaging.services import MessageService
+
+    from ._http import sign_and_deliver
+    from .serializers import serialize_direct_message
+
+    dm = DirectMessage.objects.filter(pk=dm_id).select_related("sender", "conversation").first()
+    if not dm or dm.remote:
+        return
+
+    recipient = MessageService.other_participant(dm.conversation, dm.sender)
+    if not recipient.remote:
+        return
+
+    activity = serialize_direct_message(dm)
+    sign_and_deliver(activity, recipient.actor_inbox, signer=dm.sender)
+
+
+@shared_task  # type: ignore[untyped-decorator]
 def cleanup_expired_quotes() -> None:
     """Delete expired ephemeral quotes."""
     from suddenly.characters.models import Quote, QuoteVisibility

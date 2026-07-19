@@ -8,6 +8,7 @@ get claimed, adopted, or forked by other players.
 from __future__ import annotations
 
 from collections.abc import Iterable
+from typing import Any
 
 from django.conf import settings
 from django.db import models
@@ -602,6 +603,33 @@ class Action(BaseModel):
         return f"{self.name} → {self.trait_set.label}"
 
 
+class FollowQuerySet(models.QuerySet["Follow"]):
+    """Querysets for Follow. Mutuality (DEC-E2) lives here and nowhere else —
+    both the federated-DM send gate (403) and the inbox receive gate (silent
+    drop) call this same method, so the definition of "mutual" never drifts
+    between the two call sites."""
+
+    def are_mutual(self, user_a: Any, user_b: Any) -> bool:
+        """True iff `user_a` and `user_b` accepted-follow each other (User target).
+
+        Both directions are required: an accepted Follow(a -> b) AND an
+        accepted Follow(b -> a), both targeting a User (not a Character/Game).
+        """
+        from django.contrib.contenttypes.models import ContentType
+
+        from suddenly.users.models import User
+
+        user_ct = ContentType.objects.get_for_model(User)
+        a_follows_b = self.filter(
+            follower=user_a, content_type=user_ct, object_id=user_b.pk, accepted=True
+        ).exists()
+        if not a_follows_b:
+            return False
+        return self.filter(
+            follower=user_b, content_type=user_ct, object_id=user_a.pk, accepted=True
+        ).exists()
+
+
 class Follow(BaseModel):
     """
     A follow relationship (local or federated).
@@ -640,6 +668,8 @@ class Follow(BaseModel):
             "button — always survives cast teardown."
         ),
     )
+
+    objects = FollowQuerySet.as_manager()
 
     class Meta:
         unique_together = ["follower", "content_type", "object_id"]

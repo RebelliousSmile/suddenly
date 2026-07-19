@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}@{{ other.username }} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-2xl">
+        <div class="flex items-center gap-3 mb-6">
+            <a href="{% url 'messaging:inbox' %}" class="text-semantic-muted hover:text-semantic-ink">
+                <span class="i-lucide-arrow-left"></span>
+            </a>
+            {% if other.avatar %}
+                <img src="{{ other.avatar.url }}" class="avatar-sm" alt="">
+            {% else %}
+                <span class="avatar-sm avatar-placeholder">
+                    <span class="i-lucide-user text-sm"></span>
+                </span>
+            {% endif %}
+            <h1 class="text-xl font-bold text-semantic-ink">@{{ other.username }}</h1>
+        </div>
+
+        <div class="flex flex-col gap-3 mb-6">
+            {% include "messaging/_message_list.html" %}
+        </div>
+
+        <form method="post" action="{% url 'messaging:send' %}" class="flex gap-2">
+            {% csrf_token %}
+            <input type="hidden" name="recipient" value="{{ other.pk }}">
+            <textarea name="body" rows="2" required
+                      class="input flex-1"
+                      placeholder="{% trans 'Votre message…' %}"></textarea>
+            <button type="submit" class="btn-primary btn-sm self-end">
+                <span class="i-lucide-send"></span>
+                {% trans "Envoyer" %}
+            </button>
+        </form>
+    </div>
+</section>
+{% endblock %}

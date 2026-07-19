@@ -183,6 +183,28 @@ def user_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: An
         )
 
 
+@receiver(post_save, sender="messaging.DirectMessage")
+def direct_message_post_save(
+    sender: type[Any], instance: Any, created: bool, **kwargs: Any
+) -> None:
+    """
+    When a local outbound direct message is created, federate it to the
+    remote recipient (DEC-E3). Mirrored (received) messages are
+    ``remote=True`` and must not be re-sent — ``send_direct_message_activity``
+    also guards this, but skip the queue entirely for the common case.
+
+    Deferred until after commit: ``MessageService.send`` wraps the message
+    creation in ``transaction.atomic``, so the delivery task must not fire
+    before that transaction is guaranteed to have committed (same rationale
+    as ``report_post_save``).
+    """
+    from suddenly.activitypub.tasks import send_direct_message_activity
+
+    if created and not instance.remote:
+        dm_id = str(instance.id)
+        transaction.on_commit(lambda: _safe_delay(send_direct_message_activity, dm_id))
+
+
 @receiver(post_save, sender="games.Game")
 def game_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: Any) -> None:
     """

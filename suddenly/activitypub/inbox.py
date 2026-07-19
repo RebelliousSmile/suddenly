@@ -317,6 +317,8 @@ def handle_create(activity: dict[str, Any], actor_type: str, actor_identifier: s
         _handle_create_character(activity, obj)
     elif obj_type == "Article":
         _handle_create_report(activity, obj)
+    elif obj_type == "Note":
+        _handle_create_direct_message(activity, obj)
 
 
 def _get_or_create_remote_game(domain: str, owner: Any) -> Any:
@@ -518,6 +520,81 @@ def _handle_create_report(activity: dict[str, Any], obj: dict[str, Any]) -> None
     )
 
     _resolve_fiction_links(report, obj)
+
+
+def _local_recipient_from_to(to_field: Any) -> str | None:
+    """Extract a local username from a Note's ``to`` addressing, if any.
+
+    Matches the ``{AP_BASE_URL}/users/{username}`` actor IRI shape (see
+    ``User.actor_url``). Returns ``None`` if no entry in ``to`` points at a
+    local actor.
+    """
+    prefix = f"{settings.AP_BASE_URL}/users/"
+    to = [to_field] if isinstance(to_field, str) else list(to_field or [])
+    for entry in to:
+        if isinstance(entry, str) and entry.startswith(prefix):
+            return entry[len(prefix) :].split("/")[0]
+    return None
+
+
+def _handle_create_direct_message(activity: dict[str, Any], obj: dict[str, Any]) -> None:
+    """Persist an incoming federated Direct Message (AP ``Create(Note)``, DEC-E4).
+
+    Strict Direct shape only (DEC-E3): ``Public`` must appear in neither
+    ``to`` nor ``cc``, and ``to`` must resolve to exactly one local recipient.
+    Anything else (broadcast Note, misaddressed Note) is ignored — this is
+    not a general-purpose Note inbox, only the DM channel. Idempotent by
+    ``ap_id``; silently dropped (INFO log, no error) unless sender and
+    recipient are mutual followers (DEC-E2), mirroring the 403 gate on send.
+    """
+    from django.utils.dateparse import parse_datetime
+
+    from suddenly.messaging.services import MessageService
+    from suddenly.users.models import User
+
+    public = "https://www.w3.org/ns/activitystreams#Public"
+    to = obj.get("to") or []
+    cc = obj.get("cc") or []
+    to_list = [to] if isinstance(to, str) else list(to)
+    cc_list = [cc] if isinstance(cc, str) else list(cc)
+    if public in to_list or public in cc_list:
+        return
+
+    ap_id = obj.get("id")
+    if not ap_id:
+        return
+
+    from suddenly.characters.models import Follow
+    from suddenly.messaging.models import DirectMessage
+
+    if DirectMessage.objects.filter(ap_id=ap_id).exists():
+        return
+
+    username = _local_recipient_from_to(to)
+    if not username:
+        return
+    recipient = User.objects.filter(username=username, remote=False).first()
+    if recipient is None:
+        return
+
+    actor_url = activity.get("actor") or obj.get("attributedTo") or ""
+    if not actor_url:
+        return
+    result = get_or_create_remote_user(actor_url)
+    if result is None:
+        return
+    sender, _ = result
+
+    if not Follow.objects.are_mutual(sender, recipient):
+        logger.info(f"Dropped Direct Message from {sender} to {recipient}: not mutual followers")
+        return
+
+    body = str(obj.get("content") or "")
+    published_raw = obj.get("published")
+    published_at = parse_datetime(published_raw) if isinstance(published_raw, str) else None
+
+    conversation, _ = MessageService.get_or_create_conversation(sender, recipient)
+    MessageService.receive_remote(conversation, sender, body, ap_id, published_at=published_at)
 
 
 def _ingest_trait_sets(character: Any, obj: dict[str, Any]) -> None:

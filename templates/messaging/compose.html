@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Nouveau message" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="container-app max-w-2xl">
+        <h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "Nouveau message" %}</h1>
+
+        {% if not recipient %}
+            {% include "components/status_banner.html" with type="warning" icon="alert-triangle" message=_("Choisissez un destinataire depuis son profil, sa fiche personnage ou une partie.") %}
+        {% elif not mutual %}
+            {% include "components/status_banner.html" with type="warning" icon="lock" message=_("Vous devez vous suivre mutuellement pour envoyer un message privé à cette personne.") %}
+        {% else %}
+            <p class="text-sm text-semantic-muted mb-4">
+                {% blocktrans with username=recipient.username %}À @{{ username }}{% endblocktrans %}
+            </p>
+            <form method="post" action="{% url 'messaging:send' %}" class="flex flex-col gap-3">
+                {% csrf_token %}
+                <input type="hidden" name="recipient" value="{{ recipient.pk }}">
+                <textarea name="body" rows="4" required
+                          class="input"
+                          placeholder="{% trans 'Votre message…' %}"></textarea>
+                <button type="submit" class="btn-primary self-end">
+                    <span class="i-lucide-send"></span>
+                    {% trans "Envoyer" %}
+                </button>
+            </form>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -52,6 +52,7 @@ class NotificationType(models.TextChoices):
     MODERATION_REPORT = "moderation_report", "Nouveau signalement à traiter"
     OFFER = "offer", "Nouvelle offre à laquelle répondre"
     OFFER_RESPONSE = "offer_response", "Votre offre a reçu une réponse"
+    DIRECT_MESSAGE = "direct_message", "Message privé"
 
 
 class Notification(BaseModel):

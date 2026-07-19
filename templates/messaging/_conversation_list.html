@@ -1,0 +1,31 @@
+{% comment %}
+  Conversation list (Epic E, #135). Rendered both as the inbox page's body and
+  as an HTMX fragment (htmx_render). ``rows`` items carry {conversation, other,
+  unread_count} — computed server-side in messaging.views.inbox.
+{% endcomment %}
+{% load i18n %}
+
+{% if rows %}
+    <div class="flex flex-col divide-y divide-semantic-border">
+        {% for row in rows %}
+            <a href="{% url 'messaging:thread' pk=row.conversation.pk %}"
+               class="flex items-center justify-between gap-3 py-4 hover:bg-semantic-card transition-colors">
+                <div class="flex items-center gap-3 min-w-0">
+                    {% if row.other.avatar %}
+                        <img src="{{ row.other.avatar.url }}" class="avatar-sm" alt="">
+                    {% else %}
+                        <span class="avatar-sm avatar-placeholder">
+                            <span class="i-lucide-user text-sm"></span>
+                        </span>
+                    {% endif %}
+                    <span class="truncate text-sm font-medium text-semantic-ink">@{{ row.other.username }}</span>
+                </div>
+                {% if row.unread_count %}
+                    <span class="badge-primary shrink-0">{{ row.unread_count }}</span>
+                {% endif %}
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    {% include "components/empty_state.html" with icon="mail" title=_("Aucun message") description=_("Vos conversations privées avec vos abonnements mutuels apparaîtront ici.") %}
+{% endif %}
