@@ -242,6 +242,18 @@ class TestReportedUserNeverNotified:
 
         assert Notification.objects.filter(recipient=reported).count() == 0
 
+    def test_reporting_a_local_admin_does_not_notify_that_admin(self) -> None:
+        reporter = UserFactory()
+        reported_admin = UserFactory(is_admin=True)
+        other_admin = UserFactory(is_admin=True)
+
+        create_user_report(reporter, reported_admin, ReportCategory.HARASSMENT)
+
+        notifs = Notification.objects.filter(type=NotificationType.MODERATION_REPORT)
+        recipients = set(notifs.values_list("recipient_id", flat=True))
+        assert reported_admin.pk not in recipients
+        assert recipients == {other_admin.pk}
+
 
 # ─── report_user view (critère 1, user-facing) ─────────────────────────────
 

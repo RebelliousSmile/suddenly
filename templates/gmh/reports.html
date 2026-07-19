@@ -34,7 +34,7 @@
                         <form method="post" action="{% url 'gmh:user_block' pk=report.pk %}">
                             {% csrf_token %}
                             <button type="submit" class="btn-ghost btn-sm text-semantic-danger"
-                                    onclick="return confirm('{% blocktrans with username=report.reported_user.username %}Block @{{ username }}?{% endblocktrans %}')">
+                                    onclick="return confirm('{% blocktrans with username=report.reported_user.username|escapejs %}Block @{{ username }}?{% endblocktrans %}')">
                                 {% trans "Block" %}
                             </button>
                         </form>
