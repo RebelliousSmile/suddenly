@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n offers_tags %}
 
 {% block title %}{{ report.title|default:_("Scene") }} — {{ SITE_NAME }}{% endblock %}
 
@@ -93,6 +93,8 @@
 
         {# ── Contrôles auteur (jusqu'à leur bascule dans le dock d'édition) ─ #}
         {% if is_author %}
+            {% offer_panel offer user %}
+
             {# Liberation control (SUD-V4): cross the wall #}
             {% if report.is_published %}
                 <div class="card card-body mb-6 flex items-center justify-between gap-3">

@@ -248,11 +248,31 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
     # this report (regardless of the wall), and pick a speaker among its cast.
     manage_quotes = None
     quote_characters = None
+    offer = None
     if is_author:
         manage_quotes = report.quotes.select_related("character").order_by("-created_at")
         quote_characters = Character.objects.filter(
             models.Q(appearances__report=report) | models.Q(cast_entries__report=report)
         ).distinct()
+
+        # The seam-1 (summary) social Offer opened at import time, addressed
+        # to the author's followers (Epic B, #132). Only the author sees it
+        # here — followers reach it via their Notification(type=OFFER) link
+        # to the standalone offers:panel page (this page 404s for them while
+        # the scene is behind the wall).
+        from django.contrib.contenttypes.models import ContentType
+
+        from suddenly.offers.models import OfferKind, SocialOffer
+
+        offer = (
+            SocialOffer.objects.filter(
+                content_type=ContentType.objects.get_for_model(Report),
+                object_id=report.pk,
+                kind=OfferKind.SUMMARY,
+            )
+            .order_by("-created_at")
+            .first()
+        )
 
     rapports = report.rapports.select_related("actor").prefetch_related(
         "parent_links__parent_rapport", "markers__character", "media"
@@ -285,6 +305,7 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
             "quote_characters": quote_characters,
             "rapports": rapports,
             "fiction_next": fiction_next,
+            "offer": offer,
         },
     )
 

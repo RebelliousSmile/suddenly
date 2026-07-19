@@ -65,3 +65,76 @@ def expire_offer_on_sequence_published(
 
     if instance.status == SharedSequenceStatus.PUBLISHED:
         OfferService.expire_for_carrier(instance)
+
+
+@receiver(post_save, sender="offers.SocialOffer")
+def notify_followers_on_offer_created(
+    sender: type, instance: Any, created: bool, **kwargs: Any
+) -> None:
+    """DEC-B5: notify the emitter's local followers when a SocialOffer opens.
+
+    Remote followers are reached via the Offer AP activity instead (Phase 4);
+    this only creates in-app Notifications for local followers. Fires
+    regardless of the emitter's own locality (a mirrored remote emitter's
+    local followers still need the local notification — DEC-B6).
+    """
+    if not created:
+        return
+
+    from django.contrib.contenttypes.models import ContentType
+
+    from suddenly.characters.models import Follow
+    from suddenly.core.models import Notification, NotificationType
+    from suddenly.users.models import User
+
+    user_ct = ContentType.objects.get_for_model(User)
+    offer_ct = ContentType.objects.get_for_model(instance)
+    follower_ids = Follow.objects.filter(
+        content_type=user_ct, object_id=instance.emitter_id, follower__remote=False
+    ).values_list("follower_id", flat=True)
+
+    for fid in follower_ids:
+        if fid == instance.emitter_id:
+            continue
+        Notification.objects.create(
+            recipient_id=fid,
+            type=NotificationType.OFFER,
+            actor=instance.emitter,
+            target_content_type=offer_ct,
+            target_object_id=instance.pk,
+            message=f"@{instance.emitter.username} a une nouvelle offre à laquelle répondre",
+        )
+
+
+@receiver(post_save, sender="offers.OfferResponse")
+def notify_emitter_on_offer_response(
+    sender: type, instance: Any, created: bool, **kwargs: Any
+) -> None:
+    """DEC-B5: notify the offer's emitter when a follower responds.
+
+    Interpretation of DEC-B5's wording: ``OFFER_RESPONSE``'s fixed label
+    ("Votre offre a reçu une réponse") only makes sense addressed to the
+    emitter, so this fires on response creation rather than on acceptance.
+    Skipped when the emitter is a mirrored remote user (no local session to
+    read it — their own instance notifies them via the Accept/Reject AP
+    round-trip instead, DEC-B6/Phase 4).
+    """
+    if not created:
+        return
+
+    from django.contrib.contenttypes.models import ContentType
+
+    from suddenly.core.models import Notification, NotificationType
+
+    offer = instance.offer
+    if offer.emitter.remote or offer.emitter_id == instance.responder_id:
+        return
+
+    Notification.objects.create(
+        recipient=offer.emitter,
+        type=NotificationType.OFFER_RESPONSE,
+        actor=instance.responder,
+        target_content_type=ContentType.objects.get_for_model(offer),
+        target_object_id=offer.pk,
+        message=f"@{instance.responder.username} a répondu à votre offre",
+    )

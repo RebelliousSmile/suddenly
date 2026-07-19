@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n offers_tags %}
 
 {% block title %}{% trans "Shared Sequence" %} — {{ SITE_NAME }}{% endblock %}
 
@@ -60,6 +60,8 @@
         {% if sequence.status == 'published' %}
             {% include "components/status_banner.html" with type="success" icon="check-circle" message=_("This sequence is published and visible in both characters' history.") %}
         {% endif %}
+
+        {% offer_panel offer user %}
 
         <!-- Editor (DA-3: async, no CRDT) -->
         {% if sequence.status == 'draft' %}

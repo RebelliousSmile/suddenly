@@ -99,6 +99,25 @@ class Notification(BaseModel):
     def __str__(self) -> str:
         return f"{self.type}: {self.message[:50]}"
 
+    @property
+    def target_url(self) -> str:
+        """Best-effort deep link to this notification's target (US-20).
+
+        Only ``OFFER``/``OFFER_RESPONSE`` (Epic B, #132) resolve a link today
+        — every other type predates this property and never populated the
+        GFK ``target``, so ``target_object_id`` is ``None`` and this falls
+        through to ``""``, matching the prior (always-empty) template
+        behavior for them unchanged.
+        """
+        if self.target_object_id and self.type in (
+            NotificationType.OFFER,
+            NotificationType.OFFER_RESPONSE,
+        ):
+            from django.urls import reverse
+
+            return reverse("offers:panel", kwargs={"pk": self.target_object_id})
+        return ""
+
 
 class Tag(BaseModel):
     """Hashtag for cross-instance content discovery.

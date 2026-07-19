@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n offers_tags %}
 <div id="request-{{ link_request.id }}" class="card card-body">
     <p class="text-sm font-medium text-semantic-ink mb-3">
         {% blocktrans with username=link_request.requester.username type=link_request.get_type_display|upper name=link_request.target_character.name %}
@@ -27,4 +27,6 @@
             </button>
         </div>
     </form>
+
+    {% offer_panel offer user %}
 </div>

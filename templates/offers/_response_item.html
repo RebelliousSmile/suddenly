@@ -1,0 +1,29 @@
+{% load i18n %}
+<div id="response-{{ response.id }}" class="border border-semantic-border rounded-lg p-3">
+    <p class="text-xs text-semantic-muted mb-1">@{{ response.responder.username }}</p>
+    <p class="text-sm text-semantic-ink mb-2">{{ response.content }}</p>
+    {% if response.status == 'pending' %}
+        <div class="flex gap-2">
+            <form hx-post="{% url 'offers:accept' pk=response.id %}"
+                  hx-target="#offer-panel-{{ response.offer_id }}"
+                  hx-swap="outerHTML" class="inline">
+                {% csrf_token %}
+                <button type="submit" class="btn-primary btn-sm">
+                    <span class="i-lucide-check text-xs" aria-hidden="true"></span>{% trans "Accept" %}
+                </button>
+            </form>
+            <form hx-post="{% url 'offers:decline' pk=response.id %}"
+                  hx-target="#offer-panel-{{ response.offer_id }}"
+                  hx-swap="outerHTML" class="inline">
+                {% csrf_token %}
+                <button type="submit" class="btn-ghost btn-sm">
+                    <span class="i-lucide-x text-xs" aria-hidden="true"></span>{% trans "Decline" %}
+                </button>
+            </form>
+        </div>
+    {% else %}
+        <span class="badge {% if response.status == 'accepted' %}badge-success{% else %}badge-muted{% endif %}">
+            {{ response.get_status_display }}
+        </span>
+    {% endif %}
+</div>

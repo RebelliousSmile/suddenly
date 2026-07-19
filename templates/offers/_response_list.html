@@ -1,0 +1,10 @@
+{% load i18n %}
+{% if responses %}
+    <div class="space-y-3">
+        {% for response in responses %}
+            {% include "offers/_response_item.html" %}
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-sm text-semantic-muted">{% trans "No response yet." %}</p>
+{% endif %}

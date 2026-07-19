@@ -158,6 +158,38 @@ class OfferService:
         )
 
     @staticmethod
+    def panel_context(*, offer: SocialOffer | None, user: Any) -> dict[str, Any]:
+        """Shared view-context for the Offer panel (dry-refactor Rule of
+        Three): a single source of truth consumed both by ``offers/views.py``
+        (the standalone panel + HTMX mutation endpoints) and by the
+        ``offer_panel`` inclusion tag embedded at the 3 seam templates,
+        instead of recomputing the emitter/follower/resolved branching at
+        each of the 4 call sites.
+        """
+        if offer is None:
+            return {"offer": None}
+
+        is_authenticated = bool(getattr(user, "is_authenticated", False))
+        is_emitter = is_authenticated and user == offer.emitter
+        is_resolved = offer.status != OfferStatus.OPEN
+
+        my_response = None
+        if is_authenticated and not is_emitter:
+            my_response = offer.responses.filter(responder=user).first()
+
+        responses = None
+        if is_emitter:
+            responses = offer.responses.select_related("responder").order_by("created_at")
+
+        return {
+            "offer": offer,
+            "is_emitter": is_emitter,
+            "is_resolved": is_resolved,
+            "my_response": my_response,
+            "responses": responses,
+        }
+
+    @staticmethod
     @transaction.atomic
     def expire_for_carrier(carrier: Model) -> None:
         """DEC-B3: close every open Offer pointing at a carrier that reached

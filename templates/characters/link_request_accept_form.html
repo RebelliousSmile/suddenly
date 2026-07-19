@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n offers_tags %}
 
 {% block title %}{% trans "Accept request" %} — {{ SITE_NAME }}{% endblock %}
 
@@ -33,6 +33,8 @@
                 <a href="{% url 'characters:link_requests' %}" class="btn-ghost">{% trans "Cancel" %}</a>
             </div>
         </form>
+
+        {% offer_panel offer user %}
     </div>
 </section>
 {% endblock %}
