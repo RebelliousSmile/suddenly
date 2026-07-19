@@ -1,19 +1,28 @@
 {% comment %}
   Remote Follow Button Component (HTMX toggle, ActivityPub)
+
+  Visual/structural twin of components/follow_button.html (DEC-C4, Epic C
+  #133 Task 5) — same container/button/icon classes, plus the remote-only
+  ap_id field. target_type is resolved server-side (_resolve_remote_actor_type)
+  and carried back here so the polymorphic target ("user"/"character"/"game")
+  is visible on the element, mirroring the local button's target_type prop.
+
   Props:
     ap_id        — remote actor URL
+    target_type  — "user" | "character" | "game" (DEC-C4 classification)
     is_following — bool
 {% endcomment %}
 {% load i18n %}
 
 {% if user.is_authenticated %}
-    <div class="remote-follow-container">
+    <div class="remote-follow-container" data-target-type="{{ target_type }}">
         {% if is_following %}
             <form hx-post="{% url 'federation:remote_follow_toggle' %}"
                   hx-target="closest .remote-follow-container"
                   hx-swap="innerHTML">
                 {% csrf_token %}
                 <input type="hidden" name="ap_id" value="{{ ap_id }}">
+                <input type="hidden" name="target_type" value="{{ target_type }}">
                 <input type="hidden" name="action" value="unfollow">
                 <button type="submit"
                         class="btn-secondary btn-sm group">
@@ -28,6 +37,7 @@
                   hx-swap="innerHTML">
                 {% csrf_token %}
                 <input type="hidden" name="ap_id" value="{{ ap_id }}">
+                <input type="hidden" name="target_type" value="{{ target_type }}">
                 <input type="hidden" name="action" value="follow">
                 <button type="submit"
                         class="btn-primary btn-sm">

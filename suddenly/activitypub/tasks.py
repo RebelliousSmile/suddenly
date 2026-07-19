@@ -220,14 +220,37 @@ def send_offer_activity(link_request_id: str) -> None:
     sign_and_deliver(activity, creator.inbox_url, signer=request.requester)
 
 
+def _resolve_remote_follow_target(target_type: str, target_actor_url: str) -> Any:
+    """Resolve a remote actor URL to its local mirror, dispatched by `target_type`.
+
+    `target_type` defaults to ``"user"`` everywhere it is optional (DEC-C4,
+    Epic C #133) so existing callers/tests that predate polymorphic Follow
+    targets keep working unchanged. Returns `None` on any resolution failure
+    — callers must degrade gracefully, never 500.
+    """
+    from .inbox import get_or_create_remote_character, get_or_create_remote_game
+
+    key = target_type.lower()
+    if key == "character":
+        return get_or_create_remote_character(target_actor_url)
+    if key == "game":
+        return get_or_create_remote_game(target_actor_url)
+    return get_or_create_remote_user(target_actor_url)
+
+
 @shared_task  # type: ignore[untyped-decorator]
 def send_follow_activity(
-    user_id: str, target_actor_url: str, follow_ap_id: str | None = None
+    user_id: str,
+    target_actor_url: str,
+    follow_ap_id: str | None = None,
+    target_type: str = "user",
 ) -> None:
     """Send a Follow activity from a local user to a remote actor.
 
     Resolves the remote actor's inbox URL, builds a signed Follow activity,
-    and delivers it via ``deliver_activity``.
+    and delivers it via ``deliver_activity``. `target_type` ("user"/"character"
+    /"game", DEC-C4) selects the resolver — a followed remote Character or Game
+    actor mirrors the same delivery path as a followed remote User.
     """
     from suddenly.users.models import User
 
@@ -238,25 +261,26 @@ def send_follow_activity(
     if not user or user.remote:
         return
 
-    remote_user = get_or_create_remote_user(target_actor_url)
-    if not remote_user or not remote_user.inbox_url:
+    remote_target = _resolve_remote_follow_target(target_type, target_actor_url)
+    if not remote_target or not remote_target.inbox_url:
         return
 
     activity = create_follow_activity(user, target_actor_url, follow_ap_id)
-    sign_and_deliver(activity, remote_user.inbox_url, signer=user)
+    sign_and_deliver(activity, remote_target.inbox_url, signer=user)
 
 
 @shared_task  # type: ignore[untyped-decorator]
-def send_undo_follow_activity(user_id: str, target_actor_url: str) -> None:
+def send_undo_follow_activity(
+    user_id: str, target_actor_url: str, target_type: str = "user"
+) -> None:
     """Send an Undo(Follow) activity from a local user to a remote actor.
 
     Looks up the Follow record by follower+target to retrieve its ``ap_id``,
     builds a signed Undo(Follow) activity, delivers it, then deletes the
-    local Follow record.
+    local Follow record. `target_type` ("user"/"character"/"game", DEC-C4)
+    selects the target model/resolver.
     """
-    from django.contrib.contenttypes.models import ContentType
-
-    from suddenly.characters.models import Follow
+    from suddenly.core.utils import actor_model_for, content_type_for_actor
     from suddenly.users.models import User
 
     from ._http import sign_and_deliver
@@ -266,22 +290,32 @@ def send_undo_follow_activity(user_id: str, target_actor_url: str) -> None:
     if not user or user.remote:
         return
 
-    remote_user = User.objects.filter(ap_id=target_actor_url, remote=True).first()
-    if not remote_user or not remote_user.inbox_url:
+    try:
+        target_model: Any = actor_model_for(target_type)
+    except ValueError:
         return
 
-    content_type = ContentType.objects.get_for_model(User)
+    remote_target = target_model._default_manager.filter(
+        ap_id=target_actor_url, remote=True
+    ).first()
+    if not remote_target or not remote_target.inbox_url:
+        return
+
+    content_type = content_type_for_actor(target_type)
+
+    from suddenly.characters.models import Follow
+
     follow = Follow.objects.filter(
         follower=user,
         content_type=content_type,
-        object_id=remote_user.pk,
+        object_id=remote_target.pk,
     ).first()
 
     if not follow or not follow.ap_id:
         return
 
     activity = create_undo_follow_activity(user, follow.ap_id, target_actor_url)
-    sign_and_deliver(activity, remote_user.inbox_url, signer=user)
+    sign_and_deliver(activity, remote_target.inbox_url, signer=user)
 
     follow.delete()
 
