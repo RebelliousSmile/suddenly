@@ -267,6 +267,35 @@ def user_followers(request: HttpRequest, username: str) -> HttpResponse:
     )
 
 
+@require_GET
+def user_following(request: HttpRequest, username: str) -> HttpResponse:
+    """User following collection (accounts/characters/games this user follows).
+
+    Announced by ``serialize_user`` (unlike ``serialize_game``/``serialize_character``,
+    which do not announce a "following" IRI — a User is the only actor type that
+    initiates follows). Target is a polymorphic GFK (Epic C, #133); ``prefetch_related``
+    batches the resolution per content type instead of N+1 per-row fetches.
+    """
+    try:
+        user = User.objects.get(username=username, remote=False)
+    except User.DoesNotExist:
+        return HttpResponseNotFound("User not found")
+
+    from suddenly.characters.models import Follow
+
+    following = Follow.objects.filter(follower=user).prefetch_related("target")
+
+    return activitypub_response(
+        {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "OrderedCollection",
+            "id": f"{user.actor_url}/following",
+            "totalItems": following.count(),
+            "orderedItems": [f.target.actor_url for f in following if f.target is not None],
+        }
+    )
+
+
 # =================================================================
 # Game actor endpoints
 # =================================================================
@@ -313,6 +342,39 @@ def game_outbox(request: HttpRequest, game_id: str) -> HttpResponse:
     )
 
 
+@require_GET
+def game_followers(request: HttpRequest, game_id: str) -> HttpResponse:
+    """Game followers collection.
+
+    ``serialize_game`` announces a "followers" IRI but had no backing view
+    (404) — added to close that gap (Epic C, #133, Phase 3 Task 1). Games
+    have no "following" IRI (a Game does not initiate follows).
+    """
+    try:
+        game = Game.objects.get(id=game_id, remote=False, is_public=True)
+    except Game.DoesNotExist:
+        return HttpResponseNotFound("Game not found")
+
+    from django.contrib.contenttypes.models import ContentType
+
+    from suddenly.characters.models import Follow
+
+    game_ct = ContentType.objects.get_for_model(Game)
+    followers = Follow.objects.filter(content_type=game_ct, object_id=game.id).select_related(
+        "follower"
+    )
+
+    return activitypub_response(
+        {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "OrderedCollection",
+            "id": f"{game.actor_url}/followers",
+            "totalItems": followers.count(),
+            "orderedItems": [f.follower.actor_url for f in followers],
+        }
+    )
+
+
 # =================================================================
 # Character actor endpoints
 # =================================================================
@@ -355,5 +417,38 @@ def character_outbox(request: HttpRequest, character_id: str) -> HttpResponse:
             "id": f"{character.actor_url}/outbox",
             "totalItems": total,
             "orderedItems": items,
+        }
+    )
+
+
+@require_GET
+def character_followers(request: HttpRequest, character_id: str) -> HttpResponse:
+    """Character followers collection.
+
+    ``serialize_character`` announces a "followers" IRI but had no backing
+    view (404) — added to close that gap (Epic C, #133, Phase 3 Task 1).
+    Characters have no "following" IRI (a Character does not initiate follows).
+    """
+    try:
+        character = Character.objects.get(id=character_id, remote=False)
+    except Character.DoesNotExist:
+        return HttpResponseNotFound("Character not found")
+
+    from django.contrib.contenttypes.models import ContentType
+
+    from suddenly.characters.models import Follow
+
+    character_ct = ContentType.objects.get_for_model(Character)
+    followers = Follow.objects.filter(
+        content_type=character_ct, object_id=character.id
+    ).select_related("follower")
+
+    return activitypub_response(
+        {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "OrderedCollection",
+            "id": f"{character.actor_url}/followers",
+            "totalItems": followers.count(),
+            "orderedItems": [f.follower.actor_url for f in followers],
         }
     )
