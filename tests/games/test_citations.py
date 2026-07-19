@@ -105,20 +105,18 @@ def test_promotable_excludes_quote_without_report() -> None:
 
 @pytest.mark.django_db
 def test_constraint_public_with_expiry_fails() -> None:
-    with pytest.raises(IntegrityError):
-        with transaction.atomic():
-            _quote(
-                _released_report(),
-                visibility=QuoteVisibility.PUBLIC,
-                expires_at=timezone.now() + timedelta(days=1),
-            )
+    with pytest.raises(IntegrityError), transaction.atomic():
+        _quote(
+            _released_report(),
+            visibility=QuoteVisibility.PUBLIC,
+            expires_at=timezone.now() + timedelta(days=1),
+        )
 
 
 @pytest.mark.django_db
 def test_constraint_ephemeral_without_expiry_fails() -> None:
-    with pytest.raises(IntegrityError):
-        with transaction.atomic():
-            _quote(_released_report(), visibility=QuoteVisibility.EPHEMERAL, expires_at=None)
+    with pytest.raises(IntegrityError), transaction.atomic():
+        _quote(_released_report(), visibility=QuoteVisibility.EPHEMERAL, expires_at=None)
 
 
 @pytest.mark.django_db

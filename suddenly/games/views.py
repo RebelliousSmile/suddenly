@@ -116,9 +116,8 @@ class ReportViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
             queryset = queryset.filter(status="published", visibility=ReportVisibility.PUBLIC)
 
         # Optional query-param filters (all additive)
-        if visibility := params.get("visibility"):
-            if visibility in ReportVisibility.values:
-                queryset = queryset.filter(visibility=visibility)
+        if (visibility := params.get("visibility")) and visibility in ReportVisibility.values:
+            queryset = queryset.filter(visibility=visibility)
 
         if game_id := params.get("game"):
             queryset = queryset.filter(game_id=game_id)

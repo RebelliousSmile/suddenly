@@ -67,9 +67,12 @@ def _get_follow_stats(profile_user: User, request_user: User | AnonymousUser) ->
     followers_count = followers_qs.count()
 
     is_following = False
-    if hasattr(request_user, "is_authenticated") and request_user.is_authenticated:
-        if request_user != profile_user:
-            is_following = followers_qs.filter(follower=request_user).exists()
+    if (
+        hasattr(request_user, "is_authenticated")
+        and request_user.is_authenticated
+        and request_user != profile_user
+    ):
+        is_following = followers_qs.filter(follower=request_user).exists()
 
     return {
         "followers_count": followers_count,

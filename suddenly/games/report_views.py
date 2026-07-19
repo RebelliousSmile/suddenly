@@ -223,9 +223,10 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
     # AND released (liberation axis) to be visible to the public. A report that
     # is published but not yet released is still a game in progress behind the
     # wall — only its editors (author or GM) may read it.
-    if report.status != ReportStatus.PUBLISHED or not report.is_released:
-        if not can_edit_scene(request.user, report):
-            raise Http404
+    if (report.status != ReportStatus.PUBLISHED or not report.is_released) and not can_edit_scene(
+        request.user, report
+    ):
+        raise Http404
 
     from suddenly.characters.models import Character, Quote
 

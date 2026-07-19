@@ -8,6 +8,7 @@ from typing import Any
 
 import pytest
 from django.conf import settings
+from django.db import IntegrityError
 from django.test import Client
 
 from suddenly.users.models import User
@@ -27,7 +28,7 @@ class TestUserEmailConstraint:
 
     def test_two_identical_emails_raise(self, db: Any) -> None:
         User.objects.create_user(username="a", password="x", email="dup@test.com")
-        with pytest.raises(Exception):  # IntegrityError wrapped by Django ORM
+        with pytest.raises(IntegrityError):
             User.objects.create_user(username="b", password="x", email="dup@test.com")
 
 

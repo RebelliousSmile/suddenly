@@ -198,7 +198,7 @@ def _scene_cast(report: Report) -> list[Character]:
         Character.objects.filter(pk__in=cast_ids).select_related("origin_game").order_by("name")
     )
     for character in scene_cast:
-        # Transient view-model attribute; setattr keeps mypy from flagging an
-        # attribute the model does not declare.
-        setattr(character, "has_left", str(character.pk) in gone_ids)
+        # Transient view-model attribute the model does not declare; the mypy
+        # attr-defined check is silenced here.
+        character.has_left = str(character.pk) in gone_ids  # type: ignore[attr-defined]
     return scene_cast

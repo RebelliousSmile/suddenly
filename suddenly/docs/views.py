@@ -21,7 +21,7 @@ def page(request: HttpRequest, section: str, slug: str) -> HttpResponse:
     try:
         text = path.read_text(encoding="utf-8")
     except FileNotFoundError:
-        raise Http404
+        raise Http404 from None
 
     extensions = ["fenced_code", "tables", "toc", "codehilite"]
     extension_configs = {"codehilite": {"guess_lang": False}}
@@ -54,4 +54,4 @@ def wireframe_prototype(request: HttpRequest, name: str) -> HttpResponse:
     try:
         return render(request, f"wireframes/{name}.html")
     except TemplateDoesNotExist:
-        raise Http404
+        raise Http404 from None

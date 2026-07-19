@@ -89,7 +89,7 @@ def deliver_activity(
             raise self.retry(countdown=2**self.request.retries * 60)
 
     except httpx.RequestError as e:
-        raise self.retry(exc=e, countdown=2**self.request.retries * 60)
+        raise self.retry(exc=e, countdown=2**self.request.retries * 60) from e
 
 
 @shared_task  # type: ignore[untyped-decorator]

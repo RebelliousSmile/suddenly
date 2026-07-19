@@ -398,7 +398,9 @@ class FollowCreateSerializer(serializers.Serializer):  # type: ignore[misc]
         try:
             content_type = content_type_for_actor(data["target_type"])
         except ValueError:
-            raise serializers.ValidationError(f"Invalid target type: {data['target_type']}")
+            raise serializers.ValidationError(
+                f"Invalid target type: {data['target_type']}"
+            ) from None
 
         # Check target exists
         model_class = content_type.model_class()

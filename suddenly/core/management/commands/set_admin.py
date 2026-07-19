@@ -24,7 +24,7 @@ class Command(BaseCommand):
         try:
             user = user_model.objects.get(username=username)
         except user_model.DoesNotExist:
-            raise CommandError(f"User '{username}' not found.")
+            raise CommandError(f"User '{username}' not found.") from None
 
         if user.is_admin:
             self.stdout.write(

@@ -1010,7 +1010,7 @@ class TestOfferOutgoing:
             # Normalise positional args to their named equivalents so assertions
             # can use call_kwargs.get("activity") / call_kwargs.get("inbox_url").
             param_names = ["activity", "inbox_url", "actor_key_id", "private_key_pem"]
-            normalised = dict(zip(param_names, args))
+            normalised = dict(zip(param_names, args, strict=False))
             normalised.update(kwargs)
             captured_delay_calls.append(normalised)
 

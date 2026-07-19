@@ -40,20 +40,20 @@ def report_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: 
     """
     from suddenly.activitypub.tasks import send_create_activity
 
-    # Only send when status changes to published
-    if instance.status == "published" and instance.published_at:
-        # Check if this is a new publication (not just an update)
-        # We use a simple heuristic: published_at was just set
-        if created or (
-            instance.published_at and (timezone.now() - instance.published_at).seconds < 10
-        ):
-            # Defer the broadcast until after the surrounding transaction commits.
-            # Without on_commit, a caller that creates the report inside an atomic
-            # block (e.g. ingest, which then creates cast/rapports) would broadcast
-            # a Create before its children exist. Outside a transaction, Django
-            # runs the callback immediately — no behavior change for auto-commit.
-            report_id = str(instance.id)
-            transaction.on_commit(lambda: _safe_delay(send_create_activity, "report", report_id))
+    # Only send when status changes to published, and only for a fresh publication
+    # (created, or published_at was just set — simple heuristic within a 10s window).
+    if (
+        instance.status == "published"
+        and instance.published_at
+        and (created or (timezone.now() - instance.published_at).seconds < 10)
+    ):
+        # Defer the broadcast until after the surrounding transaction commits.
+        # Without on_commit, a caller that creates the report inside an atomic
+        # block (e.g. ingest, which then creates cast/rapports) would broadcast
+        # a Create before its children exist. Outside a transaction, Django
+        # runs the callback immediately — no behavior change for auto-commit.
+        report_id = str(instance.id)
+        transaction.on_commit(lambda: _safe_delay(send_create_activity, "report", report_id))
 
 
 @receiver(pre_save, sender="games.Report")

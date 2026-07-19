@@ -50,24 +50,22 @@ class TestModel:
     def test_constraint_rejects_previous_fk_and_iri_together(self) -> None:
         game = GameFactory()
         a = ReportFactory(game=game)
-        with pytest.raises(IntegrityError):
-            with transaction.atomic():
-                ReportFactory(
-                    game=game,
-                    previous_report=a,
-                    previous_report_iri="https://peer.example/reports/x",
-                )
+        with pytest.raises(IntegrityError), transaction.atomic():
+            ReportFactory(
+                game=game,
+                previous_report=a,
+                previous_report_iri="https://peer.example/reports/x",
+            )
 
     def test_constraint_rejects_anchor_fk_and_iri_together(self) -> None:
         game = GameFactory()
         a = ReportFactory(game=game)
-        with pytest.raises(IntegrityError):
-            with transaction.atomic():
-                ReportFactory(
-                    game=game,
-                    temporal_anchor=a,
-                    temporal_anchor_iri="https://peer.example/reports/x",
-                )
+        with pytest.raises(IntegrityError), transaction.atomic():
+            ReportFactory(
+                game=game,
+                temporal_anchor=a,
+                temporal_anchor_iri="https://peer.example/reports/x",
+            )
 
 
 # ---------------------------------------------------------------------------

@@ -757,11 +757,9 @@ def suggested_characters_to_link(user: User, limit: int = 8) -> list[Character]:
 
     for character in ordered:
         # Transient view-model attribute read by templates/characters/_link_suggestions.html;
-        # setattr keeps mypy from flagging an attribute the model does not declare.
-        setattr(
-            character,
-            "available_actions",
-            ["claim", "adopt", "fork"] if character.status == CharacterStatus.NPC else ["fork"],
+        # the model does not declare it, so the mypy attr-defined check is silenced here.
+        character.available_actions = (  # type: ignore[attr-defined]
+            ["claim", "adopt", "fork"] if character.status == CharacterStatus.NPC else ["fork"]
         )
 
     return ordered

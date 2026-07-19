@@ -107,14 +107,15 @@ class AuthRateLimitMiddleware:
             return self.get_response(request)
 
         for path_prefix, (max_attempts, window) in self.RATE_LIMITS.items():
-            if request.path.startswith(path_prefix):
-                if self._is_rate_limited(request, path_prefix, max_attempts, window):
-                    logger.warning(
-                        "Auth rate limit exceeded: %s from %s",
-                        path_prefix,
-                        self._get_client_ip(request),
-                    )
-                    return HttpResponseForbidden("Too many attempts. Please try again later.")
+            if request.path.startswith(path_prefix) and self._is_rate_limited(
+                request, path_prefix, max_attempts, window
+            ):
+                logger.warning(
+                    "Auth rate limit exceeded: %s from %s",
+                    path_prefix,
+                    self._get_client_ip(request),
+                )
+                return HttpResponseForbidden("Too many attempts. Please try again later.")
 
         return self.get_response(request)
 

@@ -53,9 +53,8 @@ class TestLikeModel:
     def test_duplicate_like_raises_integrity_error(self, db: Any, user: User, game: Game) -> None:
         report = _published(user, game)
         Like.objects.create(user=user, report=report)
-        with pytest.raises(IntegrityError):
-            with transaction.atomic():
-                Like.objects.create(user=user, report=report)
+        with pytest.raises(IntegrityError), transaction.atomic():
+            Like.objects.create(user=user, report=report)
 
     def test_same_report_liked_by_two_users_is_allowed(
         self, db: Any, user: User, other_user: User, game: Game

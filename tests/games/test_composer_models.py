@@ -92,9 +92,8 @@ def test_media_second_on_same_description_fails() -> None:
     rapport = Rapport.objects.create(report=report, kind=RapportKind.DESCRIPTION, content="A hall.")
     RapportMedia.objects.create(rapport=rapport, image=_png())
 
-    with pytest.raises(IntegrityError):
-        with transaction.atomic():
-            RapportMedia.objects.create(rapport=rapport, image=_png())
+    with pytest.raises(IntegrityError), transaction.atomic():
+        RapportMedia.objects.create(rapport=rapport, image=_png())
 
 
 @pytest.mark.django_db
