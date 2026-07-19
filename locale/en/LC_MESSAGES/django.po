@@ -3347,16 +3347,16 @@ msgstr ""
 msgid "Story"
 msgstr ""
 
-#: .\templates\stories\detail.html:19
+#: .\templates\stories\detail.html:39
 #, python-format
-msgid "%(counter)s report · readable by all"
-msgid_plural "%(counter)s reports · readable by all"
+msgid "%(counter)s scene · readable by all"
+msgid_plural "%(counter)s scenes · readable by all"
 msgstr[0] ""
 msgstr[1] ""
 
-#: .\templates\stories\detail.html:27
+#: .\templates\stories\detail.html:59 .\templates\stories\_reading_nav.html:33
 #, python-format
-msgid "Report %(n)s"
+msgid "Scene %(n)s"
 msgstr ""
 
 #: .\templates\stories\detail.html:75

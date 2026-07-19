@@ -4,8 +4,24 @@
 {% block title %}{{ game.title }} — {% trans "Story" %} — {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
-<section class="py-8">
-    <div class="container-app max-w-3xl">
+{% comment %}
+Lecture maître-détail (SUD-V3, #156) : rail des scènes à gauche, lecture d'UNE
+scène à la fois à droite. Toutes les scènes libérées sont en DOM ; la sélection
+est client-side (Alpine), `current` = pk de la scène affichée. Valeur initiale
+injectée via data-initial + x-init (exception whitelistée 03-alpine-patterns.md).
+{% endcomment %}
+<section class="py-8"
+         x-data="{
+            current: '',
+            scrollToReading() {
+                if (window.matchMedia('(max-width: 1023px)').matches) {
+                    document.getElementById('reading-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+         }"
+         data-initial="{{ reports.0.pk }}"
+         x-init="current = $el.dataset.initial">
+    <div class="container-app">
 
         <!-- Breadcrumb -->
         <p class="text-sm text-semantic-muted mb-3">
@@ -15,65 +31,77 @@
 
         <!-- Title + one-line summary (no cover here — the story is the long read). -->
         <h1 class="text-2xl font-bold text-semantic-ink mb-1.5">{{ game.title }}</h1>
-        <p class="text-sm text-semantic-muted mb-10">
-            {% blocktrans count counter=reports|length %}{{ counter }} report · readable by all{% plural %}{{ counter }} reports · readable by all{% endblocktrans %}
+        <p class="text-sm text-semantic-muted mb-8">
+            {% blocktrans count counter=reports|length %}{{ counter }} scene · readable by all{% plural %}{{ counter }} scenes · readable by all{% endblocktrans %}
         </p>
 
-        <!-- Released reports, end to end — one continuous read per scene. -->
-        {% for report in reports %}
-            <article class="{% if not forloop.first %}mt-12 pt-10 border-t border-semantic-border{% endif %}">
-                <header class="mb-5 pb-2 border-b border-semantic-border/60">
-                    <p class="text-[11px] font-semibold tracking-wider uppercase text-semantic-muted">
-                        {% blocktrans with n=forloop.counter %}Report {{ n }}{% endblocktrans %}{% if report.title %} · {{ report.title }}{% endif %}{% if report.session_date %} · {{ report.session_date|date:"d/m/Y" }}{% elif report.released_at %} · {{ report.released_at|date:"d/m/Y" }}{% endif %}
-                    </p>
-                </header>
+        <div class="@lg:flex @lg:gap-10">
 
-                {% if report.content_warning %}
-                    <div class="flex items-center gap-2 text-sm text-semantic-warning mb-4">
-                        <span class="i-lucide-alert-triangle text-xs"></span>
-                        {{ report.content_warning }}
-                    </div>
-                {% endif %}
+            <!-- Rail des scènes — sidebar desktop / bande horizontale mobile -->
+            <aside class="flex-shrink-0 @lg:w-64 mb-6 @lg:mb-0">
+                {% include "stories/_reading_nav.html" %}
+            </aside>
 
-                {% if report.content %}
-                    <p class="font-serif text-[18px] leading-loose text-semantic-ink my-4">{{ report.content|linebreaksbr }}</p>
-                {% endif %}
+            <!-- Colonne de lecture — une scène à la fois -->
+            <main id="reading-panel" class="flex-1 min-w-0 max-w-3xl">
+                {% for report in reports %}
+                    <article data-report="{{ report.pk }}"
+                             x-show="current === $el.dataset.report"
+                             x-cloak>
+                        <header class="mb-5 pb-2 border-b border-semantic-border/60">
+                            <p class="text-[11px] font-semibold tracking-wider uppercase text-semantic-muted">
+                                {% blocktrans with n=forloop.counter %}Scene {{ n }}{% endblocktrans %}{% if report.title %} · {{ report.title }}{% endif %}{% if report.session_date %} · {{ report.session_date|date:"d/m/Y" }}{% elif report.released_at %} · {{ report.released_at|date:"d/m/Y" }}{% endif %}
+                            </p>
+                        </header>
 
-                {% for rapport in report.rapports.all %}
-                    {% include "stories/_rapport.html" %}
+                        {% if report.content_warning %}
+                            <div class="flex items-center gap-2 text-sm text-semantic-warning mb-4">
+                                <span class="i-lucide-alert-triangle text-xs" aria-hidden="true"></span>
+                                {{ report.content_warning }}
+                            </div>
+                        {% endif %}
+
+                        {% if report.content %}
+                            <p class="font-serif text-[18px] leading-loose text-semantic-ink my-4">{{ report.content|linebreaksbr }}</p>
+                        {% endif %}
+
+                        {% for rapport in report.rapports.all %}
+                            {% include "stories/_rapport.html" %}
+                        {% endfor %}
+
+                        {% comment %} Scene markers — pulled out of the reading flow, gathered as
+                        discreet tags at the end of the scene. {% endcomment %}
+                        {% with scene_markers=report.rapports.all %}
+                            <div class="mt-6 flex flex-wrap gap-x-4 gap-y-1">
+                                {% for rapport in scene_markers %}
+                                    {% for marker in rapport.markers.all %}
+                                        <span class="text-[10px] uppercase tracking-wider text-semantic-muted">
+                                            {{ marker.get_kind_display }}{% if marker.character %} · {{ marker.character.name }}{% endif %}
+                                        </span>
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+                        {% endwith %}
+                    </article>
                 {% endfor %}
 
-                {% comment %} Scene markers — pulled out of the reading flow, gathered as
-                discreet tags at the end of the scene. {% endcomment %}
-                {% with scene_markers=report.rapports.all %}
-                    <div class="mt-6 flex flex-wrap gap-x-4 gap-y-1">
-                        {% for rapport in scene_markers %}
-                            {% for marker in rapport.markers.all %}
-                                <span class="text-[10px] uppercase tracking-wider text-semantic-muted">
-                                    {{ marker.get_kind_display }}{% if marker.character %} · {{ marker.character.name }}{% endif %}
-                                </span>
+                {% if quotes %}
+                    <div class="mt-12 pt-8 border-t border-semantic-border">
+                        <h2 class="text-xl font-bold text-semantic-ink mb-4">{% trans "Citations retenues" %}</h2>
+                        <div class="space-y-4">
+                            {% for quote in quotes %}
+                                {% include "quotes/_quote_card.html" with hide_source=True %}
                             {% endfor %}
-                        {% endfor %}
+                        </div>
                     </div>
-                {% endwith %}
-            </article>
-        {% endfor %}
+                {% endif %}
 
-        {% if quotes %}
-            <div class="mt-12 pt-8 border-t border-semantic-border">
-                <h2 class="text-xl font-bold text-semantic-ink mb-4">{% trans "Citations retenues" %}</h2>
-                <div class="space-y-4">
-                    {% for quote in quotes %}
-                        {% include "quotes/_quote_card.html" with hide_source=True %}
-                    {% endfor %}
+                <div class="mt-10">
+                    <a href="{% url 'games:stories' %}" class="btn-secondary btn-sm">← {% trans "All stories" %}</a>
                 </div>
-            </div>
-        {% endif %}
+            </main>
 
-        <div class="mt-10">
-            <a href="{% url 'games:stories' %}" class="btn-secondary btn-sm">← {% trans "All stories" %}</a>
         </div>
-
     </div>
 </section>
 {% endblock %}
