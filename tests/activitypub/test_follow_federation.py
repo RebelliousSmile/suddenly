@@ -254,6 +254,47 @@ class TestAcceptOfferNonRegression:
         # The unrelated Follow must remain untouched (still unaccepted).
         assert Follow.objects.get(ap_id=unrelated_follow_ap_id).accepted is False
 
+    def test_accept_offer_not_swallowed_by_follow_same_actor_match(
+        self, db: Any, mocker: Any
+    ) -> None:
+        """Fix for review blocker: the followed remote actor is ALSO the
+        Accept(Offer) emitter (same actor on both sides) — the previous
+        actor-scoped fallback in `_resolve_outbound_follow` ran for any bare
+        string `object` and matched by actor alone, so it would swallow this
+        legitimate Accept(Offer) into the unrelated Follow row and never
+        reach `reconstruct_remote_accept`, leaving the LinkRequest stuck
+        PENDING. `test_accept_offer_not_swallowed_by_follow_ambiguous_string_match`
+        above does not cover this because it uses different actors for the
+        Follow target and the Offer emitter.
+        """
+        link_request, offer_id, peer_owner_actor_url = self._make_remote_offer_setup()
+
+        # The local requester ALSO follows the same remote actor that is
+        # about to send the Accept(Offer) — same actor for both the Follow
+        # target and the Offer emitter.
+        peer_owner = User.objects.get(ap_id=peer_owner_actor_url)
+        follow_ap_id = (
+            f"https://testserver/users/{link_request.requester.username}/follows/{peer_owner.pk}"
+        )
+        _make_outbound_follow(link_request.requester, peer_owner, follow_ap_id, accepted=False)
+
+        reconstruct = mocker.patch(
+            "suddenly.characters.services.LinkService.reconstruct_remote_accept"
+        )
+
+        handle_accept(
+            {"type": "Accept", "actor": peer_owner_actor_url, "object": offer_id, "summary": ""},
+            actor_type="user",
+            actor_identifier=link_request.requester.username,
+        )
+
+        # The LinkRequest must be reconstructed — not swallowed by the Follow.
+        reconstruct.assert_called_once()
+        called_request = reconstruct.call_args[0][0]
+        assert called_request.pk == link_request.pk
+        # The Follow to the same actor must remain untouched (still unaccepted).
+        assert Follow.objects.get(ap_id=follow_ap_id).accepted is False
+
 
 def _make_remote_user_with_inbox(actor_url: str, inbox_url: str) -> User:
     user = _make_remote_user(actor_url)

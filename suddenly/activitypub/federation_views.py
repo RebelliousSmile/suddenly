@@ -11,7 +11,8 @@ from typing import Any
 from urllib.parse import urlparse
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
+from django.views.decorators.http import require_POST
 
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
@@ -166,6 +167,7 @@ def _resolve_remote_actor_type(
     return "user"
 
 
+@require_POST
 @login_required
 def remote_follow_toggle(request: AuthenticatedRequest) -> HttpResponse:
     """Toggle follow on a remote ActivityPub actor. HTMX POST.
@@ -176,19 +178,11 @@ def remote_follow_toggle(request: AuthenticatedRequest) -> HttpResponse:
     against that target — not always a User. A non-Suddenly actor (Mastodon)
     always resolves to "user" and never 500s.
     """
-    if request.method != "POST":
-        from django.http import HttpResponseNotAllowed
-
-        return HttpResponseNotAllowed(["POST"])
-
     ap_id = request.POST.get("ap_id", "").strip()
     if not ap_id:
-        from django.http import HttpResponseBadRequest
-
         return HttpResponseBadRequest("Missing ap_id")
 
     from django.conf import settings
-    from django.http import HttpResponseBadRequest
     from django.shortcuts import render
 
     from suddenly.activitypub.inbox import (
