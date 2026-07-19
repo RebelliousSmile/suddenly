@@ -1,0 +1,56 @@
+{% load i18n %}
+{% if is_suddenly %}
+    <div class="mt-8">
+        <h2 class="text-heading text-lg mb-3">{% trans "Games" %}</h2>
+        {% if remote_games %}
+            <div class="space-y-2">
+                {% for game in remote_games %}
+                    <a href="{{ game.url }}" target="_blank" rel="noopener"
+                       class="card card-body flex items-center gap-2 hover:bg-semantic-card-sunken/30 transition-colors">
+                        <span class="i-lucide-book-open text-sm text-semantic-muted"></span>
+                        <span class="font-medium text-sm text-semantic-ink">{{ game.name }}</span>
+                        <span class="i-lucide-external-link text-xs text-semantic-muted ml-auto"></span>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-sm text-semantic-muted">{% trans "No games to show." %}</p>
+        {% endif %}
+    </div>
+
+    <div class="mt-8">
+        <h2 class="text-heading text-lg mb-3">{% trans "Characters" %}</h2>
+        {% if remote_characters %}
+            <div class="flex flex-wrap gap-2">
+                {% for character in remote_characters %}
+                    <a href="{{ character.url }}" target="_blank" rel="noopener" class="badge text-xs">
+                        {{ character.name }}
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-sm text-semantic-muted">{% trans "No characters to show." %}</p>
+        {% endif %}
+    </div>
+{% endif %}
+
+<div class="mt-8">
+    <h2 class="text-heading text-lg mb-3">{% trans "Recent activity" %}</h2>
+    {% if activity %}
+        <div class="space-y-3">
+            {% for item in activity %}
+                <a href="{{ item.url }}" target="_blank" rel="noopener"
+                   class="card card-body block hover:bg-semantic-card-sunken/30 transition-colors">
+                    {% if item.title %}
+                        <h3 class="font-medium text-sm text-semantic-ink mb-1">{{ item.title }}</h3>
+                    {% endif %}
+                    <p class="text-sm text-semantic-ink-secondary line-clamp-3">
+                        {{ item.content|striptags|truncatewords:40 }}
+                    </p>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-sm text-semantic-muted">{% trans "No recent activity to show." %}</p>
+    {% endif %}
+</div>
