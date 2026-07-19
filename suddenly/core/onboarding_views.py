@@ -27,7 +27,7 @@ def onboarding_step1(request: AuthenticatedRequest) -> HttpResponse:
 @login_required
 def onboarding_step2(request: AuthenticatedRequest) -> HttpResponse:
     """Step 2: Discover instance (follow suggestions + local timeline)."""
-    from suddenly.games.models import Game, Report, ReportStatus
+    from suddenly.games.models import Game, Report
     from suddenly.users.models import User
 
     users = (
@@ -37,7 +37,8 @@ def onboarding_step2(request: AuthenticatedRequest) -> HttpResponse:
     )
     games = Game.objects.filter(is_public=True, remote=False).order_by("-updated_at")[:3]
     recent = (
-        Report.objects.filter(status=ReportStatus.PUBLISHED, visibility="public", remote=False)
+        Report.objects.feed_visible()
+        .filter(remote=False)
         .select_related("game", "author")
         .order_by("-published_at")[:3]
     )

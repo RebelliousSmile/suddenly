@@ -109,9 +109,11 @@ class CharacterViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
     def appearances(self, request: Request, pk: str | None = None, **kwargs: Any) -> Response:
         """List reports where this character appears."""
         character = self.get_object()
+        from suddenly.games.models import Report
+
         appearances = character.appearances.select_related(
             "report", "report__author", "report__game"
-        ).filter(report__status="published")
+        ).filter(report__in=Report.objects.feed_visible())
 
         data = [
             {

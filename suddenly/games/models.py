@@ -101,6 +101,20 @@ class ReportQuerySet(models.QuerySet["Report"]):
             visibility=ReportVisibility.PUBLIC,
         )
 
+    def feed_visible(self) -> "ReportQuerySet":
+        """Published + public reports listable in a reading feed.
+
+        The temporal wall is a *local* concept (liberation axis): a local report
+        must have crossed it (``released_at`` set) to appear. A remote report is
+        already gated by its origin instance before federation (federation axis),
+        so it passes on ``status``/``visibility`` alone — the local ``released_at``
+        is never populated on ingest and must not filter remote content out.
+        """
+        return self.filter(
+            status=ReportStatus.PUBLISHED,
+            visibility=ReportVisibility.PUBLIC,
+        ).filter(Q(remote=True) | Q(released_at__isnull=False))
+
 
 class ReportTemporalKind(models.TextChoices):
     """Chronological label of a scene relative to its ``temporal_anchor``.

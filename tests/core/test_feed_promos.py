@@ -100,6 +100,7 @@ def test_feed_home_interleaves_promocards(client: Client, settings: Any) -> None
         status=ReportStatus.PUBLISHED,
         visibility=ReportVisibility.PUBLIC,
         published_at=timezone.now(),
+        released_at=timezone.now(),  # must have crossed the wall to enter the feed
     )
     CharacterFactory(status="npc", origin_game=game, creator=author, remote=False)
 

@@ -66,9 +66,9 @@ class GameViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
 
     @action(detail=True, methods=["get"])  # type: ignore[untyped-decorator]
     def reports(self, request: Request, pk: str | None = None) -> Response:
-        """List published reports for this game."""
+        """List reports for this game that have crossed the temporal wall."""
         game = self.get_object()
-        reports = game.reports.filter(status="published").select_related("author")
+        reports = game.reports.feed_visible().select_related("author")
         serializer = ReportSerializer(reports, many=True)
         return Response(serializer.data)
 
@@ -106,14 +106,16 @@ class ReportViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
         queryset = Report.objects.filter(remote=False)
         params = self.request.query_params
 
+        # The temporal wall gates listings, not just the detail view: a published
+        # but unreleased report is behind the wall and must not surface to anyone
+        # but its author. `feed_visible()` is the single wall-aware filter.
+        visible = Report.objects.feed_visible().values("pk")
         if self.request.user.is_authenticated:
             queryset = queryset.filter(
-                models.Q(status="published") | models.Q(author=self.request.user)
+                models.Q(author=self.request.user) | models.Q(pk__in=visible)
             )
         else:
-            # Unauthenticated callers only see public published reports in listings.
-            # Detail access to unlisted/followers reports is handled by has_object_permission.
-            queryset = queryset.filter(status="published", visibility=ReportVisibility.PUBLIC)
+            queryset = queryset.filter(pk__in=visible)
 
         # Optional query-param filters (all additive)
         if (visibility := params.get("visibility")) and visibility in ReportVisibility.values:

@@ -293,3 +293,68 @@ def test_story_detail_renders_rapports(client: Client) -> None:
     response = client.get(reverse("games:story_detail", kwargs={"pk": str(game.pk)}))
     assert response.status_code == 200
     assert b"The wall falls." in response.content
+
+
+# ---------------------------------------------------------------------------
+# SUD-V2 — feed_visible (the wall also gates reading feeds, not just detail)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+def test_feed_visible_excludes_local_unreleased() -> None:
+    """A local published-but-unreleased report is behind the wall — it must not
+    surface in a reading feed (regression: it used to leak into the feed)."""
+    author = UserFactory()
+    game = GameFactory(owner=author)
+    released = _published(game, author, released=True)
+    unreleased = _published(game, author, released=False)
+
+    visible = set(Report.objects.feed_visible())
+    assert released in visible
+    assert unreleased not in visible
+
+
+@pytest.mark.django_db
+def test_feed_visible_keeps_remote_unreleased() -> None:
+    """A remote report never carries a local ``released_at`` (set nowhere on
+    ingest). The wall is local, so remote content passes on published/public
+    alone — otherwise the Fediverse feed would be permanently empty."""
+    author = UserFactory()
+    game = GameFactory(owner=author)
+    remote_report = ReportFactory(
+        game=game,
+        author=author,
+        status=ReportStatus.PUBLISHED,
+        visibility=ReportVisibility.PUBLIC,
+        published_at=timezone.now(),
+        released_at=None,
+        remote=True,
+    )
+
+    assert remote_report in set(Report.objects.feed_visible())
+
+
+@pytest.mark.django_db
+def test_feed_home_excludes_unreleased_from_followed_game(client: Client) -> None:
+    """End-to-end: following a game whose only report is behind the wall yields a
+    feed without that report."""
+    from django.contrib.contenttypes.models import ContentType
+
+    from suddenly.characters.models import Follow
+    from suddenly.games.models import Game
+
+    viewer = UserFactory()
+    author = UserFactory()
+    game = GameFactory(owner=author)
+    Follow.objects.create(
+        follower=viewer,
+        content_type=ContentType.objects.get_for_model(Game),
+        object_id=game.pk,
+    )
+    _published(game, author, released=False)
+
+    client.force_login(viewer)
+    response = client.get(reverse("feed:home"))
+    assert response.status_code == 200
+    report_items = [it for it in response.context["feed_items"] if it["type"] == "report"]
+    assert report_items == []

@@ -93,7 +93,13 @@ def game_detail(request: HttpRequest, pk: str) -> HttpResponse:
 
     game = get_object_or_404(Game.objects.select_related("owner").filter(visibility), pk=pk)
 
-    reports = game.reports.filter(status=ReportStatus.PUBLISHED).select_related("author")[:20]
+    # Owner-facing vs discovery: the owner sees their own reports still behind
+    # the wall (published, not yet released) on their game page; any other visitor
+    # only sees wall-cleared content (feed_visible), like the public feeds.
+    if request.user.is_authenticated and request.user == game.owner:
+        reports = game.reports.filter(status=ReportStatus.PUBLISHED).select_related("author")[:20]
+    else:
+        reports = game.reports.feed_visible().select_related("author")[:20]
     # Roster = characters *homed* in this game (origin_game). Exclude forks:
     # a fork inherits its parent's origin_game (its AP home) but originated
     # elsewhere, created by another player — it does not belong to this roster.

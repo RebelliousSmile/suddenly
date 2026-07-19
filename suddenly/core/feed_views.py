@@ -98,10 +98,7 @@ def feed_home(request: AuthenticatedRequest) -> HttpResponse:
     # (Front #9) we read them as a stream of interventions grouped by scene, so
     # prefetch each scene's rapports (in reading order) to avoid N+1.
     reports = (
-        Report.objects.filter(
-            status=ReportStatus.PUBLISHED,
-            visibility="public",
-        )
+        Report.objects.feed_visible()
         .filter(Q(author_id__in=followed_user_ids) | Q(game_id__in=followed_game_ids))
         .select_related("game", "author")
         .prefetch_related(
@@ -153,11 +150,8 @@ def feed_instance(request: HttpRequest) -> HttpResponse:
     from suddenly.games.models import Rapport
 
     reports_qs = (
-        Report.objects.filter(
-            status=ReportStatus.PUBLISHED,
-            visibility="public",
-            remote=False,
-        )
+        Report.objects.feed_visible()
+        .filter(remote=False)
         .select_related("game", "author")
         .prefetch_related(
             Prefetch(
@@ -193,11 +187,8 @@ def feed_fediverse(request: HttpRequest) -> HttpResponse:
     from suddenly.games.models import Rapport
 
     reports_qs = (
-        Report.objects.filter(
-            status=ReportStatus.PUBLISHED,
-            visibility="public",
-            remote=True,
-        )
+        Report.objects.feed_visible()
+        .filter(remote=True)
         .select_related("game", "author")
         .prefetch_related(
             Prefetch(
