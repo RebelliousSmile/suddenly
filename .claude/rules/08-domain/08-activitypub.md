@@ -90,8 +90,12 @@ paths:
 - Resolve a target/proposed character with `_resolve_character_by_actor_url` (remote `ap_id`, else parse the local URL); unknown remote proposed PC → `get_or_create_remote_character` (fetch via `fetch_ap_json`, SSRF-safe)
 - Correlate a federated Accept/Reject by `LinkRequest.origin_offer_id` (the requester's Offer `id`), never by the local PK — set at receipt in `handle_offer`, read in `send_accept_activity`/`send_reject_activity`
 - Requester-side state after Accept is rebuilt by `LinkService.reconstruct_remote_accept` (CharacterLink + SharedSequence + notification), idempotent on replay — never call `accept_request` on the requester side
-- Accepting a CLAIM with an unresolved `proposed_character` raises `ValidationError` (never let `CharacterLink.source` IntegrityError surface)
+- Accepting a CLAIM with an unresolved `proposed_character` raises `ValidationError` (never let `CharacterLink.source` IntegrityError surface); `reconstruct_remote_accept` mirrors the same null guard
 - Inbox dispatch lives in `inbox.py` only — `tasks.py` has no incoming-activity handlers
+- Authorize an inbound Accept/Reject with `_remote_response_authorized` — signature auth proves the *sender*, not entitlement
+- Sender domain must match a target-controller domain: `target_character.ap_id` **or** its `owner`/`creator` `ap_id` (the Offer was delivered there) — else a peer that learned the Offer id could forge acceptance (fabricated `CharacterLink`, new FORK PC)
+- Lock the `LinkRequest` row (`select_for_update`, DEC-035) in `reconstruct_remote_accept` and `handle_reject` — federation retries redeliver; without the lock the loser hits the `OneToOne` `IntegrityError`
+- Store `origin_offer_id` only when it fits `URLField(max_length=500)` — untrusted remote input, `.create()` skips `full_clean`
 
 ## Cross-instance request timeouts
 

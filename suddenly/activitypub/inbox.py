@@ -779,6 +779,15 @@ def handle_offer(activity: dict[str, Any], actor_type: str, actor_identifier: st
     ).exists()
     status = LinkRequestStatus.QUEUED if has_pending else LinkRequestStatus.PENDING
 
+    # `origin_offer_id` is untrusted remote input stored in a URLField(max_length=500);
+    # .create() skips full_clean, so an over-long id would surface as a DB DataError
+    # and drop the whole Offer. Store it only when it fits — a pathological id merely
+    # loses the Accept-back correlation, the request is still created.
+    raw_offer_id = activity.get("id")
+    origin_offer_id = (
+        raw_offer_id if isinstance(raw_offer_id, str) and 0 < len(raw_offer_id) <= 500 else None
+    )
+
     LinkRequest.objects.create(
         type=link_type,
         requester=requester,
@@ -787,7 +796,7 @@ def handle_offer(activity: dict[str, Any], actor_type: str, actor_identifier: st
         message=obj.get("content", ""),
         status=status,
         # Correlate a future Accept back to the requester's own LinkRequest (Part 1).
-        origin_offer_id=activity.get("id") or None,
+        origin_offer_id=origin_offer_id,
     )
 
     logger.info("Created LinkRequest: %s for %s", link_type, target_character.name)
@@ -891,6 +900,38 @@ def _offer_id_from_activity(activity: dict[str, Any]) -> str | None:
     return offer_id
 
 
+def _remote_response_authorized(actor_url: str | None, link_request: Any) -> bool:
+    """Verify an inbound Accept/Reject comes from the instance controlling the target.
+
+    ``process_inbox`` already authenticates the sender as ``activity["actor"]``
+    (signature + actor/signature domain match), but that proves only *who* sent
+    the activity — not that they are entitled to resolve THIS request. The Offer
+    was delivered to the party that controls the ``target_character`` (its
+    owner/creator), so a legitimate Accept/Reject can only originate from that
+    party's instance. Bind the sender's domain to the target's controller domains
+    — its ``owner``/``creator`` ``ap_id`` and its own ``ap_id`` (mirror case) — so
+    a third-party peer that merely learned the Offer id cannot forge an
+    acceptance (DEC-038 trust boundary): a forged Accept would otherwise fabricate
+    a CharacterLink — and, for FORK, a brand-new local PC.
+    """
+    from urllib.parse import urlparse
+
+    if not actor_url:
+        return False
+    actor_host = urlparse(actor_url).hostname
+    if not actor_host:
+        return False
+
+    target = link_request.target_character
+    authoritative_urls = [
+        getattr(target, "ap_id", None),
+        getattr(getattr(target, "owner", None), "ap_id", None),
+        getattr(getattr(target, "creator", None), "ap_id", None),
+    ]
+    allowed_hosts = {urlparse(u).hostname for u in authoritative_urls if u}
+    return actor_host in allowed_hosts
+
+
 def handle_accept(activity: dict[str, Any], actor_type: str, actor_identifier: str) -> None:
     """
     Handle Accept activity (our offer was accepted).
@@ -915,6 +956,14 @@ def handle_accept(activity: dict[str, Any], actor_type: str, actor_identifier: s
     except (LinkRequest.DoesNotExist, ValueError):
         return
 
+    if not _remote_response_authorized(activity.get("actor"), link_request):
+        logger.warning(
+            "Rejected forged Accept for LinkRequest %s: actor %s not from target instance",
+            request_id,
+            activity.get("actor"),
+        )
+        return
+
     LinkService.reconstruct_remote_accept(link_request, activity.get("summary", ""))
     logger.info("LinkRequest %s accepted (remote)", request_id)
 
@@ -923,6 +972,8 @@ def handle_reject(activity: dict[str, Any], actor_type: str, actor_identifier: s
     """
     Handle Reject activity (our offer was rejected).
     """
+    from django.db import transaction
+
     from suddenly.characters.models import LinkRequest, LinkRequestStatus
 
     offer_id = _offer_id_from_activity(activity)
@@ -930,15 +981,25 @@ def handle_reject(activity: dict[str, Any], actor_type: str, actor_identifier: s
         return
 
     request_id = _extract_link_request_id(offer_id)
-    if request_id:
-        try:
-            link_request = LinkRequest.objects.get(id=request_id)
+    if not request_id:
+        return
+    try:
+        with transaction.atomic():
+            # Lock the row (DEC-035) so a concurrent/duplicate Reject serializes.
+            link_request = LinkRequest.objects.select_for_update().get(id=request_id)
+            if not _remote_response_authorized(activity.get("actor"), link_request):
+                logger.warning(
+                    "Rejected forged Reject for LinkRequest %s: actor %s not from target instance",
+                    request_id,
+                    activity.get("actor"),
+                )
+                return
             link_request.status = LinkRequestStatus.REJECTED
             link_request.response_message = activity.get("summary", "")
             link_request.save()
-            logger.info(f"LinkRequest {request_id} rejected")
-        except (LinkRequest.DoesNotExist, ValueError):
-            pass
+            logger.info("LinkRequest %s rejected (remote)", request_id)
+    except (LinkRequest.DoesNotExist, ValueError):
+        pass
 
 
 # =================================================================

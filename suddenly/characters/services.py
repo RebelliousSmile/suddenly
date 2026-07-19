@@ -253,15 +253,28 @@ class LinkService:
         already ACCEPTED with its link built returns that link without redoing
         any work.
         """
+        # Lock the LinkRequest row (DEC-035 anchor) so a concurrent duplicate
+        # Accept — federation retries redeliver the same activity — serializes
+        # here. Without the lock both callers pass the idempotency guard and race
+        # to CharacterLink.create; the loser hits the OneToOne IntegrityError
+        # instead of gracefully returning the existing link.
+        request = LinkRequest.objects.select_for_update().get(pk=request.pk)
+
         existing = CharacterLink.objects.filter(link_request=request).first()
         if request.status == LinkRequestStatus.ACCEPTED and existing is not None:
             return existing
 
         source: Character
         if request.type == LinkType.CLAIM:
-            # On the requester side the proposed PC is LOCAL (created when the
-            # player launched the claim) — non-null, no degradation needed here.
-            source = request.proposed_character  # type: ignore[assignment]
+            # On the requester side the proposed PC is normally LOCAL (created when
+            # the player launched the claim). Guard for parity with accept_request:
+            # a malformed/legacy claim with a null proposed PC would otherwise hit
+            # the non-null CharacterLink.source as an IntegrityError.
+            if request.proposed_character is None:
+                raise ValidationError(
+                    "Impossible de reconstruire ce claim : le PJ proposé est introuvable"
+                )
+            source = request.proposed_character
         elif request.type == LinkType.ADOPT:
             # Adoption is represented by a link onto the (remote) mirror without
             # mutating its owner/status — the mirror follows the remote object.

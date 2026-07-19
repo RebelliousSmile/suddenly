@@ -459,27 +459,6 @@ class TestInbox:
         # the body is ever parsed, so it never reaches JSON validation (400).
         assert response.status_code == 403
 
-    @pytest.mark.skip(reason="Inbox architecture changed")
-    def test_inbox_accepts_valid_activity(self, client: Client, user: User, mocker: Any) -> None:
-        # Mock the task to avoid actual processing
-        mock_task = mocker.patch("suddenly.activitypub.views.process_incoming_activity")
-        mock_task.delay = mocker.MagicMock()
-
-        activity = {
-            "@context": "https://www.w3.org/ns/activitystreams",
-            "type": "Follow",
-            "actor": "https://remote.social/users/alice",
-            "object": f"https://test.social/users/{user.username}",
-        }
-
-        response = client.post(
-            f"/users/{user.username}/inbox",
-            data=json.dumps(activity),
-            content_type="application/activity+json",
-        )
-
-        assert response.status_code == 202
-
 
 class TestPublicKeyCache:
     """Tests for PublicKeyCache model and verify_signature cache/retry logic."""
