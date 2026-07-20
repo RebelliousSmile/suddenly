@@ -1,17 +1,25 @@
-{# Partial: recommend button state (swapped by HTMX) #}
+{# Partial: recommend button state (swapped by HTMX). #155 — a real toggle. #}
 {% load i18n %}
 {% if recommended %}
-    <span class="btn-ghost btn-sm text-brand-primary">
-        <span class="i-lucide-sparkles text-sm"></span>
+    <button hx-post="{% url 'feed:recommend' %}"
+            hx-vals='{"report_id": "{{ report.pk }}"}'
+            hx-target="this"
+            hx-swap="outerHTML"
+            class="btn-ghost btn-sm tap-target text-brand-primary"
+            aria-pressed="true"
+            aria-label="{% trans 'Remove recommendation from this scene' %}">
+        <span class="i-lucide-sparkles text-sm" aria-hidden="true"></span>
         {% trans "Recommended" %}
-    </span>
+    </button>
 {% else %}
     <button hx-post="{% url 'feed:recommend' %}"
             hx-vals='{"report_id": "{{ report.pk }}"}'
             hx-target="this"
             hx-swap="outerHTML"
-            class="btn-ghost btn-sm">
-        <span class="i-lucide-sparkles text-sm"></span>
+            class="btn-ghost btn-sm tap-target"
+            aria-pressed="false"
+            aria-label="{% trans 'Recommend this scene' %}">
+        <span class="i-lucide-sparkles text-sm" aria-hidden="true"></span>
         {% trans "Recommend" %}
     </button>
 {% endif %}

@@ -2339,6 +2339,14 @@ msgstr "Recommandé"
 msgid "Recommend"
 msgstr "Recommander"
 
+#: .\templates\feed\_recommend_button.html:10
+msgid "Remove recommendation from this scene"
+msgstr "Retirer la recommandation de cette scène"
+
+#: .\templates\feed\_recommend_button.html:21
+msgid "Recommend this scene"
+msgstr "Recommander cette scène"
+
 #: .\templates\feed\home.html:4 .\templates\feed\home.html:21
 msgid "Feed"
 msgstr "Fil d'actualité"

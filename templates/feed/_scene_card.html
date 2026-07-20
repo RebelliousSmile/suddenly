@@ -44,8 +44,9 @@
         <div class="ml-auto flex items-center gap-2 text-semantic-muted">
             {# Like (toggle, #138): wired via feed:like. `liked` annotated on the feed queryset. #}
             {% include "feed/_like_button.html" with report=report liked=report.liked %}
-            {# Recommend (boost / AP Announce, US-28): wired via feed:recommend. #}
-            {% include "feed/_recommend_button.html" with report=report %}
+            {# Recommend (boost / AP Announce, US-28 / #155): toggle via feed:recommend.
+               `recommended` annotated on the feed queryset (annotate_viewer_reactions). #}
+            {% include "feed/_recommend_button.html" with report=report recommended=report.recommended %}
         </div>
     </div>
 </article>

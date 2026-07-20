@@ -9,13 +9,13 @@ from __future__ import annotations
 import datetime
 import re
 import unicodedata
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
-from django.db.models import Count, F, Q
+from django.db.models import Count, Exists, F, OuterRef, Q
 from django.db.models.query import QuerySet
 from django.utils import timezone
 
@@ -31,6 +31,7 @@ from .models import (
     CastRole,
     Game,
     GameCast,
+    Like,
     MarkerKind,
     Rapport,
     RapportKind,
@@ -38,6 +39,7 @@ from .models import (
     RapportMarker,
     RapportMedia,
     RapportStatus,
+    Recommendation,
     Report,
     ReportCast,
     ReportStatus,
@@ -128,6 +130,26 @@ def can_edit_scene(user: AbstractBaseUser | AnonymousUser, report: Report) -> bo
     if not user.is_authenticated:
         return False
     return bool(report.author_id == user.pk or report.game.owner_id == user.pk)
+
+
+def annotate_viewer_reactions(
+    qs: QuerySet[Report], user: AbstractBaseUser | AnonymousUser
+) -> QuerySet[Report]:
+    """Annotate per-viewer ``liked`` (#138) and ``recommended`` (#155) on a Report qs.
+
+    Single source of truth for both engagement flags — replaces the duplicated
+    ``liked=Exists(...)`` annotation across every feed queryset. Anonymous viewer
+    → qs unchanged (templates read a falsy ``report.liked`` / ``report.recommended``).
+    Set-based ``Exists`` subqueries: one correlated JOIN per flag for the whole
+    page, never a query per card.
+    """
+    if not user.is_authenticated:
+        return qs
+    concrete = cast("User", user)
+    return qs.annotate(
+        liked=Exists(Like.objects.filter(report=OuterRef("pk"), user=concrete)),
+        recommended=Exists(Recommendation.objects.filter(report=OuterRef("pk"), user=concrete)),
+    )
 
 
 def build_actor_pool(user: User, game: Game) -> QuerySet[Character]:

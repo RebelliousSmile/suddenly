@@ -351,6 +351,38 @@ class Like(BaseModel):
         return f"{self.user} ♥ {self.report}"
 
 
+class Recommendation(BaseModel):
+    """A user's recommendation (boost) of a published scene (Report). #155.
+
+    Mirrors ``Like`` (#138): persistence only, no denormalized counter. The
+    ``recommended`` state is read via an ``Exists`` annotation (never a per-card
+    query), and a ``Count`` stays addable later without a migration. Uniqueness
+    ``(user, report)`` makes the toggle idempotent; the DB constraint is the
+    safety net against a fast double-click racing two concurrent creates. A
+    recommendation federates as an AP ``Announce`` (boost) to the user's
+    followers, and ``Undo(Announce)`` on removal.
+    """
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="recommendations"
+    )
+    report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name="recommendations")
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "report"], name="unique_user_report_recommendation"
+            ),
+        ]
+        indexes = [
+            models.Index(fields=["report"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.user} ★ {self.report}"
+
+
 class CastRole(models.TextChoices):
     """Role of a character in the cast."""
 

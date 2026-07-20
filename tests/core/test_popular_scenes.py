@@ -221,13 +221,15 @@ def test_infinite_scroll_sentinel_paginates(client: Client) -> None:
     url = reverse("core:popular_scenes")
     page1 = client.get(url)
     b1 = page1.content.decode()
-    # Full page: 20 cards + a sentinel pointing at page 2.
-    assert b1.count("aria-pressed") == 20
+    # Full page: 20 cards + a sentinel pointing at page 2. Count scene cards by
+    # their wrapper — each card now carries two toggles (like + recommend, #155),
+    # so `aria-pressed` alone no longer maps 1:1 to a card.
+    assert b1.count("card card-hover") == 20
     assert 'hx-get="?page=2"' in b1
 
     page2 = client.get(url, {"page": "2"}, HTTP_HX_REQUEST="true")
     b2 = page2.content.decode()
     # HTMX request → items partial alone (no base layout), last card, no sentinel.
     assert "<!DOCTYPE" not in b2 and "<html" not in b2
-    assert b2.count("aria-pressed") == 1
+    assert b2.count("card card-hover") == 1
     assert 'hx-get="?page=3"' not in b2

@@ -37,6 +37,7 @@ from .models import (
     ReportVisibility,
 )
 from .services import (
+    annotate_viewer_reactions,
     build_composer_context,
     can_edit_scene,
     close_scene,
@@ -209,15 +210,18 @@ def scene_reopen(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpRe
 
 def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
     """Report detail page (US-04)."""
-    report = get_object_or_404(
+    # Annotate the viewer's like/recommend state (#155) so the scene page can
+    # render the engagement buttons hot — set-based, no extra per-request query
+    # for anonymous visitors (helper is a no-op then).
+    report_qs = annotate_viewer_reactions(
         Report.objects.select_related("game", "author", "previous_report").prefetch_related(
             "rapports__parent_links",
             "rapports__parent_links__parent_rapport",
             "next_reports",
         ),
-        pk=pk,
-        game_id=game_pk,
+        request.user,
     )
+    report = get_object_or_404(report_qs, pk=pk, game_id=game_pk)
 
     # Wall check (SUD-V2): a report must be BOTH published (federation axis)
     # AND released (liberation axis) to be visible to the public. A report that

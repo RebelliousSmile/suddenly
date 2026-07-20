@@ -378,9 +378,19 @@ def send_reject_activity(link_request_id: str) -> None:
 # =================================================================
 
 
+def _announce_activity_id(domain: str, username: str, report_pk: Any) -> str:
+    """Deterministic AP ``id`` for a user's Announce (boost) of a report (#155).
+
+    Stable by construction so ``Undo(Announce)`` references the exact same ``id``
+    the receiver saw on the original ``Announce`` — correlation on the remote
+    side (mirrors ``_like_activity_id``).
+    """
+    return f"https://{domain}/users/{username}/announce/{report_pk}"
+
+
 @shared_task  # type: ignore[untyped-decorator]
 def send_announce_activity(user_id: str, report_id: str) -> None:
-    """Send Announce (recommendation/boost) for a report. US-28."""
+    """Send Announce (recommendation/boost) for a report. US-28 / #155."""
     from django.conf import settings as django_settings
 
     from suddenly.games.models import Report
@@ -397,9 +407,50 @@ def send_announce_activity(user_id: str, report_id: str) -> None:
     activity: dict[str, Any] = {
         "@context": "https://www.w3.org/ns/activitystreams",
         "type": "Announce",
-        "id": f"https://{domain}/users/{user.username}/announce/{report.pk}",
+        "id": _announce_activity_id(domain, user.username, report.pk),
         "actor": user.actor_url,
         "object": report_url,
+        "to": ["https://www.w3.org/ns/activitystreams#Public"],
+        "cc": [f"{user.actor_url}/followers"],
+        "published": timezone.now().isoformat(),
+    }
+
+    broadcast_activity.delay(activity, str(user.pk), "User")
+
+
+@shared_task  # type: ignore[untyped-decorator]
+def send_undo_announce_activity(user_id: str, report_id: str) -> None:
+    """Broadcast an AP ``Undo(Announce)`` for a report to the user's followers. #155.
+
+    Wraps the same ``Announce`` (identical ``id``) inside an ``Undo`` so remote
+    receivers correlate it with the original boost. Boost/unboost is a followers
+    broadcast (not directed) — local or remote scene alike.
+    """
+    from django.conf import settings as django_settings
+
+    from suddenly.games.models import Report
+    from suddenly.users.models import User
+
+    user = User.objects.filter(pk=user_id).first()
+    report = Report.objects.filter(pk=report_id).first()
+    if not user or not report:
+        return
+
+    domain = django_settings.DOMAIN
+    announce_id = _announce_activity_id(domain, user.username, report.pk)
+    report_url = report.ap_id or f"https://{domain}/reports/{report.pk}"
+
+    activity: dict[str, Any] = {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "type": "Undo",
+        "id": f"{announce_id}/undo",
+        "actor": user.actor_url,
+        "object": {
+            "type": "Announce",
+            "id": announce_id,
+            "actor": user.actor_url,
+            "object": report_url,
+        },
         "to": ["https://www.w3.org/ns/activitystreams#Public"],
         "cc": [f"{user.actor_url}/followers"],
         "published": timezone.now().isoformat(),
