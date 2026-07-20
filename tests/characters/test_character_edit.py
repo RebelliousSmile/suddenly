@@ -15,7 +15,7 @@ from django.test import Client
 from django.urls import reverse
 
 from suddenly.characters.models import Character
-from suddenly.games.models import Game, Rapport, RapportKind, Report, ReportStatus
+from suddenly.games.models import Rapport, RapportKind, Report, ReportStatus
 from suddenly.users.models import User
 from tests.factories import GameFactory
 
