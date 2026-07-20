@@ -23,6 +23,62 @@ from suddenly.users.models import User
 
 
 @login_required
+def settings_stats(request: AuthenticatedRequest) -> HttpResponse:
+    """Stats & Succès page (#153) — the user's own precise stats + achievements.
+
+    Evaluates achievements on visit (unlocking any interaction-based milestone
+    reached since last time), renders the stats tiles + achievement grid, then
+    marks the unlocked achievements as seen so the account-menu badge clears.
+    """
+    from django.utils import timezone
+
+    from suddenly.core.achievements import achievements_view_model, evaluate_and_unlock
+    from suddenly.core.models import UnlockedAchievement
+    from suddenly.core.stats import compute_user_stats
+
+    user = request.user
+    evaluate_and_unlock(user)
+    stats = compute_user_stats(user)
+    achievements = achievements_view_model(user, stats)
+
+    # "Seen" = displayed on the Stats page (distinct from a read notification).
+    UnlockedAchievement.objects.filter(user=user, seen_at__isnull=True).update(
+        seen_at=timezone.now()
+    )
+
+    # Ordered (label, value) tiles — labels use the UI vocabulary (scènes/posts).
+    stat_tiles = [
+        (_("Scènes publiées"), stats["scenes_published"]),
+        (_("Posts"), stats["posts"]),
+        (_("Signes"), stats["signs"]),
+        (_("Mots"), stats["words"]),
+        (_("Personnages"), stats["characters_created"]),
+        (_("Parties"), stats["games"]),
+        (_("Likes reçus"), stats["likes_received"]),
+        (_("Likes donnés"), stats["likes_given"]),
+        (_("Recommandations reçues"), stats["recommendations_received"]),
+        (_("Recommandations données"), stats["recommendations_given"]),
+        (_("Abonnés"), stats["followers"]),
+        (_("Abonnements"), stats["following"]),
+        (_("Demandes acceptées"), stats["accepted_links_made"]),
+        (_("Demandes reçues acceptées"), stats["accepted_links_received"]),
+        (_("Messages envoyés"), stats["messages_sent"]),
+    ]
+
+    return render(
+        request,
+        "users/settings_stats.html",
+        {
+            "stats": stats,
+            "stat_tiles": stat_tiles,
+            "achievements": achievements,
+            "unlocked_count": sum(1 for a in achievements if a["unlocked"]),
+            "total_count": len(achievements),
+        },
+    )
+
+
+@login_required
 def settings_preferences(request: AuthenticatedRequest) -> HttpResponse:
     """Language and interface preferences."""
     if request.method == "POST":

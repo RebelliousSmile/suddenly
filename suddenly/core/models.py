@@ -53,6 +53,7 @@ class NotificationType(models.TextChoices):
     OFFER = "offer", "Nouvelle offre à laquelle répondre"
     OFFER_RESPONSE = "offer_response", "Votre offre a reçu une réponse"
     DIRECT_MESSAGE = "direct_message", "Message privé"
+    ACHIEVEMENT = "achievement", "Succès débloqué"
 
 
 class Notification(BaseModel):
@@ -119,6 +120,37 @@ class Notification(BaseModel):
 
             return reverse("offers:panel", kwargs={"pk": self.target_object_id})
         return ""
+
+
+class UnlockedAchievement(BaseModel):
+    """A succès (achievement) unlocked by a user (#153).
+
+    Definitions live in code (``suddenly.core.achievements.ACHIEVEMENTS``), keyed
+    by ``key`` — this table only records who unlocked what and when, plus whether
+    the user has seen it on their Stats page (``seen_at`` drives the account-menu
+    badge). Uniqueness ``(user, key)`` makes the unlock idempotent — the DB
+    constraint guards a double trigger (page visit + scene publish racing).
+    """
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="unlocked_achievements",
+    )
+    key = models.CharField(max_length=50)
+    seen_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(fields=["user", "key"], name="unique_user_achievement"),
+        ]
+        indexes = [
+            models.Index(fields=["user", "seen_at"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.user} ★ {self.key}"
 
 
 class Tag(BaseModel):

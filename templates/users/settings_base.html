@@ -41,6 +41,13 @@
                             {% trans "Data" %}
                         </a>
 
+                        <a href="{% url 'users:settings_stats' %}"
+                           class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm whitespace-nowrap @lg:whitespace-normal transition-colors
+                                  {% if url_name == 'settings_stats' %}bg-semantic-surface text-semantic-ink font-medium{% else %}text-semantic-ink-secondary hover:text-semantic-ink hover:bg-semantic-surface{% endif %}">
+                            <span class="i-lucide-gem text-sm flex-shrink-0"></span>
+                            {% trans "Stats & Succès" %}
+                        </a>
+
                         <a href="{% url 'account_logout' %}"
                            class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm whitespace-nowrap @lg:whitespace-normal transition-colors
                                   text-semantic-danger hover:bg-semantic-danger/10

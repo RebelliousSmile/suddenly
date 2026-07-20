@@ -1,0 +1,65 @@
+{% extends "users/settings_base.html" %}
+{% load i18n %}
+
+{% block settings_content %}
+{# Stats & Succès (#153). Vocabulaire : « scènes »/« posts », jamais reports/rapports. #}
+<h1 class="text-2xl font-bold text-semantic-ink mb-6">{% trans "Stats & Succès" %}</h1>
+
+{# ── Stats chiffrées ──────────────────────────────────────────────────────── #}
+<section aria-labelledby="stats-heading" class="mb-10">
+    <h2 id="stats-heading" class="text-heading mb-4">{% trans "Statistiques" %}</h2>
+    <div class="grid grid-cols-2 @md:grid-cols-3 gap-3">
+        {% for label, value in stat_tiles %}
+            <div class="card card-body">
+                <p class="text-2xl font-bold text-semantic-ink tabular-nums">{{ value }}</p>
+                <p class="text-xs text-semantic-muted mt-1">{{ label }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+{# ── Succès ───────────────────────────────────────────────────────────────── #}
+<section aria-labelledby="achievements-heading">
+    <div class="flex items-baseline justify-between mb-4">
+        <h2 id="achievements-heading" class="text-heading">{% trans "Succès" %}</h2>
+        <p class="text-sm text-semantic-muted tabular-nums">
+            {% blocktrans with n=unlocked_count total=total_count %}{{ n }} / {{ total }} débloqués{% endblocktrans %}
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 @md:grid-cols-2 gap-3">
+        {% for a in achievements %}
+            <div class="card card-body flex items-start gap-3
+                        {% if not a.unlocked %}opacity-70{% endif %}">
+                <span class="i-lucide-{{ a.icon }} text-xl flex-shrink-0 mt-0.5
+                             {% if a.unlocked %}text-brand-primary{% else %}text-semantic-muted{% endif %}"
+                      aria-hidden="true"></span>
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2">
+                        <p class="font-medium text-semantic-ink">{{ a.name }}</p>
+                        {% if a.unlocked %}
+                            <span class="inline-flex items-center gap-1 text-xs text-brand-primary">
+                                <span class="i-lucide-check text-xs" aria-hidden="true"></span>
+                                {% trans "Débloqué" %}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <p class="text-xs text-semantic-muted mt-0.5">{{ a.description }}</p>
+
+                    {% if not a.unlocked %}
+                        {% widthratio a.current a.threshold 100 as pct %}
+                        <div class="mt-2 flex items-center gap-2">
+                            <div class="flex-1 h-1.5 rounded-full bg-semantic-surface overflow-hidden">
+                                <div class="h-full rounded-full bg-brand-primary" style="width: {{ pct }}%"></div>
+                            </div>
+                            <span class="text-[11px] text-semantic-muted tabular-nums flex-shrink-0">
+                                {{ a.current }}/{{ a.threshold }}
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
