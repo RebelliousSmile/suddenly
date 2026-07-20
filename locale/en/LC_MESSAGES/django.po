@@ -2293,6 +2293,14 @@ msgstr ""
 msgid "Recommend"
 msgstr ""
 
+#: .\templates\feed\_recommend_button.html:10
+msgid "Remove recommendation from this scene"
+msgstr ""
+
+#: .\templates\feed\_recommend_button.html:21
+msgid "Recommend this scene"
+msgstr ""
+
 #: .\templates\feed\home.html:4 .\templates\feed\home.html:21
 msgid "Feed"
 msgstr ""

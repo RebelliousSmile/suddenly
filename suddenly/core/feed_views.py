@@ -13,15 +13,15 @@ from typing import Any
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.db.models import Exists, OuterRef, Q
+from django.db.models import Q
 from django.http import HttpRequest, HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
-from suddenly.games.models import Like, Report, ReportStatus
-from suddenly.games.services import build_composer_feed_context
+from suddenly.games.models import Like, Recommendation, Report, ReportStatus
+from suddenly.games.services import annotate_viewer_reactions, build_composer_feed_context
 
 
 def interleave_promos(reports: list[Any], npcs: list[Any], every: int) -> list[dict[str, Any]]:
@@ -97,7 +97,7 @@ def feed_home(request: AuthenticatedRequest) -> HttpResponse:
     # Published reports (scenes) from followed users/games. For the Friends tab
     # (Front #9) we read them as a stream of interventions grouped by scene, so
     # prefetch each scene's rapports (in reading order) to avoid N+1.
-    reports = (
+    reports_base = (
         Report.objects.feed_visible()
         .filter(Q(author_id__in=followed_user_ids) | Q(game_id__in=followed_game_ids))
         .select_related("game", "author")
@@ -107,11 +107,11 @@ def feed_home(request: AuthenticatedRequest) -> HttpResponse:
                 queryset=Rapport.objects.select_related("actor").order_by("created_at"),
             )
         )
-        # `liked` state via a correlated subquery — one extra JOIN for the whole
-        # page, never one query per card (#138). Feed is login-gated here.
-        .annotate(liked=Exists(Like.objects.filter(report=OuterRef("pk"), user=user)))
-        .order_by("-published_at")[:20]
+        .order_by("-published_at")
     )
+    # `liked` (#138) + `recommended` (#155) via correlated subqueries — one extra
+    # JOIN each for the whole page, never one query per card. Feed is login-gated.
+    reports = annotate_viewer_reactions(reports_base, user)[:20]
 
     # Available NPCs in followed games — promocard pool for interleaving.
     npcs = (
@@ -160,13 +160,10 @@ def feed_instance(request: HttpRequest) -> HttpResponse:
             )
         )
     )
-    # Instance is anonymous-accessible: only annotate `liked` for a logged-in
-    # visitor. Anonymous → no annotation, template reads a falsy `report.liked`.
-    if request.user.is_authenticated:
-        reports_qs = reports_qs.annotate(
-            liked=Exists(Like.objects.filter(report=OuterRef("pk"), user=request.user))
-        )
-    reports = reports_qs.order_by("-published_at")[:20]
+    # Instance is anonymous-accessible: the helper annotates `liked`/`recommended`
+    # only for a logged-in visitor (anonymous → falsy `report.liked`/`recommended`).
+    annotated = annotate_viewer_reactions(reports_qs, request.user)
+    reports = annotated.order_by("-published_at")[:20]
 
     return htmx_render(
         request,
@@ -197,12 +194,10 @@ def feed_fediverse(request: HttpRequest) -> HttpResponse:
             )
         )
     )
-    # Fediverse is anonymous-accessible: annotate `liked` only when logged in.
-    if request.user.is_authenticated:
-        reports_qs = reports_qs.annotate(
-            liked=Exists(Like.objects.filter(report=OuterRef("pk"), user=request.user))
-        )
-    reports = reports_qs.order_by("-published_at")[:20]
+    # Fediverse is anonymous-accessible: annotate `liked`/`recommended` only when
+    # logged in (the helper is a no-op for anonymous visitors).
+    annotated = annotate_viewer_reactions(reports_qs, request.user)
+    reports = annotated.order_by("-published_at")[:20]
 
     return htmx_render(
         request,
@@ -216,30 +211,45 @@ def feed_fediverse(request: HttpRequest) -> HttpResponse:
     )
 
 
+@require_POST
 @login_required
-def recommend_report(request: HttpRequest) -> HttpResponse:
-    """Recommend (boost) a report. US-28. HTMX POST."""
-    from django.http import JsonResponse
+def recommend_report(request: AuthenticatedRequest) -> HttpResponse:
+    """Toggle a recommendation (boost) on a published scene. #155. HTMX POST.
 
-    if request.method != "POST":
-        return JsonResponse({"error": "POST required"}, status=405)
-
+    Was a stub (fire-and-forget Announce, inert ``<span>``, no revert). Now a real
+    persistent toggle mirroring ``like_report``: the ``recommended`` state is read
+    back on every feed via annotation, and removal is possible. On toggle-on we
+    broadcast an AP ``Announce`` to followers; on toggle-off, an ``Undo(Announce)``
+    with the same activity id so the remote side correlates it. Uniqueness
+    ``unique_user_report_recommendation`` guards a concurrent double-click.
+    """
     report_id = request.POST.get("report_id", "")
-    report = Report.objects.filter(pk=report_id, status=ReportStatus.PUBLISHED).first()
+    try:
+        report = Report.objects.filter(pk=report_id, status=ReportStatus.PUBLISHED).first()
+    except (ValidationError, ValueError):
+        report = None
     if not report:
-        return JsonResponse({"error": "Report not found"}, status=404)
+        # 404 leaves the button untouched — HTMX only swaps 2xx responses.
+        return HttpResponseNotFound()
 
-    # Queue AP Announce activity
+    recommendation = Recommendation.objects.filter(user=request.user, report=report).first()
+    if recommendation:
+        recommendation.delete()
+        recommended = False
+    else:
+        Recommendation.objects.create(user=request.user, report=report)
+        recommended = True
+
+    # Boost = a followers broadcast (Announce) / Undo(Announce), local or remote
+    # scene alike — unlike Like, which is directed to a remote author only.
     from suddenly.activitypub.signals import _safe_delay
-    from suddenly.activitypub.tasks import send_announce_activity
+    from suddenly.activitypub.tasks import send_announce_activity, send_undo_announce_activity
 
-    _safe_delay(send_announce_activity, str(request.user.pk), str(report.pk))
+    task = send_announce_activity if recommended else send_undo_announce_activity
+    _safe_delay(task, str(request.user.pk), str(report.pk))
 
-    # Return updated button (HTMX swap)
     return render(
-        request,
-        "feed/_recommend_button.html",
-        {"report": report, "recommended": True},
+        request, "feed/_recommend_button.html", {"report": report, "recommended": recommended}
     )
 
 

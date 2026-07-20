@@ -66,13 +66,15 @@ def popular_scenes_page(
 
     Ranking lives in ``Report.objects.most_liked()`` (wall filter + like count +
     ``like_count >= 1``); this only adds the per-card fetch shape. ``rapports``
-    are prefetched (the scene card reads them) and ``liked`` is annotated only
-    for an authenticated visitor — anonymous cards read a falsy ``report.liked``.
+    are prefetched (the scene card reads them) and ``liked``/``recommended`` are
+    annotated only for an authenticated visitor via ``annotate_viewer_reactions``
+    — anonymous cards read a falsy ``report.liked``/``report.recommended``.
     """
     from django.core.paginator import Paginator
-    from django.db.models import Exists, OuterRef, Prefetch
+    from django.db.models import Prefetch
 
-    from suddenly.games.models import Like, Rapport
+    from suddenly.games.models import Rapport
+    from suddenly.games.services import annotate_viewer_reactions
 
     qs = (
         Report.objects.most_liked()
@@ -84,9 +86,8 @@ def popular_scenes_page(
             )
         )
     )
-    if user.is_authenticated:
-        qs = qs.annotate(liked=Exists(Like.objects.filter(report=OuterRef("pk"), user=user)))
-    return Paginator(qs, POPULAR_SCENES_PER_PAGE).get_page(page_number)
+    annotated = annotate_viewer_reactions(qs, user)
+    return Paginator(annotated, POPULAR_SCENES_PER_PAGE).get_page(page_number)
 
 
 def get_distinct_tag_names(model_cls: type[Any]) -> list[str]:
