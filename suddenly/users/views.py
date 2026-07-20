@@ -38,9 +38,8 @@ class ProfileView(DetailView):  # type: ignore[type-arg]
         from suddenly.games.services import build_game_queryset
 
         context["games"] = build_game_queryset(self.request.user).filter(owner=profile_user)[:10]
-        context["characters"] = profile_user.created_characters.select_related(
-            "origin_game"
-        ).order_by("-created_at")[:12]
+        # Characters are no longer listed on the profile (#154): a character belongs
+        # to its game, shown as a subsection of the game page (game_detail roster).
         # Released, public reports authored by this user — the "Comptes rendus" tab.
         context["reports"] = (
             Report.objects.filter(author=profile_user)

@@ -30,6 +30,29 @@
                           class="form-input">{{ form_data.description|default:character.description|default:'' }}</textarea>
             </div>
 
+            {# Game (origin_game) — editable, but locked once the character has posts (#154). #}
+            <div>
+                <label for="origin_game" class="form-label">{% trans "Game" %}</label>
+                {% if game_locked %}
+                    <input type="text" id="origin_game" value="{{ character.origin_game.title }}"
+                           class="form-input" disabled>
+                    <p class="form-help flex items-center gap-1.5">
+                        <span class="i-lucide-lock text-xs" aria-hidden="true"></span>
+                        {% trans "Locked: this character already has posts." %}
+                    </p>
+                {% else %}
+                    <select id="origin_game" name="origin_game" class="form-input" required>
+                        {% for g in games %}
+                            <option value="{{ g.pk }}"
+                                {% if form_data.origin_game %}{% if form_data.origin_game == g.pk|stringformat:"s" %}selected{% endif %}{% elif character.origin_game_id == g.pk %}selected{% endif %}>
+                                {{ g.title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <p class="form-help">{% trans "The game this character belongs to." %}</p>
+                {% endif %}
+            </div>
+
             <div>
                 <label for="sheet_url" class="form-label">
                     {% trans "Sheet URL" %} <span class="text-semantic-muted">({% trans "optional" %})</span>

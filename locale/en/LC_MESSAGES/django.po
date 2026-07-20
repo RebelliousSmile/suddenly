@@ -802,6 +802,22 @@ msgstr ""
 msgid "Origin game"
 msgstr ""
 
+#: .\templates\characters\character_form.html:35
+msgid "Game"
+msgstr ""
+
+#: .\templates\characters\character_form.html:41
+msgid "Locked: this character already has posts."
+msgstr ""
+
+#: .\templates\characters\character_form.html:51
+msgid "The game this character belongs to."
+msgstr ""
+
+#: .\suddenly\characters\front_views.py:404
+msgid "Choose a game you own."
+msgstr ""
+
 #: .\templates\characters\_list_results.html:109
 #: .\templates\characters\detail.html:43
 #: .\templates\games\_list_results.html:74 .\templates\games\detail.html:42
