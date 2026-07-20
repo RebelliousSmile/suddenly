@@ -813,6 +813,22 @@ msgstr "Scènes"
 msgid "Origin game"
 msgstr "Partie d'origine"
 
+#: .\templates\characters\character_form.html:35
+msgid "Game"
+msgstr "Partie"
+
+#: .\templates\characters\character_form.html:41
+msgid "Locked: this character already has posts."
+msgstr "Verrouillé : ce personnage a déjà des posts."
+
+#: .\templates\characters\character_form.html:51
+msgid "The game this character belongs to."
+msgstr "La partie à laquelle appartient ce personnage."
+
+#: .\suddenly\characters\front_views.py:404
+msgid "Choose a game you own."
+msgstr "Choisissez une partie que vous possédez."
+
 #: .\templates\characters\_list_results.html:109
 #: .\templates\characters\detail.html:43
 #: .\templates\games\_list_results.html:74 .\templates\games\detail.html:42

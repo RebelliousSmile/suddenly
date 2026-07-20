@@ -39,6 +39,18 @@ from .models import (
 LINK_REQUEST_EXPIRY_DAYS = 30
 
 
+def character_has_posts(character: Character) -> bool:
+    """True if the character is the actor of at least one post (Rapport). #154.
+
+    The signal that locks ``origin_game`` in the edit form: once a character has
+    posted, its game — and thus its ActivityPub federation home — is frozen.
+    Posts only (decision): a mere recorded presence (``CharacterAppearance``)
+    does not lock. ``Rapport.actor`` is ``SET_NULL``, so a post whose actor was
+    later unlinked no longer counts — assumed.
+    """
+    return character.rapport_appearances.exists()
+
+
 class LinkService:
     """
     Service for managing character links (claim, adopt, fork).

@@ -28,6 +28,7 @@ from .models import Character, CharacterLink, CharacterLinkStatus, CharacterStat
 from .services import (
     build_character_queryset,
     build_transverse_actions_queryset,
+    character_has_posts,
     create_character_with_sheet,
     suggested_characters_to_link,
 )
@@ -361,22 +362,54 @@ def quote_add(request: AuthenticatedRequest, slug: str) -> HttpResponse:
 
 @login_required
 def character_edit(request: AuthenticatedRequest, slug: str) -> HttpResponse:
-    """Edit a character (creator only)."""
+    """Edit a character (creator only).
+
+    The character's game (``origin_game``) is editable here — scoped to games the
+    editor owns, exactly like creation — but **locked once the character has
+    posts** (#154): re-homing an active character would move its AP federation
+    home and split its activity. The lock is enforced server-side, never trusting
+    the disabled ``<select>``.
+    """
     character = get_object_or_404(Character, slug=slug, creator=request.user)
+
+    # Owned games scope the picker (mirror of character_create); the lock freezes
+    # origin_game once the character is the actor of at least one post.
+    games = Game.objects.filter(owner=request.user)
+    game_locked = character_has_posts(character)
+
+    def _render_form(error: object = None, form_data: object = None) -> HttpResponse:
+        return htmx_render(
+            request,
+            full_template="characters/character_form.html",
+            partial_template="characters/character_form.html",
+            context={
+                "character": character,
+                "games": games,
+                "game_locked": game_locked,
+                "error": error,
+                "form_data": form_data,
+            },
+        )
 
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
         if not name:
-            return htmx_render(
-                request,
-                full_template="characters/character_form.html",
-                partial_template="characters/character_form.html",
-                context={
-                    "character": character,
-                    "error": _("Name is required."),
-                    "form_data": request.POST,
-                },
-            )
+            return _render_form(error=_("Name is required."), form_data=request.POST)
+
+        update_fields = ["name", "description", "sheet_url", "avatar", "updated_at"]
+
+        # Game change — only when unlocked. A locked character ignores any posted
+        # origin_game (server guard). An empty value keeps the current game
+        # (origin_game is non-null; never overwrite it with nothing).
+        if not game_locked:
+            origin_game_pk = request.POST.get("origin_game", "").strip()
+            if origin_game_pk and origin_game_pk != str(character.origin_game_id):
+                try:
+                    character.origin_game = games.get(pk=origin_game_pk)
+                except (Game.DoesNotExist, ValidationError, ValueError):
+                    return _render_form(error=_("Choose a game you own."), form_data=request.POST)
+                update_fields.append("origin_game")
+
         character.name = name
         character.description = request.POST.get("description", "").strip()
         character.sheet_url = request.POST.get("sheet_url", "").strip() or None
@@ -388,18 +421,13 @@ def character_edit(request: AuthenticatedRequest, slug: str) -> HttpResponse:
         elif "avatar" in request.FILES:
             character.avatar = request.FILES["avatar"]
 
-        character.save(update_fields=["name", "description", "sheet_url", "avatar", "updated_at"])
+        character.save(update_fields=update_fields)
         from suddenly.core.models import Tag
 
         character.tags.set(Tag.resolve_names(request.POST.get("tags", "")))
         return redirect(reverse("characters:detail", kwargs={"slug": character.slug}))
 
-    return htmx_render(
-        request,
-        full_template="characters/character_form.html",
-        partial_template="characters/character_form.html",
-        context={"character": character},
-    )
+    return _render_form()
 
 
 @require_POST

@@ -15,7 +15,22 @@ from django.test import Client
 from django.urls import reverse
 
 from suddenly.characters.models import Character
+from suddenly.games.models import Game, Rapport, RapportKind, Report, ReportStatus
 from suddenly.users.models import User
+from tests.factories import GameFactory
+
+
+def _give_character_a_post(character: Character) -> None:
+    """Make the character the actor of one post (Rapport) → locks its game (#154)."""
+    report = Report.objects.create(
+        game=character.origin_game,
+        author=character.creator,
+        content="Scene body.",
+        status=ReportStatus.DRAFT,
+    )
+    Rapport.objects.create(
+        report=report, kind=RapportKind.ACTION, content="It acts.", actor=character
+    )
 
 
 @pytest.fixture
@@ -94,3 +109,91 @@ class TestCharacterFormEditOnly:
         assert "Le nom est obligatoire." in content
         assert "Modifier le personnage" in content
         assert "Nouveau personnage" not in content
+
+
+@pytest.mark.django_db
+class TestCharacterGameEdit:
+    """#154 — the character's game (origin_game) is editable, locked once it has posts."""
+
+    def test_unlocked_get_shows_game_select(
+        self, plain_static: None, logged_client: Client, user: User, character: Character
+    ) -> None:
+        other = GameFactory(owner=user)
+        content = logged_client.get(
+            reverse("characters:edit", kwargs={"slug": character.slug})
+        ).content.decode()
+        # Editable select present (structural, language-independent) + both owned games.
+        assert 'name="origin_game"' in content
+        assert other.title in content
+        assert character.origin_game.title in content
+
+    def test_change_game_persists_and_redirects(
+        self, plain_static: None, logged_client: Client, user: User, character: Character
+    ) -> None:
+        other = GameFactory(owner=user)
+        resp = logged_client.post(
+            reverse("characters:edit", kwargs={"slug": character.slug}),
+            {"name": character.name, "origin_game": str(other.pk), "tags": ""},
+        )
+        character.refresh_from_db()
+        assert resp.status_code == 302
+        assert character.origin_game_id == other.pk
+
+    def test_change_appears_in_new_game_roster(
+        self, plain_static: None, logged_client: Client, user: User, character: Character
+    ) -> None:
+        other = GameFactory(owner=user)
+        logged_client.post(
+            reverse("characters:edit", kwargs={"slug": character.slug}),
+            {"name": character.name, "origin_game": str(other.pk), "tags": ""},
+        )
+        # (B) The character now surfaces in the new game's roster (game_detail).
+        body = logged_client.get(
+            reverse("games:detail", kwargs={"pk": str(other.pk)})
+        ).content.decode()
+        assert character.name in body
+
+    def test_unowned_game_rejected(
+        self,
+        plain_static: None,
+        logged_client: Client,
+        character: Character,
+        other_user: User,
+    ) -> None:
+        foreign = GameFactory(owner=other_user)
+        original_game_id = character.origin_game_id
+        resp = logged_client.post(
+            reverse("characters:edit", kwargs={"slug": character.slug}),
+            {"name": character.name, "origin_game": str(foreign.pk), "tags": ""},
+        )
+        character.refresh_from_db()
+        assert resp.status_code == 200  # re-render with error (edit convention)
+        assert character.origin_game_id == original_game_id
+
+    def test_locked_get_has_no_editable_select(
+        self, plain_static: None, logged_client: Client, character: Character
+    ) -> None:
+        _give_character_a_post(character)
+        content = logged_client.get(
+            reverse("characters:edit", kwargs={"slug": character.slug})
+        ).content.decode()
+        # Locked → a disabled field, not a submittable select.
+        assert 'name="origin_game"' not in content
+        assert 'id="origin_game"' in content
+        assert "disabled" in content
+
+    def test_locked_post_ignores_game_change(
+        self, plain_static: None, logged_client: Client, user: User, character: Character
+    ) -> None:
+        _give_character_a_post(character)
+        other = GameFactory(owner=user)
+        original_game_id = character.origin_game_id
+        resp = logged_client.post(
+            reverse("characters:edit", kwargs={"slug": character.slug}),
+            {"name": "Renommé", "origin_game": str(other.pk), "tags": ""},
+        )
+        character.refresh_from_db()
+        # Server guard: forged origin_game ignored; other fields still saved.
+        assert resp.status_code == 302
+        assert character.origin_game_id == original_game_id
+        assert character.name == "Renommé"

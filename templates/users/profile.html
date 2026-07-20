@@ -119,47 +119,6 @@
     </div>
 </section>
 
-<!-- Characters -->
-{% if games or characters %}
-<section class="py-8">
-    <div class="container-app">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-heading text-xl">{% trans "Characters" %}</h2>
-            {% if user == profile_user and games %}
-                <a href="{% url 'characters:create' %}" class="btn-primary btn-sm">
-                    <span class="i-lucide-plus"></span>
-                    {% trans "New character" %}
-                </a>
-            {% endif %}
-        </div>
-
-        {% if characters %}
-            <div class="grid grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 gap-3">
-                {% for character in characters %}
-                    <div class="card card-body text-center">
-                        <a href="{% url 'characters:detail' slug=character.slug %}" class="font-medium text-sm text-semantic-ink hover:text-brand-primary">{{ character.name }}</a>
-                        <p class="text-xs text-semantic-muted">{{ character.get_status_display }}</p>
-                        {% if user == profile_user %}
-                            <div class="mt-2 flex items-center justify-center gap-1">
-                                <a href="{% url 'characters:edit' slug=character.slug %}" class="btn-ghost btn-sm" title="{% trans "Edit" %}">
-                                    <span class="i-lucide-edit-2"></span>
-                                </a>
-                                <form method="post" action="{% url 'characters:delete' slug=character.slug %}"
-                                      onsubmit="return confirm(&#39;{% trans "Delete this character? This cannot be undone." %}&#39;)">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn-ghost btn-sm text-semantic-danger" title="{% trans "Delete" %}">
-                                        <span class="i-lucide-trash-2"></span>
-                                    </button>
-                                </form>
-                            </div>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p class="text-sm text-semantic-muted">{% trans "No characters yet." %}</p>
-        {% endif %}
-    </div>
-</section>
-{% endif %}
+{# Characters are no longer listed here (#154): a character belongs to its game,
+   shown as a subsection of the game page. #}
 {% endblock %}
