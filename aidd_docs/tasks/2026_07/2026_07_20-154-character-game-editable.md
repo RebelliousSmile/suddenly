@@ -160,7 +160,7 @@ Points confirmés :
 | Nom | Chemin | Pourquoi |
 |-----|--------|----------|
 | characters (domain) | `.claude/rules/08-domain/08-characters.md` | 3 relations distinctes ; `origin_game` non-null = maison AP ; roster via `origin_game`, jamais `castings` |
-| django-services | `.claude/rules/03-frameworks-and-libraries/03-django-services.md` | `character_has_activity` en service, pas dans le modèle ; vue mince |
+| django-services | `.claude/rules/03-frameworks-and-libraries/03-django-services.md` | `character_has_posts` en service, pas dans le modèle ; vue mince |
 | django-models | `.claude/rules/03-frameworks-and-libraries/03-django-models.md` | `origin_game` reste non-null ; `update_fields` explicite |
 | data-pivots §7 (sécurité) | `.claude/rules/07-quality/data-pivots-django-orm.md` | scope `origin_game` cible aux games `owner=request.user` ; verrou serveur (jamais faire confiance au `disabled` client) |
 | htmx-patterns | `.claude/rules/03-frameworks-and-libraries/03-htmx-patterns.md` | vue édition rend du HTML (form partial) ; garde serveur sur mutateur |
