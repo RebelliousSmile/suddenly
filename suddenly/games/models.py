@@ -366,9 +366,7 @@ class Recommendation(BaseModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="recommendations"
     )
-    report = models.ForeignKey(
-        Report, on_delete=models.CASCADE, related_name="recommendations"
-    )
+    report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name="recommendations")
 
     class Meta:
         ordering = ["-created_at"]
