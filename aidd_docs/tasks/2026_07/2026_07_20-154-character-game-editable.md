@@ -1,9 +1,9 @@
 ---
 objective: >
   #154 « personnage et game ». (A) Permettre de choisir/modifier le game d'un personnage
-  dans le formulaire d'édition (origin_game), en le VERROUILLANT dès que le personnage a de
-  l'activité (des posts / Rapport ou des CharacterAppearance) — re-homer un personnage actif
-  déplacerait sa maison AP et casserait la cohérence. (B) Les personnages apparaissent dans
+  dans le formulaire d'édition (origin_game), en le VERROUILLANT dès que le personnage a des
+  posts (Rapport dont il est l'acteur) — re-homer un personnage actif déplacerait sa maison AP
+  et casserait la cohérence. (B) Les personnages apparaissent dans
   leur game (sous-section du game) et la section « personnages » du profil est retirée : la
   sous-section personnages du game EXISTE DÉJÀ (game_detail), donc (B)-apparition est acquise ;
   le travail (B) se réduit au retrait de la section profil. Aucune migration (origin_game
@@ -15,7 +15,7 @@ success_condition: >
   && mypy suddenly/characters/front_views.py suddenly/characters/services.py suddenly/users/views.py
   && node design/lint/lint-files.mjs templates/characters/character_form.html templates/users/profile.html
 plan_kind: simple
-confidence: 8
+confidence: 9
 iteration: 1
 created_at: 2026-07-20
 ---
@@ -51,7 +51,15 @@ Cible :
 |----------|------|-----------|
 | **`origin_game`** (FK non-null, `related_name=characters`) | naissance + **maison AP** (`attributedTo`) | **c'est LE « game du personnage »** de l'issue : roster + édition |
 | `GameCast` (`castings`) | pool incarnable (qui peut poster) | hors périmètre |
-| `CharacterAppearance` (`appearances`) | présence jouée dans une scène (a posteriori) | **signal d'activité** pour le verrou |
+| `CharacterAppearance` (`appearances`) | présence jouée dans une scène (a posteriori) | **hors verrou** (décision : posts seuls) |
+
+**Décisions itération 1 (validées, non négociables)** :
+- **Verrou = posts seuls** : `origin_game` figé dès que `character.rapport_appearances.exists()`
+  (un `Rapport` dont le personnage est l'`actor`). `CharacterAppearance` **n'entre pas** dans le
+  verrou (littéral à l'issue « des posts associés »).
+- **Re-home AP = hors périmètre** : aucun `Update(Person)` émis au changement d'`origin_game`.
+  Acceptable car le verrou borne le changement aux personnages **sans post** ; propagation
+  fédérée différée (travail ultérieur si un perso a déjà fédéré du contenu).
 
 - Le **roster d'un game** s'affiche déjà via le reverse `origin_game` (`game.characters`) — donc
   « apparaître dans la game » = `origin_game`. Éditer « le game du personnage » = éditer
@@ -84,8 +92,8 @@ flowchart TD
 | Élément | Emplacement | Rôle |
 |---------|-------------|------|
 | FK game | `suddenly/characters/models.py:80-86` `origin_game` (non-null, CASCADE, `related_name=characters`, indexé) | Le champ à rendre éditable ; **rester non-null** |
-| Signal activité 1 | `suddenly/games/models.py` `Rapport.actor` → `related_name=rapport_appearances` (SET_NULL) | « a des posts » — signal direct de l'issue |
-| Signal activité 2 | `CharacterAppearance.character` → `related_name=appearances` (CASCADE) | présence durable ; ce que l'app compte déjà comme activité (`report_count`) |
+| Signal du verrou | `suddenly/games/models.py` `Rapport.actor` → `related_name=rapport_appearances` (SET_NULL) | **le** signal retenu : « a des posts » (décision : posts seuls) |
+| (non retenu) | `CharacterAppearance.character` → `related_name=appearances` (CASCADE) | présence durable — **hors verrou** par décision |
 | Vue édition | `suddenly/characters/front_views.py:362-402` `character_edit` (creator-only) | POST à étendre : lire `origin_game`, valider possédé + non verrouillé, ajouter à `update_fields` (l.391) |
 | Vue création (patron) | `characters/front_views.py:423-505` `character_create` | Scoping `games=Game.objects.filter(owner=request.user)` (l.439), lecture+validation `origin_game` (l.458-477) — **patron à mirrorer** |
 | Template édition | `templates/characters/character_form.html` (edit-only) | Ajouter le `<select origin_game>` + état verrouillé ; pas de branche create ici |
@@ -106,12 +114,12 @@ Points confirmés :
 ## Projection d'architecture
 
 ### Modifier
-- `suddenly/characters/services.py` — ajouter `character_has_activity(character) -> bool` :
-  `character.rapport_appearances.exists() or character.appearances.exists()`. Source de vérité
-  unique du verrou (réutilisée vue + template via contexte). (Règle : logique hors modèle.)
+- `suddenly/characters/services.py` — ajouter `character_has_posts(character) -> bool` :
+  `character.rapport_appearances.exists()` (posts seuls — décision). Source de vérité unique du
+  verrou (réutilisée vue + template via contexte). (Règle : logique hors modèle.)
 - `suddenly/characters/front_views.py` `character_edit` :
   - Contexte GET/erreur : passer `games = Game.objects.filter(owner=request.user)` et
-    `game_locked = character_has_activity(character)`.
+    `game_locked = character_has_posts(character)`.
   - POST : si **non** verrouillé, lire `origin_game` (POST), valider qu'il est **possédé**
     (`games.get(pk=...)`, sinon rejet message) et l'affecter ; ajouter `"origin_game"` à
     `save(update_fields=[...])`. Si **verrouillé**, ignorer toute valeur `origin_game`
@@ -130,11 +138,11 @@ Points confirmés :
   verrouillé** ne casse pas (origin_game conservé si champ absent/vide → ne pas écraser par nul).
 
 ### Créer
-- `character_has_activity` (dans `services.py`, cf. Modifier).
+- `character_has_posts` (dans `services.py`, cf. Modifier).
 - Tests neufs dans `tests/characters/test_character_edit.py` (ou `test_character_game_edit.py`) :
   changement de game réussi (non verrouillé, game possédé) ; rejet game non possédé ; **verrou**
-  (personnage avec un `Rapport` actor / une `CharacterAppearance` → `origin_game` non modifiable,
-  select `disabled`, POST forgé ignoré) ; le personnage apparaît dans le roster du **nouveau** game.
+  (personnage avec un `Rapport` dont il est l'`actor` → `origin_game` non modifiable, select
+  `disabled`, POST forgé ignoré) ; le personnage apparaît dans le roster du **nouveau** game.
 - (Optionnel) test de non-régression profil : le profil ne rend plus la section personnages.
 
 ### Supprimer
@@ -165,12 +173,12 @@ Points confirmés :
 Chaîne : M1 (service verrou) → M2 (édition backend+template) → M3 (retrait profil) →
 M4 (roster : vérification) → M5 (tests + i18n/design). M3/M4 indépendants de M2.
 
-### Milestone 1 — Service `character_has_activity`
-- `character_has_activity(character) -> bool` dans `characters/services.py` :
-  `rapport_appearances.exists() or appearances.exists()`.
-- **Acceptation** : True dès qu'un `Rapport(actor=perso)` **ou** une `CharacterAppearance` existe ;
-  False sur un personnage neuf.
-- **Vérif** : `pytest tests/characters -k has_activity -q --no-cov && mypy suddenly/characters/services.py`.
+### Milestone 1 — Service `character_has_posts`
+- `character_has_posts(character) -> bool` dans `characters/services.py` :
+  `character.rapport_appearances.exists()` (posts seuls — décision).
+- **Acceptation** : True dès qu'un `Rapport(actor=perso)` existe ; False sur un personnage neuf ;
+  une `CharacterAppearance` seule (sans post) **ne** verrouille **pas**.
+- **Vérif** : `pytest tests/characters -k has_posts -q --no-cov && mypy suddenly/characters/services.py`.
 
 ### Milestone 2 — Édition `origin_game` (backend + template) avec verrou
 - Vue : contexte `games` + `game_locked` ; POST valide/affecte `origin_game` (possédé, non
@@ -211,13 +219,13 @@ M4 (roster : vérification) → M5 (tests + i18n/design). M3/M4 indépendants de
   est absent/vide sur un personnage non verrouillé — conserver la valeur courante.
 - **Verrou serveur, pas seulement `disabled`** : un `<select disabled>` ne soumet rien, mais un
   POST forgé pourrait porter `origin_game` → la vue **doit** ignorer/refuser le changement quand
-  `character_has_activity` est vrai.
-- **Signal d'activité** : `Rapport.actor` est `SET_NULL` — un post dont l'acteur a été dé-lié ne
-  compte plus ; d'où le OR avec `appearances` (présence durable, ce que l'app compte déjà).
-- **Re-home AP** : changer `origin_game` déplace la maison AP (`attributedTo`). Borné au cas
-  « aucune activité » par le verrou. **Optionnel/vigilance** : émettre un `Update(Person)` pour
-  propager le nouveau home aux instances distantes — hors périmètre par défaut ; à décider si le
-  personnage a déjà fédéré un `Create(Person)`.
+  `character_has_posts` est vrai.
+- **Signal du verrou = posts seuls** (décision) : `character.rapport_appearances.exists()`.
+  `Rapport.actor` est `SET_NULL` — un post dont l'acteur a été dé-lié ne compte plus ; assumé.
+  `CharacterAppearance` est volontairement **hors** verrou (littéral à l'issue).
+- **Re-home AP hors périmètre** (décision) : changer `origin_game` déplace la maison AP
+  (`attributedTo`) mais **aucun** `Update(Person)` n'est émis. Borné au cas « aucun post » par le
+  verrou ; propagation fédérée = travail ultérieur si un perso a déjà fédéré un `Create(Person)`.
 - **Scope de sécurité** : options du select = games `owner=request.user` (+ l'option courante) ;
   valider côté serveur que la cible est possédée (jamais un pk arbitraire).
 - **Roster forks** : un FORK hérite d'`origin_game` et apparaît dans le roster du parent — **par
@@ -226,7 +234,7 @@ M4 (roster : vérification) → M5 (tests + i18n/design). M3/M4 indépendants de
   confirmer qu'aucun raccourci « + Nouveau personnage » au niveau profil n'est requis (la création
   exige de toute façon un game possédé → bouton présent sur `games/detail.html`).
 
-## Évaluation de confiance : 8/10
+## Évaluation de confiance : 9/10
 
 Raisons (✓)
 - Périmètre cadré par les règles domaine : `origin_game` = « game du personnage », roster déjà
@@ -236,10 +244,13 @@ Raisons (✓)
 - (B)-apparition déjà acquise → le travail (B) se réduit à un retrait propre (template + contexte).
 - Chaque milestone est vérifiable (pytest/ruff/mypy/lint dédiés).
 
-Risques (✗)
-- **Sémantique du verrou** : « posts associés » = `Rapport.actor` ; le OR avec `appearances`
-  élargit un peu la définition — à confirmer si l'utilisateur veut strictement les posts.
-- **Re-home AP** : propagation `Update(Person)` non incluse par défaut ; acceptable tant que le
-  changement se fait avant toute fédération de contenu, mais à trancher si un perso a déjà fédéré.
+Ambiguïtés levées (itération 1)
+- **Sémantique du verrou** : tranchée → **posts seuls** (`rapport_appearances`), `CharacterAppearance`
+  exclue. Plus de OR.
+- **Re-home AP** : tranchée → **hors périmètre**, aucun `Update(Person)`.
+
+Risques résiduels (✗)
+- **Post à acteur dé-lié** (`Rapport.actor` `SET_NULL`) : un perso ayant posté puis dé-lié
+  redeviendrait techniquement déverrouillé — cas de bord assumé (rare, cohérent avec « posts seuls »).
 - **Tests profil** : peu/pas de test existant sur la section profil ; vérifier qu'aucun test de
   rendu n'assert « Characters » avant suppression.
