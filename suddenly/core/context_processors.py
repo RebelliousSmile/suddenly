@@ -50,7 +50,7 @@ def account_badges(request: object) -> dict[str, object]:
         return {}
 
     from suddenly.characters.models import LinkRequest, LinkRequestStatus
-    from suddenly.core.models import Notification
+    from suddenly.core.models import Notification, UnlockedAchievement
     from suddenly.messaging.services import MessageService
 
     return {
@@ -61,4 +61,8 @@ def account_badges(request: object) -> dict[str, object]:
             recipient=user, is_read=False
         ).count(),
         "unread_messages_count": MessageService.unread_count(user),
+        # Newly unlocked achievements not yet seen on the Stats page (#153).
+        "new_stats_count": UnlockedAchievement.objects.filter(
+            user=user, seen_at__isnull=True
+        ).count(),
     }

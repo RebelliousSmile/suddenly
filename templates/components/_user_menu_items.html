@@ -32,7 +32,7 @@ suddenly.core.context_processors.account_badges context processor.
     <span><span class="i-lucide-mail mr-2"></span>{% trans "Messages" %}</span>
     {% if unread_messages_count %}<span class="badge-primary">{{ unread_messages_count }}</span>{% endif %}
 </a>
-<a href="#" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
+<a href="{% url 'users:settings_stats' %}" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card flex items-center justify-between">
     <span><span class="i-lucide-gem mr-2"></span>{% trans "Stats & achievements" %}</span>
     {% if new_stats_count %}<span class="badge-primary">{{ new_stats_count }}</span>{% endif %}
 </a>
