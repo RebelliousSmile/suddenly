@@ -30,6 +30,27 @@
                           class="form-input">{{ form_data.description|default:character.description|default:'' }}</textarea>
             </div>
 
+            <div>
+                <label for="background" class="form-label">
+                    {% trans "Background" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
+                </label>
+                <textarea id="background" name="background" rows="4"
+                          class="form-input">{{ form_data.background|default:character.background|default:'' }}</textarea>
+                <p class="form-help">{% trans "Public backstory shown on the sheet." %}</p>
+            </div>
+
+            <div>
+                <label for="secrets" class="form-label">
+                    {% trans "Secrets" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
+                </label>
+                <textarea id="secrets" name="secrets" rows="4"
+                          class="form-input">{{ form_data.secrets|default:character.secrets|default:'' }}</textarea>
+                <p class="form-help flex items-center gap-1.5">
+                    <span class="i-lucide-lock text-xs" aria-hidden="true"></span>
+                    {% trans "Visible only to you (creator/owner). Never shown publicly." %}
+                </p>
+            </div>
+
             {# Game (origin_game) — editable, but locked once the character has posts (#154). #}
             <div>
                 <label for="origin_game" class="form-label">{% trans "Game" %}</label>

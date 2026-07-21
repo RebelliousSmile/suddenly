@@ -15,6 +15,7 @@ from django.test import Client
 from django.urls import reverse
 
 from suddenly.characters.models import Character
+from suddenly.core.models import Tag
 from suddenly.games.models import Rapport, RapportKind, Report, ReportStatus
 from suddenly.users.models import User
 from tests.factories import GameFactory
@@ -97,6 +98,26 @@ class TestCharacterFormEditOnly:
         assert resp["Location"] == reverse("characters:detail", kwargs={"slug": character.slug})
         assert character.name == "Nouveau nom"
         assert character.description == "Nouvelle description"
+
+    def test_edit_persists_background_and_secrets(
+        self, plain_static: None, logged_client: Client, character: Character
+    ) -> None:
+        url = reverse("characters:edit", kwargs={"slug": character.slug})
+        resp = logged_client.post(
+            url,
+            {
+                "name": character.name,
+                "description": "",
+                "background": "Né dans la tempête.",
+                "secrets": "Travaille pour l'ennemi.",
+                "tags": "",
+            },
+        )
+        character.refresh_from_db()
+
+        assert resp.status_code == 302
+        assert character.background == "Né dans la tempête."
+        assert character.secrets == "Travaille pour l'ennemi."
 
     def test_empty_name_re_renders_edit_mode_with_422_like_error(
         self, plain_static: None, logged_client: Client, character: Character
@@ -197,3 +218,55 @@ class TestCharacterGameEdit:
         assert resp.status_code == 302
         assert character.origin_game_id == original_game_id
         assert character.name == "Renommé"
+
+
+@pytest.mark.django_db
+class TestSheetExtraFields:
+    """#148 — tags + background (public) + secrets (maintainer-only) on the sheet."""
+
+    def _prepare(self, character: Character) -> None:
+        character.background = "PUBLIC-BACKSTORY-XYZ"
+        character.secrets = "HIDDEN-SECRET-XYZ"
+        character.save(update_fields=["background", "secrets"])
+        character.tags.set(Tag.resolve_names("héros"))
+
+    def test_tags_and_background_shown_publicly(
+        self, plain_static: None, client: Client, character: Character
+    ) -> None:
+        self._prepare(character)
+        content = client.get(
+            reverse("characters:detail", kwargs={"slug": character.slug})
+        ).content.decode()
+        assert "héros" in content
+        assert "PUBLIC-BACKSTORY-XYZ" in content
+
+    def test_secrets_visible_to_maintainer(
+        self, plain_static: None, logged_client: Client, character: Character
+    ) -> None:
+        # `character` is created by `user`; `logged_client` is logged in as `user`.
+        self._prepare(character)
+        content = logged_client.get(
+            reverse("characters:detail", kwargs={"slug": character.slug})
+        ).content.decode()
+        assert "HIDDEN-SECRET-XYZ" in content
+
+    def test_secrets_hidden_from_others(
+        self, plain_static: None, client: Client, other_user: User, character: Character
+    ) -> None:
+        self._prepare(character)
+        client.force_login(other_user)
+        content = client.get(
+            reverse("characters:detail", kwargs={"slug": character.slug})
+        ).content.decode()
+        assert "HIDDEN-SECRET-XYZ" not in content
+        # ...but the public background still shows.
+        assert "PUBLIC-BACKSTORY-XYZ" in content
+
+    def test_secrets_hidden_from_anonymous(
+        self, plain_static: None, client: Client, character: Character
+    ) -> None:
+        self._prepare(character)
+        content = client.get(
+            reverse("characters:detail", kwargs={"slug": character.slug})
+        ).content.decode()
+        assert "HIDDEN-SECRET-XYZ" not in content

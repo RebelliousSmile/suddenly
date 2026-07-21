@@ -85,11 +85,34 @@
             {% include "components/_dm_trigger.html" with recipient=dm_recipient %}
         </div>
 
+        <!-- Tags -->
+        {% if character.tags.all %}
+            <div class="flex flex-wrap gap-1.5 mb-6">
+                {% for tag in character.tags.all %}
+                    <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-btn bg-semantic-card-sunken text-semantic-ink-secondary border border-semantic-border">
+                        <span class="i-lucide-tag text-[10px]" aria-hidden="true"></span>{{ tag.name }}
+                    </span>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {# Desktop: narrative in the main column, secondary blocks in the aside (readability, #148). #}
+        <div class="grid gap-6 items-start @lg:grid-cols-3">
+        <div class="@lg:col-span-2">
+
         <!-- Description -->
         {% if character.description %}
             <div class="card card-body mb-6">
                 <h2 class="text-heading mb-3">{% trans "Description" %}</h2>
                 <p class="text-semantic-ink-secondary">{{ character.description|linebreaksbr }}</p>
+            </div>
+        {% endif %}
+
+        <!-- Background (public backstory) -->
+        {% if character.background %}
+            <div class="card card-body mb-6">
+                <h2 class="text-heading mb-3">{% trans "Background" %}</h2>
+                <p class="text-semantic-ink-secondary">{{ character.background|linebreaksbr }}</p>
             </div>
         {% endif %}
 
@@ -153,6 +176,20 @@
             {% endif %}
         </div>
 
+        </div>{# /main column #}
+        <aside class="@lg:col-span-1 @lg:sticky @lg:top-6">
+
+        <!-- Secrets (maintainer-only: creator/owner) -->
+        {% if can_edit_traits and character.secrets %}
+            <div class="card card-body mb-6 border-semantic-warning/30 bg-semantic-warning/5">
+                <h2 class="text-heading mb-2 flex items-center gap-1.5">
+                    <span class="i-lucide-lock text-sm text-semantic-warning" aria-hidden="true"></span>{% trans "Secrets" %}
+                </h2>
+                <p class="text-xs text-semantic-muted mb-3">{% trans "Only you (creator/owner) can see this." %}</p>
+                <p class="text-semantic-ink-secondary">{{ character.secrets|linebreaksbr }}</p>
+            </div>
+        {% endif %}
+
         <!-- Quotes -->
         <div class="card card-body mb-6">
             <h2 class="text-heading mb-3">
@@ -194,6 +231,9 @@
                 {% endfor %}
             </div>
         {% endif %}
+
+        </aside>
+        </div>{# /grid #}
 
     </div>
 </section>
