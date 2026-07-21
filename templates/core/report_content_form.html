@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% blocktrans with label=target_label %}Report {{ label }}{% endblocktrans %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="py-12">
+    <div class="container-app max-w-lg">
+        <h1 class="text-2xl font-bold text-semantic-ink mb-2">
+            {% blocktrans with label=target_label %}Report {{ label }}{% endblocktrans %}
+        </h1>
+        <p class="text-sm text-semantic-muted mb-6">
+            {% trans "This report is sent privately to instance admins. Nobody is notified." %}
+        </p>
+
+        <form method="post" class="card card-body space-y-4">
+            {% csrf_token %}
+
+            <div class="space-y-1">
+                <label for="id_category" class="text-sm font-medium text-semantic-ink-secondary">
+                    {% trans "Reason" %} <span class="text-semantic-danger">*</span>
+                </label>
+                <select id="id_category"
+                        name="category"
+                        required
+                        class="w-full rounded-lg border border-semantic-border bg-semantic-card px-3 py-2 text-sm text-semantic-ink focus:outline-none focus:ring-2 focus:ring-brand-primary/50">
+                    <option value="">{% trans "Select a reason" %}</option>
+                    {% for value, label in categories %}
+                        <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="space-y-1">
+                <label for="id_comment" class="text-sm font-medium text-semantic-ink-secondary">
+                    {% trans "Additional context (optional)" %}
+                </label>
+                <textarea id="id_comment"
+                          name="comment"
+                          rows="4"
+                          class="w-full rounded-lg border border-semantic-border bg-semantic-card px-3 py-2 text-sm text-semantic-ink placeholder-semantic-muted focus:outline-none focus:ring-2 focus:ring-brand-primary/50"></textarea>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button type="submit" class="btn-primary">
+                    <span class="i-lucide-flag mr-2"></span>
+                    {% trans "Submit report" %}
+                </button>
+                <a href="{{ cancel_url }}" class="btn-ghost">
+                    {% trans "Cancel" %}
+                </a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

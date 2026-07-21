@@ -76,6 +76,11 @@
 
             {% if user.is_authenticated and user != character.creator and user != character.owner %}
                 {% include "components/follow_button.html" with target=character target_type="character" is_following=is_following %}
+                <a href="{% url 'core:report_content' kind='character' pk=character.pk %}"
+                   class="btn-ghost btn-sm text-semantic-muted"
+                   title="{% trans "Report this character" %}">
+                    <span class="i-lucide-flag"></span>
+                </a>
             {% endif %}
             {% include "components/_dm_trigger.html" with recipient=dm_recipient %}
         </div>

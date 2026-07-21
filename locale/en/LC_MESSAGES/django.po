@@ -3695,3 +3695,47 @@ msgstr ""
 #: .\templates\gmh\reports.html:47
 msgid "No pending reports."
 msgstr ""
+
+#: .\templates\core\report_content_form.html:4
+msgid "Report %(label)s"
+msgstr ""
+
+#: .\templates\core\report_content_form.html:13
+msgid "This report is sent privately to instance admins. Nobody is notified."
+msgstr ""
+
+#: .\templates\characters\detail.html:82
+msgid "Report this character"
+msgstr ""
+
+#: .\templates\games\detail.html:65
+msgid "Report this game"
+msgstr ""
+
+#: .\templates\games\report_detail.html:44
+msgid "Report this scene"
+msgstr ""
+
+#: .\suddenly\core\views.py:225
+msgid "You cannot report your own content."
+msgstr ""
+
+#: .\suddenly\core\views.py:200
+msgid "an untitled scene"
+msgstr ""
+
+#: .\templates\gmh\reports.html:30
+msgid "Flagged %(kind)s:"
+msgstr ""
+
+#: .\suddenly\core\admin_views.py:130
+msgid "character"
+msgstr ""
+
+#: .\suddenly\core\admin_views.py:133
+msgid "scene"
+msgstr ""
+
+#: .\suddenly\core\admin_views.py:136
+msgid "game"
+msgstr ""

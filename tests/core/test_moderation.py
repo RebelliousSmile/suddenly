@@ -37,7 +37,7 @@ from suddenly.core.moderation import (
     is_blocked,
     unblock_user,
 )
-from tests.factories import CharacterFactory, UserFactory
+from tests.factories import CharacterFactory, GameFactory, ReportFactory, UserFactory
 
 # ─── core.moderation service ───────────────────────────────────────────────
 
@@ -352,6 +352,23 @@ class TestAdminReportsQueue:
         assert response.status_code == 200
         assert reported.username.encode() in response.content
 
+    def test_queue_links_to_flagged_content(self) -> None:
+        """A signalement carrying a content context surfaces a link to that
+        element in the queue, so the admin can retrieve it fast (#150)."""
+        admin = UserFactory(is_admin=True)
+        reporter = UserFactory()
+        scene = ReportFactory()
+        create_user_report(reporter, scene.author, ReportCategory.INAPPROPRIATE, context=scene)
+        client = Client()
+        client.force_login(admin)
+
+        response = client.get(reverse("gmh:reports"))
+
+        detail_url = reverse(
+            "games:report_detail", kwargs={"game_pk": scene.game_id, "pk": scene.pk}
+        )
+        assert detail_url.encode() in response.content
+
     def test_resolved_and_dismissed_reports_excluded_from_queue(self) -> None:
         admin = UserFactory(is_admin=True)
         reporter = UserFactory()
@@ -542,3 +559,91 @@ class TestBlockDistinctFromSuspend:
         target.refresh_from_db()
         assert target.is_active is False
         assert target.is_blocked is False
+
+
+# ─── report_content view — signaler un contenu (#150, Option A) ─────────────
+
+
+@pytest.mark.django_db
+class TestReportContentView:
+    def test_report_scene_files_report_against_author_with_context(self) -> None:
+        reporter = UserFactory()
+        scene = ReportFactory()
+        client = Client()
+        client.force_login(reporter)
+
+        response = client.post(
+            reverse("core:report_content", kwargs={"kind": "scene", "pk": scene.pk}),
+            {"category": ReportCategory.INAPPROPRIATE, "comment": "Not ok."},
+        )
+
+        assert response.status_code == 302
+        report = UserReport.objects.get(reporter=reporter, reported_user=scene.author)
+        assert report.status == UserReportStatus.PENDING
+        assert report.context == scene  # the flagged element is recorded
+
+    def test_report_character_targets_owner_or_creator(self) -> None:
+        reporter = UserFactory()
+        character = CharacterFactory()  # owner null → responsible party is the creator
+        client = Client()
+        client.force_login(reporter)
+
+        response = client.post(
+            reverse("core:report_content", kwargs={"kind": "character", "pk": character.pk}),
+            {"category": ReportCategory.HARASSMENT, "comment": ""},
+        )
+
+        assert response.status_code == 302
+        report = UserReport.objects.get(reporter=reporter, reported_user=character.creator)
+        assert report.context == character
+
+    def test_report_game_targets_owner(self) -> None:
+        reporter = UserFactory()
+        game = GameFactory()
+        client = Client()
+        client.force_login(reporter)
+
+        response = client.post(
+            reverse("core:report_content", kwargs={"kind": "game", "pk": game.pk}),
+            {"category": ReportCategory.SPAM, "comment": ""},
+        )
+
+        assert response.status_code == 302
+        report = UserReport.objects.get(reporter=reporter, reported_user=game.owner)
+        assert report.context == game
+
+    def test_reporting_own_content_creates_no_report(self) -> None:
+        author = UserFactory()
+        scene = ReportFactory(author=author)
+        client = Client()
+        client.force_login(author)
+
+        response = client.post(
+            reverse("core:report_content", kwargs={"kind": "scene", "pk": scene.pk}),
+            {"category": ReportCategory.SPAM, "comment": ""},
+        )
+
+        assert response.status_code == 302  # redirected back, not a form re-render
+        assert UserReport.objects.count() == 0
+
+    def test_unknown_kind_returns_404(self) -> None:
+        reporter = UserFactory()
+        client = Client()
+        client.force_login(reporter)
+
+        response = client.get(
+            reverse("core:report_content", kwargs={"kind": "widget", "pk": reporter.pk})
+        )
+
+        assert response.status_code == 404
+
+    def test_anonymous_redirected_to_login(self) -> None:
+        scene = ReportFactory()
+        client = Client()
+
+        response = client.get(
+            reverse("core:report_content", kwargs={"kind": "scene", "pk": scene.pk})
+        )
+
+        assert response.status_code == 302
+        assert "login" in response.url

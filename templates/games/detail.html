@@ -58,6 +58,11 @@
 
             {% if user.is_authenticated and not is_owner %}
                 {% include "components/follow_button.html" with target=game target_type="game" is_following=is_following %}
+                <a href="{% url 'core:report_content' kind='game' pk=game.pk %}"
+                   class="btn-ghost btn-sm text-semantic-muted"
+                   title="{% trans "Report this game" %}">
+                    <span class="i-lucide-flag"></span>
+                </a>
             {% endif %}
             {% include "components/_dm_trigger.html" with recipient=dm_recipient %}
         </div>

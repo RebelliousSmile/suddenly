@@ -18,4 +18,5 @@ urlpatterns = [
     path("applications/", views.apps, name="apps"),
     path("raccourcis/", views.shortcuts, name="shortcuts"),
     path("signaler/<str:username>/", views.report_user, name="report_user"),
+    path("signaler-contenu/<str:kind>/<uuid:pk>/", views.report_content, name="report_content"),
 ]

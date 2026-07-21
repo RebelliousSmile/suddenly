@@ -37,6 +37,12 @@
                     <span class="i-lucide-pencil text-xs" aria-hidden="true"></span>
                     {% trans "Éditer" %}
                 </a>
+            {% elif request.user.is_authenticated and request.user != report.author %}
+                <a href="{% url 'core:report_content' kind='scene' pk=report.pk %}"
+                   class="btn-ghost btn-sm shrink-0 text-semantic-muted"
+                   title="{% trans "Report this scene" %}">
+                    <span class="i-lucide-flag text-xs" aria-hidden="true"></span>
+                </a>
             {% endif %}
         </div>
 

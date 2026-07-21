@@ -3904,6 +3904,50 @@ msgstr "Bloquer @%(username)s ?"
 msgid "No pending reports."
 msgstr "Aucun signalement en attente."
 
+#: .\templates\core\report_content_form.html:4
+msgid "Report %(label)s"
+msgstr "Signaler %(label)s"
+
+#: .\templates\core\report_content_form.html:13
+msgid "This report is sent privately to instance admins. Nobody is notified."
+msgstr "Ce signalement est envoyé en privé aux administrateurs de l'instance. Personne n'est notifié."
+
+#: .\templates\characters\detail.html:82
+msgid "Report this character"
+msgstr "Signaler ce personnage"
+
+#: .\templates\games\detail.html:65
+msgid "Report this game"
+msgstr "Signaler cette partie"
+
+#: .\templates\games\report_detail.html:44
+msgid "Report this scene"
+msgstr "Signaler cette scène"
+
+#: .\suddenly\core\views.py:225
+msgid "You cannot report your own content."
+msgstr "Vous ne pouvez pas signaler votre propre contenu."
+
+#: .\suddenly\core\views.py:200
+msgid "an untitled scene"
+msgstr "une scène sans titre"
+
+#: .\templates\gmh\reports.html:30
+msgid "Flagged %(kind)s:"
+msgstr "Signalé (%(kind)s) :"
+
+#: .\suddenly\core\admin_views.py:130
+msgid "character"
+msgstr "personnage"
+
+#: .\suddenly\core\admin_views.py:133
+msgid "scene"
+msgstr "scène"
+
+#: .\suddenly\core\admin_views.py:136
+msgid "game"
+msgstr "partie"
+
 #~ msgid "published reports"
 #~ msgstr "comptes-rendus publiés"
 
