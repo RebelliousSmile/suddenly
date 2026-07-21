@@ -1197,11 +1197,14 @@ msgstr ""
 msgid "Forked from"
 msgstr ""
 
-#: .\templates\characters\gm_dashboard.html:4
-#: .\templates\characters\gm_dashboard.html:10
-#: .\templates\components\_user_menu_items.html:12 .\templates\gmh\base.html:19
+#: .\templates\components\_user_menu_items.html:15 .\templates\gmh\base.html:12
+#: .\templates\gmh\dashboard.html:4
 msgid "Dashboard"
 msgstr ""
+
+#: .\templates\gmh\base.html:19 .\templates\gmh\dashboard.html:7
+msgid "Overview"
+msgstr "Overview"
 
 #: .\templates\characters\gm_dashboard.html:16
 msgid "NPCs created"

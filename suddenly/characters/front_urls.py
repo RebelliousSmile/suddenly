@@ -9,7 +9,6 @@ from django.urls import path
 from . import (
     follow_views,
     front_views,
-    gm_views,
     link_views,
     sequence_views,
     trait_views,
@@ -20,7 +19,6 @@ app_name = "characters"
 urlpatterns = [
     path("", front_views.character_list, name="list"),
     path("search/", front_views.character_search, name="search"),
-    path("dashboard/", gm_views.gm_dashboard, name="gm_dashboard"),
     path("follow/", follow_views.follow_toggle, name="follow_toggle"),
     # Link requests management
     path("requests/", link_views.link_requests_list, name="link_requests"),
