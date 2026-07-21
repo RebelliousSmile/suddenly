@@ -589,6 +589,8 @@ def create_character_with_sheet(
     cover_alt: str,
     trait_sets: list[dict[str, Any]],
     actions: list[dict[str, Any]],
+    background: str = "",
+    secrets: str = "",
 ) -> Character:
     """Create a full PC (identity + multi-concept traits + cross-concept actions) atomically.
 
@@ -622,6 +624,8 @@ def create_character_with_sheet(
     character = Character(
         name=name,
         description=description,
+        background=background,
+        secrets=secrets,
         status=CharacterStatus.PC,
         owner=user,
         creator=user,

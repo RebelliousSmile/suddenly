@@ -44,6 +44,14 @@ class Character(BaseModel):
         help_text="URL-friendly name, auto-generated from name",
     )
     description = models.TextField(blank=True)
+    background = models.TextField(
+        blank=True,
+        help_text="Public backstory / lore shown on the sheet.",
+    )
+    secrets = models.TextField(
+        blank=True,
+        help_text="Maintainer-only notes (creator/owner). Never shown publicly.",
+    )
     avatar = models.ImageField(upload_to="characters/", blank=True, null=True)
     cover_alt = models.CharField(
         max_length=280,

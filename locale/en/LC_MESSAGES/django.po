@@ -3739,3 +3739,27 @@ msgstr ""
 #: .\suddenly\core\admin_views.py:136
 msgid "game"
 msgstr ""
+
+#: .\templates\characters\character_create.html:44
+#: .\templates\characters\character_form.html:26 .\templates\characters\detail.html:112
+msgid "Background"
+msgstr ""
+
+#: .\templates\characters\character_create.html:54
+#: .\templates\characters\character_form.html:36 .\templates\characters\detail.html:165
+msgid "Secrets"
+msgstr ""
+
+#: .\templates\characters\character_create.html:48
+#: .\templates\characters\character_form.html:30
+msgid "Public backstory shown on the sheet."
+msgstr ""
+
+#: .\templates\characters\character_create.html:60
+#: .\templates\characters\character_form.html:42
+msgid "Visible only to you (creator/owner). Never shown publicly."
+msgstr ""
+
+#: .\templates\characters\detail.html:167
+msgid "Only you (creator/owner) can see this."
+msgstr ""

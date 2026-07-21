@@ -396,7 +396,15 @@ def character_edit(request: AuthenticatedRequest, slug: str) -> HttpResponse:
         if not name:
             return _render_form(error=_("Name is required."), form_data=request.POST)
 
-        update_fields = ["name", "description", "sheet_url", "avatar", "updated_at"]
+        update_fields = [
+            "name",
+            "description",
+            "background",
+            "secrets",
+            "sheet_url",
+            "avatar",
+            "updated_at",
+        ]
 
         # Game change — only when unlocked. A locked character ignores any posted
         # origin_game (server guard). An empty value keeps the current game
@@ -412,6 +420,8 @@ def character_edit(request: AuthenticatedRequest, slug: str) -> HttpResponse:
 
         character.name = name
         character.description = request.POST.get("description", "").strip()
+        character.background = request.POST.get("background", "").strip()
+        character.secrets = request.POST.get("secrets", "").strip()
         character.sheet_url = request.POST.get("sheet_url", "").strip() or None
 
         if request.POST.get("avatar-clear"):
@@ -479,6 +489,8 @@ def character_create(request: AuthenticatedRequest) -> HttpResponse:
 
     name = request.POST.get("name", "").strip()
     description = request.POST.get("description", "").strip()
+    background = request.POST.get("background", "").strip()
+    secrets = request.POST.get("secrets", "").strip()
     cover_alt = request.POST.get("cover_alt", "").strip()
     sheet_url = request.POST.get("sheet_url", "").strip()
     avatar = request.FILES.get("avatar")
@@ -518,6 +530,8 @@ def character_create(request: AuthenticatedRequest) -> HttpResponse:
             user=request.user,
             name=name,
             description=description,
+            background=background,
+            secrets=secrets,
             origin_game=origin_game,
             sheet_url=sheet_url,
             avatar=avatar,

@@ -124,6 +124,26 @@ class TestCreateCharacterWithSheet:
         trait = Trait.objects.get(trait_set__character=character)
         assert trait.value == 99
 
+    def test_creates_with_background_and_secrets(self, user: User, game: Game) -> None:
+        """#148 — background/secrets thread through the create service."""
+        character = create_character_with_sheet(
+            user=user,
+            name="Mira",
+            description="",
+            background="Élevée par des contrebandiers.",
+            secrets="Recherchée dans trois cités.",
+            origin_game=game,
+            sheet_url="",
+            avatar=None,
+            cover_alt="",
+            trait_sets=[],
+            actions=[],
+        )
+
+        character.refresh_from_db()
+        assert character.background == "Élevée par des contrebandiers."
+        assert character.secrets == "Recherchée dans trois cités."
+
     def test_invalid_trait_ref_rolls_back_everything(self, user: User, game: Game) -> None:
         """An out-of-bounds trait_refs index raises KeyError and rolls back atomically.
 
