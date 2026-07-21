@@ -549,6 +549,30 @@ def test_composer_post_opens_scene(client: Client) -> None:
 
 
 @pytest.mark.django_db
+def test_composer_post_opens_scene_with_content_warning(client: Client) -> None:
+    """Free-mode composer: the content-warning field lands on the scene (#151)."""
+    user = UserFactory()
+    game = GameFactory(owner=user)
+    pc = CharacterFactory(owner=user, status=CharacterStatus.PC, origin_game=game)
+
+    client.force_login(user)
+    resp = client.post(
+        reverse("games:composer"),
+        {
+            "mode": "add",
+            "game": str(game.pk),
+            "character": pc.slug,
+            "kind": RapportKind.NARRATION,
+            "content": "Le coup part.",
+            "content_warning": "Violence",
+        },
+    )
+    assert resp.status_code == 302
+    report = Report.objects.get(game=game, author=user)
+    assert report.content_warning == "Violence"
+
+
+@pytest.mark.django_db
 def test_composer_post_opens_scene_with_media(client: Client) -> None:
     """Free-mode composer: a description opener may carry an image (rule 2e)."""
     user = UserFactory()

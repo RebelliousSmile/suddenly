@@ -429,6 +429,41 @@ def test_open_new_scene_attaches_media_for_description() -> None:
     assert media.alt == "Route déserte"
 
 
+@pytest.mark.django_db
+def test_open_new_scene_persists_content_warning() -> None:
+    """The composer's content-warning input lands on the scene (Report), veiled
+    later in the reading UI (#151)."""
+    player = UserFactory()
+    game = GameFactory(owner=player)
+    pc = CharacterFactory(owner=player, status=CharacterStatus.PC, origin_game=game)
+
+    report, _rapport = open_new_scene(
+        user=player,
+        character=pc,
+        kind=RapportKind.NARRATION,
+        content="Ça tourne mal.",
+        content_warning="Violence",
+    )
+
+    report.refresh_from_db()
+    assert report.content_warning == "Violence"
+
+
+@pytest.mark.django_db
+def test_open_new_scene_content_warning_defaults_empty() -> None:
+    """No warning given → the scene carries none (no false veil)."""
+    player = UserFactory()
+    game = GameFactory(owner=player)
+    pc = CharacterFactory(owner=player, status=CharacterStatus.PC, origin_game=game)
+
+    report, _rapport = open_new_scene(
+        user=player, character=pc, kind=RapportKind.NARRATION, content="Rien de grave."
+    )
+
+    report.refresh_from_db()
+    assert report.content_warning == ""
+
+
 # ---------------------------------------------------------------------------
 # available_kinds — narration is GM-only (rule 2c)
 # ---------------------------------------------------------------------------

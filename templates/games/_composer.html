@@ -30,6 +30,7 @@
         body: '{% if edit_rapport %}{{ edit_rapport.content|escapejs }}{% endif %}',
         mediaName: '', mediaPreview: '',
         replyScope: 'none',
+        cw: '',
         sheet: '',
         availableKinds: [{% for value, label in kinds %}'{{ value }}'{% if not forloop.last %},{% endif %}{% endfor %}],
         placeholders: {
@@ -391,6 +392,33 @@
                         <span class="text-xs text-semantic-muted">{% trans "Créé mais non publié dans le fil. Repris plus tard." %}</span></span>
                 </button>
             {% else %}
+                {% comment %} Avertissement de contenu — porté par la nouvelle scène
+                   (open_new_scene). Champ texte libre ; les presets ne font que pré-remplir
+                   (un clic = toggle). Comparaison d'état via $el.dataset, jamais une valeur
+                   interpolée dans le JS Alpine. {% endcomment %}
+                <div class="px-1.5 pt-1 pb-3 space-y-2 border-b border-semantic-border mb-2">
+                    <label for="composer-cw" class="text-xs font-semibold text-semantic-ink-secondary inline-flex items-center gap-1">
+                        <span class="i-lucide-triangle-alert text-xs" aria-hidden="true"></span>{% trans "Content warning" %}
+                    </label>
+                    <div class="flex flex-wrap gap-1">
+                        {% for preset in cw_presets %}
+                        <button type="button"
+                                data-cw="{{ preset|escapejs }}"
+                                @click="cw = (cw === $el.dataset.cw ? '' : $el.dataset.cw)"
+                                :class="cw === $el.dataset.cw ? 'border-domain-kind-description/50 bg-domain-kind-description/10 text-semantic-ink' : 'border-semantic-border text-semantic-ink-secondary'"
+                                class="text-xs font-semibold rounded-btn border px-2.5 py-1 min-h-[32px] hover:bg-semantic-card-sunken">
+                            {{ preset }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                    <input type="text" id="composer-cw" name="content_warning" maxlength="500"
+                           x-model="cw" @keydown.enter.prevent
+                           placeholder="{% trans "e.g. Violence, dark themes" %}"
+                           class="form-input w-full text-sm">
+                    <p class="text-xs text-semantic-muted">
+                        {% trans "If filled, content will be hidden behind a 'Show' button." %}
+                    </p>
+                </div>
                 <button type="submit" name="mode" value="add" :disabled="!canSend"
                         class="flex items-start gap-3 w-full text-left rounded-btn px-2.5 py-3 min-h-[44px] hover:bg-semantic-card-sunken">
                     <span class="i-lucide-check text-lg mt-0.5 shrink-0 text-semantic-ink-secondary" aria-hidden="true"></span>
