@@ -2888,6 +2888,22 @@ msgstr ""
 msgid "e.g. Violence, dark themes"
 msgstr ""
 
+#: .\suddenly\games\services.py:57
+msgid "Violence"
+msgstr "Violence"
+
+#: .\suddenly\games\services.py:58
+msgid "Dark themes"
+msgstr "Dark themes"
+
+#: .\suddenly\games\services.py:59
+msgid "Sexual content"
+msgstr "Sexual content"
+
+#: .\suddenly\games\services.py:60
+msgid "Death"
+msgstr "Death"
+
 #: .\templates\games\partials\_report_meta_form.html:61
 #: .\templates\games\report_compose.html:94
 msgid "If filled, content will be hidden behind a 'Show' button."

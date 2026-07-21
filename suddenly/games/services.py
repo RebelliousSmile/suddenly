@@ -18,6 +18,7 @@ from django.db import transaction
 from django.db.models import Count, Exists, F, OuterRef, Q
 from django.db.models.query import QuerySet
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from suddenly.characters.models import (
     AppearanceRole,
@@ -48,6 +49,15 @@ from .models import (
 
 if TYPE_CHECKING:
     from suddenly.users.models import User
+
+# Quick content-warning presets offered in the composer (feed mode). Free text
+# stays available — these only pre-fill the field in one tap (#151).
+CW_PRESETS: tuple[Any, ...] = (
+    _("Violence"),
+    _("Dark themes"),
+    _("Sexual content"),
+    _("Death"),
+)
 
 
 def build_game_queryset(
@@ -310,6 +320,7 @@ def build_composer_context(
         "last_scene_rapports": last_scene_rapports,
         "last_scene_can_edit": last_scene_can_edit,
         "edit_rapport": edit_rapport,
+        "cw_presets": CW_PRESETS,
     }
 
 
@@ -516,6 +527,7 @@ def open_new_scene(
     status: str = RapportStatus.PUBLISHED,
     image: object | None = None,
     media_alt: str = "",
+    content_warning: str = "",
 ) -> tuple[Report, Rapport]:
     """Open a new scene featuring a character, in one transaction.
 
@@ -527,6 +539,9 @@ def open_new_scene(
 
     ``image``/``media_alt`` attach a ``RapportMedia`` when ``kind`` is
     ``description`` (see ``_attach_rapport_media``).
+
+    ``content_warning`` is free text set on the scene (``Report.content_warning``);
+    the reading UI blurs the scene behind it (spoiler veil) when non-empty.
 
     Produces, atomically:
       - ``Report(game=game, author=user, status=draft, released_at=None)`` — a
@@ -553,6 +568,7 @@ def open_new_scene(
         game=game,
         author=user,
         content="",
+        content_warning=content_warning.strip(),
         status=ReportStatus.DRAFT,
         released_at=None,
     )
