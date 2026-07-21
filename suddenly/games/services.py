@@ -410,15 +410,14 @@ def validate_actor_for_role(user: User, game: Game, actor: Character | None) -> 
 
 
 def _attach_rapport_media(
-    rapport: Rapport, kind: str, image: object | None, media_alt: str, media_tone: str
+    rapport: Rapport, kind: str, image: object | None, media_alt: str
 ) -> None:
-    """One image = one mood, description only (``RapportMedia.clean`` also enforces this)."""
+    """One image, description only (``RapportMedia.clean`` also enforces this)."""
     if image is not None and kind == RapportKind.DESCRIPTION:
         media = RapportMedia(
             rapport=rapport,
             image=image,
             alt=(media_alt or "").strip(),
-            tone=(media_tone or "").strip(),
         )
         media.full_clean()
         media.save()
@@ -436,7 +435,6 @@ def create_scene_post(
     reply_iri: str = "",
     image: object | None = None,
     media_alt: str = "",
-    media_tone: str = "",
 ) -> Rapport:
     """Create one Rapport inside an existing scene (``report``).
 
@@ -474,7 +472,7 @@ def create_scene_post(
         link.full_clean(exclude=["rapport"])
         link.save()
 
-    _attach_rapport_media(rapport, kind, image, media_alt, media_tone)
+    _attach_rapport_media(rapport, kind, image, media_alt)
     return rapport
 
 
@@ -518,7 +516,6 @@ def open_new_scene(
     status: str = RapportStatus.PUBLISHED,
     image: object | None = None,
     media_alt: str = "",
-    media_tone: str = "",
 ) -> tuple[Report, Rapport]:
     """Open a new scene featuring a character, in one transaction.
 
@@ -528,8 +525,8 @@ def open_new_scene(
     character's origin game plus games it is already cast into, but this
     function itself does not enforce that narrower UI-level restriction.
 
-    ``image``/``media_alt``/``media_tone`` attach a ``RapportMedia`` when
-    ``kind`` is ``description`` (see ``_attach_rapport_media``).
+    ``image``/``media_alt`` attach a ``RapportMedia`` when ``kind`` is
+    ``description`` (see ``_attach_rapport_media``).
 
     Produces, atomically:
       - ``Report(game=game, author=user, status=draft, released_at=None)`` — a
@@ -581,7 +578,7 @@ def open_new_scene(
     if actor is not None and actor.pk != character.pk:
         add_to_cast(game, actor, user)
 
-    _attach_rapport_media(rapport, kind, image, media_alt, media_tone)
+    _attach_rapport_media(rapport, kind, image, media_alt)
 
     return report, rapport
 

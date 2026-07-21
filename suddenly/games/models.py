@@ -552,11 +552,6 @@ class RapportMedia(BaseModel):
         blank=True,
         help_text="Ce que montre l'image (a11y + ActivityPub Document.name).",
     )
-    tone = models.CharField(
-        max_length=80,
-        blank=True,
-        help_text="L'ambiance de l'image : lourde, feutrée…",
-    )
 
     class Meta:
         ordering = ["created_at"]

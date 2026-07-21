@@ -621,7 +621,6 @@ def scene_post_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> H
             reply_iri=request.POST.get("reply_iri", ""),
             image=request.FILES.get("image"),
             media_alt=request.POST.get("media_alt", ""),
-            media_tone=request.POST.get("media_tone", ""),
         )
     except ValidationError as exc:
         return HttpResponse("; ".join(exc.messages), status=422)

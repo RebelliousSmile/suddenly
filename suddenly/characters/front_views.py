@@ -480,7 +480,6 @@ def character_create(request: AuthenticatedRequest) -> HttpResponse:
     name = request.POST.get("name", "").strip()
     description = request.POST.get("description", "").strip()
     cover_alt = request.POST.get("cover_alt", "").strip()
-    cover_tone = request.POST.get("cover_tone", "").strip()
     sheet_url = request.POST.get("sheet_url", "").strip()
     avatar = request.FILES.get("avatar")
     origin_game_pk = request.POST.get("origin_game", "").strip()
@@ -523,7 +522,6 @@ def character_create(request: AuthenticatedRequest) -> HttpResponse:
             sheet_url=sheet_url,
             avatar=avatar,
             cover_alt=cover_alt,
-            cover_tone=cover_tone,
             trait_sets=trait_sets,
             actions=actions,
         )

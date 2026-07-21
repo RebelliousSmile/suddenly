@@ -189,7 +189,7 @@ def test_scene_post_iri_reply_creates_link(client: Client) -> None:
 
 @pytest.mark.django_db
 def test_scene_post_description_with_media(client: Client) -> None:
-    """A description posted from the composer carries its image + alt + tone."""
+    """A description posted from the composer carries its image + alt."""
     from django.core.files.uploadedfile import SimpleUploadedFile
 
     user = UserFactory()
@@ -207,14 +207,12 @@ def test_scene_post_description_with_media(client: Client) -> None:
             "content": "A dim hall.",
             "image": image,
             "media_alt": "a dim hall",
-            "media_tone": "feutrée",
         },
         HTTP_HX_REQUEST="true",
     )
     assert resp.status_code == 200
     rapport = Rapport.objects.get(report=report)
     assert rapport.media.alt == "a dim hall"
-    assert rapport.media.tone == "feutrée"
 
 
 @pytest.mark.django_db
@@ -363,12 +361,11 @@ def test_media_add_on_description_succeeds(client: Client) -> None:
         kwargs={"game_pk": game.pk, "pk": report.pk, "rapport_pk": rapport.pk},
     )
     image = SimpleUploadedFile("shot.png", _png_bytes(), content_type="image/png")
-    resp = client.post(url, {"image": image, "alt": "A dim room", "tone": "feutrée"})
+    resp = client.post(url, {"image": image, "alt": "A dim room"})
 
     assert resp.status_code == 201
     media = RapportMedia.objects.get(rapport=rapport)
     assert media.alt == "A dim room"
-    assert media.tone == "feutrée"
 
 
 @pytest.mark.django_db

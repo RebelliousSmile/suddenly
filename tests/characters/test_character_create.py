@@ -65,7 +65,6 @@ class TestCreateCharacterWithSheet:
             sheet_url="https://example.com/sheet",
             avatar=None,
             cover_alt="Une falaise sous la pluie",
-            cover_tone="lourde",
             trait_sets=_trait_sets_payload(),
             actions=_cross_action_payload(),
         )
@@ -118,7 +117,6 @@ class TestCreateCharacterWithSheet:
             sheet_url="",
             avatar=None,
             cover_alt="",
-            cover_tone="",
             trait_sets=trait_sets,
             actions=[],
         )
@@ -152,7 +150,6 @@ class TestCreateCharacterWithSheet:
                 sheet_url="",
                 avatar=None,
                 cover_alt="",
-                cover_tone="",
                 trait_sets=_trait_sets_payload(),
                 actions=actions,
             )
@@ -200,7 +197,6 @@ class TestCreateCharacterWithSheet:
                 sheet_url="",
                 avatar=None,
                 cover_alt="",
-                cover_tone="",
                 trait_sets=trait_sets,
                 actions=actions,
             )
@@ -310,7 +306,6 @@ class TestCharacterCreateViewPost:
                 "description": "Une eclaireuse",
                 "origin_game": str(game.pk),
                 "cover_alt": "Une falaise",
-                "cover_tone": "lourde",
                 "sheet_url": "https://example.com/sheet",
                 "payload": json.dumps(_valid_create_payload()),
             },

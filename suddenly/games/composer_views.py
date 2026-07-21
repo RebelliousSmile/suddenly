@@ -82,7 +82,6 @@ def composer(request: AuthenticatedRequest) -> HttpResponse:
                 status=status,
                 image=request.FILES.get("image"),
                 media_alt=request.POST.get("media_alt", "").strip(),
-                media_tone=request.POST.get("media_tone", "").strip(),
             )
         except ValidationError as exc:
             return HttpResponse("; ".join(exc.messages), status=422)

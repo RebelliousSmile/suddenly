@@ -50,11 +50,6 @@ class Character(BaseModel):
         blank=True,
         help_text="Ce que montre la couverture (a11y + ActivityPub Document.name).",
     )
-    cover_tone = models.CharField(
-        max_length=80,
-        blank=True,
-        help_text="L'ambiance de la couverture : lourde, feutrée…",
-    )
 
     # Status
     status = models.CharField(

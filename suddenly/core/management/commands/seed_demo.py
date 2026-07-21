@@ -240,9 +240,6 @@ MEDIA_ALT_EN = [
     "An empty warehouse; light slants through a broken skylight.",
     "The river at dawn, under a greasy mist.",
 ]
-MEDIA_TONES_FR = ["lourde", "feutrée", "électrique", "suspendue", "délavée"]
-MEDIA_TONES_EN = ["heavy", "muffled", "electric", "suspended", "washed-out"]
-
 # Deep, desaturated palette — legible behind white initials in both UI themes.
 PALETTE: list[tuple[tuple[int, int, int], tuple[int, int, int]]] = [
     ((28, 37, 65), (86, 63, 105)),
@@ -265,7 +262,6 @@ LANG_POOLS: dict[str, dict[str, list[str]]] = {
         "discussion": DISCUSSION_FR,
         "quotes": QUOTES_FR,
         "media_alt": MEDIA_ALT_FR,
-        "media_tones": MEDIA_TONES_FR,
     },
     "en": {
         "game_titles": GAME_TITLES_EN,
@@ -276,7 +272,6 @@ LANG_POOLS: dict[str, dict[str, list[str]]] = {
         "discussion": DISCUSSION_EN,
         "quotes": QUOTES_EN,
         "media_alt": MEDIA_ALT_EN,
-        "media_tones": MEDIA_TONES_EN,
     },
 }
 
@@ -664,7 +659,6 @@ class Command(BaseCommand):
                 media = RapportMedia(
                     rapport=rapport,
                     alt=self.rng.choice(pool["media_alt"]),
-                    tone=self.rng.choice(pool["media_tones"]),
                 )
                 self._attach_image(media, "image", report.title, (1024, 576), f"media-{rapport.id}")
                 if self.images:

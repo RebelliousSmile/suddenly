@@ -345,9 +345,6 @@
                 <input type="text" name="media_alt" maxlength="280"
                        placeholder="{% trans "Texte alternatif — ce que montre l'image." %}"
                        class="form-input w-full text-sm" :disabled="kind !== 'description'">
-                <input type="text" name="media_tone" maxlength="80"
-                       placeholder="{% trans "Tonalité : lourde, feutrée, blafarde…" %}"
-                       class="form-input w-full text-sm" :disabled="kind !== 'description'">
             </div>
             <button type="button" @click="clearMedia(); closeSheet()" x-show="mediaPreview" x-cloak
                     class="block w-full text-center text-sm font-semibold text-semantic-ink-secondary bg-semantic-card-sunken rounded-btn py-3 mt-3 min-h-[44px]">

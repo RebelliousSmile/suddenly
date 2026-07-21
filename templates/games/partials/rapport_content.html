@@ -58,7 +58,7 @@ Context: rapport.
             <figure class="mt-2.5 inline-block max-w-[260px]">
                 <img src="{{ media.image.url }}" alt="{{ media.alt }}"
                      class="w-full h-auto rounded-xl border border-semantic-border">
-                {% if media.alt %}<figcaption class="mt-1 text-xs text-semantic-muted">{{ media.alt }}{% if media.tone %} · <em>{{ media.tone }}</em>{% endif %}</figcaption>{% endif %}
+                {% if media.alt %}<figcaption class="mt-1 text-xs text-semantic-muted">{{ media.alt }}</figcaption>{% endif %}
             </figure>
         {% endif %}
     {% endwith %}
