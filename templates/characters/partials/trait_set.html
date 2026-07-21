@@ -215,6 +215,68 @@
                             <span class="text-semantic-muted">{% trans "Then" %}:</span> {{ action.outcome }}
                         </p>
                     {% endif %}
+
+                    {# Conditional outcomes (#148) — several results by free-text condition #}
+                    {% if action.outcomes.all or editable %}
+                        <div class="mt-2 space-y-1.5 border-t border-semantic-border pt-2">
+                            {% for oc in action.outcomes.all %}
+                                {% if editable and editing_kind == 'outcome' and editing_pk == oc.pk %}
+                                    <form hx-post="{% url 'characters:action_outcome_edit' slug=character.slug outcome_pk=oc.pk %}"
+                                          hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                                          class="flex flex-wrap items-center gap-2">
+                                        <input type="text" name="trigger" maxlength="100" value="{{ oc.trigger }}"
+                                               placeholder="{% trans '7-9…' %}" class="form-input w-24" aria-label="{% trans 'Condition' %}">
+                                        <input type="text" name="text" required maxlength="1000" value="{{ oc.text }}"
+                                               placeholder="{% trans 'Result…' %}" class="form-input flex-1 min-w-40" aria-label="{% trans 'Result' %}">
+                                        <button type="submit" class="btn-secondary btn-sm">
+                                            <span class="i-lucide-check" aria-hidden="true"></span>
+                                        </button>
+                                        <button type="button"
+                                                hx-get="{% url 'characters:trait_set_card' slug=character.slug set_pk=set.pk %}"
+                                                hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                                                class="btn-ghost btn-sm">{% trans "Cancel" %}</button>
+                                    </form>
+                                {% else %}
+                                    <p class="flex items-start justify-between gap-2 text-sm text-semantic-ink-secondary">
+                                        <span>
+                                            {% if oc.trigger %}<span class="badge bg-semantic-card-sunken text-semantic-ink-secondary border border-semantic-border text-xs mr-1">{{ oc.trigger }}</span>{% endif %}
+                                            {{ oc.text }}
+                                        </span>
+                                        {% if editable %}
+                                            <span class="flex items-center gap-1 shrink-0">
+                                                <button type="button"
+                                                        hx-get="{% url 'characters:action_outcome_edit' slug=character.slug outcome_pk=oc.pk %}"
+                                                        hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                                                        class="btn-ghost btn-sm text-semantic-muted" title="{% trans 'Edit' %}">
+                                                    <span class="i-lucide-pencil text-xs" aria-hidden="true"></span>
+                                                </button>
+                                                <button type="button"
+                                                        hx-post="{% url 'characters:action_outcome_delete' slug=character.slug outcome_pk=oc.pk %}"
+                                                        hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                                                        class="btn-ghost btn-sm text-semantic-muted hover:text-semantic-danger" title="{% trans 'Delete' %}">
+                                                    <span class="i-lucide-x text-xs"></span>
+                                                </button>
+                                            </span>
+                                        {% endif %}
+                                    </p>
+                                {% endif %}
+                            {% endfor %}
+                            {% if editable %}
+                                <form hx-post="{% url 'characters:action_outcome_create' slug=character.slug action_pk=action.pk %}"
+                                      hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                                      class="flex flex-wrap items-center gap-2"
+                                      @submit="$nextTick(() => $el.reset())">
+                                    <input type="text" name="trigger" maxlength="100"
+                                           placeholder="{% trans '7-9…' %}" class="form-input w-24">
+                                    <input type="text" name="text" required maxlength="1000"
+                                           placeholder="{% trans 'Add a conditional result…' %}" class="form-input flex-1 min-w-40">
+                                    <button type="submit" class="btn-secondary btn-sm">
+                                        <span class="i-lucide-plus"></span> {% trans "Result" %}
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    {% endif %}
                 </div>
             {% endif %}
         {% endfor %}

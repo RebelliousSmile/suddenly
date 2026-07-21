@@ -606,6 +606,34 @@ class Action(BaseModel):
         return f"{self.name} → {self.trait_set.label}"
 
 
+class ActionOutcome(BaseModel):
+    """A conditional result of an ``Action`` (#148).
+
+    ``trigger`` is a free-text display label (e.g. "7-9", "on a miss") and
+    ``text`` the result. Never parsed or evaluated — like everything in the
+    meta-model, these are displayed as written. ``Action.outcome`` stays as the
+    optional single/base result; ``ActionOutcome`` rows add the "choose one by
+    condition" list the issue asks for.
+    """
+
+    action = models.ForeignKey(Action, on_delete=models.CASCADE, related_name="outcomes")
+    trigger = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Displayed condition label (e.g. 7-9). Free text, never evaluated.",
+    )
+    text = models.TextField(help_text="The result — displayed text, never evaluated")
+    order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "created_at"]
+        indexes = [models.Index(fields=["action"])]
+
+    def __str__(self) -> str:
+        label = self.text[:40]
+        return f"{self.trigger}: {label}" if self.trigger else label
+
+
 class FollowQuerySet(models.QuerySet["Follow"]):
     """Querysets for Follow. Mutuality (DEC-E2) lives here and nowhere else —
     both the federated-DM send gate (403) and the inbox receive gate (silent

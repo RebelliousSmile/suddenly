@@ -8,7 +8,7 @@ import pytest
 from django.test import Client
 from django.urls import reverse
 
-from suddenly.characters.models import Action, Character, Trait, TraitSet
+from suddenly.characters.models import Action, ActionOutcome, Character, Trait, TraitSet
 from suddenly.users.models import User
 
 
@@ -278,6 +278,127 @@ class TestInlineEdit:
         trait.refresh_from_db()
         assert resp.status_code == 403
         assert trait.name == "Secret"
+
+
+@pytest.mark.django_db
+class TestActionOutcomes:
+    """#148 — an action can carry several results chosen by a free-text condition."""
+
+    def _action(self, character: Character) -> Action:
+        ts = TraitSet.objects.create(character=character, label="Corps")
+        return Action.objects.create(trait_set=ts, character=character, name="Foncer")
+
+    def test_create_outcome_with_trigger(self, logged_client: Client, character: Character) -> None:
+        action = self._action(character)
+        url = reverse(
+            "characters:action_outcome_create",
+            kwargs={"slug": character.slug, "action_pk": action.pk},
+        )
+        resp = logged_client.post(url, {"trigger": "7-9", "text": "Ça passe mais…"})
+        assert resp.status_code == 200
+        oc = action.outcomes.get()
+        assert oc.trigger == "7-9"
+        assert oc.text == "Ça passe mais…"
+        assert b"7-9" in resp.content
+
+    def test_create_outcome_without_trigger(
+        self, logged_client: Client, character: Character
+    ) -> None:
+        action = self._action(character)
+        url = reverse(
+            "characters:action_outcome_create",
+            kwargs={"slug": character.slug, "action_pk": action.pk},
+        )
+        resp = logged_client.post(url, {"trigger": "", "text": "Résultat simple"})
+        assert resp.status_code == 200
+        assert action.outcomes.get().trigger == ""
+
+    def test_create_outcome_requires_text(
+        self, logged_client: Client, character: Character
+    ) -> None:
+        action = self._action(character)
+        url = reverse(
+            "characters:action_outcome_create",
+            kwargs={"slug": character.slug, "action_pk": action.pk},
+        )
+        resp = logged_client.post(url, {"trigger": "10+", "text": ""})
+        assert resp.status_code == 422
+        assert not action.outcomes.exists()
+
+    def test_get_outcome_edit_returns_inline_form(
+        self, logged_client: Client, character: Character
+    ) -> None:
+        action = self._action(character)
+        oc = ActionOutcome.objects.create(action=action, trigger="6-", text="Échec")
+        url = reverse(
+            "characters:action_outcome_edit",
+            kwargs={"slug": character.slug, "outcome_pk": oc.pk},
+        )
+        resp = logged_client.get(url)
+        assert resp.status_code == 200
+        assert 'value="Échec"' in resp.content.decode()
+
+    def test_post_outcome_edit_updates(self, logged_client: Client, character: Character) -> None:
+        action = self._action(character)
+        oc = ActionOutcome.objects.create(action=action, trigger="6-", text="Old")
+        url = reverse(
+            "characters:action_outcome_edit",
+            kwargs={"slug": character.slug, "outcome_pk": oc.pk},
+        )
+        resp = logged_client.post(url, {"trigger": "miss", "text": "New"})
+        oc.refresh_from_db()
+        assert resp.status_code == 200
+        assert oc.trigger == "miss"
+        assert oc.text == "New"
+
+    def test_delete_outcome(self, logged_client: Client, character: Character) -> None:
+        action = self._action(character)
+        oc = ActionOutcome.objects.create(action=action, text="Gone")
+        url = reverse(
+            "characters:action_outcome_delete",
+            kwargs={"slug": character.slug, "outcome_pk": oc.pk},
+        )
+        resp = logged_client.post(url)
+        assert resp.status_code == 200
+        assert not ActionOutcome.objects.filter(pk=oc.pk).exists()
+
+    def test_transverse_action_outcome_forbidden(
+        self, logged_client: Client, character: Character
+    ) -> None:
+        """Transverse actions (trait_set=None) stay read-only — the set-scoped
+        outcome endpoint doesn't reach them (404, not found)."""
+        transverse = Action.objects.create(trait_set=None, character=character, name="Transverse")
+        url = reverse(
+            "characters:action_outcome_create",
+            kwargs={"slug": character.slug, "action_pk": transverse.pk},
+        )
+        resp = logged_client.post(url, {"trigger": "7-9", "text": "nope"})
+        assert resp.status_code == 404
+        assert not transverse.outcomes.exists()
+
+    def test_stranger_cannot_add_outcome(
+        self, client: Client, other_user: User, character: Character
+    ) -> None:
+        action = self._action(character)
+        client.force_login(other_user)
+        url = reverse(
+            "characters:action_outcome_create",
+            kwargs={"slug": character.slug, "action_pk": action.pk},
+        )
+        resp = client.post(url, {"trigger": "7-9", "text": "hack"})
+        assert resp.status_code == 403
+        assert not action.outcomes.exists()
+
+    def test_outcomes_render_on_public_sheet(
+        self, plain_static: None, client: Client, character: Character
+    ) -> None:
+        action = self._action(character)
+        ActionOutcome.objects.create(action=action, trigger="10+", text="Réussite totale")
+        content = client.get(
+            reverse("characters:detail", kwargs={"slug": character.slug})
+        ).content.decode()
+        assert "10+" in content
+        assert "Réussite totale" in content
 
 
 @pytest.mark.django_db

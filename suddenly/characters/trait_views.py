@@ -16,8 +16,8 @@ from django.views.decorators.http import require_POST
 from suddenly.core.types import AuthenticatedRequest
 from suddenly.core.views import htmx_render
 
-from .forms import ActionForm, TraitForm, TraitSetForm
-from .models import Action, Character, Trait, TraitSet
+from .forms import ActionForm, ActionOutcomeForm, TraitForm, TraitSetForm
+from .models import Action, ActionOutcome, Character, Trait, TraitSet
 from .services import build_transverse_actions_queryset
 
 
@@ -43,7 +43,9 @@ def _render_set(
 ) -> str:
     """Re-render a set block. ``editing_kind``/``editing_pk`` put one row
     (``"set"`` / ``"trait"`` / ``"action"``) into inline-edit mode (#148)."""
-    trait_set = TraitSet.objects.prefetch_related("traits", "actions__traits").get(pk=trait_set.pk)
+    trait_set = TraitSet.objects.prefetch_related(
+        "traits", "actions__traits", "actions__outcomes"
+    ).get(pk=trait_set.pk)
     return render_to_string(
         "characters/partials/trait_set.html",
         {
@@ -64,7 +66,9 @@ def traits_editor(request: AuthenticatedRequest, slug: str) -> HttpResponse:
     if character is None:
         return HttpResponseForbidden()
 
-    trait_sets = character.trait_sets.prefetch_related("traits", "actions__traits")
+    trait_sets = character.trait_sets.prefetch_related(
+        "traits", "actions__traits", "actions__outcomes"
+    )
     transverse_actions = build_transverse_actions_queryset(character)
     return htmx_render(
         request,
@@ -246,6 +250,90 @@ def action_edit(request: AuthenticatedRequest, slug: str, action_pk: str) -> Htt
     return HttpResponse(
         _render_set(request, trait_set, editing_kind="action", editing_pk=action.pk), status=422
     )
+
+
+# ── Conditional outcomes on an action (#148) ───────────────────────────────
+# An action may carry several results chosen by a free-text condition ("7-9").
+# All swap the parent #set-<pk> block. Only set-scoped actions are editable
+# (transverse actions stay read-only, like their delete path).
+
+
+def _get_editable_action(
+    request: AuthenticatedRequest, slug: str, action_pk: str
+) -> tuple[Character, Action, TraitSet] | None:
+    character = _get_editable_character(request, slug)
+    if character is None:
+        return None
+    action = get_object_or_404(
+        Action.objects.select_related("trait_set"), pk=action_pk, trait_set__character=character
+    )
+    trait_set = action.trait_set
+    if trait_set is None:
+        return None
+    return character, action, trait_set
+
+
+@login_required
+def action_outcome_create(request: AuthenticatedRequest, slug: str, action_pk: str) -> HttpResponse:
+    resolved = _get_editable_action(request, slug, action_pk)
+    if resolved is None:
+        return HttpResponseForbidden()
+    _character, action, trait_set = resolved
+    if request.method != "POST":
+        return HttpResponseForbidden()
+    form = ActionOutcomeForm(request.POST)
+    if form.is_valid():
+        outcome = form.save(commit=False)
+        outcome.action = action
+        outcome.save()
+        return HttpResponse(_render_set(request, trait_set))
+    return HttpResponse(_render_set(request, trait_set), status=422)
+
+
+@login_required
+def action_outcome_edit(request: AuthenticatedRequest, slug: str, outcome_pk: str) -> HttpResponse:
+    character = _get_editable_character(request, slug)
+    if character is None:
+        return HttpResponseForbidden()
+    outcome = get_object_or_404(
+        ActionOutcome.objects.select_related("action__trait_set"),
+        pk=outcome_pk,
+        action__trait_set__character=character,
+    )
+    trait_set = outcome.action.trait_set
+    if trait_set is None:  # guaranteed non-None by the filter above; narrows for mypy
+        return HttpResponseForbidden()
+    if request.method != "POST":
+        return HttpResponse(
+            _render_set(request, trait_set, editing_kind="outcome", editing_pk=outcome.pk)
+        )
+    form = ActionOutcomeForm(request.POST, instance=outcome)
+    if form.is_valid():
+        form.save()
+        return HttpResponse(_render_set(request, trait_set))
+    return HttpResponse(
+        _render_set(request, trait_set, editing_kind="outcome", editing_pk=outcome.pk), status=422
+    )
+
+
+@require_POST
+@login_required
+def action_outcome_delete(
+    request: AuthenticatedRequest, slug: str, outcome_pk: str
+) -> HttpResponse:
+    character = _get_editable_character(request, slug)
+    if character is None:
+        return HttpResponseForbidden()
+    outcome = get_object_or_404(
+        ActionOutcome.objects.select_related("action__trait_set"),
+        pk=outcome_pk,
+        action__trait_set__character=character,
+    )
+    trait_set = outcome.action.trait_set
+    if trait_set is None:  # guaranteed non-None by the filter above; narrows for mypy
+        return HttpResponseForbidden()
+    outcome.delete()
+    return HttpResponse(_render_set(request, trait_set))
 
 
 @require_POST

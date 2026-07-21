@@ -688,7 +688,7 @@ def build_transverse_actions_queryset(character: Character) -> QuerySet[Action]:
     ``TraitSet``" queryset (DEC: shared queryset builders live in services.py
     as soon as 2+ callers need them).
     """
-    return character.actions.filter(trait_set__isnull=True).prefetch_related("traits")
+    return character.actions.filter(trait_set__isnull=True).prefetch_related("traits", "outcomes")
 
 
 def build_owned_pc_queryset(user: User) -> QuerySet[Character]:

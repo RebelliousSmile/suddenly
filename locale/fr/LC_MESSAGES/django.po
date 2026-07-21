@@ -3996,6 +3996,26 @@ msgstr "Nom de l'action"
 msgid "You'll add traits and actions one at a time on the sheet, right after creating the character — each one is saved on its own."
 msgstr "Vous ajouterez les traits et actions un par un sur la fiche, juste après la création du personnage — chacun est enregistré séparément."
 
+#: .\templates\characters\partials\trait_set.html:224
+msgid "7-9…"
+msgstr "7-9…"
+
+#: .\templates\characters\partials\trait_set.html:226
+msgid "Condition"
+msgstr "Condition"
+
+#: .\templates\characters\partials\trait_set.html:228
+msgid "Result…"
+msgstr "Résultat…"
+
+#: .\templates\characters\partials\trait_set.html:252
+msgid "Result"
+msgstr "Résultat"
+
+#: .\templates\characters\partials\trait_set.html:250
+msgid "Add a conditional result…"
+msgstr "Ajouter un résultat conditionnel…"
+
 #~ msgid "published reports"
 #~ msgstr "comptes-rendus publiés"
 
