@@ -53,9 +53,9 @@
                             <figure class="rounded-full overflow-hidden border border-semantic-border">
                                 <img src="{{ media.image.url }}" alt="{{ media.alt }}"
                                      class="w-full max-h-80 object-cover">
-                                {% if media.alt or media.tone %}
+                                {% if media.alt %}
                                     <figcaption class="px-3 py-2 text-xs text-semantic-muted">
-                                        {{ media.alt }}{% if media.tone %} · <em>{{ media.tone }}</em>{% endif %}
+                                        {{ media.alt }}
                                     </figcaption>
                                 {% endif %}
                             </figure>
@@ -90,9 +90,6 @@
                                        class="form-input w-full text-sm">
                                 <input type="text" name="alt" maxlength="280"
                                        placeholder="{% trans "Ce que montre l'image (alt)" %}"
-                                       class="form-input w-full text-sm">
-                                <input type="text" name="tone" maxlength="80"
-                                       placeholder="{% trans "Ambiance : lourde, feutrée…" %}"
                                        class="form-input w-full text-sm">
                                 <button type="submit" class="btn-primary btn-sm">{% trans "Enregistrer l'image" %}</button>
                             </form>

@@ -389,7 +389,6 @@ def rapport_media_add(
     media = getattr(rapport, "media", None) or RapportMedia(rapport=rapport)
     media.image = image
     media.alt = request.POST.get("alt", "").strip()
-    media.tone = request.POST.get("tone", "").strip()
     try:
         media.full_clean()
     except ValidationError as exc:

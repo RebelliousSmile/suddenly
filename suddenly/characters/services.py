@@ -587,7 +587,6 @@ def create_character_with_sheet(
     sheet_url: str,
     avatar: object | None,
     cover_alt: str,
-    cover_tone: str,
     trait_sets: list[dict[str, Any]],
     actions: list[dict[str, Any]],
 ) -> Character:
@@ -630,7 +629,6 @@ def create_character_with_sheet(
         sheet_url=sheet_url,
         avatar=avatar,
         cover_alt=cover_alt,
-        cover_tone=cover_tone,
     )
     character.full_clean(exclude=["slug"])
     character.save()

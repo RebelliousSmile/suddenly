@@ -66,7 +66,7 @@ class RapportInline(_RapportInlineBase):
 
 class RapportMediaInline(_RapportMediaInlineBase):
     model = RapportMedia
-    fields = ["image", "alt", "tone"]
+    fields = ["image", "alt"]
     extra = 0
 
 

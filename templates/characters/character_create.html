@@ -62,14 +62,6 @@
                            value="{{ form_data.cover_alt|default:'' }}" class="form-input">
                 </div>
 
-                <div>
-                    <label for="cover_tone" class="form-label">
-                        {% trans "Cover tone" %} <span class="text-semantic-muted">({% trans "optional" %})</span>
-                    </label>
-                    <input type="text" id="cover_tone" name="cover_tone"
-                           value="{{ form_data.cover_tone|default:'' }}" class="form-input">
-                </div>
-
                 {% trans "Avatar" as label_avatar %}
                 {% include "components/form_image_upload.html" with field_id="avatar" field_name="avatar" field_label=label_avatar field_optional=True current_url="" %}
             </div>

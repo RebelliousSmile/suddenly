@@ -423,12 +423,10 @@ def test_open_new_scene_attaches_media_for_description() -> None:
         content="Brume.",
         image=image,
         media_alt="Route déserte",
-        media_tone="lourde",
     )
 
     media = RapportMedia.objects.get(rapport=rapport)
     assert media.alt == "Route déserte"
-    assert media.tone == "lourde"
 
 
 # ---------------------------------------------------------------------------
