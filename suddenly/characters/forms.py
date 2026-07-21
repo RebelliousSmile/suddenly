@@ -14,7 +14,7 @@ from typing import Any
 from django import forms
 from django.forms import ModelMultipleChoiceField
 
-from .models import Action, Trait, TraitSet
+from .models import Action, ActionOutcome, Trait, TraitSet
 
 
 class TraitSetForm(forms.ModelForm):  # type: ignore[type-arg]
@@ -50,3 +50,9 @@ class ActionForm(forms.ModelForm):  # type: ignore[type-arg]
             traits_field.queryset = trait_set.traits.all()
         else:
             traits_field.queryset = Trait.objects.none()
+
+
+class ActionOutcomeForm(forms.ModelForm):  # type: ignore[type-arg]
+    class Meta:
+        model = ActionOutcome
+        fields = ["trigger", "text"]

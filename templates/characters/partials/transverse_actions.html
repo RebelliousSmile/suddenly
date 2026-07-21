@@ -33,6 +33,16 @@
                         <span class="text-semantic-muted">{% trans "Then" %}:</span> {{ action.outcome }}
                     </p>
                 {% endif %}
+                {% if action.outcomes.all %}
+                    <div class="mt-2 space-y-1.5 border-t border-semantic-border pt-2">
+                        {% for oc in action.outcomes.all %}
+                            <p class="text-sm text-semantic-ink-secondary">
+                                {% if oc.trigger %}<span class="badge bg-semantic-card-sunken text-semantic-ink-secondary border border-semantic-border text-xs mr-1">{{ oc.trigger }}</span>{% endif %}
+                                {{ oc.text }}
+                            </p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
         {% endfor %}
     </div>

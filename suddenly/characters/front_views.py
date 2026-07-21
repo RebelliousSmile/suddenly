@@ -106,7 +106,9 @@ def character_detail(request: HttpRequest, slug: str) -> HttpResponse:
     quotes = Quote.objects.promotable().filter(character=character).order_by("-created_at")[:10]
 
     # Narrative meta-model (issues A/C): displayed, never evaluated.
-    trait_sets = character.trait_sets.prefetch_related("traits", "actions__traits")
+    trait_sets = character.trait_sets.prefetch_related(
+        "traits", "actions__traits", "actions__outcomes"
+    )
 
     # Cross-concept actions (trait_set=None) — "Actions transverses" block.
     transverse_actions = build_transverse_actions_queryset(character)

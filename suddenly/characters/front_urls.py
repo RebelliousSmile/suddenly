@@ -120,6 +120,21 @@ urlpatterns = [
         trait_views.action_delete,
         name="action_delete",
     ),
+    path(
+        "<slug:slug>/traits/actions/<uuid:action_pk>/outcomes/add/",
+        trait_views.action_outcome_create,
+        name="action_outcome_create",
+    ),
+    path(
+        "<slug:slug>/traits/outcomes/<uuid:outcome_pk>/edit/",
+        trait_views.action_outcome_edit,
+        name="action_outcome_edit",
+    ),
+    path(
+        "<slug:slug>/traits/outcomes/<uuid:outcome_pk>/delete/",
+        trait_views.action_outcome_delete,
+        name="action_outcome_delete",
+    ),
     path("<slug:slug>/link/", link_views.link_choose_type, name="link_choose"),
     path(
         "<slug:slug>/link/<str:link_type>/",
