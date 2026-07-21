@@ -3910,9 +3910,7 @@ msgstr "Signaler %(label)s"
 
 #: .\templates\core\report_content_form.html:13
 msgid "This report is sent privately to instance admins. Nobody is notified."
-msgstr ""
-"Ce signalement est envoyé en privé aux administrateurs de l'instance. "
-"Personne n'est notifié."
+msgstr "Ce signalement est envoyé en privé aux administrateurs de l'instance. Personne n'est notifié."
 
 #: .\templates\characters\detail.html:82
 msgid "Report this character"
