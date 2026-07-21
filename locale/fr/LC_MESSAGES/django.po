@@ -3972,6 +3972,26 @@ msgstr "Visible par vous seul (créateur/propriétaire). Jamais affiché publiqu
 msgid "Only you (creator/owner) can see this."
 msgstr "Vous seul (créateur/propriétaire) pouvez voir ceci."
 
+#: .\templates\characters\partials\trait_set.html:34
+msgid "Rename"
+msgstr "Renommer"
+
+#: .\templates\characters\partials\trait_set.html:16
+msgid "Concept name"
+msgstr "Nom du concept"
+
+#: .\templates\characters\partials\trait_set.html:62
+msgid "Trait name"
+msgstr "Nom du trait"
+
+#: .\templates\characters\partials\trait_set.html:64
+msgid "Value"
+msgstr "Valeur"
+
+#: .\templates\characters\partials\trait_set.html:158
+msgid "Action name"
+msgstr "Nom de l'action"
+
 #~ msgid "published reports"
 #~ msgstr "comptes-rendus publiés"
 

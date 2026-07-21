@@ -81,9 +81,24 @@ urlpatterns = [
         name="trait_set_delete",
     ),
     path(
+        "<slug:slug>/traits/sets/<uuid:set_pk>/card/",
+        trait_views.trait_set_card,
+        name="trait_set_card",
+    ),
+    path(
+        "<slug:slug>/traits/sets/<uuid:set_pk>/edit/",
+        trait_views.trait_set_edit,
+        name="trait_set_edit",
+    ),
+    path(
         "<slug:slug>/traits/sets/<uuid:set_pk>/traits/add/",
         trait_views.trait_create,
         name="trait_create",
+    ),
+    path(
+        "<slug:slug>/traits/traits/<uuid:trait_pk>/edit/",
+        trait_views.trait_edit,
+        name="trait_edit",
     ),
     path(
         "<slug:slug>/traits/traits/<uuid:trait_pk>/delete/",
@@ -94,6 +109,11 @@ urlpatterns = [
         "<slug:slug>/traits/sets/<uuid:set_pk>/actions/add/",
         trait_views.action_create,
         name="action_create",
+    ),
+    path(
+        "<slug:slug>/traits/actions/<uuid:action_pk>/edit/",
+        trait_views.action_edit,
+        name="action_edit",
     ),
     path(
         "<slug:slug>/traits/actions/<uuid:action_pk>/delete/",

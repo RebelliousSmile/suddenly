@@ -176,6 +176,111 @@ class TestActionCrud:
 
 
 @pytest.mark.django_db
+class TestInlineEdit:
+    """#148 — edit existing sets/traits/actions in place (not delete + recreate)."""
+
+    def test_get_trait_edit_returns_inline_form(
+        self, logged_client: Client, character: Character
+    ) -> None:
+        ts = TraitSet.objects.create(character=character)
+        trait = Trait.objects.create(trait_set=ts, name="Casse-cou", value=3)
+        url = reverse(
+            "characters:trait_edit", kwargs={"slug": character.slug, "trait_pk": trait.pk}
+        )
+        resp = logged_client.get(url)
+        assert resp.status_code == 200
+        # The current value is pre-filled in an editable input (edit mode, not display).
+        assert b'value="Casse-cou"' in resp.content
+        assert (
+            reverse(
+                "characters:trait_edit", kwargs={"slug": character.slug, "trait_pk": trait.pk}
+            ).encode()
+            in resp.content
+        )
+
+    def test_post_trait_edit_updates_fields(
+        self, logged_client: Client, character: Character
+    ) -> None:
+        ts = TraitSet.objects.create(character=character)
+        trait = Trait.objects.create(trait_set=ts, name="Old", value=1, note="old note")
+        url = reverse(
+            "characters:trait_edit", kwargs={"slug": character.slug, "trait_pk": trait.pk}
+        )
+        resp = logged_client.post(url, {"name": "New", "value": "-2", "note": "new note"})
+        trait.refresh_from_db()
+        assert resp.status_code == 200
+        assert trait.name == "New"
+        assert trait.value == -2
+        assert trait.note == "new note"
+
+    def test_post_trait_edit_clears_value(
+        self, logged_client: Client, character: Character
+    ) -> None:
+        ts = TraitSet.objects.create(character=character)
+        trait = Trait.objects.create(trait_set=ts, name="Tagged", value=4)
+        url = reverse(
+            "characters:trait_edit", kwargs={"slug": character.slug, "trait_pk": trait.pk}
+        )
+        resp = logged_client.post(url, {"name": "Tagged", "value": "", "note": ""})
+        trait.refresh_from_db()
+        assert resp.status_code == 200
+        assert trait.value is None  # valueless tag after edit
+
+    def test_post_set_edit_renames_label(self, logged_client: Client, character: Character) -> None:
+        ts = TraitSet.objects.create(character=character, label="Corps")
+        url = reverse("characters:trait_set_edit", kwargs={"slug": character.slug, "set_pk": ts.pk})
+        resp = logged_client.post(url, {"label": "Esprit"})
+        ts.refresh_from_db()
+        assert resp.status_code == 200
+        assert ts.label == "Esprit"
+
+    def test_post_action_edit_updates_fields_and_traits(
+        self, logged_client: Client, character: Character
+    ) -> None:
+        ts = TraitSet.objects.create(character=character)
+        a = Trait.objects.create(trait_set=ts, name="A", value=1)
+        b = Trait.objects.create(trait_set=ts, name="B")
+        action = Action.objects.create(trait_set=ts, character=character, name="Old", condition="c")
+        action.traits.set([a])
+        url = reverse(
+            "characters:action_edit", kwargs={"slug": character.slug, "action_pk": action.pk}
+        )
+        resp = logged_client.post(
+            url,
+            {"name": "Combo", "traits": [str(a.pk), str(b.pk)], "condition": "X", "outcome": "Y"},
+        )
+        action.refresh_from_db()
+        assert resp.status_code == 200
+        assert action.name == "Combo"
+        assert action.condition == "X"
+        assert action.outcome == "Y"
+        assert action.traits.count() == 2
+
+    def test_set_card_returns_plain_block(
+        self, logged_client: Client, character: Character
+    ) -> None:
+        ts = TraitSet.objects.create(character=character, label="Corps")
+        url = reverse("characters:trait_set_card", kwargs={"slug": character.slug, "set_pk": ts.pk})
+        resp = logged_client.get(url)
+        assert resp.status_code == 200
+        assert f'id="set-{ts.pk}"'.encode() in resp.content
+
+    def test_stranger_cannot_edit(
+        self, client: Client, other_user: User, character: Character
+    ) -> None:
+        ts = TraitSet.objects.create(character=character)
+        trait = Trait.objects.create(trait_set=ts, name="Secret", value=1)
+        client.force_login(other_user)
+        url = reverse(
+            "characters:trait_edit", kwargs={"slug": character.slug, "trait_pk": trait.pk}
+        )
+        resp = client.post(url, {"name": "Hacked", "value": "9", "note": ""})
+        trait.refresh_from_db()
+        assert resp.status_code == 403
+        assert trait.name == "Secret"
+
+
+@pytest.mark.django_db
 class TestSheetDisplay:
     def test_traits_render_on_public_sheet(
         self, plain_static: None, client: Client, character: Character

@@ -2,42 +2,98 @@
 {% comment %}
   One trait set: traits then actions. Used read-only on the public sheet
   (editable=False) and with inline HTMX controls in the editor (editable=True).
+  Inline edit (#148): editing_kind ∈ "set"/"trait"/"action" + editing_pk put one
+  row into edit mode; every control swaps the single #set-<pk> target.
   Suddenly displays — it never evaluates. No "roll"/"resolve"/"compute" button.
 {% endcomment %}
 <div id="set-{{ set.pk }}" class="card card-body mb-4">
-    <div class="flex items-center justify-between mb-3">
-        <h3 class="text-heading">{{ set.label }}</h3>
-        {% if editable %}
-            <button type="button"
-                    hx-post="{% url 'characters:trait_set_delete' slug=character.slug set_pk=set.pk %}"
-                    hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
-                    hx-confirm="{% trans 'Supprimer ce lot et tout son contenu ?' %}"
-                    class="btn-ghost btn-sm text-semantic-danger" title="{% trans 'Delete' %}">
-                <span class="i-lucide-trash-2"></span>
-            </button>
+    <div class="flex items-center justify-between mb-3 gap-2">
+        {% if editable and editing_kind == 'set' and editing_pk == set.pk %}
+            <form hx-post="{% url 'characters:trait_set_edit' slug=character.slug set_pk=set.pk %}"
+                  hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                  class="flex items-center gap-2 flex-1">
+                <input type="text" name="label" required maxlength="100" value="{{ set.label }}"
+                       class="form-input flex-1" aria-label="{% trans 'Concept name' %}">
+                <button type="submit" class="btn-secondary btn-sm" title="{% trans 'Save' %}">
+                    <span class="i-lucide-check" aria-hidden="true"></span>
+                </button>
+                <button type="button"
+                        hx-get="{% url 'characters:trait_set_card' slug=character.slug set_pk=set.pk %}"
+                        hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                        class="btn-ghost btn-sm">{% trans "Cancel" %}</button>
+            </form>
+        {% else %}
+            <h3 class="text-heading">{{ set.label }}</h3>
+            {% if editable %}
+                <div class="flex items-center gap-1 shrink-0">
+                    <button type="button"
+                            hx-get="{% url 'characters:trait_set_edit' slug=character.slug set_pk=set.pk %}"
+                            hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                            class="btn-ghost btn-sm text-semantic-muted" title="{% trans 'Rename' %}">
+                        <span class="i-lucide-pencil text-xs" aria-hidden="true"></span>
+                    </button>
+                    <button type="button"
+                            hx-post="{% url 'characters:trait_set_delete' slug=character.slug set_pk=set.pk %}"
+                            hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                            hx-confirm="{% trans 'Supprimer ce lot et tout son contenu ?' %}"
+                            class="btn-ghost btn-sm text-semantic-danger" title="{% trans 'Delete' %}">
+                        <span class="i-lucide-trash-2"></span>
+                    </button>
+                </div>
+            {% endif %}
         {% endif %}
     </div>
 
     {# ── Traits ────────────────────────────────────────────── #}
     <ul class="space-y-1 mb-3">
         {% for trait in set.traits.all %}
-            <li class="flex items-center justify-between gap-2 py-1 border-b border-semantic-border last:border-0">
-                <span class="flex items-center gap-2">
-                    <span class="font-medium text-semantic-ink">{{ trait.name }}</span>
-                    {% if trait.value is not None %}
-                        <span class="badge bg-semantic-card-sunken text-semantic-ink-secondary border border-semantic-border text-xs">{{ trait.value|stringformat:"+d" }}</span>
+            {% if editable and editing_kind == 'trait' and editing_pk == trait.pk %}
+                <li>
+                    <form hx-post="{% url 'characters:trait_edit' slug=character.slug trait_pk=trait.pk %}"
+                          hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                          class="flex flex-wrap items-center gap-2 py-1">
+                        <input type="text" name="name" required maxlength="200" value="{{ trait.name }}"
+                               class="form-input flex-1 min-w-40" aria-label="{% trans 'Trait name' %}">
+                        <input type="number" name="value" value="{{ trait.value|default_if_none:'' }}"
+                               placeholder="±" class="form-input w-24" aria-label="{% trans 'Value' %}">
+                        <input type="text" name="note" maxlength="500" value="{{ trait.note }}"
+                               placeholder="{% trans 'note (optional)' %}" class="form-input w-40">
+                        <button type="submit" class="btn-secondary btn-sm">
+                            <span class="i-lucide-check" aria-hidden="true"></span> {% trans "Save" %}
+                        </button>
+                        <button type="button"
+                                hx-get="{% url 'characters:trait_set_card' slug=character.slug set_pk=set.pk %}"
+                                hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                                class="btn-ghost btn-sm">{% trans "Cancel" %}</button>
+                    </form>
+                </li>
+            {% else %}
+                <li class="flex items-center justify-between gap-2 py-1 border-b border-semantic-border last:border-0">
+                    <span class="flex items-center gap-2">
+                        <span class="font-medium text-semantic-ink">{{ trait.name }}</span>
+                        {% if trait.value is not None %}
+                            <span class="badge bg-semantic-card-sunken text-semantic-ink-secondary border border-semantic-border text-xs">{{ trait.value|stringformat:"+d" }}</span>
+                        {% endif %}
+                        {% if trait.note %}<span class="text-xs text-semantic-muted">— {{ trait.note }}</span>{% endif %}
+                    </span>
+                    {% if editable %}
+                        <span class="flex items-center gap-1 shrink-0">
+                            <button type="button"
+                                    hx-get="{% url 'characters:trait_edit' slug=character.slug trait_pk=trait.pk %}"
+                                    hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                                    class="btn-ghost btn-sm text-semantic-muted" title="{% trans 'Edit' %}">
+                                <span class="i-lucide-pencil text-xs" aria-hidden="true"></span>
+                            </button>
+                            <button type="button"
+                                    hx-post="{% url 'characters:trait_delete' slug=character.slug trait_pk=trait.pk %}"
+                                    hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                                    class="btn-ghost btn-sm text-semantic-muted hover:text-semantic-danger" title="{% trans 'Delete' %}">
+                                <span class="i-lucide-x text-xs"></span>
+                            </button>
+                        </span>
                     {% endif %}
-                    {% if trait.note %}<span class="text-xs text-semantic-muted">— {{ trait.note }}</span>{% endif %}
-                </span>
-                {% if editable %}
-                    <button type="button"
-                            hx-post="{% url 'characters:trait_delete' slug=character.slug trait_pk=trait.pk %}"
-                            hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
-                            class="btn-ghost btn-sm text-semantic-muted hover:text-semantic-danger" title="{% trans 'Delete' %}">
-                        <span class="i-lucide-x text-xs"></span>
-                    </button>
-                {% endif %}
-            </li>
+                </li>
+            {% endif %}
         {% empty %}
             <li class="text-sm text-semantic-muted">{% trans "No trait yet." %}</li>
         {% endfor %}
@@ -91,36 +147,76 @@
     {% endif %}
     <div class="space-y-3 mb-3">
         {% for action in set.actions.all %}
-            <div class="rounded-lg bg-semantic-surface p-3">
-                <div class="flex items-center justify-between gap-2">
-                    <span class="flex items-center flex-wrap gap-2">
-                        <span class="font-medium text-semantic-ink">{{ action.name }}</span>
-                        {% for t in action.traits.all %}
-                            <span class="badge bg-semantic-card-sunken text-semantic-ink-secondary border border-semantic-border text-xs">
-                                {{ t.name }}{% if t.value is not None %} {{ t.value|stringformat:"+d" }}{% endif %}
-                            </span>
-                        {% endfor %}
-                    </span>
-                    {% if editable %}
-                        <button type="button"
-                                hx-post="{% url 'characters:action_delete' slug=character.slug action_pk=action.pk %}"
-                                hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
-                                class="btn-ghost btn-sm text-semantic-muted hover:text-semantic-danger" title="{% trans 'Delete' %}">
-                            <span class="i-lucide-x text-xs"></span>
+            {% if editable and editing_kind == 'action' and editing_pk == action.pk %}
+                <form hx-post="{% url 'characters:action_edit' slug=character.slug action_pk=action.pk %}"
+                      hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                      class="space-y-2 rounded-lg border border-dashed border-semantic-border p-3">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <input type="text" name="name" required maxlength="200" value="{{ action.name }}"
+                               class="form-input flex-1 min-w-40" aria-label="{% trans 'Action name' %}">
+                        {% if set.traits.all %}
+                            <select name="traits" multiple size="3" class="form-input w-48"
+                                    title="{% trans 'One or more traits (Ctrl/Cmd to multi-select)' %}">
+                                {% for t in set.traits.all %}
+                                    <option value="{{ t.pk }}" {% if t in action.traits.all %}selected{% endif %}>{{ t }}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                    </div>
+                    <input type="text" name="condition" maxlength="1000" value="{{ action.condition }}"
+                           placeholder="{% trans 'When this applies (displayed text)…' %}" class="form-input w-full">
+                    <input type="text" name="outcome" maxlength="1000" value="{{ action.outcome }}"
+                           placeholder="{% trans 'What it produces (displayed text)…' %}" class="form-input w-full">
+                    <div class="flex items-center gap-2">
+                        <button type="submit" class="btn-secondary btn-sm">
+                            <span class="i-lucide-check" aria-hidden="true"></span> {% trans "Save" %}
                         </button>
+                        <button type="button"
+                                hx-get="{% url 'characters:trait_set_card' slug=character.slug set_pk=set.pk %}"
+                                hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                                class="btn-ghost btn-sm">{% trans "Cancel" %}</button>
+                    </div>
+                </form>
+            {% else %}
+                <div class="rounded-lg bg-semantic-surface p-3">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="flex items-center flex-wrap gap-2">
+                            <span class="font-medium text-semantic-ink">{{ action.name }}</span>
+                            {% for t in action.traits.all %}
+                                <span class="badge bg-semantic-card-sunken text-semantic-ink-secondary border border-semantic-border text-xs">
+                                    {{ t.name }}{% if t.value is not None %} {{ t.value|stringformat:"+d" }}{% endif %}
+                                </span>
+                            {% endfor %}
+                        </span>
+                        {% if editable %}
+                            <span class="flex items-center gap-1 shrink-0">
+                                <button type="button"
+                                        hx-get="{% url 'characters:action_edit' slug=character.slug action_pk=action.pk %}"
+                                        hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                                        class="btn-ghost btn-sm text-semantic-muted" title="{% trans 'Edit' %}">
+                                    <span class="i-lucide-pencil text-xs" aria-hidden="true"></span>
+                                </button>
+                                <button type="button"
+                                        hx-post="{% url 'characters:action_delete' slug=character.slug action_pk=action.pk %}"
+                                        hx-target="#set-{{ set.pk }}" hx-swap="outerHTML"
+                                        class="btn-ghost btn-sm text-semantic-muted hover:text-semantic-danger" title="{% trans 'Delete' %}">
+                                    <span class="i-lucide-x text-xs"></span>
+                                </button>
+                            </span>
+                        {% endif %}
+                    </div>
+                    {% if action.condition %}
+                        <p class="text-sm text-semantic-ink-secondary mt-1">
+                            <span class="text-semantic-muted">{% trans "When" %}:</span> {{ action.condition }}
+                        </p>
+                    {% endif %}
+                    {% if action.outcome %}
+                        <p class="text-sm text-semantic-ink-secondary">
+                            <span class="text-semantic-muted">{% trans "Then" %}:</span> {{ action.outcome }}
+                        </p>
                     {% endif %}
                 </div>
-                {% if action.condition %}
-                    <p class="text-sm text-semantic-ink-secondary mt-1">
-                        <span class="text-semantic-muted">{% trans "When" %}:</span> {{ action.condition }}
-                    </p>
-                {% endif %}
-                {% if action.outcome %}
-                    <p class="text-sm text-semantic-ink-secondary">
-                        <span class="text-semantic-muted">{% trans "Then" %}:</span> {{ action.outcome }}
-                    </p>
-                {% endif %}
-            </div>
+            {% endif %}
         {% endfor %}
     </div>
 
