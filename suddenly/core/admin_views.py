@@ -114,22 +114,52 @@ def admin_user_suspend(request: HttpRequest, pk: str) -> HttpResponse:
     return redirect(reverse("gmh:users"))
 
 
+def _context_link(obj: object) -> tuple[str, object]:
+    """Map a report's flagged content (GFK) to ``(detail_url, kind_label)``.
+
+    Empty strings when there is no context or its type is unknown — the queue
+    then simply shows the person-report without a content link (#150).
+    """
+    from django.urls import reverse
+    from django.utils.translation import gettext_lazy as _
+
+    from suddenly.characters.models import Character
+    from suddenly.games.models import Game, Report
+
+    if isinstance(obj, Character):
+        return reverse("characters:detail", kwargs={"slug": obj.slug}), _("character")
+    if isinstance(obj, Report):
+        return reverse("games:report_detail", kwargs={"game_pk": obj.game_id, "pk": obj.pk}), _(
+            "scene"
+        )
+    if isinstance(obj, Game):
+        return reverse("games:detail", kwargs={"pk": obj.pk}), _("game")
+    return "", ""
+
+
 @admin_required
 def admin_reports(request: HttpRequest) -> HttpResponse:
-    """Moderation queue — pending user reports (#136, DEC-F4)."""
+    """Moderation queue — pending reports, with a link to the flagged content
+    when the signalement carries one (#136, DEC-F4; content link #150)."""
     from suddenly.core.models import UserReport, UserReportStatus
 
     reports = (
         UserReport.objects.filter(status=UserReportStatus.PENDING)
         .select_related("reporter", "reported_user")
+        .prefetch_related("context")  # GFK: the flagged content (scene/character/game), #150
         .order_by("-created_at")
     )
+
+    rows = []
+    for report in reports:
+        url, kind_label = _context_link(report.context)
+        rows.append({"report": report, "context_url": url, "context_kind": kind_label})
 
     return htmx_render(
         request,
         full_template="gmh/reports.html",
         partial_template="gmh/reports.html",
-        context={"reports": reports},
+        context={"report_rows": rows},
     )
 
 

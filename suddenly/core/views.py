@@ -12,7 +12,7 @@ from typing import Any, cast
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.http import HttpRequest, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext_lazy as _
 
@@ -212,6 +212,92 @@ def report_user(request: HttpRequest, username: str) -> HttpResponse:
         "core/report_user_form.html",
         {
             "reported_user": reported_user,
+            "categories": ReportCategory.choices,
+        },
+    )
+
+
+#: Whitelisted reportable content kinds (#150). Anything else → 404.
+_REPORTABLE_KINDS = ("character", "scene", "game")
+
+
+def _resolve_reportable(kind: str, pk: str) -> tuple[Any, Any, str, Any]:
+    """Resolve a content ``kind``+``pk`` to ``(target, author, back_url, label)``.
+
+    Whitelisted local content only (character / scene / game) — an unknown kind
+    or remote content raises ``Http404`` (remote content is not locally
+    moderatable, and the ban acts on a local user). ``author`` is the person a
+    signalement is filed against; ``back_url`` is the content's detail page.
+    """
+    from django.urls import reverse
+
+    if kind == "character":
+        from suddenly.characters.models import Character
+
+        character = get_object_or_404(Character, pk=pk, remote=False)
+        author = character.owner or character.creator
+        back = reverse("characters:detail", kwargs={"slug": character.slug})
+        return character, author, back, character.name
+    if kind == "scene":
+        from suddenly.games.models import Report
+
+        scene = get_object_or_404(Report, pk=pk, remote=False)
+        back = reverse("games:report_detail", kwargs={"game_pk": scene.game_id, "pk": scene.pk})
+        return scene, scene.author, back, scene.title or _("an untitled scene")
+    if kind == "game":
+        from suddenly.games.models import Game
+
+        game = get_object_or_404(Game, pk=pk, remote=False)
+        back = reverse("games:detail", kwargs={"pk": game.pk})
+        return game, game.owner, back, game.title
+    raise Http404("Unknown reportable content kind")
+
+
+@login_required
+def report_content(request: HttpRequest, kind: str, pk: str) -> HttpResponse:
+    """Report a piece of content — character, scene, or game — to admins (#150).
+
+    Option A: reuses the person-report pipeline (``UserReport`` + the existing
+    moderation queue) rather than a parallel ``ContentReport`` system. Files a
+    signalement against the content's author with the content itself recorded
+    as the report's GFK context, so the admin queue can link straight to the
+    flagged element. Self-reports and remote content are refused; the reported
+    author is never notified (DEC-F6).
+    """
+    from suddenly.core.models import ReportCategory
+    from suddenly.core.moderation import create_user_report
+
+    target, author, back_url, label = _resolve_reportable(kind, pk)
+    user = cast(AuthenticatedRequest, request).user
+
+    if author is None or author.pk == user.pk:
+        messages.error(request, _("You cannot report your own content."))
+        return redirect(back_url)
+
+    if request.method == "POST":
+        category = request.POST.get("category", "")
+        comment = request.POST.get("comment", "").strip()
+        valid_categories = {choice for choice, _label in ReportCategory.choices}
+
+        if category not in valid_categories:
+            messages.error(request, _("Please select a reason."))
+        else:
+            create_user_report(
+                reporter=user,
+                reported_user=author,
+                category=category,
+                comment=comment,
+                context=target,
+            )
+            messages.success(request, _("Report submitted. An admin will review it."))
+            return redirect(back_url)
+
+    return render(
+        request,
+        "core/report_content_form.html",
+        {
+            "target_label": label,
+            "cancel_url": back_url,
             "categories": ReportCategory.choices,
         },
     )
