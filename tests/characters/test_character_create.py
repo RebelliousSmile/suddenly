@@ -1,14 +1,11 @@
-"""Tests for characters:create — the `create_character_with_sheet` service (Phase 2),
-the `character_create` view + URL + payload parsing (Phase 3), and the real
-one-page `character_create.html` template (Phase 4). The Alpine.js client-side
-serialization (`characterCreate` in frontend/src/main.js) that builds the hidden
-`payload` field is not exercised by these server-side tests — POST requests here
-submit the payload JSON directly, exactly as the Alpine component would.
+"""Tests for characters:create — the `create_character_with_sheet` service and the
+identity-first `character_create` view (#148). Creation posts identity only and
+redirects to the per-row traits editor; traits/actions are no longer batched
+through a hidden payload field (that flow was removed in #148).
 """
 
 from __future__ import annotations
 
-import json
 from typing import Any
 
 import pytest
@@ -243,25 +240,6 @@ def logged_client(client: Client, user: User) -> Client:
     return client
 
 
-def _valid_create_payload() -> dict[str, Any]:
-    return {
-        "trait_sets": [
-            {
-                "name": "Corps",
-                "traits": [{"name": "Costaud", "value": 3, "note": ""}],
-            }
-        ],
-        "actions": [
-            {
-                "name": "Charger",
-                "trait_refs": [[0, 0]],
-                "condition": "Quand la fuite n'est plus possible",
-                "outcome": "L'obstacle cede",
-            }
-        ],
-    }
-
-
 @pytest.mark.django_db
 class TestCharacterCreateUrl:
     def test_create_url_resolves(self) -> None:
@@ -292,30 +270,28 @@ class TestCharacterCreateViewGet:
         resp = client.get(url)
         assert resp.status_code == 302
 
-    def test_renders_alpine_scaffold_and_hidden_payload(
+    def test_renders_identity_form_without_payload(
         self, plain_static: None, logged_client: Client, game: Game
     ) -> None:
-        """Structural smoke check (Phase 4): the Alpine component is wired up
-        and the hidden payload field exists — the actual client-side behavior
-        (Alpine state/serialization) cannot be exercised by a server-side test."""
+        """#148 — creation is identity-first: the Alpine submit gate is wired, but
+        there is no in-memory traits/actions builder or hidden payload field."""
         url = reverse("characters:create")
         resp = logged_client.get(url)
         content = resp.content.decode()
 
         assert resp.status_code == 200
         assert 'x-data="characterCreate"' in content
-        assert '<input type="hidden" name="payload"' in content
         assert ':disabled="!canSubmit"' in content
         assert 'name="origin_game"' in content
         assert 'name="sheet_url"' in content
-        # An unrendered {% trans %} tag or a broken quote nesting would leak
-        # this literal substring into the response.
+        # The former payload batch is gone — traits are built per row on the sheet.
+        assert 'name="payload"' not in content
         assert "{% trans" not in content
 
 
 @pytest.mark.django_db
 class TestCharacterCreateViewPost:
-    def test_valid_post_creates_character_and_redirects(
+    def test_valid_post_creates_identity_and_redirects_to_editor(
         self, plain_static: None, logged_client: Client, user: User, game: Game
     ) -> None:
         url = reverse("characters:create")
@@ -327,97 +303,28 @@ class TestCharacterCreateViewPost:
                 "origin_game": str(game.pk),
                 "cover_alt": "Une falaise",
                 "sheet_url": "https://example.com/sheet",
-                "payload": json.dumps(_valid_create_payload()),
             },
         )
 
         character = Character.objects.get(name="Aeliana")
         assert resp.status_code == 302
-        assert resp["Location"] == reverse("characters:detail", kwargs={"slug": character.slug})
+        # Identity-first: land on the per-row traits editor to build the sheet.
+        assert resp["Location"] == reverse(
+            "characters:traits_editor", kwargs={"slug": character.slug}
+        )
         assert character.owner_id == user.pk
         assert character.creator_id == user.pk
         assert character.origin_game_id == game.pk
         assert character.status == CharacterStatus.PC
-        assert TraitSet.objects.filter(character=character).count() == 1
-        assert Action.objects.filter(character=character).count() == 1
-
-    def test_malformed_payload_renders_422_and_creates_nothing(
-        self, plain_static: None, logged_client: Client, game: Game
-    ) -> None:
-        url = reverse("characters:create")
-        resp = logged_client.post(
-            url,
-            {
-                "name": "Fantome",
-                "origin_game": str(game.pk),
-                "payload": "{not json",
-            },
-        )
-
-        assert resp.status_code == 422
-        assert not Character.objects.filter(name="Fantome").exists()
-
-    def test_oversized_payload_renders_422_and_creates_nothing(
-        self, plain_static: None, logged_client: Client, game: Game
-    ) -> None:
-        url = reverse("characters:create")
-        oversized_payload = {
-            "trait_sets": [{"name": f"Concept {i}", "traits": []} for i in range(51)],
-            "actions": [],
-        }
-        resp = logged_client.post(
-            url,
-            {
-                "name": "Trop",
-                "origin_game": str(game.pk),
-                "payload": json.dumps(oversized_payload),
-            },
-        )
-
-        assert resp.status_code == 422
-        assert not Character.objects.filter(name="Trop").exists()
-
-    def test_invalid_trait_ref_renders_422_and_creates_nothing(
-        self, plain_static: None, logged_client: Client, game: Game
-    ) -> None:
-        url = reverse("characters:create")
-        payload = {
-            "trait_sets": [{"name": "Corps", "traits": [{"name": "Costaud", "value": 3}]}],
-            "actions": [
-                {
-                    "name": "Charger",
-                    "trait_refs": [[9, 9]],
-                    "condition": "",
-                    "outcome": "",
-                }
-            ],
-        }
-        resp = logged_client.post(
-            url,
-            {
-                "name": "Fantome2",
-                "origin_game": str(game.pk),
-                "payload": json.dumps(payload),
-            },
-        )
-
-        assert resp.status_code == 422
-        assert not Character.objects.filter(name="Fantome2").exists()
-        assert TraitSet.objects.count() == 0
-        assert Trait.objects.count() == 0
+        # No traits/actions yet — they're added one at a time on the sheet.
+        assert TraitSet.objects.filter(character=character).count() == 0
+        assert Action.objects.filter(character=character).count() == 0
 
     def test_empty_name_renders_422_and_creates_nothing(
         self, plain_static: None, logged_client: Client, game: Game
     ) -> None:
         url = reverse("characters:create")
-        resp = logged_client.post(
-            url,
-            {
-                "name": "   ",
-                "origin_game": str(game.pk),
-                "payload": json.dumps({"trait_sets": [], "actions": []}),
-            },
-        )
+        resp = logged_client.post(url, {"name": "   ", "origin_game": str(game.pk)})
 
         assert resp.status_code == 422
         assert Character.objects.count() == 0
@@ -428,14 +335,7 @@ class TestCharacterCreateViewPost:
         other_game = GameFactory(title="Not mine", owner=other_user)  # type: ignore[no-untyped-call]
 
         url = reverse("characters:create")
-        resp = logged_client.post(
-            url,
-            {
-                "name": "Intrus",
-                "origin_game": str(other_game.pk),
-                "payload": json.dumps({"trait_sets": [], "actions": []}),
-            },
-        )
+        resp = logged_client.post(url, {"name": "Intrus", "origin_game": str(other_game.pk)})
 
         assert resp.status_code == 422
         assert not Character.objects.filter(name="Intrus").exists()
@@ -444,13 +344,7 @@ class TestCharacterCreateViewPost:
         self, plain_static: None, logged_client: Client
     ) -> None:
         url = reverse("characters:create")
-        resp = logged_client.post(
-            url,
-            {
-                "name": "Sans partie",
-                "payload": json.dumps({"trait_sets": [], "actions": []}),
-            },
-        )
+        resp = logged_client.post(url, {"name": "Sans partie"})
 
         assert resp.status_code == 422
         assert Character.objects.count() == 0

@@ -3716,6 +3716,10 @@ msgstr ""
 msgid "Action name"
 msgstr ""
 
+#: .\templates\characters\character_create.html:94
+msgid "You'll add traits and actions one at a time on the sheet, right after creating the character — each one is saved on its own."
+msgstr ""
+
 #: .\templates\core\report_content_form.html:4
 msgid "Report %(label)s"
 msgstr ""
