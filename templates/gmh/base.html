@@ -9,14 +9,14 @@
         <aside class="@md:w-56 flex-shrink-0">
             <nav class="card card-body space-y-1">
                 <p class="text-xs font-semibold text-semantic-muted uppercase tracking-wider mb-3">
-                    {% trans "Administration" %}
+                    {% trans "Dashboard" %}
                 </p>
 
                 <a href="{% url 'gmh:dashboard' %}"
                    class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
                           {% if request.resolver_match.url_name == 'dashboard' %}text-semantic-ink font-semibold bg-semantic-card-sunken{% else %}text-semantic-ink-secondary hover:text-semantic-ink hover:bg-semantic-card-sunken{% endif %}">
                     <span class="i-lucide-layout-dashboard text-base"></span>
-                    {% trans "Dashboard" %}
+                    {% trans "Overview" %}
                 </a>
 
                 <a href="{% url 'gmh:instance_settings' %}"

@@ -71,9 +71,18 @@ class TestAccountMenu:
         client.force_login(user)
         body = client.get("/").content.decode()
         # The previously-dead account entries now resolve to real routes.
-        assert reverse("characters:gm_dashboard") in body
         assert reverse("characters:link_requests") in body
         assert reverse("feed:notifications") in body
+
+    def test_dashboard_link_admin_only(self, db: Any, client: Client, user: User) -> None:
+        """The admin dashboard (gmh) is the "Tableau de bord" — visible only to
+        instance admins, never to a regular player (#150)."""
+        client.force_login(user)
+        assert reverse("gmh:dashboard") not in client.get("/").content.decode()
+
+        admin = User.objects.create_user(username="dash-admin", password="x", is_admin=True)
+        client.force_login(admin)
+        assert reverse("gmh:dashboard") in client.get("/").content.decode()
 
     def test_badge_counts_injected(
         self, db: Any, client: Client, user: User, other_user: User, character: Character

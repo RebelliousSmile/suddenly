@@ -8,15 +8,12 @@ suddenly.core.context_processors.account_badges context processor.
 <a href="{% url 'users:profile' username=user.username %}" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
     <span class="i-lucide-user mr-2"></span>{% trans "My profile" %}
 </a>
-<a href="{% url 'characters:gm_dashboard' %}" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
-    <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Dashboard" %}
-</a>
 <a href="{% url 'users:settings_data' %}" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
     <span class="i-lucide-settings mr-2"></span>{% trans "Preferences" %}
 </a>
 {% if request.user.is_admin %}
 <a href="{% url 'gmh:dashboard' %}" class="block px-4 py-3 text-sm text-semantic-ink-secondary hover:bg-semantic-card">
-    <span class="i-lucide-shield mr-2"></span>{% trans "Admin" %}
+    <span class="i-lucide-layout-dashboard mr-2"></span>{% trans "Dashboard" %}
 </a>
 {% endif %}
 <hr class="my-1 border-semantic-border">
