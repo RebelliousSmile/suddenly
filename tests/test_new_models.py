@@ -260,7 +260,8 @@ class TestNotification:
         # +MODERATION_REPORT (épique F, #136) → 11
         # +OFFER, +OFFER_RESPONSE (épique B, #132) → 13
         # +DIRECT_MESSAGE (épique E, #135) → 14
-        assert len(NotificationType.choices) == 14
+        # +ACHIEVEMENT (Stats & Succès, #153) → 15
+        assert len(NotificationType.choices) == 15
 
     def test_notification_ordering(self, user: User) -> None:
         """Notifications are ordered by -created_at."""

@@ -158,13 +158,15 @@ def notify_on_report_published(sender: type, instance: Any, created: bool, **kwa
     # Track usage for donation prompts
     _track_usage_and_prompt(instance.author)
 
-    # Re-evaluate achievements (#153): a milestone crossed by this publication
-    # (e.g. Nth scene, word thresholds) unlocks now, without a Stats-page visit.
-    # DB-only side effect, in the same transaction as the publish (mirrors
-    # _track_usage_and_prompt) — rolls back with it, counts include this scene.
-    from suddenly.core.achievements import evaluate_after_change
+    # Re-evaluate achievements (#153) — LOCAL authors only. A remote report is
+    # ingested from another instance (its author is remote, has no local stats),
+    # and skipping it keeps the federated ingest path's query count bounded.
+    # DB-only side effect, in the publish transaction (mirrors _track_usage) —
+    # rolls back with it, counts include this scene.
+    if not instance.remote:
+        from suddenly.core.achievements import evaluate_after_change
 
-    evaluate_after_change(instance.author_id)
+        evaluate_after_change(instance.author_id)
 
 
 def _track_usage_and_prompt(user: Any) -> None:
