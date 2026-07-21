@@ -3696,6 +3696,26 @@ msgstr ""
 msgid "No pending reports."
 msgstr ""
 
+#: .\templates\characters\partials\trait_set.html:34
+msgid "Rename"
+msgstr ""
+
+#: .\templates\characters\partials\trait_set.html:16
+msgid "Concept name"
+msgstr ""
+
+#: .\templates\characters\partials\trait_set.html:62
+msgid "Trait name"
+msgstr ""
+
+#: .\templates\characters\partials\trait_set.html:64
+msgid "Value"
+msgstr ""
+
+#: .\templates\characters\partials\trait_set.html:158
+msgid "Action name"
+msgstr ""
+
 #: .\templates\core\report_content_form.html:4
 msgid "Report %(label)s"
 msgstr ""

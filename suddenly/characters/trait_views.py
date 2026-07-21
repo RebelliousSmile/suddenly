@@ -34,11 +34,25 @@ def _get_editable_character(request: AuthenticatedRequest, slug: str) -> Charact
     return None
 
 
-def _render_set(request: AuthenticatedRequest, trait_set: TraitSet) -> str:
+def _render_set(
+    request: AuthenticatedRequest,
+    trait_set: TraitSet,
+    *,
+    editing_kind: str = "",
+    editing_pk: object = None,
+) -> str:
+    """Re-render a set block. ``editing_kind``/``editing_pk`` put one row
+    (``"set"`` / ``"trait"`` / ``"action"``) into inline-edit mode (#148)."""
     trait_set = TraitSet.objects.prefetch_related("traits", "actions__traits").get(pk=trait_set.pk)
     return render_to_string(
         "characters/partials/trait_set.html",
-        {"set": trait_set, "character": trait_set.character, "editable": True},
+        {
+            "set": trait_set,
+            "character": trait_set.character,
+            "editable": True,
+            "editing_kind": editing_kind,
+            "editing_pk": editing_pk,
+        },
         request=request,
     )
 
@@ -151,6 +165,87 @@ def action_create(request: AuthenticatedRequest, slug: str, set_pk: str) -> Http
         form.save_m2m()
         return HttpResponse(_render_set(request, trait_set))
     return HttpResponse(_render_set(request, trait_set), status=422)
+
+
+# ── Inline edit (#148) ─────────────────────────────────────────────────────
+# GET loads an inline edit form inside the set block; POST saves and re-renders
+# the plain block. All swap the single #set-<pk> target (never a broken layout).
+# Dual GET/POST → internal method guard, not @require_POST (GET serves the form).
+
+
+@login_required
+def trait_set_card(request: AuthenticatedRequest, slug: str, set_pk: str) -> HttpResponse:
+    """Plain (non-editing) re-render of a set block — the "Cancel" target."""
+    character = _get_editable_character(request, slug)
+    if character is None:
+        return HttpResponseForbidden()
+    trait_set = get_object_or_404(TraitSet, pk=set_pk, character=character)
+    return HttpResponse(_render_set(request, trait_set))
+
+
+@login_required
+def trait_set_edit(request: AuthenticatedRequest, slug: str, set_pk: str) -> HttpResponse:
+    character = _get_editable_character(request, slug)
+    if character is None:
+        return HttpResponseForbidden()
+    trait_set = get_object_or_404(TraitSet, pk=set_pk, character=character)
+    if request.method != "POST":
+        return HttpResponse(
+            _render_set(request, trait_set, editing_kind="set", editing_pk=trait_set.pk)
+        )
+    form = TraitSetForm(request.POST, instance=trait_set)
+    if form.is_valid():
+        form.save()
+        return HttpResponse(_render_set(request, trait_set))
+    return HttpResponse(
+        _render_set(request, trait_set, editing_kind="set", editing_pk=trait_set.pk), status=422
+    )
+
+
+@login_required
+def trait_edit(request: AuthenticatedRequest, slug: str, trait_pk: str) -> HttpResponse:
+    character = _get_editable_character(request, slug)
+    if character is None:
+        return HttpResponseForbidden()
+    trait = get_object_or_404(
+        Trait.objects.select_related("trait_set"), pk=trait_pk, trait_set__character=character
+    )
+    trait_set = trait.trait_set
+    if request.method != "POST":
+        return HttpResponse(
+            _render_set(request, trait_set, editing_kind="trait", editing_pk=trait.pk)
+        )
+    form = TraitForm(request.POST, instance=trait)
+    if form.is_valid():
+        form.save()
+        return HttpResponse(_render_set(request, trait_set))
+    return HttpResponse(
+        _render_set(request, trait_set, editing_kind="trait", editing_pk=trait.pk), status=422
+    )
+
+
+@login_required
+def action_edit(request: AuthenticatedRequest, slug: str, action_pk: str) -> HttpResponse:
+    character = _get_editable_character(request, slug)
+    if character is None:
+        return HttpResponseForbidden()
+    action = get_object_or_404(
+        Action.objects.select_related("trait_set"), pk=action_pk, trait_set__character=character
+    )
+    trait_set = action.trait_set
+    if trait_set is None:
+        return HttpResponseForbidden()
+    if request.method != "POST":
+        return HttpResponse(
+            _render_set(request, trait_set, editing_kind="action", editing_pk=action.pk)
+        )
+    form = ActionForm(request.POST, instance=action, trait_set=trait_set)
+    if form.is_valid():
+        form.save()
+        return HttpResponse(_render_set(request, trait_set))
+    return HttpResponse(
+        _render_set(request, trait_set, editing_kind="action", editing_pk=action.pk), status=422
+    )
 
 
 @require_POST
