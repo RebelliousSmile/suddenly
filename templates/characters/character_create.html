@@ -87,108 +87,13 @@
                 {% include "components/form_image_upload.html" with field_id="avatar" field_name="avatar" field_label=label_avatar field_optional=True current_url="" %}
             </div>
 
-            <!-- Traits: addable/removable concepts (TraitSet) and traits -->
-            <div class="card card-body space-y-4">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-heading">{% trans "Traits" %}</h2>
-                    <button type="button" class="btn-secondary btn-sm" @click="addSet">
-                        <span class="i-lucide-plus"></span> {% trans "Concept" %}
-                    </button>
-                </div>
-
+            {# Traits & actions are built per-row on the sheet, right after creation
+               (#148) — persisted and editable one at a time, no in-memory batch. #}
+            <div class="card card-body">
+                <h2 class="text-heading mb-2">{% trans "Traits & actions" %}</h2>
                 <p class="text-sm text-semantic-muted">
-                    {% blocktrans %}Group traits by concept (e.g. Body, Mind, Gear). Values are display-only — Suddenly never rolls, resolves or computes anything.{% endblocktrans %}
+                    {% trans "You'll add traits and actions one at a time on the sheet, right after creating the character — each one is saved on its own." %}
                 </p>
-
-                <template x-if="sets.length === 0">
-                    <p class="text-sm text-semantic-muted">{% trans "No concept yet." %}</p>
-                </template>
-
-                <template x-for="(set, setIndex) in sets" :key="set.id">
-                    <div class="rounded-lg border border-semantic-border p-3 space-y-3">
-                        <div class="flex items-center gap-2">
-                            <input type="text" x-model="set.name" required maxlength="200"
-                                   placeholder="{% trans 'Concept name…' %}" class="form-input flex-1">
-                            <button type="button" class="btn-ghost btn-sm text-semantic-danger"
-                                    @click="removeSet(setIndex)" title="{% trans 'Delete' %}">
-                                <span class="i-lucide-trash-2"></span>
-                            </button>
-                        </div>
-
-                        <ul class="space-y-2">
-                            <template x-for="(trait, traitIndex) in set.traits" :key="trait.id">
-                                <li class="flex flex-wrap items-center gap-2">
-                                    <input type="text" x-model="trait.name" maxlength="200"
-                                           placeholder="{% trans 'Trait name…' %}" class="form-input flex-1 min-w-32">
-                                    <input type="number" x-model.number="trait.value" min="-5" max="5"
-                                           @change="clampValue(trait)"
-                                           placeholder="±" class="form-input w-20">
-                                    <input type="text" x-model="trait.note" maxlength="500"
-                                           placeholder="{% trans 'note (optional)' %}" class="form-input w-40">
-                                    <button type="button" class="btn-ghost btn-sm text-semantic-muted hover:text-semantic-danger"
-                                            @click="removeTrait(setIndex, traitIndex)" title="{% trans 'Delete' %}">
-                                        <span class="i-lucide-x text-xs"></span>
-                                    </button>
-                                </li>
-                            </template>
-                        </ul>
-
-                        <button type="button" class="btn-secondary btn-sm" @click="addTrait(setIndex)">
-                            <span class="i-lucide-plus"></span> {% trans "Trait" %}
-                        </button>
-                    </div>
-                </template>
-            </div>
-
-            <!-- Actions: name + trait picker spanning all concepts + free-text condition/outcome -->
-            <div class="card card-body space-y-4">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-heading">{% trans "Actions" %}</h2>
-                    <button type="button" class="btn-secondary btn-sm" @click="addAction">
-                        <span class="i-lucide-plus"></span> {% trans "Action" %}
-                    </button>
-                </div>
-
-                <p class="text-sm text-semantic-muted">
-                    {% blocktrans %}An action can draw on traits from any concept. Condition and outcome are free text — displayed as written, never evaluated.{% endblocktrans %}
-                </p>
-
-                <template x-if="actions.length === 0">
-                    <p class="text-sm text-semantic-muted">{% trans "No action yet." %}</p>
-                </template>
-
-                <template x-for="(action, actionIndex) in actions" :key="action.id">
-                    <div class="rounded-lg border border-dashed border-semantic-border p-3 space-y-2">
-                        <div class="flex items-center gap-2">
-                            <input type="text" x-model="action.name" required maxlength="200"
-                                   placeholder="{% trans 'Action name…' %}" class="form-input flex-1">
-                            <button type="button" class="btn-ghost btn-sm text-semantic-danger"
-                                    @click="removeAction(actionIndex)" title="{% trans 'Delete' %}">
-                                <span class="i-lucide-trash-2"></span>
-                            </button>
-                        </div>
-
-                        <template x-if="allTraits.length === 0">
-                            <p class="text-xs text-semantic-muted italic">{% trans "Add traits above to link this action to them." %}</p>
-                        </template>
-                        <div class="flex flex-wrap gap-2">
-                            <template x-for="t in allTraits" :key="t.id">
-                                <label class="badge cursor-pointer select-none min-h-11 inline-flex items-center"
-                                       :class="action.traitIds.includes(t.id) ? 'bg-brand-primary/10 border-brand-primary text-brand-primary' : 'bg-semantic-card-sunken text-semantic-ink-secondary border border-semantic-border'">
-                                    <input type="checkbox" class="sr-only"
-                                           :checked="action.traitIds.includes(t.id)"
-                                           @change="toggleTraitRef(action, t.id)">
-                                    <span x-text="t.setName + ' · ' + t.name"></span>
-                                </label>
-                            </template>
-                        </div>
-
-                        <input type="text" x-model="action.condition" maxlength="1000"
-                               placeholder="{% trans 'When this applies (displayed text)…' %}" class="form-input w-full">
-                        <input type="text" x-model="action.outcome" maxlength="1000"
-                               placeholder="{% trans 'What it produces (displayed text)…' %}" class="form-input w-full">
-                    </div>
-                </template>
             </div>
 
             <!-- External sheet -->
@@ -203,12 +108,6 @@
                            placeholder="https://..." class="form-input">
                 </div>
             </div>
-
-            {% comment %}
-            Serialized client-side by the characterCreate Alpine component (buildPayload) —
-            matches _parse_character_create_payload's expected shape exactly.
-            {% endcomment %}
-            <input type="hidden" name="payload" :value="JSON.stringify(buildPayload())">
 
             <div class="flex items-center gap-3">
                 <button type="submit" class="btn-primary" :disabled="!canSubmit">

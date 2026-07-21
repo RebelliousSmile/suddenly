@@ -3992,6 +3992,10 @@ msgstr "Valeur"
 msgid "Action name"
 msgstr "Nom de l'action"
 
+#: .\templates\characters\character_create.html:94
+msgid "You'll add traits and actions one at a time on the sheet, right after creating the character — each one is saved on its own."
+msgstr "Vous ajouterez les traits et actions un par un sur la fiche, juste après la création du personnage — chacun est enregistré séparément."
+
 #~ msgid "published reports"
 #~ msgstr "comptes-rendus publiés"
 

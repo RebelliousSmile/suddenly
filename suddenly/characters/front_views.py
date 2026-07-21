@@ -7,9 +7,6 @@ DRF ViewSets in views.py remain for the JSON API.
 
 from __future__ import annotations
 
-import json
-from typing import Any
-
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.db.models.query import QuerySet
@@ -32,107 +29,6 @@ from .services import (
     create_character_with_sheet,
     suggested_characters_to_link,
 )
-
-# Payload bounds (characters:create) — reject absurdly large hidden-field
-# submissions before they ever reach create_character_with_sheet.
-MAX_TRAIT_SETS = 50
-MAX_TRAITS_PER_TRAIT_SET = 50
-MAX_ACTIONS = 50
-MAX_TRAIT_REFS_PER_ACTION = 50
-
-
-def _is_plain_int(value: Any) -> bool:
-    """True for a genuine int — bool is a subclass of int in Python, excluded."""
-    return isinstance(value, int) and not isinstance(value, bool)
-
-
-def _parse_character_create_payload(raw: Any) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    """Validate + translate the hidden ``payload`` field into the service's structures.
-
-    ``raw`` is whatever ``json.loads`` produced — untrusted shape. Raises
-    ``TypeError``/``ValueError`` on any malformed or oversized input; the caller
-    (``character_create``) catches these uniformly and re-renders with a 422.
-    Field-name translation: a payload TraitSet's ``name`` becomes the service's
-    ``label`` (Phase 2 signature); trait references are resolved by
-    ``(set_index, trait_index)`` position only, never by value.
-    """
-    if not isinstance(raw, dict):
-        raise TypeError("payload must be an object")
-
-    raw_trait_sets = raw.get("trait_sets", [])
-    raw_actions = raw.get("actions", [])
-    if not isinstance(raw_trait_sets, list) or not isinstance(raw_actions, list):
-        raise TypeError("trait_sets/actions must be lists")
-    if len(raw_trait_sets) > MAX_TRAIT_SETS:
-        raise ValueError("too many trait sets")
-    if len(raw_actions) > MAX_ACTIONS:
-        raise ValueError("too many actions")
-
-    trait_sets: list[dict[str, Any]] = []
-    for trait_set_data in raw_trait_sets:
-        if not isinstance(trait_set_data, dict):
-            raise TypeError("trait_set must be an object")
-        label = trait_set_data.get("name", "")
-        if not isinstance(label, str):
-            raise TypeError("trait_set name must be a string")
-
-        raw_traits = trait_set_data.get("traits", [])
-        if not isinstance(raw_traits, list):
-            raise TypeError("traits must be a list")
-        if len(raw_traits) > MAX_TRAITS_PER_TRAIT_SET:
-            raise ValueError("too many traits")
-
-        traits: list[dict[str, Any]] = []
-        for trait_data in raw_traits:
-            if not isinstance(trait_data, dict):
-                raise TypeError("trait must be an object")
-            trait_name = trait_data.get("name", "")
-            if not isinstance(trait_name, str):
-                raise TypeError("trait name must be a string")
-            value = trait_data.get("value")
-            if value is not None and not _is_plain_int(value):
-                raise TypeError("trait value must be an int or null")
-            note = trait_data.get("note", "")
-            if not isinstance(note, str):
-                raise TypeError("trait note must be a string")
-            traits.append({"name": trait_name, "value": value, "note": note})
-
-        trait_sets.append({"label": label, "traits": traits})
-
-    actions: list[dict[str, Any]] = []
-    for action_data in raw_actions:
-        if not isinstance(action_data, dict):
-            raise TypeError("action must be an object")
-        action_name = action_data.get("name", "")
-        condition = action_data.get("condition", "")
-        outcome = action_data.get("outcome", "")
-        if not isinstance(action_name, str):
-            raise TypeError("action name must be a string")
-        if not isinstance(condition, str) or not isinstance(outcome, str):
-            raise TypeError("condition/outcome must be strings")
-
-        raw_refs = action_data.get("trait_refs", [])
-        if not isinstance(raw_refs, list):
-            raise TypeError("trait_refs must be a list")
-        if len(raw_refs) > MAX_TRAIT_REFS_PER_ACTION:
-            raise ValueError("too many trait_refs")
-
-        trait_refs: list[list[int]] = []
-        for ref in raw_refs:
-            if not isinstance(ref, list) or len(ref) != 2 or not all(_is_plain_int(i) for i in ref):
-                raise TypeError("trait_refs entries must be [int, int]")
-            trait_refs.append(ref)
-
-        actions.append(
-            {
-                "name": action_name,
-                "trait_refs": trait_refs,
-                "condition": condition,
-                "outcome": outcome,
-            }
-        )
-
-    return trait_sets, actions
 
 
 def character_list(request: HttpRequest) -> HttpResponse:
@@ -460,19 +356,16 @@ def character_delete_bulk(request: AuthenticatedRequest) -> HttpResponse:
 
 @login_required
 def character_create(request: AuthenticatedRequest) -> HttpResponse:
-    """Single-gesture character creation: identity + multi-concept traits + actions + sheet.
+    """Identity-first character creation (#148).
 
-    GET renders the one-page form; ``games`` is scoped to ``request.user``'s own
-    games (a PC can only originate from a game the player owns — no notion of
-    "member" beyond ``owner`` exists on ``Game``). POST reads identity scalars
-    directly off ``request.POST``/``request.FILES``, validates+parses the hidden
-    ``payload`` JSON field (see ``_parse_character_create_payload``), then calls
-    ``create_character_with_sheet`` inside its own atomic transaction. Any
-    failure — malformed payload, empty name, missing/non-owned origin_game, a
-    ``ValidationError`` or out-of-range ``trait_refs`` (``KeyError``) raised by
-    the service — re-renders the form with ``error`` + ``form_data`` at 422;
-    nothing is created on that path (the service's ``@transaction.atomic``
-    guarantees the rollback).
+    GET renders the identity form; ``games`` is scoped to ``request.user``'s own
+    games (a PC can only originate from a game the player owns). POST reads the
+    identity scalars off ``request.POST``/``request.FILES`` and creates the
+    character with an empty sheet, then redirects to the traits editor — traits
+    and actions are added per row there (persisted and editable one at a time),
+    replacing the former in-memory ``payload`` batch. On empty name or a
+    missing/non-owned origin game, re-renders the form with ``error`` +
+    ``form_data`` at 422.
     """
     games: QuerySet[Game] = Game.objects.filter(owner=request.user)
 
@@ -516,16 +409,6 @@ def character_create(request: AuthenticatedRequest) -> HttpResponse:
         return _error(str(_("Origin game is required.")))
 
     try:
-        raw_payload = json.loads(request.POST.get("payload", ""))
-    except json.JSONDecodeError:
-        return _error(str(_("Malformed payload.")))
-
-    try:
-        trait_sets, actions = _parse_character_create_payload(raw_payload)
-    except (TypeError, ValueError):
-        return _error(str(_("Malformed payload.")))
-
-    try:
         character = create_character_with_sheet(
             user=request.user,
             name=name,
@@ -536,10 +419,11 @@ def character_create(request: AuthenticatedRequest) -> HttpResponse:
             sheet_url=sheet_url,
             avatar=avatar,
             cover_alt=cover_alt,
-            trait_sets=trait_sets,
-            actions=actions,
+            trait_sets=[],
+            actions=[],
         )
-    except (ValidationError, KeyError):
+    except ValidationError:
         return _error(str(_("Could not create the character.")))
 
-    return redirect(reverse("characters:detail", kwargs={"slug": character.slug}))
+    # Land on the per-row traits editor to build the sheet (#148).
+    return redirect(reverse("characters:traits_editor", kwargs={"slug": character.slug}))

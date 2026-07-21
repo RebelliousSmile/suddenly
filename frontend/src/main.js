@@ -541,18 +541,12 @@ Alpine.data('gameForm', () => ({
   },
 }))
 
-// Character create form (characters:create) — identity + addable/removable
-// TraitSets/Traits + actions whose trait picker spans ALL concepts. Serializes
-// its own state into the hidden `payload` field on submit, matching
-// _parse_character_create_payload's expected shape exactly. Values are
-// display-only (Trait.value clamped -5..+5 client-side only — the model has
-// no server-side bound); condition/outcome are free text, never evaluated.
+// Character create form (characters:create) — identity only. Traits and
+// actions are built per-row on the sheet after creation (#148), so this
+// component just gates the submit button on name + origin game being set.
 Alpine.data('characterCreate', () => ({
   hasName: false,
   hasGame: false,
-  sets: [],
-  actions: [],
-  nextId: 1,
 
   init() {
     this.hasName = this.$refs.nameInput ? this.$refs.nameInput.value.trim().length > 0 : false
@@ -563,103 +557,9 @@ Alpine.data('characterCreate', () => ({
     return this.hasName && this.hasGame
   },
 
-  get allTraits() {
-    const flat = []
-    for (const set of this.sets) {
-      for (const trait of set.traits) {
-        flat.push({ id: trait.id, name: trait.name, setName: set.name })
-      }
-    }
-    return flat
-  },
-
-  addSet() {
-    this.sets.push({ id: this.nextId++, name: '', traits: [] })
-  },
-
-  removeSet(setIndex) {
-    const removed = this.sets[setIndex]
-    if (!removed) return
-    const removedIds = new Set(removed.traits.map((t) => t.id))
-    this.sets.splice(setIndex, 1)
-    for (const action of this.actions) {
-      action.traitIds = action.traitIds.filter((id) => !removedIds.has(id))
-    }
-  },
-
-  addTrait(setIndex) {
-    const set = this.sets[setIndex]
-    if (!set) return
-    set.traits.push({ id: this.nextId++, name: '', value: null, note: '' })
-  },
-
-  removeTrait(setIndex, traitIndex) {
-    const set = this.sets[setIndex]
-    if (!set) return
-    const removed = set.traits[traitIndex]
-    if (!removed) return
-    set.traits.splice(traitIndex, 1)
-    for (const action of this.actions) {
-      action.traitIds = action.traitIds.filter((id) => id !== removed.id)
-    }
-  },
-
-  clampValue(trait) {
-    if (trait.value === null || trait.value === '' || Number.isNaN(trait.value)) {
-      trait.value = null
-      return
-    }
-    trait.value = Math.min(5, Math.max(-5, Math.trunc(trait.value)))
-  },
-
-  addAction() {
-    this.actions.push({ id: this.nextId++, name: '', traitIds: [], condition: '', outcome: '' })
-  },
-
-  removeAction(actionIndex) {
-    this.actions.splice(actionIndex, 1)
-  },
-
-  toggleTraitRef(action, traitId) {
-    const idx = action.traitIds.indexOf(traitId)
-    if (idx === -1) action.traitIds.push(traitId)
-    else action.traitIds.splice(idx, 1)
-  },
-
-  // Resolve a trait id to its [setIndex, traitIndex] position — the payload
-  // references traits positionally, never by client-side id.
-  _resolveRef(traitId) {
-    for (let setIndex = 0; setIndex < this.sets.length; setIndex++) {
-      const traitIndex = this.sets[setIndex].traits.findIndex((t) => t.id === traitId)
-      if (traitIndex !== -1) return [setIndex, traitIndex]
-    }
-    return null
-  },
-
-  buildPayload() {
-    return {
-      trait_sets: this.sets.map((set) => ({
-        name: set.name,
-        traits: set.traits.map((trait) => ({
-          name: trait.name,
-          value: trait.value === '' ? null : trait.value,
-          note: trait.note,
-        })),
-      })),
-      actions: this.actions.map((action) => ({
-        name: action.name,
-        trait_refs: action.traitIds
-          .map((id) => this._resolveRef(id))
-          .filter((ref) => ref !== null),
-        condition: action.condition,
-        outcome: action.outcome,
-      })),
-    }
-  },
-
   onSubmit() {
-    // No preventDefault: this is a normal multipart POST, not fetch. The
-    // hidden `payload` field is kept in sync via :value="JSON.stringify(buildPayload())".
+    // No preventDefault: a normal multipart POST creates the character, then
+    // the view redirects to the per-row traits editor.
   },
 }))
 
