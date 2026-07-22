@@ -14,7 +14,6 @@ if TYPE_CHECKING:
     from django.contrib.auth.models import AnonymousUser
     from django.core.paginator import Page
 
-    from suddenly.characters.models import Quote
     from suddenly.users.models import User
 
 POPULAR_SCENES_PER_PAGE = 20
@@ -41,22 +40,11 @@ def get_recent_public_reports(limit: int = 3) -> list[Report]:
             remote=False,
         )
         .select_related("author", "game")
-        .prefetch_related("cast", "quotes")
+        .prefetch_related("cast")
         .order_by("-published_at")[:limit]
     )
     cache.set(cache_key, reports, RECENT_REPORTS_TTL)
     return reports
-
-
-def get_instance_quotes(limit: int = 3) -> list[Quote]:
-    """Promotable citations for the anonymous vitrine ("Ce qu'on y dit").
-
-    Starts from ``Quote.objects.promotable()`` — the double lock — so nothing
-    behind the wall or kept private ever reaches the front page.
-    """
-    from suddenly.characters.models import Quote
-
-    return list(Quote.objects.promotable().order_by("-created_at")[:limit])
 
 
 def popular_scenes_page(

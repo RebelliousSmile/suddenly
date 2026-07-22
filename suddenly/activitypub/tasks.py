@@ -124,18 +124,17 @@ def send_create_activity(object_type: str, object_id: str) -> None:
     Send a Create activity for new content.
 
     Args:
-        object_type: 'report', 'character', or 'quote'
+        object_type: 'report' or 'character'
         object_id: UUID of the object
     """
     from django.db import models as db_models
 
-    from suddenly.characters.models import Character, Quote
+    from suddenly.characters.models import Character
     from suddenly.games.models import Report
 
     from .serializers import (
         create_create_activity,
         serialize_character,
-        serialize_quote,
         serialize_report,
     )
 
@@ -158,14 +157,6 @@ def send_create_activity(object_type: str, object_id: str) -> None:
         serialized = serialize_character(character)
         actor = character.origin_game
         actor_type = "Game"
-
-    elif object_type == "quote":
-        quote = Quote.objects.filter(id=object_id).select_related("character").first()
-        if not quote or quote.remote:
-            return
-        serialized = serialize_quote(quote)
-        actor = quote.character
-        actor_type = "Character"
 
     else:
         return
@@ -565,16 +556,6 @@ def send_direct_message_activity(dm_id: str) -> None:
 
     activity = serialize_direct_message(dm)
     sign_and_deliver(activity, recipient.actor_inbox, signer=dm.sender)
-
-
-@shared_task  # type: ignore[untyped-decorator]
-def cleanup_expired_quotes() -> None:
-    """Delete expired ephemeral quotes."""
-    from suddenly.characters.models import Quote, QuoteVisibility
-
-    Quote.objects.filter(
-        visibility=QuoteVisibility.EPHEMERAL, expires_at__lt=timezone.now()
-    ).delete()
 
 
 @shared_task  # type: ignore[untyped-decorator]

@@ -21,7 +21,7 @@ from suddenly.activitypub.url_utils import absolute_media_url, media_type_for_fi
 # type it might reject.
 #
 # ``sensitive`` is the Mastodon/AS2 Content-Warning flag emitted alongside
-# ``summary`` by serialize_report/serialize_quote; it must be declared here or
+# ``summary`` by serialize_report; it must be declared here or
 # strict peers drop it. ``toot`` is declared for the Mastodon namespace.
 AP_CONTEXT: list[str | dict[str, str]] = [
     "https://www.w3.org/ns/activitystreams",
@@ -31,7 +31,6 @@ AP_CONTEXT: list[str | dict[str, str]] = [
         "toot": "http://joinmastodon.org/ns#",
         "Character": "suddenly:Character",
         "Game": "suddenly:Game",
-        "Quote": "suddenly:Quote",
         "status": "suddenly:status",
         "sheetUrl": "suddenly:sheetUrl",
         # ``gameSystem`` stays a free-form display label (issue D decision: no
@@ -316,42 +315,13 @@ def serialize_report(report: Any) -> dict[str, Any]:
     return data
 
 
-def serialize_quote(quote: Any) -> dict[str, Any]:
-    """Serialize a Quote to ActivityPub Note."""
-    quote_url = f"https://{settings.DOMAIN}/quotes/{quote.pk}"
-
-    data: dict[str, Any] = {
-        "@context": AP_CONTEXT,
-        "type": "Note",
-        "id": quote.ap_id or quote_url,
-        "url": quote_url,
-        "attributedTo": quote.character.actor_url,
-        "content": f'"{quote.content}"',
-        "published": quote.created_at.isoformat(),
-    }
-
-    # Content Warning (US-30) — overrides context as summary if CW present
-    if hasattr(quote, "content_warning") and quote.content_warning:
-        data["summary"] = quote.content_warning
-        data["sensitive"] = True
-    elif quote.context:
-        data["summary"] = quote.context
-
-    if quote.report:
-        data["inReplyTo"] = (
-            quote.report.ap_id or f"https://{settings.DOMAIN}/reports/{quote.report.pk}"
-        )
-
-    return data
-
-
 def serialize_direct_message(dm: Any) -> dict[str, Any]:
     """Serialize a DirectMessage to a full AP ``Create(Note)`` envelope (DEC-E3).
 
     Strict Direct addressing: ``to`` is exactly the recipient's actor IRI,
     ``cc`` is empty, ``Public`` never appears, and the recipient is also
     carried as a ``Mention`` tag (Mastodon-compatible DM shape). Unlike
-    :func:`serialize_report`/:func:`serialize_quote` (which return only the
+    :func:`serialize_report` (which returns only the
     inner object, wrapped by :func:`create_activity` at the call site), this
     returns the full ``Create`` envelope directly — DEC-E3 requires ``to``/
     ``cc`` repeated at both the ``Note`` and the ``Create`` level, which

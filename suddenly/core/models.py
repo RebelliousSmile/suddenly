@@ -406,7 +406,6 @@ class UserUsageStats(BaseModel):
         related_name="usage_stats",
     )
     total_posts = models.IntegerField(default=0)
-    total_quotes = models.IntegerField(default=0)
     total_link_requests = models.IntegerField(default=0)
     posts_since_last_prompt = models.IntegerField(default=0)
     last_donation_date = models.DateField(null=True, blank=True)

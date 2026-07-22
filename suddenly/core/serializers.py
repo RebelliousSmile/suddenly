@@ -13,7 +13,6 @@ from suddenly.characters.models import (
     CharacterLink,
     Follow,
     LinkRequest,
-    Quote,
     SharedSequence,
 )
 from suddenly.games.models import Game, Report, ReportCast
@@ -142,24 +141,19 @@ class CharacterSerializer(serializers.ModelSerializer):  # type: ignore[misc]
 
 
 class CharacterDetailSerializer(CharacterSerializer):
-    """Detailed character with appearances and quotes."""
+    """Detailed character with appearances."""
 
     appearances_count = serializers.SerializerMethodField()
-    quotes_count = serializers.SerializerMethodField()
     forks_count = serializers.SerializerMethodField()
 
     class Meta(CharacterSerializer.Meta):
         fields = CharacterSerializer.Meta.fields + [
             "appearances_count",
-            "quotes_count",
             "forks_count",
         ]
 
     def get_appearances_count(self, obj: Character) -> int:
         return obj.appearances.count()
-
-    def get_quotes_count(self, obj: Character) -> int:
-        return obj.quotes.filter(visibility="public").count()
 
     def get_forks_count(self, obj: Character) -> int:
         return obj.forks.count()
@@ -245,45 +239,6 @@ class ReportCastSerializer(serializers.ModelSerializer):  # type: ignore[misc]
             "role",
             "created_at",
         ]
-
-
-# =================================================================
-# Quote Serializers
-# =================================================================
-
-
-class QuoteSerializer(serializers.ModelSerializer):  # type: ignore[misc]
-    """Quote representation."""
-
-    character = CharacterSerializer(read_only=True)
-    author = UserSerializer(read_only=True)
-
-    class Meta:
-        model = Quote
-        fields = [
-            "id",
-            "content",
-            "context",
-            "content_warning",
-            "character",
-            "report",
-            "visibility",
-            "author",
-            "created_at",
-        ]
-        read_only_fields = ["id", "author", "created_at"]
-
-
-class QuoteCreateSerializer(serializers.ModelSerializer):  # type: ignore[misc]
-    """Quote creation."""
-
-    class Meta:
-        model = Quote
-        fields = ["content", "context", "character", "report", "visibility"]
-
-    def create(self, validated_data: dict[str, Any]) -> Quote:
-        validated_data["author"] = self.context["request"].user
-        return super().create(validated_data)  # type: ignore[no-any-return]
 
 
 # =================================================================

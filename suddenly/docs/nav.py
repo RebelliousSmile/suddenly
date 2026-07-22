@@ -189,11 +189,6 @@ NAV: list[NavSection] = [
                 "path": BASE / "aidd_docs/wireframes/07-characters.md",
             },
             {
-                "slug": "quotes",
-                "label": "Citations",
-                "path": BASE / "aidd_docs/wireframes/08-quotes.md",
-            },
-            {
                 "slug": "links",
                 "label": "Liens",
                 "path": BASE / "aidd_docs/wireframes/09-links.md",

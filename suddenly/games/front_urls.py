@@ -43,16 +43,6 @@ urlpatterns = [
         front_views.rapport_move,
         name="rapport_move",
     ),
-    path(
-        "<uuid:game_pk>/reports/<uuid:pk>/quotes/add/",
-        front_views.quote_create,
-        name="quote_create",
-    ),
-    path(
-        "<uuid:game_pk>/reports/<uuid:pk>/quotes/<uuid:quote_pk>/delete/",
-        front_views.quote_delete,
-        name="quote_delete",
-    ),
     # Stories — public reading surface for released content (SUD-V3)
     path("stories/", front_views.stories_index, name="stories"),
     path("stories/<uuid:pk>/", front_views.story_detail, name="story_detail"),

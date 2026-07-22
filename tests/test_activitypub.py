@@ -14,12 +14,11 @@ from django.test import Client, RequestFactory
 from suddenly.activitypub.serializers import (
     serialize_character,
     serialize_game,
-    serialize_quote,
     serialize_report,
     serialize_user,
 )
 from suddenly.activitypub.signatures import generate_key_pair
-from suddenly.characters.models import Character, CharacterStatus, Quote, QuoteVisibility
+from suddenly.characters.models import Character, CharacterStatus
 from suddenly.games.models import Game, Report
 from suddenly.users.models import User
 
@@ -238,23 +237,6 @@ class TestSerializers:
         assert data["type"] == "Article"
         assert data["content"] == report.content
         assert "attributedTo" in data
-
-    def test_serialize_quote(
-        self, db: Any, character: Character, user: User, settings: Any
-    ) -> None:
-        settings.DOMAIN = "test.social"
-
-        quote = Quote.objects.create(
-            content="To be or not to be",
-            character=character,
-            author=user,
-            visibility=QuoteVisibility.PUBLIC,
-        )
-
-        data = serialize_quote(quote)
-
-        assert data["type"] == "Note"
-        assert "To be or not to be" in data["content"]
 
 
 @pytest.mark.django_db

@@ -50,7 +50,7 @@ def _forbid_non_author(
 
     Returns a bare ``HttpResponseForbidden`` (empty body, as the inline checks
     did) when ``report`` is missing or the caller is not its author, else
-    ``None``. A ``None`` report yields 403 — mirrors ``quote_delete``'s guard.
+    ``None``. A ``None`` report yields 403.
     """
     if report is None or report.author != request.user:
         return HttpResponseForbidden()

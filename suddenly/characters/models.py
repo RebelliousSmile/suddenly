@@ -13,11 +13,10 @@ from typing import Any
 from django.conf import settings
 from django.db import models
 from django.db.models.base import ModelBase
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from suddenly.core.models import BaseModel
-from suddenly.games.models import Game, Report, wall_open_q
+from suddenly.games.models import Game, Report
 
 
 class CharacterStatus(models.TextChoices):
@@ -175,122 +174,6 @@ class Character(BaseModel):
     def local(self) -> bool:
         """True if this character belongs to the local instance."""
         return not self.remote
-
-
-class QuoteVisibility(models.TextChoices):
-    """Visibility levels for quotes."""
-
-    EPHEMERAL = "ephemeral", _("Ephemeral")
-    PRIVATE = "private", _("Private")
-    PUBLIC = "public", _("Public")
-
-
-class QuoteQuerySet(models.QuerySet["Quote"]):
-    """Querysets for Quote. The single place the two liberation locks meet."""
-
-    def promotable(self) -> QuoteQuerySet:
-        """Citations remontables sur les surfaces publiques.
-
-        Double verrou, orthogonal (SUD-V1): ``report`` libéré (mur temporel, y
-        compris via la clôture de partie — DEC-D6/wall_open_q, Epic D #134) ET
-        ``quote`` publique et non expirée (choix éditorial). Toute surface
-        publique part d'ici — aucune vue, aucun template ne refiltre la
-        libération.
-        """
-        return (
-            self.filter(visibility=QuoteVisibility.PUBLIC)
-            .filter(wall_open_q("report__"))
-            .exclude(expires_at__lte=timezone.now())
-            .select_related("character", "report", "report__game")
-        )
-
-
-class Quote(BaseModel):
-    """
-    A memorable quote from a character, BookWyrm-style.
-    """
-
-    objects = QuoteQuerySet.as_manager()
-
-    # Content
-    content = models.TextField(help_text="The quote itself")
-    context = models.TextField(blank=True, help_text="Situation when this was said")
-    content_warning = models.CharField(
-        max_length=500,
-        blank=True,
-        help_text="Content warning displayed before the quote (US-30)",
-    )
-
-    # Relations
-    character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name="quotes")
-    report = models.ForeignKey(
-        Report,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="quotes",
-        help_text="Source report if any",
-    )
-    author = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="saved_quotes",
-        help_text="Who recorded this quote",
-    )
-
-    # Visibility
-    visibility = models.CharField(
-        max_length=20, choices=QuoteVisibility.choices, default=QuoteVisibility.PUBLIC
-    )
-
-    # Ephemeral quotes expiration
-    expires_at = models.DateTimeField(
-        blank=True,
-        null=True,
-        help_text="When this quote should disappear (for EPHEMERAL visibility)",
-    )
-
-    # ActivityPub
-    remote = models.BooleanField(default=False)
-    ap_id = models.URLField(blank=True, null=True, unique=True)
-
-    # Timestamps
-
-    class Meta:
-        ordering = ["-created_at"]
-        indexes = [
-            models.Index(fields=["character", "visibility"]),
-            models.Index(fields=["visibility", "expires_at"]),
-        ]
-        constraints = [
-            # expires_at is set iff the quote is ephemeral (and only then).
-            # `check=` (Django 5.0) vs `condition=` (5.1): django-stubs versions disagree,
-            # so suppress call-arg and self-suppress when the ignore is unused (cross-version).
-            models.CheckConstraint(  # type: ignore[call-arg, unused-ignore]
-                name="quote_expires_iff_ephemeral",
-                check=(
-                    models.Q(visibility=QuoteVisibility.EPHEMERAL, expires_at__isnull=False)
-                    | (
-                        ~models.Q(visibility=QuoteVisibility.EPHEMERAL)
-                        & models.Q(expires_at__isnull=True)
-                    )
-                ),
-            ),
-        ]
-
-    def __str__(self) -> str:
-        return f'"{self.content[:50]}..." - {self.character.name}'
-
-    @property
-    def is_expired(self) -> bool:
-        """Check if ephemeral quote has expired."""
-        from django.utils import timezone
-
-        if self.visibility != QuoteVisibility.EPHEMERAL:
-            return False
-        if not self.expires_at:
-            return False
-        return timezone.now() > self.expires_at
 
 
 class AppearanceRole(models.TextChoices):

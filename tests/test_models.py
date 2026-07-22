@@ -4,7 +4,6 @@ Tests for Suddenly models.
 
 from __future__ import annotations
 
-from datetime import timedelta
 from typing import Any
 
 from django.contrib.contenttypes.models import ContentType
@@ -18,8 +17,6 @@ from suddenly.characters.models import (
     LinkRequest,
     LinkRequestStatus,
     LinkType,
-    Quote,
-    QuoteVisibility,
 )
 from suddenly.games.models import Game, Report, ReportCast
 from suddenly.users.models import User
@@ -118,36 +115,6 @@ class TestCharacterModel:
             name="Adopted", status=CharacterStatus.ADOPTED, creator=user, origin_game=game
         )
         assert adopted.is_available is False
-
-
-class TestQuoteModel:
-    """Tests for Quote model."""
-
-    def test_create_quote(self, db: Any, user: User, character: Character) -> None:
-        quote = Quote.objects.create(
-            content="I'll be back!",
-            character=character,
-            author=user,
-            visibility=QuoteVisibility.PUBLIC,
-        )
-        assert "I'll be back" in str(quote)
-
-    def test_ephemeral_quote_expiration(self, db: Any, user: User, character: Character) -> None:
-        past = timezone.now() - timedelta(hours=1)
-        quote = Quote.objects.create(
-            content="Temporary",
-            character=character,
-            author=user,
-            visibility=QuoteVisibility.EPHEMERAL,
-            expires_at=past,
-        )
-        assert quote.is_expired is True
-
-    def test_public_quote_not_expired(self, db: Any, user: User, character: Character) -> None:
-        quote = Quote.objects.create(
-            content="Permanent", character=character, author=user, visibility=QuoteVisibility.PUBLIC
-        )
-        assert quote.is_expired is False
 
 
 class TestLinkRequestModel:

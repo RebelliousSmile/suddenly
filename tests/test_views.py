@@ -13,7 +13,7 @@ from typing import Any
 import pytest
 from django.test import Client
 
-from suddenly.characters.models import Character, Quote, QuoteVisibility
+from suddenly.characters.models import Character
 from suddenly.games.models import Game, Report
 from suddenly.users.models import User
 from tests.factories import GameFactory
@@ -448,30 +448,6 @@ class TestCharacterActorViews:
             HTTP_ACCEPT="application/activity+json",
         )
         assert response.status_code == 404
-
-    def test_character_outbox_includes_public_quotes(
-        self, client: Client, character: Character, user: User, settings: Any
-    ) -> None:
-        settings.DOMAIN = "test.social"
-        settings.AP_BASE_URL = "https://test.social"
-        Quote.objects.create(
-            content="Public quote",
-            character=character,
-            author=user,
-            visibility=QuoteVisibility.PUBLIC,
-        )
-        Quote.objects.create(
-            content="Private quote",
-            character=character,
-            author=user,
-            visibility=QuoteVisibility.PRIVATE,
-        )
-        response = client.get(
-            f"/characters/{character.id}/outbox",
-            HTTP_ACCEPT="application/activity+json",
-        )
-        data = response.json()
-        assert data["totalItems"] == 1
 
 
 # ===================================================================

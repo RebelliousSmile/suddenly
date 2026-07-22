@@ -794,7 +794,6 @@ def build_character_queryset(
         .select_related("creator", "owner", "origin_game")
         .annotate(
             report_count=Count("appearances__report", distinct=True),
-            quote_count=Count("quotes", distinct=True),
         )
         .order_by("-created_at")
     )

@@ -4,7 +4,6 @@ Tests for models added/modified in T7.
 
 Covers:
 - Report.content_warning and Report.visibility (US-29, US-30)
-- Quote.content_warning (US-30)
 - LinkRequestStatus QUEUED and EXPIRED (US-15, US-23)
 - SharedSequence collaborative fields (DA-3)
 - Notification model (US-20)
@@ -26,7 +25,7 @@ from suddenly.characters.models import (
 from suddenly.core.models import Notification, NotificationType
 from suddenly.games.models import Report, ReportVisibility
 from suddenly.users.models import User
-from tests.factories import CharacterFactory, GameFactory, UserFactory
+from tests.factories import UserFactory
 
 # ─── Report CW + Visibility ──────────────────────────────────────
 
@@ -62,42 +61,6 @@ class TestReportVisibility:
     def test_content_warning_max_length(self, report: Report) -> None:
         report.content_warning = "x" * 500
         report.save()  # Should not raise
-
-
-# ─── Quote CW ────────────────────────────────────────────────────
-
-
-@pytest.mark.django_db
-class TestQuoteCW:
-    """Test Quote content warning field."""
-
-    def test_quote_cw_blank_by_default(self, db: Any) -> None:
-        from suddenly.characters.models import Quote
-
-        user = UserFactory()  # type: ignore[no-untyped-call]
-        game = GameFactory(owner=user)  # type: ignore[no-untyped-call]
-        char = CharacterFactory(creator=user, origin_game=game)  # type: ignore[no-untyped-call]
-        q = Quote.objects.create(
-            content="Test quote",
-            character=char,
-            author=user,
-        )
-        assert q.content_warning == ""
-
-    def test_quote_cw_can_be_set(self, db: Any) -> None:
-        from suddenly.characters.models import Quote
-
-        user = UserFactory()  # type: ignore[no-untyped-call]
-        game = GameFactory(owner=user)  # type: ignore[no-untyped-call]
-        char = CharacterFactory(creator=user, origin_game=game)  # type: ignore[no-untyped-call]
-        q = Quote.objects.create(
-            content="Dark quote",
-            character=char,
-            author=user,
-            content_warning="Contenu mature",
-        )
-        q.refresh_from_db()
-        assert q.content_warning == "Contenu mature"
 
 
 # ─── LinkRequestStatus QUEUED + EXPIRED ───────────────────────────
