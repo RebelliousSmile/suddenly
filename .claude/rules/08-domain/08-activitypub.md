@@ -49,7 +49,7 @@ paths:
 - Actor discovery via WebFinger (`/.well-known/webfinger`)
 - Instance metadata via NodeInfo 2.0 (`/.well-known/nodeinfo`)
 - Inbox handler must validate signature before processing
-- AP types: User=Person, Character=Person, Game=Collection, Report=Article, Quote=Note
+- AP types: User=Person, Character=Person, Game=Collection, Report=Article
 - Link requests (Claim/Adopt/Fork) use AP Offer type
 - No direct HTTP calls in views — use Celery tasks (or sync fallback) for federation delivery
 - Exception: `verify_signature()` does synchronous HTTP fetch (required before processing)

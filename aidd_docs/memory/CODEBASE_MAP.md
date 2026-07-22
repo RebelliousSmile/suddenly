@@ -41,7 +41,7 @@ flowchart TD
             GFO["Report fiction order — previous_report/next_reports (self-FK), temporal_kind/temporal_anchor/temporal_label; ReportTemporalKind"]
         end
         subgraph "characters/"
-            CH["Character (tags M2M) · Quote · CharacterAppearance"]
+            CH["Character (tags M2M) · CharacterAppearance"]
             CL["LinkRequest · CharacterLink · SharedSequence · Follow"]
             CS["LinkService (claim / adopt / fork)"]
         end

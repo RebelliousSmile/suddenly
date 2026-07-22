@@ -123,12 +123,6 @@ Fréquence : 0 3 * * *
 Commande  : /home/<user>/www/soudainement/venv/bin/python /home/<user>/www/soudainement/manage.py clearsessions
 ```
 
-**Nettoyage citations éphémères** (horaire) :
-```
-Fréquence : 0 * * * *
-Commande  : /home/<user>/www/soudainement/venv/bin/python /home/<user>/www/soudainement/manage.py shell -c "from suddenly.activitypub.tasks import cleanup_expired_quotes; cleanup_expired_quotes()"
-```
-
 ---
 
 ## Mise à jour

@@ -35,7 +35,7 @@
 
 ### Scopes
 
-`users`, `games`, `characters`, `quotes`, `activitypub`, `api`
+`users`, `games`, `characters`, `activitypub`, `api`
 
 ### Rules
 

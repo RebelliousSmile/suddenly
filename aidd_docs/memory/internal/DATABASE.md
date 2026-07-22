@@ -24,7 +24,7 @@ flowchart LR
 
 - `User` owns `Game`s, creates/owns `Character`s, authors `Report`s
 - `Game` has many `Report`s and `Character`s (via `origin_game`)
-- `Character` has `Quote`s, `CharacterAppearance`s, receives `LinkRequest`s
+- `Character` has `CharacterAppearance`s, receives `LinkRequest`s
 - `LinkRequest` → accepted → creates `CharacterLink` + `SharedSequence`
 - `Follow` is polymorphic (targets `User`, `Character`, or `Game`)
 
@@ -38,7 +38,6 @@ erDiagram
     User ||--o{ Character : "creates/owns"
     Game ||--o{ Report : has
     Game ||--o{ Character : "origin_game"
-    Character ||--o{ Quote : has
     Character ||--o{ CharacterAppearance : appears_in
     Report ||--o{ CharacterAppearance : features
     Report ||--o{ ReportCast : planned_via
@@ -80,7 +79,6 @@ Fork           (derivation: creates a new PC with parent=NPC; NPC stays NPC — 
 | Game | games | Group | `title`, `owner`, `is_public`, `ap_id`, `local` |
 | Report | games | Article | `content` (Markdown), `game`, `author`, `status` (DRAFT/PUBLISHED), `language`, `content_warning` (CharField 500 optional), `visibility` (PUBLIC/UNLISTED/FOLLOWERS), `session_date` (DateField optional) |
 | Character | characters | Person | `name`, `status` (NPC/PC/CLAIMED/ADOPTED), `owner`, `creator`, `origin_game`, `parent` (fork lineage) |
-| Quote | characters | Note | `content`, `character`, `visibility` (EPHEMERAL/PRIVATE/PUBLIC), `language` |
 | CharacterAppearance | characters | — | `character`, `report`, `role` (MAIN/SUPPORTING/MENTIONED) |
 | ReportCast | games | — | `report`, `character` (nullable), `new_character_name`, `role` |
 | LinkRequest | characters | Offer | `link_type` (CLAIM/ADOPT/FORK), `requester`, `target_character`, `status` (PENDING/ACCEPTED/REJECTED/CANCELLED) |
@@ -94,7 +92,7 @@ Fork           (derivation: creates a new PC with parent=NPC; NPC stays NPC — 
 | UserBlock | core | — | `blocker` + `blocked` (User FKs), unique_together |
 | UserMute | core | — | `muter` + `muted` (User FKs), unique_together |
 | DonationPrompt | core | — | `user` (FK), `posts_at_prompt`, `donated`, `donated_at`, `amount_suggested` |
-| UserUsageStats | core | — | `user` (OneToOne), `total_posts`, `total_quotes`, `total_link_requests`, `posts_since_last_prompt`, `last_donation_date` |
+| UserUsageStats | core | — | `user` (OneToOne), `total_posts`, `total_link_requests`, `posts_since_last_prompt`, `last_donation_date` |
 | GameSystem | games | — | `name` (CharField) — game system taxonomy |
 | Rapport | games | — | `report` (FK to Report), `kind` (RapportKind: DESCRIPTION/ACTION/DISCUSSION/NARRATION), `content`, `actor` (Character FK nullable — required for DISCUSSION) |
 | RapportLink | games | — | `rapport` (FK), `parent_rapport` (FK nullable), `parent_iri` (URLField nullable) — exactly one of local/remote must be set |
@@ -105,7 +103,6 @@ Fork           (derivation: creates a new PC with parent=NPC; NPC stays NPC — 
 - `Character(status)` — list available NPCs
 - `Character(local, status)` — local available NPCs
 - `Report(game, status)` — published reports for a game
-- `Quote(character, visibility)` — public quotes
 - `LinkRequest(status, target_character)` — pending requests
 - `Follow(follower, target_type, target_id)` — unique
 - `Notification(recipient, read)` — unread count

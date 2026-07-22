@@ -35,7 +35,7 @@ scope: frontend
 ## Colour carries domain meaning — not decoration
 
 - `color.domain.*` encodes narrative state; never repurpose for styling
-- `pc` = indigo `#6366f1` · `npc` = amber `#b45309` · `available` = neon `#00e676` · `remote`/`forked`/`oracle` = violet `#7c3aed` · `claimed` = blue · `adopted` = green · `quoted` = crimson
+- `pc` = indigo `#6366f1` · `npc` = amber `#b45309` · `available` = neon `#00e676` · `remote`/`forked`/`oracle` = violet `#7c3aed` · `claimed` = blue · `adopted` = green
 - **`brand.signal` (#00e676) never carries a glyph** — 1.6:1 on light ground. Text uses `domain.available-text` (`#0a8f4d`). Rule: `usage.rules[signal-never-text]`
 - A status is never colour-only: it pairs a `color.domain.*` token with a label or icon; avatar rings add a distinct `border.style`
 
@@ -104,6 +104,6 @@ scope: frontend
 
 ## Components (`templates/components/`)
 
-- Server-rendered Django partials: `character_card`, `game_card`, `report_card`, `quote_card`, `feed_item`, `link_request_card`, `notification_item`, `npc_highlight`, `empty_state`, `modal`, `follow_button`, `presence_indicator`, `password_strength`, `status_banner`, `tag_filter`, `report_editor`, `docs_sidebar`, `_fonts`
+- Server-rendered Django partials: `character_card`, `game_card`, `report_card`, `feed_item`, `link_request_card`, `notification_item`, `npc_highlight`, `empty_state`, `modal`, `follow_button`, `presence_indicator`, `password_strength`, `status_banner`, `tag_filter`, `report_editor`, `docs_sidebar`, `_fonts`
 - Form partials: `form_fields`, `form_image_upload`, `form_switch`
 - The 17 BEM components in `design/components.json` (`rap`, `badge--npc`, `card__body`…) come from mockup v3 and are **not integrated yet** — declared ahead of use
