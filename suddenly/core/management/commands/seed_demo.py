@@ -2,7 +2,7 @@
 Management command: populate the local database with demo content.
 
 Generates a coherent, bilingual (fr/en) graph of games, characters, reports,
-rapports, quotes, follows and character links — enough volume to exercise
+rapports, follows and character links — enough volume to exercise
 pagination, infinite scroll and the language filters.
 
 Every generated user is prefixed with ``demo_``, which makes ``--flush``
@@ -37,8 +37,6 @@ from suddenly.characters.models import (
     CharacterStatus,
     Follow,
     LinkType,
-    Quote,
-    QuoteVisibility,
     SharedSequence,
     SharedSequenceStatus,
 )
@@ -221,15 +219,6 @@ DISCUSSION_EN = [
     "“You knew. You knew all along, and you said nothing.”",
     "“We are not leaving without her. That was not the deal.”",
 ]
-QUOTES_FR = [
-    "On ne rachète pas une dette pareille avec des excuses.",
-    "J'ai déjà été mort une fois. Ça ne s'améliore pas.",
-]
-QUOTES_EN = [
-    "You do not settle a debt like that with an apology.",
-    "I have been dead once already. It does not improve.",
-]
-
 MEDIA_ALT_FR = [
     "Une ruelle noyée sous la pluie, éclairée par une seule enseigne.",
     "Un entrepôt vide ; la lumière tombe en biais par une verrière brisée.",
@@ -260,7 +249,6 @@ LANG_POOLS: dict[str, dict[str, list[str]]] = {
         "description": DESCRIPTION_FR,
         "action": ACTION_FR,
         "discussion": DISCUSSION_FR,
-        "quotes": QUOTES_FR,
         "media_alt": MEDIA_ALT_FR,
     },
     "en": {
@@ -270,7 +258,6 @@ LANG_POOLS: dict[str, dict[str, list[str]]] = {
         "description": DESCRIPTION_EN,
         "action": ACTION_EN,
         "discussion": DISCUSSION_EN,
-        "quotes": QUOTES_EN,
         "media_alt": MEDIA_ALT_EN,
     },
 }
@@ -374,7 +361,6 @@ class Command(BaseCommand):
             games = self._create_games(users, options["games"])
             characters = self._create_characters(games, users, options["characters_per_game"])
             self._create_reports(games, characters, options["reports"])
-            self._create_quotes(characters)
             self._create_follows(users, characters, games)
             self._create_links(characters, users)
 
@@ -676,25 +662,6 @@ class Command(BaseCommand):
         RapportLink.objects.create(rapport=closing, parent_rapport=previous)
         RapportMarker.objects.create(rapport=closing, kind=MarkerKind.END, character=None)
         return created + 1
-
-    def _create_quotes(self, characters: dict[str, list[Character]]) -> None:
-        count = 0
-        for chars in characters.values():
-            for char in chars:
-                if self.rng.random() > 0.6:
-                    continue
-                lang = self.game_lang[str(char.origin_game_id)]
-                Quote.objects.create(
-                    content=self.rng.choice(LANG_POOLS[lang]["quotes"]),
-                    context="",
-                    character=char,
-                    author=char.creator,
-                    visibility=self.rng.choice(
-                        [QuoteVisibility.PUBLIC] * 4 + [QuoteVisibility.PRIVATE]
-                    ),
-                )
-                count += 1
-        self.stdout.write(f"quotes      {count}")
 
     def _create_follows(
         self, users: list[Any], characters: dict[str, list[Character]], games: list[Game]

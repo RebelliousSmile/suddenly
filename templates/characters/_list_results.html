@@ -69,10 +69,6 @@
                                 <span class="i-lucide-scroll-text"></span>
                                 {{ character.report_count|default:0 }}
                             </span>
-                            <span class="flex items-center gap-1" title="{% trans "Quotes" %}">
-                                <span class="i-lucide-quote"></span>
-                                {{ character.quote_count|default:0 }}
-                            </span>
                             {% if character.origin_game %}
                             <span class="flex items-center gap-1 min-w-0" title="{% trans "Origin game" %}">
                                 <span class="i-lucide-dices shrink-0"></span>

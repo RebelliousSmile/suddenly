@@ -169,10 +169,6 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
 CELERY_BEAT_SCHEDULE = {
-    "cleanup-expired-quotes": {
-        "task": "suddenly.activitypub.tasks.cleanup_expired_quotes",
-        "schedule": 3600,
-    },
     "refresh-remote-actors": {
         "task": "suddenly.activitypub.tasks.refresh_remote_actors",
         "schedule": 86400,

@@ -18,7 +18,6 @@ from django.utils.translation import gettext_lazy as _
 
 from suddenly.core.services import (
     get_distinct_tag_names,
-    get_instance_quotes,
     get_instance_stats,
     get_recent_public_reports,
 )
@@ -55,9 +54,7 @@ def home(request: HttpRequest) -> HttpResponse:
     Mastodon-like behaviour (Front #1): a single canonical ``/`` URL with two
     renders depending on the session. Authenticated users get their feed
     (delegated to ``feed_home``, keeping ``/`` as the displayed URL); anonymous
-    visitors get the marketing vitrine enriched with instance stats (Front #2)
-    and a few promotable citations ("ce qu'on y dit") from the double-locked
-    queryset.
+    visitors get the marketing vitrine enriched with instance stats (Front #2).
     """
     if request.user.is_authenticated:
         from suddenly.core.feed_views import feed_home
@@ -70,7 +67,6 @@ def home(request: HttpRequest) -> HttpResponse:
         {
             "recent_reports": get_recent_public_reports(),
             "stats": get_instance_stats(),
-            "instance_quotes": get_instance_quotes(3),
         },
     )
 

@@ -189,15 +189,11 @@ def story_detail(request: HttpRequest, pk: str) -> HttpResponse:
     if not reports:
         raise Http404
 
-    from suddenly.characters.models import Quote
-
-    quotes = Quote.objects.promotable().filter(report__game=game).order_by("-created_at")
-
     return htmx_render(
         request,
         full_template="stories/detail.html",
         partial_template="stories/detail.html",
-        context={"game": game, "reports": reports, "quotes": quotes},
+        context={"game": game, "reports": reports},
     )
 
 

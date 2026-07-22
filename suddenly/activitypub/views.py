@@ -26,7 +26,6 @@ from suddenly.users.models import User
 from .serializers import (
     serialize_character,
     serialize_game,
-    serialize_quote,
     serialize_report,
     serialize_user,
 )
@@ -399,24 +398,19 @@ def character_actor(request: HttpRequest, character_id: str) -> HttpResponse:
 
 @require_GET
 def character_outbox(request: HttpRequest, character_id: str) -> HttpResponse:
-    """Character outbox endpoint - quotes and appearances."""
+    """Character outbox endpoint - empty collection (a Character emits no activities)."""
     try:
         character = Character.objects.get(id=character_id, remote=False)
     except Character.DoesNotExist:
         return HttpResponseNotFound("Character not found")
-
-    quotes_qs = character.quotes.filter(visibility="public")
-    total = quotes_qs.count()  # whole collection, not the sliced page
-    quotes = quotes_qs.order_by("-created_at")[:20]
-    items = [serialize_quote(q) for q in quotes]
 
     return activitypub_response(
         {
             "@context": "https://www.w3.org/ns/activitystreams",
             "type": "OrderedCollection",
             "id": f"{character.actor_url}/outbox",
-            "totalItems": total,
-            "orderedItems": items,
+            "totalItems": 0,
+            "orderedItems": [],
         }
     )
 

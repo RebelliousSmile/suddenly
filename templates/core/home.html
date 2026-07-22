@@ -173,10 +173,6 @@
                         <span class="i-lucide-users text-xs"></span>
                         {% blocktrans count counter=report.cast.count %}{{ counter }} character{% plural %}{{ counter }} characters{% endblocktrans %}
                     </span>
-                    <span class="flex items-center gap-1">
-                        <span class="i-lucide-message-circle text-xs"></span>
-                        {% blocktrans count counter=report.quotes.count %}{{ counter }} quote{% plural %}{{ counter }} quotes{% endblocktrans %}
-                    </span>
                 </div>
             </article>
             {% endfor %}
@@ -189,26 +185,6 @@
         {% endif %}
     </div>
 </section>
-
-<!-- Ce qu'on y dit — promotable citations for anonymous visitors (§4.1) -->
-{% if not user.is_authenticated and instance_quotes %}
-<section class="py-16 container-app">
-    <div class="max-w-2xl mx-auto">
-        <div class="flex items-center justify-between mb-8">
-            <h2 class="text-2xl font-bold text-semantic-ink">{% trans "Ce qu'on y dit" %}</h2>
-            <a href="{% url 'core:popular_scenes' %}" class="link flex items-center gap-1">
-                {% trans "Popular scenes" %}
-                <span class="i-lucide-arrow-right text-sm"></span>
-            </a>
-        </div>
-        <div class="space-y-4">
-            {% for quote in instance_quotes %}
-                {% include "quotes/_quote_card.html" %}
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
 
 <!-- Federation -->
 <section class="py-16 container-app">

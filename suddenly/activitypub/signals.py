@@ -76,18 +76,6 @@ def character_post_save(sender: type[Any], instance: Any, created: bool, **kwarg
         _safe_delay(send_create_activity, "character", str(instance.id))
 
 
-@receiver(post_save, sender="characters.Quote")
-def quote_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: Any) -> None:
-    """
-    When a public quote is created, broadcast it.
-    """
-    from suddenly.activitypub.tasks import send_create_activity
-    from suddenly.characters.models import QuoteVisibility
-
-    if created and not instance.remote and instance.visibility == QuoteVisibility.PUBLIC:
-        _safe_delay(send_create_activity, "quote", str(instance.id))
-
-
 @receiver(post_save, sender="characters.LinkRequest")
 def link_request_post_save(sender: type[Any], instance: Any, created: bool, **kwargs: Any) -> None:
     """

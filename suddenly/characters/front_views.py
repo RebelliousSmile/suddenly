@@ -99,12 +99,6 @@ def character_detail(request: HttpRequest, slug: str) -> HttpResponse:
         "report", "report__game", "report__author"
     ).order_by("-report__published_at")[:20]
 
-    # §4.4: the character's citations, behind the double lock (released report +
-    # public quote). The wall filter is never re-expressed here.
-    from .models import Quote
-
-    quotes = Quote.objects.promotable().filter(character=character).order_by("-created_at")[:10]
-
     # Narrative meta-model (issues A/C): displayed, never evaluated.
     trait_sets = character.trait_sets.prefetch_related(
         "traits", "actions__traits", "actions__outcomes"
@@ -123,7 +117,6 @@ def character_detail(request: HttpRequest, slug: str) -> HttpResponse:
     context: dict[str, object] = {
         "character": character,
         "appearances": appearances,
-        "quotes": quotes,
         "trait_sets": trait_sets,
         "transverse_actions": transverse_actions,
         "can_edit_traits": can_edit_traits,
@@ -212,49 +205,6 @@ def character_search(request: HttpRequest) -> HttpResponse:
             "default_bg": default_bg,
             "active_tag": request.GET.get("tag", ""),
         },
-    )
-
-
-@login_required
-def quote_add(request: AuthenticatedRequest, slug: str) -> HttpResponse:
-    """Add a quote to a character (US-08). HTMX partial."""
-    character = get_object_or_404(Character, slug=slug)
-
-    if request.method == "POST":
-        from .models import Quote, QuoteVisibility
-
-        content = request.POST.get("content", "").strip()
-        context_text = request.POST.get("context", "").strip()
-        cw = request.POST.get("content_warning", "").strip()
-        visibility = request.POST.get("visibility", QuoteVisibility.PUBLIC)
-
-        if len(content) < 2:
-            return render(
-                request,
-                "characters/_quote_form.html",
-                {
-                    "character": character,
-                    "error": "La citation doit faire au moins 2 caractères.",
-                    "form_data": request.POST,
-                },
-                status=422,
-            )
-
-        quote = Quote.objects.create(
-            content=content,
-            context=context_text,
-            content_warning=cw,
-            visibility=visibility,
-            character=character,
-            author=request.user,
-        )
-        return render(request, "characters/_quote_card.html", {"quote": quote})
-
-    # GET: return the form partial
-    return render(
-        request,
-        "characters/_quote_form.html",
-        {"character": character},
     )
 
 

@@ -190,24 +190,6 @@
             </div>
         {% endif %}
 
-        <!-- Quotes -->
-        <div class="card card-body mb-6">
-            <h2 class="text-heading mb-3">
-                {% trans "Quotes" %}
-                {% if quotes %}({{ quotes|length }}){% endif %}
-            </h2>
-
-            {% if quotes %}
-                <div class="space-y-4">
-                    {% for quote in quotes %}
-                        {% include "quotes/_quote_card.html" %}
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p class="text-sm text-semantic-muted">{% trans "No quotes yet." %}</p>
-            {% endif %}
-        </div>
-
         <!-- Lineage (forks) -->
         {% if character.parent or character.forks.exists %}
             <div class="card card-body">

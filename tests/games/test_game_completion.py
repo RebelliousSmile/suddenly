@@ -2,7 +2,7 @@
 #134, DEC-D6/DEC-D7).
 
 Criterion 4: closing a game makes every one of its PUBLISHED/PUBLIC reports
-pass ``released()``, ``feed_visible()`` and ``Quote.promotable()`` regardless
+pass ``released()`` and ``feed_visible()`` regardless
 of their own ``released_at`` — via the shared ``wall_open_q()`` helper.
 Retro-compat: on data with no ``completed_at`` set, ``released()`` returns
 exactly the pre-Epic-D set (the added disjunct is empty). ``close_game`` is
@@ -17,7 +17,6 @@ from django.test import Client
 from django.urls import reverse
 from django.utils import timezone
 
-from suddenly.characters.models import Quote, QuoteVisibility
 from suddenly.games.models import Report, ReportStatus, ReportVisibility
 from suddenly.games.services import close_game
 from tests.factories import CharacterFactory, GameFactory, ReportFactory, UserFactory
@@ -84,29 +83,6 @@ def test_released_retro_compat_without_completed_at() -> None:
     visible = set(Report.objects.released())
     assert released in visible
     assert unreleased not in visible
-
-
-@pytest.mark.django_db
-def test_promotable_includes_quote_of_report_once_game_completed() -> None:
-    """Quote.promotable() (characters/models.py) shares wall_open_q via the
-    report__ prefix — DEC-D6, rule of three."""
-    author = UserFactory()
-    game = GameFactory(owner=author)
-    report = _published_unreleased(game, author)
-    character = CharacterFactory(creator=author, origin_game=game)
-    quote = Quote.objects.create(
-        content="A line worth remembering.",
-        character=character,
-        report=report,
-        author=author,
-        visibility=QuoteVisibility.PUBLIC,
-    )
-
-    assert quote not in set(Quote.objects.promotable())
-
-    close_game(game=game, user=author)
-
-    assert quote in set(Quote.objects.promotable())
 
 
 # ---------------------------------------------------------------------------

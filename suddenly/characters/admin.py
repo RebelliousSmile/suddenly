@@ -17,7 +17,6 @@ from .models import (
     CharacterLink,
     Follow,
     LinkRequest,
-    Quote,
     SharedSequence,
     Trait,
     TraitSet,
@@ -25,7 +24,6 @@ from .models import (
 
 if TYPE_CHECKING:
     _CharacterBase = admin.ModelAdmin[Character]
-    _QuoteBase = admin.ModelAdmin[Quote]
     _AppearanceBase = admin.ModelAdmin[CharacterAppearance]
     _LinkRequestBase = admin.ModelAdmin[LinkRequest]
     _CharacterLinkBase = admin.ModelAdmin[CharacterLink]
@@ -37,7 +35,6 @@ if TYPE_CHECKING:
     _TraitSetInlineBase = admin.TabularInline[TraitSet, Character]
 else:
     _CharacterBase = admin.ModelAdmin
-    _QuoteBase = admin.ModelAdmin
     _AppearanceBase = admin.ModelAdmin
     _LinkRequestBase = admin.ModelAdmin
     _CharacterLinkBase = admin.ModelAdmin
@@ -115,19 +112,6 @@ class CharacterAdmin(_CharacterBase):
     raw_id_fields = ["owner", "creator", "origin_game", "parent"]
     ordering = ["-created_at"]
     inlines = [TraitSetInline]
-
-
-@admin.register(Quote)
-class QuoteAdmin(_QuoteBase):
-    list_display = ["content_preview", "character", "author", "visibility", "created_at"]
-    list_filter = ["visibility", "created_at"]
-    search_fields = ["content", "character__name", "author__username"]
-    raw_id_fields = ["character", "report", "author"]
-    ordering = ["-created_at"]
-
-    @admin.display(description="Content")
-    def content_preview(self, obj: Quote) -> str:
-        return obj.content[:50] + "..." if len(obj.content) > 50 else obj.content
 
 
 @admin.register(CharacterAppearance)

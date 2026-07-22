@@ -7,7 +7,6 @@ from __future__ import annotations
 import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.db import models
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -232,15 +231,10 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
     ):
         raise Http404
 
-    from suddenly.characters.models import Character, Quote
-
     cast = report.character_appearances.select_related("character").order_by("role")
     # Fallback for ingested reports: CharacterAppearance not created via ingest endpoint,
     # so fall back to ReportCast (new_character_name entries) when appearances are absent.
     cast_fallback = report.cast.all() if not cast.exists() else None
-
-    # Public "Citations retenues": the double lock, never re-expressed here.
-    quotes = Quote.objects.promotable().filter(report=report).order_by("-created_at")[:5]
 
     # Draft rapports are private to their editors: an editor (author or GM)
     # manages them here (edit/publish), but the public thread of a released
@@ -248,17 +242,8 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
     is_author = request.user.is_authenticated and request.user == report.author
     can_edit = can_edit_scene(request.user, report)
 
-    # §5: the author marks a réplique as citation. They manage every quote of
-    # this report (regardless of the wall), and pick a speaker among its cast.
-    manage_quotes = None
-    quote_characters = None
     offer = None
     if is_author:
-        manage_quotes = report.quotes.select_related("character").order_by("-created_at")
-        quote_characters = Character.objects.filter(
-            models.Q(appearances__report=report) | models.Q(cast_entries__report=report)
-        ).distinct()
-
         # The seam-1 (summary) social Offer opened at import time, addressed
         # to the author's followers (Epic B, #132). Only the author sees it
         # here — followers reach it via their Notification(type=OFFER) link
@@ -310,12 +295,9 @@ def report_detail(request: HttpRequest, game_pk: str, pk: str) -> HttpResponse:
             "game": report.game,
             "cast": cast,
             "cast_fallback": cast_fallback,
-            "quotes": quotes,
             "is_author": is_author,
             "can_edit": can_edit,
             "scene_cast": scene_cast,
-            "manage_quotes": manage_quotes,
-            "quote_characters": quote_characters,
             "rapports": rapports,
             "fiction_next": fiction_next,
             "offer": offer,

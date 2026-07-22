@@ -27,8 +27,6 @@ from .game_views import (
 from .rapport_views import (
     marker_create,
     marker_delete,
-    quote_create,
-    quote_delete,
     rapport_add_remote_parent,
     rapport_create,
     rapport_delete,
@@ -71,8 +69,6 @@ __all__ = [
     "game_search",
     "marker_create",
     "marker_delete",
-    "quote_create",
-    "quote_delete",
     "rapport_add_remote_parent",
     "rapport_create",
     "rapport_delete",

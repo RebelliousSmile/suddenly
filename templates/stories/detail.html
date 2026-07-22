@@ -85,17 +85,6 @@ injectée via data-initial + x-init (exception whitelistée 03-alpine-patterns.m
                     </article>
                 {% endfor %}
 
-                {% if quotes %}
-                    <div class="mt-12 pt-8 border-t border-semantic-border">
-                        <h2 class="text-xl font-bold text-semantic-ink mb-4">{% trans "Citations retenues" %}</h2>
-                        <div class="space-y-4">
-                            {% for quote in quotes %}
-                                {% include "quotes/_quote_card.html" with hide_source=True %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endif %}
-
                 <div class="mt-10">
                     <a href="{% url 'games:stories' %}" class="btn-secondary btn-sm">← {% trans "All stories" %}</a>
                 </div>

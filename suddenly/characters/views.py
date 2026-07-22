@@ -22,7 +22,6 @@ from suddenly.characters.models import (
     Follow,
     LinkRequest,
     LinkType,
-    Quote,
 )
 from suddenly.characters.services import LinkService, build_character_queryset
 from suddenly.core.serializers import (
@@ -33,8 +32,6 @@ from suddenly.core.serializers import (
     FollowSerializer,
     LinkRequestCreateSerializer,
     LinkRequestSerializer,
-    QuoteCreateSerializer,
-    QuoteSerializer,
 )
 
 
@@ -95,14 +92,6 @@ class CharacterViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
         characters = build_character_queryset(q=query)[:limit]
 
         serializer = CharacterSearchSerializer(characters, many=True)
-        return Response(serializer.data)
-
-    @action(detail=True, methods=["get"])  # type: ignore[untyped-decorator]
-    def quotes(self, request: Request, pk: str | None = None, **kwargs: Any) -> Response:
-        """List public quotes for this character."""
-        character = self.get_object()
-        quotes = character.quotes.filter(visibility="public")
-        serializer = QuoteSerializer(quotes, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=["get"])  # type: ignore[untyped-decorator]
@@ -301,30 +290,6 @@ class LinkRequestViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
         link_request.refresh_from_db()
         serializer = LinkRequestSerializer(link_request)
         return Response(serializer.data)
-
-
-class QuoteViewSet(viewsets.ModelViewSet):  # type: ignore[misc]
-    """
-    API endpoint for quotes.
-    """
-
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-    def get_queryset(self) -> QuerySet[Quote]:
-        queryset = Quote.objects.filter(remote=False)
-
-        if self.request.user.is_authenticated:
-            # Include user's private quotes
-            return queryset.filter(
-                models.Q(visibility="public") | models.Q(author=self.request.user)
-            ).select_related("character", "author")
-
-        return queryset.filter(visibility="public").select_related("character", "author")
-
-    def get_serializer_class(self) -> type[BaseSerializer[Any]]:
-        if self.action == "create":
-            return QuoteCreateSerializer
-        return QuoteSerializer
 
 
 class FollowViewSet(viewsets.ModelViewSet):  # type: ignore[misc]

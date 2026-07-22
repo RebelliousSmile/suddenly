@@ -1,6 +1,5 @@
 """
-Rapport (post) views: create/edit/delete, markers, replies, media, move,
-and quotes (DA-1).
+Rapport (post) views: create/edit/delete, markers, replies, media, move (DA-1).
 """
 
 from __future__ import annotations
@@ -39,9 +38,6 @@ from .services import (
     record_appearance_from_marker,
     update_scene_post,
 )
-
-# Public "Citations retenues" visibilities the author may choose from.
-_QUOTE_VISIBILITIES = frozenset({"public", "private"})
 
 
 def _rapport_item_response(
@@ -440,63 +436,3 @@ def rapport_move(
         "games/partials/_rapports_list.html",
         {"rapports": _scene_rapports(rapport.report)},
     )
-
-
-# ---------------------------------------------------------------------------
-# Quotes (citations) — the author marks a réplique on a Report they own (§5).
-#
-# A Quote may be created on a Report not yet released — it simply waits for the
-# temporal wall to open before it can be promoted (QuoteQuerySet.promotable).
-# Ephemeral visibility is a character-page gesture; here only public/private are
-# offered, so the expires_at ⟺ EPHEMERAL constraint is never tripped.
-# ---------------------------------------------------------------------------
-
-
-@require_POST
-@login_required
-def quote_create(request: AuthenticatedRequest, game_pk: str, pk: str) -> HttpResponse:
-    """Create a citation on a Report the caller authored. HTMX, returns a card."""
-    from suddenly.characters.models import Character, Quote, QuoteVisibility
-
-    report = get_object_or_404(Report.objects.select_related("game"), pk=pk, game__pk=game_pk)
-    if (forbidden := _forbid_non_author(report, request)) is not None:
-        return forbidden
-
-    content = request.POST.get("content", "").strip()
-    if len(content) < 2:
-        return HttpResponse("La citation doit faire au moins 2 caractères.", status=422)
-
-    character = get_object_or_404(Character, slug=request.POST.get("character", "").strip())
-    visibility = request.POST.get("visibility", QuoteVisibility.PUBLIC)
-    if visibility not in _QUOTE_VISIBILITIES:
-        visibility = QuoteVisibility.PUBLIC
-
-    quote = Quote.objects.create(
-        report=report,
-        character=character,
-        author=request.user,
-        content=content,
-        context=request.POST.get("context", "").strip(),
-        visibility=visibility,
-    )
-    return render(request, "quotes/_quote_card.html", {"quote": quote})
-
-
-@require_POST
-@login_required
-def quote_delete(
-    request: AuthenticatedRequest, game_pk: str, pk: str, quote_pk: str
-) -> HttpResponse:
-    """Hard-delete a citation of a Report the caller authored (§5)."""
-    from suddenly.characters.models import Quote
-
-    quote = get_object_or_404(
-        Quote.objects.select_related("report"),
-        pk=quote_pk,
-        report__pk=pk,
-        report__game__pk=game_pk,
-    )
-    if (forbidden := _forbid_non_author(quote.report, request)) is not None:
-        return forbidden
-    quote.delete()
-    return HttpResponse(status=204)

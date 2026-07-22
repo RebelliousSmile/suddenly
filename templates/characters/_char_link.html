@@ -2,7 +2,7 @@
 {% comment %}
   A character link that reveals a hover-card (maquette §10). Reusable:
 
-    {% include "characters/_char_link.html" with character=quote.character %}
+    {% include "characters/_char_link.html" with character=appearance.character %}
     {% include "characters/_char_link.html" with slug=c.slug label=c.name %}
 
   The card is lazy-loaded over HTMX on first hover (find .char-pop__body, scoped
