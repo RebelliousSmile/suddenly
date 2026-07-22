@@ -194,7 +194,7 @@ C4Context
 
 ## Report Model Enhancements
 
-- `content_warning` field on `Report` (US-30)
+- `content_warning` field on `Report`
 - `visibility` field: PUBLIC / UNLISTED / FOLLOWERS (US-29)
 - `session_date` field on `Report`
 

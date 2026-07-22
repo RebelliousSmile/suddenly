@@ -110,7 +110,6 @@ Scenario: Mention de personnage
 Scenario: Consultation de fiche
   Given je clique sur un personnage
   Then je vois son nom, description, avatar, statut et ses apparitions
-  And je vois ses citations mémorables
   And si c'est un PNJ disponible, les boutons Adopter/Réclamer/Dériver sont visibles
 ```
 
@@ -135,24 +134,6 @@ Scenario: Filtrage par tag
   Given j'utilise la barre de filtres
   When je sélectionne un tag
   Then seuls les personnages portant ce tag s'affichent
-```
-
----
-
-## Domaine 5 — Citations
-
-### US-08: "Ajouter une citation"
-
-**As a** joueur solo
-**I want** enregistrer une réplique mémorable d'un personnage
-**So that** les moments forts de mes parties soient préservés
-
-```gherkin
-Scenario: Ajout de citation
-  Given je suis sur la fiche d'un personnage ou dans un CR
-  When j'ajoute une citation avec son contexte
-  Then la citation apparaît sur la fiche du personnage et est fédérée si publique
-  And je peux choisir Éphémère / Privée / Publique
 ```
 
 ---
@@ -532,11 +513,6 @@ Scenario: CR visible comme Article
   Then il apparaît comme un Article dans mon fil Mastodon
   And je peux lire le contenu et voir le lien vers la source
 
-Scenario: Citation visible comme Note
-  Given je suis un personnage Suddenly depuis Mastodon
-  When une citation publique est ajoutée
-  Then elle apparaît comme une Note dans mon fil
-
 Scenario: Activités Suddenly-only
   Given une Offer (Claim/Adopt/Fork) est émise
   Then elle n'est PAS envoyée aux instances non-Suddenly
@@ -555,7 +531,7 @@ Scenario: Activités Suddenly-only
 
 ```gherkin
 Scenario: Suppression de contenu
-  Given un CR ou une citation est signalé
+  Given un CR est signalé
   When je le supprime en tant qu'admin
   Then le contenu est masqué (soft delete)
   And l'auteur est notifié avec la raison
@@ -667,23 +643,6 @@ Scenario: Visibilite abonnes
   Then seuls mes followers le voient
 ```
 
-### US-30: "Ajouter un avertissement de contenu"
-
-**As a** joueur qui publie du contenu sensible
-**I want** ajouter un avertissement de contenu (CW)
-**So that** les lecteurs choisissent de voir ou non le contenu
-
-```gherkin
-Scenario: CR avec CW
-  Given je publie un CR avec un avertissement "Violence"
-  Then le CR est replie dans le fil derriere "Afficher le contenu"
-  And le CW est transmis dans l'activite AP
-
-Scenario: Citation avec CW
-  Given j'ajoute une citation avec un avertissement "Contenu mature"
-  Then la citation est repliee sur la fiche personnage
-```
-
 ### US-31: "Voir les details de mon instance"
 
 **As a** visiteur ou joueur
@@ -713,7 +672,6 @@ Scenario: Citation avec CW
 | 2 | US-13 | GM — Distribution | Prérequis pour la rédaction de CRs |
 | 3 | US-04, US-05 | Comptes-rendus | Valeur principale |
 | 4 | US-06, US-07 | Personnages | Découle des CRs |
-| 5 | US-08 | Citations | Gain immédiat, haute valeur perçue |
 | 5 | US-20, US-21 | Notifications | Nécessaire dès que les interactions existent |
 | 6 | US-09, US-10, US-11 | Liens (base) | Le gameplay — arrive quand la base existe |
 | 6 | US-14 | GM — Arbitrage | Prérequis pour le workflow de liens |
@@ -723,7 +681,7 @@ Scenario: Citation avec CW
 | 7 | US-23 | Lien cross-instance | Fédération gameplay |
 | 7 | US-24 | Compatibilité Mastodon | Visibilité externe |
 | 7 | US-25, US-26, US-27 | Administration | Gouvernance d'instance |
-| 3 | US-29, US-30 | Fediverse natif | Visibilite + CW : requis avant publication de CRs |
+| 3 | US-29 | Fediverse natif | Visibilite : requis avant publication de CRs |
 | 5 | US-28 | Fediverse natif | Recommandation : propagation de contenu |
 | 6 | US-31 | Fediverse natif | Page A propos : identite d'instance |
 | 7 | US-32, US-33 | Fediverse natif | Import/export, block/mute : portabilite |
