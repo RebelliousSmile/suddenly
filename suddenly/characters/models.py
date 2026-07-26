@@ -63,6 +63,15 @@ class Character(BaseModel):
         max_length=20, choices=CharacterStatus.choices, default=CharacterStatus.NPC
     )
 
+    # Reversible archival (#125): hides the character from public lists,
+    # discovery and search without destroying it. Federation-silent — no AP
+    # Delete/Update is emitted, since archival is a local visibility toggle
+    # that can be undone at any time.
+    is_archived = models.BooleanField(
+        default=False,
+        help_text="Archived characters are hidden from public lists but kept (reversible).",
+    )
+
     # Ownership
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -117,6 +126,7 @@ class Character(BaseModel):
             models.Index(fields=["status"]),
             models.Index(fields=["origin_game"]),
             models.Index(fields=["owner"]),
+            models.Index(fields=["is_archived"]),
         ]
 
     def __str__(self) -> str:

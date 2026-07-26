@@ -95,6 +95,39 @@
         <div id="character-results">
             {% include "characters/_list_results.html" %}
         </div>
+
+        {# Archived characters — reversible archival (#125), creator only #}
+        {% if archived_characters %}
+        <div class="mt-10 border-t border-semantic-border pt-6" x-data="{ open: false }">
+            <button type="button" @click="open = !open"
+                    class="flex items-center gap-2 text-sm font-medium text-semantic-muted hover:text-semantic-ink"
+                    :aria-expanded="open">
+                <span class="i-lucide-archive"></span>
+                {% trans "Archived" %} ({{ archived_characters|length }})
+                <span class="i-lucide-chevron-down transition-transform" :class="open && 'rotate-180'"></span>
+            </button>
+            <div x-show="open" x-cloak class="mt-4 flex flex-col gap-2">
+                {% for character in archived_characters %}
+                <div class="flex items-center gap-3 p-3 rounded-lg border border-semantic-border bg-semantic-card-sunken/30">
+                    <div class="min-w-0 flex-1">
+                        <a href="{% url 'characters:detail' slug=character.slug %}"
+                           class="font-medium text-semantic-ink truncate hover:text-brand-primary">{{ character.name }}</a>
+                        {% if character.origin_game %}
+                        <p class="text-xs text-semantic-muted truncate">{{ character.origin_game.title }}</p>
+                        {% endif %}
+                    </div>
+                    <form method="post" action="{% url 'characters:unarchive' slug=character.slug %}">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="btn-secondary btn-sm shrink-0">
+                            <span class="i-lucide-archive-restore text-xs"></span>{% trans "Restore" %}
+                        </button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

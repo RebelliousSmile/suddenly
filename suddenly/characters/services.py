@@ -14,6 +14,7 @@ from django.db import transaction
 from django.db.models import Count, Q
 from django.db.models.query import QuerySet
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from suddenly.core.models import Notification, NotificationType
 from suddenly.games.models import Game
@@ -790,7 +791,7 @@ def build_character_queryset(
     game-system filter — Suddenly has no system catalogue.
     """
     qs = (
-        Character.objects.filter(remote=False)
+        Character.objects.filter(remote=False, is_archived=False)
         .select_related("creator", "owner", "origin_game")
         .annotate(
             report_count=Count("appearances__report", distinct=True),
@@ -817,3 +818,51 @@ def build_character_queryset(
         )
 
     return qs
+
+
+def owned_archived_characters(user: User) -> QuerySet[Character]:
+    """Archived characters created by ``user`` — for the restore section (#125)."""
+    return (
+        Character.objects.filter(creator=user, remote=False, is_archived=True)
+        .select_related("origin_game")
+        .order_by("-updated_at")
+    )
+
+
+def archive_character(*, character: Character, user: User) -> Character:
+    """Archive a character (reversible, #125). Creator only.
+
+    Refuses while a link request is still open (PENDING/QUEUED) targeting this
+    character: archiving it out from under a pending Claim/Adopt/Fork would
+    strand the requester. The requester must resolve or cancel first.
+
+    Federation-silent: no ActivityPub Delete/Update is emitted — archival is a
+    local visibility toggle, undone by :func:`unarchive_character`.
+    """
+    if character.creator_id != user.id:
+        raise ValidationError(_("Only the creator can archive this character."))
+
+    has_open_link = LinkRequest.objects.filter(
+        target_character=character,
+        status__in=[LinkRequestStatus.PENDING, LinkRequestStatus.QUEUED],
+    ).exists()
+    if has_open_link:
+        raise ValidationError(
+            _("Resolve the pending link request before archiving this character.")
+        )
+
+    if not character.is_archived:
+        character.is_archived = True
+        character.save(update_fields=["is_archived", "updated_at"])
+    return character
+
+
+def unarchive_character(*, character: Character, user: User) -> Character:
+    """Restore an archived character (#125). Creator only."""
+    if character.creator_id != user.id:
+        raise ValidationError(_("Only the creator can restore this character."))
+
+    if character.is_archived:
+        character.is_archived = False
+        character.save(update_fields=["is_archived", "updated_at"])
+    return character

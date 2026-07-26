@@ -66,6 +66,12 @@ urlpatterns = [
     path("<slug:slug>/", front_views.character_detail, name="detail"),
     path("<slug:slug>/edit/", front_views.character_edit, name="edit"),
     path("<slug:slug>/delete/", front_views.character_delete, name="delete"),
+    path("<slug:slug>/archive/", front_views.character_archive, name="archive"),
+    path(
+        "<slug:slug>/unarchive/",
+        front_views.character_unarchive,
+        name="unarchive",
+    ),
     path("<slug:slug>/card/", front_views.character_card, name="card"),
     # Narrative meta-model editor (issue B) — traits & actions
     path("<slug:slug>/traits/", trait_views.traits_editor, name="traits_editor"),

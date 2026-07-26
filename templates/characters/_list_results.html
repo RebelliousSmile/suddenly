@@ -90,6 +90,16 @@
                                    class="inline-flex items-center gap-1 text-semantic-ink-secondary border border-semantic-border rounded-lg px-2.5 py-1 text-xs font-medium hover:border-brand-primary hover:text-brand-primary">
                                     <span class="i-lucide-pencil text-xs"></span>{% trans "Edit" %}
                                 </a>
+                                <form method="post" action="{% url 'characters:archive' slug=character.slug %}"
+                                      class="inline-flex">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                            onclick="return confirm('{% trans "Archive this character? You can restore it later." %}')"
+                                            class="inline-flex items-center gap-1 text-semantic-ink-secondary border border-semantic-border rounded-lg px-2.5 py-1 text-xs font-medium hover:border-brand-primary hover:text-brand-primary"
+                                            title="{% trans "Archive" %}">
+                                        <span class="i-lucide-archive text-xs"></span>{% trans "Archive" %}
+                                    </button>
+                                </form>
                             {% endif %}
 
                             <a href="{% url 'characters:detail' slug=character.slug %}"

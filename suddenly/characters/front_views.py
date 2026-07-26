@@ -7,6 +7,7 @@ DRF ViewSets in views.py remain for the JSON API.
 
 from __future__ import annotations
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.db.models.query import QuerySet
@@ -23,11 +24,14 @@ from suddenly.games.models import Game
 
 from .models import Character, CharacterLink, CharacterLinkStatus, CharacterStatus
 from .services import (
+    archive_character,
     build_character_queryset,
     build_transverse_actions_queryset,
     character_has_posts,
     create_character_with_sheet,
+    owned_archived_characters,
     suggested_characters_to_link,
+    unarchive_character,
 )
 
 
@@ -41,6 +45,7 @@ def character_list(request: HttpRequest) -> HttpResponse:
 
     default_bg = ""
     first_character = None
+    archived_characters: QuerySet[Character] | list[Character] = []
     if request.user.is_authenticated:
         if request.user.default_character_background:
             default_bg = request.user.default_character_background.url
@@ -52,6 +57,8 @@ def character_list(request: HttpRequest) -> HttpResponse:
             .order_by("name")
             .first()
         )
+        # Archived characters created by the viewer — restore section (#125).
+        archived_characters = owned_archived_characters(request.user)
 
     # Distinct tags for the filter bar — cached + DB-distinct via the shared
     # service (avoids the uncached full-scan + Python set() this used to do).
@@ -70,6 +77,7 @@ def character_list(request: HttpRequest) -> HttpResponse:
             "active_tag": request.GET.get("tag", ""),
             "all_tags": all_tags,
             "first_character": first_character,
+            "archived_characters": archived_characters,
         },
     )
 
@@ -303,6 +311,30 @@ def character_delete_bulk(request: AuthenticatedRequest) -> HttpResponse:
     """Bulk delete characters (creator only)."""
     slugs = request.POST.getlist("slugs")
     Character.objects.filter(slug__in=slugs, creator=request.user).delete()
+    return redirect(reverse("characters:list"))
+
+
+@require_POST
+@login_required
+def character_archive(request: AuthenticatedRequest, slug: str) -> HttpResponse:
+    """Archive a character — reversible hide, creator only (#125)."""
+    character = get_object_or_404(Character, slug=slug, creator=request.user)
+    try:
+        archive_character(character=character, user=request.user)
+    except ValidationError as exc:
+        messages.error(request, exc.messages[0])
+        return redirect(reverse("characters:detail", kwargs={"slug": slug}))
+    messages.success(request, _("Character archived."))
+    return redirect(reverse("characters:list"))
+
+
+@require_POST
+@login_required
+def character_unarchive(request: AuthenticatedRequest, slug: str) -> HttpResponse:
+    """Restore an archived character, creator only (#125)."""
+    character = get_object_or_404(Character, slug=slug, creator=request.user)
+    unarchive_character(character=character, user=request.user)
+    messages.success(request, _("Character restored."))
     return redirect(reverse("characters:list"))
 
 
