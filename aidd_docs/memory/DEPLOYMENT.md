@@ -150,7 +150,6 @@ Site → Python WSGI
 **Scheduled tasks** (env vars must be set in each task):
 ```
 0 3 * * *  /home/<user>/www/<app>/venv/bin/python /home/<user>/www/<app>/manage.py clearsessions
-0 * * * *  /home/<user>/www/<app>/venv/bin/python /home/<user>/www/<app>/manage.py shell -c "from suddenly.activitypub.tasks import cleanup_expired_quotes; cleanup_expired_quotes()"
 ```
 
 - SSL: Let's Encrypt via Alwaysdata interface

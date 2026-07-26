@@ -93,7 +93,6 @@ Avec les valeurs par défaut :
 | Comptes-rendus | 400 | 200 `fr` / 200 `en`, brouillons et publiés, visibilités `public`/`unlisted`/`followers`, une partie `released` |
 | Rapports | ~2800 | Fils narratifs enchaînés par `RapportLink`, tous types confondus |
 | Images | ~430 | Avatars, couvertures, images de rapports |
-| Citations | ~110 | Publiques et privées |
 | Abonnements | 240 | Vers des personnages et des parties |
 | Liens | ~38 | Claims, adoptions et forks : certains en attente, d'autres acceptés, d'autres avec séquence partagée publiée |
 
@@ -101,7 +100,7 @@ Avec les valeurs par défaut :
 
 La langue est portée par **la campagne** : une partie est française ou anglaise, et ses comptes-rendus héritent de sa langue via `Report.language` (BCP-47). Le résultat est exactement équilibré, ce qui rend les filtres de langue et le `contentMap` ActivityPub testables sur des données réelles.
 
-Les textes ne sont pas générés au hasard : narration, actions, dialogues, citations et textes alternatifs des images existent dans les deux langues.
+Les textes ne sont pas générés au hasard : narration, actions, dialogues et textes alternatifs des images existent dans les deux langues.
 
 ### Les images
 

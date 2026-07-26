@@ -28,7 +28,6 @@
 | PNJ | Non-Player Character — created in a report, available for adoption | NPC |
 | Partie / Jeu | Ongoing fiction receiving reports | Game, Campaign |
 | Compte-rendu | Narrative session log (Markdown) | Report |
-| Citation | Memorable character quote (public/private/ephemeral) | Quote |
 | Claim | Retcon: the NPC was always the requester's PC | — |
 | Adopt | Takeover: NPC becomes requester's new PC | — |
 | Fork | Derivation: new PC inspired by NPC, lineage link | — |
@@ -46,7 +45,6 @@
 - Send claim/adopt/fork requests on available NPCs
 - Accept/reject requests (NPC creator's role)
 - Follow users, games, and characters (local and federated)
-- Publish memorable character quotes (configurable visibility)
 - Federation via ActivityPub: WebFinger, NodeInfo, inbox/outbox
 
 ## User Journey maps
@@ -125,7 +123,6 @@ journey
 | Entity | AP Type | Description |
 |--------|---------|-------------|
 | Report | Article | Session report |
-| Quote | Note | Character quote |
 
 ### Character Status Transitions
 

@@ -94,9 +94,9 @@
 | Follow | User | User/Character/Game | Follow |
 | Accept | User | Follow/Offer | Accept |
 | Reject | User | Follow/Offer | Reject |
-| Create | User | Report/Quote/Character | Publish |
-| Update | User | Report/Quote/Character | Edit |
-| Delete | User | Report/Quote | Delete |
+| Create | User | Report/Character | Publish |
+| Update | User | Report/Character | Edit |
+| Delete | User | Report | Delete |
 | Announce | User | Report | Share |
 | Offer | User | Claim/Adopt/Fork | Propose link |
 
@@ -110,7 +110,6 @@
 | `suddenly:originGame` | Character's origin game |
 | `suddenly:creator` | Original creator |
 | `suddenly:appearances` | Appearances in reports |
-| `suddenly:quotes` | Character quotes |
 | `suddenly:links` | Claim/Adopt/Fork links |
 | `suddenly:gameSystem` | Game system |
 | `suddenly:targetCharacter` | Target NPC (for Offer) |
@@ -134,6 +133,5 @@ keyId: https://instance/actor#main-key
 | Suddenly Type | Displayed as |
 |---------------|--------------|
 | Report (Article) | Article |
-| Quote (Note) | Note |
 | Character (Person) | Person |
 | Offer(Claim/Adopt/Fork) | Not sent to non-Suddenly instances |
