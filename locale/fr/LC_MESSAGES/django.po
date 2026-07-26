@@ -4016,6 +4016,42 @@ msgstr "Résultat"
 msgid "Add a conditional result…"
 msgstr "Ajouter un résultat conditionnel…"
 
+#: .\suddenly\characters\front_views.py
+msgid "Character archived."
+msgstr "Personnage archivé."
+
+#: .\suddenly\characters\front_views.py
+msgid "Character restored."
+msgstr "Personnage restauré."
+
+#: .\suddenly\characters\services.py
+msgid "Only the creator can archive this character."
+msgstr "Seul le créateur peut archiver ce personnage."
+
+#: .\suddenly\characters\services.py
+msgid "Resolve the pending link request before archiving this character."
+msgstr "Résolvez la demande de lien en attente avant d'archiver ce personnage."
+
+#: .\suddenly\characters\services.py
+msgid "Only the creator can restore this character."
+msgstr "Seul le créateur peut restaurer ce personnage."
+
+#: .\templates\characters\_list_results.html
+msgid "Archive this character? You can restore it later."
+msgstr "Archiver ce personnage ? Vous pourrez le restaurer plus tard."
+
+#: .\templates\characters\_list_results.html
+msgid "Archive"
+msgstr "Archiver"
+
+#: .\templates\characters\list.html
+msgid "Archived"
+msgstr "Archivés"
+
+#: .\templates\characters\list.html
+msgid "Restore"
+msgstr "Restaurer"
+
 #~ msgid "published reports"
 #~ msgstr "comptes-rendus publiés"
 
