@@ -53,7 +53,7 @@ dev = [
     "pytest-mock>=3.12",
     "pytest-playwright>=0.4",
     "factory-boy>=3.3",
-    "ruff>=0.2",
+    "ruff==0.15.20",
     "mypy>=1.8",
     "django-stubs>=4.2",
     "django-extensions>=3.2",
