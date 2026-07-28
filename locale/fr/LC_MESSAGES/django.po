@@ -600,8 +600,13 @@ msgstr "Accueil"
 #: .\templates\base.html:48 .\templates\base.html:223
 #: .\templates\stories\detail.html:12 .\templates\stories\index.html:4
 #: .\templates\stories\index.html:11
+#. « Stories » est un nom de fonctionnalité, non traduit en français : la
+#. maquette de référence (templates/wireframes/maquette-v3.html) l'écrit ainsi
+#. dans la nav, le titre de page et le fil d'Ariane, tout le reste étant en
+#. français. La divergence « Histoires complètes » était relevée par le gate de
+#. fidélité (section manquante, aidd_docs/qa/fidelity/stories.report.json).
 msgid "Stories"
-msgstr "Histoires complètes"
+msgstr "Stories"
 
 #: .\templates\base.html:51 .\templates\base.html:224
 #: .\templates\characters\_list_results.html:72
@@ -3479,6 +3484,14 @@ msgstr "Toutes les stories"
 msgid "Resolved accounts that have crossed the wall — readable by everyone, end to end."
 msgstr "Les comptes rendus résolus qui ont franchi le mur — lisibles par tous, de bout en bout."
 
+#. Libellé repris tel quel de la maquette de référence
+#. (templates/wireframes/maquette-v3.html, pageStories) : « Lire l'histoire → ».
+#. La maquette laisse « Stories » non traduit dans la nav mais francise le CTA —
+#. c'est la référence qui arbitre, pas une cohérence reconstruite après coup.
+#: .\templates\stories\_index_results.html:50
+msgid "Read the story"
+msgstr "Lire l'histoire"
+
 #: .\templates\users\profile.html:40
 msgid "Edit profile"
 msgstr "Modifier le profil"
@@ -4051,6 +4064,10 @@ msgstr "Archivés"
 #: .\templates\characters\list.html
 msgid "Restore"
 msgstr "Restaurer"
+
+#: templates/games/detail.html
+msgid "Behind the wall"
+msgstr "Derrière le mur"
 
 #~ msgid "published reports"
 #~ msgstr "comptes-rendus publiés"

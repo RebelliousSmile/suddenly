@@ -24,10 +24,16 @@ repos:
         pass_filenames: false
         stages: [pre-push]
 
-      - id: design-lint
-        name: design system lint (tokens + colour namespaces)
-        entry: node design/lint/lint-files.mjs
+      # Gate 3 du funnel design (enforce/02-wire-gates).
+      # run-gates.py agrège deux choses qu'un lint par fichier ne peut pas faire :
+      # le seuil de maturité du contrat (sous `validated`, exit 4 — la conformité
+      # n'est pas opposable) et le rapport des règles sans réalisateur.
+      # `pass_filenames: false` car la cible est le contrat entier, pas un diff :
+      # le périmètre linté est énuméré dans design/lint/gates.config.json.
+      # `-X utf8` : sans lui, la sortie casse en cp1252 sous Windows.
+      - id: design-gates
+        name: design system gates (contract vocabulary + maturity)
+        entry: python -X utf8 design/lint/run-gates.py --config design/lint/gates.config.json
         language: system
-        files: ^templates/.*\.html$
-        exclude: ^templates/(wireframes/|500\.html$)
-        pass_filenames: true
+        files: ^(templates/.*\.html|design/.*\.json|design/lint/.*)$
+        pass_filenames: false

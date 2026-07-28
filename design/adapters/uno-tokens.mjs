@@ -1,10 +1,16 @@
-// GENERATED FROM design/tokens.json (v1.4.0) — DO NOT EDIT BY HAND.
+// DERIVED FROM design/tokens.json (v1.6.0) — mirror it by hand after any token change.
 //
 // UnoCSS theme adapter. The contract's reference adapters target Tailwind v4
 // (`@theme`) or v3 (`tailwind-tokens.cjs`); this project runs UnoCSS, so the
 // functional equivalent is this theme object.
 //
-// Usage (wired only after the namespace migration — see design-system.md § Provenance):
+// NOT a product of the design plugin's `tools/generate.py`. That generator emits
+// `module.exports = { "color-brand-primary": "#e03558", … }` — CommonJS, flat, hex
+// literals. Three breakages at once: the ESM `import { theme }` below fails, the
+// nested namespace shape UnoCSS needs is gone, and hex literals kill every alpha
+// modifier. Do not regenerate — edit this file alongside tokens.json.
+//
+// Usage:
 //   import { theme } from '../../design/adapters/uno-tokens.mjs'
 //   export default defineConfig({ theme, ... })
 //
@@ -92,6 +98,7 @@ export const theme = {
         secondary: rgb('semantic-ink-secondary'),
       },
       muted: rgb('semantic-muted'),
+      'on-brand': rgb('semantic-on-brand'),
       focus: rgb('semantic-focus'),
       success: rgb('semantic-success'),
       warning: rgb('semantic-warning'),

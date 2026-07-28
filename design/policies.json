@@ -1,0 +1,88 @@
+{
+  "$schema": "design/references/contract-schema#policies",
+  "mode": "utility-first",
+  "usage": {
+    "rawHexForbidden": true,
+    "colorUtilityPrefixes": [
+      "bg",
+      "text",
+      "border",
+      "ring",
+      "outline",
+      "from",
+      "to",
+      "via",
+      "fill",
+      "stroke",
+      "decoration",
+      "accent"
+    ],
+    "rules": [
+      {
+        "id": "state-colour-icon",
+        "description": "Tout état narratif porté par un token color.domain.* doit l'être AUSSI par un libellé ou une icône — jamais par la couleur seule. Trois familles : (1) statut de personnage (pc, npc, available, remote, claimed, adopted, forked, gone) — l'anneau d'avatar ajoute une border.style distincte ; (2) kind de rapport (kind-description, kind-action, kind-discussion, kind-closure) — la couleur du kmark/liseré double toujours l'icône de nature et la forme typographique ; (3) état de scène (state-draft, state-closed, state-released) — la pastille d'état (statepill) porte toujours son libellé texte à côté de la couleur.",
+        "enforcement": "unrealized"
+      },
+      {
+        "id": "signal-never-text",
+        "description": "color.brand.signal (#00e676) ne porte jamais de glyphe : contraste 1,6:1 sur fond clair. Tout texte de disponibilité utilise color.domain.available-text. Le signal reste réservé aux pastilles, anneaux et fonds (seuil 3:1).",
+        "enforcement": "unrealized"
+      },
+      {
+        "id": "display-font-is-fiction",
+        "description": "font.family.display (Fraunces) est réservée au contenu de fiction (récit, titres narratifs, descriptions, dialogues). Le chrome applicatif utilise font.family.sans. L'italique Fraunces marque la description narrative — jamais une simple emphase.",
+        "enforcement": "unrealized"
+      },
+      {
+        "id": "focus-visible-required",
+        "description": "Tout élément focusable porte un focus visible dérivé du groupe focus.* (2px, offset 2px, color.semantic.focus). Jamais outline:none sans remplacement.",
+        "enforcement": "unrealized"
+      },
+      {
+        "id": "tap-target-min",
+        "description": "Tout contrôle interactif mesure au moins size.tap (44px) dans ses deux dimensions.",
+        "enforcement": "unrealized"
+      },
+      {
+        "id": "no-emoji-as-icon",
+        "description": "Aucun emoji comme icône UI, puce, pastille d'état ou glyphe de bouton. Les emoji sont du contenu utilisateur, pas le langage visuel du système.",
+        "enforcement": "unrealized"
+      },
+      {
+        "id": "icon-set-roles",
+        "description": "Trois jeux d'icônes, trois rôles disjoints, jamais interchangeables. (1) icon.sets.ui = lucide : TOUTES les icônes d'interface, sans exception — c'est le jeu unique de l'UI. (2) icon.sets.brand = simple-icons : uniquement les logos de plateformes et protocoles tiers (Mastodon, ActivityPub) ; un logo de marque ne se redessine pas en lucide. (3) icon.sets.illustration = game-icons : uniquement l'illustration décorative (états vides, évocation du registre JdR) ; jamais un contrôle, jamais un statut. Une icône brand ou illustration ne porte JAMAIS une action : pas de bouton, pas de lien, pas de badge d'état.",
+        "enforcement": "unrealized"
+      },
+      {
+        "id": "icon-accessible-name",
+        "description": "Une icône décorative porte aria-hidden=\"true\". Une icône signifiante (qui remplace un mot : logo de plateforme, statut, action) porte un nom accessible — aria-label ou texte adjacent. Un bouton icon-only est toujours labellisé.",
+        "enforcement": "unrealized"
+      },
+      {
+        "id": "container-not-viewport",
+        "description": "La responsivité passe par @container (app) aux seuils breakpoint.xs/sm/md, pas par @media. Les tailles fluides en cqi n'ont de sens que dans un contexte de conteneur nommé.",
+        "enforcement": "unrealized"
+      },
+      {
+        "id": "native-scales-not-overridden",
+        "description": "Les échelles spacing, fontSize, lineHeight, letterSpacing, borderRadius et maxWidth ne sont JAMAIS injectées dans le thème UnoCSS : leurs clés collisionnent avec l'échelle native pour des valeurs différentes (p-4 passerait de 16px à 4px, text-sm de 14px à 13px). Les valeurs du contrat se consomment par variable CSS. Équivalences natives : rounded-lg = 8px (radius.md), rounded-xl = 12px (radius.lg).",
+        "enforcement": "unrealized"
+      },
+      {
+        "id": "wireframes-out-of-scope",
+        "description": "templates/wireframes/*.html sont des maquettes statiques, pas des templates applicatifs : elles emploient des couleurs Tailwind natives et sont exclues du glob de lint.",
+        "enforcement": "unrealized"
+      }
+    ]
+  },
+  "adapters": [
+    {
+      "artifact": "adapters/tokens.css",
+      "consumer": "stylesheet"
+    },
+    {
+      "artifact": "adapters/uno-tokens.mjs",
+      "consumer": "build configuration"
+    }
+  ]
+}

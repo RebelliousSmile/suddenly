@@ -5,11 +5,27 @@
 
 {% block content %}
 <section class="py-8">
-    <div class="container-app">
+    {% comment %}
+       Colonne de lecture à 64rem — équivalent de `.content--mid .container-app`
+       dans la maquette. `container-app` seul plafonne à 80rem, trop large pour
+       une liste en colonne unique : les cartes s'étirent et la ligne devient
+       illisible au-delà de ~1100px.
 
+       `{# … #}` ne ferme QUE sur sa propre ligne : un commentaire multi-ligne
+       écrit ainsi est imprimé tel quel dans la page. Tout commentaire de plus
+       d'une ligne passe par `{% comment %}`.
+    {% endcomment %}
+    <div class="container-app !max-w-5xl">
+
+        {% comment %}
+           `h-page` / `lede` : les shortcuts qui portent les pas de type FLUIDES du
+           contrat, calqués sur la maquette v3 et mesurés par le gate de fidélité.
+           Ne pas revenir à `text-2xl @md:text-3xl` — un palier au breakpoint rate
+           la référence partout entre deux seuils.
+        {% endcomment %}
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-semantic-ink mb-1">{% trans "Stories" %}</h1>
-            <p class="text-sm text-semantic-muted max-w-2xl">
+            <h1 class="h-page mb-2">{% trans "Stories" %}</h1>
+            <p class="lede">
                 {% trans "Resolved accounts that have crossed the wall — readable by everyone, end to end." %}
             </p>
         </div>

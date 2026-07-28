@@ -1,0 +1,55 @@
+{
+  "_note": "Genere par config-gen.py puis REECRIT A LA MAIN. Le generateur derive ses selecteurs de components.json, qui nomme les composants en BEM (btn--primary, card__body). Le contrat est en mode `utility-first` : `components.json § components` y est documentaire, la regle 1 du linter ne s'execute jamais, et les vrais noms de classe sont les shortcuts UnoCSS de frontend/uno.config.js (btn-primary, card-body, badge-info). Les selecteurs ci-dessous sont ceux qui existent AU RENDU, releves des deux cotes.",
+  "reference_url": "http://127.0.0.1:8765/maquette-v3.html",
+  "reference_page": "stories",
+  "implementation_url": "http://127.0.0.1:8000/games/stories/",
+  "_note_breakpoints": "`mockup_viewport` est `desktop` aux TROIS breakpoints, volontairement. Les modes `mobile`/`tablet` du simulateur plafonnent `.preview-frame` a 390px / 834px (bordure de chassis comprise) INDEPENDAMMENT du viewport Playwright ; or `.preview-frame` porte `container-type: inline-size; container-name: app`, le meme container que `<body>` cote implementation. Mesurer la maquette en mode mobile a un viewport de 640 comparait donc un container de ~374px a un container de ~625px : tous les pas de type fluides (`clamp(_, Ncqi, _)`) tombaient sur leur borne min d'un cote et leur borne max de l'autre. En mode `desktop` la frame suit le viewport, les deux containers ont la meme largeur, et c'est le viewport qui pilote le responsive des deux cotes — ce qui est exactement le contrat mobile-first container-driven du projet (`@container app`, jamais `@media`). Le chassis n'est pas la maquette.",
+  "_note_scrollbar": "Les `width` portent +16px sur la largeur de container visee (640 / 768 / 1024). L'oracle applique UN SEUL viewport aux deux cotes, or les deux n'ont pas la meme chrome : la maquette scrolle dans `.preview-stage` (overflow interne, pas de scrollbar de document) et sa `.preview-frame` fait exactement la largeur du viewport, tandis que l'implementation scrolle au niveau du document et son `<body>` perd la scrollbar. Mesure a viewport identique : maquette 640/768/1024 contre impl 624/752/1008, ecart constant de 16px. Consequence : chaque seuil `@container app (min-width: N)` etait franchi d'un cote et pas de l'autre — le container basculait a 24px de gouttiere et `card-body` a 20px cote maquette seulement. Les +16 alignent les deux containers sur la largeur nommee ; l'invariant compare est la largeur de CONTAINER, pas celle de fenetre. La valeur 16 est la scrollbar classique de Chromium headless sous Windows : sur un harnais a scrollbar overlay (macOS) elle vaut 0 et ces offsets sont a reprendre.",
+  "breakpoints": [
+    { "name": "mobile", "width": 656, "height": 812, "mockup_viewport": "desktop" },
+    { "name": "tablet", "width": 784, "height": 1194, "mockup_viewport": "desktop" },
+    { "name": "desktop", "width": 1040, "height": 900, "mockup_viewport": "desktop" }
+  ],
+  "props": [
+    "fontSize",
+    "fontWeight",
+    "lineHeight",
+    "fontFamily",
+    "color",
+    "backgroundColor",
+    "paddingTop",
+    "paddingBottom",
+    "paddingLeft",
+    "paddingRight",
+    "gap",
+    "borderRadius",
+    "boxShadow",
+    "borderWidth",
+    "maxWidth"
+  ],
+  "_note_props": "`minHeight` est volontairement hors mesure : sa valeur calculee vaut `auto` sur un item flex et `0px` ailleurs, sans qu'aucun des deux ne soit peint. La mesure renvoyait `0px` d'un cote et `auto` de l'autre sur les memes cibles, en s'inversant d'une cible a l'autre selon le contexte de mise en page — un artefact de valeur initiale, jamais un ecart de rendu. La geometrie reelle des boutons reste couverte par `paddingTop/Bottom/Left/Right`, `fontSize` et `lineHeight` ; la contrainte `min-h-[38px]` demeure dans le shortcut `btn-sm`. `borderColor` est volontairement hors mesure : `frontend/src/base.css` pose `border-color: var(--color-semantic-border)` sur `*` (necessaire, le preflight UnoCSS ne reset pas les bordures), la maquette herite `currentColor`. Sur toute cible a `borderWidth: 0` la couleur n'est pas peinte — l'ecart mesure etait un artefact, jamais un rendu. La bordure reelle des cartes reste couverte par `borderWidth`. C'est une reduction de perimetre declaree, pas un ecart tolere : elle n'a donc pas d'entree dans deviations.json.",
+  "headings_sel": {
+    "mockup": "h1",
+    "implementation": "h1"
+  },
+  "targets": [
+    { "name": "container", "mockup": ".content .container-app", "implementation": "main .container-app" },
+    { "name": "page title", "mockup": ".h-page", "implementation": "h1" },
+    { "name": "page lede", "mockup": ".lede", "implementation": "h1 + p" },
+    { "name": "story card", "mockup": ".card.card-hover", "implementation": ".card.card-hover" },
+    { "name": "story card body", "mockup": ".card-body", "implementation": ".card-body" },
+    { "name": "story card title", "mockup": ".card-body .h-sec", "implementation": ".card-body h2" },
+    { "name": "story card meta", "mockup": ".card-body p.text-xs", "implementation": ".card-body .text-xs" },
+    { "name": "story card description", "mockup": ".card-body p.text-sm", "implementation": ".card-body p.text-sm" },
+    { "name": "story card badge", "mockup": ".card-body .badge-info", "implementation": ".card-body .badge-info" },
+    { "name": "story card cta", "mockup": ".card-body .btn-primary", "implementation": ".card-body .btn-primary" }
+  ],
+  "ledger": [
+    {
+      "id": "DEV-001",
+      "target": "story card",
+      "prop": "boxShadow",
+      "why": "Composition d'utilitaire UnoCSS : deux couches transparentes prefixent l'ombre reelle, identique a la maquette. Voir design/deviations.json."
+    }
+  ]
+}

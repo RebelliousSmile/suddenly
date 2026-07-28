@@ -69,7 +69,12 @@ dev = [
 [tool.ruff]
 line-length = 100
 target-version = "py312"
-extend-exclude = ["*/migrations/*"]
+# design/lint/ : outillage vendoré du plugin `design` (run-gates, status,
+# migrate-contract). Maintenu en amont, recopié tel quel — le garder identique
+# octet pour octet est ce qui permet de diffuser une mise à jour du plugin et de
+# voir la dérive. Le reformater ici rendrait tout diff futur illisible.
+# Même posture que design/lint/lint-core.mjs, qu'aucun lint JS ne couvre.
+extend-exclude = ["*/migrations/*", "design/lint/*.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP", "B", "SIM"]

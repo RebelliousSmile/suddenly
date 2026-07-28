@@ -86,9 +86,9 @@
         {# Fiction order: closing link « Suite → » (self-guards) #}
         {% include "games/_fiction_next.html" %}
 
-        {# ── Engagement (like / recommend, #155) ─────────────────────────────
+        {% comment %} ── Engagement (like / recommend, #155) ─────────────────────────────
            Authenticated viewers only; a released (publicly engageable) scene.
-           `liked`/`recommended` annotated on the report (annotate_viewer_reactions). #}
+           `liked`/`recommended` annotated on the report (annotate_viewer_reactions). {% endcomment %}
         {% if request.user.is_authenticated and report.is_released %}
             <div class="flex items-center gap-2 text-semantic-muted mb-6">
                 {% include "feed/_like_button.html" with report=report liked=report.liked %}

@@ -1,0 +1,94 @@
+{
+  "$schema": "design/references/contract-schema#release",
+  "$format": "2.0",
+  "designSystem": {
+    "version": "1.6.0"
+  },
+  "artifacts": {
+    "tokens.json": {
+      "version": "1.6.0",
+      "sourceHash": "sha256:cec7679ff5bec26103fd4da0e9b7134fb4b228edf86f35c41bf20004229c9625"
+    },
+    "components.json": {
+      "version": "1.6.0",
+      "sourceHash": "sha256:8bab464524ef3d00afc71df946fb8a57d018b3a45bc00e0103ff887cb3783e11"
+    },
+    "policies.json": {
+      "version": "1.5.0",
+      "sourceHash": "sha256:c86c02babe1a3fa5707259d0037a9abcb6b98d1875a23421b5788f1b480bb279"
+    },
+    "deviations.json": {
+      "version": "1.0.0",
+      "sourceHash": "sha256:65e77582389e88e49290b04a104b6384c07c850038b341f31eae406e74f792ae"
+    }
+  },
+  "charter": {
+    "present": true,
+    "path": "design-system.md",
+    "version": "1.6.0"
+  },
+  "provenance": {
+    "producedBy": "adjust/02-freeze",
+    "producedAt": "2026-07-28T00:00:00+00:00",
+    "from": "re-freeze after 1.x migration — foregrounds/states declared, a11y checks run"
+  },
+  "checks": {
+    "contrast": { "ran": true, "allPass": false, "pairs": 228 },
+    "states": { "ran": true, "allPass": true }
+  },
+  "gaps": [
+    {
+      "class": "contrast",
+      "caps": "validated",
+      "detail": "color.semantic.muted echoue AA sur tous les fonds clairs (2.88 a 3.36) — 21 paires, 10 composants, theme default"
+    },
+    {
+      "class": "contrast",
+      "caps": "validated",
+      "detail": "color.brand.primary en texte echoue AA sur background/surface/card/card-sunken (3.73 a 4.39) — les deux themes"
+    },
+    {
+      "class": "contrast",
+      "caps": "validated",
+      "detail": "color.semantic.on-brand sur color.brand.primary a 4.36 — libelle du bouton primaire, juste sous 4.5, les deux themes"
+    },
+    {
+      "class": "contrast",
+      "caps": "validated",
+      "detail": "color.domain.pc echoue sur background/surface/card (3.83 a 4.49) — badge PJ et mention, les deux themes"
+    },
+    {
+      "class": "contrast",
+      "caps": "validated",
+      "detail": "color.domain.available-text echoue sur surface (3.56) et card (4.16) — theme default"
+    },
+    {
+      "class": "contrast",
+      "caps": "validated",
+      "detail": "color.domain.adopted et color.semantic.warning a 4.30 sur surface — theme default"
+    },
+    {
+      "class": "contrast",
+      "caps": "validated",
+      "detail": "color.domain.forked (3.09/3.36) et color.brand.accent (3.52) echouent en theme dark"
+    },
+    {
+      "class": "contrast",
+      "caps": "validated",
+      "detail": "9 paires btn issues du produit croise foregrounds x backgrounds sans existence au rendu (on-brand sur card/background/surface, ink-secondary sur primary/danger, primary sur primary/danger) — artefact du schema, pas un ecart mesure"
+    }
+  ],
+  "status": "validated",
+  "generated": {
+    "adapters/tokens.css": {
+      "sources": {
+        "tokens.json": "sha256:cec7679ff5bec26103fd4da0e9b7134fb4b228edf86f35c41bf20004229c9625"
+      }
+    },
+    "adapters/uno-tokens.mjs": {
+      "sources": {
+        "tokens.json": "sha256:cec7679ff5bec26103fd4da0e9b7134fb4b228edf86f35c41bf20004229c9625"
+      }
+    }
+  }
+}

@@ -87,8 +87,8 @@
                 {% include "components/form_image_upload.html" with field_id="avatar" field_name="avatar" field_label=label_avatar field_optional=True current_url="" %}
             </div>
 
-            {# Traits & actions are built per-row on the sheet, right after creation
-               (#148) — persisted and editable one at a time, no in-memory batch. #}
+            {% comment %} Traits & actions are built per-row on the sheet, right after creation
+               (#148) — persisted and editable one at a time, no in-memory batch. {% endcomment %}
             <div class="card card-body">
                 <h2 class="text-heading mb-2">{% trans "Traits & actions" %}</h2>
                 <p class="text-sm text-semantic-muted">

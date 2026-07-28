@@ -1,5 +1,68 @@
 {
-  "$schema": "design/references/contract-schema#components",
+  "$schema": "design/references/manifest-schema#",
+  "$version": "1.5.0",
+  "mode": "utility-first",
+  "usage": {
+    "rawHexForbidden": true,
+    "colorUtilityPrefixes": ["bg", "text", "border", "ring", "outline", "from", "to", "via", "fill", "stroke", "decoration", "accent"],
+    "rules": [
+      {
+        "id": "state-colour-icon",
+        "description": "Tout état narratif porté par un token color.domain.* doit l'être AUSSI par un libellé ou une icône — jamais par la couleur seule. Trois familles : (1) statut de personnage (pc, npc, available, remote, claimed, adopted, forked, gone) — l'anneau d'avatar ajoute une border.style distincte ; (2) kind de rapport (kind-description, kind-action, kind-discussion, kind-closure) — la couleur du kmark/liseré double toujours l'icône de nature et la forme typographique ; (3) état de scène (state-draft, state-closed, state-released) — la pastille d'état (statepill) porte toujours son libellé texte à côté de la couleur.",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "signal-never-text",
+        "description": "color.brand.signal (#00e676) ne porte jamais de glyphe : contraste 1,6:1 sur fond clair. Tout texte de disponibilité utilise color.domain.available-text. Le signal reste réservé aux pastilles, anneaux et fonds (seuil 3:1).",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "display-font-is-fiction",
+        "description": "font.family.display (Fraunces) est réservée au contenu de fiction (récit, titres narratifs, descriptions, dialogues). Le chrome applicatif utilise font.family.sans. L'italique Fraunces marque la description narrative — jamais une simple emphase.",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "focus-visible-required",
+        "description": "Tout élément focusable porte un focus visible dérivé du groupe focus.* (2px, offset 2px, color.semantic.focus). Jamais outline:none sans remplacement.",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "tap-target-min",
+        "description": "Tout contrôle interactif mesure au moins size.tap (44px) dans ses deux dimensions.",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "no-emoji-as-icon",
+        "description": "Aucun emoji comme icône UI, puce, pastille d'état ou glyphe de bouton. Les emoji sont du contenu utilisateur, pas le langage visuel du système.",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "icon-set-roles",
+        "description": "Trois jeux d'icônes, trois rôles disjoints, jamais interchangeables. (1) icon.sets.ui = lucide : TOUTES les icônes d'interface, sans exception — c'est le jeu unique de l'UI. (2) icon.sets.brand = simple-icons : uniquement les logos de plateformes et protocoles tiers (Mastodon, ActivityPub) ; un logo de marque ne se redessine pas en lucide. (3) icon.sets.illustration = game-icons : uniquement l'illustration décorative (états vides, évocation du registre JdR) ; jamais un contrôle, jamais un statut. Une icône brand ou illustration ne porte JAMAIS une action : pas de bouton, pas de lien, pas de badge d'état.",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "icon-accessible-name",
+        "description": "Une icône décorative porte aria-hidden=\"true\". Une icône signifiante (qui remplace un mot : logo de plateforme, statut, action) porte un nom accessible — aria-label ou texte adjacent. Un bouton icon-only est toujours labellisé.",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "container-not-viewport",
+        "description": "La responsivité passe par @container (app) aux seuils breakpoint.xs/sm/md, pas par @media. Les tailles fluides en cqi n'ont de sens que dans un contexte de conteneur nommé.",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "native-scales-not-overridden",
+        "description": "Les échelles spacing, fontSize, lineHeight, letterSpacing, borderRadius et maxWidth ne sont JAMAIS injectées dans le thème UnoCSS : leurs clés collisionnent avec l'échelle native pour des valeurs différentes (p-4 passerait de 16px à 4px, text-sm de 14px à 13px). Les valeurs du contrat se consomment par variable CSS. Équivalences natives : rounded-lg = 8px (radius.md), rounded-xl = 12px (radius.lg).",
+        "enforcement": "pivot-only"
+      },
+      {
+        "id": "wireframes-out-of-scope",
+        "description": "templates/wireframes/*.html sont des maquettes statiques, pas des templates applicatifs : elles emploient des couleurs Tailwind natives et sont exclues du glob de lint.",
+        "enforcement": "pivot-only"
+      }
+    ]
+  },
   "components": {
     "btn": {
       "base": "btn",
@@ -22,24 +85,11 @@
         "color.semantic.background",
         "color.semantic.surface",
         "color.semantic.card",
-        "color.brand.primary",
-        "color.semantic.danger"
-      ],
-      "foregrounds": [
-        "color.semantic.ink-secondary",
-        "color.brand.primary",
-        "color.semantic.on-brand"
+        "color.brand.primary"
       ],
       "a11y": {
         "role": "button",
-        "requires": [
-          "aria-busy"
-        ]
-      },
-      "states": {
-        "disabled": true,
-        "error": false,
-        "focus": true
+        "requires": ["aria-busy"]
       }
     },
     "card": {
@@ -60,20 +110,9 @@
         "color.semantic.card",
         "color.semantic.card-sunken"
       ],
-      "foregrounds": [
-        "color.semantic.ink",
-        "color.semantic.ink-secondary",
-        "color.semantic.muted",
-        "color.brand.primary"
-      ],
       "a11y": {
         "role": "article",
         "requires": []
-      },
-      "states": {
-        "disabled": false,
-        "error": false,
-        "focus": true
       }
     },
     "badge": {
@@ -96,23 +135,9 @@
         "color.semantic.card",
         "color.semantic.surface"
       ],
-      "foregrounds": [
-        "color.domain.available-text",
-        "color.domain.claimed",
-        "color.domain.adopted",
-        "color.domain.forked",
-        "color.domain.pc",
-        "color.semantic.info",
-        "color.semantic.warning",
-        "color.semantic.danger",
-        "color.semantic.muted",
-        "color.brand.primary"
-      ],
       "a11y": {
         "role": "status",
-        "requires": [
-          "aria-label"
-        ]
+        "requires": ["aria-label"]
       }
     },
     "avatar": {
@@ -136,14 +161,9 @@
         "color.semantic.surface",
         "color.semantic.card"
       ],
-      "foregrounds": [
-        "color.semantic.ink-secondary"
-      ],
       "a11y": {
         "role": "img",
-        "requires": [
-          "alt"
-        ]
+        "requires": ["alt"]
       }
     },
     "rap": {
@@ -168,11 +188,6 @@
         "color.semantic.card-sunken",
         "color.semantic.background"
       ],
-      "foregrounds": [
-        "color.semantic.ink",
-        "color.semantic.ink-secondary",
-        "color.semantic.muted"
-      ],
       "a11y": {
         "role": "article",
         "requires": []
@@ -191,10 +206,6 @@
       "backgrounds": [
         "color.semantic.background"
       ],
-      "foregrounds": [
-        "color.semantic.muted",
-        "color.brand.accent"
-      ],
       "a11y": {
         "role": "note",
         "requires": []
@@ -209,10 +220,6 @@
       "backgrounds": [
         "color.semantic.card",
         "color.semantic.background"
-      ],
-      "foregrounds": [
-        "color.domain.pc",
-        "color.domain.npc"
       ],
       "a11y": {
         "role": "link",
@@ -230,15 +237,9 @@
       "backgrounds": [
         "color.semantic.card"
       ],
-      "foregrounds": [
-        "color.semantic.ink",
-        "color.semantic.muted"
-      ],
       "a11y": {
         "role": "tooltip",
-        "requires": [
-          "aria-describedby"
-        ]
+        "requires": ["aria-describedby"]
       }
     },
     "quote-card": {
@@ -253,11 +254,6 @@
       "backgrounds": [
         "color.semantic.card",
         "color.semantic.card-sunken"
-      ],
-      "foregrounds": [
-        "color.semantic.ink",
-        "color.semantic.ink-secondary",
-        "color.semantic.muted"
       ],
       "a11y": {
         "role": "blockquote",
@@ -282,22 +278,9 @@
         "color.semantic.card",
         "color.semantic.surface"
       ],
-      "foregrounds": [
-        "color.semantic.ink",
-        "color.semantic.muted",
-        "color.semantic.danger"
-      ],
       "a11y": {
         "role": "textbox",
-        "requires": [
-          "aria-invalid",
-          "aria-describedby"
-        ]
-      },
-      "states": {
-        "disabled": true,
-        "error": true,
-        "focus": true
+        "requires": ["aria-invalid", "aria-describedby"]
       }
     },
     "form-field": {
@@ -317,22 +300,9 @@
         "color.semantic.surface",
         "color.semantic.card"
       ],
-      "foregrounds": [
-        "color.semantic.ink",
-        "color.semantic.ink-secondary",
-        "color.semantic.muted",
-        "color.semantic.danger"
-      ],
       "a11y": {
         "role": "group",
-        "requires": [
-          "aria-invalid"
-        ]
-      },
-      "states": {
-        "disabled": true,
-        "error": true,
-        "focus": true
+        "requires": ["aria-invalid"]
       }
     },
     "tabs": {
@@ -348,20 +318,9 @@
         "color.semantic.background",
         "color.semantic.surface"
       ],
-      "foregrounds": [
-        "color.semantic.ink-secondary",
-        "color.brand.primary"
-      ],
       "a11y": {
         "role": "tablist",
-        "requires": [
-          "aria-selected"
-        ]
-      },
-      "states": {
-        "disabled": false,
-        "error": false,
-        "focus": true
+        "requires": ["aria-selected"]
       }
     },
     "dropdown": {
@@ -373,23 +332,11 @@
       },
       "modifiers": {},
       "backgrounds": [
-        "color.semantic.surface"
-      ],
-      "foregrounds": [
-        "color.semantic.ink",
-        "color.semantic.ink-secondary",
-        "color.semantic.danger"
+        "color.semantic.card"
       ],
       "a11y": {
         "role": "menu",
-        "requires": [
-          "aria-expanded"
-        ]
-      },
-      "states": {
-        "disabled": false,
-        "error": false,
-        "focus": true
+        "requires": ["aria-expanded"]
       }
     },
     "app-header": {
@@ -400,23 +347,17 @@
         "navlink": "app-header__navlink",
         "controls": "app-header__controls"
       },
-      "modifiers": {},
+      "modifiers": {
+        "chrome": "app-header--chrome"
+      },
       "backgrounds": [
-        "color.semantic.surface"
-      ],
-      "foregrounds": [
-        "color.semantic.ink",
-        "color.semantic.ink-secondary",
-        "color.brand.primary"
+        "color.semantic.background",
+        "color.semantic.surface",
+        "color.semantic.chrome"
       ],
       "a11y": {
         "role": "banner",
         "requires": []
-      },
-      "states": {
-        "disabled": false,
-        "error": false,
-        "focus": true
       }
     },
     "nav-drawer": {
@@ -432,21 +373,9 @@
       "backgrounds": [
         "color.semantic.card"
       ],
-      "foregrounds": [
-        "color.semantic.ink",
-        "color.semantic.ink-secondary"
-      ],
       "a11y": {
         "role": "dialog",
-        "requires": [
-          "aria-modal",
-          "aria-label"
-        ]
-      },
-      "states": {
-        "disabled": false,
-        "error": false,
-        "focus": true
+        "requires": ["aria-modal", "aria-label"]
       }
     },
     "actionbar": {
@@ -456,23 +385,11 @@
       },
       "modifiers": {},
       "backgrounds": [
-        "color.semantic.surface",
         "color.semantic.card"
-      ],
-      "foregrounds": [
-        "color.semantic.ink-secondary",
-        "color.brand.primary"
       ],
       "a11y": {
         "role": "toolbar",
-        "requires": [
-          "aria-label"
-        ]
-      },
-      "states": {
-        "disabled": true,
-        "error": false,
-        "focus": true
+        "requires": ["aria-label"]
       }
     },
     "stat-card": {
@@ -485,10 +402,6 @@
       "backgrounds": [
         "color.semantic.card",
         "color.semantic.card-sunken"
-      ],
-      "foregrounds": [
-        "color.semantic.ink",
-        "color.semantic.muted"
       ],
       "a11y": {
         "role": "group",
@@ -506,21 +419,9 @@
         "color.semantic.surface",
         "color.semantic.card"
       ],
-      "foregrounds": [
-        "color.semantic.ink-secondary",
-        "color.semantic.muted",
-        "color.brand.primary"
-      ],
       "a11y": {
         "role": "button",
-        "requires": [
-          "aria-label"
-        ]
-      },
-      "states": {
-        "disabled": true,
-        "error": false,
-        "focus": true
+        "requires": ["aria-label"]
       }
     },
     "pick-sheet": {
@@ -537,22 +438,9 @@
       "backgrounds": [
         "color.semantic.card"
       ],
-      "foregrounds": [
-        "color.semantic.ink",
-        "color.semantic.ink-secondary",
-        "color.semantic.muted"
-      ],
       "a11y": {
         "role": "dialog",
-        "requires": [
-          "aria-modal",
-          "aria-label"
-        ]
-      },
-      "states": {
-        "disabled": false,
-        "error": false,
-        "focus": true
+        "requires": ["aria-modal", "aria-label"]
       }
     }
   }

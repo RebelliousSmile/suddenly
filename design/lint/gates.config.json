@@ -1,0 +1,29 @@
+{
+  "$schema": "design/references/gate-config-schema",
+  "contract": "..",
+  "linter": "lint-core.mjs",
+  "targets": [
+    "../../templates/400.html",
+    "../../templates/403.html",
+    "../../templates/404.html",
+    "../../templates/base.html",
+    "../../templates/account/**/*.html",
+    "../../templates/admin_panel/**/*.html",
+    "../../templates/characters/**/*.html",
+    "../../templates/components/**/*.html",
+    "../../templates/core/**/*.html",
+    "../../templates/docs/**/*.html",
+    "../../templates/explore/**/*.html",
+    "../../templates/federation/**/*.html",
+    "../../templates/fediverse_auth/**/*.html",
+    "../../templates/feed/**/*.html",
+    "../../templates/games/**/*.html",
+    "../../templates/gmh/**/*.html",
+    "../../templates/messaging/**/*.html",
+    "../../templates/notifications/**/*.html",
+    "../../templates/offers/**/*.html",
+    "../../templates/onboarding/**/*.html",
+    "../../templates/stories/**/*.html",
+    "../../templates/users/**/*.html"
+  ]
+}

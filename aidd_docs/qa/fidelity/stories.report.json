@@ -1,0 +1,3204 @@
+{
+  "mode": "B",
+  "mockup_page": "stories",
+  "breakpoints": {
+    "mobile": [
+      {
+        "element": "container",
+        "prop": "fontSize",
+        "mockup": "16px",
+        "implementation": "16px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "lineHeight",
+        "mockup": "24.8px",
+        "implementation": "24.8px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "color",
+        "mockup": "rgb(26, 26, 46)",
+        "implementation": "rgb(26, 26, 46)",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "paddingLeft",
+        "mockup": "16px",
+        "implementation": "16px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "paddingRight",
+        "mockup": "16px",
+        "implementation": "16px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "maxWidth",
+        "mockup": "1024px",
+        "implementation": "1024px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "fontSize",
+        "mockup": "30px",
+        "implementation": "30px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "fontWeight",
+        "mockup": "600",
+        "implementation": "600",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "lineHeight",
+        "mockup": "34.5px",
+        "implementation": "34.5px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "fontFamily",
+        "mockup": "Fraunces, Georgia, serif",
+        "implementation": "Fraunces, Georgia, serif",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "color",
+        "mockup": "rgb(26, 26, 46)",
+        "implementation": "rgb(26, 26, 46)",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "fontSize",
+        "mockup": "18px",
+        "implementation": "18px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "lineHeight",
+        "mockup": "27.9px",
+        "implementation": "27.9px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "color",
+        "mockup": "rgb(85, 85, 85)",
+        "implementation": "rgb(85, 85, 85)",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "maxWidth",
+        "mockup": "672px",
+        "implementation": "672px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "fontSize",
+        "mockup": "16px",
+        "implementation": "16px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "lineHeight",
+        "mockup": "24.8px",
+        "implementation": "24.8px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "color",
+        "mockup": "rgb(26, 26, 46)",
+        "implementation": "rgb(26, 26, 46)",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "backgroundColor",
+        "mockup": "rgb(255, 255, 255)",
+        "implementation": "rgb(255, 255, 255)",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "borderRadius",
+        "mockup": "12px",
+        "implementation": "12px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "boxShadow",
+        "mockup": "rgba(0, 0, 0, 0.07) 0px 2px 16px 0px",
+        "implementation": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.07) 0px 2px 16px 0px",
+        "match": false,
+        "ledgered": true,
+        "why": "Composition d'utilitaire UnoCSS : deux couches transparentes prefixent l'ombre reelle, identique a la maquette. Voir design/deviations.json.",
+        "ledger_id": "DEV-001"
+      },
+      {
+        "element": "story card",
+        "prop": "borderWidth",
+        "mockup": "1px",
+        "implementation": "1px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "fontSize",
+        "mockup": "16px",
+        "implementation": "16px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "lineHeight",
+        "mockup": "24.8px",
+        "implementation": "24.8px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "color",
+        "mockup": "rgb(26, 26, 46)",
+        "implementation": "rgb(26, 26, 46)",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "paddingTop",
+        "mockup": "20px",
+        "implementation": "20px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "paddingBottom",
+        "mockup": "20px",
+        "implementation": "20px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "paddingLeft",
+        "mockup": "20px",
+        "implementation": "20px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "paddingRight",
+        "mockup": "20px",
+        "implementation": "20px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "fontSize",
+        "mockup": "19px",
+        "implementation": "19px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "fontWeight",
+        "mockup": "600",
+        "implementation": "600",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "lineHeight",
+        "mockup": "29.45px",
+        "implementation": "29.45px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "fontFamily",
+        "mockup": "Fraunces, Georgia, serif",
+        "implementation": "Fraunces, Georgia, serif",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "color",
+        "mockup": "rgb(26, 26, 46)",
+        "implementation": "rgb(26, 26, 46)",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "fontSize",
+        "mockup": "12px",
+        "implementation": "12px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "lineHeight",
+        "mockup": "18.6px",
+        "implementation": "18.6px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "color",
+        "mockup": "rgb(140, 140, 140)",
+        "implementation": "rgb(140, 140, 140)",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "fontSize",
+        "mockup": "14px",
+        "implementation": "14px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "lineHeight",
+        "mockup": "21.7px",
+        "implementation": "21.7px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "color",
+        "mockup": "rgb(85, 85, 85)",
+        "implementation": "rgb(85, 85, 85)",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "fontSize",
+        "mockup": "12px",
+        "implementation": "12px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "fontWeight",
+        "mockup": "500",
+        "implementation": "500",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "lineHeight",
+        "mockup": "18.6px",
+        "implementation": "18.6px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "color",
+        "mockup": "rgb(3, 105, 161)",
+        "implementation": "rgb(3, 105, 161)",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "backgroundColor",
+        "mockup": "rgba(3, 105, 161, 0.1)",
+        "implementation": "rgba(3, 105, 161, 0.1)",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "paddingTop",
+        "mockup": "3px",
+        "implementation": "3px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "paddingBottom",
+        "mockup": "3px",
+        "implementation": "3px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "paddingLeft",
+        "mockup": "10px",
+        "implementation": "10px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "paddingRight",
+        "mockup": "10px",
+        "implementation": "10px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "gap",
+        "mockup": "4px",
+        "implementation": "4px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "borderRadius",
+        "mockup": "999px",
+        "implementation": "999px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "borderWidth",
+        "mockup": "1px",
+        "implementation": "1px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "fontSize",
+        "mockup": "14px",
+        "implementation": "14px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "fontWeight",
+        "mockup": "600",
+        "implementation": "600",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "lineHeight",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "color",
+        "mockup": "rgb(255, 255, 255)",
+        "implementation": "rgb(255, 255, 255)",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "backgroundColor",
+        "mockup": "rgb(224, 53, 88)",
+        "implementation": "rgb(224, 53, 88)",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "paddingLeft",
+        "mockup": "14px",
+        "implementation": "14px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "paddingRight",
+        "mockup": "14px",
+        "implementation": "14px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "gap",
+        "mockup": "8px",
+        "implementation": "8px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "borderRadius",
+        "mockup": "8px",
+        "implementation": "8px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      }
+    ],
+    "tablet": [
+      {
+        "element": "container",
+        "prop": "fontSize",
+        "mockup": "16px",
+        "implementation": "16px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "lineHeight",
+        "mockup": "24.8px",
+        "implementation": "24.8px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "color",
+        "mockup": "rgb(26, 26, 46)",
+        "implementation": "rgb(26, 26, 46)",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "paddingLeft",
+        "mockup": "24px",
+        "implementation": "24px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "paddingRight",
+        "mockup": "24px",
+        "implementation": "24px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "maxWidth",
+        "mockup": "1024px",
+        "implementation": "1024px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "fontSize",
+        "mockup": "30px",
+        "implementation": "30px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "fontWeight",
+        "mockup": "600",
+        "implementation": "600",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "lineHeight",
+        "mockup": "34.5px",
+        "implementation": "34.5px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "fontFamily",
+        "mockup": "Fraunces, Georgia, serif",
+        "implementation": "Fraunces, Georgia, serif",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "color",
+        "mockup": "rgb(26, 26, 46)",
+        "implementation": "rgb(26, 26, 46)",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "fontSize",
+        "mockup": "18px",
+        "implementation": "18px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "lineHeight",
+        "mockup": "27.9px",
+        "implementation": "27.9px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "color",
+        "mockup": "rgb(85, 85, 85)",
+        "implementation": "rgb(85, 85, 85)",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "maxWidth",
+        "mockup": "672px",
+        "implementation": "672px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "fontSize",
+        "mockup": "16px",
+        "implementation": "16px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "lineHeight",
+        "mockup": "24.8px",
+        "implementation": "24.8px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "color",
+        "mockup": "rgb(26, 26, 46)",
+        "implementation": "rgb(26, 26, 46)",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "backgroundColor",
+        "mockup": "rgb(255, 255, 255)",
+        "implementation": "rgb(255, 255, 255)",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "borderRadius",
+        "mockup": "12px",
+        "implementation": "12px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "boxShadow",
+        "mockup": "rgba(0, 0, 0, 0.07) 0px 2px 16px 0px",
+        "implementation": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.07) 0px 2px 16px 0px",
+        "match": false,
+        "ledgered": true,
+        "why": "Composition d'utilitaire UnoCSS : deux couches transparentes prefixent l'ombre reelle, identique a la maquette. Voir design/deviations.json.",
+        "ledger_id": "DEV-001"
+      },
+      {
+        "element": "story card",
+        "prop": "borderWidth",
+        "mockup": "1px",
+        "implementation": "1px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "fontSize",
+        "mockup": "16px",
+        "implementation": "16px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "lineHeight",
+        "mockup": "24.8px",
+        "implementation": "24.8px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "color",
+        "mockup": "rgb(26, 26, 46)",
+        "implementation": "rgb(26, 26, 46)",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "paddingTop",
+        "mockup": "20px",
+        "implementation": "20px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "paddingBottom",
+        "mockup": "20px",
+        "implementation": "20px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "paddingLeft",
+        "mockup": "20px",
+        "implementation": "20px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "paddingRight",
+        "mockup": "20px",
+        "implementation": "20px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "fontSize",
+        "mockup": "19px",
+        "implementation": "19px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "fontWeight",
+        "mockup": "600",
+        "implementation": "600",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "lineHeight",
+        "mockup": "29.45px",
+        "implementation": "29.45px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "fontFamily",
+        "mockup": "Fraunces, Georgia, serif",
+        "implementation": "Fraunces, Georgia, serif",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "color",
+        "mockup": "rgb(26, 26, 46)",
+        "implementation": "rgb(26, 26, 46)",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "fontSize",
+        "mockup": "12px",
+        "implementation": "12px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "lineHeight",
+        "mockup": "18.6px",
+        "implementation": "18.6px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "color",
+        "mockup": "rgb(140, 140, 140)",
+        "implementation": "rgb(140, 140, 140)",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "fontSize",
+        "mockup": "14px",
+        "implementation": "14px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "lineHeight",
+        "mockup": "21.7px",
+        "implementation": "21.7px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "color",
+        "mockup": "rgb(85, 85, 85)",
+        "implementation": "rgb(85, 85, 85)",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "fontSize",
+        "mockup": "12px",
+        "implementation": "12px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "fontWeight",
+        "mockup": "500",
+        "implementation": "500",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "lineHeight",
+        "mockup": "18.6px",
+        "implementation": "18.6px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "color",
+        "mockup": "rgb(3, 105, 161)",
+        "implementation": "rgb(3, 105, 161)",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "backgroundColor",
+        "mockup": "rgba(3, 105, 161, 0.1)",
+        "implementation": "rgba(3, 105, 161, 0.1)",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "paddingTop",
+        "mockup": "3px",
+        "implementation": "3px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "paddingBottom",
+        "mockup": "3px",
+        "implementation": "3px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "paddingLeft",
+        "mockup": "10px",
+        "implementation": "10px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "paddingRight",
+        "mockup": "10px",
+        "implementation": "10px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "gap",
+        "mockup": "4px",
+        "implementation": "4px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "borderRadius",
+        "mockup": "999px",
+        "implementation": "999px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "borderWidth",
+        "mockup": "1px",
+        "implementation": "1px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "fontSize",
+        "mockup": "14px",
+        "implementation": "14px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "fontWeight",
+        "mockup": "600",
+        "implementation": "600",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "lineHeight",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "color",
+        "mockup": "rgb(255, 255, 255)",
+        "implementation": "rgb(255, 255, 255)",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "backgroundColor",
+        "mockup": "rgb(224, 53, 88)",
+        "implementation": "rgb(224, 53, 88)",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "paddingLeft",
+        "mockup": "14px",
+        "implementation": "14px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "paddingRight",
+        "mockup": "14px",
+        "implementation": "14px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "gap",
+        "mockup": "8px",
+        "implementation": "8px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "borderRadius",
+        "mockup": "8px",
+        "implementation": "8px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      }
+    ],
+    "desktop": [
+      {
+        "element": "container",
+        "prop": "fontSize",
+        "mockup": "16px",
+        "implementation": "16px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "lineHeight",
+        "mockup": "24.8px",
+        "implementation": "24.8px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "color",
+        "mockup": "rgb(26, 26, 46)",
+        "implementation": "rgb(26, 26, 46)",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "paddingLeft",
+        "mockup": "24px",
+        "implementation": "24px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "paddingRight",
+        "mockup": "24px",
+        "implementation": "24px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "container",
+        "prop": "maxWidth",
+        "mockup": "1024px",
+        "implementation": "1024px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "fontSize",
+        "mockup": "30px",
+        "implementation": "30px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "fontWeight",
+        "mockup": "600",
+        "implementation": "600",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "lineHeight",
+        "mockup": "34.5px",
+        "implementation": "34.5px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "fontFamily",
+        "mockup": "Fraunces, Georgia, serif",
+        "implementation": "Fraunces, Georgia, serif",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "color",
+        "mockup": "rgb(26, 26, 46)",
+        "implementation": "rgb(26, 26, 46)",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page title",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "fontSize",
+        "mockup": "18px",
+        "implementation": "18px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "lineHeight",
+        "mockup": "27.9px",
+        "implementation": "27.9px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "color",
+        "mockup": "rgb(85, 85, 85)",
+        "implementation": "rgb(85, 85, 85)",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "page lede",
+        "prop": "maxWidth",
+        "mockup": "672px",
+        "implementation": "672px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "fontSize",
+        "mockup": "16px",
+        "implementation": "16px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "lineHeight",
+        "mockup": "24.8px",
+        "implementation": "24.8px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "color",
+        "mockup": "rgb(26, 26, 46)",
+        "implementation": "rgb(26, 26, 46)",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "backgroundColor",
+        "mockup": "rgb(255, 255, 255)",
+        "implementation": "rgb(255, 255, 255)",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "borderRadius",
+        "mockup": "12px",
+        "implementation": "12px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "boxShadow",
+        "mockup": "rgba(0, 0, 0, 0.07) 0px 2px 16px 0px",
+        "implementation": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.07) 0px 2px 16px 0px",
+        "match": false,
+        "ledgered": true,
+        "why": "Composition d'utilitaire UnoCSS : deux couches transparentes prefixent l'ombre reelle, identique a la maquette. Voir design/deviations.json.",
+        "ledger_id": "DEV-001"
+      },
+      {
+        "element": "story card",
+        "prop": "borderWidth",
+        "mockup": "1px",
+        "implementation": "1px",
+        "match": true
+      },
+      {
+        "element": "story card",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "fontSize",
+        "mockup": "16px",
+        "implementation": "16px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "lineHeight",
+        "mockup": "24.8px",
+        "implementation": "24.8px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "color",
+        "mockup": "rgb(26, 26, 46)",
+        "implementation": "rgb(26, 26, 46)",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "paddingTop",
+        "mockup": "20px",
+        "implementation": "20px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "paddingBottom",
+        "mockup": "20px",
+        "implementation": "20px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "paddingLeft",
+        "mockup": "20px",
+        "implementation": "20px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "paddingRight",
+        "mockup": "20px",
+        "implementation": "20px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card body",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "fontSize",
+        "mockup": "19px",
+        "implementation": "19px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "fontWeight",
+        "mockup": "600",
+        "implementation": "600",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "lineHeight",
+        "mockup": "29.45px",
+        "implementation": "29.45px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "fontFamily",
+        "mockup": "Fraunces, Georgia, serif",
+        "implementation": "Fraunces, Georgia, serif",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "color",
+        "mockup": "rgb(26, 26, 46)",
+        "implementation": "rgb(26, 26, 46)",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card title",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "fontSize",
+        "mockup": "12px",
+        "implementation": "12px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "lineHeight",
+        "mockup": "18.6px",
+        "implementation": "18.6px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "color",
+        "mockup": "rgb(140, 140, 140)",
+        "implementation": "rgb(140, 140, 140)",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card meta",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "fontSize",
+        "mockup": "14px",
+        "implementation": "14px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "fontWeight",
+        "mockup": "400",
+        "implementation": "400",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "lineHeight",
+        "mockup": "21.7px",
+        "implementation": "21.7px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "color",
+        "mockup": "rgb(85, 85, 85)",
+        "implementation": "rgb(85, 85, 85)",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "backgroundColor",
+        "mockup": "rgba(0, 0, 0, 0)",
+        "implementation": "rgba(0, 0, 0, 0)",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "paddingLeft",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "paddingRight",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "gap",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "borderRadius",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card description",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "fontSize",
+        "mockup": "12px",
+        "implementation": "12px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "fontWeight",
+        "mockup": "500",
+        "implementation": "500",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "lineHeight",
+        "mockup": "18.6px",
+        "implementation": "18.6px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "color",
+        "mockup": "rgb(3, 105, 161)",
+        "implementation": "rgb(3, 105, 161)",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "backgroundColor",
+        "mockup": "rgba(3, 105, 161, 0.1)",
+        "implementation": "rgba(3, 105, 161, 0.1)",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "paddingTop",
+        "mockup": "3px",
+        "implementation": "3px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "paddingBottom",
+        "mockup": "3px",
+        "implementation": "3px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "paddingLeft",
+        "mockup": "10px",
+        "implementation": "10px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "paddingRight",
+        "mockup": "10px",
+        "implementation": "10px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "gap",
+        "mockup": "4px",
+        "implementation": "4px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "borderRadius",
+        "mockup": "999px",
+        "implementation": "999px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "borderWidth",
+        "mockup": "1px",
+        "implementation": "1px",
+        "match": true
+      },
+      {
+        "element": "story card badge",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "fontSize",
+        "mockup": "14px",
+        "implementation": "14px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "fontWeight",
+        "mockup": "600",
+        "implementation": "600",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "lineHeight",
+        "mockup": "normal",
+        "implementation": "normal",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "fontFamily",
+        "mockup": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "implementation": "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "color",
+        "mockup": "rgb(255, 255, 255)",
+        "implementation": "rgb(255, 255, 255)",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "backgroundColor",
+        "mockup": "rgb(224, 53, 88)",
+        "implementation": "rgb(224, 53, 88)",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "paddingTop",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "paddingBottom",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "paddingLeft",
+        "mockup": "14px",
+        "implementation": "14px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "paddingRight",
+        "mockup": "14px",
+        "implementation": "14px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "gap",
+        "mockup": "8px",
+        "implementation": "8px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "borderRadius",
+        "mockup": "8px",
+        "implementation": "8px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "boxShadow",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "borderWidth",
+        "mockup": "0px",
+        "implementation": "0px",
+        "match": true
+      },
+      {
+        "element": "story card cta",
+        "prop": "maxWidth",
+        "mockup": "none",
+        "implementation": "none",
+        "match": true
+      }
+    ]
+  },
+  "ledger_ids": [
+    "DEV-001"
+  ],
+  "ledger_unused": [],
+  "completeness": {
+    "mockup_headings": [
+      "Stories"
+    ],
+    "implementation_headings": [
+      "Stories"
+    ],
+    "missing_in_implementation": [],
+    "extra_in_implementation": []
+  },
+  "coverage": {
+    "implementation_headings": 1,
+    "measured_targets": 10,
+    "ok": true
+  },
+  "summary": {
+    "verdict": "CLOSED",
+    "closed": true,
+    "reasons": [],
+    "total_diff": 0,
+    "ledgered_diff": 3,
+    "total_missing": 0,
+    "missing_sections": 0,
+    "collection_failures": 0,
+    "ledger_ids": [
+      "DEV-001"
+    ],
+    "ledger_unused_count": 0
+  }
+}

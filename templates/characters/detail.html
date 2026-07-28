@@ -89,7 +89,7 @@
         {% if character.tags.all %}
             <div class="flex flex-wrap gap-1.5 mb-6">
                 {% for tag in character.tags.all %}
-                    <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-btn bg-semantic-card-sunken text-semantic-ink-secondary border border-semantic-border">
+                    <span class="tag-chip">
                         <span class="i-lucide-tag text-[10px]" aria-hidden="true"></span>{{ tag.name }}
                     </span>
                 {% endfor %}

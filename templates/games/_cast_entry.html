@@ -8,7 +8,7 @@
             hx-post="{% url 'games:cast_remove' game_pk=game.pk pk=report.pk cast_pk=entry.pk %}"
             hx-target="#cast-entry-{{ entry.pk }}"
             hx-swap="delete"
-            class="btn-ghost btn-sm text-xs">
+            class="btn-ghost btn-xs">
         {% trans "Remove" %}
     </button>
 </div>

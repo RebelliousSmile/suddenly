@@ -1,11 +1,19 @@
-{# Partial: like button state (swapped by HTMX). #138 #}
 {% load i18n %}
+{% comment %}
+   Partial: like button state (swapped by HTMX). #138
+
+   Pas de `btn-sm` ici : ce cran pose `!min-h-[38px]`, sous le plancher tactile
+   de 44px (`size.tap`), et son `!` bat le `min-h-11` de `tap-target` — la cible
+   tombait à 44×38. Demander « petit » et « ≥ 44px » à la fois est contradictoire ;
+   sur un contrôle tactile la contrainte a11y gagne. `tap-target` porte déjà
+   la géométrie et le centrage, l'icône porte déjà sa taille.
+{% endcomment %}
 {% if liked %}
     <button hx-post="{% url 'feed:like' %}"
             hx-vals='{"report_id": "{{ report.pk }}"}'
             hx-target="this"
             hx-swap="outerHTML"
-            class="btn-ghost btn-sm tap-target text-brand-primary"
+            class="btn-ghost tap-target text-brand-primary"
             aria-pressed="true"
             aria-label="{% trans 'Remove like from this scene' %}">
         <span class="i-lucide-heart text-sm" aria-hidden="true"></span>
@@ -15,7 +23,7 @@
             hx-vals='{"report_id": "{{ report.pk }}"}'
             hx-target="this"
             hx-swap="outerHTML"
-            class="btn-ghost btn-sm tap-target"
+            class="btn-ghost tap-target"
             aria-pressed="false"
             aria-label="{% trans 'Like this scene' %}">
         <span class="i-lucide-heart text-sm" aria-hidden="true"></span>

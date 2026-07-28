@@ -1,28 +1,57 @@
-{# Partial: released-stories grid (SUD-V3). #}
 {% load i18n %}
+{% comment %}
+   Partial: released-stories list (SUD-V3).
+
+   Aligné sur `pageStories()` de templates/wireframes/maquette-v3.html, mesuré par
+   le gate de fidélité (aidd_docs/qa/fidelity/stories.config.json) : colonne unique
+   et non grille, titre en font display, badge de système, CTA explicite.
+   `!p-0` neutralise le `p-6` du shortcut `card` — sans lui, `card` + `card-body`
+   empilent deux paddings et le texte se retrouve à 48px du bord.
+{% endcomment %}
 
 {% if games %}
-    <div class="grid grid-cols-1 @md:grid-cols-2 @lg:grid-cols-3 gap-4">
+    <div class="flex flex-col gap-5">
         {% for game in games %}
-            <a href="{% url 'games:story_detail' pk=game.pk %}"
-               class="card card-hover block overflow-hidden">
+            <article class="card card-hover !p-0 overflow-hidden">
                 {% if game.cover %}
                     <img src="{{ game.cover.url }}" alt="{{ game.title }}"
                          class="w-full h-32 object-cover">
                 {% endif %}
                 <div class="card-body">
-                    <h2 class="font-semibold text-semantic-ink mb-1">{{ game.title }}</h2>
-                    <p class="text-xs text-semantic-muted mb-2">
-                        {% blocktrans with username=game.owner.username %}by @{{ username }}{% endblocktrans %}
+                    {% comment %}
+                       `h-sec` porte la famille et le poids ; la maquette fige la
+                       taille du titre de carte à 19px plutôt que de la laisser
+                       fluide comme un titre de section.
+                    {% endcomment %}
+                    <h2 class="h-sec !text-[19px] mb-2">
+                        {{ game.title }}
+                    </h2>
+
+                    <div class="flex flex-wrap items-center gap-2 mb-2.5">
                         {% if game.game_system %}
-                            · {{ game.game_system }}
+                            <span class="badge badge-info">{{ game.game_system }}</span>
                         {% endif %}
-                    </p>
+                        {% comment %}
+                           `leading-[1.55]` : la maquette hérite l'interlignage du
+                           corps de page, `text-xs`/`text-sm` embarquent le leur
+                           (16px / 20px) et resserrent les lignes. Le contrat
+                           interdit de remapper l'échelle native dans le thème
+                           (`native-scales-not-overridden`) — donc explicitement, ici.
+                        {% endcomment %}
+                        <span class="text-xs text-semantic-muted leading-[1.55]">
+                            {% blocktrans with username=game.owner.username %}by @{{ username }}{% endblocktrans %}
+                        </span>
+                    </div>
+
                     {% if game.description %}
-                        <p class="text-sm text-semantic-ink-secondary line-clamp-2">{{ game.description }}</p>
+                        <p class="text-sm text-semantic-ink-secondary line-clamp-2 leading-[1.55] mb-3">{{ game.description }}</p>
                     {% endif %}
+
+                    <a href="{% url 'games:story_detail' pk=game.pk %}" class="btn-primary btn-sm">
+                        {% trans "Read the story" %} →
+                    </a>
                 </div>
-            </a>
+            </article>
         {% endfor %}
     </div>
 {% else %}

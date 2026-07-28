@@ -63,7 +63,7 @@
                         {% if request.user == rapport.report.author %}
                             <div class="mt-2 flex items-center gap-2">
                                 <button type="button" @click="mediaForm = !mediaForm"
-                                        class="btn-ghost btn-sm text-semantic-muted text-xs">
+                                        class="btn-ghost btn-xs text-semantic-muted">
                                     <span class="i-lucide-image text-xs"></span>
                                     {% if media %}{% trans "Remplacer l'image" %}{% else %}{% trans "Ajouter une image" %}{% endif %}
                                 </button>
@@ -73,7 +73,7 @@
                                             hx-target="#rapport-{{ rapport.pk }}"
                                             hx-swap="outerHTML"
                                             hx-confirm="{% trans "Retirer l'image ?" %}"
-                                            class="btn-ghost btn-sm text-semantic-danger text-xs">
+                                            class="btn-ghost btn-xs text-semantic-danger">
                                         <span class="i-lucide-trash-2 text-xs"></span>
                                         {% trans "Retirer" %}
                                     </button>
@@ -147,7 +147,7 @@
         <div x-data="{ showRemoteForm: false }" class="mt-2">
             <button type="button"
                     @click="showRemoteForm = !showRemoteForm"
-                    class="btn-ghost btn-sm text-semantic-muted text-xs">
+                    class="btn-ghost btn-xs text-semantic-muted">
                 <span class="i-lucide-link text-xs"></span>
                 {% trans "+ Remote parent" %}
             </button>
@@ -174,10 +174,10 @@
         </div>
     {% endif %}
 
-    {# Marqueurs de scène — entrée/sortie de personnages existants. Posé par
+    {% comment %} Marqueurs de scène — entrée/sortie de personnages existants. Posé par
        l'auteur tant que la scène n'est pas libérée ; les badges restent
        visibles en lecture. Le POST du formulaire (marker_form.html) rerend
-       cette carte via #rapport-<pk>, badge inclus. #}
+       cette carte via #rapport-<pk>, badge inclus. {% endcomment %}
     {% with scene_markers=rapport.markers.all %}
         {% if scene_markers or request.user == rapport.report.author %}
             <div x-data="{ markerForm: false }" class="mt-2 flex flex-wrap items-center gap-1.5">
@@ -185,14 +185,14 @@
                     {% include "games/partials/marker_badge.html" %}
                 {% endfor %}
                 {% if request.user == rapport.report.author and not rapport.report.is_released %}
-                    {# hx-get charge marker_form.html rendu par la vue (qui fournit `form`) ;
-                       Alpine ouvre le conteneur. Le formulaire poste vers #rapport-<pk>. #}
+                    {% comment %} hx-get charge marker_form.html rendu par la vue (qui fournit `form`) ;
+                       Alpine ouvre le conteneur. Le formulaire poste vers #rapport-<pk>. {% endcomment %}
                     <button type="button"
                             @click="markerForm = true"
                             hx-get="{% url 'games:marker_create' rapport.report.game.pk rapport.report.pk rapport.pk %}"
                             hx-target="#marker-form-{{ rapport.pk }}"
                             hx-swap="innerHTML"
-                            class="btn-ghost btn-sm text-semantic-muted text-xs">
+                            class="btn-ghost btn-xs text-semantic-muted">
                         <span class="i-lucide-flag text-xs" aria-hidden="true"></span>
                         {% trans "+ Marqueur" %}
                     </button>

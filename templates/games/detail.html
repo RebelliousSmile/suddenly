@@ -25,12 +25,12 @@
                 <p class="text-sm text-semantic-muted">{% trans "Depuis le" %} {{ game.started_at|date:"d/m/Y" }}</p>
             {% endif %}
 
-            {# Tags — chips linking to the tag-filtered game list. #}
+            {# Tags — `tag-chip-link`, jamais `btn-*` : une étiquette n'est pas une action. #}
             {% if game.tags.all %}
-                <div class="flex flex-wrap gap-2 mt-3">
+                <div class="flex flex-wrap gap-1.5 mt-3">
                     {% for tag in game.tags.all %}
-                        <a href="{% url 'games:list' %}?tag={{ tag.name|urlencode }}" class="btn-secondary btn-sm">
-                            <span class="i-lucide-tag"></span>{{ tag.name }}
+                        <a href="{% url 'games:list' %}?tag={{ tag.name|urlencode }}" class="tag-chip-link">
+                            <span class="i-lucide-tag text-[10px]" aria-hidden="true"></span>{{ tag.name }}
                         </a>
                     {% endfor %}
                 </div>
@@ -80,34 +80,52 @@
                 {% endif %}
             </div>
 
+            {# Table des matières : ol pour l'ordre, compteur CSS pour le numéro d'acte. #}
             {% if reports %}
-                <div class="space-y-3">
+                <ol class="scene-index list-none border-t border-semantic-border">
                     {% for report in reports %}
-                        <div class="card card-body">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h3 class="font-semibold text-semantic-ink">
+                        <li class="border-b border-semantic-border">
+                            <a href="{% url 'games:report_detail' game_pk=game.pk pk=report.pk %}"
+                               class="group flex items-baseline gap-3 py-3.5 px-2 -mx-2 rounded-lg hover:bg-semantic-card-sunken transition-colors focus-ring">
+                                <span class="scene-index-num shrink-0 w-8 font-display text-sm text-semantic-muted group-hover:text-brand-primary transition-colors"
+                                      aria-hidden="true"></span>
+                                <span class="min-w-0">
+                                    <span class="block font-display text-base text-semantic-ink group-hover:text-brand-primary transition-colors">
                                         {{ report.title|default:_("Untitled") }}
-                                    </h3>
-                                    <p class="text-xs text-semantic-muted">
-                                        {% blocktrans with username=report.author.username %}by @{{ username }}{% endblocktrans %}
-                                        {% if report.session_date %}
-                                            · <span class="text-sm text-semantic-muted">{% trans "Session du" %} {{ report.session_date|date:"d/m/Y" }}</span>
-                                        {% elif report.published_at %}
-                                            · <span class="text-sm text-semantic-muted">{{ report.published_at|timesince }}</span>
-                                        {% endif %}
-                                    </p>
-                                </div>
-                                {% if report.content_warning %}
-                                    <span class="badge-info text-xs">
-                                        <span class="i-lucide-alert-triangle text-xs"></span>
-                                        {{ report.content_warning }}
                                     </span>
-                                {% endif %}
-                            </div>
-                        </div>
+                                    {# Méta courte : auteur si ≠ MJ, CW lisible avant le clic, mur temporel au seul propriétaire. #}
+                                    {% if report.author != game.owner or report.content_warning or is_owner and not report.is_released %}
+                                        <span class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-semantic-muted">
+                                            {% if report.author != game.owner %}
+                                                <span>{% blocktrans with username=report.author.username %}by @{{ username }}{% endblocktrans %}</span>
+                                            {% endif %}
+                                            {% if is_owner and not report.is_released %}
+                                                <span class="badge-pending text-[10px]">
+                                                    <span class="i-lucide-lock text-[10px]" aria-hidden="true"></span>
+                                                    {% trans "Behind the wall" %}
+                                                </span>
+                                            {% endif %}
+                                            {% if report.content_warning %}
+                                                <span class="badge-accent text-[10px]">
+                                                    <span class="i-lucide-alert-triangle text-[10px]" aria-hidden="true"></span>
+                                                    {{ report.content_warning }}
+                                                </span>
+                                            {% endif %}
+                                        </span>
+                                    {% endif %}
+                                </span>
+                                <span class="hidden @sm:block flex-1 self-center border-b border-dotted border-semantic-border" aria-hidden="true"></span>
+                                <span class="shrink-0 text-xs text-semantic-muted tabular-nums">
+                                    {% if report.session_date %}
+                                        {{ report.session_date|date:"d/m/Y" }}
+                                    {% elif report.published_at %}
+                                        {{ report.published_at|date:"d/m/Y" }}
+                                    {% endif %}
+                                </span>
+                            </a>
+                        </li>
                     {% endfor %}
-                </div>
+                </ol>
             {% else %}
                 <p class="text-sm text-semantic-muted">{% trans "No published scene." %}</p>
             {% endif %}

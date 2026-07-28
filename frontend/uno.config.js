@@ -28,16 +28,19 @@ const presetSuddenly = () => ({
   theme: {
     ...contractTheme,
 
-    // fontFamily — Fraunces est la serif de fiction du contrat (font.family.display).
-    // `serif` et `display` pointent sur la même famille : les 34 usages historiques
-    // de `font-serif` sont exactement les endroits de fiction, ils n'ont pas à être
-    // renommés. Crimson Text est retirée : elle n'a plus aucun usage.
-    // `mono` n'est pas self-hostée — repli sur la mono du système.
+    // fontFamily — les familles viennent du contrat (`contractTheme`, qui pointe
+    // sur `var(--font-sans|display|mono)`). Ne rien redéclarer ici : une stack
+    // littérale prend le pas sur le token et diverge en silence. C'était le cas
+    // de `sans`, qui rendait `Inter, system-ui, -apple-system` alors que le token
+    // vaut `Inter, -apple-system, BlinkMacSystemFont` — écart relevé sur TOUTE
+    // cible par le gate de fidélité (aidd_docs/qa/fidelity/stories.report.json).
+    //
+    // Seul ajout : `serif`, alias de `display`. Les 34 usages historiques de
+    // `font-serif` sont exactement les endroits de fiction — ils n'ont pas à être
+    // renommés, mais ils doivent rendre la même famille que `font-display`.
     fontFamily: {
-      sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-      serif: ['Fraunces', 'Georgia', 'serif'],
-      display: ['Fraunces', 'Georgia', 'serif'],
-      mono: ['JetBrains Mono', 'Fira Code', 'ui-monospace', 'monospace'],
+      ...contractTheme.fontFamily,
+      serif: 'var(--font-display)',
     },
 
     // Espacements custom — insets d'encoche (safe-area) sur les 4 côtés,
@@ -62,7 +65,24 @@ const presetSuddenly = () => ({
   // Shortcuts — classes réutilisables
   shortcuts: {
     // Layout
-    'container-app': 'max-w-7xl mx-auto px-4 @sm:px-6 @lg:px-8',
+    // Gouttières alignées sur `.container-app` de la maquette de référence :
+    // 16px, puis 24px à `@container app (min-width: 768px)` — deux paliers, pas
+    // trois. Le palier `@sm` (640) faisait passer la gouttière à 24px un cran
+    // trop tôt et `@lg:px-8` ajoutait un 32px que la maquette n'a jamais ;
+    // les deux étaient relevés par le gate de fidélité.
+    'container-app': 'max-w-7xl mx-auto px-4 @md:px-6',
+
+    // Typographie de page — reprend `.h-page` / `.h-sec` / `.lede` de la maquette
+    // v3, à l'identique. Les tailles sont les pas FLUIDES du contrat
+    // (`--font-size-h-page` = clamp(1.5rem, 6cqi, 1.875rem)) : pas de palier au
+    // breakpoint, la taille suit la largeur du conteneur `app`. Ces pas n'étaient
+    // consommés nulle part — les pages posaient `text-2xl @md:text-3xl`, qui saute
+    // d'un cran au lieu de glisser et rate la référence entre deux breakpoints.
+    // Passer par un shortcut plutôt que par la classe arbitraire évite d'avoir à
+    // réécrire `text-[length:var(--font-size-h-page)]` sur chaque page.
+    'h-page': 'font-display text-[length:var(--font-size-h-page)] font-semibold text-semantic-ink leading-[var(--line-height-tight)]',
+    'h-sec': 'font-display text-[length:var(--font-size-h-sec)] font-semibold text-semantic-ink',
+    'lede': 'text-[length:var(--font-size-lede)] text-semantic-ink-secondary max-w-2xl',
 
     // Focus — figé par le contrat (focus.*) : 2px, offset 2px, indigo.
     // Indigo et non crimson : 4,5:1 contre 4,2:1, et pour ne pas confondre
@@ -82,8 +102,27 @@ const presetSuddenly = () => ({
     'btn-secondary': 'inline-flex items-center justify-center gap-2 bg-transparent border border-semantic-border text-semantic-ink-secondary px-7 py-[13px] text-[15px] font-semibold rounded-lg transition-all duration-250 hover:border-brand-primary hover:text-brand-primary hover:-translate-y-0.5 focus-ring disabled:opacity-50 disabled:cursor-not-allowed',
     'btn-ghost': 'inline-flex items-center justify-center gap-2 bg-transparent text-semantic-ink-secondary hover:text-semantic-ink transition-colors focus-ring disabled:opacity-50 disabled:cursor-not-allowed',
     'btn-danger': 'inline-flex items-center justify-center gap-2 bg-semantic-danger text-white px-7 py-[13px] text-[15px] font-semibold rounded-lg transition-all duration-250 hover:bg-semantic-danger/90 focus-ring disabled:opacity-50 disabled:cursor-not-allowed',
-    'btn-sm': 'px-3 py-1.5 text-sm',
-    'btn-lg': 'px-6 py-3 text-lg',
+    // `.btn-sm` de la maquette : `min-height: 38px; padding: 0 14px; font-size: 14px`.
+    // La hauteur vient de la contrainte, pas du padding vertical — sinon le bouton
+    // grandit avec l'interlignage du texte. `leading-[normal]` reproduit le
+    // `line-height: normal` du bouton de référence (`leading-normal` d'UnoCSS vaut
+    // 1.5, pas `normal`) et neutralise les 20px qu'embarque `text-sm`.
+    //
+    // Les `!` sont load-bearing : un modificateur de taille doit battre la variante
+    // qu'il accompagne (`btn-primary btn-sm`), or les deux shortcuts déclarent les
+    // MÊMES propriétés et UnoCSS n'ordonne pas le CSS généré selon l'ordre des
+    // classes dans le markup. Sans `!`, le gagnant dépend de l'ordre de génération
+    // — il a basculé silencieusement d'une build à l'autre, et le gate de fidélité
+    // a relevé le CTA à 15px/28px (géométrie de `btn-primary`) au lieu de 14px/14px.
+    'btn-sm': '!px-3.5 !py-0 !min-h-[38px] !text-sm !leading-[normal]',
+    'btn-lg': '!px-6 !py-3 !text-lg',
+    // `btn-xs` : cran de typographie, pas de cran de gabarit. Il reprend la
+    // geometrie de `btn-sm` et ne descend QUE la police a 12px, pour les actions
+    // secondaires inline des listes (rapports, distribution). La hauteur reste a
+    // 38px : `btn-sm` est deja sous `size.tap` (44px) par decision de maquette,
+    // retrecir encore la cible tactile serait une regression a11y gratuite.
+    // Remplace l'ancien idiome `btn-sm text-xs`, que les `!` de `btn-sm` cassent.
+    'btn-xs': '!px-3.5 !py-0 !min-h-[38px] !text-xs !leading-[normal]',
     // Cible tactile ≥ 44px pour les boutons d'action compacts sur mobile (#6).
     'tap-target': 'min-h-11 min-w-11 inline-flex items-center justify-center',
     // Barre d'action de l'éditeur (#7) : collante en bas sur mobile (avec
@@ -91,9 +130,19 @@ const presetSuddenly = () => ({
     'editor-actions': 'flex items-center gap-3 sticky bottom-0 -mx-4 px-4 py-3 bg-semantic-surface border-t border-semantic-border pb-safe z-sticky sm:static sm:mx-0 sm:px-0 sm:py-0 sm:bg-transparent sm:border-0',
 
     // Cards
-    'card': 'bg-semantic-card border border-semantic-border rounded-xl p-6',
-    'card-hover': 'card hover:shadow-card-hover hover:border-brand-primary/30 hover:-translate-y-0.5 transition-all cursor-pointer',
-    'card-body': 'p-4 @sm:p-6',
+    // `shadow-card` : le token `--shadow-card` existait et n'était consommé que
+    // par l'état survolé (`card-hover`). La carte au repos rendait `box-shadow:
+    // none` là où la maquette pose l'ombre en permanence — relevé par le gate de
+    // fidélité sur toutes les cartes, pas seulement celles de Stories.
+    'card': 'bg-semantic-card border border-semantic-border rounded-xl p-6 shadow-card',
+    // `focus-ring` fait partie du composant, pas de l'appelant : une carte
+    // cliquable est un interactif, et le manifeste déclare `states.focus: true`
+    // pour `card`. Sans lui, la navigation au clavier traverse la grille sans
+    // rien montrer (components.json § card.states).
+    'card-hover': 'card hover:shadow-card-hover hover:border-brand-primary/30 hover:-translate-y-0.5 transition-all cursor-pointer focus-ring',
+    // 16px, puis 20px à `@container app (min-width: 640px)` — la maquette
+    // (`.card-body`) ne monte jamais à 24px.
+    'card-body': 'p-4 @sm:p-5',
     'card-header': 'px-4 py-3 @sm:px-6 border-b border-semantic-border',
     'card-footer': 'px-4 py-3 @sm:px-6 border-t border-semantic-border rounded-b-xl',
 
@@ -113,7 +162,19 @@ const presetSuddenly = () => ({
     'switch-thumb': 'inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200',
 
     // Badges
-    'badge': 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium',
+    // `.badge` de la maquette : `padding: 3px 10px; border-radius: 999px`.
+    // `py-0.5` (2px) et `rounded-full` (9999px) en étaient les deux écarts
+    // mesurés. `leading-[1.55]` : la maquette hérite l'interlignage du corps de
+    // page, `text-xs` embarque 16px — 2,6px de moins par ligne.
+    'badge': 'inline-flex items-center gap-1 px-2.5 py-[3px] rounded-[999px] text-xs font-medium leading-[1.55]',
+
+    // Tags — étiquettes de contenu, jamais une action.
+    // Volontairement distinct de `btn-*` : pilule pleine et basse plutôt que
+    // rectangle bordé, texte `xs` non gras plutôt que `sm` semibold. Ce qui
+    // sépare une étiquette d'un bouton doit rester lisible même si les deux
+    // sont cliquables (un tag navigue vers la liste filtrée).
+    'tag-chip': 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-semantic-card-sunken text-semantic-ink-secondary transition-colors',
+    'tag-chip-link': 'tag-chip hover:bg-brand-primary/10 hover:text-brand-primary focus-ring',
 
     // Badges de statut personnage — tokens color.domain.*
     // available : le fond et la bordure prennent le signal vif (seuil 3:1),

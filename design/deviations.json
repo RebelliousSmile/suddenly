@@ -1,0 +1,16 @@
+{
+  "$schema": "design/references/contract-schema#deviations",
+  "_note": "Registre des ecarts sanctionnes, lu par adapters/measure/measure.py (--ledger-registry). Un delta mesure non couvert par une entree ACTIVE portant `expected` reste une derive : verdict OPEN. Ne jamais ajouter une entree pour faire taire une mesure — une entree achete une decision produit, pas un silence.",
+  "active": [
+    {
+      "id": "DEV-001",
+      "status": "active",
+      "target": "story card",
+      "prop": "boxShadow",
+      "expected": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.07) 0px 2px 16px 0px",
+      "date": "2026-07-28",
+      "reason": "Serialisation, pas rendu : l'utilitaire `shadow-card` d'UnoCSS compose `box-shadow: var(--un-ring-offset-shadow), var(--un-ring-shadow), var(--un-shadow)`, ce qui prefixe deux couches `rgba(0,0,0,0)` — transparentes, donc jamais peintes — a l'ombre reelle, identique a celle de la maquette (`--shadow-card`, 0 2px 16px rgba(0,0,0,.07)). L'ecart achete le maintien de `shadow-card` comme unique consommateur du token d'ombre : le contourner demanderait un `[box-shadow:var(--shadow-card)]` brut qui sortirait l'ombre du systeme d'utilitaires et casserait la composition avec `hover:shadow-card-hover`."
+    }
+  ],
+  "historical": []
+}

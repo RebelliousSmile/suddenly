@@ -1,5 +1,5 @@
 ---
-version: 1.6.0
+version: 1.4.0
 status: figé
 source: app/templates/wireframes/maquette-v3.html (16 pages, extraction CSS)
 derived_by: design:define → destructure → adjust
@@ -118,7 +118,7 @@ règle est portée par l'adapter, pas laissée à chaque composant.
 
 ## 2. Inventaire des composants
 
-Les 19 composants ci-dessous ont une entrée dans `design/components.json` (couche 2), qui est
+Les 18 composants ci-dessous ont une entrée dans `design/components.json` (couche 2), qui est
 la source fermée et vérifiable. Cette section en donne l'intention ; elle ne la contredit
 jamais.
 
@@ -253,86 +253,6 @@ section) est une piste ouverte, non arbitrée.
 ---
 
 ## 6. Provenance
-
-### v1.6.0 — 2026-07-28 — migration du contrat en format 2.0, premier contraste mesuré
-
-Le plugin `design` est passé au **format de contrat 2.0** : cinq artefacts (`tokens.json`,
-`components.json`, `policies.json`, `oracle.json`, `deviations.json`) enracinés par un
-`release.json` qui porte versions, hashes, provenance, vérifications et écarts. La migration
-depuis 1.x (`adjust/03-migrate`, sauvegarde dans `design/.contract-1x/`) est **purement
-structurelle : aucune valeur de design n'a bougé** — l'entrée `btn` est octet pour octet
-identique avant et après. Ce qui a changé, c'est ce que le contrat peut prouver.
-
-**Deux champs que 1.x ne connaissait pas ont dû être déclarés à la main** — un script de
-migration ne peut pas les inventer :
-
-1. `foregrounds` sur chacun des 19 composants — sans eux, `contrast.py` sortait en 3 avec
-   `paired: 0` : aucune paire à mesurer, donc `release.json § checks` restait `null`, donc le
-   statut plafonnait à `normalized`, donc `run-gates.py` sortait en **4** — les violations
-   étaient listées mais *la conformité n'était pas opposable*. Le gate était vert sur rien.
-2. `states` sur les 11 composants interactifs (les 8 statiques — `badge`, `avatar`, `rap`,
-   `scene-marker`, `mention`, `def`, `quote-card`, `stat-card` — omettent le champ, ce qui est
-   une déclaration, pas un oubli).
-
-Dérives relevées entre le manifeste et `uno.config.js`, corrigées **dans le manifeste** (le code
-avait raison) : `btn` prend `semantic.danger` en fond · `dropdown` est sur `semantic.surface`, pas
-`card` · `app-header` sur `semantic.surface` seul — le modifier `chrome` et le token
-`semantic.chrome` n'avaient aucun usage, le modifier est retiré · `actionbar` accepte les deux.
-
-Un seul changement de code, pour rendre vraie une déclaration plutôt que l'affaiblir : le
-shortcut `card-hover` gagne `focus-ring`. `card` déclare `states.focus: true` ; sans lui, la
-navigation clavier traversait la grille sans rien montrer.
-
-**Token ajouté** : `color.semantic.on-brand` (= `neutral.0`). Le `text-white` posé sur les fonds
-de marque n'était nommé nulle part, donc jamais mesurable.
-
-#### Premier contraste mesuré du projet — 228 paires, 77 échecs
-
-Ce n'est pas une régression : c'est la première fois que la mesure existe. Les écarts sont
-enregistrés dans `release.json § gaps` avec `caps: "validated"` — exactement le seuil, donc le
-gate reste vert et les écarts restent visibles. **Aucune couleur n'a été changée** : toucher
-`#8c8c8c` ou `#e03558` déplacerait l'identité visuelle du site, c'est un arbitrage produit.
-
-| Écart | Mesure | Portée |
-|---|---|---|
-| `semantic.muted` sur tous les fonds clairs | 2,88 à 3,36 | 21 paires, 10 composants — toute la couche métadonnée |
-| `brand.primary` en texte | 3,73 à 4,39 | les deux thèmes |
-| `on-brand` sur `brand.primary` | **4,36** | libellé du bouton primaire, juste sous 4,5 |
-| `domain.pc` | 3,83 à 4,49 | badge PJ, mention |
-| `domain.available-text` | 3,56 / 4,16 | thème clair |
-| `domain.forked`, `brand.accent` | 3,09 à 3,52 | thème sombre |
-
-9 paires `btn` supplémentaires sont des artefacts du produit croisé `foregrounds × backgrounds`
-(on-brand sur card, ink-secondary sur primary…) — elles n'existent à aucun rendu.
-
-#### Gates recâblés
-
-- **Gate 0** (import) — vérifié : `tokens.css` importé par `main.js` avant `base.css`, aucun
-  `:root` concurrent dans `frontend/src/`.
-- **Gate 1** (rules) — `.claude/rules/08-design/01-enforce.md` réécrite : elle nommait
-  `lint-files.mjs` et `.lintrc.json § _exclude`, tous deux supprimés. Elle énumère désormais les
-  **11 règles `unrealized`** — déclarées dans `policies.json`, sans réalisateur installé, donc
-  tenues à la main : aucun linter ne les attrape.
-- **Gate 2** (plans) — un plan touchant `templates/**` porte le gate dans son `success_condition`.
-- **Gate 3** (pre-commit) — le hook `design-lint` devient `design-gates` et appelle
-  `run-gates.py`, qui agrège ce qu'un lint par fichier ne peut pas faire : le seuil de maturité
-  (exit 4) et le rapport des règles non réalisées. Validé en introduisant une violation : 3 règles
-  déclenchées, exit 1.
-
-#### Réserve — `tools/generate.py` du plugin ne convient pas à ce projet
-
-Rejouer le générateur du plugin sur `design/adapters/` **casse le build**, silencieusement pour
-l'un des deux fichiers :
-
-- `uno-tokens.mjs` — il émet du CommonJS plat (`module.exports = { "color-brand-primary": "#e03558" }`).
-  L'`import { theme }` ESM de `uno.config.js` échoue à la compilation, donc l'erreur est visible.
-- `tokens.css` — il perd les **59 variables `-rgb`**. Là il n'y a pas d'erreur : le build passe et
-  tous les modificateurs alpha (`bg-brand-primary/10`, `border-brand-primary/30`,
-  `bg-semantic-danger/90`) cessent de résoudre.
-
-Les deux adapters sont donc **maintenus à la main**, en miroir de `tokens.json`, et leur en-tête
-le dit. `release.json § generated` garde le hash source : il sert à détecter qu'ils ont pris du
-retard, pas à autoriser une régénération.
 
 ### v1.5.0 — 2026-07-18 — re-figeage : promotion du `pick-sheet`
 

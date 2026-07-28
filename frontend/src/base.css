@@ -9,9 +9,30 @@
   box-sizing: border-box;
 }
 
+/* Reset bordures — non inclus dans le preflight UnoCSS.
+   `border` / `border-b` / … ne génèrent QUE `border-width`. La valeur initiale
+   de `border-style` étant `none`, toute bordure utilitaire du projet reste
+   invisible sans cette règle (btn-secondary, card, badge-*, dropdown-menu…).
+   Les deux déclarations sont indissociables : poser `solid` sans remettre la
+   largeur à 0 ferait apparaître une bordure `medium` sur chaque élément. */
+*, *::before, *::after {
+  border-width: 0;
+  border-style: solid;
+  border-color: var(--color-semantic-border);
+}
+
 body {
   background: var(--color-semantic-background);
   color: var(--color-semantic-ink);
+
+  /* Famille et interlignage de base — mesurés manquants par le gate de fidélité
+     (aidd_docs/qa/fidelity/stories.report.json, run du 2026-07-28).
+     Sans ces deux lignes, le preflight UnoCSS gagne : `ui-sans-serif, system-ui`
+     au lieu du token, et `line-height: normal` (~1.2) au lieu du 1.55 de la
+     maquette. L'écart portait sur TOUTE cible sans `font-*` ni `leading-*`
+     explicite — soit la majorité du markup. */
+  font-family: var(--font-sans);
+  line-height: var(--line-height-base);
 
   /* Conteneur racine `app` — la responsivite passe par @container, pas @media
      (usage.rules[container-not-viewport]). A la racine, la largeur inline du
@@ -44,16 +65,36 @@ body {
   );
 }
 
-a { text-decoration: none; }
+/* `color: inherit` — équivalent du preflight Tailwind, absent d'UnoCSS.
+   Sans lui, tout <a> sans classe de couleur retombe sur le bleu lien natif
+   (#0000ee) : mesuré sur les cartes de /games/stories/, où la carte entière est
+   un lien. Les liens qui DOIVENT porter la couleur de marque la posent
+   explicitement (`link`, `text-brand-primary`) et ne sont pas affectés. */
+a { text-decoration: none; color: inherit; }
 
 /* Boutons — mini-reset : aucun reset CSS complet n'est importé (cf. box-sizing plus
-   haut), donc les <button> gardent sinon la bordure et le fond natifs du navigateur.
-   Les styles réels viennent des classes utilitaires posées dans les templates. */
+   haut), donc les <button> gardent sinon le fond et la typo natifs du navigateur.
+   Pas de `border: 0` ici : plus spécifique que le reset universel ci-dessus, il
+   remettrait `border-style: none` et re-neutraliserait `btn-secondary` sur les
+   <button>. La largeur est déjà à 0 — les utilitaires font le reste. */
 button {
   background: transparent;
-  border: 0;
   color: inherit;
   font: inherit;
+}
+
+/* Table des matières d'une partie — numérotation en chiffres romains, façon
+   découpage en actes. Un compteur CSS plutôt qu'une valeur dans le template :
+   la numérotation suit l'ordre de rendu et reste juste si une entrée disparaît
+   (mur temporel, brouillon filtré) sans que la vue ait à la recalculer.
+   La position est déjà portée par le <ol> pour les lecteurs d'écran ; le
+   chiffre affiché est une redite décorative. */
+.scene-index { counter-reset: scene; }
+
+.scene-index > li { counter-increment: scene; }
+
+.scene-index .scene-index-num::before {
+  content: counter(scene, upper-roman);
 }
 
 [x-cloak] { display: none !important; }

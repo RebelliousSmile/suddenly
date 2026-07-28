@@ -15,8 +15,8 @@
         </header>
 
         {% if scenes %}
-            {# The sentinel (last child of this container) replaces itself with the
-               next batch + a fresh sentinel — the list stays inside this wrapper. #}
+            {% comment %} The sentinel (last child of this container) replaces itself with the
+               next batch + a fresh sentinel — the list stays inside this wrapper. {% endcomment %}
             <div class="space-y-4">
                 {% include "core/_popular_scenes_items.html" %}
             </div>

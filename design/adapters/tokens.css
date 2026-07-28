@@ -1,12 +1,16 @@
-/* GENERATED FROM design/tokens.json — DO NOT EDIT BY HAND.
-   Source of truth: design/tokens.json (v1.4.0). Regenerate after any token change.
+/* DERIVED FROM design/tokens.json (v1.6.0) — mirror it by hand after any token change.
+
+   NOT a product of the design plugin's `tools/generate.py`. That generator emits a
+   generic flat map without the `-rgb` companions; running it here silently breaks
+   every alpha modifier in the codebase (`bg-brand-primary/10`, `border-…/30`, …).
+   Do not regenerate — edit this file alongside tokens.json.
 
    Each colour is emitted twice:
      --color-<path>      hex, for direct use
      --color-<path>-rgb  space-separated channels, for alpha modifiers
                          (UnoCSS `bg-brand-primary/10` needs `rgb(var(…) / <alpha>)`)
 
-   Not yet wired into the build — see design-system.md § Provenance. */
+   Imported by frontend/src/main.js, before base.css. */
 
 :root {
   /* ---- color.brand ---- */
@@ -78,6 +82,8 @@
   --color-semantic-ink-secondary-rgb: var(--color-neutral-700-rgb);
   --color-semantic-muted: var(--color-neutral-500);
   --color-semantic-muted-rgb: var(--color-neutral-500-rgb);
+  --color-semantic-on-brand: var(--color-neutral-0);
+  --color-semantic-on-brand-rgb: var(--color-neutral-0-rgb);
   --color-semantic-focus: var(--color-brand-identity);
   --color-semantic-focus-rgb: var(--color-brand-identity-rgb);
   --color-semantic-success: #15803d;

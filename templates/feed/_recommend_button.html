@@ -1,11 +1,20 @@
-{# Partial: recommend button state (swapped by HTMX). #155 — a real toggle. #}
 {% load i18n %}
+{% comment %}
+   Partial: recommend button state (swapped by HTMX). #155 — a real toggle.
+
+   Pas de `btn-sm` ici : ce cran pose `!min-h-[38px]`, sous le plancher tactile
+   de 44px (`size.tap`), et son `!` bat le `min-h-11` de `tap-target` — la cible
+   tombait a 44×38. `tap-target` porte la geometrie et le centrage ; `text-sm`
+   et `px-3.5` reprennent la typographie et la gouttiere de `btn-sm` SANS sa
+   contrainte de hauteur. Le bouton porte un libelle, pas seulement une icone :
+   sans `text-sm` il remonterait a 16px, hors de l'echelle de ses voisins.
+{% endcomment %}
 {% if recommended %}
     <button hx-post="{% url 'feed:recommend' %}"
             hx-vals='{"report_id": "{{ report.pk }}"}'
             hx-target="this"
             hx-swap="outerHTML"
-            class="btn-ghost btn-sm tap-target text-brand-primary"
+            class="btn-ghost tap-target text-sm px-3.5 text-brand-primary"
             aria-pressed="true"
             aria-label="{% trans 'Remove recommendation from this scene' %}">
         <span class="i-lucide-sparkles text-sm" aria-hidden="true"></span>
@@ -16,7 +25,7 @@
             hx-vals='{"report_id": "{{ report.pk }}"}'
             hx-target="this"
             hx-swap="outerHTML"
-            class="btn-ghost btn-sm tap-target"
+            class="btn-ghost tap-target text-sm px-3.5"
             aria-pressed="false"
             aria-label="{% trans 'Recommend this scene' %}">
         <span class="i-lucide-sparkles text-sm" aria-hidden="true"></span>
