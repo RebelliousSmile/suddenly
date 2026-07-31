@@ -42,10 +42,7 @@ paths:
 - Conséquence : lever un `fuzzy` **change le rendu** — vérifier les tests qui assertent sur ce texte
 - `msgattrib --clear-previous` après avoir levé des flags — sinon les `#| msgid` orphelins subsistent
 
-## Tests et chaînes traduites
-
-- Ne jamais asserter sur un libellé traduit rendu — asserter sur le **contexte de vue**
-  **Why:** l'assertion casse à tout changement de formulation ou de locale, et une assertion négative (`not in content`) devient silencieusement vacuement vraie dès que la chaîne est traduite
+- Lever un `fuzzy` casse les tests qui assertent sur ce libellé — cf. règle pytest
 
 ## Vérification du catalogue
 
