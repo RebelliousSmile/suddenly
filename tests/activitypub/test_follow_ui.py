@@ -564,8 +564,10 @@ class TestRemoteProfileEnrichment:
         assert response.status_code == 200
         content = response.content
         assert b"Hello fediverse" in content
-        assert b"No games to show" not in content
-        assert b"No characters to show" not in content
+        # The Games/Characters sections are gated on `is_suddenly` in the
+        # template. Asserted on the context, not on the rendered empty-state
+        # labels, which are translated and would make the check vacuously true.
+        assert response.context["is_suddenly"] is False
 
     def test_javascript_scheme_url_stripped_reflected_xss(self) -> None:
         """Fix for review blocker: a hostile outbox must not smuggle a
@@ -667,9 +669,12 @@ class TestRemoteProfileEnrichment:
             response = client.get(reverse("federation:remote_profile"), {"ap_id": ap_id})
 
         assert response.status_code == 200
-        assert b"No recent activity to show" in response.content
-        assert b"No games to show" in response.content
-        assert b"No characters to show" in response.content
+        # Degradation is asserted on the context rather than on the rendered
+        # empty-state labels: those are translated, so a string assertion
+        # would break on any wording or locale change.
+        assert response.context["activity"] == []
+        assert response.context["remote_games"] == []
+        assert response.context["remote_characters"] == []
 
     def test_actor_fetch_failure_never_500s(self) -> None:
         client = Client()
