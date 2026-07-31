@@ -27,6 +27,29 @@ paths:
   **Why:** la langue est un thread-local ; les workers Gunicorn/threads sont réutilisés → sans reset, la langue d'une requête fuit sur la requête suivante servie par le même thread
 - Pattern : `translation.activate(lang)` puis `try: response = get_response(request) finally: translation.deactivate()`
 
+## Catalogue `locale/fr` — convention msgid mixtes
+
+- Les chaînes sources sont **mixtes FR/EN** — le msgid n'est pas garanti anglais
+- msgid déjà français → **traduction identité** (`msgstr` = `msgid`), jamais laissé vide
+- msgid anglais → traduction française réelle
+- Terminologie établie à respecter : *follower* → abonné · *following* → abonnement · *Follow/Unfollow* → Suivre / Se désabonner
+- Patcher un `.po` par **index d'entrée**, jamais en retapant un msgid — accents, `…` et `—` se corrompent silencieusement
+
+## Entrées fuzzy — piège de rendu
+
+- gettext **exclut les entrées `fuzzy` du `.mo`** → la chaîne s'affiche en **msgid brut**
+- Un msgid anglais resté fuzzy s'affiche donc en anglais malgré un `msgstr` français présent
+- Conséquence : lever un `fuzzy` **change le rendu** — vérifier les tests qui assertent sur ce texte
+- `msgattrib --clear-previous` après avoir levé des flags — sinon les `#| msgid` orphelins subsistent
+
+- Lever un `fuzzy` casse les tests qui assertent sur ce libellé — cf. règle pytest
+
+## Vérification du catalogue
+
+- `make i18n-check` relance `makemessages` avant de tester → le catalogue doit être **idempotent sous régénération**
+- Gate complète : `msgfmt -c` propre **et** 0 fuzzy **et** 0 msgstr vide
+- Un `.mo` versionné peut dériver de son `.po` (compilé depuis un état antérieur) — comparer via `msgunfmt` avant de conclure à une perte de traduction
+
 ## Fichiers .mo
 
 - Les `.mo` sont versionnés dans git (pas dans `.gitignore`)

@@ -18,6 +18,8 @@ paths:
 - Every test must assert something meaningful — no test without assertions
 - Use `pytest.raises` for expected exceptions
 - One behavior per test function
+- Ne jamais asserter sur un libellé traduit rendu — asserter sur `response.context`
+  **Why:** une entrée `.po` fuzzy s'affiche en msgid brut ; le jour où elle est traduite, le rendu bascule — l'assertion positive casse et l'assertion négative (`not in content`) devient silencieusement vacuement vraie
 
 ## E2E tests (Playwright)
 

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Suddenly 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-16 15:27+0200\n"
+"POT-Creation-Date: 2026-07-31 18:15+0200\n"
 "PO-Revision-Date: 2026-04-28 10:19+0200\n"
 "Last-Translator: Suddenly Team\n"
 "Language-Team: French\n"
@@ -17,24 +17,31 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: .\suddenly\characters\front_views.py:343
-#: .\suddenly\characters\front_views.py:436
+#: .\suddenly\characters\front_views.py:253
+#: .\suddenly\characters\front_views.py:385
 msgid "Name is required."
 msgstr "Le nom est obligatoire."
 
+#: .\suddenly\characters\front_views.py:274
+msgid "Choose a game you own."
+msgstr "Choisissez une partie que vous possédez."
+
+#: .\suddenly\characters\front_views.py:327
+msgid "Character archived."
+msgstr "Personnage archivé."
+
+#: .\suddenly\characters\front_views.py:337
+msgid "Character restored."
+msgstr "Personnage restauré."
+
 # | msgid "Name is required."
-#: .\suddenly\characters\front_views.py:439
-#: .\suddenly\characters\front_views.py:444
+#: .\suddenly\characters\front_views.py:388
+#: .\suddenly\characters\front_views.py:393
 msgid "Origin game is required."
 msgstr "La partie d'origine est obligatoire."
 
-#: .\suddenly\characters\front_views.py:449
-#: .\suddenly\characters\front_views.py:454
-msgid "Malformed payload."
-msgstr "Données malformées."
-
 # | msgid "Create a character"
-#: .\suddenly\characters\front_views.py:470
+#: .\suddenly\characters\front_views.py:410
 msgid "Could not create the character."
 msgstr "Impossible de créer le personnage."
 
@@ -47,115 +54,234 @@ msgid "PC"
 msgstr "PJ"
 
 #: .\suddenly\characters\models.py:27
-#: .\templates\components\character_card.html:46
 msgid "Claimed"
 msgstr "Révélé"
 
 #: .\suddenly\characters\models.py:28
-#: .\templates\components\character_card.html:51
 msgid "Adopted"
 msgstr "Adopté"
 
-#: .\suddenly\characters\models.py:29
-#: .\templates\components\character_card.html:56
-msgid "Forked"
-msgstr "Dérivé"
-
-#: .\suddenly\characters\models.py:180
-#: .\templates\characters\_quote_form.html:44
-#: .\templates\components\quote_card.html:56
-msgid "Ephemeral"
-msgstr "Éphémère"
-
-#: .\suddenly\characters\models.py:181
-#: .\templates\characters\_quote_card.html:19
-#: .\templates\characters\_quote_form.html:43
-#: .\templates\components\game_card.html:46
-#: .\templates\components\quote_card.html:61
-msgid "Private"
-msgstr "Privée"
-
-#: .\suddenly\characters\models.py:182 .\suddenly\games\models.py:84
-#: .\templates\characters\_quote_form.html:42
-msgid "Public"
-msgstr "Public"
-
-#: .\suddenly\characters\models.py:296 .\suddenly\games\models.py:268
+#: .\suddenly\characters\models.py:192 .\suddenly\games\models.py:389
 msgid "Main"
 msgstr "Principal"
 
-#: .\suddenly\characters\models.py:297 .\suddenly\games\models.py:269
+#: .\suddenly\characters\models.py:193 .\suddenly\games\models.py:390
 msgid "Supporting"
 msgstr "Secondaire"
 
-#: .\suddenly\characters\models.py:298 .\suddenly\games\models.py:270
+#: .\suddenly\characters\models.py:194 .\suddenly\games\models.py:391
 msgid "Mentioned"
 msgstr "Mentionné"
 
-#: .\suddenly\characters\models.py:330
+#: .\suddenly\characters\models.py:226
 msgid "Claim (retcon)"
 msgstr "Révélation (rétcon)"
 
-#: .\suddenly\characters\models.py:331
+#: .\suddenly\characters\models.py:227
 #: .\templates\characters\link_choose_type.html:39
 #: .\templates\characters\link_request_form.html:24
 msgid "Adoption"
 msgstr "Adoption"
 
-#: .\suddenly\characters\models.py:332
+#: .\suddenly\characters\models.py:228
 msgid "Fork (derivation)"
 msgstr "Dérivation"
 
-#: .\suddenly\characters\models.py:338 .\templates\admin_panel\users.html:25
-#: .\templates\gmh\users.html:20
+#: .\suddenly\characters\models.py:234 .\templates\admin_panel\users.html:25
+#: .\templates\gmh\users.html:29
 msgid "Active"
 msgstr "Actif"
 
 # | msgid "Revoke link"
-#: .\suddenly\characters\models.py:339
+#: .\suddenly\characters\models.py:235
 msgid "Revoked"
 msgstr "Révoqué"
 
-#: .\suddenly\characters\models.py:345
+#: .\suddenly\characters\models.py:241
 msgid "Pending"
 msgstr "En attente"
 
-#: .\suddenly\characters\models.py:346
+#: .\suddenly\characters\models.py:242
 msgid "Queued"
 msgstr "En file d'attente"
 
-#: .\suddenly\characters\models.py:347
+#: .\suddenly\characters\models.py:243
 msgid "Accepted"
 msgstr "Accepté"
 
-#: .\suddenly\characters\models.py:348
+#: .\suddenly\characters\models.py:244
 msgid "Rejected"
 msgstr "Rejeté"
 
-#: .\suddenly\characters\models.py:349
+#: .\suddenly\characters\models.py:245
 msgid "Cancelled"
 msgstr "Annulé"
 
-#: .\suddenly\characters\models.py:350
+#: .\suddenly\characters\models.py:246
 msgid "Expired"
 msgstr "Expiré"
 
-#: .\suddenly\characters\models.py:447 .\suddenly\games\models.py:77
-#: .\suddenly\games\models.py:372 .\templates\characters\sequence_edit.html:19
-#: .\templates\components\report_card.html:33
+#: .\suddenly\characters\models.py:350 .\suddenly\games\models.py:89
+#: .\suddenly\games\models.py:493 .\templates\characters\sequence_edit.html:19
 msgid "Draft"
 msgstr "Brouillon"
 
-#: .\suddenly\characters\models.py:448 .\suddenly\games\models.py:78
-#: .\suddenly\games\models.py:373 .\templates\characters\sequence_edit.html:21
+#: .\suddenly\characters\models.py:351 .\suddenly\games\models.py:90
+#: .\suddenly\games\models.py:494 .\templates\characters\sequence_edit.html:21
 msgid "Published"
 msgstr "Publié"
 
+#: .\suddenly\characters\services.py:843
+msgid "Only the creator can archive this character."
+msgstr "Seul le créateur peut archiver ce personnage."
+
+#: .\suddenly\characters\services.py:851
+msgid "Resolve the pending link request before archiving this character."
+msgstr "Résolvez la demande de lien en attente avant d'archiver ce personnage."
+
+#: .\suddenly\characters\services.py:863
+msgid "Only the creator can restore this character."
+msgstr "Seul le créateur peut restaurer ce personnage."
+
+#: .\suddenly\core\achievements.py:41
+msgid "Première scène"
+msgstr "Première scène"
+
+#: .\suddenly\core\achievements.py:42
+msgid "Publier votre première scène."
+msgstr "Publier votre première scène."
+
+# | msgid "Context"
+#: .\suddenly\core\achievements.py:48
+msgid "Conteur"
+msgstr "Conteur"
+
+#: .\suddenly\core\achievements.py:48
+msgid "Publier 10 scènes."
+msgstr "Publier 10 scènes."
+
+#: .\suddenly\core\achievements.py:51
+msgid "Chroniqueur"
+msgstr "Chroniqueur"
+
+#: .\suddenly\core\achievements.py:51
+msgid "Publier 50 scènes."
+msgstr "Publier 50 scènes."
+
+#: .\suddenly\core\achievements.py:54
+msgid "Plume affûtée"
+msgstr "Plume affûtée"
+
+#: .\suddenly\core\achievements.py:54
+msgid "Écrire 10 000 mots."
+msgstr "Écrire 10 000 mots."
+
+#: .\suddenly\core\achievements.py:57
+msgid "Romancier"
+msgstr "Romancier"
+
+#: .\suddenly\core\achievements.py:57
+msgid "Écrire 100 000 mots."
+msgstr "Écrire 100 000 mots."
+
+#: .\suddenly\core\achievements.py:61
+msgid "Créateur"
+msgstr "Créateur"
+
+#: .\suddenly\core\achievements.py:62
+msgid "Créer votre premier personnage."
+msgstr "Créer votre premier personnage."
+
+#: .\suddenly\core\achievements.py:68
+msgid "Troupe"
+msgstr "Troupe"
+
+#: .\suddenly\core\achievements.py:68
+msgid "Créer 5 personnages."
+msgstr "Créer 5 personnages."
+
+#: .\suddenly\core\achievements.py:72
+msgid "Apprécié"
+msgstr "Apprécié"
+
+#: .\suddenly\core\achievements.py:73
+msgid "Recevoir votre premier like."
+msgstr "Recevoir votre premier like."
+
+#: .\suddenly\core\achievements.py:80
+msgid "Plébiscité"
+msgstr "Plébiscité"
+
+#: .\suddenly\core\achievements.py:81
+msgid "Recevoir 100 likes."
+msgstr "Recevoir 100 likes."
+
+#: .\suddenly\core\achievements.py:88
+msgid "Suivi"
+msgstr "Suivi"
+
+#: .\suddenly\core\achievements.py:89
+msgid "Gagner votre premier abonné."
+msgstr "Gagner votre premier abonné."
+
+#: .\suddenly\core\achievements.py:95
+msgid "Entouré"
+msgstr "Entouré"
+
+#: .\suddenly\core\achievements.py:95
+msgid "Atteindre 10 abonnés."
+msgstr "Atteindre 10 abonnés."
+
+#: .\suddenly\core\achievements.py:99
+msgid "Lié"
+msgstr "Lié"
+
+#: .\suddenly\core\achievements.py:100
+msgid "Voir une de vos demandes de lien acceptée."
+msgstr "Voir une de vos demandes de lien acceptée."
+
+#: .\suddenly\core\achievements.py:135
+#, python-format
+msgid "Succès débloqué : %(name)s"
+msgstr "Succès débloqué : %(name)s"
+
+#: .\suddenly\core\admin_views.py:130
+msgid "character"
+msgstr "personnage"
+
+#: .\suddenly\core\admin_views.py:133
+msgid "scene"
+msgstr "scène"
+
+#: .\suddenly\core\admin_views.py:136
+msgid "game"
+msgstr "partie"
+
 #: .\suddenly\core\context_processors.py:24
-#: .\suddenly\core\context_processors.py:28 .\templates\base.html:281
+#: .\suddenly\core\context_processors.py:28 .\templates\base.html:285
 #: .\templates\core\home.html:4
 msgid "Federated shared fiction network"
 msgstr "Réseau fédéré de fiction partagée"
+
+#: .\suddenly\core\views.py:191 .\suddenly\core\views.py:279
+msgid "Please select a reason."
+msgstr "Veuillez sélectionner une raison."
+
+#: .\suddenly\core\views.py:201
+msgid "You cannot report yourself."
+msgstr "Vous ne pouvez pas vous signaler vous-même."
+
+#: .\suddenly\core\views.py:203 .\suddenly\core\views.py:288
+msgid "Report submitted. An admin will review it."
+msgstr "Signalement envoyé. Un administrateur va l'examiner."
+
+#: .\suddenly\core\views.py:242
+msgid "an untitled scene"
+msgstr "une scène sans titre"
+
+#: .\suddenly\core\views.py:270
+msgid "You cannot report your own content."
+msgstr "Vous ne pouvez pas signaler votre propre contenu."
 
 #: .\suddenly\fediverse_auth\views.py:76
 msgid "Invalid instance address. Example: mastodon.social"
@@ -203,93 +329,112 @@ msgstr "Les inscriptions sont actuellement fermées sur cette instance."
 msgid "Welcome! Your account was created via the Fediverse."
 msgstr "Bienvenue ! Votre compte a été créé via le Fediverse."
 
-#: .\suddenly\games\front_views.py:121 .\suddenly\games\front_views.py:588
-#: .\suddenly\games\front_views.py:659
-msgid "Content is required."
-msgstr "Le contenu est obligatoire."
-
-# | msgid "No published report."
-#: .\suddenly\games\front_views.py:362
-msgid "Only a published report can be released."
-msgstr "Seule une scène publiée peut être partagée."
-
-#: .\suddenly\games\front_views.py:431 .\suddenly\games\front_views.py:833
+#: .\suddenly\games\game_views.py:216 .\suddenly\games\game_views.py:276
 msgid "Title is required."
 msgstr "Le titre est obligatoire."
 
-#: .\suddenly\games\front_views.py:1243
-msgid "Please enter a valid URL."
-msgstr "Veuillez saisir une URL valide."
+#: .\suddenly\games\models.py:96
+msgid "Public"
+msgstr "Public"
 
-#: .\suddenly\games\models.py:85
+#: .\suddenly\games\models.py:97
 msgid "Unlisted"
 msgstr "Non répertorié"
 
-#: .\suddenly\games\models.py:86
+#: .\suddenly\games\models.py:98
 msgid "Followers only"
 msgstr "Abonnés uniquement"
 
-#: .\suddenly\games\models.py:113
+#: .\suddenly\games\models.py:182
 msgid "Normal"
 msgstr "Normal"
 
-#: .\suddenly\games\models.py:114 .\templates\games\_fiction_previously.html:23
+#: .\suddenly\games\models.py:183 .\templates\games\_fiction_previously.html:23
 msgid "Flashback"
 msgstr "Flashback"
 
-#: .\suddenly\games\models.py:115 .\templates\games\_fiction_previously.html:24
+#: .\suddenly\games\models.py:184 .\templates\games\_fiction_previously.html:24
 msgid "Flashforward"
 msgstr "Flashforward"
 
-#: .\suddenly\games\models.py:354
+#: .\suddenly\games\models.py:475
 #: .\templates\characters\character_create.html:35
 #: .\templates\characters\character_form.html:27
-#: .\templates\characters\detail.html:87 .\templates\games\_composer.html:156
+#: .\templates\characters\detail.html:106 .\templates\games\_composer.html:249
 #: .\templates\games\create.html:50 .\templates\games\game_form.html:86
 #: .\templates\gmh\instance_settings.html:38
 msgid "Description"
 msgstr "Description"
 
-#: .\suddenly\games\models.py:355
-#: .\templates\characters\character_create.html:135
-#: .\templates\characters\partials\trait_set.html:149
-#: .\templates\games\_composer.html:157
+#: .\suddenly\games\models.py:476
+#: .\templates\characters\partials\trait_set.html:307
+#: .\templates\games\_composer.html:250
 msgid "Action"
 msgstr "Action"
 
-#: .\suddenly\games\models.py:356
+#: .\suddenly\games\models.py:477
 msgid "Discussion"
 msgstr "Discussion"
 
-#: .\suddenly\games\models.py:357 .\templates\games\_composer.html:155
+#: .\suddenly\games\models.py:478 .\templates\games\_composer.html:248
 msgid "Narration"
 msgstr "Narration"
 
 # | msgid "Close"
-#: .\suddenly\games\models.py:360
+#: .\suddenly\games\models.py:481
 msgid "Closure"
 msgstr "Clôture"
 
-#: .\suddenly\games\models.py:514 .\templates\characters\list.html:37
+#: .\suddenly\games\models.py:630 .\templates\characters\list.html:37
 msgid "Start"
 msgstr "Commencer"
 
-#: .\suddenly\games\models.py:515
+#: .\suddenly\games\models.py:631
 msgid "End"
 msgstr "Fin"
 
-#: .\suddenly\games\models.py:516
+#: .\suddenly\games\models.py:632
 msgid "Character appears"
 msgstr "Personnage entre en scène"
 
-#: .\suddenly\games\models.py:517
+#: .\suddenly\games\models.py:633
 msgid "Character leaves"
 msgstr "Personnage quitte la scène"
 
-#: .\suddenly\games\models.py:518
+#: .\suddenly\games\models.py:634
 #: .\templates\games\partials\_marker_divider.html:9
 msgid "Oracle"
 msgstr "Oracle"
+
+#: .\suddenly\games\rapport_views.py:354
+msgid "Please enter a valid URL."
+msgstr "Veuillez saisir une URL valide."
+
+#: .\suddenly\games\report_views.py:97 .\suddenly\games\report_views.py:329
+#: .\suddenly\games\report_views.py:400
+msgid "Content is required."
+msgstr "Le contenu est obligatoire."
+
+# | msgid "No published report."
+#: .\suddenly\games\report_views.py:158
+msgid "Only a published report can be released."
+msgstr "Seule une scène publiée peut être partagée."
+
+#: .\suddenly\games\services.py:56
+msgid "Violence"
+msgstr "Violence"
+
+#: .\suddenly\games\services.py:57
+msgid "Dark themes"
+msgstr "Thèmes sombres"
+
+#: .\suddenly\games\services.py:58
+msgid "Sexual content"
+msgstr "Contenu sexuel"
+
+#: .\suddenly\games\services.py:59
+msgid "Death"
+msgstr "Mort"
 
 #: .\suddenly\users\forms.py:46
 msgid "Use instance default"
@@ -299,25 +444,70 @@ msgstr "Utiliser le défaut de l'instance"
 msgid "UI language. Empty = use instance default."
 msgstr "Langue de l'interface. Vide = utiliser le défaut de l'instance."
 
-#: .\suddenly\users\models.py:63
-msgid "Enable Muses AI assistance for your account."
-msgstr "Activer l'assistance IA Muses pour votre compte."
+#: .\suddenly\users\settings_views.py:51
+msgid "Scènes publiées"
+msgstr "Scènes publiées"
 
-#: .\suddenly\users\models.py:69
-msgid "Available Muses credits."
-msgstr "Crédits Muses disponibles."
+#: .\suddenly\users\settings_views.py:52
+msgid "Posts"
+msgstr "Posts"
 
-#: .\suddenly\users\models.py:77
-msgid "Receive an editable summary and federated-link suggestions from Muses when a report is imported from choix-narratifs."
-msgstr "Recevoir un résumé éditable et des suggestions de liens fédérés de Muses lorsqu'une scène est importée depuis choix-narratifs."
+#: .\suddenly\users\settings_views.py:53
+msgid "Signes"
+msgstr "Signes"
 
-#: .\suddenly\users\settings_views.py:34
-msgid "Preferences saved."
-msgstr "Préférences enregistrées."
+#: .\suddenly\users\settings_views.py:54
+msgid "Mots"
+msgstr "Mots"
+
+#: .\suddenly\users\settings_views.py:55 .\templates\games\_cast_box.html:14
+msgid "Personnages"
+msgstr "Personnages"
+
+#: .\suddenly\users\settings_views.py:56
+msgid "Parties"
+msgstr "Parties"
 
 #: .\suddenly\users\settings_views.py:57
-msgid "Muses settings saved."
-msgstr "Paramètres Muses enregistrés."
+msgid "Likes reçus"
+msgstr "Likes reçus"
+
+#: .\suddenly\users\settings_views.py:58
+msgid "Likes donnés"
+msgstr "Likes donnés"
+
+#: .\suddenly\users\settings_views.py:59
+msgid "Recommandations reçues"
+msgstr "Recommandations reçues"
+
+#: .\suddenly\users\settings_views.py:60
+msgid "Recommandations données"
+msgstr "Recommandations données"
+
+#: .\suddenly\users\settings_views.py:61
+#: .\templates\games\report_detail.html:55
+msgid "Abonnés"
+msgstr "Abonnés"
+
+#: .\suddenly\users\settings_views.py:62
+msgid "Abonnements"
+msgstr "Abonnements"
+
+#: .\suddenly\users\settings_views.py:63
+msgid "Demandes acceptées"
+msgstr "Demandes acceptées"
+
+#: .\suddenly\users\settings_views.py:64
+msgid "Demandes reçues acceptées"
+msgstr "Demandes reçues acceptées"
+
+#: .\suddenly\users\settings_views.py:65
+msgid "Messages envoyés"
+msgstr "Messages envoyés"
+
+#: .\suddenly\users\settings_views.py:90
+msgid "Preferences saved."
+msgstr "Préférences enregistrées."
 
 #: .\templates\400.html:4 .\templates\400.html:10
 msgid "Bad request"
@@ -340,8 +530,8 @@ msgstr "Accès refusé"
 msgid "You do not have permission to access this page."
 msgstr "Vous n'avez pas la permission d'accéder à cette page."
 
-#: .\templates\403.html:17 .\templates\base.html:86 .\templates\base.html:97
-#: .\templates\base.html:171 .\templates\base.html:181
+#: .\templates\403.html:17 .\templates\base.html:89 .\templates\base.html:100
+#: .\templates\base.html:174 .\templates\base.html:184
 #: .\templates\core\home.html:27
 msgid "Log in"
 msgstr "Connexion"
@@ -362,7 +552,7 @@ msgstr "Explorer"
 
 #: .\templates\account\logout.html:4 .\templates\account\logout.html:10
 #: .\templates\account\logout.html:21
-#: .\templates\components\_user_menu_items.html:73
+#: .\templates\components\_user_menu_items.html:74
 #: .\templates\users\settings_base.html:56
 msgid "Log out"
 msgstr "Déconnexion"
@@ -446,8 +636,7 @@ msgstr "Se connecter"
 #: .\templates\admin_panel\instances.html:4
 #: .\templates\admin_panel\instances.html:10
 #: .\templates\admin_panel\users.html:4 .\templates\admin_panel\users.html:10
-#: .\templates\gmh\base.html:12 .\templates\gmh\dashboard.html:4
-#: .\templates\gmh\dashboard.html:7 .\templates\gmh\instances.html:4
+#: .\templates\gmh\instances.html:4 .\templates\gmh\reports.html:4
 #: .\templates\gmh\users.html:4
 msgid "Administration"
 msgstr "Administration"
@@ -512,19 +701,25 @@ msgstr "Confirmer le blocage"
 
 #: .\templates\admin_panel\instance_block.html:17
 #: .\templates\characters\_accept_form.html:26
-#: .\templates\characters\_quote_form.html:53
-#: .\templates\characters\character_create.html:205
-#: .\templates\characters\character_form.html:97
-#: .\templates\characters\link_request_accept_form.html:50
+#: .\templates\characters\character_create.html:117
+#: .\templates\characters\character_form.html:141
+#: .\templates\characters\link_request_accept_form.html:33
 #: .\templates\characters\link_request_form.html:93
 #: .\templates\characters\link_request_reject_form.html:25
 #: .\templates\characters\link_revoke_form.html:35
-#: .\templates\characters\list.html:60 .\templates\components\modal.html:71
-#: .\templates\games\create.html:74 .\templates\games\game_form.html:134
-#: .\templates\games\list.html:42 .\templates\games\marker_form.html:67
+#: .\templates\characters\list.html:60
+#: .\templates\characters\partials\trait_set.html:23
+#: .\templates\characters\partials\trait_set.html:67
+#: .\templates\characters\partials\trait_set.html:177
+#: .\templates\characters\partials\trait_set.html:237
+#: .\templates\components\modal.html:71
+#: .\templates\core\report_content_form.html:50
+#: .\templates\core\report_user_form.html:50 .\templates\games\create.html:74
+#: .\templates\games\game_form.html:134 .\templates\games\list.html:42
+#: .\templates\games\marker_form.html:67
 #: .\templates\games\partials\_report_meta_form.html:119
 #: .\templates\games\partials\_report_meta_form.html:121
-#: .\templates\games\partials\rapport_item.html:174
+#: .\templates\games\partials\rapport_item.html:171
 #: .\templates\games\partials\rapport_reply_form.html:84
 #: .\templates\games\rapport_form.html:78
 #: .\templates\games\report_compose.html:126
@@ -552,14 +747,17 @@ msgid "Block %(name)s?"
 msgstr "Bloquer %(name)s ?"
 
 #: .\templates\admin_panel\instances.html:33 .\templates\gmh\instances.html:28
+#: .\templates\gmh\reports.html:46
 msgid "Block"
 msgstr "Bloquer"
 
 #: .\templates\admin_panel\instances.html:37 .\templates\gmh\instances.html:32
+#: .\templates\gmh\users.html:20
 msgid "Blocked"
 msgstr "Bloquée"
 
 #: .\templates\admin_panel\instances.html:41 .\templates\gmh\instances.html:36
+#: .\templates\gmh\users.html:24
 msgid "Unblock"
 msgstr "Débloquer"
 
@@ -576,98 +774,99 @@ msgstr "Aucune instance connue."
 msgid "Joined %(date)s"
 msgstr "Inscrit il y a %(date)s"
 
-#: .\templates\admin_panel\users.html:30 .\templates\gmh\users.html:25
+#: .\templates\admin_panel\users.html:30 .\templates\gmh\users.html:34
 #, python-format
 msgid "Suspend @%(username)s?"
 msgstr "Suspendre @%(username)s ?"
 
-#: .\templates\admin_panel\users.html:31 .\templates\gmh\users.html:26
+#: .\templates\admin_panel\users.html:31 .\templates\gmh\users.html:35
 msgid "Suspend"
 msgstr "Suspendre"
 
-#: .\templates\admin_panel\users.html:36 .\templates\gmh\users.html:31
+#: .\templates\admin_panel\users.html:36 .\templates\gmh\users.html:40
 msgid "Suspended"
 msgstr "Suspendu"
 
-#: .\templates\admin_panel\users.html:43 .\templates\gmh\users.html:38
+#: .\templates\admin_panel\users.html:43 .\templates\gmh\users.html:47
 msgid "No users."
 msgstr "Aucun utilisateur."
 
-#: .\templates\base.html:45 .\templates\base.html:222
+#: .\templates\base.html:45 .\templates\base.html:225
 msgid "Home"
 msgstr "Accueil"
 
-#: .\templates\base.html:48 .\templates\base.html:223
-#: .\templates\stories\detail.html:12 .\templates\stories\index.html:4
-#: .\templates\stories\index.html:11
-#. « Stories » est un nom de fonctionnalité, non traduit en français : la
-#. maquette de référence (templates/wireframes/maquette-v3.html) l'écrit ainsi
-#. dans la nav, le titre de page et le fil d'Ariane, tout le reste étant en
-#. français. La divergence « Histoires complètes » était relevée par le gate de
-#. fidélité (section manquante, aidd_docs/qa/fidelity/stories.report.json).
+#: .\templates\base.html:48 .\templates\base.html:226
+#: .\templates\stories\detail.html:28 .\templates\stories\index.html:4
+#: .\templates\stories\index.html:29
 msgid "Stories"
 msgstr "Stories"
 
-#: .\templates\base.html:51 .\templates\base.html:224
-#: .\templates\characters\_list_results.html:72
-#: .\templates\characters\detail.html:155
-msgid "Quotes"
-msgstr "Citations"
+#: .\templates\base.html:51 .\templates\base.html:227
+msgid "Popular"
+msgstr "Populaires"
 
-#: .\templates\base.html:100 .\templates\base.html:184
+#: .\templates\base.html:54 .\templates\base.html:228
+msgid "Features"
+msgstr "Fonctionnalités"
+
+#: .\templates\base.html:103 .\templates\base.html:187
 msgid "Sign up"
 msgstr "Inscription"
 
-#: .\templates\base.html:106 .\templates\base.html:230
-#: .\templates\components\_user_menu_items.html:42
+#: .\templates\base.html:109 .\templates\base.html:234
+#: .\templates\components\_user_menu_items.html:43
 msgid "Switch to light mode"
 msgstr "Passer en mode clair"
 
-#: .\templates\base.html:107 .\templates\base.html:231
-#: .\templates\components\_user_menu_items.html:43
+#: .\templates\base.html:110 .\templates\base.html:235
+#: .\templates\components\_user_menu_items.html:44
 msgid "Switch to dark mode"
 msgstr "Passer en mode sombre"
 
-#: .\templates\base.html:111 .\templates\base.html:241
-#: .\templates\components\_user_menu_items.html:47
+#: .\templates\base.html:114 .\templates\base.html:245
+#: .\templates\components\_user_menu_items.html:48
 msgid "Light mode"
 msgstr "Mode clair"
 
-#: .\templates\base.html:111 .\templates\base.html:241
-#: .\templates\components\_user_menu_items.html:47
+#: .\templates\base.html:114 .\templates\base.html:245
+#: .\templates\components\_user_menu_items.html:48
 msgid "Dark mode"
 msgstr "Mode sombre"
 
-#: .\templates\base.html:207
+#: .\templates\base.html:210
 msgid "Open menu"
 msgstr "Ouvrir le menu"
 
-#: .\templates\base.html:288 .\templates\base.html:294
+#: .\templates\base.html:292 .\templates\base.html:298
 #: .\templates\core\about.html:4
 msgid "About"
 msgstr "À propos"
 
-#: .\templates\base.html:289
+#: .\templates\base.html:293 .\templates\core\directory.html:4
+#: .\templates\core\directory.html:11
 msgid "Profile directory"
 msgstr "Annuaire des profils"
 
-#: .\templates\base.html:290
+#: .\templates\base.html:294 .\templates\core\privacy.html:4
+#: .\templates\core\privacy.html:10
 msgid "Privacy policy"
 msgstr "Politique de confidentialité"
 
-#: .\templates\base.html:295
+#: .\templates\base.html:299 .\templates\core\apps.html:4
+#: .\templates\core\apps.html:10
 msgid "Apps"
 msgstr "Les applications"
 
-#: .\templates\base.html:296
+#: .\templates\base.html:300 .\templates\core\shortcuts.html:4
+#: .\templates\core\shortcuts.html:10
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis clavier"
 
-#: .\templates\base.html:297
+#: .\templates\base.html:301
 msgid "View source code"
 msgstr "Voir le code source"
 
-#: .\templates\base.html:323
+#: .\templates\base.html:327
 msgid "Dismiss notification"
 msgstr "Masquer la notification"
 
@@ -696,94 +895,15 @@ msgid "Chargement…"
 msgstr "Chargement…"
 
 # | msgid "Retcon on %(name)s"
-#: .\templates\characters\_character_card.html:35
+#: .\templates\characters\_character_card.html:28
 #: .\templates\games\_cast_box.html:44
 #, python-format
 msgid "né dans %(game)s"
 msgstr "né dans %(game)s"
 
-#: .\templates\characters\_character_card.html:48
-#: .\templates\characters\_link_suggestions.html:54
-#: .\templates\characters\_list_results.html:89
-#: .\templates\characters\link_request_form.html:5
-#: .\templates\components\character_card.html:109 .\templates\core\home.html:96
-#: .\templates\feed\_promo_card.html:40
-msgid "Claim"
-msgstr "Révéler"
-
-#: .\templates\characters\_character_card.html:52
-#: .\templates\characters\_link_suggestions.html:58
-#: .\templates\characters\_list_results.html:93
-#: .\templates\characters\link_request_form.html:5
-#: .\templates\components\character_card.html:117
-#: .\templates\core\home.html:110 .\templates\feed\_promo_card.html:42
-msgid "Adopt"
-msgstr "Adopter"
-
-#: .\templates\characters\_character_card.html:56
-#: .\templates\characters\_link_suggestions.html:62
-#: .\templates\characters\_list_results.html:97
-#: .\templates\characters\_list_results.html:102
-#: .\templates\characters\link_request_form.html:5
-#: .\templates\components\character_card.html:125
-#: .\templates\core\home.html:124 .\templates\feed\_promo_card.html:44
-msgid "Fork"
-msgstr "Dériver"
-
-#: .\templates\characters\_character_card.html:61
+#: .\templates\characters\_character_card.html:43
 msgid "Fiche"
 msgstr "Fiche"
-
-#: .\templates\characters\_claim_coherence.html:9
-msgid "Coherence analysis"
-msgstr "Analyse de cohérence"
-
-#: .\templates\characters\_claim_coherence.html:14
-msgid "This Claim has no proposed character to compare — nothing to analyse."
-msgstr "Ce Claim ne propose aucun personnage à comparer — rien à analyser."
-
-#: .\templates\characters\_claim_coherence.html:19
-#: .\templates\characters\_sequence_suggestion.html:45
-msgid "No Muses credits left — top up to use this feature."
-msgstr "Plus de crédits Muses — rechargez pour utiliser cette fonction."
-
-#: .\templates\characters\_claim_coherence.html:24
-msgid "Overall plausibility"
-msgstr "Plausibilité globale"
-
-#: .\templates\characters\_claim_coherence.html:26
-msgid "strong"
-msgstr "forte"
-
-#: .\templates\characters\_claim_coherence.html:28
-msgid "medium"
-msgstr "moyenne"
-
-#: .\templates\characters\_claim_coherence.html:30
-msgid "weak"
-msgstr "faible"
-
-# | msgid "Compatible with:"
-#: .\templates\characters\_claim_coherence.html:39
-msgid "Compatible points"
-msgstr "Points compatibles"
-
-#: .\templates\characters\_claim_coherence.html:52
-msgid "Points of friction"
-msgstr "Points de friction"
-
-#: .\templates\characters\_claim_coherence.html:65
-msgid "To harmonise if accepted"
-msgstr "À harmoniser si accepté"
-
-#: .\templates\characters\_claim_coherence.html:78
-msgid "The decision is yours — this analysis is advisory and does not decide."
-msgstr "La décision vous appartient — cette analyse est consultative et ne décide pas."
-
-#: .\templates\characters\_claim_coherence.html:83
-#: .\templates\characters\_sequence_suggestion.html:50
-msgid "Muses is unavailable right now — try again later."
-msgstr "Muses est indisponible pour le moment — réessayez plus tard."
 
 # | msgid "Existing character"
 #: .\templates\characters\_link_suggestions.html:9
@@ -794,12 +914,12 @@ msgstr "Lier un personnage existant"
 msgid "Rather than start from scratch, connect your story to a character already out there."
 msgstr "Plutôt que de partir de zéro, reliez votre histoire à un personnage qui existe déjà."
 
-#: .\templates\characters\_link_suggestions.html:66
-#: .\templates\characters\detail.html:63
+#: .\templates\characters\_link_suggestions.html:49
+#: .\templates\characters\detail.html:57
 msgid "View"
 msgstr "Voir"
 
-#: .\templates\characters\_link_suggestions.html:74
+#: .\templates\characters\_link_suggestions.html:57
 msgid "No character to suggest yet — follow players or characters to see candidates here."
 msgstr "Aucun personnage à suggérer pour l'instant — suivez des joueurs ou des personnages pour voir des candidats ici."
 
@@ -808,87 +928,80 @@ msgid "No description yet."
 msgstr "Pas encore de description."
 
 #: .\templates\characters\_list_results.html:68
-#: .\templates\games\_list_results.html:34 .\templates\games\detail.html:56
-#: .\templates\users\profile.html:99
+#: .\templates\games\_list_results.html:34 .\templates\games\detail.html:74
+#: .\templates\stories\_reading_nav.html:16 .\templates\users\profile.html:104
 msgid "Scenes"
 msgstr "Scènes"
 
-#: .\templates\characters\_list_results.html:77
-#: .\templates\characters\character_create.html:42
+#: .\templates\characters\_list_results.html:73
+#: .\templates\characters\character_create.html:63
 msgid "Origin game"
 msgstr "Partie d'origine"
 
-#: .\templates\characters\character_form.html:35
-msgid "Game"
-msgstr "Partie"
-
-#: .\templates\characters\character_form.html:41
-msgid "Locked: this character already has posts."
-msgstr "Verrouillé : ce personnage a déjà des posts."
-
-#: .\templates\characters\character_form.html:51
-msgid "The game this character belongs to."
-msgstr "La partie à laquelle appartient ce personnage."
-
-#: .\suddenly\characters\front_views.py:404
-msgid "Choose a game you own."
-msgstr "Choisissez une partie que vous possédez."
-
-#: .\templates\characters\_list_results.html:109
-#: .\templates\characters\detail.html:43
+#: .\templates\characters\_list_results.html:91
+#: .\templates\characters\detail.html:37
+#: .\templates\characters\partials\trait_set.html:84
+#: .\templates\characters\partials\trait_set.html:196
+#: .\templates\characters\partials\trait_set.html:250
 #: .\templates\games\_list_results.html:74 .\templates\games\detail.html:42
-#: .\templates\games\partials\rapport_item.html:135
-#: .\templates\games\report_form.html:14 .\templates\users\profile.html:130
+#: .\templates\games\partials\rapport_item.html:132
+#: .\templates\games\report_form.html:14
 msgid "Edit"
 msgstr "Modifier"
 
-#: .\templates\characters\_list_results.html:115
+#: .\templates\characters\_list_results.html:97
+msgid "Archive this character? You can restore it later."
+msgstr "Archiver ce personnage ? Vous pourrez le restaurer plus tard."
+
+#: .\templates\characters\_list_results.html:99
+#: .\templates\characters\_list_results.html:100
+msgid "Archive"
+msgstr "Archiver"
+
+#: .\templates\characters\_list_results.html:107
 msgid "Sheet"
 msgstr "Fiche"
 
-#: .\templates\characters\_list_results.html:128
+#: .\templates\characters\_list_results.html:120
 #, python-format
 msgid "No character found for \"%(q)s\"."
 msgstr "Aucun personnage trouvé pour « %(q)s »."
 
-#: .\templates\characters\_list_results.html:130
-#: .\templates\users\profile.html:146
+#: .\templates\characters\_list_results.html:122
 msgid "No characters yet."
 msgstr "Aucun personnage pour l'instant."
 
-#: .\templates\characters\_quote_card.html:17
-#: .\templates\characters\detail.html:140
-#: .\templates\characters\gm_dashboard.html:102
-#: .\templates\games\_list_results.html:64 .\templates\games\detail.html:75
-#: .\templates\onboarding\step2.html:26
-#: .\templates\stories\_index_results.html:16
-#, python-format
-msgid "by @%(username)s"
-msgstr "par @%(username)s"
+#: .\templates\characters\_request_resolved.html:22
+msgid "Open shared sequence →"
+msgstr "Ouvrir la Séquence partagée"
 
-#: .\templates\characters\_quote_form.html:15
-msgid "The line"
-msgstr "La réplique"
+#: .\templates\characters\character_create.html:4
+#: .\templates\characters\character_create.html:9
+#: .\templates\games\detail.html:142
+msgid "New character"
+msgstr "Nouveau personnage"
 
-#: .\templates\characters\_quote_form.html:17
-msgid "The memorable line..."
-msgstr "La réplique mémorable..."
+#: .\templates\characters\character_create.html:23
+msgid "Identity"
+msgstr "Identité"
 
-#: .\templates\characters\_quote_form.html:23
-msgid "Context"
-msgstr "Contexte"
+#: .\templates\characters\character_create.html:26
+#: .\templates\characters\character_form.html:19
+msgid "Name"
+msgstr "Nom"
 
-#: .\templates\characters\_quote_form.html:23
-#: .\templates\characters\_quote_form.html:32
 #: .\templates\characters\character_create.html:35
-#: .\templates\characters\character_create.html:59
-#: .\templates\characters\character_create.html:67
-#: .\templates\characters\character_create.html:186
+#: .\templates\characters\character_create.html:43
+#: .\templates\characters\character_create.html:52
+#: .\templates\characters\character_create.html:80
+#: .\templates\characters\character_create.html:105
 #: .\templates\characters\character_form.html:27
 #: .\templates\characters\character_form.html:35
-#: .\templates\characters\character_form.html:45
-#: .\templates\characters\character_form.html:58
-#: .\templates\characters\link_request_accept_form.html:38
+#: .\templates\characters\character_form.html:44
+#: .\templates\characters\character_form.html:79
+#: .\templates\characters\character_form.html:89
+#: .\templates\characters\character_form.html:102
+#: .\templates\characters\link_request_accept_form.html:21
 #: .\templates\characters\link_request_reject_form.html:17
 #: .\templates\characters\link_revoke_form.html:25
 #: .\templates\components\form_fields.html:13
@@ -911,193 +1024,67 @@ msgstr "Contexte"
 msgid "optional"
 msgstr "optionnel"
 
-#: .\templates\characters\_quote_form.html:26
-msgid "Narrative situation..."
-msgstr "Situation narrative..."
+#: .\templates\characters\character_create.html:43
+#: .\templates\characters\character_form.html:35
+#: .\templates\characters\detail.html:114
+msgid "Background"
+msgstr "Histoire"
 
-#: .\templates\characters\_quote_form.html:32
-#: .\templates\games\partials\_report_meta_form.html:54
-#: .\templates\games\report_compose.html:87
-msgid "Content warning"
-msgstr "Avertissement de contenu"
+#: .\templates\characters\character_create.html:47
+#: .\templates\characters\character_form.html:39
+msgid "Public backstory shown on the sheet."
+msgstr "Histoire publique affichée sur la fiche."
 
-#: .\templates\characters\_quote_form.html:36
-msgid "e.g. Mature content"
-msgstr "ex. Contenu adulte"
+#: .\templates\characters\character_create.html:52
+#: .\templates\characters\character_form.html:44
+#: .\templates\characters\detail.html:186
+msgid "Secrets"
+msgstr "Secrets"
 
-#: .\templates\characters\_quote_form.html:47
-#: .\templates\characters\character_form.html:95
-#: .\templates\characters\sequence_edit.html:87
-#: .\templates\games\game_form.html:128
-#: .\templates\games\partials\_report_meta_form.html:106
-#: .\templates\gmh\instance_settings.html:68
-#: .\templates\users\settings_muses.html:56
-msgid "Save"
-msgstr "Enregistrer"
-
-#: .\templates\characters\_request_resolved.html:22
-msgid "Open shared sequence →"
-msgstr "Ouvrir la Séquence partagée"
-
-#: .\templates\characters\_sequence_suggestion.html:13
-msgid "Muses — opening suggestion"
-msgstr "Muses — suggestion d'ouverture"
-
-#: .\templates\characters\_sequence_suggestion.html:21
-msgid "A neutral proposal — it belongs to neither character. Nothing is inserted automatically."
-msgstr "Une proposition neutre — elle n'appartient à aucun des deux personnages. Rien n'est inséré automatiquement."
-
-#: .\templates\characters\_sequence_suggestion.html:27
-msgid "Insert into editor"
-msgstr "Insérer dans l'éditeur"
-
-# | msgid "Federated"
-#: .\templates\characters\_sequence_suggestion.html:34
-msgid "Regenerate"
-msgstr "Régénérer"
-
-#: .\templates\characters\_sequence_suggestion.html:38
-#: .\templates\components\status_banner.html:26
-msgid "Dismiss"
-msgstr "Masquer"
-
-#: .\templates\characters\character_create.html:4
-#: .\templates\characters\character_create.html:9
-#: .\templates\games\detail.html:106
-msgid "New character"
-msgstr "Nouveau personnage"
-
-#: .\templates\characters\character_create.html:23
-msgid "Identity"
-msgstr "Identité"
-
-#: .\templates\characters\character_create.html:26
-#: .\templates\characters\character_form.html:19
-msgid "Name"
-msgstr "Nom"
+#: .\templates\characters\character_create.html:58
+#: .\templates\characters\character_form.html:50
+msgid "Visible only to you (creator/owner). Never shown publicly."
+msgstr "Visible par vous seul (créateur/propriétaire). Jamais affiché publiquement."
 
 # | msgid "Create a game"
-#: .\templates\characters\character_create.html:46
+#: .\templates\characters\character_create.html:67
 msgid "Choose a game"
 msgstr "Choisir une partie"
 
-#: .\templates\characters\character_create.html:54
+#: .\templates\characters\character_create.html:75
 msgid "A PC can only originate from one of your own games."
 msgstr "Un PJ ne peut être originaire que d'une de vos propres parties."
 
 # | msgid "Cover image"
-#: .\templates\characters\character_create.html:59
+#: .\templates\characters\character_create.html:80
 msgid "Cover alt text"
 msgstr "Texte alternatif de la couverture"
 
-# | msgid "Cover image"
-#: .\templates\characters\character_create.html:67
-msgid "Cover tone"
-msgstr "Tonalité de la couverture"
-
-#: .\templates\characters\character_create.html:73
-#: .\templates\characters\character_form.html:58
+#: .\templates\characters\character_create.html:86
+#: .\templates\characters\character_form.html:102
 msgid "Avatar"
 msgstr "Avatar"
 
-#: .\templates\characters\character_create.html:80
-#: .\templates\characters\detail.html:96
-#: .\templates\characters\traits_editor.html:4
-#: .\templates\characters\traits_editor.html:13
-msgid "Traits"
-msgstr "Traits"
+# | msgid "More actions"
+#: .\templates\characters\character_create.html:94
+#: .\templates\characters\traits_editor.html:18
+msgid "Traits & actions"
+msgstr "Traits & actions"
 
-# | msgid "Accept"
-#: .\templates\characters\character_create.html:82
-msgid "Concept"
-msgstr "Concept"
+#: .\templates\characters\character_create.html:96
+msgid "You'll add traits and actions one at a time on the sheet, right after creating the character — each one is saved on its own."
+msgstr "Vous ajouterez les traits et actions un par un sur la fiche, juste après la création du personnage — chacun est enregistré séparément."
 
-#: .\templates\characters\character_create.html:87
-msgid "Group traits by concept (e.g. Body, Mind, Gear). Values are display-only — Suddenly never rolls, resolves or computes anything."
-msgstr "Regroupez les traits par concept (ex. Corps, Esprit, Équipement). Les valeurs sont purement indicatives — Suddenly ne lance aucun dé, ne résout et ne calcule rien."
-
-# | msgid "No posts yet."
-#: .\templates\characters\character_create.html:91
-msgid "No concept yet."
-msgstr "Aucun concept pour l'instant."
-
-#: .\templates\characters\character_create.html:98
-msgid "Concept name…"
-msgstr "Nom du concept…"
-
-#: .\templates\characters\character_create.html:100
-#: .\templates\characters\character_create.html:116
-#: .\templates\characters\character_create.html:153
-#: .\templates\characters\partials\trait_set.html:15
-#: .\templates\characters\partials\trait_set.html:36
-#: .\templates\characters\partials\trait_set.html:108
-#: .\templates\components\link_request_card.html:109
-#: .\templates\components\report_editor.html:146
-#: .\templates\games\_list_results.html:82
-#: .\templates\games\partials\rapport_item.html:142
-#: .\templates\games\report_detail.html:180 .\templates\users\profile.html:136
-msgid "Delete"
-msgstr "Supprimer"
-
-#: .\templates\characters\character_create.html:109
-msgid "Trait name…"
-msgstr "Nom du trait…"
-
-# | msgid "optional"
-#: .\templates\characters\character_create.html:114
-#: .\templates\characters\partials\trait_set.html:81
-msgid "note (optional)"
-msgstr "note (optionnelle)"
-
-#: .\templates\characters\character_create.html:124
-#: .\templates\characters\partials\trait_set.html:83
-msgid "Trait"
-msgstr "Trait"
-
-# | msgid "Action"
-#: .\templates\characters\character_create.html:133
-#: .\templates\characters\partials\trait_set.html:90
-msgid "Actions"
-msgstr "Actions"
-
-#: .\templates\characters\character_create.html:140
-msgid "An action can draw on traits from any concept. Condition and outcome are free text — displayed as written, never evaluated."
-msgstr "Une action peut mobiliser des traits de n'importe quel concept. Condition et effet sont du texte libre — affichés tels quels, jamais évalués."
-
-# | msgid "No description yet."
-#: .\templates\characters\character_create.html:144
-msgid "No action yet."
-msgstr "Aucune action pour l'instant."
-
-# | msgid "Action"
-#: .\templates\characters\character_create.html:151
-msgid "Action name…"
-msgstr "Nom de l'action…"
-
-#: .\templates\characters\character_create.html:159
-msgid "Add traits above to link this action to them."
-msgstr "Ajoutez des traits ci-dessus pour les relier à cette action."
-
-#: .\templates\characters\character_create.html:174
-#: .\templates\characters\partials\trait_set.html:145
-msgid "When this applies (displayed text)…"
-msgstr "Quand cela s'applique (texte affiché)…"
-
-#: .\templates\characters\character_create.html:176
-#: .\templates\characters\partials\trait_set.html:147
-msgid "What it produces (displayed text)…"
-msgstr "Ce que cela produit (texte affiché)…"
-
-#: .\templates\characters\character_create.html:183
+#: .\templates\characters\character_create.html:102
 msgid "External sheet"
 msgstr "Fiche externe"
 
-#: .\templates\characters\character_create.html:186
-#: .\templates\characters\character_form.html:35
+#: .\templates\characters\character_create.html:105
+#: .\templates\characters\character_form.html:79
 msgid "Sheet URL"
 msgstr "URL de la fiche"
 
-#: .\templates\characters\character_create.html:203
+#: .\templates\characters\character_create.html:115
 msgid "Create"
 msgstr "Créer"
 
@@ -1106,195 +1093,168 @@ msgstr "Créer"
 msgid "Edit character"
 msgstr "Modifier le personnage"
 
-#: .\templates\characters\character_form.html:45
+#: .\templates\characters\character_form.html:56
+#: .\templates\users\_following_page.html:43
+msgid "Game"
+msgstr "Partie"
+
+#: .\templates\characters\character_form.html:62
+msgid "Locked: this character already has posts."
+msgstr "Verrouillé : ce personnage a déjà des posts."
+
+#: .\templates\characters\character_form.html:73
+msgid "The game this character belongs to."
+msgstr "La partie à laquelle appartient ce personnage."
+
+#: .\templates\characters\character_form.html:89
 #: .\templates\games\game_form.html:107
 msgid "Tags"
 msgstr "Tags"
 
-#: .\templates\characters\character_form.html:52
+#: .\templates\characters\character_form.html:96
 msgid "Tags séparés par des virgules"
 msgstr "Tags séparés par des virgules"
 
-#: .\templates\characters\character_form.html:62
+#: .\templates\characters\character_form.html:106
 msgid "Current avatar"
 msgstr "Avatar actuel"
 
-#: .\templates\characters\character_form.html:64
+#: .\templates\characters\character_form.html:108
 #: .\templates\components\form_image_upload.html:12
 #: .\templates\users\settings_preferences.html:83
 msgid "Current image"
 msgstr "Image actuelle"
 
-#: .\templates\characters\character_form.html:69
+#: .\templates\characters\character_form.html:113
 #: .\templates\components\form_image_upload.html:15
 #: .\templates\users\settings_preferences.html:88
 msgid "Delete image"
 msgstr "Supprimer l'image"
 
-#: .\templates\characters\character_form.html:79
+#: .\templates\characters\character_form.html:123
 #: .\templates\components\form_image_upload.html:34
 #: .\templates\users\settings_preferences.html:98
 msgid "Upload an image"
 msgstr "Téléverser une image"
 
-#: .\templates\characters\character_form.html:86
+#: .\templates\characters\character_form.html:130
 #: .\templates\components\form_fields.html:114
 #: .\templates\components\form_image_upload.html:35
 #: .\templates\users\settings_preferences.html:105
 msgid "or drag and drop"
 msgstr "ou glisser-déposer"
 
-#: .\templates\characters\character_form.html:88
+#: .\templates\characters\character_form.html:132
 #: .\templates\components\form_image_upload.html:37
 #: .\templates\users\settings_preferences.html:107
 msgid "PNG, JPG or GIF up to 10 MB"
 msgstr "PNG, JPG ou GIF jusqu'à 10 Mo"
 
-#: .\templates\characters\detail.html:34
+#: .\templates\characters\character_form.html:139
+#: .\templates\characters\partials\trait_set.html:17
+#: .\templates\characters\partials\trait_set.html:62
+#: .\templates\characters\partials\trait_set.html:172
+#: .\templates\characters\sequence_edit.html:89
+#: .\templates\games\game_form.html:128
+#: .\templates\games\partials\_report_meta_form.html:106
+#: .\templates\gmh\instance_settings.html:68
+msgid "Save"
+msgstr "Enregistrer"
+
+#: .\templates\characters\detail.html:28
 #, python-format
 msgid "Created by @%(username)s"
 msgstr "Créé par @%(username)s"
 
-#: .\templates\characters\detail.html:35
+#: .\templates\characters\detail.html:29
 #, python-format
 msgid "Owner: @%(username)s"
 msgstr "Propriétaire : @%(username)s"
 
-#: .\templates\characters\detail.html:47
+#: .\templates\characters\detail.html:41
 msgid "Révoquer le lien"
 msgstr "Révoquer le lien"
 
 # | msgid "Renounce %(name)s"
-#: .\templates\characters\detail.html:56
+#: .\templates\characters\detail.html:50
 msgid "Renoncer au lien"
 msgstr "Renoncer au lien"
 
-#: .\templates\characters\detail.html:63
+#: .\templates\characters\detail.html:57
 msgid "You have a pending request on this character."
 msgstr "Vous avez une demande en attente sur ce personnage."
 
-#: .\templates\characters\detail.html:67
+#: .\templates\characters\detail.html:61
 msgid "Link to my story"
 msgstr "Lier à mon histoire"
 
 # | msgid "You have a pending request on this character."
-#: .\templates\characters\detail.html:74
+#: .\templates\characters\detail.html:68
 msgid "You have a pending fork request on this character."
 msgstr "Vous avez une demande de dérivation en attente sur ce personnage."
 
 # | msgid "Edit character"
-#: .\templates\characters\detail.html:78
+#: .\templates\characters\detail.html:72
 msgid "Fork this character"
 msgstr "Dériver ce personnage"
 
+#: .\templates\characters\detail.html:81
+msgid "Report this character"
+msgstr "Signaler ce personnage"
+
+#: .\templates\characters\detail.html:123
+#: .\templates\characters\traits_editor.html:4
+#: .\templates\characters\traits_editor.html:13
+msgid "Traits"
+msgstr "Traits"
+
 # | msgid "Edit character"
-#: .\templates\characters\detail.html:99
+#: .\templates\characters\detail.html:126
 msgid "Edit traits"
 msgstr "Modifier les traits"
 
 # | msgid "No characters added yet."
-#: .\templates\characters\detail.html:106
+#: .\templates\characters\detail.html:133
 msgid "No traits recorded yet."
 msgstr "Aucun trait enregistré pour l'instant."
 
-#: .\templates\characters\detail.html:116
+#: .\templates\characters\detail.html:143
 msgid "Technical sheet: external link"
 msgstr "Fiche technique : lien externe"
 
-#: .\templates\characters\detail.html:127
+#: .\templates\characters\detail.html:154
 msgid "Appearances"
 msgstr "Apparitions"
 
-#: .\templates\characters\detail.html:137 .\templates\explore\_results.html:37
-#: .\templates\feed\_interventions.html:26
-#: .\templates\feed\_report_card.html:44 .\templates\feed\_scene_card.html:15
-#: .\templates\games\detail.html:72 .\templates\onboarding\step2.html:25
+#: .\templates\characters\detail.html:164 .\templates\explore\_results.html:37
+#: .\templates\feed\_interventions.html:26 .\templates\feed\_scene_card.html:15
+#: .\templates\games\detail.html:94 .\templates\onboarding\step2.html:25
 msgid "Untitled"
 msgstr "Sans titre"
 
-#: .\templates\characters\detail.html:148
+#: .\templates\characters\detail.html:167
+#: .\templates\games\_list_results.html:64 .\templates\games\detail.html:100
+#: .\templates\onboarding\step2.html:26
+#: .\templates\stories\_index_results.html:44
+#, python-format
+msgid "by @%(username)s"
+msgstr "par @%(username)s"
+
+#: .\templates\characters\detail.html:175
 msgid "No appearance in a scene."
 msgstr "Aucune apparition dans une scène."
 
-#: .\templates\characters\detail.html:166
-msgid "No quotes yet."
-msgstr "Aucune citation pour l'instant."
+#: .\templates\characters\detail.html:188
+msgid "Only you (creator/owner) can see this."
+msgstr "Vous seul (créateur/propriétaire) pouvez voir ceci."
 
-#: .\templates\characters\detail.html:173
+#: .\templates\characters\detail.html:196
 msgid "Lineage"
 msgstr "Lignée"
 
-#: .\templates\characters\detail.html:176
+#: .\templates\characters\detail.html:199
 msgid "Forked from"
 msgstr "Dérivé de"
-
-#: .\templates\components\_user_menu_items.html:15 .\templates\gmh\base.html:12
-#: .\templates\gmh\dashboard.html:4
-msgid "Dashboard"
-msgstr "Tableau de bord"
-
-#: .\templates\gmh\base.html:19 .\templates\gmh\dashboard.html:7
-msgid "Overview"
-msgstr "Vue d'ensemble"
-
-#: .\templates\characters\gm_dashboard.html:16
-msgid "NPCs created"
-msgstr "PNJ créés"
-
-#: .\templates\characters\gm_dashboard.html:20
-msgid "pending requests"
-msgstr "demandes en attente"
-
-#: .\templates\characters\gm_dashboard.html:24
-msgid "linked characters"
-msgstr "personnages liés"
-
-#: .\templates\characters\gm_dashboard.html:28
-msgid "Explore NPCs"
-msgstr "Explorer les PNJ"
-
-#: .\templates\characters\gm_dashboard.html:38
-msgid "NPCs with pending requests"
-msgstr "PNJ avec des demandes en attente"
-
-#: .\templates\characters\gm_dashboard.html:53
-#: .\templates\components\character_card.html:81
-#, python-format
-msgid "%(counter)s appearance"
-msgid_plural "%(counter)s appearances"
-msgstr[0] "%(counter)s apparition"
-msgstr[1] "%(counter)s apparitions"
-
-#: .\templates\characters\gm_dashboard.html:56
-#, python-format
-msgid "%(counter)s request"
-msgid_plural "%(counter)s requests"
-msgstr[0] "%(counter)s demande"
-msgstr[1] "%(counter)s demandes"
-
-#: .\templates\characters\gm_dashboard.html:71
-msgid "Available NPCs"
-msgstr "PNJ disponibles"
-
-#: .\templates\characters\gm_dashboard.html:87
-msgid "Linked characters"
-msgstr "Personnages liés"
-
-#: .\templates\characters\gm_dashboard.html:107
-msgid "Révoquer"
-msgstr "Révoquer"
-
-#: .\templates\characters\gm_dashboard.html:121
-msgid "You have no NPCs yet"
-msgstr "Vous n'avez pas encore de PNJ"
-
-#: .\templates\characters\gm_dashboard.html:123
-msgid "NPCs are created automatically when you mention them in a scene."
-msgstr "Les PNJ sont créés automatiquement quand vous les mentionnez dans une scène."
-
-#: .\templates\characters\gm_dashboard.html:125
-msgid "See my games"
-msgstr "Voir mes parties"
 
 #: .\templates\characters\link_choose_type.html:4
 #, python-format
@@ -1365,27 +1325,19 @@ msgstr "Accepter la demande de @%(username)s"
 msgid "@%(username)s wants to <strong>%(type)s</strong> %(name)s."
 msgstr "@%(username)s veut <strong>%(type)s</strong> %(name)s."
 
-#: .\templates\characters\link_request_accept_form.html:25
-msgid "Check coherence"
-msgstr "Vérifier la cohérence"
-
-#: .\templates\characters\link_request_accept_form.html:28
-msgid "An advisory plausibility analysis. It never decides for you."
-msgstr "Une analyse de plausibilité consultative. Elle ne décide jamais à votre place."
-
-#: .\templates\characters\link_request_accept_form.html:38
+#: .\templates\characters\link_request_accept_form.html:21
 msgid "Your response message"
 msgstr "Votre message de réponse"
 
-#: .\templates\characters\link_request_accept_form.html:41
+#: .\templates\characters\link_request_accept_form.html:24
 msgid "A narrative word to accompany the transition..."
 msgstr "Un mot narratif pour accompagner la transition..."
 
-#: .\templates\characters\link_request_accept_form.html:46
+#: .\templates\characters\link_request_accept_form.html:29
 msgid "A Shared Sequence will be created to co-write the transition scene."
 msgstr "Une Séquence partagée sera créée pour co-écrire la scène de transition."
 
-#: .\templates\characters\link_request_accept_form.html:49
+#: .\templates\characters\link_request_accept_form.html:32
 msgid "Confirm acceptance"
 msgstr "Confirmer l'acceptation"
 
@@ -1409,6 +1361,30 @@ msgstr "Ouvrir la Séquence partagée"
 #: .\templates\characters\link_request_accepted.html:22
 msgid "Back to requests"
 msgstr "Retour aux demandes"
+
+#: .\templates\characters\link_request_form.html:5
+#: .\templates\characters\partials\_claim_adopt_fork_actions.html:25
+#: .\templates\characters\partials\_claim_adopt_fork_actions.html:38
+#: .\templates\characters\partials\_claim_adopt_fork_actions.html:54
+#: .\templates\core\home.html:110
+msgid "Adopt"
+msgstr "Adopter"
+
+#: .\templates\characters\link_request_form.html:5
+#: .\templates\characters\partials\_claim_adopt_fork_actions.html:29
+#: .\templates\characters\partials\_claim_adopt_fork_actions.html:42
+#: .\templates\characters\partials\_claim_adopt_fork_actions.html:60
+#: .\templates\core\home.html:124
+msgid "Fork"
+msgstr "Dériver"
+
+#: .\templates\characters\link_request_form.html:5
+#: .\templates\characters\partials\_claim_adopt_fork_actions.html:21
+#: .\templates\characters\partials\_claim_adopt_fork_actions.html:34
+#: .\templates\characters\partials\_claim_adopt_fork_actions.html:48
+#: .\templates\core\home.html:96
+msgid "Claim"
+msgstr "Révéler"
 
 #: .\templates\characters\link_request_form.html:14
 msgid "Back to choice"
@@ -1529,7 +1505,7 @@ msgstr "a été envoyée à @%(username)s. Vous serez notifié de leur décision
 #: .\templates\characters\link_request_sent.html:21
 #: .\templates\characters\link_revoked.html:17
 #: .\templates\components\link_request_card.html:94
-#: .\templates\components\npc_highlight.html:26
+#: .\templates\components\npc_highlight.html:20
 #: .\templates\federation\_search_results.html:26
 msgid "View profile"
 msgstr "Voir le profil"
@@ -1558,6 +1534,7 @@ msgstr "@%(username)s veut <strong>%(type)s</strong> %(name)s"
 
 #: .\templates\characters\link_requests.html:45
 #: .\templates\components\link_request_card.html:84
+#: .\templates\offers\_response_item.html:12
 msgid "Accept"
 msgstr "Accepter"
 
@@ -1608,6 +1585,8 @@ msgid "The link and sequence draft will be deleted. The NPC will become availabl
 msgstr "Le lien et le brouillon de séquence seront supprimés. Le PNJ redeviendra disponible."
 
 #: .\templates\characters\link_revoke_form.html:25
+#: .\templates\core\report_content_form.html:21
+#: .\templates\core\report_user_form.html:21
 msgid "Reason"
 msgstr "Raison"
 
@@ -1638,8 +1617,9 @@ msgid "%(name)s is available again as an NPC."
 msgstr "%(name)s est à nouveau disponible en tant que PNJ."
 
 #: .\templates\characters\list.html:4 .\templates\characters\list.html:15
-#: .\templates\core\explorer.html:20 .\templates\games\detail.html:102
-#: .\templates\users\profile.html:103 .\templates\users\profile.html:120
+#: .\templates\core\explorer.html:20
+#: .\templates\federation\_remote_profile_sections.html:22
+#: .\templates\games\detail.html:138 .\templates\users\profile.html:108
 msgid "Characters"
 msgstr "Personnages"
 
@@ -1675,49 +1655,136 @@ msgstr "Rechercher un personnage..."
 msgid "All statuses"
 msgstr "Tous les statuts"
 
-#: .\templates\characters\partials\trait_set.html:14
+#: .\templates\characters\list.html:106
+msgid "Archived"
+msgstr "Archivés"
+
+#: .\templates\characters\list.html:123
+msgid "Restore"
+msgstr "Restaurer"
+
+#: .\templates\characters\partials\trait_set.html:16
+msgid "Concept name"
+msgstr "Nom du concept"
+
+#: .\templates\characters\partials\trait_set.html:32
+msgid "Rename"
+msgstr "Renommer"
+
+#: .\templates\characters\partials\trait_set.html:38
 msgid "Supprimer ce lot et tout son contenu ?"
 msgstr "Supprimer ce lot et tout son contenu ?"
 
+#: .\templates\characters\partials\trait_set.html:39
+#: .\templates\characters\partials\trait_set.html:90
+#: .\templates\characters\partials\trait_set.html:202
+#: .\templates\characters\partials\trait_set.html:256
+#: .\templates\components\link_request_card.html:109
+#: .\templates\components\report_editor.html:146
+#: .\templates\games\_list_results.html:82
+#: .\templates\games\partials\rapport_item.html:139
+msgid "Delete"
+msgstr "Supprimer"
+
+#: .\templates\characters\partials\trait_set.html:56
+msgid "Trait name"
+msgstr "Nom du trait"
+
+#: .\templates\characters\partials\trait_set.html:58
+msgid "Value"
+msgstr "Valeur"
+
+# | msgid "optional"
+#: .\templates\characters\partials\trait_set.html:60
+#: .\templates\characters\partials\trait_set.html:137
+msgid "note (optional)"
+msgstr "note (optionnelle)"
+
 # | msgid "No characters yet."
-#: .\templates\characters\partials\trait_set.html:42
+#: .\templates\characters\partials\trait_set.html:98
 msgid "No trait yet."
 msgstr "Aucun trait pour l'instant."
 
-#: .\templates\characters\partials\trait_set.html:53
+#: .\templates\characters\partials\trait_set.html:109
 msgid "New trait…"
 msgstr "Nouveau trait…"
 
-#: .\templates\characters\partials\trait_set.html:65
+#: .\templates\characters\partials\trait_set.html:121
 msgid "no value"
 msgstr "sans valeur"
 
-#: .\templates\characters\partials\trait_set.html:72
+#: .\templates\characters\partials\trait_set.html:128
 msgid "free"
 msgstr "libre"
 
-#: .\templates\characters\partials\trait_set.html:75
+#: .\templates\characters\partials\trait_set.html:131
 msgid "none"
 msgstr "aucun"
 
-#: .\templates\characters\partials\trait_set.html:115
+#: .\templates\characters\partials\trait_set.html:139
+msgid "Trait"
+msgstr "Trait"
+
+# | msgid "Action"
+#: .\templates\characters\partials\trait_set.html:146
+msgid "Actions"
+msgstr "Actions"
+
+#: .\templates\characters\partials\trait_set.html:156
+msgid "Action name"
+msgstr "Nom de l'action"
+
+#: .\templates\characters\partials\trait_set.html:159
+#: .\templates\characters\partials\trait_set.html:295
+msgid "One or more traits (Ctrl/Cmd to multi-select)"
+msgstr "Un ou plusieurs traits (Ctrl/Cmd pour multi-sélection)"
+
+#: .\templates\characters\partials\trait_set.html:167
+#: .\templates\characters\partials\trait_set.html:303
+msgid "When this applies (displayed text)…"
+msgstr "Quand cela s'applique (texte affiché)…"
+
+#: .\templates\characters\partials\trait_set.html:169
+#: .\templates\characters\partials\trait_set.html:305
+msgid "What it produces (displayed text)…"
+msgstr "Ce que cela produit (texte affiché)…"
+
+#: .\templates\characters\partials\trait_set.html:210
 #: .\templates\characters\partials\transverse_actions.html:28
 msgid "When"
 msgstr "Quand"
 
-#: .\templates\characters\partials\trait_set.html:120
+#: .\templates\characters\partials\trait_set.html:215
 #: .\templates\characters\partials\transverse_actions.html:33
 msgid "Then"
 msgstr "Alors"
 
+#: .\templates\characters\partials\trait_set.html:228
+#: .\templates\characters\partials\trait_set.html:270
+msgid "7-9…"
+msgstr "7-9…"
+
+#: .\templates\characters\partials\trait_set.html:228
+msgid "Condition"
+msgstr "Condition"
+
+#: .\templates\characters\partials\trait_set.html:230
+msgid "Result…"
+msgstr "Résultat…"
+
+#: .\templates\characters\partials\trait_set.html:230
+#: .\templates\characters\partials\trait_set.html:274
+msgid "Result"
+msgstr "Résultat"
+
+#: .\templates\characters\partials\trait_set.html:272
+msgid "Add a conditional result…"
+msgstr "Ajouter un résultat conditionnel…"
+
 # | msgid "More actions"
-#: .\templates\characters\partials\trait_set.html:134
+#: .\templates\characters\partials\trait_set.html:292
 msgid "New action…"
 msgstr "Nouvelle action…"
-
-#: .\templates\characters\partials\trait_set.html:137
-msgid "One or more traits (Ctrl/Cmd to multi-select)"
-msgstr "Un ou plusieurs traits (Ctrl/Cmd pour multi-sélection)"
 
 # --- Vocabulary fix: report→scene / rapport→post (display) ---
 # | msgid "New scene"
@@ -1781,37 +1848,28 @@ msgstr "Valider et publier"
 msgid "This sequence is published and visible in both characters' history."
 msgstr "Cette séquence est publiée et visible dans l'historique des deux personnages."
 
-#: .\templates\characters\sequence_edit.html:70
+#: .\templates\characters\sequence_edit.html:72
 #: .\templates\components\report_editor.html:16
 #: .\templates\games\create.html:21 .\templates\games\game_form.html:25
 #: .\templates\games\partials\_report_meta_form.html:16
 msgid "Title"
 msgstr "Titre"
 
-#: .\templates\characters\sequence_edit.html:73
+#: .\templates\characters\sequence_edit.html:75
 msgid "e.g. The meeting at the crossroads"
 msgstr "ex. La rencontre au carrefour"
 
-#: .\templates\characters\sequence_edit.html:78
+#: .\templates\characters\sequence_edit.html:80
 msgid "Content (Markdown)"
 msgstr "Contenu (Markdown)"
 
-#: .\templates\characters\sequence_edit.html:80
+#: .\templates\characters\sequence_edit.html:82
 msgid "Write the transition scene together..."
 msgstr "Écrivez ensemble la scène de transition..."
 
 #: .\templates\characters\sequence_edit.html:99
-msgid "Suggest an opening"
-msgstr "Suggérer une ouverture"
-
-#: .\templates\characters\sequence_edit.html:109
 msgid "Propose publication"
 msgstr "Proposer la publication"
-
-# | msgid "More actions"
-#: .\templates\characters\traits_editor.html:18
-msgid "Traits & actions"
-msgstr "Traits & actions"
 
 # | msgid "Back to home"
 #: .\templates\characters\traits_editor.html:21
@@ -1824,53 +1882,50 @@ msgid ""
 "            display-only — Suddenly never rolls, resolves or computes anything."
 msgstr "Transposez une fiche narrative en traits et actions nommés. Les valeurs sont purement indicatives — Suddenly ne lance aucun dé, ne résout et ne calcule rien."
 
+#: .\templates\components\_dm_trigger.html:19
+msgid "Message privé"
+msgstr "Message privé"
+
 #: .\templates\components\_user_menu_items.html:9
 msgid "My profile"
 msgstr "Mon profil"
 
-#: .\templates\components\_user_menu_items.html:15
+#: .\templates\components\_user_menu_items.html:12
 #: .\templates\users\settings_base.html:27
 #: .\templates\users\settings_preferences.html:4
 #: .\templates\users\settings_preferences.html:7
 msgid "Preferences"
 msgstr "Préférences"
 
-#: .\templates\components\_user_menu_items.html:19
-msgid "Admin"
-msgstr "Admin"
+#: .\templates\components\_user_menu_items.html:16 .\templates\gmh\base.html:12
+#: .\templates\gmh\dashboard.html:4
+msgid "Dashboard"
+msgstr "Tableau de bord"
 
-#: .\templates\components\_user_menu_items.html:24
+#: .\templates\components\_user_menu_items.html:21
 msgid "Requests"
 msgstr "Demandes"
 
-#: .\templates\components\_user_menu_items.html:28
+#: .\templates\components\_user_menu_items.html:25
 #: .\templates\notifications\list.html:4 .\templates\notifications\list.html:12
 msgid "Notifications"
 msgstr "Notifications"
 
-#: .\templates\components\_user_menu_items.html:32
+#: .\templates\components\_user_menu_items.html:29
+#: .\templates\messaging\inbox.html:4 .\templates\messaging\inbox.html:9
+msgid "Messages"
+msgstr "Messages"
+
+#: .\templates\components\_user_menu_items.html:33
 msgid "Stats & achievements"
 msgstr "Stats & succès"
-
-#: .\templates\components\character_card.html:36
-msgid "Available"
-msgstr "Disponible"
-
-#: .\templates\components\character_card.html:88 .\templates\core\home.html:178
-#, python-format
-msgid "%(counter)s quote"
-msgid_plural "%(counter)s quotes"
-msgstr[0] "%(counter)s citation"
-msgstr[1] "%(counter)s citations"
 
 #: .\templates\components\docs_sidebar.html:5
 msgid "← Application"
 msgstr "← Application"
 
 #: .\templates\components\feed_item.html:31
-#: .\templates\components\quote_card.html:46
 #: .\templates\explore\_results.html:14 .\templates\feed\_interventions.html:15
-#: .\templates\feed\_report_card.html:14
 msgid "in"
 msgstr "dans"
 
@@ -1879,7 +1934,6 @@ msgid "Available NPC"
 msgstr "PNJ disponible"
 
 #: .\templates\components\feed_item.html:75
-#: .\templates\feed\_report_card.html:57 .\templates\feed\_scene_card.html:46
 msgid "Like"
 msgstr "J'aime"
 
@@ -1889,7 +1943,6 @@ msgid "Reply"
 msgstr "Répondre"
 
 #: .\templates\components\feed_item.html:81
-#: .\templates\components\report_card.html:102
 msgid "Share"
 msgstr "Partager"
 
@@ -1907,18 +1960,26 @@ msgstr "Copier le lien"
 msgid "Report"
 msgstr "Compte-rendu"
 
+#: .\templates\components\follow_button.html:24
+msgid "Verrouillé (partie en cours)"
+msgstr "Verrouillé (partie en cours)"
+
 #: .\templates\components\follow_button.html:26
-#: .\templates\components\remote_follow_button.html:21
+msgid "Verrouillé"
+msgstr "Verrouillé"
+
+#: .\templates\components\follow_button.html:38
+#: .\templates\components\remote_follow_button.html:30
 msgid "Unfollow"
 msgstr "Se désabonner"
 
-#: .\templates\components\follow_button.html:27
-#: .\templates\components\remote_follow_button.html:22
+#: .\templates\components\follow_button.html:39
+#: .\templates\components\remote_follow_button.html:31
 msgid "Following"
 msgstr "Abonné"
 
-#: .\templates\components\follow_button.html:40
-#: .\templates\components\remote_follow_button.html:35
+#: .\templates\components\follow_button.html:52
+#: .\templates\components\remote_follow_button.html:45
 msgid "Follow"
 msgstr "Suivre"
 
@@ -1930,24 +1991,6 @@ msgstr "Téléverser un fichier"
 #: .\templates\components\form_image_upload.html:42
 msgid "Change image"
 msgstr "Changer l'image"
-
-#: .\templates\components\game_card.html:62
-#, python-format
-msgid "%(counter)s report"
-msgid_plural "%(counter)s reports"
-msgstr[0] "%(counter)s compte-rendu"
-msgstr[1] "%(counter)s comptes-rendus"
-
-#: .\templates\components\game_card.html:67 .\templates\core\home.html:174
-#, python-format
-msgid "%(counter)s character"
-msgid_plural "%(counter)s characters"
-msgstr[0] "%(counter)s personnage"
-msgstr[1] "%(counter)s personnages"
-
-#: .\templates\components\game_card.html:82
-msgid "Recent characters"
-msgstr "Personnages récents"
 
 #: .\templates\components\link_request_card.html:38
 msgid "wants to"
@@ -1991,10 +2034,6 @@ msgstr "En ligne"
 msgid "seen %(time)s ago"
 msgstr "vu il y a %(time)s"
 
-#: .\templates\components\report_card.html:107
-msgid "Read more"
-msgstr "Lire la suite"
-
 #: .\templates\components\report_editor.html:36
 msgid "Tell us about your session..."
 msgstr "Racontez votre session..."
@@ -2028,7 +2067,7 @@ msgstr "Ajouter un personnage..."
 
 #: .\templates\components\report_editor.html:112
 #: .\templates\games\_cast_widget.html:50
-#: .\templates\games\partials\rapport_item.html:169
+#: .\templates\games\partials\rapport_item.html:166
 #: .\templates\games\rapport_form.html:71
 msgid "Add"
 msgstr "Ajouter"
@@ -2048,6 +2087,10 @@ msgstr "Enregistrer le brouillon"
 #: .\templates\components\report_editor.html:145
 msgid "Delete this draft?"
 msgstr "Supprimer ce brouillon ?"
+
+#: .\templates\components\status_banner.html:26 .\templates\gmh\reports.html:39
+msgid "Dismiss"
+msgstr "Masquer"
 
 #: .\templates\components\tag_filter.html:21
 msgid "All tags"
@@ -2070,7 +2113,7 @@ msgstr "personnages"
 msgid "Instance rules"
 msgstr "Règles de l'instance"
 
-#: .\templates\core\about.html:51 .\templates\users\settings_base.html:41
+#: .\templates\core\about.html:51 .\templates\users\settings_base.html:34
 #: .\templates\users\settings_federation.html:4
 #: .\templates\users\settings_federation.html:7
 msgid "Federation"
@@ -2088,7 +2131,7 @@ msgstr "Protocole :"
 msgid "Compatible with:"
 msgstr "Compatible avec :"
 
-#: .\templates\core\about.html:61
+#: .\templates\core\about.html:61 .\templates\core\privacy.html:44
 msgid "Contact"
 msgstr "Contact"
 
@@ -2096,12 +2139,83 @@ msgstr "Contact"
 msgid "For any questions, contact the administrator of this instance."
 msgstr "Pour toute question, contactez l'administrateur de cette instance."
 
+#: .\templates\core\apps.html:12
+#, python-format
+msgid "%(name)s is a web application — it runs in any modern browser, on desktop and mobile, with no install required. Because it federates over ActivityPub, you can also follow and interact with it from other Fediverse clients."
+msgstr "%(name)s est une application web — elle fonctionne dans tout navigateur moderne, sur ordinateur et mobile, sans installation. Comme elle se fédère via ActivityPub, vous pouvez aussi la suivre et interagir avec elle depuis d'autres clients du Fédivers."
+
+#: .\templates\core\apps.html:18
+msgid "Web app"
+msgstr "Application web"
+
+#: .\templates\core\apps.html:21
+msgid "Publish scenes, manage your characters, and browse the network directly here. Add the site to your home screen for an app-like experience."
+msgstr "Publiez des scènes, gérez vos personnages et parcourez le réseau directement ici. Ajoutez le site à votre écran d'accueil pour une expérience proche d'une application."
+
+#: .\templates\core\apps.html:23
+msgid "Open the web app"
+msgstr "Ouvrir l'application web"
+
+#: .\templates\core\apps.html:26
+msgid "Compatible Fediverse clients"
+msgstr "Clients du Fédivers compatibles"
+
+#: .\templates\core\apps.html:28
+msgid "Follow players and characters from any ActivityPub-compatible platform:"
+msgstr "Suivez des joueurs et des personnages depuis n'importe quelle plateforme compatible ActivityPub :"
+
+#: .\templates\core\apps.html:35
+msgid "Microblogging — follow accounts and see their public activity."
+msgstr "Microblogage — suivez des comptes et voyez leur activité publique."
+
+#: .\templates\core\apps.html:42
+msgid "Reading and reviews — federates with shared-fiction content."
+msgstr "Lecture et critiques — se fédère avec le contenu de fiction partagée."
+
+#: .\templates\core\apps.html:48
+msgid "Any ActivityPub app"
+msgstr "Toute application ActivityPub"
+
+#: .\templates\core\apps.html:49
+msgid "Search a profile by its @handle from your platform of choice."
+msgstr "Recherchez un profil par son @identifiant depuis la plateforme de votre choix."
+
+#: .\templates\core\directory.html:13
+#, python-format
+msgid "%(counter)s member on this instance."
+msgid_plural "%(counter)s members on this instance."
+msgstr[0] "%(counter)s membre sur cette instance."
+msgstr[1] "%(counter)s membres sur cette instance."
+
+#: .\templates\core\directory.html:43
+msgid "Pagination"
+msgstr "Pagination"
+
+#: .\templates\core\directory.html:46
+msgid "Previous"
+msgstr "Précédent"
+
+#: .\templates\core\directory.html:50
+#, python-format
+msgid "Page %(current)s of %(total)s"
+msgstr "Page %(current)s sur %(total)s"
+
+#: .\templates\core\directory.html:54 .\templates\games\_fiction_next.html:12
+msgid "Next"
+msgstr "Suivant"
+
+#: .\templates\core\directory.html:63
+msgid "No members to display yet."
+msgstr "Aucun membre à afficher pour l'instant."
+
 #: .\templates\core\explorer.html:13
 msgid "Which character do you want to play today?"
 msgstr "Avec quel personnage voulez-vous jouer aujourd'hui ?"
 
-#: .\templates\core\explorer.html:24 .\templates\games\list.html:4
-#: .\templates\games\list.html:15 .\templates\games\report_compose.html:11
+#: .\templates\core\explorer.html:24
+#: .\templates\federation\_remote_profile_sections.html:4
+#: .\templates\games\list.html:4 .\templates\games\list.html:15
+#: .\templates\games\report_compose.html:11
 msgid "Games"
 msgstr "Parties"
 
@@ -2133,7 +2247,7 @@ msgstr "Rejoindre le réseau"
 #: .\templates\core\home.html:34 .\templates\games\create.html:4
 #: .\templates\games\create.html:9 .\templates\games\game_form.html:4
 #: .\templates\games\game_form.html:10 .\templates\games\list.html:20
-#: .\templates\users\profile.html:87
+#: .\templates\users\profile.html:92
 msgid "New game"
 msgstr "Nouvelle partie"
 
@@ -2173,7 +2287,9 @@ msgstr "Je crée un PJ dérivé de votre PNJ."
 msgid "Create a derived character — cousin, lookalike, former associate."
 msgstr "Créez un personnage dérivé — cousin, sosie, ancien associé."
 
-#: .\templates\core\home.html:140 .\templates\onboarding\step2.html:21
+#: .\templates\core\home.html:140
+#: .\templates\federation\_remote_profile_sections.html:38
+#: .\templates\onboarding\step2.html:21
 msgid "Recent activity"
 msgstr "Activité récente"
 
@@ -2181,53 +2297,143 @@ msgstr "Activité récente"
 msgid "See all"
 msgstr "Tout voir"
 
-#: .\templates\core\home.html:187
+#: .\templates\core\home.html:174
+#, python-format
+msgid "%(counter)s character"
+msgid_plural "%(counter)s characters"
+msgstr[0] "%(counter)s personnage"
+msgstr[1] "%(counter)s personnages"
+
+#: .\templates\core\home.html:183
 msgid "No activity yet. Be the first to publish a scene!"
 msgstr "Aucune activité pour l'instant. Soyez le premier à publier une scène !"
 
-#: .\templates\core\home.html:198
-msgid "Ce qu'on y dit"
-msgstr "Ce qu'on y dit"
-
-# | msgid "Open registrations"
-#: .\templates\core\home.html:200 .\templates\core\quotes.html:11
-msgid "Le mur des citations"
-msgstr "Le mur des citations"
-
-#: .\templates\core\home.html:220
+#: .\templates\core\home.html:196
 msgid "Federated with the Fediverse"
 msgstr "Fédéré avec le Fédivers"
 
-#: .\templates\core\home.html:223
+#: .\templates\core\home.html:199
 #, python-format
 msgid "%(SITE_NAME)s uses <strong>ActivityPub</strong> to connect to other instances and the rest of the Fediverse. Follow players from Mastodon, BookWyrm or any compatible platform."
 msgstr "%(SITE_NAME)s utilise <strong>ActivityPub</strong> pour se connecter aux autres instances et au reste du Fédivers. Suivez des joueurs depuis Mastodon, BookWyrm ou toute plateforme compatible."
 
-# | msgid "Notifications"
-#: .\templates\core\quotes.html:4
-msgid "Citations"
-msgstr "Citations"
+#: .\templates\core\popular_scenes.html:4
+#: .\templates\core\popular_scenes.html:11
+msgid "Popular scenes"
+msgstr "Scènes populaires"
 
-#: .\templates\core\quotes.html:13
-msgid "Ce qui a été dit, une fois les scènes libérées."
-msgstr "Ce qui a été dit, une fois les scènes libérées."
+#: .\templates\core\popular_scenes.html:13
+msgid "The most liked scenes, once released."
+msgstr "Les scènes les plus aimées, une fois libérées."
 
-#: .\templates\core\quotes.html:28
-msgid "Précédentes"
-msgstr "Précédentes"
+#: .\templates\core\popular_scenes.html:26
+msgid "No popular scene yet."
+msgstr "Aucune scène populaire pour l'instant."
 
-#: .\templates\core\quotes.html:32
+#: .\templates\core\privacy.html:12
 #, python-format
-msgid "%(num)s / %(total)s"
-msgstr "%(num)s / %(total)s"
+msgid "Applies to the %(host)s instance."
+msgstr "S'applique à l'instance %(host)s."
 
-#: .\templates\core\quotes.html:36
-msgid "Suivantes"
-msgstr "Suivantes"
+#: .\templates\core\privacy.html:18
+msgid "This is a baseline policy for a self-hosted instance. The operator should review and adapt it to their jurisdiction before relying on it."
+msgstr "Ceci est une politique de base pour une instance auto-hébergée. L'opérateur doit la relire et l'adapter à sa juridiction avant de s'y fier."
 
-#: .\templates\core\quotes.html:43
-msgid "Aucune citation libérée pour l'instant."
-msgstr "Aucune citation libérée pour l'instant."
+#: .\templates\core\privacy.html:24
+msgid "Data we collect"
+msgstr "Données que nous collectons"
+
+#: .\templates\core\privacy.html:25
+msgid "When you create an account we store your username, email address, and any profile details you provide (display name, bio, avatar). Content you publish — scenes, characters — is stored so the instance can display and federate it."
+msgstr "Lorsque vous créez un compte, nous stockons votre nom d'utilisateur, votre adresse e-mail et les informations de profil que vous fournissez (nom affiché, bio, avatar). Le contenu que vous publiez — scènes, personnages — est stocké afin que l'instance puisse l'afficher et le fédérer."
+
+#: .\templates\core\privacy.html:29
+msgid "Federation and public content"
+msgstr "Fédération et contenu public"
+
+#: .\templates\core\privacy.html:30
+msgid "This service uses <strong>ActivityPub</strong>. Public content and profiles are, by design, shared with other federated instances that follow or interact with them. Once content leaves this instance, it may be cached or copied on servers we do not control. Consider anything public to be effectively permanent."
+msgstr "Ce service utilise <strong>ActivityPub</strong>. Le contenu public et les profils sont, par conception, partagés avec les autres instances fédérées qui les suivent ou interagissent avec eux. Une fois le contenu sorti de cette instance, il peut être mis en cache ou copié sur des serveurs que nous ne contrôlons pas. Considérez tout contenu public comme durablement permanent."
+
+#: .\templates\core\privacy.html:34
+msgid "Cookies"
+msgstr "Cookies"
+
+#: .\templates\core\privacy.html:35
+msgid "We use strictly functional cookies for authentication (keeping you logged in), CSRF protection, and remembering your language and theme preferences. We do not use advertising or third-party tracking cookies."
+msgstr "Nous utilisons uniquement des cookies strictement fonctionnels pour l'authentification (vous garder connecté), la protection CSRF et la mémorisation de vos préférences de langue et de thème. Nous n'utilisons aucun cookie publicitaire ni de traçage tiers."
+
+#: .\templates\core\privacy.html:39
+msgid "Your rights"
+msgstr "Vos droits"
+
+#: .\templates\core\privacy.html:40
+msgid "You can edit or delete your profile and content at any time from your account settings, and export your data (games, characters, follows). Deleting content sends removal requests across the federation, though remote caches may take time to clear."
+msgstr "Vous pouvez modifier ou supprimer votre profil et votre contenu à tout moment depuis les paramètres de votre compte, et exporter vos données (parties, personnages, abonnements). La suppression de contenu envoie des demandes de retrait à travers la fédération, mais les caches distants peuvent mettre du temps à se vider."
+
+#: .\templates\core\privacy.html:46
+#, python-format
+msgid "For any question about your data, contact the operator of this instance. Details are on the <a href=\"%(about_url)s\" class=\"link\">About</a> page."
+msgstr "Pour toute question concernant vos données, contactez l'opérateur de cette instance. Les détails figurent sur la page <a href=\"%(about_url)s\" class=\"link\">À propos</a>."
+
+#: .\templates\core\report_content_form.html:4
+#: .\templates\core\report_content_form.html:10
+#, python-format
+msgid "Report %(label)s"
+msgstr "Signaler %(label)s"
+
+#: .\templates\core\report_content_form.html:13
+msgid "This report is sent privately to instance admins. Nobody is notified."
+msgstr "Ce signalement est envoyé en privé aux administrateurs de l'instance. Personne n'est notifié."
+
+#: .\templates\core\report_content_form.html:27
+#: .\templates\core\report_user_form.html:27
+msgid "Select a reason"
+msgstr "Choisir une raison"
+
+#: .\templates\core\report_content_form.html:36
+#: .\templates\core\report_user_form.html:36
+msgid "Additional context (optional)"
+msgstr "Contexte additionnel (optionnel)"
+
+#: .\templates\core\report_content_form.html:47
+#: .\templates\core\report_user_form.html:47
+msgid "Submit report"
+msgstr "Envoyer le signalement"
+
+#: .\templates\core\report_user_form.html:4
+#: .\templates\core\report_user_form.html:10
+#, python-format
+msgid "Report @%(username)s"
+msgstr "Signaler @%(username)s"
+
+#: .\templates\core\report_user_form.html:13
+msgid "This report is sent privately to instance admins. The reported user is never notified."
+msgstr "Ce signalement est envoyé en privé aux administrateurs de l'instance. La personne signalée n'est jamais notifiée."
+
+#: .\templates\core\shortcuts.html:12
+msgid "Press these keys from anywhere on the site (except while typing in a field). For a two-key sequence, press the keys one after the other."
+msgstr "Appuyez sur ces touches depuis n'importe quelle page du site (sauf pendant la saisie dans un champ). Pour une séquence à deux touches, appuyez sur les touches l'une après l'autre."
+
+#: .\templates\core\shortcuts.html:16
+msgid "Navigation"
+msgstr "Navigation"
+
+#: .\templates\core\shortcuts.html:19
+msgid "Go to Home"
+msgstr "Aller à l'accueil"
+
+#: .\templates\core\shortcuts.html:26
+msgid "Go to Stories"
+msgstr "Aller aux histoires"
+
+#: .\templates\core\shortcuts.html:33
+msgid "Go to Popular"
+msgstr "Aller aux populaires"
+
+#: .\templates\core\shortcuts.html:40
+msgid "Open this shortcuts page"
+msgstr "Ouvrir cette page de raccourcis"
 
 #: .\templates\explore\_results.html:57
 msgid "No published scenes yet."
@@ -2237,6 +2443,19 @@ msgstr "Aucune scène publiée pour l'instant."
 #: .\templates\explore\explore.html:24
 msgid "All languages"
 msgstr "Toutes les langues"
+
+#: .\templates\federation\_remote_profile_sections.html:17
+msgid "No games to show."
+msgstr "Aucune partie à afficher."
+
+#: .\templates\federation\_remote_profile_sections.html:32
+msgid "No characters to show."
+msgstr "Aucun personnage à afficher."
+
+# | msgid "No characters linked to your games yet."
+#: .\templates\federation\_remote_profile_sections.html:54
+msgid "No recent activity to show."
+msgstr "Aucune activité récente à afficher."
 
 #: .\templates\federation\_search_results.html:34
 msgid "Searching..."
@@ -2344,32 +2563,39 @@ msgstr "Suivez des joueurs ou des parties pour lire leurs sessions ici."
 msgid "No recent activity from your games yet."
 msgstr "Aucune activité récente de vos parties pour l'instant."
 
+#: .\templates\feed\_like_button.html:18
+msgid "Remove like from this scene"
+msgstr "Ne plus aimer cette scène"
+
+#: .\templates\feed\_like_button.html:28
+msgid "Like this scene"
+msgstr "Aimer cette scène"
+
 # | msgid "Available"
 #: .\templates\feed\_promo_card.html:15
 msgid "Available to play"
 msgstr "Disponible pour jouer"
 
-#: .\templates\feed\_promo_card.html:31
+#: .\templates\feed\_promo_card.html:25
 #, python-format
 msgid "from %(title)s"
 msgstr "de %(title)s"
 
-#: .\templates\feed\_recommend_button.html:6
-msgid "Recommended"
-msgstr "Recommandé"
-
-#: .\templates\feed\_recommend_button.html:15
-#: .\templates\feed\_report_card.html:62 .\templates\feed\_scene_card.html:50
-msgid "Recommend"
-msgstr "Recommander"
-
-#: .\templates\feed\_recommend_button.html:10
+#: .\templates\feed\_recommend_button.html:19
 msgid "Remove recommendation from this scene"
 msgstr "Retirer la recommandation de cette scène"
 
 #: .\templates\feed\_recommend_button.html:21
+msgid "Recommended"
+msgstr "Recommandé"
+
+#: .\templates\feed\_recommend_button.html:30
 msgid "Recommend this scene"
 msgstr "Recommander cette scène"
+
+#: .\templates\feed\_recommend_button.html:32
+msgid "Recommend"
+msgstr "Recommander"
 
 #: .\templates\feed\home.html:4 .\templates\feed\home.html:21
 msgid "Feed"
@@ -2391,18 +2617,15 @@ msgstr "Bourgade"
 msgid "World"
 msgstr "Monde"
 
-#: .\templates\games\_cast_box.html:14
-msgid "Personnages"
-msgstr "Personnages"
-
-#: .\templates\games\_cast_box.html:43
+#: .\templates\games\_cast_box.html:43 .\templates\games\_composer.html:146
+#: .\templates\games\_composer.html:162
 #: .\templates\games\_composer_context.html:148
 #: .\templates\games\partials\rapport_content.html:39
 #: .\templates\games\partials\rapport_read.html:21
 msgid "PNJ"
 msgstr "PNJ"
 
-#: .\templates\games\_cast_box.html:43
+#: .\templates\games\_cast_box.html:43 .\templates\games\_composer.html:162
 #: .\templates\games\_composer_context.html:133
 msgid "PJ"
 msgstr "PJ"
@@ -2443,132 +2666,194 @@ msgstr "Nom du PNJ"
 msgid "Short description (optional)"
 msgstr "Courte description (optionnelle)"
 
+#: .\templates\games\_composer.html:37 .\templates\games\_composer.html:209
+msgid "Quoi de neuf dans la scène ?"
+msgstr "Quoi de neuf dans la scène ?"
+
+#: .\templates\games\_composer.html:38
+msgid "Le décor, l'ambiance…"
+msgstr "Le décor, l'ambiance…"
+
+#: .\templates\games\_composer.html:39
+msgid "Ce que quelqu'un fait…"
+msgstr "Ce que quelqu'un fait…"
+
+#: .\templates\games\_composer.html:40
+msgid "« … »"
+msgstr "« … »"
+
 # | msgid "Notifications"
-#: .\templates\games\_composer.html:81
+#: .\templates\games\_composer.html:91
 msgid "Modification d'un post"
 msgstr "Modification d'un post"
 
-#: .\templates\games\_composer.html:82
+#: .\templates\games\_composer.html:92
 #, python-format
 msgid "dans <strong class=\"text-semantic-ink-secondary\">%(title)s</strong>"
 msgstr "dans <strong class=\"text-semantic-ink-secondary\">%(title)s</strong>"
 
-#: .\templates\games\_composer.html:84
+#: .\templates\games\_composer.html:94 .\templates\games\_composer.html:122
 msgid "MJ"
 msgstr "MJ"
 
-#: .\templates\games\_composer.html:84
+#: .\templates\games\_composer.html:94 .\templates\games\_composer.html:122
 msgid "Joueur"
 msgstr "Joueur"
 
-#: .\templates\games\_composer.html:90
-msgid "Personnage"
-msgstr "Personnage"
+#: .\templates\games\_composer.html:111 .\templates\games\_composer.html:132
+msgid "Choisir un personnage"
+msgstr "Choisir un personnage"
 
-#: .\templates\games\_composer.html:98
-msgid "— Choisir un personnage —"
-msgstr "— Choisir un personnage —"
+#: .\templates\games\_composer.html:140
+msgid "Sous quel personnage"
+msgstr "Sous quel personnage"
 
-#: .\templates\games\_composer.html:116
-msgid "Écrivez le post…  (/desc, /act, /rep · « pour une réplique)"
-msgstr "Écrivez le post…  (/desc, /act, /rep · « pour une réplique)"
+#: .\templates\games\_composer.html:146
+msgid "Vos personnages"
+msgstr "Vos personnages"
+
+# | msgid "Retcon on %(name)s"
+#: .\templates\games\_composer.html:164
+#, python-format
+msgid "né dans %(title)s"
+msgstr "né dans %(title)s"
+
+#: .\templates\games\_composer.html:174
+msgid "Aucun personnage à incarner"
+msgstr "Aucun personnage à incarner"
+
+#: .\templates\games\_composer.html:175
+msgid "Pour écrire, reprenez un personnage existant ou créez le vôtre."
+msgstr "Pour écrire, reprenez un personnage existant ou créez le vôtre."
+
+#: .\templates\games\_composer.html:179
+msgid "Créer un personnage"
+msgstr "Créer un personnage"
+
+#: .\templates\games\_composer.html:182
+msgid "Reprendre un personnage existant"
+msgstr "Reprendre un personnage existant"
+
+#: .\templates\games\_composer.html:196
+msgid "Choisissez un personnage pour commencer à écrire."
+msgstr "Choisissez un personnage pour commencer à écrire."
+
+#: .\templates\games\_composer.html:197
+#: .\templates\games\_composer_context.html:64
+msgid "Choisissez une partie pour continuer."
+msgstr "Choisissez une partie pour continuer."
 
 # | msgid "Delete image"
-#: .\templates\games\_composer.html:133 .\templates\games\_composer.html:265
+#: .\templates\games\_composer.html:226 .\templates\games\_composer.html:357
 msgid "Retirer l'image"
 msgstr "Retirer l'image"
 
-#: .\templates\games\_composer.html:150
+#: .\templates\games\_composer.html:243
+#: .\templates\games\_composer_context.html:70
 #: .\templates\games\_composer_context.html:78
 msgid "Nature du post"
 msgstr "Nature du post"
 
-#: .\templates\games\_composer.html:158
+#: .\templates\games\_composer.html:251
 msgid "Réplique"
 msgstr "Réplique"
 
-#: .\templates\games\_composer.html:166
+#: .\templates\games\_composer.html:259
 msgid "Image de la description"
 msgstr "Image de la description"
 
-#: .\templates\games\_composer.html:177
+#: .\templates\games\_composer.html:270
 msgid "Annuler"
 msgstr "Annuler"
 
-#: .\templates\games\_composer.html:190
+#: .\templates\games\_composer.html:283
 msgid "Enregistrer"
 msgstr "Enregistrer"
 
-#: .\templates\games\_composer.html:199
+#: .\templates\games\_composer.html:292
 msgid "Ajouter"
 msgstr "Ajouter"
 
 # | msgid "Public"
-#: .\templates\games\_composer.html:204 .\templates\games\_composer.html:311
+#: .\templates\games\_composer.html:297 .\templates\games\_composer.html:431
 msgid "Publier"
 msgstr "Publier"
 
-#: .\templates\games\_composer.html:210
+#: .\templates\games\_composer.html:303 .\templates\games\_composer.html:362
 msgid "Options d'envoi"
 msgstr "Options d'envoi"
 
-#: .\templates\games\_composer.html:220
+#: .\templates\games\_composer.html:313
 msgid "Rien ne part sans un personnage ET une partie — brouillon compris."
 msgstr "Rien ne part sans un personnage ET une partie — brouillon compris."
 
-#: .\templates\games\_composer.html:223
+#: .\templates\games\_composer.html:316
 msgid "Cette nature requiert un acteur."
 msgstr "Cette nature requiert un acteur."
 
-#: .\templates\games\_composer.html:248
+#: .\templates\games\_composer.html:335 .\templates\games\_composer.html:343
 msgid "Média de la description"
 msgstr "Média de la description"
 
-#: .\templates\games\_composer.html:251
+#: .\templates\games\_composer.html:346
 msgid "Choisir une image (une seule)"
 msgstr "Choisir une image (une seule)"
 
-#: .\templates\games\_composer.html:257
+#: .\templates\games\_composer.html:352
 msgid "Texte alternatif — ce que montre l'image."
 msgstr "Texte alternatif — ce que montre l'image."
 
-#: .\templates\games\_composer.html:260
-msgid "Tonalité : lourde, feutrée, blafarde…"
-msgstr "Tonalité : lourde, feutrée, blafarde…"
-
-#: .\templates\games\_composer.html:278
+#: .\templates\games\_composer.html:370
 msgid "Après ce post"
 msgstr "Après ce post"
 
-#: .\templates\games\_composer.html:286
+#: .\templates\games\_composer.html:378
 msgid "Ajouter à cette scène"
 msgstr "Ajouter à cette scène"
 
-#: .\templates\games\_composer.html:287
+#: .\templates\games\_composer.html:379
 msgid "Retour à l'édition de la scène courante."
 msgstr "Retour à l'édition de la scène courante."
 
-#: .\templates\games\_composer.html:295
+#: .\templates\games\_composer.html:387
 msgid "Ajouter et continuer"
 msgstr "Ajouter et continuer"
 
-#: .\templates\games\_composer.html:296
+#: .\templates\games\_composer.html:388
 msgid "Poste, puis rouvre un composer vide dans la même scène."
 msgstr "Poste, puis rouvre un composer vide dans la même scène."
 
-#: .\templates\games\_composer.html:304 .\templates\games\_composer.html:317
+#: .\templates\games\_composer.html:396 .\templates\games\_composer.html:437
 msgid "Enregistrer en brouillon"
 msgstr "Enregistrer en brouillon"
 
-#: .\templates\games\_composer.html:305
+#: .\templates\games\_composer.html:397
 msgid "Créé mais non publié dans le fil. Repris plus tard."
 msgstr "Créé mais non publié dans le fil. Repris plus tard."
 
-#: .\templates\games\_composer.html:312
+#: .\templates\games\_composer.html:407
+#: .\templates\games\partials\_report_meta_form.html:54
+#: .\templates\games\report_compose.html:87
+msgid "Content warning"
+msgstr "Avertissement de contenu"
+
+#: .\templates\games\_composer.html:422
+#: .\templates\games\partials\_report_meta_form.html:58
+#: .\templates\games\report_compose.html:91
+msgid "e.g. Violence, dark themes"
+msgstr "ex. Violence, thèmes sombres"
+
+#: .\templates\games\_composer.html:425
+#: .\templates\games\partials\_report_meta_form.html:61
+#: .\templates\games\report_compose.html:94
+msgid "If filled, content will be hidden behind a 'Show' button."
+msgstr "Si renseigné, le contenu sera masqué derrière un bouton « Afficher »."
+
+#: .\templates\games\_composer.html:432
 msgid "Ouvre le post dans une nouvelle scène."
 msgstr "Ouvre le post dans une nouvelle scène."
 
-#: .\templates\games\_composer.html:318
+#: .\templates\games\_composer.html:438
 msgid "Créé mais non publié dans le fil."
 msgstr "Créé mais non publié dans le fil."
 
@@ -2602,10 +2887,6 @@ msgstr "Réponse"
 msgid "↳ réponse"
 msgstr "↳ réponse"
 
-#: .\templates\games\_composer_context.html:64
-msgid "Choisissez une partie pour continuer."
-msgstr "Choisissez une partie pour continuer."
-
 #: .\templates\games\_composer_context.html:89
 msgid "La voix du récit, sans acteur."
 msgstr "La voix du récit, sans acteur."
@@ -2622,6 +2903,7 @@ msgstr "Un geste concret, sans parole."
 msgid "Une prise de parole."
 msgstr "Une prise de parole."
 
+#: .\templates\games\_composer_context.html:101
 #: .\templates\games\_composer_context.html:109
 msgid "Qui s'exprime"
 msgstr "Qui s'exprime"
@@ -2650,6 +2932,7 @@ msgstr "Nom du PNJ"
 msgid "Créer et incarner"
 msgstr "Créer et incarner"
 
+#: .\templates\games\_composer_context.html:180
 #: .\templates\games\_composer_context.html:188
 msgid "En réponse à"
 msgstr "En réponse à"
@@ -2670,13 +2953,26 @@ msgstr "Aucun post dans la scène"
 msgid "Retirer la réponse"
 msgstr "Retirer la réponse"
 
-#: .\templates\games\_composer_game_field.html:9
-msgid "Partie"
-msgstr "Partie"
+#: .\templates\games\_composer_game_field.html:27
+msgid "Choisir une partie"
+msgstr "Choisir une partie"
 
-#: .\templates\games\_composer_game_field.html:20
-msgid "— Choisir une partie —"
-msgstr "— Choisir une partie —"
+#: .\templates\games\_composer_game_field.html:32
+#: .\templates\games\_composer_game_field.html:40
+msgid "Dans quelle partie"
+msgstr "Dans quelle partie"
+
+#: .\templates\games\_composer_game_field.html:52
+msgid "Vous y êtes MJ"
+msgstr "Vous y êtes MJ"
+
+#: .\templates\games\_composer_game_field.html:52
+msgid "Vous y jouez"
+msgstr "Vous y jouez"
+
+#: .\templates\games\_composer_game_field.html:56
+msgid "Ce personnage n'a encore aucune partie où écrire."
+msgstr "Ce personnage n'a encore aucune partie où écrire."
 
 #: .\templates\games\_composer_last_scene.html:12
 msgid "Dernière scène"
@@ -2701,10 +2997,6 @@ msgstr "Aucun post publié dans cette scène."
 #: .\templates\games\_composer_last_scene.html:29
 msgid "Aucune scène publiée dans cette partie pour l'instant."
 msgstr "Aucune scène publiée dans cette partie pour l'instant."
-
-#: .\templates\games\_fiction_next.html:12
-msgid "Next"
-msgstr "Suivant"
 
 # | msgid "Untitled"
 #: .\templates\games\_fiction_next.html:18
@@ -2760,7 +3052,7 @@ msgstr "Aucune partie pour l'instant."
 
 # --- Vocabulary fix: report→scene / rapport→post (display) ---
 #: .\templates\games\composer.html:4 .\templates\games\composer.html:9
-#: .\templates\games\detail.html:60 .\templates\games\report_compose.html:4
+#: .\templates\games\detail.html:78 .\templates\games\report_compose.html:4
 #: .\templates\games\report_compose.html:12
 #: .\templates\games\report_compose.html:15
 #: .\templates\games\report_form.html:4 .\templates\games\report_form.html:16
@@ -2817,15 +3109,27 @@ msgstr "Par @%(username)s"
 msgid "Depuis le"
 msgstr "Depuis le"
 
-#: .\templates\games\detail.html:77
-msgid "Session du"
-msgstr "Session du"
+#: .\templates\games\detail.html:46
+msgid "Partie clôturée"
+msgstr "Partie clôturée"
 
-#: .\templates\games\detail.html:94
+#: .\templates\games\detail.html:52
+msgid "Clore la partie"
+msgstr "Clore la partie"
+
+#: .\templates\games\detail.html:63
+msgid "Report this game"
+msgstr "Signaler cette partie"
+
+#: .\templates\games\detail.html:105
+msgid "Behind the wall"
+msgstr "Derrière le mur"
+
+#: .\templates\games\detail.html:130
 msgid "No published scene."
 msgstr "Aucune scène publiée."
 
-#: .\templates\games\detail.html:124
+#: .\templates\games\detail.html:160
 msgid "No characters in this game."
 msgstr "Aucun personnage dans cette partie."
 
@@ -2868,6 +3172,7 @@ msgstr "Type de marqueur"
 
 #: .\templates\games\marker_form.html:33
 #: .\templates\games\report_compose.html:39
+#: .\templates\users\_following_page.html:42
 msgid "Character"
 msgstr "Personnage"
 
@@ -2887,7 +3192,7 @@ msgstr "Aucun personnage disponible pour cette partie."
 msgid "Go back to the game."
 msgstr "Retour à la partie."
 
-#: .\templates\games\marker_form.html:60
+#: .\templates\games\marker_form.html:62
 msgid "Add marker"
 msgstr "Ajouter un marqueur"
 
@@ -2943,32 +3248,6 @@ msgstr "Markdown supporté. Tapez"
 #: .\templates\games\report_compose.html:81
 msgid "to mention."
 msgstr "pour mentionner."
-
-#: .\templates\games\partials\_report_meta_form.html:58
-#: .\templates\games\report_compose.html:91
-msgid "e.g. Violence, dark themes"
-msgstr "ex. Violence, thèmes sombres"
-
-#: .\suddenly\games\services.py:57
-msgid "Violence"
-msgstr "Violence"
-
-#: .\suddenly\games\services.py:58
-msgid "Dark themes"
-msgstr "Thèmes sombres"
-
-#: .\suddenly\games\services.py:59
-msgid "Sexual content"
-msgstr "Contenu sexuel"
-
-#: .\suddenly\games\services.py:60
-msgid "Death"
-msgstr "Mort"
-
-#: .\templates\games\partials\_report_meta_form.html:61
-#: .\templates\games\report_compose.html:94
-msgid "If filled, content will be hidden behind a 'Show' button."
-msgstr "Si renseigné, le contenu sera masqué derrière un bouton « Afficher »."
 
 #: .\templates\games\partials\_report_meta_form.html:66
 msgid "Date de session"
@@ -3038,42 +3317,42 @@ msgstr "Retirer"
 msgid "Ce que montre l'image (alt)"
 msgstr "Ce que montre l'image (alt)"
 
-#: .\templates\games\partials\rapport_item.html:95
-msgid "Ambiance : lourde, feutrée…"
-msgstr "Ambiance : lourde, feutrée…"
-
-#: .\templates\games\partials\rapport_item.html:97
+#: .\templates\games\partials\rapport_item.html:94
 msgid "Enregistrer l'image"
 msgstr "Enregistrer l'image"
 
 # | msgid "Context"
-#: .\templates\games\partials\rapport_item.html:118
+#: .\templates\games\partials\rapport_item.html:115
 msgid "Monter"
 msgstr "Monter"
 
 # --- Vocabulary fix: report→scene / rapport→post (display) ---
 # | msgid "New scene"
-#: .\templates\games\partials\rapport_item.html:124
+#: .\templates\games\partials\rapport_item.html:121
 msgid "Descendre"
 msgstr "Descendre"
 
-#: .\templates\games\partials\rapport_item.html:135
+#: .\templates\games\partials\rapport_item.html:132
 #: .\templates\games\report_detail.html:38
 msgid "Éditer"
 msgstr "Éditer"
 
-#: .\templates\games\partials\rapport_item.html:141
+#: .\templates\games\partials\rapport_item.html:138
 msgid "Supprimer ce post ?"
 msgstr "Supprimer ce post ?"
 
 # | msgid "Supporting"
-#: .\templates\games\partials\rapport_item.html:142
+#: .\templates\games\partials\rapport_item.html:139
 msgid "Supprimer"
 msgstr "Supprimer"
 
-#: .\templates\games\partials\rapport_item.html:155
+#: .\templates\games\partials\rapport_item.html:152
 msgid "+ Remote parent"
 msgstr "+ Parent distant"
+
+#: .\templates\games\partials\rapport_item.html:199
+msgid "+ Marqueur"
+msgstr "+ Marqueur"
 
 #: .\templates\games\partials\rapport_reply_form.html:7
 msgid "In reply to:"
@@ -3129,119 +3408,63 @@ msgid "Brouillon"
 msgstr "Brouillon"
 
 #: .\templates\games\report_detail.html:30
-#: .\templates\games\report_detail.html:104
+#: .\templates\games\report_detail.html:112
 msgid "Derrière le mur"
 msgstr "Derrière le mur"
 
+#: .\templates\games\report_detail.html:43
+msgid "Report this scene"
+msgstr "Signaler cette scène"
+
 # | msgid "by @%(username)s"
-#: .\templates\games\report_detail.html:45
+#: .\templates\games\report_detail.html:51
 #, python-format
 msgid "par @%(username)s"
 msgstr "par @%(username)s"
 
 # | msgid "published %(date)s"
-#: .\templates\games\report_detail.html:47
+#: .\templates\games\report_detail.html:53
 #, python-format
 msgid "publié il y a %(date)s"
 msgstr "publié il y a %(date)s"
 
-#: .\templates\games\report_detail.html:49
+#: .\templates\games\report_detail.html:55
 msgid "Non listé"
 msgstr "Non listé"
 
-#: .\templates\games\report_detail.html:49
-msgid "Abonnés"
-msgstr "Abonnés"
-
-#: .\templates\games\report_detail.html:68
+#: .\templates\games\report_detail.html:75
 msgid "Masquer"
 msgstr "Masquer"
 
-#: .\templates\games\report_detail.html:68
+#: .\templates\games\report_detail.html:75
 msgid "Afficher la scène"
 msgstr "Afficher la scène"
 
-#: .\templates\games\report_detail.html:85 .\templates\stories\detail.html:65
-msgid "Citations retenues"
-msgstr "Citations retenues"
-
-#: .\templates\games\report_detail.html:101
+#: .\templates\games\report_detail.html:109
 msgid "Cette scène est partagée."
 msgstr "Cette scène est partagée."
 
-#: .\templates\games\report_detail.html:102
+#: .\templates\games\report_detail.html:110
 msgid "Lisible par tous dans les Récits."
 msgstr "Lisible par tous dans les Récits."
 
-#: .\templates\games\report_detail.html:105
+#: .\templates\games\report_detail.html:113
 msgid "Partagez pour que tous lisent cette scène comme un compte rendu résolu."
 msgstr "Partagez pour que tous lisent cette scène comme un compte rendu résolu."
 
-#: .\templates\games\report_detail.html:109
+#: .\templates\games\report_detail.html:117
 msgid "Fédérée — le partage est définitif."
 msgstr "Fédérée — le partage est définitif."
 
-#: .\templates\games\report_detail.html:115
+#: .\templates\games\report_detail.html:123
 #: .\templates\games\report_form.html:110
 msgid "Refermer le mur"
 msgstr "Refermer le mur"
 
-#: .\templates\games\report_detail.html:119
+#: .\templates\games\report_detail.html:127
 #: .\templates\games\report_form.html:103
 msgid "Partager"
 msgstr "Partager"
-
-#: .\templates\games\report_detail.html:130
-msgid "Marquer une citation"
-msgstr "Marquer une citation"
-
-# | msgid "Documentation"
-#: .\templates\games\report_detail.html:133
-msgid "Nouvelle citation"
-msgstr "Nouvelle citation"
-
-#: .\templates\games\report_detail.html:145
-msgid "La réplique, telle quelle"
-msgstr "La réplique, telle quelle"
-
-#: .\templates\games\report_detail.html:149
-msgid "— Qui parle —"
-msgstr "— Qui parle —"
-
-# | msgid "Public"
-#: .\templates\games\report_detail.html:155
-msgid "Publique"
-msgstr "Publique"
-
-# | msgid "Private"
-#: .\templates\games\report_detail.html:156
-msgid "Privée"
-msgstr "Privée"
-
-# | msgid "Open registrations"
-#: .\templates\games\report_detail.html:159
-msgid "Enregistrer la citation"
-msgstr "Enregistrer la citation"
-
-#: .\templates\games\report_detail.html:169
-msgid "publique"
-msgstr "publique"
-
-#: .\templates\games\report_detail.html:170
-msgid "privée"
-msgstr "privée"
-
-#: .\templates\games\report_detail.html:171
-msgid "éphémère"
-msgstr "éphémère"
-
-#: .\templates\games\report_detail.html:172
-msgid "en attente du mur"
-msgstr "en attente du mur"
-
-#: .\templates\games\report_detail.html:177
-msgid "Supprimer cette citation ?"
-msgstr "Supprimer cette citation ?"
 
 #: .\templates\games\report_form.html:4 .\templates\games\report_form.html:22
 msgid "Edit scene"
@@ -3319,10 +3542,19 @@ msgstr "Le fil de la scène"
 msgid "Paramètres de la scène"
 msgstr "Paramètres de la scène"
 
+#: .\templates\gmh\base.html:19 .\templates\gmh\dashboard.html:7
+msgid "Overview"
+msgstr "Vue d'ensemble"
+
 #: .\templates\gmh\base.html:26 .\templates\gmh\instance_settings.html:4
 #: .\templates\gmh\instance_settings.html:7
 msgid "Instance settings"
 msgstr "Paramètres de l'instance"
+
+#: .\templates\gmh\base.html:47 .\templates\gmh\reports.html:4
+#: .\templates\gmh\reports.html:7
+msgid "Reports"
+msgstr "Signalements"
 
 #: .\templates\gmh\instance_settings.html:26
 msgid "Instance name"
@@ -3332,6 +3564,67 @@ msgstr "Nom de l'instance"
 msgid "Open registrations"
 msgstr "Inscriptions ouvertes"
 
+#: .\templates\gmh\reports.html:17
+#, python-format
+msgid "@%(reporter)s reported @%(reported)s"
+msgstr "@%(reporter)s a signalé @%(reported)s"
+
+#: .\templates\gmh\reports.html:22
+#, python-format
+msgid "%(date)s ago"
+msgstr "il y a %(date)s"
+
+#: .\templates\gmh\reports.html:27
+#, python-format
+msgid "Flagged %(kind)s:"
+msgstr "Signalé (%(kind)s) :"
+
+#: .\templates\gmh\reports.html:45
+#, python-format
+msgid "Block @%(username)s?"
+msgstr "Bloquer @%(username)s ?"
+
+#: .\templates\gmh\reports.html:56
+msgid "No pending reports."
+msgstr "Aucun signalement en attente."
+
+#: .\templates\messaging\_conversation_list.html:30
+msgid "Aucun message"
+msgstr "Aucun message"
+
+#: .\templates\messaging\_conversation_list.html:30
+msgid "Vos conversations privées avec vos abonnements mutuels apparaîtront ici."
+msgstr "Vos conversations privées avec vos abonnements mutuels apparaîtront ici."
+
+#: .\templates\messaging\_message_list.html:17
+msgid "Aucun message pour l’instant."
+msgstr "Aucun message pour l’instant."
+
+#: .\templates\messaging\compose.html:4 .\templates\messaging\compose.html:9
+msgid "Nouveau message"
+msgstr "Nouveau message"
+
+#: .\templates\messaging\compose.html:12
+msgid "Choisissez un destinataire depuis son profil, sa fiche personnage ou une partie."
+msgstr "Choisissez un destinataire depuis son profil, sa fiche personnage ou une partie."
+
+#: .\templates\messaging\compose.html:14
+msgid "Vous devez vous suivre mutuellement pour envoyer un message privé à cette personne."
+msgstr "Vous devez vous suivre mutuellement pour envoyer un message privé à cette personne."
+
+#: .\templates\messaging\compose.html:17
+#, python-format
+msgid "À @%(username)s"
+msgstr "À @%(username)s"
+
+#: .\templates\messaging\compose.html:24 .\templates\messaging\thread.html:32
+msgid "Votre message…"
+msgstr "Votre message…"
+
+#: .\templates\messaging\compose.html:27 .\templates\messaging\thread.html:35
+msgid "Envoyer"
+msgstr "Envoyer"
+
 #: .\templates\notifications\_items.html:56
 msgid "No notifications."
 msgstr "Aucune notification."
@@ -3339,6 +3632,50 @@ msgstr "Aucune notification."
 #: .\templates\notifications\list.html:21
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
+
+#: .\templates\offers\_offer_panel.html:6
+msgid "Offer to the community"
+msgstr "Proposer à la communauté"
+
+#: .\templates\offers\_offer_resolved.html:5
+msgid "This offer has been resolved — a response was accepted."
+msgstr "Cette proposition a été résolue — une réponse a été acceptée."
+
+#: .\templates\offers\_offer_resolved.html:10
+msgid "This offer has expired."
+msgstr "Cette proposition a expiré."
+
+#: .\templates\offers\_offer_resolved.html:15
+msgid "This offer was cancelled."
+msgstr "Cette proposition a été annulée."
+
+#: .\templates\offers\_response_form.html:6
+msgid "You already responded:"
+msgstr "Vous avez déjà répondu :"
+
+#: .\templates\offers\_response_form.html:16
+msgid "Update response"
+msgstr "Mettre à jour la réponse"
+
+#: .\templates\offers\_response_form.html:31
+msgid "Propose a narrative continuation…"
+msgstr "Proposez une suite narrative…"
+
+#: .\templates\offers\_response_form.html:35
+msgid "Respond"
+msgstr "Répondre"
+
+#: .\templates\offers\_response_item.html:20
+msgid "Decline"
+msgstr "Refuser"
+
+#: .\templates\offers\_response_list.html:9
+msgid "No response yet."
+msgstr "Aucune réponse pour l'instant."
+
+#: .\templates\offers\panel.html:4
+msgid "Offer"
+msgstr "Proposition"
 
 #: .\templates\onboarding\step1.html:4
 msgid "Welcome"
@@ -3433,92 +3770,100 @@ msgstr "Voir le fil local"
 msgid "Follow the community's publications"
 msgstr "Suivez les publications de la communauté"
 
-#: .\templates\quotes\_quote_card.html:41
-msgid "PNJ disponible"
-msgstr "PNJ disponible"
-
-#: .\templates\quotes\_quote_card.html:46
-msgid "Distant"
-msgstr "Distant"
-
-#: .\templates\quotes\_quote_card.html:53
-msgid "→ la story d'origine"
-msgstr "→ la story d'origine"
-
-# | msgid "Propose publication"
-#: .\templates\quotes\_quote_card.html:63
-msgid "Proposer un lien"
-msgstr "Proposer un lien"
+#: .\templates\stories\_index_results.html:53
+msgid "Read the story"
+msgstr "Lire l'histoire"
 
 # | msgid "No posts yet."
-#: .\templates\stories\_index_results.html:31
+#: .\templates\stories\_index_results.html:62
 msgid "No story yet"
 msgstr "Aucune story pour l'instant"
 
-#: .\templates\stories\_index_results.html:33
+#: .\templates\stories\_index_results.html:64
 msgid "When authors release their scenes, they appear here."
 msgstr "Quand les auteurs publient leurs scènes, elles apparaissent ici."
+
+#: .\templates\stories\_reading_nav.html:31 .\templates\stories\detail.html:53
+#, python-format
+msgid "Scene %(n)s"
+msgstr "Scène %(n)s"
 
 # | msgid "Stories"
 #: .\templates\stories\detail.html:4
 msgid "Story"
 msgstr "Story"
 
-#: .\templates\stories\detail.html:39
+#: .\templates\stories\detail.html:35
 #, python-format
 msgid "%(counter)s scene · readable by all"
 msgid_plural "%(counter)s scenes · readable by all"
 msgstr[0] "%(counter)s scène · lisible par tous"
 msgstr[1] "%(counter)s scènes · lisible par tous"
 
-#: .\templates\stories\detail.html:59 .\templates\stories\_reading_nav.html:33
-#, python-format
-msgid "Scene %(n)s"
-msgstr "Scène %(n)s"
-
-#: .\templates\stories\detail.html:75
+#: .\templates\stories\detail.html:90
 msgid "All stories"
 msgstr "Toutes les stories"
 
-#: .\templates\stories\index.html:13
+#: .\templates\stories\index.html:31
 msgid "Resolved accounts that have crossed the wall — readable by everyone, end to end."
 msgstr "Les comptes rendus résolus qui ont franchi le mur — lisibles par tous, de bout en bout."
 
-#. Libellé repris tel quel de la maquette de référence
-#. (templates/wireframes/maquette-v3.html, pageStories) : « Lire l'histoire → ».
-#. La maquette laisse « Stories » non traduit dans la nav mais francise le CTA —
-#. c'est la référence qui arbitre, pas une cohérence reconstruite après coup.
-#: .\templates\stories\_index_results.html:50
-msgid "Read the story"
-msgstr "Lire l'histoire"
+#: .\templates\users\_followers_page.html:22
+msgid "No followers yet."
+msgstr "Aucun abonné pour l'instant."
+
+#: .\templates\users\_following_page.html:41
+msgid "Account"
+msgstr "Compte"
+
+#: .\templates\users\_following_page.html:51
+msgid "Not following anyone yet."
+msgstr "Aucun abonnement pour l'instant."
+
+#: .\templates\users\followers_list.html:4
+#: .\templates\users\followers_list.html:16
+#, python-format
+msgid "Followers of %(name)s"
+msgstr "Abonnés de %(name)s"
+
+#: .\templates\users\followers_list.html:12
+#: .\templates\users\following_list.html:12
+msgid "Back to profile"
+msgstr "Retour au profil"
+
+#: .\templates\users\following_list.html:4
+#: .\templates\users\following_list.html:16
+#, python-format
+msgid "%(name)s is following"
+msgstr "Abonnements de %(name)s"
 
 #: .\templates\users\profile.html:40
 msgid "Edit profile"
 msgstr "Modifier le profil"
 
-#: .\templates\users\profile.html:59
+#: .\templates\users\profile.html:46
+msgid "Report this user"
+msgstr "Signaler cet utilisateur"
+
+#: .\templates\users\profile.html:64
 msgid "follower"
 msgid_plural "followers"
 msgstr[0] "abonné"
 msgstr[1] "abonnés"
 
-#: .\templates\users\profile.html:63
+#: .\templates\users\profile.html:68
 msgid "following"
 msgid_plural "following"
 msgstr[0] "abonnement"
 msgstr[1] "abonnements"
 
-#: .\templates\users\profile.html:83
+#: .\templates\users\profile.html:88
 msgid "Recent games"
 msgstr "Parties récentes"
 
-#: .\templates\users\profile.html:112
+#: .\templates\users\profile.html:117
 msgid "No published games yet."
 msgstr "Aucune partie publiée pour l'instant."
-
-#: .\templates\users\profile.html:134
-msgid "Delete this character? This cannot be undone."
-msgstr "Supprimer ce personnage ? Action irréversible."
 
 #: .\templates\users\profile_edit.html:4 .\templates\users\profile_edit.html:7
 msgid "Edit my profile"
@@ -3545,17 +3890,16 @@ msgstr "Paramètres"
 msgid "Profile"
 msgstr "Profil"
 
-#: .\templates\users\settings_base.html:34
-#: .\templates\users\settings_muses.html:4
-#: .\templates\users\settings_muses.html:7
-msgid "Muses"
-msgstr "Muses"
-
-#: .\templates\users\settings_base.html:48
+#: .\templates\users\settings_base.html:41
 #: .\templates\users\settings_data.html:4
 #: .\templates\users\settings_federation.html:38
 msgid "Data"
 msgstr "Données"
+
+#: .\templates\users\settings_base.html:48
+#: .\templates\users\settings_stats.html:6
+msgid "Stats & Succès"
+msgstr "Stats & Succès"
 
 #: .\templates\users\settings_data.html:7
 msgid "My data"
@@ -3686,23 +4030,6 @@ msgstr "Exporter mes abonnements (CSV)"
 msgid "Import / Migrate"
 msgstr "Importer / Migrer"
 
-# | msgid "Available NPCs"
-#: .\templates\users\settings_muses.html:14
-msgid "Available credits"
-msgstr "Crédits disponibles"
-
-#: .\templates\users\settings_muses.html:21
-msgid "One credit is spent per Muses assistance. Credits are granted by the instance admin."
-msgstr "Un crédit est consommé par assistance Muses. Les crédits sont attribués par l'admin de l'instance."
-
-#: .\templates\users\settings_muses.html:26
-msgid "This instance is not connected to a Muses hub yet — assistance stays unavailable even when enabled."
-msgstr "Cette instance n'est pas encore connectée à un hub Muses — l'assistance reste indisponible même activée."
-
-#: .\templates\users\settings_muses.html:46
-msgid "Only applies while Muses is enabled above."
-msgstr "Ne s'applique que si Muses est activé ci-dessus."
-
 #: .\templates\users\settings_preferences.html:22
 msgid "e.g. fr"
 msgstr "ex. fr"
@@ -3723,351 +4050,334 @@ msgstr "Image de fond par défaut des personnages"
 msgid "Current background"
 msgstr "Fond actuel"
 
-#: templates/base.html
-msgid "Features"
-msgstr "Fonctionnalités"
+#: .\templates\users\settings_stats.html:10
+msgid "Statistiques"
+msgstr "Statistiques"
 
-#: templates/core/directory.html
-msgid "No members to display yet."
-msgstr "Aucun membre à afficher pour l'instant."
+#: .\templates\users\settings_stats.html:24
+msgid "Succès"
+msgstr "Succès"
 
-#: templates/core/privacy.html
+#: .\templates\users\settings_stats.html:26
 #, python-format
-msgid "Applies to the %(host)s instance."
-msgstr "S'applique à l'instance %(host)s."
+msgid "%(n)s / %(total)s débloqués"
+msgstr "%(n)s / %(total)s débloqués"
 
-#: templates/core/privacy.html
-msgid "This is a baseline policy for a self-hosted instance. The operator should review and adapt it to their jurisdiction before relying on it."
-msgstr "Ceci est une politique de base pour une instance auto-hébergée. L'opérateur doit la relire et l'adapter à sa juridiction avant de s'y fier."
+#: .\templates\users\settings_stats.html:43
+msgid "Débloqué"
+msgstr "Débloqué"
 
-#: templates/core/privacy.html
-msgid "Data we collect"
-msgstr "Données que nous collectons"
+#~ msgid "Malformed payload."
+#~ msgstr "Données malformées."
 
-#: templates/core/privacy.html
-msgid "When you create an account we store your username, email address, and any profile details you provide (display name, bio, avatar). Content you publish — scenes, characters, quotes — is stored so the instance can display and federate it."
-msgstr "Lorsque vous créez un compte, nous stockons votre nom d'utilisateur, votre adresse e-mail et les informations de profil que vous fournissez (nom affiché, bio, avatar). Le contenu que vous publiez — scènes, personnages, citations — est stocké afin que l'instance puisse l'afficher et le fédérer."
+#~ msgid "Forked"
+#~ msgstr "Dérivé"
 
-#: templates/core/privacy.html
-msgid "Federation and public content"
-msgstr "Fédération et contenu public"
+#~ msgid "Ephemeral"
+#~ msgstr "Éphémère"
 
-#: templates/core/privacy.html
-msgid "This service uses <strong>ActivityPub</strong>. Public content and profiles are, by design, shared with other federated instances that follow or interact with them. Once content leaves this instance, it may be cached or copied on servers we do not control. Consider anything public to be effectively permanent."
-msgstr "Ce service utilise <strong>ActivityPub</strong>. Le contenu public et les profils sont, par conception, partagés avec les autres instances fédérées qui les suivent ou interagissent avec eux. Une fois le contenu sorti de cette instance, il peut être mis en cache ou copié sur des serveurs que nous ne contrôlons pas. Considérez tout contenu public comme durablement permanent."
+#~ msgid "Private"
+#~ msgstr "Privée"
 
-#: templates/core/privacy.html
-msgid "Cookies"
-msgstr "Cookies"
+#~ msgid "Enable Muses AI assistance for your account."
+#~ msgstr "Activer l'assistance IA Muses pour votre compte."
 
-#: templates/core/privacy.html
-msgid "We use strictly functional cookies for authentication (keeping you logged in), CSRF protection, and remembering your language and theme preferences. We do not use advertising or third-party tracking cookies."
-msgstr "Nous utilisons uniquement des cookies strictement fonctionnels pour l'authentification (vous garder connecté), la protection CSRF et la mémorisation de vos préférences de langue et de thème. Nous n'utilisons aucun cookie publicitaire ni de traçage tiers."
+#~ msgid "Available Muses credits."
+#~ msgstr "Crédits Muses disponibles."
 
-#: templates/core/privacy.html
-msgid "Your rights"
-msgstr "Vos droits"
+#~ msgid "Receive an editable summary and federated-link suggestions from Muses when a report is imported from choix-narratifs."
+#~ msgstr "Recevoir un résumé éditable et des suggestions de liens fédérés de Muses lorsqu'une scène est importée depuis choix-narratifs."
 
-#: templates/core/privacy.html
-msgid "You can edit or delete your profile and content at any time from your account settings, and export your data (games, characters, follows). Deleting content sends removal requests across the federation, though remote caches may take time to clear."
-msgstr "Vous pouvez modifier ou supprimer votre profil et votre contenu à tout moment depuis les paramètres de votre compte, et exporter vos données (parties, personnages, abonnements). La suppression de contenu envoie des demandes de retrait à travers la fédération, mais les caches distants peuvent mettre du temps à se vider."
+#~ msgid "Muses settings saved."
+#~ msgstr "Paramètres Muses enregistrés."
 
-#: templates/core/privacy.html
+#~ msgid "Quotes"
+#~ msgstr "Citations"
+
+#~ msgid "Coherence analysis"
+#~ msgstr "Analyse de cohérence"
+
+#~ msgid "This Claim has no proposed character to compare — nothing to analyse."
+#~ msgstr "Ce Claim ne propose aucun personnage à comparer — rien à analyser."
+
+#~ msgid "No Muses credits left — top up to use this feature."
+#~ msgstr "Plus de crédits Muses — rechargez pour utiliser cette fonction."
+
+#~ msgid "Overall plausibility"
+#~ msgstr "Plausibilité globale"
+
+#~ msgid "strong"
+#~ msgstr "forte"
+
+#~ msgid "medium"
+#~ msgstr "moyenne"
+
+#~ msgid "weak"
+#~ msgstr "faible"
+
+# | msgid "Compatible with:"
+#~ msgid "Compatible points"
+#~ msgstr "Points compatibles"
+
+#~ msgid "Points of friction"
+#~ msgstr "Points de friction"
+
+#~ msgid "To harmonise if accepted"
+#~ msgstr "À harmoniser si accepté"
+
+#~ msgid "The decision is yours — this analysis is advisory and does not decide."
+#~ msgstr "La décision vous appartient — cette analyse est consultative et ne décide pas."
+
+#~ msgid "Muses is unavailable right now — try again later."
+#~ msgstr "Muses est indisponible pour le moment — réessayez plus tard."
+
+#~ msgid "The memorable line..."
+#~ msgstr "La réplique mémorable..."
+
+#~ msgid "Context"
+#~ msgstr "Contexte"
+
+#~ msgid "Narrative situation..."
+#~ msgstr "Situation narrative..."
+
+#~ msgid "e.g. Mature content"
+#~ msgstr "ex. Contenu adulte"
+
+#~ msgid "Muses — opening suggestion"
+#~ msgstr "Muses — suggestion d'ouverture"
+
+#~ msgid "A neutral proposal — it belongs to neither character. Nothing is inserted automatically."
+#~ msgstr "Une proposition neutre — elle n'appartient à aucun des deux personnages. Rien n'est inséré automatiquement."
+
+#~ msgid "Insert into editor"
+#~ msgstr "Insérer dans l'éditeur"
+
+# | msgid "Federated"
+#~ msgid "Regenerate"
+#~ msgstr "Régénérer"
+
+# | msgid "Cover image"
+#~ msgid "Cover tone"
+#~ msgstr "Tonalité de la couverture"
+
+# | msgid "Accept"
+#~ msgid "Concept"
+#~ msgstr "Concept"
+
+#~ msgid "Group traits by concept (e.g. Body, Mind, Gear). Values are display-only — Suddenly never rolls, resolves or computes anything."
+#~ msgstr "Regroupez les traits par concept (ex. Corps, Esprit, Équipement). Les valeurs sont purement indicatives — Suddenly ne lance aucun dé, ne résout et ne calcule rien."
+
+# | msgid "No posts yet."
+#~ msgid "No concept yet."
+#~ msgstr "Aucun concept pour l'instant."
+
+#~ msgid "Concept name…"
+#~ msgstr "Nom du concept…"
+
+#~ msgid "Trait name…"
+#~ msgstr "Nom du trait…"
+
+#~ msgid "An action can draw on traits from any concept. Condition and outcome are free text — displayed as written, never evaluated."
+#~ msgstr "Une action peut mobiliser des traits de n'importe quel concept. Condition et effet sont du texte libre — affichés tels quels, jamais évalués."
+
+# | msgid "No description yet."
+#~ msgid "No action yet."
+#~ msgstr "Aucune action pour l'instant."
+
+# | msgid "Action"
+#~ msgid "Action name…"
+#~ msgstr "Nom de l'action…"
+
+#~ msgid "Add traits above to link this action to them."
+#~ msgstr "Ajoutez des traits ci-dessus pour les relier à cette action."
+
+#~ msgid "NPCs created"
+#~ msgstr "PNJ créés"
+
+#~ msgid "pending requests"
+#~ msgstr "demandes en attente"
+
+#~ msgid "linked characters"
+#~ msgstr "personnages liés"
+
+#~ msgid "Explore NPCs"
+#~ msgstr "Explorer les PNJ"
+
+#~ msgid "NPCs with pending requests"
+#~ msgstr "PNJ avec des demandes en attente"
+
 #, python-format
-msgid "For any question about your data, contact the operator of this instance. Details are on the <a href=\"%(about_url)s\" class=\"link\">About</a> page."
-msgstr "Pour toute question concernant vos données, contactez l'opérateur de cette instance. Les détails figurent sur la page <a href=\"%(about_url)s\" class=\"link\">À propos</a>."
+#~ msgid "%(counter)s appearance"
+#~ msgid_plural "%(counter)s appearances"
+#~ msgstr[0] "%(counter)s apparition"
+#~ msgstr[1] "%(counter)s apparitions"
 
-#: templates/core/apps.html
 #, python-format
-msgid "%(name)s is a web application — it runs in any modern browser, on desktop and mobile, with no install required. Because it federates over ActivityPub, you can also follow and interact with it from other Fediverse clients."
-msgstr "%(name)s est une application web — elle fonctionne dans tout navigateur moderne, sur ordinateur et mobile, sans installation. Comme elle se fédère via ActivityPub, vous pouvez aussi la suivre et interagir avec elle depuis d'autres clients du Fédivers."
+#~ msgid "%(counter)s request"
+#~ msgid_plural "%(counter)s requests"
+#~ msgstr[0] "%(counter)s demande"
+#~ msgstr[1] "%(counter)s demandes"
 
-#: templates/core/apps.html
-msgid "Web app"
-msgstr "Application web"
+#~ msgid "Available NPCs"
+#~ msgstr "PNJ disponibles"
 
-#: templates/core/apps.html
-msgid "Publish scenes, manage your characters, and browse the network directly here. Add the site to your home screen for an app-like experience."
-msgstr "Publiez des scènes, gérez vos personnages et parcourez le réseau directement ici. Ajoutez le site à votre écran d'accueil pour une expérience proche d'une application."
+#~ msgid "Linked characters"
+#~ msgstr "Personnages liés"
 
-#: templates/core/apps.html
-msgid "Open the web app"
-msgstr "Ouvrir l'application web"
+#~ msgid "Révoquer"
+#~ msgstr "Révoquer"
 
-#: templates/core/apps.html
-msgid "Compatible Fediverse clients"
-msgstr "Clients du Fédivers compatibles"
+#~ msgid "You have no NPCs yet"
+#~ msgstr "Vous n'avez pas encore de PNJ"
 
-#: templates/core/apps.html
-msgid "Follow players and characters from any ActivityPub-compatible platform:"
-msgstr "Suivez des joueurs et des personnages depuis n'importe quelle plateforme compatible ActivityPub :"
+#~ msgid "NPCs are created automatically when you mention them in a scene."
+#~ msgstr "Les PNJ sont créés automatiquement quand vous les mentionnez dans une scène."
 
-#: templates/core/apps.html
-msgid "Microblogging — follow accounts and see their public activity."
-msgstr "Microblogage — suivez des comptes et voyez leur activité publique."
+#~ msgid "See my games"
+#~ msgstr "Voir mes parties"
 
-#: templates/core/apps.html
-msgid "Reading and reviews — federates with shared-fiction content."
-msgstr "Lecture et critiques — se fédère avec le contenu de fiction partagée."
+#~ msgid "Check coherence"
+#~ msgstr "Vérifier la cohérence"
 
-#: templates/core/apps.html
-msgid "Any ActivityPub app"
-msgstr "Toute application ActivityPub"
+#~ msgid "An advisory plausibility analysis. It never decides for you."
+#~ msgstr "Une analyse de plausibilité consultative. Elle ne décide jamais à votre place."
 
-#: templates/core/apps.html
-msgid "Search a profile by its @handle from your platform of choice."
-msgstr "Recherchez un profil par son @identifiant depuis la plateforme de votre choix."
+#~ msgid "Suggest an opening"
+#~ msgstr "Suggérer une ouverture"
 
-#: templates/core/shortcuts.html
-msgid "Press these keys from anywhere on the site (except while typing in a field). For a two-key sequence, press the keys one after the other."
-msgstr "Appuyez sur ces touches depuis n'importe quelle page du site (sauf pendant la saisie dans un champ). Pour une séquence à deux touches, appuyez sur les touches l'une après l'autre."
+#~ msgid "Admin"
+#~ msgstr "Admin"
 
-#: templates/core/shortcuts.html
-msgid "Go to Home"
-msgstr "Aller à l'accueil"
+#~ msgid "Available"
+#~ msgstr "Disponible"
 
-#: templates/core/shortcuts.html
-msgid "Go to Stories"
-msgstr "Aller aux histoires"
-
-#: templates/core/shortcuts.html
-msgid "Go to Popular"
-msgstr "Aller aux populaires"
-
-#: templates/core/shortcuts.html
-msgid "Open this shortcuts page"
-msgstr "Ouvrir cette page de raccourcis"
-
-#: templates/core/directory.html
 #, python-format
-msgid "%(counter)s member on this instance."
-msgid_plural "%(counter)s members on this instance."
-msgstr[0] "%(counter)s membre sur cette instance."
-msgstr[1] "%(counter)s membres sur cette instance."
+#~ msgid "%(counter)s quote"
+#~ msgid_plural "%(counter)s quotes"
+#~ msgstr[0] "%(counter)s citation"
+#~ msgstr[1] "%(counter)s citations"
 
-#: .\templates\base.html
-msgid "Popular"
-msgstr "Populaires"
-
-#: .\templates\core\popular_scenes.html .\templates\core\home.html
-msgid "Popular scenes"
-msgstr "Scènes populaires"
-
-#: .\templates\core\popular_scenes.html
-msgid "The most liked scenes, once released."
-msgstr "Les scènes les plus aimées, une fois libérées."
-
-#: .\templates\core\popular_scenes.html
-msgid "No popular scene yet."
-msgstr "Aucune scène populaire pour l'instant."
-
-#: .\suddenly\core\views.py:187
-msgid "Please select a reason."
-msgstr "Veuillez sélectionner une raison."
-
-#: .\suddenly\core\views.py:197
-msgid "You cannot report yourself."
-msgstr "Vous ne pouvez pas vous signaler vous-même."
-
-#: .\suddenly\core\views.py:199
-msgid "Report submitted. An admin will review it."
-msgstr "Signalement envoyé. Un administrateur va l'examiner."
-
-#: .\templates\core\report_user_form.html:4
-#: .\templates\core\report_user_form.html:10
 #, python-format
-msgid "Report @%(username)s"
-msgstr "Signaler @%(username)s"
+#~ msgid "%(counter)s report"
+#~ msgid_plural "%(counter)s reports"
+#~ msgstr[0] "%(counter)s compte-rendu"
+#~ msgstr[1] "%(counter)s comptes-rendus"
 
-#: .\templates\core\report_user_form.html:13
-msgid "This report is sent privately to instance admins. The reported user is never notified."
-msgstr "Ce signalement est envoyé en privé aux administrateurs de l'instance. La personne signalée n'est jamais notifiée."
+#~ msgid "Recent characters"
+#~ msgstr "Personnages récents"
 
-#: .\templates\core\report_user_form.html:27
-msgid "Select a reason"
-msgstr "Choisir une raison"
+#~ msgid "Read more"
+#~ msgstr "Lire la suite"
 
-#: .\templates\core\report_user_form.html:36
-msgid "Additional context (optional)"
-msgstr "Contexte additionnel (optionnel)"
+#~ msgid "Ce qu'on y dit"
+#~ msgstr "Ce qu'on y dit"
 
-#: .\templates\core\report_user_form.html:47
-msgid "Submit report"
-msgstr "Envoyer le signalement"
+# | msgid "Open registrations"
+#~ msgid "Le mur des citations"
+#~ msgstr "Le mur des citations"
 
-#: .\templates\users\profile.html:46
-msgid "Report this user"
-msgstr "Signaler cet utilisateur"
+# | msgid "Notifications"
+#~ msgid "Citations"
+#~ msgstr "Citations"
 
-#: .\templates\gmh\reports.html:4 .\templates\gmh\reports.html:7
-msgid "Reports"
-msgstr "Signalements"
+#~ msgid "Ce qui a été dit, une fois les scènes libérées."
+#~ msgstr "Ce qui a été dit, une fois les scènes libérées."
 
-#: .\templates\gmh\reports.html:16
-#, python-format
-msgid "@%(reporter)s reported @%(reported)s"
-msgstr "@%(reporter)s a signalé @%(reported)s"
+#~ msgid "Précédentes"
+#~ msgstr "Précédentes"
 
-#: .\templates\gmh\reports.html:37
-#, python-format
-msgid "Block @%(username)s?"
-msgstr "Bloquer @%(username)s ?"
+#~ msgid "Suivantes"
+#~ msgstr "Suivantes"
 
-#: .\templates\gmh\reports.html:47
-msgid "No pending reports."
-msgstr "Aucun signalement en attente."
+#~ msgid "Aucune citation libérée pour l'instant."
+#~ msgstr "Aucune citation libérée pour l'instant."
 
-#: .\templates\core\report_content_form.html:4
-msgid "Report %(label)s"
-msgstr "Signaler %(label)s"
+#~ msgid "Personnage"
+#~ msgstr "Personnage"
 
-#: .\templates\core\report_content_form.html:13
-msgid "This report is sent privately to instance admins. Nobody is notified."
-msgstr "Ce signalement est envoyé en privé aux administrateurs de l'instance. Personne n'est notifié."
+#~ msgid "Écrivez le post…  (/desc, /act, /rep · « pour une réplique)"
+#~ msgstr "Écrivez le post…  (/desc, /act, /rep · « pour une réplique)"
 
-#: .\templates\characters\detail.html:82
-msgid "Report this character"
-msgstr "Signaler ce personnage"
+#~ msgid "Tonalité : lourde, feutrée, blafarde…"
+#~ msgstr "Tonalité : lourde, feutrée, blafarde…"
 
-#: .\templates\games\detail.html:65
-msgid "Report this game"
-msgstr "Signaler cette partie"
+#~ msgid "Session du"
+#~ msgstr "Session du"
 
-#: .\templates\games\report_detail.html:44
-msgid "Report this scene"
-msgstr "Signaler cette scène"
+#~ msgid "Ambiance : lourde, feutrée…"
+#~ msgstr "Ambiance : lourde, feutrée…"
 
-#: .\suddenly\core\views.py:225
-msgid "You cannot report your own content."
-msgstr "Vous ne pouvez pas signaler votre propre contenu."
+#~ msgid "Marquer une citation"
+#~ msgstr "Marquer une citation"
 
-#: .\suddenly\core\views.py:200
-msgid "an untitled scene"
-msgstr "une scène sans titre"
+# | msgid "Documentation"
+#~ msgid "Nouvelle citation"
+#~ msgstr "Nouvelle citation"
 
-#: .\templates\gmh\reports.html:30
-msgid "Flagged %(kind)s:"
-msgstr "Signalé (%(kind)s) :"
+#~ msgid "La réplique, telle quelle"
+#~ msgstr "La réplique, telle quelle"
 
-#: .\suddenly\core\admin_views.py:130
-msgid "character"
-msgstr "personnage"
+#~ msgid "— Qui parle —"
+#~ msgstr "— Qui parle —"
 
-#: .\suddenly\core\admin_views.py:133
-msgid "scene"
-msgstr "scène"
+# | msgid "Public"
+#~ msgid "Publique"
+#~ msgstr "Publique"
 
-#: .\suddenly\core\admin_views.py:136
-msgid "game"
-msgstr "partie"
+# | msgid "Private"
+#~ msgid "Privée"
+#~ msgstr "Privée"
 
-#: .\templates\characters\character_create.html:44
-#: .\templates\characters\character_form.html:26 .\templates\characters\detail.html:112
-msgid "Background"
-msgstr "Histoire"
+# | msgid "Open registrations"
+#~ msgid "Enregistrer la citation"
+#~ msgstr "Enregistrer la citation"
 
-#: .\templates\characters\character_create.html:54
-#: .\templates\characters\character_form.html:36 .\templates\characters\detail.html:165
-msgid "Secrets"
-msgstr "Secrets"
+#~ msgid "publique"
+#~ msgstr "publique"
 
-#: .\templates\characters\character_create.html:48
-#: .\templates\characters\character_form.html:30
-msgid "Public backstory shown on the sheet."
-msgstr "Histoire publique affichée sur la fiche."
+#~ msgid "privée"
+#~ msgstr "privée"
 
-#: .\templates\characters\character_create.html:60
-#: .\templates\characters\character_form.html:42
-msgid "Visible only to you (creator/owner). Never shown publicly."
-msgstr "Visible par vous seul (créateur/propriétaire). Jamais affiché publiquement."
+#~ msgid "éphémère"
+#~ msgstr "éphémère"
 
-#: .\templates\characters\detail.html:167
-msgid "Only you (creator/owner) can see this."
-msgstr "Vous seul (créateur/propriétaire) pouvez voir ceci."
+#~ msgid "en attente du mur"
+#~ msgstr "en attente du mur"
 
-#: .\templates\characters\partials\trait_set.html:34
-msgid "Rename"
-msgstr "Renommer"
+#~ msgid "Supprimer cette citation ?"
+#~ msgstr "Supprimer cette citation ?"
 
-#: .\templates\characters\partials\trait_set.html:16
-msgid "Concept name"
-msgstr "Nom du concept"
+#~ msgid "PNJ disponible"
+#~ msgstr "PNJ disponible"
 
-#: .\templates\characters\partials\trait_set.html:62
-msgid "Trait name"
-msgstr "Nom du trait"
+#~ msgid "Distant"
+#~ msgstr "Distant"
 
-#: .\templates\characters\partials\trait_set.html:64
-msgid "Value"
-msgstr "Valeur"
+#~ msgid "→ la story d'origine"
+#~ msgstr "→ la story d'origine"
 
-#: .\templates\characters\partials\trait_set.html:158
-msgid "Action name"
-msgstr "Nom de l'action"
+# | msgid "Propose publication"
+#~ msgid "Proposer un lien"
+#~ msgstr "Proposer un lien"
 
-#: .\templates\characters\character_create.html:94
-msgid "You'll add traits and actions one at a time on the sheet, right after creating the character — each one is saved on its own."
-msgstr "Vous ajouterez les traits et actions un par un sur la fiche, juste après la création du personnage — chacun est enregistré séparément."
+#~ msgid "Delete this character? This cannot be undone."
+#~ msgstr "Supprimer ce personnage ? Action irréversible."
 
-#: .\templates\characters\partials\trait_set.html:224
-msgid "7-9…"
-msgstr "7-9…"
+#~ msgid "Muses"
+#~ msgstr "Muses"
 
-#: .\templates\characters\partials\trait_set.html:226
-msgid "Condition"
-msgstr "Condition"
+# | msgid "Available NPCs"
+#~ msgid "Available credits"
+#~ msgstr "Crédits disponibles"
 
-#: .\templates\characters\partials\trait_set.html:228
-msgid "Result…"
-msgstr "Résultat…"
+#~ msgid "One credit is spent per Muses assistance. Credits are granted by the instance admin."
+#~ msgstr "Un crédit est consommé par assistance Muses. Les crédits sont attribués par l'admin de l'instance."
 
-#: .\templates\characters\partials\trait_set.html:252
-msgid "Result"
-msgstr "Résultat"
+#~ msgid "This instance is not connected to a Muses hub yet — assistance stays unavailable even when enabled."
+#~ msgstr "Cette instance n'est pas encore connectée à un hub Muses — l'assistance reste indisponible même activée."
 
-#: .\templates\characters\partials\trait_set.html:250
-msgid "Add a conditional result…"
-msgstr "Ajouter un résultat conditionnel…"
-
-#: .\suddenly\characters\front_views.py
-msgid "Character archived."
-msgstr "Personnage archivé."
-
-#: .\suddenly\characters\front_views.py
-msgid "Character restored."
-msgstr "Personnage restauré."
-
-#: .\suddenly\characters\services.py
-msgid "Only the creator can archive this character."
-msgstr "Seul le créateur peut archiver ce personnage."
-
-#: .\suddenly\characters\services.py
-msgid "Resolve the pending link request before archiving this character."
-msgstr "Résolvez la demande de lien en attente avant d'archiver ce personnage."
-
-#: .\suddenly\characters\services.py
-msgid "Only the creator can restore this character."
-msgstr "Seul le créateur peut restaurer ce personnage."
-
-#: .\templates\characters\_list_results.html
-msgid "Archive this character? You can restore it later."
-msgstr "Archiver ce personnage ? Vous pourrez le restaurer plus tard."
-
-#: .\templates\characters\_list_results.html
-msgid "Archive"
-msgstr "Archiver"
-
-#: .\templates\characters\list.html
-msgid "Archived"
-msgstr "Archivés"
-
-#: .\templates\characters\list.html
-msgid "Restore"
-msgstr "Restaurer"
-
-#: templates/games/detail.html
-msgid "Behind the wall"
-msgstr "Derrière le mur"
+#~ msgid "Only applies while Muses is enabled above."
+#~ msgstr "Ne s'applique que si Muses est activé ci-dessus."
 
 #~ msgid "published reports"
 #~ msgstr "comptes-rendus publiés"
@@ -4185,9 +4495,6 @@ msgstr "Derrière le mur"
 
 #~ msgid "This scene is released."
 #~ msgstr "Cette scène est publiée."
-
-#~ msgid "Posts"
-#~ msgstr "Posts"
 
 #~ msgid "posts"
 #~ msgstr "posts"
